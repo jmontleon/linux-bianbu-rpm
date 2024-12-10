@@ -160,18 +160,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit_2.0.2
-%define specrpmversion 6.6.63
-%define specversion 6.6.63
+%define specrpmversion 6.6.64
+%define specversion 6.6.64
 %define patchversion 6.6
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.6.63
+%define tarfile_release 6.6.64
 # This is needed to do merge window version magic
 %define patchlevel 6
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.6.63
+%define kabiversion 6.6.64
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -990,6 +990,27 @@ Source4002: gating.yaml
 %if !%{nopatches}
 
 Patch1: patch-%{patchversion}-redhat.patch
+
+
+
+
+Patch0101: 0001-Update-for-v2.0rc3.patch.xz
+Patch0102: 0002-Update-for-v2.0rc4.patch
+Patch0103: 0003-Update-for-v2.0rc5.patch
+Patch0104: 0004-Update-for-v2.0rc6.patch
+Patch0105: 0005-Update-for-v2.0rc7.patch
+Patch0106: 0006-Update-for-v2.0.patch
+Patch0107: 0007-Update-for-v2.0.1.patch
+Patch0108: 0008-Update-for-v2.0.2.patch
+Patch0109: 0009-spacemit-fixes-and-workarounds.patch
+Patch0110: 0010-remove-trace_printk.patch
+Patch0111: 0011-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch0112: 0012-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+
+
+
+
+
 %endif
 
 # empty final patch to facilitate testing of kernel patches
@@ -1736,6 +1757,26 @@ cp -a %{SOURCE1} .
 %if !%{nopatches}
 
 ApplyOptionalPatch patch-%{patchversion}-redhat.patch
+
+
+
+
+ApplyOptionalPatch 0001-Update-for-v2.0rc3.patch.xz
+ApplyOptionalPatch 0002-Update-for-v2.0rc4.patch
+ApplyOptionalPatch 0003-Update-for-v2.0rc5.patch
+ApplyOptionalPatch 0004-Update-for-v2.0rc6.patch
+ApplyOptionalPatch 0005-Update-for-v2.0rc7.patch
+ApplyOptionalPatch 0006-Update-for-v2.0.patch
+ApplyOptionalPatch 0007-Update-for-v2.0.1.patch
+ApplyOptionalPatch 0008-Update-for-v2.0.2.patch
+ApplyOptionalPatch 0009-spacemit-fixes-and-workarounds.patch
+ApplyOptionalPatch 0010-remove-trace_printk.patch
+ApplyOptionalPatch 0011-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+
+
+
+
+
 %endif
 
 ApplyOptionalPatch linux-kernel-test.patch
@@ -3723,6 +3764,9 @@ fi\
 #
 #
 %changelog
+* Mon Dec 09 2024 Jason Montleon <jason@montleon.com> [6.6.64-200.spacemit_2.0.2]
+- Break patches out into individual files
+
 * Thu Nov 14 2024 Jason Montleon <jason@montleon.com> [6.6.62-200.spacemit-2.0.2]
 - Enable CONFIG_NVMEM_SPACEMIT_EFUSE and CONFIG_SPACEMI_SOCINFO
 
