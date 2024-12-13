@@ -159,19 +159,19 @@ Summary: The Linux kernel
 #  to build the base kernel using the debug configuration. (Specifying
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
-%define buildid .spacemit_2.0.2
-%define specrpmversion 6.6.64
-%define specversion 6.6.64
+%define buildid .spacemit_2.0.4
+%define specrpmversion 6.6.65
+%define specversion 6.6.65
 %define patchversion 6.6
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.6.64
+%define tarfile_release 6.6.65
 # This is needed to do merge window version magic
 %define patchlevel 6
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.6.64
+%define kabiversion 6.6.65
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -1002,10 +1002,11 @@ Patch0105: 0005-Update-for-v2.0rc7.patch
 Patch0106: 0006-Update-for-v2.0.patch
 Patch0107: 0007-Update-for-v2.0.1.patch
 Patch0108: 0008-Update-for-v2.0.2.patch
-Patch0109: 0009-spacemit-fixes-and-workarounds.patch
-Patch0110: 0010-remove-trace_printk.patch
-Patch0111: 0011-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch0112: 0012-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch0109: 0009-Update-for-v2.0.4.patch
+Patch0110: 0010-spacemit-fixes-and-workarounds.patch
+Patch0111: 0011-remove-trace_printk.patch
+Patch0112: 0012-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch0113: 0013-Remove-depends-so-PWM_PXA-can-be-enabled.patch
 
 
 
@@ -1769,9 +1770,11 @@ ApplyOptionalPatch 0005-Update-for-v2.0rc7.patch
 ApplyOptionalPatch 0006-Update-for-v2.0.patch
 ApplyOptionalPatch 0007-Update-for-v2.0.1.patch
 ApplyOptionalPatch 0008-Update-for-v2.0.2.patch
-ApplyOptionalPatch 0009-spacemit-fixes-and-workarounds.patch
-ApplyOptionalPatch 0010-remove-trace_printk.patch
-ApplyOptionalPatch 0011-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 0009-Update-for-v2.0.4.patch
+ApplyOptionalPatch 0010-spacemit-fixes-and-workarounds.patch
+ApplyOptionalPatch 0011-remove-trace_printk.patch
+ApplyOptionalPatch 0012-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 0013-Remove-depends-so-PWM_PXA-can-be-enabled.patch
 
 
 
@@ -3764,6 +3767,10 @@ fi\
 #
 #
 %changelog
+* Wed Dec 11 2024 Jason Montleon <jason@montleon.com> [6.6.65-200.spacemit_2.0.4]
+- Incorporate bianbu 2.0.4 patch
+- enable SPACEMIT_ERRATA_LOAD_ATOMIC
+
 * Mon Dec 09 2024 Jason Montleon <jason@montleon.com> [6.6.64-200.spacemit_2.0.2]
 - Break patches out into individual files
 
