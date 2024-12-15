@@ -712,7 +712,7 @@ BuildRequires: libnl3-devel
 %endif
 %endif
 %if %{with_tools} || %{signmodules} || %{signkernel}
-BuildRequires: openssl-devel
+BuildRequires: openssl-devel openssl-devel-engine
 %endif
 %if %{with_bpftool}
 BuildRequires: python3-docutils
