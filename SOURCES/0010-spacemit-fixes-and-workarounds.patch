@@ -1,4 +1,4 @@
-From c713cdd78a78ccb7cd36a0c6db089d8eb74e3ee3 Mon Sep 17 00:00:00 2001
+From b6bb17b27d22275bbca03a0173fa7399d8c25cd1 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 29 Aug 2024 19:54:57 -0400
 Subject: [PATCH 10/13] spacemit fixes and workarounds
@@ -183,10 +183,10 @@ index 562d89886028..5eee9054f5a0 100644
  #define MEDIA_BUS_FMT_YVYU10_1_5X10_D2		0x3112
  #define MEDIA_BUS_FMT_YVYU10_1_5X10_D3		0x3113
 diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 1bb0eb195425..3feff7f738a4 100644
+index 29dac6af2efa..f336b2ddf972 100644
 --- a/net/ipv4/af_inet.c
 +++ b/net/ipv4/af_inet.c
-@@ -2080,7 +2080,7 @@ static int __init inet_init(void)
+@@ -2078,7 +2078,7 @@ static int __init inet_init(void)
  	goto out;
  }
  
