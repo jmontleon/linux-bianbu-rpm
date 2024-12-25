@@ -1,0 +1,84 @@
+From 5937a64763062d880ce7d7224210ee0904a5885d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 7 Nov 2023 17:23:28 +0800
+Subject: [PATCH 0145/1189] reset: modify reset driver file name of k1pro
+
+Change-Id: I3398cd8c744fdb1c37a2f19651ba90d89a51979a
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi                   | 2 +-
+ drivers/reset/Kconfig                                      | 7 ++++---
+ drivers/reset/Makefile                                     | 2 +-
+ drivers/reset/{k1-pro-reset.c => reset-spacemit-k1pro.c}   | 2 +-
+ .../reset/{k1-pro-reset.h => spacemit-k1pro-reset.h}       | 0
+ 5 files changed, 7 insertions(+), 6 deletions(-)
+ rename drivers/reset/{k1-pro-reset.c => reset-spacemit-k1pro.c} (99%)
+ rename include/dt-bindings/reset/{k1-pro-reset.h => spacemit-k1pro-reset.h} (100%)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 30538df03356..4c9e7fbcc690 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -6,7 +6,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/clock/k1-pro-ccu-clock.h>
+-#include <dt-bindings/reset/k1-pro-reset.h>
++#include <dt-bindings/reset/spacemit-k1pro-reset.h>
+ #include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
+ 
+ / {
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 8bc0c1c79043..8f82eae86542 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -343,11 +343,12 @@ config RESET_ZYNQMP
+ 	help
+ 	  This enables the reset controller driver for Xilinx ZynqMP SoCs.
+ 
+-config RESET_K1_PRO_SPACEMIT
+-	tristate "Reset controller driver for Spacemit SoCs"
++config RESET_K1PRO_SPACEMIT
++	tristate "Reset controller driver for Spacemit K1PRO SoCs"
++	depends on SOC_SPACEMIT_K1PRO
+ 	default y
+ 	help
+-	  Support for reset controllers on Spacemit SoCs.
++	  Support for reset controllers on Spacemit K1PRO SoCs.
+ 
+ config RESET_K1X_SPACEMIT
+         tristate "Reset controller driver for Spacemit K1X SoCs"
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 63040ee247c1..232b86e89035 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -43,5 +43,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+ obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
+ obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
+ obj-$(CONFIG_RESET_ZYNQMP) += reset-zynqmp.o
+-obj-$(CONFIG_RESET_K1_PRO_SPACEMIT) += k1-pro-reset.o
++obj-$(CONFIG_RESET_K1PRO_SPACEMIT) += reset-spacemit-k1pro.o
+ obj-$(CONFIG_RESET_K1X_SPACEMIT) += reset-spacemit-k1x.o
+\ No newline at end of file
+diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/reset-spacemit-k1pro.c
+similarity index 99%
+rename from drivers/reset/k1-pro-reset.c
+rename to drivers/reset/reset-spacemit-k1pro.c
+index 026717812959..71f10dc75420 100755
+--- a/drivers/reset/k1-pro-reset.c
++++ b/drivers/reset/reset-spacemit-k1pro.c
+@@ -11,7 +11,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/io.h>
+-#include <dt-bindings/reset/k1-pro-reset.h>
++#include <dt-bindings/reset/spacemit-k1pro-reset.h>
+ #include <linux/clk-provider.h>
+ #include <linux/atomic.h>
+ #include <linux/spinlock.h>
+diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/spacemit-k1pro-reset.h
+similarity index 100%
+rename from include/dt-bindings/reset/k1-pro-reset.h
+rename to include/dt-bindings/reset/spacemit-k1pro-reset.h
+-- 
+2.47.1
+

@@ -1,0 +1,36 @@
+From 884892bd8483891e95d6d21f40431378a84d451c Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 21 Dec 2023 22:52:20 +0800
+Subject: [PATCH 0228/1189] disable cpufreq, it will crash kernel
+
+Change-Id: Iddd554e79daa387611e5d24baa163e12cb06e96e
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 0b8c011893ac..3ff5ec87c184 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -33,10 +33,6 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
+-CONFIG_CPU_FREQ=y
+-# CONFIG_ARM_BRCMSTB_AVS_CPUFREQ is not set
+-# CONFIG_ARM_MEDIATEK_CPUFREQ_HW is not set
+-CONFIG_SPACEMIT_K1X_CPUFREQ=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+@@ -315,7 +311,6 @@ CONFIG_FB=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+-CONFIG_USB_EHCI_ROOT_HUB_TT=y
+ CONFIG_USB_EHCI_K1X=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_DWC3=y
+-- 
+2.47.1
+

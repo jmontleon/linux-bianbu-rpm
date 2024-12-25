@@ -1,0 +1,69 @@
+From a58dbc36ecf240fa010b7b79952e29898a3674f6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Sep 2023 19:51:01 +0800
+Subject: [PATCH 0120/1189] ccu: update clock controller driver
+
+Change-Id: Ia6e577867bf2f5d873b13caa4e1f522a0d6e3cb2
+---
+ drivers/clk/spacemit/k1-pro-ccu.c            | 10 +++-------
+ include/dt-bindings/clock/k1-pro-ccu-clock.h |  9 ++++-----
+ 2 files changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
+index db4deed19c79..cc0b8d7c24cf 100755
+--- a/drivers/clk/spacemit/k1-pro-ccu.c
++++ b/drivers/clk/spacemit/k1-pro-ccu.c
+@@ -69,7 +69,6 @@ static struct ccu_clk_data ccu_clocks[] =  {
+     {CLK_I2C3, CLK_TYPE_GATE, "clk_i2c3", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 3, 0, 0, 0, 0},
+     {CLK_I2C4, CLK_TYPE_GATE, "clk_i2c4", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 4, 0, 0, 0, 0},
+     {CLK_TIMER0, CLK_TYPE_GATE, "clk_timer0", "clk_sys_apb", NULL, 1, SYS_SUB_TIMER_EN_REG224, 0, 0, 0, 0, 0},
+-    {CLK_TIMER1, CLK_TYPE_GATE, "clk_timer1", "clk_sys_apb", NULL, 1, SYS_SUB_TIMER_EN_REG224, 1, 0, 0, 0, 0},
+     {CLK_QSPI0, CLK_TYPE_DIVIDER, "clk_qspi0", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 8, 2, 0, 0, 0},
+     {CLK_QSPI1, CLK_TYPE_DIVIDER, "clk_qspi1", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 10, 2, 0, 0, 0},
+     {CLK_QSPI2, CLK_TYPE_DIVIDER, "clk_qspi2", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 12, 2, 0, 0, 0},
+@@ -113,7 +112,6 @@ static struct ccu_clk_data ccu_clocks[] =  {
+     {CLK_COMBO_PHY_PCLK0, CLK_TYPE_GATE, "clk_combo_phy_pclk0", "clk_serdes_apb", NULL, 1, SERDES_SUB_PHY_EN_REG42C, 0, 0, 0, 0, 0},
+     {CLK_COMBO_PHY_PCLK1, CLK_TYPE_GATE, "clk_combo_phy_pclk1", "clk_serdes_apb", NULL, 1, SERDES_SUB_PHY_EN_REG42C, 1, 0, 0, 0, 0},
+     //vpu
+-    {CLK_VPU, CLK_TYPE_GATE, "clk_vpu", "clk_vpu_sys", NULL, 1, VPU_SUB_EN_REG504, 1, 0, 0, 0, 0},
+     {CLK_VPU2VBUS, CLK_TYPE_GATE, "clk_vpu2vbus", "clk_vpu_sys", NULL, 1, VPU_SUB_EN_REG504, 2, 0, 0, 0, 0},
+     //sec
+     {CLK_SEC_AHB, CLK_TYPE_GATE, "clk_sec_ahb", "clk_sys_ahb", NULL, 1, SEC_SUB_EN_REG604, 6, 0, 0, 0, 0},
+@@ -128,11 +126,9 @@ static struct ccu_clk_data ccu_clocks[] =  {
+     {CLK_USB_AHB, CLK_TYPE_GATE, "clk_usb_ahb", "clk_sys_ahb", NULL, 1, USB_GMAC_SUB_EN_REG704, 7, 0, 0, 0, 0},
+     {CLK_USB_AHB_DIV2, CLK_TYPE_FIXED_FACTOR, "clk_usb_ahb_div2", "clk_usb_ahb", NULL, 0, 0, 0, 0, 0, 1, 2},
+     {CLK_USB_SYS_DIV2, CLK_TYPE_FIXED_FACTOR, "clk_usb_sys_div2", "clk_usb_sys", NULL, 0, 0, 0, 0, 0, 1, 2},
+-    {CLK_USB2_CTRL, CLK_TYPE_GATE, "clk_usb2_ctrl", "clk_usb_sys_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 1, 0, 0, 0, 0},
+-    {CLK_USB3_BUS_CLK_EARLY, CLK_TYPE_GATE, "clk_sub3_bus_clk_early", "clk_usb_sys", NULL, 1, USB_GMAC_SUB_EN_REG704, 2, 0, 0, 0, 0},
+-    {CLK_USB2_PHY0_REFCLK, CLK_TYPE_GATE, "clk_usb2_phy0_refclk", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 3, 0, 0, 0, 0},
+-    {CLK_USB2_PHY1_REFCLK, CLK_TYPE_GATE, "clk_usb2_phy1_refclk", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 4, 0, 0, 0, 0},
+-    {CLK_USB3_PHY_REFCLK0, CLK_TYPE_GATE, "clk_usb3_phy_refclk0", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 5, 0, 0, 0, 0},
++    {CLK_USB20_OTG_EN, CLK_TYPE_GATE, "clk_usb20_otg_en", "clk_usb_sys_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 1, 0, 0, 0, 0},
++    {CLK_USB20_HOST_EN, CLK_TYPE_GATE, "clk_usb20_host_en", "clk_usb_sys_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 2, 0, 0, 0, 0},
++    {CLK_USB31_DRD_EN, CLK_TYPE_GATE, "clk_usb31_drd_en", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 3, 0, 0, 0, 0},
+     {CLK_GMAC_CSR, CLK_TYPE_GATE, "clk_gmac_csr", "clk_usb_ahb_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 6, 0, 0, 0, 0},
+     {CLK_USB2VBUS, CLK_TYPE_GATE, "clk_usb2vbus", "clk_usb_sys", NULL, 1, USB_GMAC_SUB_EN_REG704, 16, 0, 0, 0, 0},
+     {CLK_GMAC_PHYCLK_OUT, CLK_TYPE_GATE, "clk_gmac_phyclk_out", NULL, NULL, 0, USB_GMAC_SUB_EN_REG704, 17, 0, 0, 0, 0},
+diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
+index ba842c09138c..9518abcdf6b0 100755
+--- a/include/dt-bindings/clock/k1-pro-ccu-clock.h
++++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
+@@ -124,11 +124,10 @@
+ #define CLK_USB_AHB       110
+ #define CLK_USB_AHB_DIV2  111
+ #define CLK_USB_SYS_DIV2  112
+-#define CLK_USB2_CTRL     113
+-#define CLK_USB3_BUS_CLK_EARLY  114
+-#define CLK_USB2_PHY0_REFCLK    115
+-#define CLK_USB2_PHY1_REFCLK    116
+-#define CLK_USB3_PHY_REFCLK0    117
++#define CLK_USB20_OTG_EN  113
++#define CLK_USB20_HOST_EN 114
++#define CLK_USB31_DRD_EN  115
++
+ #define CLK_GMAC_CSR            118
+ #define CLK_USB2VBUS            119
+ #define CLK_GMAC_PHYCLK_OUT     120
+-- 
+2.47.1
+

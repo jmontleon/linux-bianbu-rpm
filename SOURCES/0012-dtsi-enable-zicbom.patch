@@ -1,0 +1,60 @@
+From ff97bd5773b63994e1ea4e7bd120b9a4c035e8b4 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Tue, 18 Apr 2023 12:43:42 +0800
+Subject: [PATCH 0012/1189] dtsi: enable zicbom
+
+1. enable zicbom, set cbom-block-size to 64
+2. add more isa support, not test
+
+Change-Id: I7ada9dce637445e4300e98ef9517976cd5a39b98
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index b933c8d446c0..f41352dc7533 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -24,7 +24,8 @@ cpu_0: cpu@0 {
+ 			reg = <0>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+ 			cpu-icache = "64KB";
+@@ -45,7 +46,8 @@ cpu_1: cpu@1 {
+ 			reg = <1>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+ 			cpu-icache = "64KB";
+@@ -66,7 +68,8 @@ cpu_2: cpu@2 {
+ 			reg = <2>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+ 			cpu-icache = "64KB";
+@@ -87,7 +90,8 @@ cpu_3: cpu@3 {
+ 			reg = <3>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+ 			cpu-icache = "64KB";
+-- 
+2.47.1
+

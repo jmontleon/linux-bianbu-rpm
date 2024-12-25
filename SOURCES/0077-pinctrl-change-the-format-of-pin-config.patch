@@ -1,0 +1,633 @@
+From 0f6689b7b09dbc52cda1c413169a8bfe7fd5bc5a Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Thu, 27 Jul 2023 21:16:13 +0800
+Subject: [PATCH 0077/1189] pinctrl: change the format of pin config
+
+1. set the format of k1-pro_pinctrl.dtsi to unix
+2. fix some compile warning
+
+Change-Id: I316614a8a6a3a0c6a2cd1e83985b5a514ff398fa
+---
+ .../boot/dts/spacemit/k1-pro_pinctrl.dtsi     | 208 +++++++++---------
+ drivers/pinctrl/spacemit/pinctrl-k1pro.c      |   2 +
+ drivers/pinctrl/spacemit/pinctrl-spacemit.c   |  46 ++--
+ drivers/pinctrl/spacemit/pinctrl-spacemit.h   |  43 ++--
+ include/dt-bindings/pinctrl/k1-pro-pinctrl.h  |  10 +-
+ 5 files changed, 154 insertions(+), 155 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
+index e2ba639196fe..17c77ba3132b 100755
+--- a/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
+@@ -4,255 +4,249 @@
+ #include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
+ 
+ /* Pin Configuration Node: */
+-/* Format: <pin_id muxsel config> */
+-/* config format: name   index       (width)  */
+-/* od(open drain enbable):    0       (1)     */
+-/* pe(pull enable):           1       (1)     */
+-/* ps(pull selector):         2       (1)    1: up, 0: down */
+-/* ds(driving seletor):       4       (4)     */
+-/* st(schmit trigger enable)  8       (1)     */
+-/* rte(retention signal bus)  9       (1)     */
++/* Format: <pin_id  muxsel  pull_up/pull_down  driving_strength> */
++/* driving_strength  0~0xf     */
+ &pinctrl {
+         pinctrl_qspi0: qspi0grp {
+                 spacemit,pins = <
+-                        GPIOA1    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sclk */
+-                        GPIOA2    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* csn0 */
+-                        GPIOA3    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* csn1 */
+-                        GPIOA4    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d0_mosi */
+-                        GPIOA5    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d1_miso */
+-                        GPIOA6    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d2_wp */
+-                        GPIOA7    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d3_hold */
++                        GPIOA1    0x0    PULL_UP    0xf         /* sclk */
++                        GPIOA2    0x0    PULL_UP    0xf         /* csn0 */
++                        GPIOA3    0x0    PULL_UP    0xf         /* csn1 */
++                        GPIOA4    0x0    PULL_UP    0xf         /* d0_mosi */
++                        GPIOA5    0x0    PULL_UP    0xf         /* d1_miso */
++                        GPIOA6    0x0    PULL_UP    0xf         /* d2_wp */
++                        GPIOA7    0x0    PULL_UP    0xf         /* d3_hold */
+                 >;
+         };
+ 
+         pinctrl_pwm0: pwm0grp {
+                 spacemit,pins = <
+-                        GPIOA3    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm0 */
++                        GPIOA3    0x1    PULL_UP    0xf         /* pwm0 */
+                 >;
+         };
+ 
+         pinctrl_pwm1: pwm1grp {
+                 spacemit,pins = <
+-                        GPIOA8    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm1 */
++                        GPIOA8    0x1    PULL_UP    0xf         /* pwm1 */
+                 >;
+         };
+ 
+         pinctrl_pwm2: pwm2grp {
+                 spacemit,pins = <
+-                        GPIOA9    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm2 */
++                        GPIOA9    0x1    PULL_UP    0xf         /* pwm2 */
+                 >;
+         };
+ 
+         pinctrl_uart4_0:uart4grp {
+                 spacemit,pins = <
+-                        GPIOA10    0x3    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOA11    0x3    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOA12    0x3    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOA13    0x3    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOA10    0x3    PULL_UP    0xf        /* txd */
++                        GPIOA11    0x3    PULL_UP    0xf        /* rxd */
++                        GPIOA12    0x3    PULL_UP    0xf        /* ctsn */
++                        GPIOA13    0x3    PULL_UP    0xf        /* rtsn */
+                 >;
+         };
+ 
+         pinctrl_can: cangrp {
+                 spacemit,pins = <
+-                        GPIOA12    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd */
+-                        GPIOA13    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd */
++                        GPIOA12    0x0    PULL_UP    0xf        /* txd */
++                        GPIOA13    0x0    PULL_UP    0xf        /* rxd */
+                 >;
+         };
+ 
+         pinctrl_i2c4: i2c4grp {
+                 spacemit,pins = <
+-                        GPIOA12    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* scl */
+-                        GPIOA13    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* sda */
++                        GPIOA12    0x1    PULL_UP    0xf        /* scl */
++                        GPIOA13    0x1    PULL_UP    0xf        /* sda */
+                 >;
+         };
+ 
+         pinctrl_sdio: sdiogrp {
+                 spacemit,pins = <
+-                        GPIOA14    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* wprtn */
+-                        GPIOA15    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* detn */
++                        GPIOA14    0x0    PULL_UP    0xf        /* wprtn */
++                        GPIOA15    0x0    PULL_UP    0xf        /* detn */
+                 >;
+         };
+ 
+         pinctrl_gmac: gmacgrp {
+                 spacemit,pins = <
+-                        GPIOA16    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* tx clk */
+-                        GPIOA17    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rx clk */
+-                        GPIOA18    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* tx en */
+-                        GPIOA19    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd[0] */
+-                        GPIOA20    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd[1] */
+-                        GPIOA21    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd[2] */
+-                        GPIOA22    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd[3] */
+-                        GPIOA23    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxdv */
+-                        GPIOA24    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd[0] */
+-                        GPIOA25    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd[1] */
+-                        GPIOA26    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd[2] */
+-                        GPIOA27    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd[3] */
+-                        GPIOA28    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* mdc */
+-                        GPIOA29    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* mdio */
++                        GPIOA16    0x0    PULL_UP    0xf        /* tx clk */
++                        GPIOA17    0x0    PULL_UP    0xf        /* rx clk */
++                        GPIOA18    0x0    PULL_UP    0xf        /* tx en */
++                        GPIOA19    0x0    PULL_UP    0xf        /* txd[0] */
++                        GPIOA20    0x0    PULL_UP    0xf        /* txd[1] */
++                        GPIOA21    0x0    PULL_UP    0xf        /* txd[2] */
++                        GPIOA22    0x0    PULL_UP    0xf        /* txd[3] */
++                        GPIOA23    0x0    PULL_UP    0xf        /* rxdv */
++                        GPIOA24    0x0    PULL_UP    0xf        /* rxd[0] */
++                        GPIOA25    0x0    PULL_UP    0xf        /* rxd[1] */
++                        GPIOA26    0x0    PULL_UP    0xf        /* rxd[2] */
++                        GPIOA27    0x0    PULL_UP    0xf        /* rxd[3] */
++                        GPIOA28    0x0    PULL_UP    0xf        /* mdc */
++                        GPIOA29    0x0    PULL_UP    0xf        /* mdio */
+                 >;
+         };
+ 
+         pinctrl_uart0: uart0grp {
+                 spacemit,pins = <
+-                        GPIOB5    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* txd */
+-                        GPIOB6    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* rxd */
++                        GPIOB5    0x0    PULL_UP    0xf         /* txd */
++                        GPIOB6    0x0    PULL_UP    0xf         /* rxd */
+                 >;
+         };
+ 
+         pinctrl_i2c0: i2c0grp {
+                 spacemit,pins = <
+-                        GPIOB7    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* scl */
+-                        GPIOB8    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* sda */
++                        GPIOB7    0x0    PULL_UP    0xf         /* scl */
++                        GPIOB8    0x0    PULL_UP    0xf         /* sda */
+                 >;
+         };
+ 
+         pinctrl_i2c1: i2cgrp {
+                 spacemit,pins = <
+-                        GPIOB9     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* scl */
+-                        GPIOB10    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* sda */
++                        GPIOB9     0x0    PULL_UP    0xf        /* scl */
++                        GPIOB10    0x0    PULL_UP    0xf        /* sda */
+                 >;
+         };
+ 
+         pinctrl_i2c2: i2c2grp {
+                 spacemit,pins = <
+-                        GPIOB11    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* scl */
+-                        GPIOB12    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* sda */
++                        GPIOB11    0x0    PULL_UP    0xf        /* scl */
++                        GPIOB12    0x0    PULL_UP    0xf        /* sda */
+                 >;
+         };
+ 
+         pinctrl_uart1:uart1grp {
+                 spacemit,pins = <
+-                        GPIOB13    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOA14    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOA15    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOA16    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOB13    0x0    PULL_UP    0xf        /* txd */
++                        GPIOA14    0x0    PULL_UP    0xf        /* rxd */
++                        GPIOA15    0x0    PULL_UP    0xf        /* ctsn */
++                        GPIOA16    0x0    PULL_UP    0xf        /* rtsn */
+                 >;
+         };
+ 
+         pinctrl_i2c3: i2c3grp {
+                 spacemit,pins = <
+-                        GPIOB15    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* scl */
+-                        GPIOB16    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* sda */
++                        GPIOB15    0x1    PULL_UP    0xf        /* scl */
++                        GPIOB16    0x1    PULL_UP    0xf        /* sda */
+                 >;
+         };
+ 
+         pinctrl_uart2:uart2grp {
+                 spacemit,pins = <
+-                        GPIOB17    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOA18    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOA19    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOA20    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOB17    0x0    PULL_UP    0xf        /* txd */
++                        GPIOA18    0x0    PULL_UP    0xf        /* rxd */
++                        GPIOA19    0x0    PULL_UP    0xf        /* ctsn */
++                        GPIOA20    0x0    PULL_UP    0xf        /* rtsn */
+                 >;
+         };
+ 
+         pinctrl_i2s1: i2s1grp {
+                 spacemit,pins = <
+-                        GPIOB17    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* mclk */
+-                        GPIOB18    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* bclk */
+-                        GPIOB19    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* lrclk */
+-                        GPIOB20    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_io0 */
+-                        GPIOB21    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_io1 */
+-                        GPIOB22    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_io2 */
+-                        GPIOB23    0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_io3 */
++                        GPIOB17    0x2    PULL_UP    0xf        /* mclk */
++                        GPIOB18    0x2    PULL_UP    0xf        /* bclk */
++                        GPIOB19    0x2    PULL_UP    0xf        /* lrclk */
++                        GPIOB20    0x2    PULL_UP    0xf        /* sdata_io0 */
++                        GPIOB21    0x2    PULL_UP    0xf        /* sdata_io1 */
++                        GPIOB22    0x2    PULL_UP    0xf        /* sdata_io2 */
++                        GPIOB23    0x2    PULL_UP    0xf        /* sdata_io3 */
+                 >;
+         };
+ 
+         pinctrl_uart3_0:uart3grp {
+                 spacemit,pins = <
+-                        GPIOB21    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOB22    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOB23    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOB24    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOB21    0x0    PULL_UP    0xf        /* txd */
++                        GPIOB22    0x0    PULL_UP    0xf        /* rxd */
++                        GPIOB23    0x0    PULL_UP    0xf        /* ctsn */
++                        GPIOB24    0x0    PULL_UP    0xf        /* rtsn */
+                 >;
+         };
+ 
+         pinctrl_pwm3: pwm3grp {
+                 spacemit,pins = <
+-                        GPIOB24    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm3 */
++                        GPIOB24    0x1    PULL_UP    0xf        /* pwm3 */
+                 >;
+         };
+ 
+         pinctrl_qspi2: qspi2grp {
+                 spacemit,pins = <
+-                        GPIOC0    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sclk */
+-                        GPIOC1    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* csn */
+-                        GPIOC2    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d1_mosi */
+-                        GPIOC3    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d2_miso */
+-                        GPIOC4    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d3_wp */
+-                        GPIOC5    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d4_hold */
++                        GPIOC0    0x1    PULL_UP    0xf         /* sclk */
++                        GPIOC1    0x1    PULL_UP    0xf         /* csn */
++                        GPIOC2    0x1    PULL_UP    0xf         /* d1_mosi */
++                        GPIOC3    0x1    PULL_UP    0xf         /* d2_miso */
++                        GPIOC4    0x1    PULL_UP    0xf         /* d3_wp */
++                        GPIOC5    0x1    PULL_UP    0xf         /* d4_hold */
+                 >;
+         };
+ 
+         pinctrl_uart4_1:uart4grp {
+                 spacemit,pins = <
+-                        GPIOC2     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOC3     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOC4     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOC5     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOC2     0x0    PULL_UP    0xf        /* txd */
++                        GPIOC3     0x0    PULL_UP    0xf        /* rxd */
++                        GPIOC4     0x0    PULL_UP    0xf        /* ctsn */
++                        GPIOC5     0x0    PULL_UP    0xf        /* rtsn */
+                 >;
+         };
+ 
+         pinctrl_qspi1: qspi1grp {
+                 spacemit,pins = <
+-                        GPIOC6     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sclk */
+-                        GPIOC7     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* csn */
+-                        GPIOC8     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d1_mosi */
+-                        GPIOC9     0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d2_miso */
+-                        GPIOC10    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d3_wp */
+-                        GPIOC11    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* d4_hold */
++                        GPIOC6     0x0    PULL_UP    0xf        /* sclk */
++                        GPIOC7     0x0    PULL_UP    0xf        /* csn */
++                        GPIOC8     0x0    PULL_UP    0xf        /* d1_mosi */
++                        GPIOC9     0x0    PULL_UP    0xf        /* d2_miso */
++                        GPIOC10    0x0    PULL_UP    0xf        /* d3_wp */
++                        GPIOC11    0x0    PULL_UP    0xf        /* d4_hold */
+                 >;
+         };
+ 
+         pinctrl_pwm4: pwm4grp {
+                 spacemit,pins = <
+-                        GPIOC10    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm4 */
++                        GPIOC10    0x1    PULL_UP    0xf        /* pwm4 */
+                 >;
+         };
+ 
+         pinctrl_pwm5: pwm5grp {
+                 spacemit,pins = <
+-                        GPIOC11    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm5 */
++                        GPIOC11    0x1    PULL_UP    0xf        /* pwm5 */
+                 >;
+         };
+ 
+         pinctrl_i2s0_0: i2s0grp {
+                 spacemit,pins = <
+-                        GPIOC16    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* mclk */
+-                        GPIOC17    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* bclk_m */
+-                        GPIOC18    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* lrclk_m */
+-                        GPIOC19    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_m_in0 */
+-                        GPIOC20    0x0    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_m_out0 */
++                        GPIOC16    0x0    PULL_UP    0xf        /* mclk */
++                        GPIOC17    0x0    PULL_UP    0xf        /* bclk_m */
++                        GPIOC18    0x0    PULL_UP    0xf        /* lrclk_m */
++                        GPIOC19    0x0    PULL_UP    0xf        /* sdata_m_in0 */
++                        GPIOC20    0x0    PULL_UP    0xf        /* sdata_m_out0 */
+                 >;
+         };
+ 
+         pinctrl_i2s0_1: i2s0grp {
+                 spacemit,pins = <
+-                        GPIOC16    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* mclk */
+-                        GPIOC17    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* bclk_s */
+-                        GPIOC18    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* lrclk_s */
+-                        GPIOC19    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_s_in0 */
+-                        GPIOC20    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* sdata_s_out0 */
++                        GPIOC16    0x1    PULL_UP    0xf        /* mclk */
++                        GPIOC17    0x1    PULL_UP    0xf        /* bclk_s */
++                        GPIOC18    0x1    PULL_UP    0xf        /* lrclk_s */
++                        GPIOC19    0x1    PULL_UP    0xf        /* sdata_s_in0 */
++                        GPIOC20    0x1    PULL_UP    0xf        /* sdata_s_out0 */
+                 >;
+         };
+ 
+         pinctrl_pwm6: pwm6grp {
+                 spacemit,pins = <
+-                        GPIOC21    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm6 */
++                        GPIOC21    0x1    PULL_UP    0xf        /* pwm6 */
+                 >;
+         };
+ 
+         pinctrl_pwm7: pwm7grp {
+                 spacemit,pins = <
+-                        GPIOC22    0x1    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)  /* pwm7 */
++                        GPIOC22    0x1    PULL_UP    0xf        /* pwm7 */
+                 >;
+         };
+ 
+         pinctrl_uart3_1:uart3grp {
+                 spacemit,pins = <
+-                        GPIOC21     0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* txd */
+-                        GPIOC22     0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rxd */
+-                        GPIOC23     0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* ctsn */
+-                        GPIOC24     0x2    (RTE|(0xf<<DS_SHIFT)|PULL_UP|PULL_EN)   /* rtsn */
++                        GPIOC21     0x2    PULL_UP    0xf       /* txd */
++                        GPIOC22     0x2    PULL_UP    0xf       /* rxd */
++                        GPIOC23     0x2    PULL_UP    0xf       /* ctsn */
++                        GPIOC24     0x2    PULL_UP    0xf       /* rtsn */
+                 >;
+         };
+-};
+\ No newline at end of file
++};
+diff --git a/drivers/pinctrl/spacemit/pinctrl-k1pro.c b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
+index 52eeeb46f834..70d5e96172d0 100755
+--- a/drivers/pinctrl/spacemit/pinctrl-k1pro.c
++++ b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
+@@ -101,6 +101,8 @@ static const struct spacemit_regs k1pro_regs = {
+ };
+ 
+ static const struct spacemit_pin_conf k1pro_pin_conf = {
++	.fs_shift = 0,
++	.fs_width = 2,
+ 	.od_shift = 4,
+ 	.pe_shift = 8,
+ 	.pull_shift = 9,
+diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.c b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
+index 2042a486710e..cd3770d82b77 100755
+--- a/drivers/pinctrl/spacemit/pinctrl-spacemit.c
++++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
+@@ -37,7 +37,7 @@ static const char *spacemit_get_group_name(struct pinctrl_dev *pctldev,
+ 	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
+ 
+ 	if (group >= d->soc->ngroups)
+-		return -EINVAL;
++		return NULL;
+ 
+ 	return d->soc->groups[group].name;
+ }
+@@ -197,7 +197,7 @@ static int spacemit_pinctrl_set_mux(struct pinctrl_dev *pctldev, unsigned select
+ 	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
+ 	struct spacemit_group *g = &d->soc->groups[group];
+ 	void __iomem *reg;
+-	u8 bank, shift;
++	u8 bank, shift, width;
+ 	u16 offset;
+ 	u32 i;
+ 
+@@ -206,12 +206,13 @@ static int spacemit_pinctrl_set_mux(struct pinctrl_dev *pctldev, unsigned select
+ 		offset = PINID_TO_PIN(g->pin_ids[i]);
+ 		reg = d->base + d->soc->regs->cfg;
+ 		reg += bank * d->soc->regs->reg_len + offset * 4;
+-		shift = 0;
++		shift = d->soc->pinconf->fs_shift;
++		width = d->soc->pinconf->fs_width;
+ 
+ 		dev_dbg(d->dev, "set mux: bank %d 0ffset %d val 0x%lx\n",
+ 			bank, offset, g->pins[i].muxsel);
+ 
+-		spacemit_pinctrl_rmwl(g->pins[i].muxsel, 0x3, shift, reg);
++		spacemit_pinctrl_rmwl(g->pins[i].muxsel, GENMASK((width-1),0), shift, reg);
+ 	}
+ 
+ 	return 0;
+@@ -234,10 +235,10 @@ static int spacemit_pinconf_get(struct pinctrl_dev *pctldev,
+ 
+ 	bank = PINID_TO_BANK(pin);
+ 	offset = PINID_TO_PIN(pin);
+-	reg = d->base + d->soc->regs->cfg;
++	reg = (u64)(d->base + d->soc->regs->cfg);
+ 	reg += bank * d->soc->regs->reg_len + offset * 4;
+ 
+-	*config = readl(reg);
++	*config = readl((void *)reg);
+ 	return 0;
+ }
+ 
+@@ -247,8 +248,8 @@ static int spacemit_pinconf_set(struct pinctrl_dev *pctldev,
+ {
+ 	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
+ 	struct spacemit_pinctrl_soc_data *soc = d->soc;
+-	struct spacemit_regs *regs = soc->regs;
+-	struct spacemit_pin_conf *pin_conf = soc->pinconf;
++	const struct spacemit_regs *regs = soc->regs;
++	const struct spacemit_pin_conf *pin_conf = soc->pinconf;
+ 	int i;
+ 	u8 bank;
+ 	u32 od, pull_en, pull, ds, st, rte;
+@@ -260,23 +261,23 @@ static int spacemit_pinconf_set(struct pinctrl_dev *pctldev,
+ 
+ 	bank = PINID_TO_BANK(pin);
+ 	offset = PINID_TO_PIN(pin);
+-	reg = d->base + regs->cfg;
++	reg = (u64)(d->base + regs->cfg);
+ 	reg += bank * regs->reg_len + offset * 4;
+ 
+ 	for (i = 0; i < num_configs; i++) {
+ 		volatile long config;
+ 
+-		config = readl(reg);
++		config = readl((void *)reg);
+ 
+-		od = (CONFIG_TO_OD(configs[i]) << pin_conf->od_shift);
+-		pull_en = (CONFIG_TO_PULL_EN(configs[i]) << pin_conf->pe_shift);
+-		pull = (CONFIG_TO_PULL(configs[i]) << pin_conf->pull_shift);
+-		ds = (CONFIG_TO_DS(configs[i]) << pin_conf->ds_shift);
+-		st = (CONFIG_TO_ST(configs[i]) << pin_conf->st_shift);
+-		rte = (CONFIG_TO_RTE(configs[i]) << pin_conf->rte_shift);
++		od = OD_DIS << pin_conf->od_shift;
++		pull_en = PE_EN << pin_conf->pe_shift;
++		pull = CONFIG_TO_PULL(configs[i]) << pin_conf->pull_shift;
++		ds = CONFIG_TO_DS(configs[i]) << pin_conf->ds_shift;
++		st = ST_DIS << pin_conf->st_shift;
++		rte = RTE_EN << pin_conf->rte_shift;
+ 
+ 		config |= (od | pull_en | pull | ds | st | rte);
+-		writel(config, reg);
++		writel(config, (void *)reg);
+ 		dev_dbg(d->dev, "write: bank %d 0ffset %d val 0x%lx\n",
+ 			bank, offset, config);
+ 	} /* for each config */
+@@ -294,10 +295,10 @@ static void spacemit_pinconf_dbg_show(struct pinctrl_dev *pctldev,
+ 
+ 	bank = PINID_TO_BANK(pin);
+ 	offset = PINID_TO_PIN(pin);
+-	reg = d->base + d->soc->regs->cfg;
++	reg = (u64)(d->base + d->soc->regs->cfg);
+ 	reg += bank * d->soc->regs->reg_len + offset * 4;
+ 
+-	seq_printf(s, "0x%lx", readl(reg));
++	seq_printf(s, "0x%lx", readl((void *)reg));
+ }
+ 
+ static void spacemit_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
+@@ -392,10 +393,13 @@ static int spacemit_pinctrl_parse_groups(struct device_node *np,
+ 
+ 	for (i = 0; i < grp->npins; i++) {
+ 		struct spacemit_pin *pin = &grp->pins[i];
++		u8 pull_val, driver_strength;
+ 
+ 		pin->pin_id = be32_to_cpu(*list++);
+ 		pin->muxsel = be32_to_cpu(*list++) & 0xF;
+-		pin->config = be32_to_cpu(*list++) & 0xFFF;
++		pull_val = be32_to_cpu(*list++) & 0x1;
++		driver_strength =  be32_to_cpu(*list++) & 0xF;
++		pin->config = (pull_val << PULL_SHIFT) | (driver_strength << DS_SHIFT);
+ 		grp->pin_ids[i] = grp->pins[i].pin_id;
+ 
+ 		dev_dbg(d->dev, "%s: 0x%04x 0x%04lx",
+@@ -411,7 +415,6 @@ static int spacemit_pinctrl_parse_functions(struct device_node *np,
+ 	struct spacemit_pinctrl_soc_data *soc = d->soc;
+ 	struct device_node *child;
+ 	struct spacemit_function *f;
+-	struct spacemit_group *grp;
+ 	u32 i = 0, idxf = 0, idxg = 0;
+ 	const char *fn, *fnull = "";
+ 	int ret;
+@@ -528,7 +531,6 @@ static int spacemit_pinctrl_probe_dt(struct platform_device *pdev,
+ int spacemit_pinctrl_probe(struct platform_device *pdev,
+ 			struct spacemit_pinctrl_soc_data *soc)
+ {
+-	struct device_node *np = pdev->dev.of_node;
+ 	struct spacemit_pinctrl_data *d;
+ 	struct resource *res;
+ 	int ret;
+diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.h b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
+index 7df1df7bcdbe..f937ab580528 100755
+--- a/drivers/pinctrl/spacemit/pinctrl-spacemit.h
++++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
+@@ -16,26 +16,31 @@
+ 
+ /*
+  * pin config bit field definitions
++ * config format
++ * 0-3  driver_strength
++ * 4    pull
+  *
+- * od:			0	(1)
+- * pe:			1	(1)
+- * pull:		2	(1)
+- * driving-seletor:	7..4	(4)
++ * od:	open drain
++ * pe:  pull enable
++ * st:	schmit trigger
++ * rte:	retention signal bus
+  *
+  * MSB of each field is presence bit for the config.
+  */
+-#define OD_SHIFT		0
+-#define PULL_EN_SHIFT		1
+-#define PULL_SHIFT		2
+-#define DS_SHIFT		4
+-#define ST_SHIFT		8
+-#define RTE_SHIFT		9
+-#define CONFIG_TO_OD(c)		((c) >> OD_SHIFT & 0x1)
+-#define CONFIG_TO_PULL_EN(c)	((c) >> PULL_EN_SHIFT & 0x1)
+-#define CONFIG_TO_PULL(c)	((c) >> PULL_SHIFT & 0x1)
++#define OD_EN		1
++#define OD_DIS		0
++#define PE_EN		1
++#define PE_DIS		0
++#define ST_EN		1
++#define ST_DIS		0
++#define RTE_EN		1
++#define RTE_DIS		0
++
++#define DS_SHIFT	0
++#define PULL_SHIFT  4
++
+ #define CONFIG_TO_DS(c)		((c) >> DS_SHIFT & 0xf)
+-#define CONFIG_TO_ST(c)		((c) >> ST_SHIFT & 0x1)
+-#define CONFIG_TO_RTE(c)	((c) >> RTE_SHIFT & 0x1)
++#define CONFIG_TO_PULL(c)	((c) >> PULL_SHIFT & 0x1)
+ 
+ struct spacemit_function {
+ 	const char *name;
+@@ -47,13 +52,15 @@ struct spacemit_function {
+  * Each pin represented in spacemit,pins consists:
+  * - u32 PIN_FUNC_ID
+  * - u32 pin muxsel
+- * - u32 pin config
++ * - u32 pin pull_up/down
++ * - u32 pin driving strength
+  */
+-#define SPACEMIT_PIN_SIZE 12
++#define SPACEMIT_PIN_SIZE 16
+ 
+ struct spacemit_pin {
+ 	unsigned int pin_id;
+ 	u8 muxsel;
++	u8 pull;
+ 	unsigned long config;
+ };
+ 
+@@ -70,6 +77,8 @@ struct spacemit_regs {
+ };
+ 
+ struct spacemit_pin_conf {
++	u8  fs_shift;
++	u8  fs_width;
+ 	u8  od_shift;
+ 	u8  pe_shift;
+ 	u8  pull_shift;
+diff --git a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
+index 07cda5ef9a1e..084b6fd8013a 100755
+--- a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
++++ b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
+@@ -88,15 +88,7 @@
+ #define GPIOC23  PINID(2, 23)
+ #define GPIOC24  PINID(2, 24)
+ 
+-#define OD_EN		1
+-#define OD_DIS		0
+-#define PULL_EN		2
+-#define PULL_DIS	0
+-#define PULL_UP		4
++#define PULL_UP 	1
+ #define PULL_DOWN	0
+-#define DS_SHIFT	4
+-#define ST_EN		(1<<8)
+-#define ST_DIS		0
+-#define RTE		(1<<9)
+ 
+ #endif /* __DT_BINDINGS_K1PRO_PINCTRL_H */
+-- 
+2.47.1
+

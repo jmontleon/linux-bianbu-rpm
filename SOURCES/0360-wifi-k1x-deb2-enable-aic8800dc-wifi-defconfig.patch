@@ -1,0 +1,27 @@
+From ba9f9451675b787488d34739671308a342091284 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 12 Jan 2024 21:35:52 +0800
+Subject: [PATCH 0360/1189] wifi: k1x-deb2: enable aic8800dc wifi defconfig
+
+Change-Id: I81caecd6233a1e420d817446122590cf17869949
+---
+ arch/riscv/configs/k1-x_deb2_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index c1a55c2d3ad3..ddb95f0f178d 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -194,6 +194,9 @@ CONFIG_USB_USBNET=y
+ # CONFIG_WLAN_VENDOR_TI is not set
+ # CONFIG_WLAN_VENDOR_ZYDAS is not set
+ # CONFIG_WLAN_VENDOR_QUANTENNA is not set
++CONFIG_AIC_WLAN_SUPPORT=y
++CONFIG_AIC8800_WLAN_SUPPORT=m
++CONFIG_AIC_LOADFW_SUPPORT=m
+ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_KEYBOARD is not set
+ # CONFIG_INPUT_MOUSE is not set
+-- 
+2.47.1
+

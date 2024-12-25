@@ -1,0 +1,61 @@
+From fd7eae3d007a81d97e5a2139b8d5fe5bf2c79b4f Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Mon, 2 Sep 2024 15:06:45 +0800
+Subject: [PATCH 0979/1189] gpu: Fix building error with FORTIFY_SOURCE enabled
+
+Change-Id: Ida3d59a5e289a6af5e1d2db8ca66f6f18d218dec
+---
+ drivers/gpu/drm/img-rogue/rgxdebug_common.c | 22 +++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.c b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
+index 8684309e9f7f..4b1393558a51 100644
+--- a/drivers/gpu/drm/img-rogue/rgxdebug_common.c
++++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
+@@ -1459,8 +1459,7 @@ typedef struct _FAULT_INFO_LOG_
+ static FAULT_INFO_LOG gsFaultInfoLog = { 0 };
+ 
+ static void _FillAppForFWFaults(PVRSRV_RGXDEV_INFO *psDevInfo,
+-							FAULT_INFO *psInfo,
+-							RGXMEM_PROCESS_INFO *psProcInfo)
++							FAULT_INFO *psInfo)
+ {
+ 	IMG_UINT32 i, j;
+ 
+@@ -1471,14 +1470,17 @@ static void _FillAppForFWFaults(PVRSRV_RGXDEV_INFO *psDevInfo,
+ 			IMG_BOOL bFound;
+ 
+ 			RGXMEM_PROCESS_INFO *psProcInfo = &psInfo->asQueryOut[i].sResults[j].sProcessInfo;
+-			bFound = RGXPCPIDToProcessInfo(psDevInfo,
+-								psProcInfo->uiPID,
+-								psProcInfo);
+-			if (!bFound)
++			if (!psProcInfo)
+ 			{
+-				OSStringLCopy(psProcInfo->szProcessName,
+-								"(unknown)",
+-								sizeof(psProcInfo->szProcessName));
++				bFound = RGXPCPIDToProcessInfo(psDevInfo,
++									psProcInfo->uiPID,
++									psProcInfo);
++				if (!bFound)
++				{
++					OSStringLCopy(psProcInfo->szProcessName,
++									"(unknown)",
++									sizeof(psProcInfo->szProcessName));
++				}
+ 			}
+ 		}
+ 	}
+@@ -1641,7 +1643,7 @@ static void _RecordFaultInfo(PVRSRV_RGXDEV_INFO *psDevInfo,
+ 
+ 					if (sProcessInfo.uiPID == RGXMEM_SERVER_PID_FIRMWARE)
+ 					{
+-						_FillAppForFWFaults(psDevInfo, psInfo, &sProcessInfo);
++						_FillAppForFWFaults(psDevInfo, psInfo);
+ 					}
+ 				}
+ 			}
+-- 
+2.47.1
+

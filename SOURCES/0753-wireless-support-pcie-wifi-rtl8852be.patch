@@ -1,0 +1,24 @@
+From 3c19795b25c79979b4692c634b948ff5a742a7ea Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 20 Nov 2024 09:24:49 +0800
+Subject: [PATCH 0753/1189] wireless: support pcie wifi rtl8852be
+
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 333330fa8727..cbba41739d10 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -342,6 +342,7 @@ CONFIG_USB_NET_ASIX=m
+ # CONFIG_WLAN_VENDOR_PURELIFI is not set
+ # CONFIG_WLAN_VENDOR_RALINK is not set
+ CONFIG_RTL8852BS=m
++CONFIG_RTL8852BE=m
+ # CONFIG_WLAN_VENDOR_RSI is not set
+ # CONFIG_WLAN_VENDOR_SILABS is not set
+ # CONFIG_WLAN_VENDOR_ST is not set
+-- 
+2.47.1
+

@@ -1,0 +1,27 @@
+From 8f1dafc3777fc315ac95f72d80b834a9e32f9fe1 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Mon, 29 Apr 2024 11:45:24 +0800
+Subject: [PATCH 0619/1189] wirless: don't show error when load regulatory.db
+ failed
+
+Change-Id: Ibb2ef594a00871ea336fb38fbd02556a5c9fc38d
+---
+ net/wireless/reg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/wireless/reg.c b/net/wireless/reg.c
+index 1df65a5a44f7..a24ebe89fc49 100644
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -1007,7 +1007,7 @@ static void regdb_fw_cb(const struct firmware *fw, void *context)
+ 	void *db;
+ 
+ 	if (!fw) {
+-		pr_info("failed to load regulatory.db\n");
++		pr_debug("failed to load regulatory.db\n");
+ 		set_error = -ENODATA;
+ 	} else if (!valid_regdb(fw->data, fw->size)) {
+ 		pr_info("loaded regulatory.db is malformed or signature is missing/invalid\n");
+-- 
+2.47.1
+

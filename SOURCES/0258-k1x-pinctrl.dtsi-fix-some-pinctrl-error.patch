@@ -1,0 +1,35 @@
+From 1a01b484c225920d0f2c80c94a0ff497f44e961a Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 27 Dec 2023 11:16:31 +0800
+Subject: [PATCH 0258/1189] k1x-pinctrl.dtsi:fix some pinctrl error
+
+Change-Id: I9d160bb8d116a5d0282acf994c5a434f7eb162b8
+---
+ arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index 19daed5fb354..b59bc3cc155b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -664,7 +664,7 @@ K1X_PADCONF(GPIO_20,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))  /* PCIe
+ 
+     pinctrl_pwm0_2: pwm0_2_grp {
+         pinctrl-single,pins = <
+-            K1X_PADCONF(GPIO_20, MUX_MODE4, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))         /* pwm0 */
++            K1X_PADCONF(GPIO_22, MUX_MODE4, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))         /* pwm0 */
+         >;
+     };
+ 
+@@ -953,7 +953,7 @@ K1X_PADCONF(GPIO_113,    MUX_MODE3, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* P
+         >;
+     };
+ 
+-    pinctrl_i2c2_1: i2c2_1_grp {
++    pinctrl_i2c2_2: i2c2_2_grp {
+         pinctrl-single,pins =<
+             K1X_PADCONF(GPIO_68,    MUX_MODE3, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i2c2_scl */
+             K1X_PADCONF(GPIO_69,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c2_sda */
+-- 
+2.47.1
+

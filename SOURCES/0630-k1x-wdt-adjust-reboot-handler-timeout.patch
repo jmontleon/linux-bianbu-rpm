@@ -1,0 +1,26 @@
+From 6f0d956f5e1cc3cfe1119bb2e7f1cba5fc07c544 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 7 May 2024 11:29:08 +0800
+Subject: [PATCH 0630/1189] k1x-wdt:adjust reboot handler timeout
+
+Change-Id: I3918c9b7f70492c9c95aff60d0d2a9be0715710a
+---
+ drivers/watchdog/k1x_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index 75a4c8ec7f00..fad7d1755fe3 100755
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -528,7 +528,7 @@ static int spa_wdt_restart_handler(struct notifier_block *this, unsigned long mo
+ 	spa_enable_wdt_clk(info);
+ 
+ 	spa_wdt_write(info, WDT_WSR, 0x0);
+-	spa_wdt_set_timeout(&info->wdt_dev, 10);
++	spa_wdt_write(info, WDT_WMR, 0x1);
+ 	spa_wdt_write(info, WDT_WMER, 0x3);
+ 	spa_wdt_write(info, WDT_WCR, 0x1);
+ 
+-- 
+2.47.1
+

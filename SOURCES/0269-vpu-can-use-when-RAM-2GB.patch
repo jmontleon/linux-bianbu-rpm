@@ -1,0 +1,352 @@
+From 8a7d96214360d26ae92285e16a9088bebb057eb1 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Fri, 29 Dec 2023 20:20:38 +0800
+Subject: [PATCH 0269/1189] vpu can use when RAM > 2GB
+
+1.add interface phys_vpu2cpu and phys_cpu2vpu
+2.before phys_to_virt, use phys_vpu2cpu
+3.after virt_to_phys, use phys_cpu2vpu
+
+Change-Id: I67bed7a0a39e295da234214dd7cc9ec6356bb404
+Signed-off-by: fuqiang <qiang.fu@spacemit.com>
+---
+ .../spacemit/vpu_k1x/if/mvx_firmware_v2.c     | 30 ++++++-------
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.c    | 42 +++++++++++++------
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.h    | 23 ++++++++++
+ .../spacemit/vpu_k1x/if/mvx_session.c         |  3 +-
+ 4 files changed, 69 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+index e4c2c1d4c57a..83161779fc7b 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+@@ -291,7 +291,7 @@ static int read_message(struct mvx_fw *fw,
+ 
+ 	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
+ 		dma_sync_single_for_cpu(fw->dev,
+-			virt_to_phys(mve),
++			phys_cpu2vpu(virt_to_phys(mve)),
+ 			MVE_PAGE_SIZE, DMA_FROM_DEVICE);
+ 	}
+ 
+@@ -354,7 +354,7 @@ static int read_message(struct mvx_fw *fw,
+ 	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
+ 		wmb();
+ 		dma_sync_single_for_device(fw->dev,
+-				   virt_to_phys(&host->out_rpos),
++				   phys_cpu2vpu(virt_to_phys(&host->out_rpos)),
+ 				   sizeof(host->out_rpos), DMA_TO_DEVICE);
+ 	}
+ 
+@@ -425,7 +425,7 @@ static int write_message(struct mvx_fw *fw,
+ 
+ 	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
+ 		dma_sync_single_for_cpu(fw->dev,
+-				virt_to_phys(&mve->in_rpos),
++				phys_cpu2vpu(virt_to_phys(&mve->in_rpos)),
+ 				sizeof(mve->in_rpos), DMA_FROM_DEVICE);
+ 	}
+ 
+@@ -455,7 +455,7 @@ static int write_message(struct mvx_fw *fw,
+ 	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
+ 		wmb();
+ 		dma_sync_single_for_device(fw->dev,
+-				   virt_to_phys(host),
++				   phys_cpu2vpu(virt_to_phys(host)),
+ 				   MVE_PAGE_SIZE, DMA_TO_DEVICE);
+ 	}
+ 
+@@ -468,7 +468,7 @@ static int write_message(struct mvx_fw *fw,
+ 	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
+ 		wmb();
+ 		dma_sync_single_for_device(fw->dev,
+-				   virt_to_phys(&host->in_wpos),
++				   phys_cpu2vpu(virt_to_phys(&host->in_wpos)),
+ 				   sizeof(host->in_wpos), DMA_TO_DEVICE);
+ 	}
+ 
+@@ -2885,7 +2885,7 @@ static int handle_rpc_v2(struct mvx_fw *fw)
+ 
+ 	if (fw->buf_attr[MVX_FW_REGION_RPC] == MVX_FW_BUF_CACHEABLE) {
+ 		dma_sync_single_for_cpu(fw->dev,
+-				virt_to_phys(rpc_area), sizeof(*rpc_area),
++				phys_cpu2vpu((virt_to_phys(rpc_area))), sizeof(*rpc_area),
+ 				DMA_FROM_DEVICE);
+ 	}
+ 
+@@ -2939,7 +2939,7 @@ static int handle_rpc_v2(struct mvx_fw *fw)
+ 			wmb();
+ 			dma_sync_single_for_device(
+ 				fw->dev,
+-				virt_to_phys(rpc_area), sizeof(*rpc_area),
++				phys_cpu2vpu(virt_to_phys(rpc_area)), sizeof(*rpc_area),
+ 				DMA_TO_DEVICE);
+ 		}
+ 
+@@ -2971,7 +2971,7 @@ static int handle_fw_ram_print_v2(struct mvx_fw *fw)
+ 	char *print_buf = NULL;
+ 
+ 	dma_sync_single_for_cpu(fw->dev,
+-				virt_to_phys(rpt_area), sizeof(*rpt_area),
++				phys_cpu2vpu(virt_to_phys(rpt_area)), sizeof(*rpt_area),
+ 				DMA_FROM_DEVICE);
+ 
+ 	wr_cnt = rpt_area->wr_cnt;
+@@ -2993,7 +2993,7 @@ static int handle_fw_ram_print_v2(struct mvx_fw *fw)
+ 		wmb();
+ 		dma_sync_single_for_device(
+ 			fw->dev,
+-			virt_to_phys(&rpt_area->rd_cnt), sizeof(rpt_area->rd_cnt),
++			phys_cpu2vpu(virt_to_phys(&rpt_area->rd_cnt)), sizeof(rpt_area->rd_cnt),
+ 			DMA_TO_DEVICE);
+ 
+ 		ret = 1;
+@@ -3018,7 +3018,7 @@ static void unmap_msq(struct mvx_fw *fw,
+ 	if (ret == 0)
+ 		mvx_mmu_unmap_va(fw->mmu, begin, MVE_PAGE_SIZE);
+ 
+-	mvx_mmu_free_page(fw->dev, virt_to_phys(*data));
++	mvx_mmu_free_page(fw->dev, phys_cpu2vpu(virt_to_phys(*data)));
+ 
+ 	*data = NULL;
+ }
+@@ -3050,7 +3050,7 @@ static int map_msq(struct mvx_fw *fw,
+ 		return ret;
+ 	}
+ 
+-	*data = phys_to_virt(page);
++	*data = phys_to_virt(phys_vpu2cpu(page));
+ 
+ 	return 0;
+ }
+@@ -3128,7 +3128,7 @@ static void unmap_fw_print_ram(struct mvx_fw *fw,
+ 	if (ret == 0)
+ 		mvx_mmu_unmap_va(fw->mmu, begin, MVE_FW_PRINT_RAM_SIZE);
+ 
+-	mvx_mmu_free_contiguous_pages(fw->dev, virt_to_phys(*data), MVE_FW_PRINT_RAM_SIZE >> PAGE_SHIFT);
++	mvx_mmu_free_contiguous_pages(fw->dev, phys_cpu2vpu(virt_to_phys(*data)), MVE_FW_PRINT_RAM_SIZE >> PAGE_SHIFT);
+ 
+ 	*data = NULL;
+ }
+@@ -3160,7 +3160,7 @@ static int map_fw_print_ram(struct mvx_fw *fw,
+ 		return ret;
+ 	}
+ 
+-	*data = phys_to_virt(page);
++	*data = phys_to_virt(phys_vpu2cpu(page));
+ 
+ 	return 0;
+ }
+@@ -3248,7 +3248,7 @@ static void print_pair(char *name_in,
+ 		       enum mvx_fw_buffer_attr mve_buf_attr)
+ {
+ 	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
+-		dma_sync_single_for_cpu(device, virt_to_phys(mve),
++		dma_sync_single_for_cpu(device, phys_cpu2vpu(virt_to_phys(mve)),
+ 				MVE_PAGE_SIZE, DMA_FROM_DEVICE);
+ 	}
+ 	mvx_seq_printf(s, name_in, ind, "wr=%10d, rd=%10d, avail=%10d\n",
+@@ -3299,7 +3299,7 @@ static void print_debug_v2(struct mvx_fw *fw)
+ 	union mve_rpc_params *p = &rpc_area->params;
+ 
+ 	if (fw->buf_attr[MVX_FW_REGION_MSG_MVE] == MVX_FW_BUF_CACHEABLE) {
+-		dma_sync_single_for_cpu(fw->dev, virt_to_phys(msg_mve),
++		dma_sync_single_for_cpu(fw->dev, phys_cpu2vpu(virt_to_phys(msg_mve)),
+ 				MVE_PAGE_SIZE, DMA_FROM_DEVICE);
+ 	}
+ 
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+index f3561d57ae2e..b50c19f83ece 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+@@ -211,13 +211,13 @@ static mvx_mmu_pte *ptw(struct mvx_mmu *mmu,
+ 		pte[index] = mvx_mmu_set_pte(MVX_ATTR_PRIVATE, l2,
+ 					     MVX_ACCESS_READ_ONLY);
+ 		dma_sync_single_for_device(mmu->dev,
+-					   virt_to_phys(&pte[index]),
++					   phys_cpu2vpu(virt_to_phys(&pte[index])),
+ 					   sizeof(pte[index]), DMA_TO_DEVICE);
+ 	}
+ 
+ 	/* Level 2. */
+ 	index = get_index(va, 1);
+-	pte = phys_to_virt(l2);
++	pte = phys_to_virt(phys_vpu2cpu(l2));
+ 
+ 	return &pte[index];
+ }
+@@ -279,7 +279,7 @@ static int map_page(struct mvx_mmu *mmu,
+ 
+ 	/* Map in physical address and flush data. */
+ 	*pte = mvx_mmu_set_pte(attr, pa, access);
+-	dma_sync_single_for_device(mmu->dev, virt_to_phys(pte), sizeof(*pte),
++	dma_sync_single_for_device(mmu->dev, phys_cpu2vpu(virt_to_phys(pte)), sizeof(*pte),
+ 				   DMA_TO_DEVICE);
+ 
+ 	return 0;
+@@ -301,7 +301,7 @@ static void unmap_page(struct mvx_mmu *mmu,
+ 
+ 	/* Unmap virtual address and flush data. */
+ 	*pte = 0;
+-	dma_sync_single_for_device(mmu->dev, virt_to_phys(pte), sizeof(*pte),
++	dma_sync_single_for_device(mmu->dev, phys_cpu2vpu(virt_to_phys(pte)), sizeof(*pte),
+ 				   DMA_TO_DEVICE);
+ }
+ 
+@@ -380,7 +380,7 @@ static int mapped_count(phys_addr_t pa)
+ 	if (pa != 0) {
+ 		int j;
+ 		phys_addr_t pa2;
+-		mvx_mmu_pte *l2 = phys_to_virt(pa);
++		mvx_mmu_pte *l2 = phys_to_virt(phys_vpu2cpu(pa));
+ 
+ 		for (j = 0; j < MVE_INDEX_SIZE; j++) {
+ 			pa2 = get_pa(l2[j]);
+@@ -611,7 +611,7 @@ int mvx_mmu_construct(struct mvx_mmu *mmu,
+ 	if (page_table == 0)
+ 		return -ENOMEM;
+ 
+-	mmu->page_table = phys_to_virt(page_table);
++	mmu->page_table = phys_to_virt(phys_vpu2cpu(page_table));
+ 
+ 	return 0;
+ }
+@@ -634,7 +634,7 @@ void mvx_mmu_destruct(struct mvx_mmu *mmu)
+ 	}
+ 
+ 	pa = virt_to_phys(mmu->page_table);
+-	mvx_mmu_free_page(mmu->dev, pa);
++	mvx_mmu_free_page(mmu->dev, phys_cpu2vpu(pa));
+ 
+ 	WARN_ON(count > 0);
+ }
+@@ -712,7 +712,7 @@ void mvx_mmu_free_contiguous_pages(struct device *dev, phys_addr_t pa, size_t np
+ 	if (pa == 0)
+ 		return;
+ 
+-	page = phys_to_page(pa);
++	page = phys_to_page(phys_vpu2cpu(pa));
+ 
+ 	dma_unmap_page(dev, pa, npages << PAGE_SHIFT, DMA_BIDIRECTIONAL);
+ 	__free_pages(page, get_order(npages << PAGE_SHIFT));
+@@ -760,7 +760,7 @@ void mvx_mmu_free_page(struct device *dev,
+ 	if (pa == 0)
+ 		return;
+ 
+-	page = phys_to_page(pa);
++	page = phys_to_page(phys_vpu2cpu(pa));
+ 
+ 	dma_unmap_page(dev, pa, PAGE_SIZE, DMA_BIDIRECTIONAL);
+ 	__free_page(page);
+@@ -1167,7 +1167,7 @@ int mvx_mmu_map_l2(struct mvx_mmu *mmu,
+ 	pte[index] = mvx_mmu_set_pte(MVX_ATTR_PRIVATE, pa,
+ 				     MVX_ACCESS_READ_ONLY);
+ 	dma_sync_single_for_device(mmu->dev,
+-				   virt_to_phys(&pte[index]),
++				   phys_cpu2vpu(virt_to_phys(&pte[index])),
+ 				   sizeof(pte[index]), DMA_TO_DEVICE);
+ 
+ 	return 0;
+@@ -1229,7 +1229,7 @@ int mvx_mmu_read(struct mvx_mmu *mmu,
+ 		dma_sync_single_for_cpu(mmu->dev, pa, n, DMA_FROM_DEVICE);
+ 
+ 		/* Convert from physical to Linux logical address. */
+-		src = phys_to_virt(pa);
++		src = phys_to_virt(phys_vpu2cpu(pa));
+ 		memcpy(data, src, n);
+ 
+ 		va += n;
+@@ -1263,7 +1263,7 @@ int mvx_mmu_write(struct mvx_mmu *mmu,
+ 			return ret;
+ 
+ 		/* Convert from physical to Linux logical address. */
+-		dst = phys_to_virt(pa);
++		dst = phys_to_virt(phys_vpu2cpu(pa));
+ 		memcpy(dst, data, n);
+ 
+ 		/* Flush the data to memory. */
+@@ -1296,7 +1296,7 @@ void mvx_mmu_print(struct mvx_mmu *mmu)
+ 		unsigned int j;
+ 
+ 		if (pa != 0) {
+-			mvx_mmu_pte *l2 = phys_to_virt(pa);
++			mvx_mmu_pte *l2 = phys_to_virt(phys_vpu2cpu(pa));
+ 
+ 			MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_INFO,
+ 				      "%-4u: PA=0x%llx, ATTR=%u, ACC=%u",
+@@ -1348,3 +1348,19 @@ int mvx_mmu_pages_debugfs_init(struct mvx_mmu_pages *pages,
+ 
+ 	return 0;
+ }
++
++unsigned long phys_vpu2cpu(unsigned long phys_addr)
++{
++	if (phys_addr >= 0x80000000UL) {
++		phys_addr += 0x80000000UL;
++	}
++	return phys_addr;
++}
++
++unsigned long phys_cpu2vpu(unsigned long phys_addr)
++{
++	if (phys_addr >= 0x100000000UL) {
++		phys_addr -= 0x80000000UL;
++	}
++	return phys_addr;
++}
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+index ab2311f4f6e5..292a07492977 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+@@ -466,4 +466,27 @@ int mvx_mmu_pages_debugfs_init(struct mvx_mmu_pages *pages,
+ 			       char *name,
+ 			       struct dentry *parent);
+ 
++/***
++ *                                                                  CPU
++ * 0x04 8000 0000                                         +-->  +----------+
++ *                                                        |     |          |
++ *                  DEVICE                 DRAM           |     |          |
++ * 0x04 0000 0000+---------+  <------+  +----------+  +---+     |          |
++ *               |         |            |          |            |          |
++ *               |         |            |          |            |    DDR   |
++ *               |         |            |          |            |          |
++ *               |         |            |          |            |          |
++ *               |         |            |          |            |          |
++ * 0x01 0000 0000|         |            |          |      +-->  +----------+
++ *               |         |            |          |      |     |          |
++ *               |         |            |          |      |     |    IO    |
++ * 0x00 8000 0000+---------+  <------+  +----------+  +---+-->  +----------+
++ *               |         |            |          |            |          |
++ *               |         |            |          |            |    DDR   |
++ * 0x00 0000 0000+---------+  <------+  +----------+  +------>  +----------+
++ *
++ */
++unsigned long phys_vpu2cpu(unsigned long phys_addr);
++unsigned long phys_cpu2vpu(unsigned long phys_addr);
++
+ #endif /* _MVX_MMU_H_ */
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+index 3a86d8b30e68..76739a3b1edc 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+@@ -49,6 +49,7 @@
+ #include "mvx_seq.h"
+ #include "mvx_dvfs.h"
+ #include "mvx_v4l2_session.h"
++#include "mvx_mmu.h"
+ 
+ /****************************************************************************
+  * Private variables
+@@ -1560,7 +1561,7 @@ static void fw_bin_ready(struct mvx_fw_bin *bin,
+ 	session->isession.ncores = session->client_ops->get_ncores(
+ 		session->client_ops);
+ 	session->isession.l0_pte = mvx_mmu_set_pte(
+-		MVX_ATTR_PRIVATE, virt_to_phys(session->mmu.page_table),
++		MVX_ATTR_PRIVATE, phys_cpu2vpu(virt_to_phys(session->mmu.page_table)),
+ 		MVX_ACCESS_READ_WRITE);
+ 
+ 	session->csession = session->client_ops->register_session(
+-- 
+2.47.1
+

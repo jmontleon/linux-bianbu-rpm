@@ -1,0 +1,31 @@
+From 092c4186e119a0d8263f43b9b3554a86feef56e8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 9 Apr 2024 09:50:36 +0800
+Subject: [PATCH 0567/1189] dts: k1-x_MINI-PC: change usb0 mode from udc to
+ ehci
+
+Change-Id: Ic366af23327ec631712203aef300f58e43ab761a
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index a893af99a8dd..db7d7843e5ff 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -614,10 +614,8 @@ &usbphy {
+ 	status = "okay";
+ };
+ 
+-&udc {
+-	/*spacemit,udc-mode = <MV_USB_MODE_OTG>;
+-	spacemit,extern-attr = <MV_USB_HAS_VBUS_IDPIN_DETECTION>;*/
+-	spacemit,udc-mode = <MV_USB_MODE_UDC>;
++&ehci {
++	spacemit,udc-mode = <MV_USB_MODE_HOST>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.1
+

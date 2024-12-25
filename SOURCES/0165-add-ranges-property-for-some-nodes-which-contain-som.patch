@@ -1,0 +1,42 @@
+From c0138f335988b3d6942ab8f00912f723a0272452 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Mon, 27 Nov 2023 21:23:25 +0800
+Subject: [PATCH 0165/1189] add ranges property for some nodes which contain
+ some child node include reg
+
+Change-Id: Iae3c2fcac8a72a653dc5eb9bd3456063662f6f9e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 480d9573d0bc..a57d9b62be2a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -237,6 +237,7 @@ opp1600000000 {
+ 	clocks {
+ 		#address-cells = <0x2>;
+ 		#size-cells = <0x2>;
++		ranges;
+ 
+ 		vctcxo_24: clock-vctcxo_24 {
+ 			#clock-cells = <0>;
+@@ -322,6 +323,7 @@ soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
++		ranges;
+ 
+ 		clint0: clint@e4000000 {
+ 			compatible = "riscv,clint0";
+@@ -725,6 +727,7 @@ usbdrd3: usb3@0 {
+ 			clock-names = "usbdrd30";
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <149>;
++			ranges;
+ 			status = "disabled";
+ 
+ 			dwc3@c0a00000 {
+-- 
+2.47.1
+

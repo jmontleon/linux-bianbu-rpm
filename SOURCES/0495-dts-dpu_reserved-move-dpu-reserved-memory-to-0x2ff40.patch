@@ -1,0 +1,163 @@
+From 30e8653b8405ff3e8fcb23d496374dd56f473a2e Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Mon, 18 Mar 2024 10:59:01 +0800
+Subject: [PATCH 0495/1189] dts/dpu_reserved: move dpu reserved memory to
+ 0x2ff40000
+
+there is many reserved memory block, but not continuously
+before modify, the memory nodes info as follows:
+Early memory node ranges
+  node   0: [mem 0x0000000001400000-0x0000000026ffffff]
+  node   0: [mem 0x0000000027000000-0x00000000270bffff]
+  node   0: [mem 0x00000000270c0000-0x000000002fffffff]
+  node   0: [mem 0x0000000030000000-0x00000000302fffff]
+  node   0: [mem 0x0000000030300000-0x000000007fffffff]
+  node   0: [mem 0x0000000100000000-0x000000027fffffff]
+
+after modify, the memory nodes info:
+Early memory node ranges
+  node   0: [mem 0x0000000001400000-0x000000002ff3ffff]
+  node   0: [mem 0x000000002ff40000-0x00000000302fffff]
+  node   0: [mem 0x0000000030300000-0x000000007fffffff]
+  node   0: [mem 0x0000000100000000-0x000000027fffffff]
+
+Change-Id: I0d742625348ba22c4f27bf423dbc8d45ef1b57d4
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   | 4 ++--
+ 8 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index c3b9314f9224..9820fb6fd7f6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -525,7 +525,7 @@ area_reserved@80000000 {
+ 			reg = <0x0 0x80000000 0x0 0x40800000>;
+ 		};
+ 
+-		/* rcpu code & data & heap space */
++		/* sram area, used for rcpu code & data & heap space */
+ 		rcpu_mem_0: mem@c0800000 {
+ 			reg = <0x0 0xc0800000 0x0 0x40000>;
+ 			da_base = <0x0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 29145d85f2fb..dfcd5a9567c6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -101,9 +101,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index c83eea3b43d2..8bcd7a099164 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -104,9 +104,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 92a4a378f6f9..859ca2a35adb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -104,9 +104,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 99156c1188d8..fa1fd4819fff 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -104,9 +104,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 48ad9cd88fba..628f9bdd08e6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -102,9 +102,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 5fa5934ce704..17352efde87e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -101,9 +101,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index decc6d73fa90..f8d1fe9c6ccd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -100,9 +100,9 @@ linux,cma {
+ 		};
+ 
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+-		dpu_resv: dpu_reserved@27000000 {
++		dpu_resv: dpu_reserved@2ff40000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x000C0000>;
++			reg = <0x0 0x2ff40000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+-- 
+2.47.1
+

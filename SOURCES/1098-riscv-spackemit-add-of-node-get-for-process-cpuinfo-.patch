@@ -1,0 +1,31 @@
+From 7515e744edc357d2af7d24da37897cbd2cdf474d Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 09:48:35 +0800
+Subject: [PATCH 1098/1189] riscv: spackemit: add of node get for process
+ cpuinfo model
+
+Change-Id: Ia7072f4b47f67f4dff1c0f9fe71514964f44520c
+---
+ arch/riscv/kernel/cpu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index 0b9c7a66e9ef..7c6b4c976010 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -338,8 +338,12 @@ static int c_show(struct seq_file *m, void *v)
+ 	seq_printf(m, "processor\t: %lu\n", cpu_id);
+ 	seq_printf(m, "hart\t\t: %lu\n", cpuid_to_hartid_map(cpu_id));
+ 
++#ifdef CONFIG_SOC_SPACEMIT
++	node = of_get_cpu_node(cpu_id, NULL);
+ 	if (!of_property_read_string(node, "model", &model))
+ 		seq_printf(m, "model name\t: %s\n", model);
++	of_node_put(node);
++#endif
+ 
+ 	/*
+ 	 * For historical raisins, the isa: line is limited to the lowest common
+-- 
+2.47.1
+

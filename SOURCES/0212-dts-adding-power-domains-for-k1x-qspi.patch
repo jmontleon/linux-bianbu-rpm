@@ -1,0 +1,27 @@
+From b5e76053ccf9b340168444d3c4c00374ff8d38ee Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Thu, 21 Dec 2023 10:47:21 +0800
+Subject: [PATCH 0212/1189] dts: adding power-domains for k1x qspi
+
+Change-Id: I1c11f36541b610e3b4056c915b6dea19d7795906
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index fd492aaa8702..04c72005d238 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1587,7 +1587,8 @@ qspi: spi@d420c000 {
+ 			k1x,qspi-mpmu-acgr-reg = <0xd4051024>;
+ 			k1x,qspi-freq = <26500000>;
+ 			k1x,qspi-id = <4>;
+-			//k1x,qspi-lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			cpuidle,pm-runtime,sleep;
+ 			interrupts = <117>;
+ 			interrupt-parent = <&intc>;
+ 			k1x,qspi-tx-dma = <1>;
+-- 
+2.47.1
+

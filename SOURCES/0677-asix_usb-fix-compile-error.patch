@@ -1,0 +1,23 @@
+From 38127236b49e245fa9e20cddd321fc4a6179e642 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 21 May 2024 08:53:35 +0800
+Subject: [PATCH 0677/1189] asix_usb: fix compile error
+
+Change-Id: Ifc730a91dc9f1bf39e46da4205d2da49dbf45787
+---
+ drivers/net/usb/asix_usb/ax_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/usb/asix_usb/ax_main.c b/drivers/net/usb/asix_usb/ax_main.c
+index ab8d1a9b0d9e..93253f0e144f 100755
+--- a/drivers/net/usb/asix_usb/ax_main.c
++++ b/drivers/net/usb/asix_usb/ax_main.c
+@@ -1,4 +1,4 @@
+-q// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0
+ /*******************************************************************************
+  *     Copyright (c) 2022    ASIX Electronic Corporation    All rights reserved.
+  *
+-- 
+2.47.1
+

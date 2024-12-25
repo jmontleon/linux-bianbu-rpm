@@ -1,0 +1,28 @@
+From e48f31160eac09843227fc677f3805fb28a72ebc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Thu, 22 Feb 2024 23:01:56 +0800
+Subject: [PATCH 0431/1189] deconfig: enable sound support
+
+Change-Id: I4458889869c37d9aad3d76ffef33a5023eaa2e17
+---
+ arch/riscv/configs/k1_defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 537c57a08ef0..2df9cece8996 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -545,6 +545,10 @@ CONFIG_FB=y
+ CONFIG_BACKLIGHT_PWM=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
++CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+-- 
+2.47.1
+

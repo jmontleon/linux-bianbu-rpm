@@ -1,0 +1,99 @@
+From d253fc75c83764598aa65eecf3577cd7318ecc74 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:26:38 +0800
+Subject: [PATCH 0330/1189] clean usb driver debug info
+
+Change-Id: I5c0c040a11aea25a2e7c55c5d058bccb52d423ae
+---
+ drivers/usb/gadget/udc/k1x_udc_core.c | 8 ++++----
+ drivers/usb/host/ehci-k1x-ci.c        | 4 ++--
+ drivers/usb/phy/phy-k1x-ci-usb2.c     | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index ce4fdd7dcbf7..0903113c10fd 100755
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -527,7 +527,7 @@ static int mv_ep_enable(struct usb_ep *_ep,
+ 
+ 	direction = ep_dir(ep);
+ 	max = usb_endpoint_maxp(desc);
+-	pr_info("mv_ep_enable: %d MPS= 0x%x \n", ep->ep_num, max);
++	pr_debug("mv_ep_enable: %d MPS= 0x%x \n", ep->ep_num, max);
+ 
+ 	/*
+ 	 * disable HW zero length termination select
+@@ -672,7 +672,7 @@ static int  mv_ep_disable(struct usb_ep *_ep)
+ 			: (EPCTRL_RX_ENABLE | EPCTRL_RX_TYPE));
+ 	writel(epctrlx, &udc->op_regs->epctrlx[ep->ep_num]);
+ 
+-	pr_info("mv_ep_disable: %d \n", ep->ep_num);
++	pr_debug("mv_ep_disable: %d \n", ep->ep_num);
+ 
+ 	/* nuke all pending requests (does flush) */
+ 	nuke(ep, -ESHUTDOWN);
+@@ -1168,7 +1168,7 @@ static int mv_udc_enable_internal(struct mv_udc *udc)
+ {
+ 	int retval;
+ 
+-	pr_info("mv_udc_enable_internal: udc->active= %d \n", udc->active);
++	pr_debug("mv_udc_enable_internal: udc->active= %d \n", udc->active);
+ 	if (udc->active)
+ 		return 0;
+ 
+@@ -1206,7 +1206,7 @@ static int mv_udc_enable(struct mv_udc *udc)
+ 
+ static void mv_udc_disable_internal(struct mv_udc *udc)
+ {
+-	pr_info("mv_udc_disable_internal... \n");
++	pr_debug("mv_udc_disable_internal... \n");
+ 	if (udc->active) {
+ 		dev_dbg(&udc->dev->dev, "disable udc\n");
+ 		usb_phy_shutdown(udc->phy);
+diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
+index 206a919e9072..ec615c4d3488 100755
+--- a/drivers/usb/host/ehci-k1x-ci.c
++++ b/drivers/usb/host/ehci-k1x-ci.c
+@@ -185,7 +185,7 @@ static int mv_ehci_probe(struct platform_device *pdev)
+ 	int retval = -ENODEV;
+ 	u32 offset;
+ 
+-	dev_info(&pdev->dev, "mv_ehci_probe: Enter ... \n");
++	dev_dbg(&pdev->dev, "mv_ehci_probe: Enter ... \n");
+ 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata) {
+ 		dev_err(&pdev->dev, "failed to allocate memory for platform_data\n");
+@@ -343,7 +343,7 @@ static int mv_ehci_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	dev_info(&pdev->dev,
++	dev_dbg(&pdev->dev,
+ 		 "successful find EHCI device with regs 0x%p irq %d"
+ 		 " working in %s mode\n", hcd->regs, hcd->irq,
+ 		 ehci_mv->mode == MV_USB_MODE_OTG ? "OTG" : "Host");
+diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
+index 4ef932dc80e3..5f3bf6b6ee94 100755
+--- a/drivers/usb/phy/phy-k1x-ci-usb2.c
++++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
+@@ -110,7 +110,7 @@ static int mv_usb2_get_phydata(struct platform_device *pdev,
+ 	if (!of_property_read_u32(np, "spacemit,usb2-phy-rev", &phy_rev))
+ 		mv_phy->drv_data.phy_rev = phy_rev;
+ 	else
+-		pr_info("No PHY revision found, use the default setting!");
++		dev_info(&pdev->dev, "No PHY revision found, use the default setting!");
+ 
+ 	return 0;
+ }
+@@ -121,7 +121,7 @@ static int mv_usb2_phy_probe(struct platform_device *pdev)
+ 	struct resource *r;
+ 	int ret = 0;
+ 
+-	dev_info(&pdev->dev, "k1x-ci-usb-phy-probe: Enter...\n");
++	dev_dbg(&pdev->dev, "k1x-ci-usb-phy-probe: Enter...\n");
+ 	mv_phy = devm_kzalloc(&pdev->dev, sizeof(*mv_phy), GFP_KERNEL);
+ 	if (mv_phy == NULL) {
+ 		dev_err(&pdev->dev, "failed to allocate memory\n");
+-- 
+2.47.1
+

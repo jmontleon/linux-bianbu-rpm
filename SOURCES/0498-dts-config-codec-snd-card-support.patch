@@ -1,0 +1,38 @@
+From 93d93b4216af9cec49d4312057b0e01928b4b8ed Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Mar 2024 09:49:34 +0800
+Subject: [PATCH 0498/1189] dts: config codec snd-card support
+
+Change-Id: I390b960030078583c6151976e35f42f43800ba75
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi     | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9820fb6fd7f6..0540bf62f3d5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2420,6 +2420,6 @@ sound_hdmi: snd-card@0 {
+ 
+ 	sound_es8326: snd-card@1 {
+ 		compatible = "spacemit,spacemit-snd-es8326";
+-		status = "ok";
++		status = "disabled";
+ 	};
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 8bcd7a099164..b0b3659ad326 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -949,3 +949,7 @@ &spacemit_i2s {
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+         status = "okay";
+ };
++
++&sound_es8326 {
++	status = "okay";
++};
+-- 
+2.47.1
+

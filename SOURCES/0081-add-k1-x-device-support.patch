@@ -1,0 +1,468 @@
+From 8ad48bba550fe6cbac1d58779be60257b2e682c9 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 8 Aug 2023 09:08:05 +0800
+Subject: [PATCH 0081/1189] add k1-x device support
+
+Change-Id: I8bc2ee3c35195eb0f6967281629f7db75372b0da
+---
+ arch/riscv/Kconfig.socs                    |  11 +-
+ arch/riscv/boot/dts/spacemit/Makefile      |   1 +
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi     | 224 +++++++++++++++++++++
+ arch/riscv/boot/dts/spacemit/k1-x_fpga.dts |  28 +++
+ arch/riscv/configs/k1-x_fpga_defconfig     | 146 ++++++++++++++
+ 5 files changed, 402 insertions(+), 8 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x.dtsi
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+ create mode 100644 arch/riscv/configs/k1-x_fpga_defconfig
+
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index e54cb34140e4..1979e540a627 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -117,15 +117,10 @@ choice
+ 		help
+ 		  This enables support for Spacemit k1-pro Platform Hardware.
+ 
+-	config SOC_SPACEMIT_K1MINI
+-		bool "k1-mini"
++	config SOC_SPACEMIT_K1X
++		bool "k1-x"
+ 		help
+-		  This enables support for Spacemit k1-mini Platform Hardware.
+-
+-	config SOC_SPACEMIT_K1MAX
+-		bool "k1-max"
+-		help
+-		  This enables support for Spacemit k1-max Platform Hardware.
++		  This enables support for Spacemit k1-x Platform Hardware.
+ endchoice
+ 
+ config SOC_SPACEMIT_K1_FPGA
+diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
+index 261673b0c692..3825afb840e3 100644
+--- a/arch/riscv/boot/dts/spacemit/Makefile
++++ b/arch/riscv/boot/dts/spacemit/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb
++dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb
+ obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+new file mode 100644
+index 000000000000..8d14cb1a49a8
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -0,0 +1,224 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2022 Spacemit, Inc */
++
++/dts-v1/;
++
++
++/ {
++	compatible = "spacemit,k1-x", "riscv";
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <50000000>;
++		cpu_0: cpu@0 {
++			device_type = "cpu";
++			reg = <0>;
++			status = "okay";
++			compatible = "riscv";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,cbom-block-size = <64>;
++			mmu-type = "riscv,sv39";
++			cpu-freq = "1.848Ghz";
++			cpu-icache = "64KB";
++			cpu-dcache = "64KB";
++			cpu-l2cache = "1MB";
++			cpu-tlb = "1024 4-ways";
++			cpu-cacheline = "64Bytes";
++			cpu-vector = "0.7.1";
++
++			cpu0_intc: interrupt-controller {
++				#interrupt-cells = <1>;
++				compatible = "riscv,cpu-intc";
++				interrupt-controller;
++			};
++		};
++		cpu_1: cpu@1 {
++			device_type = "cpu";
++			reg = <1>;
++			status = "okay";
++			compatible = "riscv";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,cbom-block-size = <64>;
++			mmu-type = "riscv,sv39";
++			cpu-freq = "1.848Ghz";
++			cpu-icache = "64KB";
++			cpu-dcache = "64KB";
++			cpu-l2cache = "1MB";
++			cpu-tlb = "1024 4-ways";
++			cpu-cacheline = "64Bytes";
++			cpu-vector = "0.7.1";
++
++			cpu1_intc: interrupt-controller {
++				#interrupt-cells = <1>;
++				compatible = "riscv,cpu-intc";
++				interrupt-controller;
++			};
++		};
++		cpu_2: cpu@2 {
++			device_type = "cpu";
++			reg = <2>;
++			status = "okay";
++			compatible = "riscv";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,cbom-block-size = <64>;
++			mmu-type = "riscv,sv39";
++			cpu-freq = "1.848Ghz";
++			cpu-icache = "64KB";
++			cpu-dcache = "64KB";
++			cpu-l2cache = "1MB";
++			cpu-tlb = "1024 4-ways";
++			cpu-cacheline = "64Bytes";
++			cpu-vector = "0.7.1";
++
++			cpu2_intc: interrupt-controller {
++				#interrupt-cells = <1>;
++				compatible = "riscv,cpu-intc";
++				interrupt-controller;
++			};
++		};
++		cpu_3: cpu@3 {
++			device_type = "cpu";
++			reg = <3>;
++			status = "okay";
++			compatible = "riscv";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,cbom-block-size = <64>;
++			mmu-type = "riscv,sv39";
++			cpu-freq = "1.848Ghz";
++			cpu-icache = "64KB";
++			cpu-dcache = "64KB";
++			cpu-l2cache = "1MB";
++			cpu-tlb = "1024 4-ways";
++			cpu-cacheline = "64Bytes";
++			cpu-vector = "0.7.1";
++
++			cpu3_intc: interrupt-controller {
++				#interrupt-cells = <1>;
++				compatible = "riscv,cpu-intc";
++				interrupt-controller;
++			};
++		};
++	};
++
++	clocks {
++		#address-cells = <0x2>;
++		#size-cells = <0x2>;
++		ranges;
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++	};
++
++	soc {
++		compatible = "simple-bus";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		clint0: clint@14000000 {
++			compatible = "riscv,clint0";
++			interrupts-extended = <
++				&cpu0_intc  3 &cpu0_intc  7
++				&cpu1_intc  3 &cpu1_intc  7
++				&cpu2_intc  3 &cpu2_intc  7
++				&cpu3_intc  3 &cpu3_intc  7
++			>;
++			reg = <0x0 0x14000000 0x0 0x00010000>;
++			clint,has-no-64bit-mmio;
++		};
++
++		intc: interrupt-controller@10000000 {
++			#interrupt-cells = <1>;
++			compatible = "riscv,plic0";
++			interrupt-controller;
++			interrupts-extended = <
++				&cpu0_intc 0xffffffff &cpu0_intc 9
++				&cpu1_intc 0xffffffff &cpu1_intc 9
++				&cpu2_intc 0xffffffff &cpu2_intc 9
++				&cpu3_intc 0xffffffff &cpu3_intc 9
++			>;
++			reg = <0x0 0x10000000 0x0 0x04000000>;
++			reg-names = "control";
++			riscv,max-priority = <7>;
++			riscv,ndev = <159>;
++		};
++
++		/* Normal serial, log */
++		uart0: serial@2cea0000 {
++			compatible = "snps,dw-apb-uart";
++			reg = <0x0 0x2cea0000 0x0 0x1000>;
++			interrupt-parent = <&intc>;
++			interrupts = <56>;
++			clock-frequency = <50000000>;
++			reg-shift = <2>;
++			reg-io-width = <4>;
++			hw-flow-control = "unsupport";
++			status = "disabled";
++		};
++	};
++
++	pmu {
++		compatible = "riscv,pmu";
++
++		riscv,event-to-mhpmevent =
++			/* BRANCH_INSTRUCTIONS */
++			<0x00005 0x0 0x01>,
++			/* BRANCH_MISSES */
++			<0x00006 0x0 0x02>,
++			/* STALLED_CYCLES_FRONTEND */
++			<0x00008 0x0 0x03>,
++			/* STALLED_CYCLES_BACKEND */
++			<0x00009 0x0 0x04>,
++			/* L1D_READ_ACCESS */
++			<0x10000 0x0 0x06>,
++			/* L1D_READ_MISS */
++			<0x10001 0x0 0x05>,
++			/* L1D_WRITE_ACCESS */
++			<0x10002 0x0 0x0a>,
++			/* L1D_WRITE_MISS */
++			<0x10003 0x0 0x09>,
++			/* L1I_READ_ACCESS */
++			<0x10008 0x0 0x0c>,
++			/* L1I_READ_MISS */
++			<0x10009 0x0 0x0b>,
++			/* L1I_PREFETCH_ACCESS */
++			<0x1000c 0x0 0x0e>,
++			/* L1I_PREFETCH_MISS */
++			<0x1000d 0x0 0x0d>,
++			/* DTLB_READ_MISS */
++			<0x10019 0x0 0x15>,
++			/* DTLB_WRITE_MISS */
++			<0x1001b 0x0 0x19>,
++			/* ITLB_READ_MISS */
++			<0x10021 0x0 0x1b>;
++
++		/* 16 valid counters: mhpmcounter3 ~ mhpmcounter18 */
++		riscv,event-to-mhpmcounters =
++			<0x00005 0x00006 0x0007fff8>,
++			<0x00008 0x00009 0x0007fff8>,
++			<0x10000 0x10003 0x0007fff8>,
++			<0x10008 0x10009 0x0007fff8>,
++			<0x1000c 0x1000d 0x0007fff8>,
++			<0x10019 0x10019 0x0007fff8>,
++			<0x1001b 0x1001b 0x0007fff8>,
++			<0x10021 0x10021 0x0007fff8>;
++
++		riscv,raw-event-to-mhpmcounters =
++			/*
++			 * For convenience, we treat 0x1~0xff as valid indexes,
++			 * but actually in hardware the valid indexes are 0x1~0xbd.
++			 */
++			<0x0 0x0 0xffffffff 0xffffff00 0x0007fff8>;
++	};
++};
++
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+new file mode 100644
+index 000000000000..4c783065403d
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++/dts-v1/;
++
++#include "k1-x.dtsi"
++/ {
++	model = "spacemit k1-x fpga board";
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <50000000>;
++
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0xA0 0x00000000 0x1 0x00000000>;
++	};
++
++	chosen {
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8,initcall_debug=1 rdinit=/init.tmp";
++		stdout-path = "serial0:115200n8";
++	};
++
++};
++
+diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
+new file mode 100644
+index 000000000000..a6bd78539626
+--- /dev/null
++++ b/arch/riscv/configs/k1-x_fpga_defconfig
+@@ -0,0 +1,146 @@
++CONFIG_COMPILE_TEST=y
++# CONFIG_WERROR is not set
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ_IDLE=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_PREEMPT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
++CONFIG_CHECKPOINT_RESTORE=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++# CONFIG_RD_ZSTD is not set
++CONFIG_EXPERT=y
++# CONFIG_BUG is not set
++CONFIG_PERF_EVENTS=y
++CONFIG_SOC_SPACEMIT=y
++CONFIG_SOC_SPACEMIT_K1X=y
++CONFIG_SOC_SPACEMIT_K1_FPGA=y
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HZ_100=y
++CONFIG_RISCV_SBI_V01=y
++# CONFIG_RISCV_BOOT_SPINWAIT is not set
++CONFIG_PM=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_BLK_DEBUG_FS is not set
++CONFIG_CMA=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++# CONFIG_IPV6 is not set
++CONFIG_NETWORK_PHY_TIMESTAMPING=y
++CONFIG_NETLINK_DIAG=y
++CONFIG_CFG80211=y
++CONFIG_FAILOVER=y
++# CONFIG_ETHTOOL_NETLINK is not set
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++# CONFIG_ARM_SCMI_POWER_DOMAIN is not set
++# CONFIG_ARM_SCPI_POWER_DOMAIN is not set
++CONFIG_MTD=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_MTD_SPEAR_SMI is not set
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_SRAM=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_NETDEVICES=y
++# CONFIG_ETHERNET is not set
++CONFIG_PHYLIB=y
++# CONFIG_WLAN is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_KEYBOARD is not set
++# CONFIG_INPUT_MOUSE is not set
++CONFIG_VT_HW_CONSOLE_BINDING=y
++CONFIG_SERIAL_8250=y
++# CONFIG_SERIAL_8250_DEPRECATED_OPTIONS is not set
++CONFIG_SERIAL_8250_CONSOLE=y
++CONFIG_SERIAL_8250_NR_UARTS=6
++CONFIG_SERIAL_8250_RUNTIME_UARTS=6
++CONFIG_SERIAL_8250_DW=y
++CONFIG_SERIAL_OF_PLATFORM=y
++CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
++CONFIG_VIRTIO_CONSOLE=y
++# CONFIG_HW_RANDOM is not set
++# CONFIG_HWMON is not set
++CONFIG_MFD_SYSCON=y
++# CONFIG_VGA_CONSOLE is not set
++# CONFIG_HID_GENERIC is not set
++# CONFIG_USB_SUPPORT is not set
++CONFIG_SYNC_FILE=y
++CONFIG_SW_SYNC=y
++CONFIG_UDMABUF=y
++# CONFIG_VIRTIO_MENU is not set
++# CONFIG_VHOST_MENU is not set
++# CONFIG_SURFACE_PLATFORMS is not set
++# CONFIG_IOMMU_SUPPORT is not set
++# CONFIG_DPAA2_CONSOLE is not set
++CONFIG_GENERIC_PHY=y
++# CONFIG_PHY_MVEBU_A3700_UTMI is not set
++# CONFIG_NVMEM is not set
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=y
++CONFIG_OVERLAY_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_HUGETLBFS=y
++CONFIG_CONFIGFS_FS=y
++# CONFIG_EFIVAR_FS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_SWAP=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_INIT_STACK_NONE=y
++CONFIG_CRYPTO_AUTHENC=y
++CONFIG_CRYPTO_DH=y
++CONFIG_CRYPTO_ECDH=y
++CONFIG_CRYPTO_CURVE25519=y
++CONFIG_CRYPTO_AES=y
++CONFIG_CRYPTO_DES=y
++CONFIG_CRYPTO_ECB=y
++CONFIG_CRYPTO_OFB=y
++CONFIG_CRYPTO_CHACHA20POLY1305=y
++CONFIG_CRYPTO_CMAC=y
++CONFIG_CRYPTO_MD5=y
++CONFIG_CRYPTO_SHA1=y
++CONFIG_CRYPTO_SHA3=y
++CONFIG_CRYPTO_DEFLATE=y
++CONFIG_CRYPTO_LZO=y
++CONFIG_CRYPTO_ZSTD=y
++CONFIG_CRYPTO_USER_API_HASH=y
++CONFIG_XZ_DEC=y
++CONFIG_DMA_CMA=y
++CONFIG_PRINTK_TIME=y
++CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
++CONFIG_CONSOLE_LOGLEVEL_QUIET=8
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_FS=y
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++# CONFIG_RCU_TRACE is not set
++# CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.1
+

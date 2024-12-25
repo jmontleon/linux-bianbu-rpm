@@ -1,0 +1,105 @@
+From db5e594cd0b5f718bdf87fdfaf1b15a11058afd2 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 11 Jan 2024 08:59:44 +0800
+Subject: [PATCH 0348/1189] k1x:cpuidle: support cpu power-down only
+
+we bind the irq of broadcast timer on cpu0
+
+Change-Id: I40f51f4dc428f2591f278bc6b1795d363caac95f
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 16 ++++++++--------
+ drivers/clocksource/timer-k1x.c        |  2 +-
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 12c5a4ffc2ef..8c20ba01152e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -52,7 +52,7 @@ cpu_0: cpu@0 {
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C0_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -79,7 +79,7 @@ cpu_1: cpu@1 {
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C0_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -106,7 +106,7 @@ cpu_2: cpu@2 {
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C0_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -133,7 +133,7 @@ cpu_3: cpu@3 {
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C0_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -160,7 +160,7 @@ cpu_4: cpu@4 {
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C1_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -187,7 +187,7 @@ cpu_5: cpu@5 {
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C1_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -214,7 +214,7 @@ cpu_6: cpu@6 {
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C1_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+@@ -241,7 +241,7 @@ cpu_7: cpu@7 {
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+ 			clocks = <&ccu CLK_CPU_C1_CORE>;
+-			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+diff --git a/drivers/clocksource/timer-k1x.c b/drivers/clocksource/timer-k1x.c
+index c66416af37e6..d76803988baf 100644
+--- a/drivers/clocksource/timer-k1x.c
++++ b/drivers/clocksource/timer-k1x.c
+@@ -538,7 +538,7 @@ int __init spacemit_timer_setup(struct spacemit_timer_evt *evt)
+ 
+ 	if (broadcast) {
+ 		evt->irqa.name = "broadcast-timer";
+-		evt->ced.features |= CLOCK_EVT_FEAT_DYNIRQ;
++		/* evt->ced.features |= CLOCK_EVT_FEAT_DYNIRQ; */
+ 		evt->ced.cpumask = cpu_possible_mask;
+ 		ret = request_irq(evt->ced.irq, timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL | IRQF_ONESHOT, "broadcast-timer", evt->irqa.dev_id);
+ 		if (ret < 0)
+-- 
+2.47.1
+

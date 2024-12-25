@@ -1,0 +1,34 @@
+From 2826a7e50f7dc221ef4d2b5ed23d900673f61877 Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Mon, 29 Jul 2024 17:21:57 +0800
+Subject: [PATCH 0893/1189] k1-x_lpi3a.dts: fix no interrupt of ctp
+
+Change-Id: I101dfebb9f8d7b5ccbcb9ae912af85a06fe0ae28
+Signed-off-by: xudong <dong.xu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index e02cf1191fcc..0070f898c4ef 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -378,13 +378,14 @@ &i2c6 {
+ 	status = "okay";
+ 
+ 	touch@14 {
+-		#gpio-cells = <2>;
+ 		compatible = "goodix,gt9271";
+ 		reg = <0x14>;
+ 
+ 		reset-gpios = <&ioexp2 0 GPIO_ACTIVE_HIGH>;
+ 		irq-gpios = <&gpio 74 GPIO_ACTIVE_HIGH>;
+ 		irq-flags = <2>;
++		interrupt-parent = <&gpio>;
++		interrupts = <74 2>;
+ 		AVDD28-supply = <&reg_tp_pwr_en>;
+ 
+ 		touchscreen-max-id = <11>;
+-- 
+2.47.1
+

@@ -1,0 +1,140 @@
+From b26876cc1362ba093370fd6856fcef162263a40e Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Sat, 12 Oct 2024 16:17:44 +0800
+Subject: [PATCH 1018/1189] muse paper: sync camera draw dts configuration
+
+Change-Id: If25969199c48ef99b6da3a8136f8e087c8594600
+---
+ .../boot/dts/spacemit/k1-x_MUSE-Paper.dts     | 102 +++++++++++++++++-
+ 1 file changed, 101 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index abae801812b6..c66225d09bbd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
+ #include "k1-x_thermal_cooling.dtsi"
++#include "k1-x-camera-sdk.dtsi"
+ #include <dt-bindings/usb/pd.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+@@ -303,7 +304,18 @@ panel2: panel2@0 {
+ &lcds {
+ 	status = "okay";
+ };
+-
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c0>;
++	spacemit,i2c-fast-mode;
++	status = "okay";
++};
++&i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	spacemit,i2c-fast-mode;
++	status = "okay";
++};
+ &i2c2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c2_0>;
+@@ -1109,6 +1121,94 @@ &pwm_bl {
+ 	status = "okay";
+ };
+ 
++/* MIPI CSI1, clk lane1, Fixme: frontsensor gc08a8 */
++&backsensor {
++	af_2v8-supply = <&ldo_3>;
++	avdd_2v8-supply = <&ldo_2>;
++	dovdd_1v8-supply = <&ldo_7>;
++	dvdd_1v2-supply = <&ldo_6>;
++
++	pwdn-gpios = <&gpio 113 0>;
++	reset-gpios = <&gpio 111 0>;
++
++	twsi-index = <0>;
++
++	status = "okay";
++};
++
++/* MIPI CSI3 data line2,3 clk lane2 */
++&backsensor_aux {
++	//af_2v8-supply = <&ldo_3>;
++	avdd_2v8-supply = <&ldo_2>;
++	dovdd_1v8-supply = <&ldo_7>;
++	//dvdd_1v2-supply = <&ldo_6>;
++
++	pwdn-gpios = <&gpio 114 0>;
++	reset-gpios = <&gpio 112 0>;
++
++	twsi-index = <1>;
++
++	status = "disabled";
++};
++
++/* MIPI CSI3 data line0,1 clk lane3, Fixme: backsensor gc13a0 */
++&frontsensor {
++	af_2v8-supply = <&ldo_3>;
++	avdd_2v8-supply = <&ldo_2>;
++	dovdd_1v8-supply = <&ldo_7>;
++	dvdd_1v2-supply = <&ldo_6>;
++
++	clocks = <&ccu CLK_CAMM1>;
++	clock-names = "cam_mclk1";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_camera1>;
++
++	pwdn-gpios = <&gpio 114 0>;
++	reset-gpios = <&gpio 112 0>;
++
++	twsi-index = <1>;
++
++	status = "okay";
++};
++&csiphy0 {
++
++	status = "okay";
++};
++&csiphy1 {
++
++	status = "disabled";
++};
++&csiphy2 {
++
++	status = "okay";
++};
++
++&ccic0 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++
++	status = "okay";
++};
++&ccic1 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++
++	status = "okay";
++};
++&ccic2 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++
++	status = "okay";
++};
++&isp {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++
++&cpp {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++
++&vi {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+-- 
+2.47.1
+

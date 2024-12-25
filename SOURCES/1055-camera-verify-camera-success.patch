@@ -1,0 +1,92 @@
+From 21598f00edfdf59b982c10738b06564b3e4cfd2f Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Wed, 30 Oct 2024 19:29:24 +0800
+Subject: [PATCH 1055/1189] camera: verify camera success
+
+Change-Id: I93eaf9a3e3d723391b2e16b072dd116c481434be
+---
+ .../boot/dts/spacemit/k1-x_orangepi-rv2.dts   | 39 +++++++------------
+ 1 file changed, 15 insertions(+), 24 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+index 28f1645934ad..306af22d9d59 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+@@ -967,18 +967,14 @@ &pwm_bl {
+ 
+ /* MIPI CSI1, clk lane1 */
+ &backsensor {
+-	af_2v8-supply = <&ldo_3>;
+-	avdd_2v8-supply = <&ldo_2>;
+-	dovdd_1v8-supply = <&ldo_7>;
+-	dvdd_1v2-supply = <&ldo_6>;
++	//af_2v8-supply = <&ldo_3>;
++	//avdd_2v8-supply = <&ldo_2>;
++	//dovdd_1v8-supply = <&ldo_7>;
++	//dvdd_1v2-supply = <&ldo_6>;
+ 
+-	pinmulti-enable;
+ 	pwdn-gpios = <&gpio 113 0>;
+ 	reset-gpios = <&gpio 111 0>;
+ 
+-	pinctrl-names = "mclk_multi";
+-	pinctrl-0 = <&pinctrl_camera0>;
+-
+ 	status = "okay";
+ };
+ 
+@@ -992,32 +988,28 @@ &backsensor_aux {
+ 	pwdn-gpios = <&gpio 124 0>;
+ 	reset-gpios = <&gpio 97 0>;
+ 
+-	pinmulti-enable;
+ 	twsi-index = <0>;
+ 	clocks = <&ccu CLK_CAMM0>;
+ 	clock-names = "cam_mclk0";
+-	pinctrl-names = "mclk_multi";
+-	pinctrl-0 = <&pinctrl_camera0>;
+ 
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ /* MIPI CSI3 data line0,1 clk lane3 */
+ &frontsensor {
+-	af_2v8-supply = <&ldo_3>;
+-	avdd_2v8-supply = <&ldo_2>;
+-	dovdd_1v8-supply = <&ldo_7>;
+-	dvdd_1v2-supply = <&ldo_6>;
++	//af_2v8-supply = <&ldo_3>;
++	//avdd_2v8-supply = <&ldo_2>;
++	//dovdd_1v8-supply = <&ldo_7>;
++	//dvdd_1v2-supply = <&ldo_6>;
+ 
+-	pinmulti-enable;
+-	pwdn-gpios = <&gpio 124 0>;
++	pwdn-gpios = <&gpio 114 0>;
+ 	reset-gpios = <&gpio 97 0>;
+ 
+-	twsi-index = <0>;
+-	clocks = <&ccu CLK_CAMM0>;
+-	clock-names = "cam_mclk0";
+-	pinctrl-names = "mclk_multi";
+-	pinctrl-0 = <&pinctrl_camera0>;
++	twsi-index = <1>;
++	clocks = <&ccu CLK_CAMM1>;
++	clock-names = "cam_mclk1";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_camera1>;
+ 
+ 	status = "okay";
+ };
+@@ -1030,7 +1022,6 @@ &csiphy1 {
+ 	status = "disabled";
+ };
+ &csiphy2 {
+-	spacemit,bifmode-enable;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.1
+

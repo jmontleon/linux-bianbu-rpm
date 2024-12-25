@@ -1,0 +1,27 @@
+From 5bbe17b308dd6290a8de4a7c9a89e7171ff6d8da Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 11 Jan 2024 15:42:52 +0800
+Subject: [PATCH 0353/1189] mmc: dts: alloc index from alias id
+
+Change-Id: I2e2e707cb857914fb0defe0d2608604191aa11ca
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 1a59537f9a06..e5700c6437da 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -28,6 +28,9 @@ aliases {
+ 		serial6 = &uart7;
+ 		serial7 = &uart8;
+ 		serial8 = &uart9;
++		mmc0 = &sdhci0;
++		mmc1 = &sdhci1;
++		mmc2 = &sdhci2;
+ 		ethernet0 = &eth0;
+ 		ethernet1 = &eth1;
+ 	};
+-- 
+2.47.1
+

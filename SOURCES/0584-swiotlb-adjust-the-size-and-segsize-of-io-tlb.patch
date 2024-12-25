@@ -1,0 +1,32 @@
+From cc37de83ba22e813dbc1b3e99dea0800084edfb2 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Thu, 11 Apr 2024 17:22:05 +0800
+Subject: [PATCH 0584/1189] swiotlb: adjust the size and segsize of io tlb
+
+Increase the maximum allowable number of contiguous slabs to 256,
+because the PCIe may try allocate 512Kbyte buffer.
+
+Change-Id: Ib2f787e448991e2bc4a6088e9d4175467d6c3428
+---
+ include/linux/swiotlb.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 3dae0f592063..29a64f4d0b6f 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -23,7 +23,11 @@ struct scatterlist;
+  * must be a power of 2.  What is the appropriate value ?
+  * The complexity of {map,unmap}_single is linearly dependent on this value.
+  */
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++#define IO_TLB_SEGSIZE	256
++#else
+ #define IO_TLB_SEGSIZE	128
++#endif
+ 
+ /*
+  * log of the size of each IO TLB slab.  The number of slabs is command line
+-- 
+2.47.1
+

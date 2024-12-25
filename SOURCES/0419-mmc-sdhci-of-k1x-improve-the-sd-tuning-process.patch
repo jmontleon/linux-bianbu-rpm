@@ -1,0 +1,35 @@
+From 999f58c233b361333ccdcaecea4960466d930c3c Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 22 Feb 2024 09:42:53 +0800
+Subject: [PATCH 0419/1189] mmc: sdhci-of-k1x: improve the sd tuning process
+
+Change-Id: I9185214105854ba34bd733834bfb9fa0206b999b
+---
+ drivers/mmc/host/sdhci-of-k1x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index 1291b714679f..14185718c147 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -761,7 +761,7 @@ static int spacemit_send_tuning_cmd(struct sdhci_host *host, u32 opcode,
+ 			"during tuning procedure, resetting CMD and DATA\n",
+ 			mmc_hostname(host->mmc));
+ 		sdhci_reset(host, SDHCI_RESET_CMD|SDHCI_RESET_DATA);
+-		err = -EIO;
++		/* err = -EIO; */
+ 	} else
+ 		err = spacemit_tuning_patten_check(host, point);
+ 
+@@ -832,7 +832,7 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)
+ 			max += SDHC_RX_TUNE_DELAY_STEP;
+ 		}
+ 
+-		pr_debug("%s: pass window [%d %d) \n", mmc_hostname(host->mmc), min, max);
++		pr_notice("%s: pass window [%d %d) \n", mmc_hostname(host->mmc), min, max);
+ 		/* store the top 3 window */
+ 		if ((max - min) >= rxtuning->window_limit) {
+ 			window->max_delay = max;
+-- 
+2.47.1
+

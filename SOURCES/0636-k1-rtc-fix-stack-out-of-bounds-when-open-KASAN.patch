@@ -1,0 +1,109 @@
+From 47ab5947f9990413c570cc17449609a311f70c53 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 8 May 2024 22:04:19 +0800
+Subject: [PATCH 0636/1189] k1:rtc: fix stack-out-of-bounds when open KASAN
+
+[    5.671835] ==================================================================
+[    5.679369] BUG: KASAN: stack-out-of-bounds in _regmap_bus_read+0x9a/0xb8
+[    5.686445] Write of size 4 at addr ffffffc804047510 by task swapper/0/1
+[    5.693395]
+[    5.694963] CPU: 6 PID: 1 Comm: swapper/0 Not tainted 6.1.15+ #400
+[    5.701376] Hardware name: spacemit k1-x deb1 board (DT)
+[    5.706886] Call Trace:
+[    5.709440] [<ffffffff80009232>] dump_backtrace+0x1c/0x24
+[    5.715075] [<ffffffff81ad4342>] show_stack+0x2c/0x38
+[    5.720352] [<ffffffff81b01138>] dump_stack_lvl+0x3c/0x54
+[    5.725976] [<ffffffff81ad7a80>] print_report+0x1c8/0x4a4
+[    5.731588] [<ffffffff802cd072>] kasan_report+0xaa/0x134
+[    5.737124] [<ffffffff802cdf54>] __asan_store4+0x7c/0xa4
+[    5.742646] [<ffffffff80f1a7fc>] _regmap_bus_read+0x9a/0xb8
+[    5.748441] [<ffffffff80f181b8>] _regmap_read+0x76/0x1ee
+[    5.753955] [<ffffffff80f1838e>] regmap_read+0x5e/0x96
+[    5.759301] [<ffffffff811b7d6e>] spt_rtc_read_alarm+0x398/0x530
+[    5.765469] [<ffffffff811b2928>] __rtc_read_alarm+0x524/0x6e8
+[    5.771446] [<ffffffff811ae0e4>] __devm_rtc_register_device.part.0+0x1a4/0x480
+[    5.778956] [<ffffffff811ae438>] __devm_rtc_register_device+0x78/0x86
+[    5.785646] [<ffffffff811b93ee>] spacemit_rtc_probe+0x282/0x412
+[    5.791804] [<ffffffff80ee7040>] platform_probe+0x82/0xd2
+[    5.797424] [<ffffffff80ee2cde>] really_probe+0x110/0x5a4
+[    5.803043] [<ffffffff80ee3242>] __driver_probe_device+0xd0/0x1f8
+[    5.809375] [<ffffffff80ee33c0>] driver_probe_device+0x56/0x11e
+[    5.815530] [<ffffffff80ee3eaa>] __driver_attach+0x152/0x286
+[    5.821414] [<ffffffff80edf780>] bus_for_each_dev+0xd4/0x134
+[    5.827297] [<ffffffff80ee2428>] driver_attach+0x28/0x32
+[    5.832827] [<ffffffff80ee1958>] bus_add_driver+0x214/0x30c
+[    5.838627] [<ffffffff80ee4fc0>] driver_register+0x100/0x1e0
+[    5.844514] [<ffffffff80ee6b88>] __platform_driver_register+0x3e/0x4a
+[    5.851214] [<ffffffff81c33ffa>] spacemit_pmic_rtc_driver_init+0x1a/0x22
+[    5.858176] [<ffffffff80002d8e>] do_one_initcall+0xa6/0x34c
+[    5.863974] [<ffffffff81c01600>] kernel_init_freeable+0x31e/0x37c
+[    5.870313] [<ffffffff81b019b6>] kernel_init+0x1e/0x128
+[    5.875744] [<ffffffff80004b38>] ret_from_exception+0x0/0x16
+[    5.881637]
+[    5.883201] The buggy address belongs to stack of task swapper/0/1
+[    5.889603]  and is located at offset 48 in frame:
+[    5.894568]  spt_rtc_read_alarm+0x0/0x530
+[    5.898756]
+[    5.900317] This frame has 2 objects:
+[    5.904116]  [48, 49) 'rtc_ctl'
+[    5.904136]  [64, 96) 'v'
+[    5.907403]
+[    5.911683] The buggy address belongs to the virtual mapping at
+[    5.911683]  [ffffffc804040000, ffffffc804049000) created by:
+[    5.911683]  kernel_clone+0xa2/0x4ca
+[    5.927448]
+[    5.929005] The buggy address belongs to the physical page:
+[    5.934785] page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x100f9c
+[    5.944522] flags: 0x4000000000000000(zone=1)
+[    5.949068] raw: 4000000000000000 0000000000000000 0000000000000122 0000000000000000
+[    5.957099] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+[    5.965121] page dumped because: kasan: bad access detected
+[    5.970896]
+[    5.972455] Memory state around the buggy address:
+[    5.977415]  ffffffc804047400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    5.984893]  ffffffc804047480: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+[    5.992385] >ffffffc804047500: f1 f1 01 f2 00 00 00 00 f3 f3 f3 f3 00 00 00 00
+[    5.999869]                          ^
+[    6.003761]  ffffffc804047580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    6.011238]  ffffffc804047600: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+[    6.018738] ==================================================================
+[    6.027762] Disabling lock debugging due to kernel taint
+
+Change-Id: I9485da33655da8021d313cfc5aaa68193cc8baa0
+---
+ include/linux/mfd/spacemit/spacemit_pmic.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
+index c42bf3760ba3..b1e58621913f 100644
+--- a/include/linux/mfd/spacemit/spacemit_pmic.h
++++ b/include/linux/mfd/spacemit/spacemit_pmic.h
+@@ -82,16 +82,16 @@ struct pin_config_desc {
+ 
+ /* rtc */
+ union rtc_ctl_desc {
+-	unsigned char val;
++	unsigned int val;
+ 	struct {
+-		unsigned char crystal_en:1;
+-		unsigned char out_32k_en:1;
+-		unsigned char rtc_en:1;
+-		unsigned char rtc_clk_sel:1;
+-		unsigned char tick_type:1;
+-		unsigned char alarm_en:1;
+-		unsigned char tick_en:1;
+-		unsigned char reserved:1;
++		unsigned int crystal_en:1;
++		unsigned int out_32k_en:1;
++		unsigned int rtc_en:1;
++		unsigned int rtc_clk_sel:1;
++		unsigned int tick_type:1;
++		unsigned int alarm_en:1;
++		unsigned int tick_en:1;
++		unsigned int reserved:25;
+ 	} bits;
+ };
+ 
+-- 
+2.47.1
+

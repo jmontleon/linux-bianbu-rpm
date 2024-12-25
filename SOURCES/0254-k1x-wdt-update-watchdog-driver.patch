@@ -1,0 +1,54 @@
+From b7afcf7c1a8b94ceb0c4e4e678b5ae775944c334 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 26 Dec 2023 20:45:14 +0800
+Subject: [PATCH 0254/1189] k1x-wdt: update watchdog driver
+
+1.fix wdt holds lock continuously after feeds
+2.cancel wdt register temporarily
+
+Change-Id: Ic1442ef04baf76e11a03a84ca97389317f93e8de
+---
+ drivers/watchdog/k1x_wdt.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index 35fdea70aa56..bb951785e0cf 100755
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -314,7 +314,7 @@ static int spa_wdt_ping(struct watchdog_device *wdd)
+ 		ret = -EINVAL;
+ 
+ 	spin_unlock(&info->wdt_lock);
+-	spin_lock(&reboot_lock);
++	spin_unlock(&reboot_lock);
+ 
+ 	return ret;
+ }
+@@ -667,11 +667,11 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 	watchdog_set_nowayout(&spa_wdt, nowayout);
+ 
+ 	info->wdt_dev = spa_wdt;
+-	ret = watchdog_register_device(&info->wdt_dev);
++	/*ret = watchdog_register_device(&info->wdt_dev);
+ 	if (ret) {
+ 		dev_err(info->dev, "cannot register watchdog (%d)\n", ret);
+ 		goto err_register_fail;
+-	}
++	}*/
+ 
+ 	info->feed_timeout = ktime_set(SPACEMIT_WATCHDOG_FEED_TIMEOUT, 0);
+ 	hrtimer_init(&info->feed_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+@@ -715,8 +715,8 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 		spa_wdt_stop(&info->wdt_dev);
+ 	}
+ 
+-	watchdog_unregister_device(&info->wdt_dev);
+-err_register_fail:
++/*	watchdog_unregister_device(&info->wdt_dev);
++err_register_fail:*/
+ 	spa_disable_wdt_clk(info);
+ 	clk_put(info->clk);
+ 
+-- 
+2.47.1
+

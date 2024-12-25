@@ -1,0 +1,140 @@
+From 6f091594b4fac8ecbc1d883750470df77b01699c Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 10 Jan 2024 20:20:01 +0800
+Subject: [PATCH 0342/1189] usb: misc: add spacemit onboard hub driver
+
+Change-Id: I5f648277a88ef3e7dd8296a519ead726a9b3b0c4
+---
+ drivers/usb/misc/Kconfig                |  8 +++
+ drivers/usb/misc/Makefile               |  1 +
+ drivers/usb/misc/spacemit_onboard_hub.c | 92 +++++++++++++++++++++++++
+ 3 files changed, 101 insertions(+)
+ create mode 100644 drivers/usb/misc/spacemit_onboard_hub.c
+
+diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
+index 6497c4e81e95..631e286aca9c 100644
+--- a/drivers/usb/misc/Kconfig
++++ b/drivers/usb/misc/Kconfig
+@@ -343,3 +343,11 @@ config USB_ONBOARD_DEV_USB5744
+ 	  during hub start-up configuration stage. It is must to enable this
+ 	  option on AMD Kria KR260 Robotics Starter Kit as this hub is
+ 	  connected to USB-SD converter which mounts the root filesystem.
++
++config SPACEMIT_ONBOARD_USB_HUB
++	tristate "Spacemit onboard USB hub support"
++	depends on ARCH_SPACEMIT || COMPILE_TEST
++	default SOC_SPACEMIT_K1X && USB_DWC3_SPACEMIT
++	help
++	  Say Y here if you want to support onboard usb hubs on Spacemit
++	  platform. If unsure, say Y when compile for Spacemit platform.
+\ No newline at end of file
+diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
+index 0cd5bc8f52fe..1e796fae0143 100644
+--- a/drivers/usb/misc/Makefile
++++ b/drivers/usb/misc/Makefile
+@@ -34,3 +34,4 @@ obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
+ obj-$(CONFIG_USB_LINK_LAYER_TEST)	+= lvstest.o
+ obj-$(CONFIG_BRCM_USB_PINMAP)		+= brcmstb-usb-pinmap.o
+ obj-$(CONFIG_USB_ONBOARD_DEV)		+= onboard_usb_dev.o
++obj-$(CONFIG_SPACEMIT_ONBOARD_USB_HUB)	+= spacemit_onboard_hub.o
+diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
+new file mode 100644
+index 000000000000..8f0150a53112
+--- /dev/null
++++ b/drivers/usb/misc/spacemit_onboard_hub.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Onboard USB Hub support for Spacemit platform
++ *
++ * Copyright (c) 2023 Spacemit Inc.
++ */
++
++#include <linux/kernel.h>
++#include <linux/resource.h>
++#include <linux/of.h>
++#include <linux/slab.h>
++#include <linux/of_device.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/device.h>
++#include <linux/of_address.h>
++#include <linux/gpio/consumer.h>
++
++struct spacemit_hub_priv {
++	struct gpio_desc *gpio_usb;
++	struct gpio_desc *gpio_hub;
++	struct gpio_desc *gpio_reset;
++};
++
++static int spacemit_hub_probe(struct platform_device *pdev)
++{
++	struct spacemit_hub_priv *spacemit;
++
++	spacemit = devm_kzalloc(&pdev->dev, sizeof(*spacemit), GFP_KERNEL);
++	if (!spacemit)
++		return -ENOMEM;
++
++	spacemit->gpio_usb = devm_gpiod_get(&pdev->dev, "usb", GPIOD_OUT_HIGH);
++	if (IS_ERR_OR_NULL(spacemit->gpio_usb)) {
++		dev_err(&pdev->dev, "can not find usb-gpio\n");
++		return -ENODEV;
++	}
++	gpiod_set_value(spacemit->gpio_usb, 1);
++
++	spacemit->gpio_hub = devm_gpiod_get(&pdev->dev, "hub", GPIOD_OUT_HIGH);
++	if (IS_ERR_OR_NULL(spacemit->gpio_hub)) {
++		dev_err(&pdev->dev, "can not find hub-gpio\n");
++		return -ENODEV;
++	}
++	gpiod_set_value(spacemit->gpio_hub, 1);
++
++	spacemit->gpio_reset= devm_gpiod_get(&pdev->dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR_OR_NULL(spacemit->gpio_reset)) {
++		dev_err(&pdev->dev, "can not find reset-gpio\n");
++		return -ENODEV;
++	}
++	gpiod_set_value(spacemit->gpio_reset, 1);
++
++	dev_info(&pdev->dev, "onboard usb hub driver probe, hub configured\n");
++
++	platform_set_drvdata(pdev, spacemit);
++
++	return 0;
++}
++
++static int spacemit_hub_remove(struct platform_device *pdev)
++{
++	struct spacemit_hub_priv *spacemit = platform_get_drvdata(pdev);
++
++	gpiod_set_value(spacemit->gpio_usb, 0);
++	gpiod_set_value(spacemit->gpio_reset, 0);
++	gpiod_set_value(spacemit->gpio_reset, 0);
++
++	dev_info(&pdev->dev, "onboard usb hub driver exit, disable hub\n");
++	return 0;
++}
++
++static const struct of_device_id spacemit_hub_dt_match[] = {
++	{ .compatible = "spacemit,usb3-hub",},
++	{},
++};
++MODULE_DEVICE_TABLE(of, spacemit_hub_dt_match);
++
++static struct platform_driver spacemit_hub_driver = {
++	.probe	= spacemit_hub_probe,
++	.remove = spacemit_hub_remove,
++	.driver = {
++		.name   = "spacemit-usb3-hub",
++		.owner  = THIS_MODULE,
++		.of_match_table = of_match_ptr(spacemit_hub_dt_match),
++	},
++};
++
++module_platform_driver(spacemit_hub_driver);
++MODULE_DESCRIPTION("Spacemit Onboard USB Hub driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.47.1
+

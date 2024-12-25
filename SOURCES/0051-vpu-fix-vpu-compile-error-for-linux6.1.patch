@@ -1,0 +1,58 @@
+From 0054da01c625a89c6f48936c57fd62a47ccd54f0 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Tue, 27 Jun 2023 20:05:53 +0800
+Subject: [PATCH 0051/1189] vpu: fix vpu compile error for linux6.1
+
+Change-Id: I7d9f4843138f39f90bb6dfc1e998d87c110b0a65
+---
+ drivers/media/vpu/if/mvx_firmware_cache.c | 4 ++--
+ drivers/media/vpu/if/mvx_secure.c         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/vpu/if/mvx_firmware_cache.c b/drivers/media/vpu/if/mvx_firmware_cache.c
+index 63510658c16a..d8e5eced7dab 100755
+--- a/drivers/media/vpu/if/mvx_firmware_cache.c
++++ b/drivers/media/vpu/if/mvx_firmware_cache.c
+@@ -423,7 +423,7 @@ static struct attribute *fw_bin_attrs[] = {
+ static struct kobj_type fw_bin_ktype = {
+ 	.release       = fw_bin_destroy,
+ 	.sysfs_ops     = &kobj_sysfs_ops,
+-	.default_attrs = fw_bin_attrs
++	//.default_attrs = fw_bin_attrs
+ };
+ 
+ /**
+@@ -602,7 +602,7 @@ static void cache_release(struct kobject *kobj)
+ static struct kobj_type cache_ktype = {
+ 	.release       = cache_release,
+ 	.sysfs_ops     = &kobj_sysfs_ops,
+-	.default_attrs = cache_attrs
++	//.default_attrs = cache_attrs
+ };
+ 
+ static void cache_update(struct mvx_fw_cache *cache)
+diff --git a/drivers/media/vpu/if/mvx_secure.c b/drivers/media/vpu/if/mvx_secure.c
+index a5fa5d8de598..c9abc98f7e23 100755
+--- a/drivers/media/vpu/if/mvx_secure.c
++++ b/drivers/media/vpu/if/mvx_secure.c
+@@ -207,7 +207,7 @@ static struct mvx_secure_firmware_priv *secure_firmware_create(
+ 	static struct kobj_type secure_ktype = {
+ 		.sysfs_ops     = &kobj_sysfs_ops,
+ 		.release       = secure_firmware_release,
+-		.default_attrs = attrs
++		//.default_attrs = attrs
+ 	};
+ 	struct mvx_secure_firmware_priv *securefw;
+ 	char numcores_env[32];
+@@ -345,7 +345,7 @@ struct dma_buf *mvx_secure_mem_alloc(struct mvx_secure *secure,
+ 	static struct kobj_type secure_mem_ktype = {
+ 		.release       = secure_mem_release,
+ 		.sysfs_ops     = &kobj_sysfs_ops,
+-		.default_attrs = attrs
++		//.default_attrs = attrs
+ 	};
+ 	struct mvx_secure_mem *smem;
+ 	char size_env[32];
+-- 
+2.47.1
+

@@ -1,0 +1,81 @@
+From 17c57b7f850007be68dd79bcbc97b68decc9cfae Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Mon, 11 Sep 2023 16:15:53 +0800
+Subject: [PATCH 0101/1189] support tcm for k1x
+
+Change-Id: Ib1a2c8a17b74cdc580b81015c8744fbd6b1d6c21
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 27 ++++++++++++++++++++++++++
+ drivers/misc/Kconfig                   |  7 +++++++
+ drivers/misc/Makefile                  |  2 +-
+ 3 files changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index fdf40aa1cfe4..84fbf029e632 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -341,6 +341,33 @@ sdhci2: sdh@d4281000 {
+ 			clock-names = "sdh-io", "sdh-core";
+ 			status = "disabled";
+ 		};
++
++		tcm: tcm@0xd8000000 {
++			compatible = "spacemit,k1-pro-tcm";
++			reg = <0x0 0xd8000000 0x0 0x80000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0x0 0x0 0xbe000000 0x80000>;
++			no-memory-wc;
++
++			core0_tcm@0 {
++				reg = <0x00000 0x20000>;
++				pool;
++			};
++			core1_tcm@20000 {
++				reg = <0x20000 0x20000>;
++				pool;
++			};
++			core2_tcm@40000 {
++				reg = <0x40000 0x20000>;
++				pool;
++			};
++			core3_tcm@60000 {
++				reg = <0x60000 0x20000>;
++				pool;
++			};
++		};
++
+ 	};
+ 
+ 	pmu {
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 09cbe3f0ab1e..1acbee2d8249 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -634,6 +634,13 @@ config MCHP_LAN966X_PCI
+ 	    - lan966x-miim (MDIO_MSCC_MIIM)
+ 	    - lan966x-switch (LAN966X_SWITCH)
+ 
++config SPACEMIT_TCM
++	bool "Generic tcm alloc management driver"
++	depends on SOC_SPACEMIT
++	default y
++	help
++	  This driver allows you to alloc tcm for userspace.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 46aea8e7520d..e9ab4454613c 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -74,4 +74,4 @@ lan966x-pci-objs		:= lan966x_pci.o
+ lan966x-pci-objs		+= lan966x_pci.dtbo.o
+ obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
+ obj-y				+= keba/
+-obj-y				+= tcm.o
++obj-$(CONFIG_SPACEMIT_TCM)	+= tcm.o
+-- 
+2.47.1
+

@@ -1,0 +1,51 @@
+From c48c75548ebfff9287a07de854ec8f7eaf516103 Mon Sep 17 00:00:00 2001
+From: mengbinghan <binghan.meng@spacemit.com>
+Date: Fri, 8 Nov 2024 11:40:35 +0800
+Subject: [PATCH 1083/1189] camera: Fix isp and cpp build error when building
+ their as module
+
+Change-Id: Ice7ed974e58d78598900333e5170a8944cd81a3e
+---
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c   | 1 +
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c | 1 +
+ drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c   | 2 ++
+ 3 files changed, 4 insertions(+)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+index 73566e36d2ec..66e3cb64f64a 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+@@ -830,4 +830,5 @@ void cpp_iommu_unregister(struct cpp_device *cpp_dev)
+ 	pr_debug("%s X\n", __func__);
+ }
+ 
++MODULE_IMPORT_NS(DMA_BUF);
+ EXPORT_SYMBOL(cpp_iommu_unregister);
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+index a4b199b42942..f8e3374b798d 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+@@ -789,6 +789,7 @@ struct platform_driver k1xisp_dev_driver = {
+ 
+ module_platform_driver(k1xisp_dev_driver);
+ 
++MODULE_IMPORT_NS(DMA_BUF);
+ MODULE_AUTHOR("SPACEMIT Inc.");
+ MODULE_DESCRIPTION("SPACEMIT K1X ISP device driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+index 89ff5c3c8a1d..7ee841a1c1d1 100644
+--- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
++++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+@@ -43,6 +43,8 @@ unsigned long phys_cpu2cam(unsigned long phys_addr)
+ 	return phys_addr;
+ }
+ 
++EXPORT_SYMBOL(phys_cpu2cam);
++
+ static void plat_cam_sd_notify(struct v4l2_subdev *sd,
+ 			       unsigned int notification, void *arg)
+ {
+-- 
+2.47.1
+

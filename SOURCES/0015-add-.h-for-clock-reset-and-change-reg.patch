@@ -1,0 +1,50 @@
+From ee736b6cc559782e4c4c6251db132cea5dcf46e2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Fri, 21 Apr 2023 12:43:18 +0800
+Subject: [PATCH 0015/1189] add .h for clock/reset and change reg
+
+Change-Id: Ib0b807e12f73d3baf616a46ea87dc995e62357f3
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index eeb312a09dbc..23e2fd668fbf 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -5,7 +5,9 @@
+ 
+ /dts-v1/;
+ 
+-//#include <dt-bindings/clock/k1-pro-ccu-clock.h>
++#include <dt-bindings/clock/k1-pro-ccu-clock.h>
++#include <dt-bindings/reset/k1-pro-reset.h>
++
+ / {
+ 	compatible = "spacemit,k1-pro", "riscv";
+ 	#address-cells = <2>;
+@@ -172,18 +174,18 @@ ccu:clock-controller@2f020000 {
+ 		    #address-cells = <0x1>;
+ 		    #size-cells = <0x1>;
+ 			compatible = "spacemit,k1pro-ccu";
+-			reg = <0x0 0x2f020000 0x0 0x4000>, <0x0 0x2f800000 0x0 0xc000>;
++			reg = <0x0 0x2f020000 0x0 0x4000>, <0x0 0x2f804000 0x0 0xc000>;
+ 			clocks = <&osc_clk_24m>, <&pll_clk_sys>, <&pll_clk_gmac>, <&pll_clk_i2s>, <&pll_ddr>, <&in_clk_32k>, <&pll_clk_400m>;
+ 			clock-names = "osc_clk_24m", "pll_clk_sys", "pll_clk_gmac", "pll_clk_i2s", "pll_ddr", "in_clk_32k", "pll_clk_400m";
+ 			#clock-cells = <1>;
+ 			status = "okay";
+ 		};
+ 
+-		reset: reset-controller@18030000 {
++		reset: reset-controller@2f024000 {
+ 		    #address-cells = <0x1>;
+ 		    #size-cells = <0x1>;
+ 			compatible = "spacemit,k1pro-reset";
+-			reg = <0x0 0x2f024000 0x0 0x4000>, <0x0 0x2f800000 0x0 0xc000>;
++			reg = <0x0 0x2f024000 0x0 0x4000>, <0x0 0x2f804000 0x0 0xc000>;
+ 			#reset-cells = <1>;
+ 			status = "okay";
+ 		};
+-- 
+2.47.1
+

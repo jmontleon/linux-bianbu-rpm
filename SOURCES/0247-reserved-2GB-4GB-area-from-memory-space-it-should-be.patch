@@ -1,0 +1,49 @@
+From e6d1bdcb1ef1ef584144a8f279a86eb0c9bc0fa3 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Dec 2023 11:01:54 +0800
+Subject: [PATCH 0247/1189] reserved 2GB~4GB area from memory space, it should
+ be io registers area
+
+Change-Id: Ifbb89436208a2508690e7c16ec630ca0acf488c9
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 5 +++++
+ arch/riscv/mm/init.c                   | 7 ++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8b1dcf6e6a4a..5532c0a65e3e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -424,6 +424,11 @@ reserved-memory {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		ranges;
++		area_reserved@80000000 {
++			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */
++			reg = <0x0 0x80000000 0x0 0x80000000>;
++			no-map;
++		};
+ 	};
+ 
+ 	soc {
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index dccef5f1c869..70bf57d9e647 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -303,7 +303,12 @@ static void __init setup_bootmem(void)
+ 		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+ 
+ #ifdef CONFIG_ZONE_DMA32
+- 	dma_contiguous_reserve(dma32_phys_limit);
++	#ifdef CONFIG_SOC_SPACEMIT_K1X
++	/* 2GB~4GB is IO area on spacemit-k1x, will be reserved when early_init_fdt_scan_reserved_mem */
++	dma_contiguous_reserve(min(2UL*SZ_1G, dma32_phys_limit));
++	#else
++	dma_contiguous_reserve(dma32_phys_limit);
++	#endif
+ #else
+ 	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
+ #endif
+-- 
+2.47.1
+

@@ -1,0 +1,34 @@
+From d44f1833ba16f8740f2d3bcdd6219913e2c603d9 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:39:59 +0800
+Subject: [PATCH 1130/1189] tcm: spacemit: modify prototype of device remove
+ function
+
+Change-Id: I5146ee0129be9e82c3e9294ce266eb0a4592e9f4
+---
+ drivers/misc/tcm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
+index ebc0b2ab2bae..63d0f36d9429 100644
+--- a/drivers/misc/tcm.c
++++ b/drivers/misc/tcm.c
+@@ -647,14 +647,12 @@ static int tcm_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int tcm_remove(struct platform_device *pdev)
++static void tcm_remove(struct platform_device *pdev)
+ {
+ 	dev_dbg(tcm.dev, "tcm deregister succfully\n");
+ 	csr_write(0x5db, 0);
+ 	kfree(g_mmheap);
+ 	misc_deregister(&tcm_misc_device);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver tcm_driver = {
+-- 
+2.47.1
+

@@ -1,0 +1,54 @@
+From d786767de52a4102e251219c8bbe8ce325eceaf2 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 25 Mar 2024 11:20:36 +0800
+Subject: [PATCH 0511/1189] eth: changing the dma range and setting dma
+ coherent mask
+
+  Because the dma of gmac only access 32 bit range, dma range
+  needs to be set to dma_range0, dma coherent mask needs to
+  be set to 32 bits.
+
+Change-Id: I17cf2c783f9152191f95a55ce5cc1f0299a601a2
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi   | 4 ++--
+ drivers/net/ethernet/spacemit/k1x-emac.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index fdf270cf02ae..e82fb9a5524f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1596,7 +1596,7 @@ eth0: ethernet@cac80000 {
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+-			interconnects = <&dram_range1>;
++			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
+ 			status = "disabled";
+ 		};
+@@ -1618,7 +1618,7 @@ eth1: ethernet@cac81000 {
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+-			interconnects = <&dram_range1>;
++			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
+ 			status = "disabled";
+ 		};
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 9b4c555fc179..9544ebfe41f3 100755
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2770,7 +2770,7 @@ static int emac_probe(struct platform_device *pdev)
+ 		pr_err("register_netdev failed\n");
+ 		goto err_mdio_deinit;
+ 	}
+-	dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
++	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 
+ 	netif_napi_add(ndev, &priv->napi, emac_rx_poll);
+ 
+-- 
+2.47.1
+

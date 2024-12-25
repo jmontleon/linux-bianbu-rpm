@@ -1,0 +1,78 @@
+From a3111e8d9788edbde2a978645807a5ca65b36443 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Dec 2023 19:57:36 +0800
+Subject: [PATCH 0200/1189] clock: enable some clocks
+
+Change-Id: Ie990fb966a276c814f2f642780cfd0983d7f36bb
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 30 +++++++++++++++++++++++++
+ drivers/clk/spacemit/ccu-spacemit-k1x.h |  5 +++++
+ 2 files changed, 35 insertions(+)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 29b5e8733af8..14cdf0c57aba 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -1182,6 +1182,33 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
+ 	.num = CLK_MAX_NO,
+ };
+ 
++static struct clk_hw_table bootup_enable_clk_table[] = {
++	{"pll1_d8_307p2", 	CLK_PLL1_307P2},
++	{"pll1_d6_409p6", 	CLK_PLL1_409P6},
++	{"pll1_d5_491p52", 	CLK_PLL1_491},
++	{"pll1_d4_614p4", 	CLK_PLL1_614},
++	{"pll1_d3_819p2", 	CLK_PLL1_819},
++	{"pll1_d2_1228p8", 	CLK_PLL1_1228},
++	{"pll1_d10_245p76",	CLK_PLL1_245P76},
++	{"pll1_d48_51p2", 	CLK_PLL1_51P2},
++	{"pll1_d48_51p2_ap",	CLK_PLL1_51P2_AP},
++	{"pll1_d96_25p6", 	CLK_PLL1_25P6},
++};
++
++void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
++{
++	int i;
++	struct clk *clk;
++
++	for (i = 0; i < tbl_size; i++) {
++		clk = clk_hw_get_clk(spacemit_k1x_hw_clks.hws[tbl[i].clk_hw_id], tbl[i].name);
++		if (!IS_ERR_OR_NULL(clk))
++			clk_prepare_enable(clk);
++		else
++			pr_err("%s : can't find clk %s\n", __func__, tbl[i].name);
++	}
++}
++
+ int ccu_common_init(struct clk_hw * hw, struct spacemit_k1x_clk *clk_info)
+ {
+ 	struct ccu_common *common = hw_to_ccu_common(hw);
+@@ -1254,6 +1281,9 @@ int spacemit_ccu_probe(struct device_node *node, struct spacemit_k1x_clk *clk_in
+ 	if (ret)
+ 		goto err_clk_unreg;
+ 
++	//enable some clocks
++	spacemit_clocks_enable(bootup_enable_clk_table, ARRAY_SIZE(bootup_enable_clk_table));
++
+ 	return 0;
+ 
+ err_clk_unreg:
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
+index c7f7bcbf20fc..4fb6a2392137 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.h
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
+@@ -57,6 +57,11 @@ struct spacemit_k1x_clk {
+ 	void __iomem *audio_ctrl_base;
+ };
+ 
++struct clk_hw_table {
++	char	*name;
++	u32 clk_hw_id;
++};
++
+ extern spinlock_t g_cru_lock;
+ 
+ static inline struct ccu_common *hw_to_ccu_common(struct clk_hw *hw)
+-- 
+2.47.1
+

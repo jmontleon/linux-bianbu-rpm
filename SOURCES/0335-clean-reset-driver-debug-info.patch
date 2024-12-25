@@ -1,0 +1,36 @@
+From 5742b661edc8266cb59105ce1e5c1f218e40c6b2 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:30:37 +0800
+Subject: [PATCH 0335/1189] clean reset driver debug info
+
+Change-Id: I166777af67795d53c558212c8789754c5bacfc5b
+---
+ drivers/reset/reset-spacemit-k1x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index efdf290e4589..6d643bd7e37b 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -429,7 +429,8 @@ static const struct spacemit_reset_variant k1x_reset_data = {
+ static void spacemit_reset_init(struct device_node *np)
+ {
+ 	struct spacemit_reset *reset;
+-	LOG_INFO("init reset");
++
++	//LOG_INFO("init reset");
+ 	if (of_device_is_compatible(np, "spacemit,k1x-reset")){
+ 		reset = &k1x_reset_controller;
+ 		reset->mpmu_base = of_iomap(np, 0);
+@@ -487,7 +488,7 @@ static void spacemit_reset_init(struct device_node *np)
+ 	reset->rcdev.nr_resets = k1x_reset_data.signals_num;
+ 	reset->rcdev.ops       = &k1x_reset_data.ops;
+ 	reset->rcdev.of_node   = np;
+-	LOG_INFO("register");
++	//LOG_INFO("register");
+ 	reset_controller_register(&reset->rcdev);
+ out:
+ 	return;
+-- 
+2.47.1
+

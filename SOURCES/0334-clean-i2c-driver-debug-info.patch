@@ -1,0 +1,44 @@
+From 3475f6cc01ac4dd559972b8b5bd3ca5f0b5b6b91 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:30:03 +0800
+Subject: [PATCH 0334/1189] clean i2c driver debug info
+
+Change-Id: Ifce34724f354dd03a61e471c6ed4b8d2a9bf1836
+---
+ drivers/i2c/busses/i2c-k1x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index f9bdb669b50c..dd89fef7d7d6 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1920,7 +1920,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 		pm_suspend_ignore_children(&pdev->dev, 1);
+ 		pm_runtime_enable(spacemit_i2c->dev);
+ 	} else
+-		dev_info(spacemit_i2c->dev, "clock keeps always on\n");
++		dev_dbg(spacemit_i2c->dev, "clock keeps always on\n");
+ 
+ 	spacemit_i2c->dbgfs_mode = SPACEMIT_I2C_MODE_INVALID;
+ 	spacemit_i2c->shutdown = false;
+@@ -1942,7 +1942,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 	}
+ #endif
+ 
+-	dev_notice(spacemit_i2c->dev, "driver probe success with dma %s\n",
++	dev_dbg(spacemit_i2c->dev, "driver probe success with dma %s\n",
+ 		spacemit_i2c->dma_disable ? "disabled" : "enabled");
+ 	return 0;
+ 
+@@ -1982,7 +1982,7 @@ static int spacemit_i2c_remove(struct platform_device *pdev)
+ 
+ 	clk_disable_unprepare(spacemit_i2c->clk);
+ 
+-	dev_notice(spacemit_i2c->dev, "driver removed\n");
++	dev_dbg(spacemit_i2c->dev, "driver removed\n");
+ 	return 0;
+ }
+ 
+-- 
+2.47.1
+

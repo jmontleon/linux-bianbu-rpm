@@ -1,0 +1,406 @@
+From ae6ed5432b3685dfbf432abc0bdb2320c7f06602 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:20:00 +0800
+Subject: [PATCH 0327/1189] clean drm driver debug info
+
+Change-Id: Ifb215d73062260f57d19adc503025a5385cd5fe2
+---
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c  | 12 +++++------
+ drivers/gpu/drm/spacemit/spacemit_dphy.c   | 12 +++++------
+ drivers/gpu/drm/spacemit/spacemit_dpu.c    | 24 +++++++++++-----------
+ drivers/gpu/drm/spacemit/spacemit_drm.c    |  8 ++++----
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c   | 18 ++++++++--------
+ drivers/gpu/drm/spacemit/spacemit_wb.c     |  8 ++++----
+ drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c |  6 +++---
+ 7 files changed, 44 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index 0c18512eb703..ff63e0211ffc 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -224,32 +224,32 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ 
+ 	clk_ctx->pxclk = of_clk_get_by_name(np, "pxclk");
+ 	if (IS_ERR(clk_ctx->pxclk)) {
+-		pr_info("%s, read pxclk failed from dts!\n", __func__);
++		pr_debug("%s, read pxclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->mclk = of_clk_get_by_name(np, "mclk");
+ 	if (IS_ERR(clk_ctx->mclk)) {
+-		pr_info("%s, read mclk failed from dts!\n", __func__);
++		pr_debug("%s, read mclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->hclk = of_clk_get_by_name(np, "hclk");
+ 	if (IS_ERR(clk_ctx->hclk)) {
+-		pr_info("%s, read hclk failed from dts!\n", __func__);
++		pr_debug("%s, read hclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->escclk = of_clk_get_by_name(np, "escclk");
+ 	if (IS_ERR(clk_ctx->escclk)) {
+-		pr_info("%s, read escclk failed from dts!\n", __func__);
++		pr_debug("%s, read escclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->bitclk = of_clk_get_by_name(np, "bitclk");
+ 	if (IS_ERR(clk_ctx->bitclk)) {
+-		pr_info("%s, read bitclk failed from dts!\n", __func__);
++		pr_debug("%s, read bitclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->hmclk = of_clk_get_by_name(np, "hmclk");
+ 	if (IS_ERR(clk_ctx->hmclk)) {
+-		pr_info("%s, read hmclk failed from dts!\n", __func__);
++		pr_debug("%s, read hmclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	if (of_property_read_u32(np, "spacemit-dpu-min-mclk", &dpu->min_mclk))
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.c b/drivers/gpu/drm/spacemit/spacemit_dphy.c
+index 2295d3b59031..8510c1412b1d 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dphy.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dphy.c
+@@ -26,7 +26,7 @@ int spacemit_dphy_resume(struct spacemit_dphy *dphy)
+ 	if (dphy->core && dphy->core->init)
+ 		dphy->core->init(&dphy->ctx);
+ 
+-	DRM_INFO("dphy resume OK\n");
++	DRM_DEBUG("dphy resume OK\n");
+ 	return 0;
+ }
+ 
+@@ -35,7 +35,7 @@ int spacemit_dphy_suspend(struct spacemit_dphy *dphy)
+ 	if (dphy->core && dphy->core->uninit)
+ 		dphy->core->uninit(&dphy->ctx);
+ 
+-	DRM_INFO("dphy suspend OK\n");
++	DRM_DEBUG("dphy suspend OK\n");
+ 	return 0;
+ }
+ 
+@@ -44,7 +44,7 @@ int spacemit_dphy_reset(struct spacemit_dphy *dphy)
+ 	if (dphy->core && dphy->core->reset)
+ 		dphy->core->reset(&dphy->ctx);
+ 
+-	DRM_INFO("dphy reset OK\n");
++	DRM_DEBUG("dphy reset OK\n");
+ 	return 0;
+ }
+ 
+@@ -53,7 +53,7 @@ int spacemit_dphy_get_status(struct spacemit_dphy *dphy)
+ 	if (dphy->core && dphy->core->get_status)
+ 		dphy->core->get_status(&dphy->ctx);
+ 
+-	DRM_INFO("dphy get status OK\n");
++	DRM_DEBUG("dphy get status OK\n");
+ 	return 0;
+ }
+ 
+@@ -108,7 +108,7 @@ static int spacemit_dphy_probe(struct platform_device *pdev)
+ 	const char *str;
+ 	int ret;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	dphy = devm_kzalloc(&pdev->dev, sizeof(*dphy), GFP_KERNEL);
+ 	if (!dphy)
+@@ -127,7 +127,7 @@ static int spacemit_dphy_probe(struct platform_device *pdev)
+ 	spacemit_dphy_sysfs_init(&dphy->dev);
+ 	platform_set_drvdata(pdev, dphy);
+ 
+-	DRM_INFO("dphy driver probe success\n");
++	DRM_DEBUG("dphy driver probe success\n");
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index cef69a81392f..0b067bb4cbf1 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -284,7 +284,7 @@ static void spacemit_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	struct spacemit_dpu *dpu = crtc_to_dpu(crtc);
+ 	struct videomode vm;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	trace_spacemit_crtc_mode_set_nofb(dpu->dev_id);
+ 	drm_display_mode_to_videomode(&crtc->mode, &vm);
+ }
+@@ -294,7 +294,7 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
+ {
+ 	struct spacemit_dpu *dpu = crtc_to_dpu(crtc);
+ 
+-	DRM_INFO("%s(power on)\n", __func__);
++	DRM_DEBUG("%s(power on)\n", __func__);
+ 	trace_spacemit_crtc_atomic_enable(dpu->dev_id);
+ 
+ 	/* If bootloader logo is boot on, release its resources first */
+@@ -318,7 +318,7 @@ static void spacemit_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	struct spacemit_dpu *dpu = crtc_to_dpu(crtc);
+ 	struct drm_device *drm = dpu->crtc.dev;
+ 
+-	DRM_INFO("%s(power off)\n", __func__);
++	DRM_DEBUG("%s(power off)\n", __func__);
+ 	trace_spacemit_crtc_atomic_disable(dpu->dev_id);
+ 
+ 	spacemit_dpu_uninit(dpu);
+@@ -610,7 +610,7 @@ static int spacemit_crtc_init(struct drm_device *drm, struct drm_crtc *crtc,
+ 
+ 	spacemit_crtc_create_properties(crtc);
+ 
+-	DRM_INFO("%s() ok\n", __func__);
++	DRM_DEBUG("%s() ok\n", __func__);
+ 	return 0;
+ }
+ 
+@@ -824,7 +824,7 @@ static int spacemit_dpu_bind(struct device *dev, struct device *master, void *da
+ 	dpu->nb.notifier_call = dpu_clkoffdet_notifier_handler;
+ 	clk_notifier_register(clk_ctx->mclk, &dpu->nb);
+ #endif
+-	DRM_INFO("dpu driver probe success\n");
++	DRM_DEBUG("dpu driver probe success\n");
+ 
+ 	return 0;
+ 
+@@ -844,7 +844,7 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ #endif
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	if (!IS_ERR_OR_NULL(dpu->esc_reset)) {
+ 		result = reset_control_assert(dpu->esc_reset);
+@@ -905,7 +905,7 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	u32 dpu_id;
+ 	int result;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	if (!dev->of_node) {
+ 		DRM_DEV_ERROR(dev, "can't find dpu devices\n");
+@@ -947,23 +947,23 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 
+ 	dpu->dsi_reset = devm_reset_control_get_optional_shared(&pdev->dev, "dsi_reset");
+ 	if (IS_ERR_OR_NULL(dpu->dsi_reset)) {
+-		DRM_DEV_INFO(dev, "not found dsi_reset\n");
++		DRM_DEV_DEBUG(dev, "not found dsi_reset\n");
+ 	}
+ 	dpu->mclk_reset = devm_reset_control_get_optional_shared(&pdev->dev, "mclk_reset");
+ 	if (IS_ERR_OR_NULL(dpu->mclk_reset)) {
+-		DRM_DEV_INFO(dev, "not found mclk_reset\n");
++		DRM_DEV_DEBUG(dev, "not found mclk_reset\n");
+ 	}
+ 	dpu->lcd_reset = devm_reset_control_get_optional_shared(&pdev->dev, "lcd_reset");
+ 	if (IS_ERR_OR_NULL(dpu->lcd_reset)) {
+-		DRM_DEV_INFO(dev, "not found lcd_reset\n");
++		DRM_DEV_DEBUG(dev, "not found lcd_reset\n");
+ 	}
+ 	dpu->esc_reset = devm_reset_control_get_optional_shared(&pdev->dev, "esc_reset");
+ 	if (IS_ERR_OR_NULL(dpu->esc_reset)) {
+-		DRM_DEV_INFO(dev, "not found esc_reset\n");
++		DRM_DEV_DEBUG(dev, "not found esc_reset\n");
+ 	}
+ 	dpu->hdmi_reset = devm_reset_control_get_optional_shared(&pdev->dev, "hdmi_reset");
+ 	if (IS_ERR_OR_NULL(dpu->hdmi_reset)) {
+-		DRM_DEV_INFO(dev, "not found hdmi_reset\n");
++		DRM_DEV_DEBUG(dev, "not found hdmi_reset\n");
+ 	}
+ 
+ 	/*
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index d040e6c7e5a4..b290476a23d1 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -167,7 +167,7 @@ static void spacemit_drm_debugfs_init(struct drm_minor *minor)
+ {
+ 	struct drm_device *dev = minor->dev;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	drm_debugfs_create_files(spacemit_debugfs_files,
+ 						ARRAY_SIZE(spacemit_debugfs_files),
+ 						minor->debugfs_root,
+@@ -219,7 +219,7 @@ static int spacemit_drm_bind(struct device *dev)
+ 	struct spacemit_drm_private *priv;
+ 	int err;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	drm = drm_dev_alloc(&spacemit_drm_drv, dev);
+ 	if (IS_ERR(drm))
+@@ -288,7 +288,7 @@ static void spacemit_drm_put_dev(struct drm_device *dev)
+ 
+ static void spacemit_drm_unbind(struct device *dev)
+ {
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	spacemit_drm_put_dev(dev_get_drvdata(dev));
+ }
+ 
+@@ -385,7 +385,7 @@ static int spacemit_drm_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *r;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (ret)
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index 736c901cfaf3..d6078b801ef8 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -167,7 +167,7 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 
+ 		udelay(2);
+ 		value = readl_relaxed(hdmi_addr + 0xe4);
+-		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
++		DRM_DEBUG("%s() hdmi 0xe4 0x%x\n", __func__, value);
+ 
+ 		writel(0x30184000, hdmi_addr + 0x28);
+ 	} else {
+@@ -180,7 +180,7 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 
+ 		udelay(2);
+ 		value = readl_relaxed(hdmi_addr + 0xe4);
+-		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
++		DRM_DEBUG("%s() hdmi 0xe4 0x%x\n", __func__, value);
+ 
+ 		writel(0x28008320, hdmi_addr + 0x20);
+ 		writel(0x1e00a20d, hdmi_addr + 0x24);
+@@ -200,7 +200,7 @@ static void spacemit_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 				       struct drm_display_mode *adj_mode)
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	/* Store the display mode for plugin/DPMS poweron events */
+ 	drm_mode_copy(&hdmi->previous_mode, adj_mode);
+@@ -209,7 +209,7 @@ static void spacemit_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ static void spacemit_hdmi_encoder_enable(struct drm_encoder *encoder)
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	spacemit_hdmi_set_pwr_mode(hdmi, NORMAL);
+ 	spacemit_hdmi_setup(hdmi, &hdmi->previous_mode);
+@@ -218,7 +218,7 @@ static void spacemit_hdmi_encoder_enable(struct drm_encoder *encoder)
+ static void spacemit_hdmi_encoder_disable(struct drm_encoder *encoder)
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	spacemit_hdmi_set_pwr_mode(hdmi, LOWER_PWR);
+ }
+ 
+@@ -337,7 +337,7 @@ static int spacemit_hdmi_bind(struct device *dev, struct device *master,
+ 	// int irq;
+ 	int ret;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	hdmi = devm_kzalloc(dev, sizeof(*hdmi), GFP_KERNEL);
+ 	if (!hdmi)
+@@ -364,7 +364,7 @@ static void spacemit_hdmi_unbind(struct device *dev, struct device *master,
+ {
+ 	struct spacemit_hdmi *hdmi = dev_get_drvdata(dev);
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	hdmi->connector.funcs->destroy(&hdmi->connector);
+ }
+@@ -376,13 +376,13 @@ static const struct component_ops spacemit_hdmi_ops = {
+ 
+ static int spacemit_hdmi_probe(struct platform_device *pdev)
+ {
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	return component_add(&pdev->dev, &spacemit_hdmi_ops);
+ }
+ 
+ static int spacemit_hdmi_remove(struct platform_device *pdev)
+ {
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 	component_del(&pdev->dev, &spacemit_hdmi_ops);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
+index e208969fb23f..a7b15fa4a1ee 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_wb.c
++++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
+@@ -74,7 +74,7 @@ static int spacemit_wb_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct drm_device *dev = connector->dev;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	return drm_add_modes_noedid(connector, dev->mode_config.max_width,
+ 				    dev->mode_config.max_height);
+@@ -86,7 +86,7 @@ spacemit_wb_connector_mode_valid(struct drm_connector *connector,
+ {
+ 	enum drm_mode_status mode_status = MODE_OK;
+ 
+-	DRM_INFO("%s(%s)\n", __func__, mode->name);
++	DRM_DEBUG("%s(%s)\n", __func__, mode->name);
+ 
+ 	return mode_status;
+ }
+@@ -205,7 +205,7 @@ static void spacemit_wb_unbind(struct device *dev,
+ 				struct device *master, void *data)
+ {
+ 	/* do nothing */
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ }
+ 
+ static const struct component_ops spacemit_wb_component_ops = {
+@@ -219,7 +219,7 @@ static int spacemit_wb_probe(struct platform_device *pdev)
+ 	struct spacemit_wb *wb;
+ 	int ret;
+ 
+-	DRM_INFO("%s()\n", __func__);
++	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	wb = devm_kzalloc(&pdev->dev, sizeof(*wb), GFP_KERNEL);
+ 	if (!wb) {
+diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c
+index b7c4ca383027..060826b7d322 100644
+--- a/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c
++++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c
+@@ -135,19 +135,19 @@ int spacemit_dpu_sysfs_init(struct device *dev)
+ 	if (ret)
+ 		DRM_ERROR("failed to create device file: enable_dump_reg\n");
+ 	else
+-		DRM_INFO("create device file enable_dump_reg\n");
++		DRM_DEBUG("create device file enable_dump_reg\n");
+ 
+ 	ret = device_create_file(dev, &dev_attr_dpu_enable_dump_fps);
+ 	if (ret)
+ 		DRM_ERROR("failed to create device file: enable_dump_fps\n");
+ 	else
+-		DRM_INFO("create device file enable_dump_fps\n");
++		DRM_DEBUG("create device file enable_dump_fps\n");
+ #ifdef CONFIG_PM
+ 	ret = device_create_file(dev, &dev_attr_dpu_enable_auto_fc);
+ 	if (ret)
+ 		DRM_ERROR("failed to create device file: enable_auto_fc\n");
+ 	else
+-		DRM_INFO("create device file enable_auto_fc\n");
++		DRM_DEBUG("create device file enable_auto_fc\n");
+ #endif
+ 	return 0;
+ }
+-- 
+2.47.1
+

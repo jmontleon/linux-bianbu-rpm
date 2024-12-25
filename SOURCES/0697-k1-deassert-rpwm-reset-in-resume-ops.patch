@@ -1,0 +1,99 @@
+From b4d1a2adf459877562c013207f37f2d1cac9e3f6 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 7 Jun 2024 15:20:41 +0800
+Subject: [PATCH 0697/1189] k1:deassert rpwm reset in resume ops
+
+Change-Id: Idbbfe16eefc699e96ee38e13e89b23e4da580aef
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  1 +
+ drivers/pwm/pwm-pxa.c                  | 36 +++++++++++++++++++++++++-
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index ac9ab1fcd610..9240bec8cc63 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1567,6 +1567,7 @@ rpwm2: pwm@c0888300 {
+ 			clocks = <&ccu CLK_RCPU2_PWM>;
+ 			resets = <&reset RESET_RCPU2_PWM>;
+ 			k1x,pwm-disable-fd;
++			rcpu-pwm;
+ 			status = "disabled";
+ 		};
+ 
+diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+index a392b3c5e9b8..8e6f400de3f7 100644
+--- a/drivers/pwm/pwm-pxa.c
++++ b/drivers/pwm/pwm-pxa.c
+@@ -57,6 +57,7 @@ struct pxa_pwm_chip {
+ 	void __iomem	*mmio_base;
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+ 	int dcr_fd; /* Controller PWM_DCR FD feature */
++	int rcpu_pwm; /* PWM in rcpu domain */
+ #endif
+ };
+ 
+@@ -211,9 +212,15 @@ static int pwm_probe(struct platform_device *pdev)
+ 			pc->dcr_fd = 0;
+ 		else
+ 			pc->dcr_fd = 1;
++		if(of_get_property(pdev->dev.of_node, "rcpu-pwm", NULL))
++			pc->rcpu_pwm = 1;
++		else
++			pc->rcpu_pwm = 0;
+ 	}
+-	else
++	else {
+ 		pc->dcr_fd = 0;
++		pc->rcpu_pwm = 0;
++	}
+ #endif
+ 
+ 	pc->clk = devm_clk_get(&pdev->dev, NULL);
+@@ -242,6 +249,8 @@ static int pwm_probe(struct platform_device *pdev)
+ 		goto err_rst;
+ 	}
+ 
++	platform_set_drvdata(pdev, pc);
++
+ 	return 0;
+ 
+ err_rst:
+@@ -249,9 +258,34 @@ static int pwm_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int pxa_pwm_suspend_noirq(struct device *dev)
++{
++	return 0;
++}
++
++static int pxa_pwm_resume_noirq(struct device *dev)
++{
++	struct pxa_pwm_chip *pc = dev_get_drvdata(dev);
++
++	/* if pwm in rcpu domain, deassert reset first before apply the old state */
++	if(pc->rcpu_pwm)
++		reset_control_deassert(pc->reset);
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops pxa_pwm_pm_qos = {
++	.suspend_noirq = pxa_pwm_suspend_noirq,
++	.resume_noirq = pxa_pwm_resume_noirq,
++};
++
+ static struct platform_driver pwm_driver = {
+ 	.driver		= {
+ 		.name	= "pxa25x-pwm",
++#ifdef CONFIG_PM_SLEEP
++		.pm	= &pxa_pwm_pm_qos,
++#endif
+ 		.of_match_table = pwm_of_match,
+ 	},
+ 	.probe		= pwm_probe,
+-- 
+2.47.1
+

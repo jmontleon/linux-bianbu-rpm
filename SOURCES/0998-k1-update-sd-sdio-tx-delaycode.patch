@@ -1,0 +1,85 @@
+From b5080be216b499a7a1b5c06d96bc0d975012b5c1 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 20 Sep 2024 15:09:57 +0800
+Subject: [PATCH 0998/1189] k1: update sd/sdio tx delaycode
+
+Change-Id: I0d23a89307165451d826a8d72adf8798b982be52
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts  | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts    | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts       | 3 ++-
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
+index 24a15834d1a4..0d859c1b3525 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
+@@ -622,7 +622,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x7f>;
++	spacemit,tx_delaycode = <0x8f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 8c8fd9fec450..585fbf350870 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -745,7 +745,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x7f>;
++	spacemit,tx_delaycode = <0xaf>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 6d8e6f3c510d..91a1663a1687 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -682,7 +682,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x7f>;
++	spacemit,tx_delaycode = <0x9f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -713,7 +713,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x30>;
++	spacemit,tx_delaycode = <0x9f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 721d351bcee7..b3b9a12a78ad 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -671,7 +671,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x7f>;
++	spacemit,tx_delaycode = <0x5f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -702,6 +702,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
++	spacemit,tx_delaycode = <0x8f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+-- 
+2.47.1
+

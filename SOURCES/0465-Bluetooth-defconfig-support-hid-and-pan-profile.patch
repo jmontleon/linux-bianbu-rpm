@@ -1,0 +1,41 @@
+From eb24b7a034cd24b94ee47618f269fefe970a062a Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 11 Mar 2024 16:38:01 +0800
+Subject: [PATCH 0465/1189] Bluetooth: defconfig: support hid and pan profile
+
+Change-Id: I2d74f879d2ded007ab58abeb8546ca74d35e9fd7
+---
+ arch/riscv/configs/k1_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index c8845bd42a91..a5449ed7d004 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -199,6 +199,7 @@ CONFIG_CAN=y
+ CONFIG_BT=y
+ CONFIG_BT_RFCOMM=y
+ CONFIG_BT_RFCOMM_TTY=y
++CONFIG_BT_BNEP=y
+ CONFIG_BT_HIDP=y
+ CONFIG_BT_HCIUART=y
+ CONFIG_BT_HCIUART_H4=y
+@@ -351,6 +352,7 @@ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_TOUCHSCREEN_GT9XX=y
+ CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_INPUT_MISC=y
++CONFIG_INPUT_UINPUT=y
+ CONFIG_INPUT_SPACEMIT_POWERKEY=y
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_SERIAL_PXA=y
+@@ -555,6 +557,7 @@ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_SND_SOC_ES8326=y
++CONFIG_UHID=y
+ CONFIG_HID_MULTITOUCH=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_I2C_HID_OF=y
+-- 
+2.47.1
+

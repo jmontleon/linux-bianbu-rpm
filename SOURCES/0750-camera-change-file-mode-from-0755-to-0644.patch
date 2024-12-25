@@ -1,0 +1,362 @@
+From 1f0b6d6f897eae19d4bf2d03ec5b798d62527a6f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 19 Jun 2024 17:26:30 +0800
+Subject: [PATCH 0750/1189] camera: change file mode from 0755 to 0644
+
+Change-Id: I79d9eec8fa695923dd8dffcb4900876ad66204a8
+---
+ drivers/media/platform/spacemit/camera/Kconfig                    | 0
+ drivers/media/platform/spacemit/camera/Makefile                   | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c        | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h        | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c      | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h      | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c          | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h          | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c        | 0
+ drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h        | 0
+ .../media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h    | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c         | 0
+ .../media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c   | 0
+ .../media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h   | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c       | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h       | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c        | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h        | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c          | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h          | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h   | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h    | 0
+ drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h    | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c      | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h      | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c     | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h     | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c      | 0
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h      | 0
+ .../media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c    | 0
+ .../media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h    | 0
+ drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c        | 0
+ drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h        | 0
+ drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c    | 0
+ drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h    | 0
+ drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c         | 0
+ drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h         | 0
+ drivers/media/platform/spacemit/camera/vi/cam_block.c             | 0
+ drivers/media/platform/spacemit/camera/vi/cam_block.h             | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c          | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h          | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c  | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h  | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c   | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h   | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c   | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h   | 0
+ .../media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c  | 0
+ .../media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h  | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h   | 0
+ .../media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c           | 0
+ drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h           | 0
+ drivers/media/platform/spacemit/camera/vi/mlink.c                 | 0
+ drivers/media/platform/spacemit/camera/vi/mlink.h                 | 0
+ drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h    | 0
+ drivers/media/platform/spacemit/camera/vi/subdev.c                | 0
+ drivers/media/platform/spacemit/camera/vi/subdev.h                | 0
+ drivers/media/platform/spacemit/camera/vi/vdev.c                  | 0
+ drivers/media/platform/spacemit/camera/vi/vdev.h                  | 0
+ drivers/media/platform/spacemit/camera/vi/vsensor.c               | 0
+ drivers/media/platform/spacemit/camera/vi/vsensor.h               | 0
+ include/uapi/media/k1x/cam_sensor_uapi.h                          | 0
+ include/uapi/media/k1x/k1x_cpp_uapi.h                             | 0
+ include/uapi/media/k1x/k1x_isp_drv_uapi.h                         | 0
+ include/uapi/media/k1x/k1x_media_bus_format.h                     | 0
+ include/uapi/media/k1x/k1x_plat_cam.h                             | 0
+ include/uapi/media/k1x/k1x_videodev2.h                            | 0
+ 70 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/Kconfig
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/Makefile
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/cam_block.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/cam_block.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/mlink.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/mlink.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/subdev.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/subdev.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/vdev.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/vdev.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/vsensor.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/camera/vi/vsensor.h
+ mode change 100755 => 100644 include/uapi/media/k1x/cam_sensor_uapi.h
+ mode change 100755 => 100644 include/uapi/media/k1x/k1x_cpp_uapi.h
+ mode change 100755 => 100644 include/uapi/media/k1x/k1x_isp_drv_uapi.h
+ mode change 100755 => 100644 include/uapi/media/k1x/k1x_media_bus_format.h
+ mode change 100755 => 100644 include/uapi/media/k1x/k1x_plat_cam.h
+ mode change 100755 => 100644 include/uapi/media/k1x/k1x_videodev2.h
+
+diff --git a/drivers/media/platform/spacemit/camera/Kconfig b/drivers/media/platform/spacemit/camera/Kconfig
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/Makefile b/drivers/media/platform/spacemit/camera/Makefile
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/cam_block.c b/drivers/media/platform/spacemit/camera/vi/cam_block.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/cam_block.h b/drivers/media/platform/spacemit/camera/vi/cam_block.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/mlink.c b/drivers/media/platform/spacemit/camera/vi/mlink.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/mlink.h b/drivers/media/platform/spacemit/camera/vi/mlink.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h b/drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.c b/drivers/media/platform/spacemit/camera/vi/subdev.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.h b/drivers/media/platform/spacemit/camera/vi/subdev.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.c b/drivers/media/platform/spacemit/camera/vi/vdev.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.h b/drivers/media/platform/spacemit/camera/vi/vdev.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/vsensor.c b/drivers/media/platform/spacemit/camera/vi/vsensor.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/camera/vi/vsensor.h b/drivers/media/platform/spacemit/camera/vi/vsensor.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/cam_sensor_uapi.h b/include/uapi/media/k1x/cam_sensor_uapi.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/k1x_cpp_uapi.h b/include/uapi/media/k1x/k1x_cpp_uapi.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/k1x_isp_drv_uapi.h b/include/uapi/media/k1x/k1x_isp_drv_uapi.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/k1x_media_bus_format.h b/include/uapi/media/k1x/k1x_media_bus_format.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/k1x_plat_cam.h b/include/uapi/media/k1x/k1x_plat_cam.h
+old mode 100755
+new mode 100644
+diff --git a/include/uapi/media/k1x/k1x_videodev2.h b/include/uapi/media/k1x/k1x_videodev2.h
+old mode 100755
+new mode 100644
+-- 
+2.47.1
+

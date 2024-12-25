@@ -1,0 +1,86 @@
+From c87057556f24f242b2b41d7e8858bbc635c45f8e Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Sat, 13 Jan 2024 00:08:08 +0800
+Subject: [PATCH 0367/1189] support dvfs for evb performance
+
+Change-Id: I677b5c26f930ba4548dbb1a513ac2ece8e4a4de2
+---
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts | 58 +++++++++++++----------
+ 1 file changed, 33 insertions(+), 25 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index ef893aeebe76..222303b7ee2f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -441,25 +441,23 @@ sw_1: SWITCH_REG1 {
+ 		};
+ 	};
+ 
+-/**
+- *	sy8810l: sy8810l@70 {
+- *		compatible = "spacemit,sy8810l";
+- *		reg = <0x70>;
+- *
+- *		dcdc1-supply = <&dcdc_1>;
+- *
+- *		regulators {
+- *			compatible = "pmic,regulator,sy8810l";
+- *
+- *			edcdc_1: EDCDC_REG1 {
+- *				regulator-name = "edcdc1";
+- *				regulator-min-microvolt = <600000>;
+- *				regulator-max-microvolt = <1500000>;
+- *				regulator-always-on;
+- *			};
+- *		};
+- *	};
+- */
++ 	sy8810l: sy8810l@70 {
++ 		compatible = "spacemit,sy8810l";
++ 		reg = <0x70>;
++
++ 		dcdc1-supply = <&dcdc_1>;
++
++ 		regulators {
++ 			compatible = "pmic,regulator,sy8810l";
++
++ 			edcdc_1: EDCDC_REG1 {
++ 				regulator-name = "edcdc1";
++ 				regulator-min-microvolt = <600000>;
++ 				regulator-max-microvolt = <1500000>;
++ 				regulator-always-on;
++ 			};
++ 		};
++ 	};
+ };
+ 
+ &pinctrl {
+@@ -798,9 +796,19 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-/**
+- * &cpu_0 {
+- *       clst0-supply = <&edcdc_1>;
+- *       vin-supply-names = "clst0";
+- *};
+- */
++&cpu_0 {
++	clst0-supply = <&edcdc_1>;
++	vin-supply-names = "clst0";
++};
++
++&clst0_core_opp_table {
++	opp1600000000 {
++		opp-microvolt = <1050000>;
++	};
++};
++
++&clst1_core_opp_table {
++	opp1600000000 {
++		opp-microvolt = <1050000>;
++	};
++};
+-- 
+2.47.1
+

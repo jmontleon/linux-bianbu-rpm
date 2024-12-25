@@ -1,0 +1,39 @@
+From 7cdcdb59bac7ae3c5ba198769d7b5360a4bf97e3 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Tue, 10 Oct 2023 14:55:12 +0800
+Subject: [PATCH 0128/1189] k1-x: add gmac PTP support
+
+Change-Id: I4230411eda7aa59f29fe1122b52d793d4dddc515
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi   | 2 ++
+ drivers/net/ethernet/spacemit/k1x-emac.c | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8f937c9ca0ed..d55106762211 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -500,6 +500,8 @@ eth0: ethernet@cac80000 {
+ 			clock-names = "emac-clk", "ptp-clk";
+ 			interrupts = <131>;
+ 			interrupt-parent = <&intc>;
++			ptp-support;
++			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+ 			status = "disabled";
+ 		};
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 9565809f9ab3..b98f30d5853f 100755
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2490,6 +2490,7 @@ static const struct net_device_ops emac_netdev_ops = {
+ 	.ndo_start_xmit         = emac_start_xmit,
+ 	.ndo_set_mac_address    = emac_set_mac_address,
+ 	.ndo_do_ioctl           = emac_ioctl,
++	.ndo_eth_ioctl          = emac_ioctl,
+ 	.ndo_change_mtu         = emac_change_mtu,
+ 	.ndo_tx_timeout         = emac_tx_timeout,
+ 	.ndo_set_rx_mode        = emac_rx_mode_set,
+-- 
+2.47.1
+

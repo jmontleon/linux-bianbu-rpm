@@ -1,0 +1,26 @@
+From 89888408c68477dbc878074b421955c9d3f77e80 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:23:28 +0800
+Subject: [PATCH 1171/1189] usbnet: fix compile warning
+
+Change-Id: I276c356f2ef1ccb5db35f1f83f5a199068c41d74
+---
+ drivers/net/usb/qmi_wwan_f.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
+index 3f540f3c0cf8..e53a60d2ea0a 100644
+--- a/drivers/net/usb/qmi_wwan_f.c
++++ b/drivers/net/usb/qmi_wwan_f.c
+@@ -1320,7 +1320,7 @@ typedef struct {
+     unsigned int dl_minimum_padding; //0x1A
+ } QMAP_SETTING;
+ 
+-int qma_setting_store(struct device *dev, QMAP_SETTING *qmap_settings, size_t size) {
++static int qma_setting_store(struct device *dev, QMAP_SETTING *qmap_settings, size_t size) {
+     struct net_device *netdev = to_net_dev(dev);
+     struct usbnet * usbnetdev = netdev_priv( netdev );
+     struct qmi_wwan_state *info = (void *)&usbnetdev->data;
+-- 
+2.47.1
+

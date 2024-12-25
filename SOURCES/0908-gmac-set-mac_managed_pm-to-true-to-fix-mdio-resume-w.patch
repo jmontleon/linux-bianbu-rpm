@@ -1,0 +1,27 @@
+From e13d7461191c12644fecd009a9177178e44b9cb7 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 12 Aug 2024 11:37:01 +0800
+Subject: [PATCH 0908/1189] gmac: set mac_managed_pm to true to fix mdio resume
+ warning
+
+Change-Id: Ifc5cde827e85405ef1731773269e2d3c98d4259f
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index a59f49214dfa..dea7e3b776e2 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2242,6 +2242,8 @@ static int emac_phy_connect(struct net_device *dev)
+ 			" Link = %d\n", __func__,
+ 			dev->name, phydev->phy_id, phydev->link);
+ 
++	/* Indicate that the MAC is responsible for PHY PM */
++	phydev->mac_managed_pm = true;
+ 	dev->phydev = phydev;
+ 
+ 	clk_phase_set(priv, TX_PHASE);
+-- 
+2.47.1
+

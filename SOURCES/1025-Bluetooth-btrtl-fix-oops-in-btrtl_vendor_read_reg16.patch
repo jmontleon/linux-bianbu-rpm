@@ -1,0 +1,60 @@
+From 5512010a9fc83e87e9243c1afc28b24f9f4b77e5 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 18 Oct 2024 17:50:53 +0800
+Subject: [PATCH 1025/1189] Bluetooth: btrtl: fix oops in
+ btrtl_vendor_read_reg16()
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+Oops [#1]
+Modules linked in: btusb btintel btbcm binfmt_misc 8852be ip_tables autofs4
+CPU: 5 PID: 299598 Comm: kworker/u17:0 Tainted: G        W          6.6.36 #20241017105119
+Hardware name: M1-MUSE-BOOK (DT)
+Workqueue: hci0 hci_power_on
+epc : btrtl_vendor_read_reg16+0x32/0xcc
+ ra : btrtl_vendor_read_reg16+0x2a/0xcc
+epc : ffffffff80bbd612 ra : ffffffff80bbd60a sp : ffffffc80dc33b20
+ gp : ffffffff82341f38 tp : ffffffd903dacd40 t0 : 00000000000003a8
+ t1 : 0000000000000001 t2 : ffffffffffffffff s0 : ffffffc80dc33b50
+ s1 : 0000000000000000 a0 : 0000000000000000 a1 : ffffffffffffffff
+ a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
+ a5 : fffffffffffff000 a6 : 000001003d7dbb09 a7 : 00000000000805ef
+ s2 : ffffffc80dc33b90 s3 : ffffffd925d60000 s4 : ffffffd905933000
+ s5 : ffffffd9437efa20 s6 : ffffffd9084dfc05 s7 : 0000000000000000
+ s8 : ffffffff82347220 s9 : 0000000000000088 s10: 0000000000008822
+ s11: ffffffd925d62000 t3 : ffffffdc6d7d4908 t4 : 0000000000000000
+ t5 : 0000000000000001 t6 : ffffffff823473f0
+status: 0000000200000120 badaddr: 0000000000000070 cause: 000000000000000d
+[<ffffffff80bbd612>] btrtl_vendor_read_reg16+0x32/0xcc
+[<ffffffff80bbeb8e>] btrtl_initialize+0xb0/0x598
+[<ffffffff80bbf08a>] btrtl_setup_realtek+0x14/0x56
+[<ffffffff034f1128>] btusb_setup_realtek+0x1a/0x3a [btusb]
+[<ffffffff80e8003e>] hci_dev_open_sync+0xe4/0xaae
+[<ffffffff80e2ba40>] hci_dev_do_open+0x30/0x6c
+[<ffffffff80e2ec54>] hci_power_on+0x42/0x1ca
+[<ffffffff800397aa>] process_one_work+0x1b0/0x45e
+[<ffffffff80039bf6>] worker_thread+0x19e/0x350
+[<ffffffff80041190>] kthread+0xda/0xf6
+[<ffffffff80fb5ed6>] ret_from_fork+0xe/0x1c
+Code: c615 89aa c097 002b 80e7 b100 77fd 84aa ee63 02a7 (5938) 478d
+
+Change-Id: Iaf296ffbd6623191356c46a420a358233723e728
+---
+ drivers/bluetooth/btrtl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 83025f457ca0..336b3dd62fb9 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -419,7 +419,7 @@ static int btrtl_vendor_read_reg16(struct hci_dev *hdev,
+ 
+ 	skb = __hci_cmd_sync(hdev, 0xfc61, sizeof(*cmd), cmd,
+ 			     HCI_INIT_TIMEOUT);
+-	if (IS_ERR(skb)) {
++	if (IS_ERR_OR_NULL(skb)) {
+ 		err = PTR_ERR(skb);
+ 		rtl_dev_err(hdev, "RTL: Read reg16 failed (%d)", err);
+ 		return err;
+-- 
+2.47.1
+

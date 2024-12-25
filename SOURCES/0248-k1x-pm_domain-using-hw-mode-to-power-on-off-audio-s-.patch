@@ -1,0 +1,26 @@
+From 60bffa1e64b4eb544f65700e61ce99060238d8ea Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 26 Dec 2023 13:41:05 +0800
+Subject: [PATCH 0248/1189] k1x:pm_domain: using hw mode to power-on/off
+ audio's power-switch
+
+Change-Id: I463bce2d6b4c98ba68686e870486ecf201827a40
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 5532c0a65e3e..28dbb93020cf 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -613,6 +613,7 @@ power-domain@SPT_PD_AUDIO {
+ 					bit_auto_pwr_on = <0>;
+ 					bit_pwr_stat = <3>;
+ 					bit_hw_pwr_stat = <11>;
++					use_hw = <1>;
+ 					#power-domain-cells = <0>;
+ 				};
+ 
+-- 
+2.47.1
+

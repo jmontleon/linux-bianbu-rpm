@@ -1,0 +1,31 @@
+From ca504bf55b0c37f5252e1cc7c22faf8a3d830e67 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Fri, 30 Jun 2023 09:11:24 +0800
+Subject: [PATCH 0064/1189] vpu: enable debug mode
+
+Change-Id: Ib70fea5275bbc46e4978488b54c3fe95247e44a3
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 212eb4aba5c0..b709a96bbe34 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -138,11 +138,13 @@ CONFIG_GPIO_DWAPB=y
+ # CONFIG_MEDIA_CEC_SUPPORT is not set
+ CONFIG_MEDIA_SUPPORT=y
+ # CONFIG_MEDIA_CONTROLLER is not set
++CONFIG_VIDEO_ADV_DEBUG=y
+ # CONFIG_DVB_NET is not set
+ # CONFIG_DVB_DYNAMIC_MINORS is not set
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_MEDIA_PLATFORM_DRIVERS is not set
++CONFIG_VIDEO_LINLON_FTRACE=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_USB_ULPI_BUS=y
+ CONFIG_USB=y
+-- 
+2.47.1
+

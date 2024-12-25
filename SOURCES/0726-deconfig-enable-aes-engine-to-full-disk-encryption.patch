@@ -1,0 +1,25 @@
+From dfed7cb318f139ad7f74de28f791d41c6fb107fd Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Tue, 18 Jun 2024 20:58:19 +0800
+Subject: [PATCH 0726/1189] deconfig: enable aes engine to full disk encryption
+
+Change-Id: I6f0a943f952601ca21bb55f7ee4a18e109977e16
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index deecc256d400..57bab257cce2 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -760,6 +760,7 @@ CONFIG_CRYPTO_ZSTD=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_USER_API_SKCIPHER=y
+ CONFIG_SPACEMIT_REE_ENGINE=y
++CONFIG_SPACEMIT_REE_AES=y
+ CONFIG_XZ_DEC=y
+ CONFIG_DMA_CMA=y
+ CONFIG_PRINTK_TIME=y
+-- 
+2.47.1
+

@@ -1,0 +1,40 @@
+From 83454067d627cdfdaed4f7f2b233427b8b9c03c8 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 29 Jun 2023 09:03:49 +0800
+Subject: [PATCH 0058/1189] rproc: change compatible name for rproc driver
+
+Change-Id: Idc5bc3b7d30d24d6a91b93a85fb43cf3435e3492
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 2 +-
+ drivers/remoteproc/spacemit_rproc.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 075b87276c8b..f92963cbbaf8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -539,7 +539,7 @@ pcie5: pcie@41400000 {
+ 		};
+ 
+ 		esos_rproc: esos_rproc@0 {
+-			compatible = "spacemit,k1-pro";
++			compatible = "spacemit,k1-pro-rproc";
+ 			reg = <0x0 0x2f804100 0x0 0x1000>;
+ 			clocks = <&ccu CLK_MCU_SRC>, <&ccu PLL_CLK_400M>, <&ccu CLK_MCU_SYS>, <&ccu CLK_MCU2MBUS>,
+ 					<&ccu CLK_MCU_AHB>, <&ccu CLK_MCU_APB>;
+diff --git a/drivers/remoteproc/spacemit_rproc.c b/drivers/remoteproc/spacemit_rproc.c
+index 513d5824b360..f0ed72ab2e8b 100644
+--- a/drivers/remoteproc/spacemit_rproc.c
++++ b/drivers/remoteproc/spacemit_rproc.c
+@@ -339,7 +339,7 @@ static int spacemit_rproc_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id spacemit_rproc_of_match[] = {
+-	{ .compatible = "spacemit,k1-pro" },
++	{ .compatible = "spacemit,k1-pro-rproc" },
+ 	{},
+ };
+ 
+-- 
+2.47.1
+

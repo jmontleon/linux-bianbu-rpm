@@ -1,0 +1,41 @@
+From 032a1747b5f6141c9e284f9840c255881d858295 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E7=8E=8B=E6=A5=9A?= <chu.wang@spacemit.com>
+Date: Wed, 27 Sep 2023 19:25:54 +0800
+Subject: [PATCH 0149/1189] add tcm_cfg_save/restore
+
+Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
+---
+ arch/riscv/include/asm/csr.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+index 37bdea65bbd8..751504d6a007 100644
+--- a/arch/riscv/include/asm/csr.h
++++ b/arch/riscv/include/asm/csr.h
+@@ -429,6 +429,11 @@
+ #define CSR_VTYPE		0xc21
+ #define CSR_VLENB		0xc22
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++/* TCM enable register */
++#define CSR_TCMCFG		0x5db
++#endif
++
+ /* Scalar Crypto Extension - Entropy */
+ #define CSR_SEED		0x015
+ #define SEED_OPST_MASK		_AC(0xC0000000, UL)
+@@ -560,6 +565,11 @@
+ 			      : "memory");			\
+ })
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++#define tcm_config_save()		csr_read(CSR_TCMCFG)
++#define tcm_config_restore(flags)	csr_set(CSR_TCMCFG, flags)
++#endif
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_RISCV_CSR_H */
+-- 
+2.47.1
+

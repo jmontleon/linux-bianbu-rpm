@@ -1,0 +1,31 @@
+From c861248a5b59c5e034c93fd267a901d41b6b7631 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 11 Jun 2024 16:51:12 +0800
+Subject: [PATCH 0710/1189] qspi: Fix the bug of data transmission failure with
+ a length >= 125 bytes and not multiples of 4
+
+Change-Id: I8e056adfdedcf0dad9f32c5d4d28a65ef381b4ac
+---
+ drivers/spi/spi-k1x-qspi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
+index 467b6fa53145..c5a6d46597c0 100644
+--- a/drivers/spi/spi-k1x-qspi.c
++++ b/drivers/spi/spi-k1x-qspi.c
+@@ -1305,8 +1305,11 @@ static int k1x_qspi_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+ 		if (op->data.nbytes > qspi->tx_unit_size)
+ 			op->data.nbytes = qspi->tx_unit_size;
+ 	} else {
+-		if (op->data.nbytes > qspi->rx_unit_size)
++		if (op->data.nbytes > qspi->rx_unit_size) {
+ 			op->data.nbytes = qspi->rx_unit_size;
++		} else if (op->data.nbytes > qspi->rx_buf_size - 4 && !IS_ALIGNED(op->data.nbytes, 4)) {
++			op->data.nbytes = qspi->rx_buf_size - 4;
++		}
+ 	}
+ 	mutex_unlock(&qspi->lock);
+ 
+-- 
+2.47.1
+

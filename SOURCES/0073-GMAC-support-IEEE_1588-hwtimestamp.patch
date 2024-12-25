@@ -1,0 +1,84 @@
+From 0c3a8891a904b0554b66653ef623fa442c2ae053 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Wed, 26 Jul 2023 20:48:52 +0800
+Subject: [PATCH 0073/1189] GMAC: support IEEE_1588 hwtimestamp
+
+Change-Id: I2c8f137e61d0d1a60c909cd3fcb44d239d6eb211
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi             | 12 +++++++++---
+ arch/riscv/configs/k1-pro_fpga_defconfig             |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c |  1 +
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 3aafd37888f3..382380d5d2b6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -21,7 +21,7 @@ aliases {
+ 	cpus: cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-		timebase-frequency = <500000000>;
++		timebase-frequency = <50000000>;
+ 		cpu_0: cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0>;
+@@ -171,6 +171,12 @@ pll_clk_qspi: clock-pll_spi {
+ 			clock-frequency = <50000000>;
+ 			clock-output-names = "pll_qspi";
+ 		};
++		pll_clk_ptp: clock-pll_ptp {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <50000000>;
++			clock-output-names = "pll_ptp";
++		};
+ 	};
+ 
+ 	reserved-memory {
+@@ -548,8 +554,8 @@ eth0: ethernet@2cc00000 {
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <132>;
+ 			interrupt-names = "macirq";
+-			clocks = <&ccu CLK_GMAC_CSR>, <&ccu CLK_GMAC_PHYCLK_OUT>;
+-			clock-names = "apb_pclk", "phy_ref_clk";
++			clocks = <&ccu CLK_GMAC_CSR>, <&ccu CLK_GMAC_PHYCLK_OUT>, <&pll_clk_ptp>;
++			clock-names = "apb_pclk", "phy_ref_clk", "ptp_ref";
+ 			resets = <&reset RESET_GMAC_CSR>, <&reset RESET_GMAC_DMA>;
+ 			reset-names = "gmac_csr", "gmac_dma";
+ 			snps,pbl = <32>;
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index c026363fb339..d48e7b56b6d3 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -47,6 +47,7 @@ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_ADVANCED_ROUTER=y
+ # CONFIG_IPV6 is not set
++CONFIG_NETWORK_PHY_TIMESTAMPING=y
+ CONFIG_NETLINK_DIAG=y
+ CONFIG_CAN=y
+ CONFIG_CFG80211=y
+@@ -157,7 +158,6 @@ CONFIG_VIRTIO_CONSOLE=y
+ # CONFIG_HW_RANDOM is not set
+ CONFIG_SPI=y
+ CONFIG_SPI_DESIGNWARE_EXT=y
+-# CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_PINCTRL=y
+ # CONFIG_PINCTRL_MESON is not set
+ CONFIG_PINCTRL_K1PRO=y
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
+index cc17e7169bb5..0694ab2b9f03 100755
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
+@@ -272,6 +272,7 @@ static int spacemit_dwmac_probe(struct platform_device *pdev)
+ 	plat_dat->pmt = 1;
+ 	plat_dat->multi_msi_en = 0;
+ 	plat_dat->addr64 = spacemit_plat_dat->data->addr_width;
++	plat_dat->enh_desc = 1;
+ 
+ 	ret = spacemit_dwmac_init(pdev, plat_dat->bsp_priv);
+ 	if (ret)
+-- 
+2.47.1
+

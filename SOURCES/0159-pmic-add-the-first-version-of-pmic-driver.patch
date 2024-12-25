@@ -1,0 +1,566 @@
+From 4ff022a620525c69e41988475f1a1e5eb6f4e4ef Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 10 Nov 2023 14:39:01 +0800
+Subject: [PATCH 0159/1189] pmic: add the first version of pmic driver
+
+Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
+---
+ drivers/mfd/Kconfig                        |  10 ++
+ drivers/mfd/Makefile                       |   1 +
+ drivers/mfd/spacemit-mfd.c                 | 140 ++++++++++++++++
+ drivers/regulator/Kconfig                  |   8 +
+ drivers/regulator/Makefile                 |   1 +
+ drivers/regulator/spacemit-regulator.c     |  77 +++++++++
+ include/linux/mfd/spacemit/spacemit_pmic.h |  62 +++++++
+ include/linux/mfd/spacemit/spm8821.h       | 180 +++++++++++++++++++++
+ 8 files changed, 479 insertions(+)
+ create mode 100644 drivers/mfd/spacemit-mfd.c
+ create mode 100644 drivers/regulator/spacemit-regulator.c
+ create mode 100644 include/linux/mfd/spacemit/spacemit_pmic.h
+ create mode 100644 include/linux/mfd/spacemit/spm8821.h
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index ae23b317a64e..ffe9839e68e3 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -2269,6 +2269,16 @@ config MFD_QCOM_PM8008
+ 	  under it in the device tree. Additional drivers must be enabled in
+ 	  order to use the functionality of the device.
+ 
++config MFD_SPACEMIT_PMIC
++	tristate "Spacemit Power Management IC"
++	depends on I2C && OF
++	depends on SOC_SPACEMIT
++	select MFD_CORE
++	select REGMAP_I2C
++	select REGMAP_IRQ
++	help
++	  Select this option to get support for the SPACEMIT Power Management ICs.
++
+ menu "Multimedia Capabilities Port drivers"
+ 	depends on ARCH_SA1100
+ 
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index e057d6d6faef..a36ce5946be8 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -290,3 +290,4 @@ obj-$(CONFIG_MFD_ATC260X_I2C)	+= atc260x-i2c.o
+ 
+ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
+ obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu_spi.o rsmu_core.o
++obj-$(CONFIG_MFD_SPACEMIT_PMIC) += spacemit-mfd.o
+\ No newline at end of file
+diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
+new file mode 100644
+index 000000000000..ea8ab1c92adf
+--- /dev/null
++++ b/drivers/mfd/spacemit-mfd.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/mfd/core.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/reboot.h>
++#include <linux/mfd/spacemit/spacemit_pmic.h>
++
++SPM8821_MFD_CELL;
++SPM8821_REGMAP_CONFIG;
++
++static const struct of_device_id spacemit_pmic_of_match[] = {
++	{ .compatible = "spacemit,spm8821" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, spacemit_pmic_of_match);
++
++static int __spacemit_pmic_read_u8(struct i2c_client *c, u8 reg, u8 *val)
++{
++	struct i2c_msg msg[2];
++	int ret;
++	u8 buf;
++
++	msg[0].addr = c->addr;
++	msg[0].flags = 0;
++	msg[0].len = 1;
++	msg[0].buf = &reg;
++
++	msg[1].addr = c->addr;
++	msg[1].flags = I2C_M_RD;
++	msg[1].len = 1;
++	msg[1].buf = (char *)&buf;
++
++	ret = i2c_transfer(c->adapter, msg, 2);
++	if (ret < 0) {
++		dev_err(&c->dev, "i2c read transfer error: %d\n", ret);
++		return ret;
++	}
++
++	*val = buf;
++
++	return 0;
++}
++
++static int spacemit_pmic_probe(struct i2c_client *client,
++		       const struct i2c_device_id *id)
++{
++	int ret;
++	unsigned char pmic_id_reg, pmic_id;
++	struct spacemit_pmic *pmic;
++	const struct mfd_cell *cells;
++	int nr_cells;
++	struct device_node *np = client->dev.of_node;
++
++	pmic = devm_kzalloc(&client->dev, sizeof(*pmic), GFP_KERNEL);
++	if (!pmic) {
++		pr_err("%s:%d, err\n", __func__, __LINE__);
++		return -ENOMEM;
++	}
++
++	/* read the chip id */
++	if (of_device_is_compatible(np, "spacemit,spm8821"))
++		pmic_id_reg = SPACEMIT_SPM8821_ID_REG;
++	else {
++		pr_err("%s:%d, not supported\n", __func__, __LINE__);
++		return -EINVAL;
++	}
++
++	ret = __spacemit_pmic_read_u8(client, pmic_id_reg, &pmic_id);
++	if (ret) {
++		pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
++		return -EINVAL;
++	}
++
++	pmic->variant = pmic_id;
++
++	switch (pmic->variant) {
++	case SPM8821_ID:
++		pmic->regmap_cfg = &spm8821_regmap_config;
++		/* pmic->regmap_irq_chip = ; */
++		cells = spm8821;
++		nr_cells = ARRAY_SIZE(spm8821);
++		break;
++	default:
++		pr_err("%s:%d, Unsupported SPACEMIT ID :%d\n",
++				__func__, __LINE__, pmic->variant);
++		return -EINVAL;
++	}
++
++	pmic->i2c = client;
++	i2c_set_clientdata(client, pmic);
++
++	pmic->regmap = devm_regmap_init_i2c(client, pmic->regmap_cfg);
++	if (IS_ERR(pmic->regmap)) {
++		pr_err("%s:%d, regmap initialization failed\n",
++				__func__, __LINE__);
++		return PTR_ERR(pmic->regmap);
++	}
++
++	if (!client->irq) {
++		pr_warn("%s:%d, No interrupt supported\n",
++				__func__, __LINE__);
++	}
++
++	ret = devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_NONE,
++			      cells, nr_cells, NULL, 0, NULL);
++	if (ret) {
++		pr_err("failed to add MFD devices %d\n", ret);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void spacemit_pmic_remove(struct i2c_client *client)
++{
++	/* !TODO */
++}
++
++static void spacemit_pmic_shutdown(struct i2c_client *client)
++{
++	/* !TODO */
++}
++
++static struct i2c_driver spacemit_pmic_i2c_driver = {
++	.driver = {
++		.name = "spacemit-pmic",
++		.of_match_table = spacemit_pmic_of_match,
++	},
++	.probe    = spacemit_pmic_probe,
++	.remove   = spacemit_pmic_remove,
++	.shutdown = spacemit_pmic_shutdown,
++};
++
++module_i2c_driver(spacemit_pmic_i2c_driver);
++
++MODULE_LICENSE("GPL");
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 39297f7d8177..df0ce7f902c0 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -1720,4 +1720,12 @@ config REGULATOR_QCOM_LABIBB
+ 	  boost regulator and IBB can be used as a negative boost regulator
+ 	  for LCD display panel.
+ 
++config REGULATOR_SPACEMIT
++	tristate "Spacemit regulator support"
++	depends on MFD_SPACEMIT_PMIC
++	select REGULATOR_FIXED_VOLTAGE
++	help
++	  This driver provides support for the voltage regulators on the
++	   spacemit pmic.
++	
+ endif
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 3d5a803dce8a..33243249aef5 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -201,5 +201,6 @@ obj-$(CONFIG_REGULATOR_WM831X) += wm831x-ldo.o
+ obj-$(CONFIG_REGULATOR_WM8350) += wm8350-regulator.o
+ obj-$(CONFIG_REGULATOR_WM8400) += wm8400-regulator.o
+ obj-$(CONFIG_REGULATOR_WM8994) += wm8994-regulator.o
++obj-$(CONFIG_REGULATOR_SPACEMIT) += spacemit-regulator.o
+ 
+ ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG
+diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
+new file mode 100644
+index 000000000000..f775a54cf708
+--- /dev/null
++++ b/drivers/regulator/spacemit-regulator.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/of_regulator.h>
++#include <linux/gpio/consumer.h>
++#include <linux/mfd/spacemit/spacemit_pmic.h>
++
++static const struct regulator_ops spm8821_dcdc_ops = {
++	.list_voltage		= regulator_list_voltage_linear,
++	.map_voltage		= regulator_map_voltage_linear,
++	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
++	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
++	.set_voltage_time_sel	= regulator_set_voltage_time_sel,
++	.enable			= regulator_enable_regmap,
++	.disable		= regulator_disable_regmap,
++	.is_enabled		= regulator_is_enabled_regmap,
++};
++
++static const struct regulator_ops spm8821_switch_ops = {
++	.enable			= regulator_enable_regmap,
++	.disable		= regulator_disable_regmap,
++	.is_enabled		= regulator_is_enabled_regmap,
++};
++
++SPM8821_REGULATOR_DESC;
++
++static int spacemit_regulator_probe(struct platform_device *pdev)
++{
++	struct regulator_config config = {};
++	struct spacemit_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
++	struct i2c_client *client = pmic->i2c;
++	const struct regulator_desc *regulators;
++	struct regulator_dev *regulator_dev;
++	int i, nregulators;
++
++	switch (pmic->variant) {
++	case SPM8821_ID:
++		regulators = spm8821_reg;
++		nregulators = ARRAY_SIZE(spm8821_reg);
++	       break;
++	default:
++	       pr_err("unsupported Spacemit pmic ID: %d\n", pmic->variant);
++	       return -EINVAL;
++	}
++
++	config.dev = &client->dev;
++	config.regmap = pmic->regmap;
++
++	for (i = 0; i < nregulators; ++i) {
++		regulator_dev = devm_regulator_register(&pdev->dev,
++				regulators + i, &config);
++		if (IS_ERR(regulator_dev)) {
++			pr_err("failed to register %d regulator\n", i);
++			return PTR_ERR(regulator_dev);
++		}
++	}
++
++	return 0;
++}
++
++static struct platform_driver spacemit_regulator_driver = {
++	.probe = spacemit_regulator_probe,
++	.driver = {
++		.name = "spacemit-regulator"
++	},
++};
++
++module_platform_driver(spacemit_regulator_driver);
++
++MODULE_DESCRIPTION("regulator drivers for the Spacemit series PMICs");
++
+diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
+new file mode 100644
+index 000000000000..f5200dfc856a
+--- /dev/null
++++ b/include/linux/mfd/spacemit/spacemit_pmic.h
+@@ -0,0 +1,62 @@
++#ifndef __SPACEMIT_PMIC_H__
++#define __SPACEMIT_PMIC_H__
++
++#include <linux/regulator/machine.h>
++#include <linux/regmap.h>
++
++struct spacemit_pmic {
++	struct i2c_client		*i2c;
++	struct regmap_irq_chip_data	*irq_data;
++	struct regmap			*regmap;
++	unsigned char			variant;
++	const struct regmap_config	*regmap_cfg;
++	const struct regmap_irq_chip	*regmap_irq_chip;
++};
++
++/* pmic ID configuration */
++#define SPM8821_ID			0x22
++
++/* common regulator defination */
++#define SPM8XX_DESC_COM(_id, _match, _supply, _min, _max, _step, _vreg,	\
++	_vmask, _ereg, _emask, _enval, _disval, _etime, _ops)		\
++	{								\
++		.name		= (_match),				\
++		.supply_name	= (_supply),				\
++		.of_match	= of_match_ptr(_match),			\
++		.regulators_node = of_match_ptr("regulators"),		\
++		.type		= REGULATOR_VOLTAGE,			\
++		.id		= (_id),				\
++		.n_voltages	= (((_max) - (_min)) / (_step) + 1),	\
++		.owner		= THIS_MODULE,				\
++		.min_uV		= (_min) * 1000,			\
++		.uV_step	= (_step) * 1000,			\
++		.vsel_reg	= (_vreg),				\
++		.vsel_mask	= (_vmask),				\
++		.enable_reg	= (_ereg),				\
++		.enable_mask	= (_emask),				\
++		.enable_val     = (_enval),				\
++		.disable_val     = (_disval),				\
++		.enable_time	= (_etime),				\
++		.ops		= _ops,			\
++	}
++
++#define SPM8XX_DESC_SWITCH_COM(_id, _match, _supply, _ereg, _emask,	\
++	_enval, _disval, _ops)						\
++	{								\
++		.name		= (_match),				\
++		.supply_name	= (_supply),				\
++		.of_match	= of_match_ptr(_match),			\
++		.regulators_node = of_match_ptr("regulators"),		\
++		.type		= REGULATOR_VOLTAGE,			\
++		.id		= (_id),				\
++		.enable_reg	= (_ereg),				\
++		.enable_mask	= (_emask),				\
++		.enable_val     = (_enval),				\
++		.disable_val     = (_disval),				\
++		.owner		= THIS_MODULE,				\
++		.ops		= _ops					\
++	}
++
++#include "spm8821.h"
++
++#endif /* __SPACEMIT_PMIC_H__ */
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+new file mode 100644
+index 000000000000..6393008aaa4e
+--- /dev/null
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -0,0 +1,180 @@
++#ifndef __SMP8821_H__
++
++enum SPM8821_reg {
++	SPM8821_ID_DCDC1,
++	SPM8821_ID_DCDC2,
++	SPM8821_ID_DCDC3,
++	SPM8821_ID_DCDC4,
++	SPM8821_ID_DCDC5,
++	SPM8821_ID_DCDC6,
++	SPM8821_ID_ALDO1,
++	SPM8821_ID_ALDO2,
++	SPM8821_ID_ALDO3,
++	SPM8821_ID_ALDO4,
++	SPM8821_ID_DLDO1,
++	SPM8821_ID_DLDO2,
++	SPM8821_ID_DLDO3,
++	SPM8821_ID_DLDO4,
++	SPM8821_ID_DLDO5,
++	SPM8821_ID_DLDO6,
++	SPM8821_ID_DLDO7,
++	SPM8821_ID_SWITCH1,
++};
++
++#define SPACEMIT_SPM8821_ID_REG		0x0
++#define SPACEMIT_SPM8821_MAX_REG	0xA8
++
++#define SPM8821_BUCK_VSEL_MASK		0xff
++#define SMP8821_BUCK_EN_MASK		0x1
++
++#define SPM8821_BUCK1_CTRL_REG		0x47
++#define SPM8821_BUCK2_CTRL_REG		0x4a
++#define SPM8821_BUCK3_CTRL_REG		0x4d
++#define SPM8821_BUCK4_CTRL_REG		0x50
++#define SPM8821_BUCK5_CTRL_REG		0x53
++#define SPM8821_BUCK6_CTRL_REG		0x56
++
++#define SPM8821_BUCK1_VSEL_REG		0x48
++#define SPM8821_BUCK2_VSEL_REG		0x4b
++#define SPM8821_BUCK3_VSEL_REG		0x4e
++#define SPM8821_BUCK4_VSEL_REG		0x51
++#define SPM8821_BUCK5_VSEL_REG		0x54
++#define SPM8821_BUCK6_VSEL_REG		0x57
++
++#define SPM8821_ALDO1_CTRL_REG		0x5b
++#define SPM8821_ALDO2_CTRL_REG		0x5e
++#define SPM8821_ALDO3_CTRL_REG		0x61
++#define SPM8821_ALDO4_CTRL_REG		0x64
++
++#define SPM8821_ALDO1_VOLT_REG		0x5c
++#define SPM8821_ALDO2_VOLT_REG		0x5f
++#define SPM8821_ALDO3_VOLT_REG		0x62
++#define SPM8821_ALDO4_VOLT_REG		0x65
++
++#define SPM8821_ALDO_EN_MASK		0x1
++#define SPM8821_ALDO_VSEL_MASK		0x3f
++
++#define SPM8821_DLDO1_CTRL_REG		0x67
++#define SPM8821_DLDO2_CTRL_REG		0x6a
++#define SPM8821_DLDO3_CTRL_REG		0x6d
++#define SPM8821_DLDO4_CTRL_REG		0x70
++#define SPM8821_DLDO5_CTRL_REG		0x73
++#define SPM8821_DLDO6_CTRL_REG		0x76
++#define SPM8821_DLDO7_CTRL_REG		0x79
++
++#define SPM8821_DLDO1_VOLT_REG		0x68
++#define SPM8821_DLDO2_VOLT_REG		0x6b
++#define SPM8821_DLDO3_VOLT_REG		0x6e
++#define SPM8821_DLDO4_VOLT_REG		0x71
++#define SPM8821_DLDO5_VOLT_REG		0x74
++#define SPM8821_DLDO6_VOLT_REG		0x77
++#define SPM8821_DLDO7_VOLT_REG		0x7a
++
++#define SPM8821_DLDO_EN_MASK		0x1
++#define SPM8821_DLDO_VSEL_MASK		0x3f
++
++#define SPM8821_SWITCH_CTRL_REG		0x59
++#define SPM8821_SWTICH_EN_MASK		0x1
++
++/* mfd configuration */
++#define SPM8821_MFD_CELL	\
++	static const struct mfd_cell spm8821[] = {	\
++		{ .name = "spacemit-regulator", },	\
++		{ .name = "spacemit-pinctrl", },	\
++	};
++
++#define SPM8821_REGMAP_CONFIG	\
++	static const struct regmap_config spm8821_regmap_config = {	\
++		.reg_bits = 8,	\
++		.val_bits = 8,	\
++		.max_register = SPACEMIT_SPM8821_MAX_REG,	\
++		.cache_type = REGCACHE_RBTREE,	\
++	};
++
++/* regulator configuration */
++#define SPM8821_DESC(_id, _match, _supply, _min, _max, _step, _vreg,	\
++	_vmask, _ereg, _emask, _etime)					\
++	SPM8XX_DESC_COM(_id, _match, _supply, _min, _max, _step, _vreg,	\
++	_vmask, _ereg, _emask, 0, 0, _etime, &spm8821_dcdc_ops)
++
++#define SPM8821_DESC_SWITCH(_id, _match, _supply, _ereg, _emask)		\
++	SPM8XX_DESC_SWITCH_COM(_id, _match, _supply, _ereg, _emask,	\
++	0, 0, &spm8821_switch_ops)
++
++#define SPM8821_REGULATOR_DESC		\
++static const struct regulator_desc spm8821_reg[] = {	\
++	/* BUCK */		\
++	SPM8821_DESC(SPM8821_ID_DCDC1, "DCDC_REG1", "vcc_sys",		\
++			500, 1770, 5, SPM8821_BUCK1_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK1_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DCDC2, "DCDC_REG2", "vcc_sys",		\
++			500, 1770, 5, SPM8821_BUCK2_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK2_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DCDC3, "DCDC_REG3", "vcc_sys",		\
++			500, 1770, 5, SPM8821_BUCK3_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK3_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DCDC4, "DCDC_REG4", "vcc_sys",	\
++			500, 1770, 5, SPM8821_BUCK4_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK4_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DCDC5, "DCDC_REG5", "vcc_sys",		\
++			500, 1770, 5, SPM8821_BUCK5_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK5_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DCDC6, "DCDC_REG6", "vcc_sys",	\
++			500, 1770, 5, SPM8821_BUCK6_VSEL_REG, SPM8821_BUCK_VSEL_MASK,	\
++			SPM8821_BUCK6_CTRL_REG, SMP8821_BUCK_EN_MASK, 0),	\
++	/* ALDO */	\
++	SPM8821_DESC(SPM8821_ID_ALDO1, "ALDO_REG1", "vcc_sys",	\
++			500, 3400, 25, SPM8821_ALDO1_VOLT_REG, SPM8821_ALDO_VSEL_MASK,	\
++			SPM8821_ALDO1_CTRL_REG, SPM8821_ALDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_ALDO2, "ALDO_REG2", "vcc_sys",	\
++			500, 3400, 25, SPM8821_ALDO2_VOLT_REG, SPM8821_ALDO_VSEL_MASK,	\
++			SPM8821_ALDO2_CTRL_REG, SPM8821_ALDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_ALDO3, "ALDO_REG3", "vcc_sys",	\
++			500, 3400, 25, SPM8821_ALDO3_VOLT_REG, SPM8821_ALDO_VSEL_MASK,	\
++			SPM8821_ALDO3_CTRL_REG, SPM8821_ALDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_ALDO4, "ALDO_REG4", "vcc_sys",	\
++			500, 3400, 25, SPM8821_ALDO4_VOLT_REG, SPM8821_ALDO_VSEL_MASK,	\
++			SPM8821_ALDO4_CTRL_REG, SPM8821_ALDO_EN_MASK, 0),	\
++	\
++	/* DLDO */	\
++	SPM8821_DESC(SPM8821_ID_DLDO1, "DLDO_REG1", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO1_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO1_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO2, "DLDO_REG2", "dcdc5",	\
++			500, 3400, 25, SPM8821_DLDO2_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO2_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO3, "DLDO_REG3", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO3_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO3_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO4, "DLDO_REG4", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO4_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO4_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO5, "DLDO_REG5", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO5_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO5_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO6, "DLDO_REG6", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO6_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO6_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	SPM8821_DESC(SPM8821_ID_DLDO7, "DLDO_REG7", "dcdc5",		\
++			500, 3400, 25, SPM8821_DLDO7_VOLT_REG, SPM8821_DLDO_VSEL_MASK,	\
++			SPM8821_DLDO7_CTRL_REG, SPM8821_DLDO_EN_MASK, 0),	\
++	\
++	/* PWR SWITCH */	\
++	SPM8821_DESC_SWITCH(SPM8821_ID_SWITCH1, "SWITCH_REG1", "dcdc4", SPM8821_SWITCH_CTRL_REG, SPM8821_SWTICH_EN_MASK),		\
++};
++
++#endif /* __SPM8821_H__ */
+-- 
+2.47.1
+

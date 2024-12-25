@@ -1,0 +1,143 @@
+From dd18e1202124fbc9c5ca8086711570c90b8cf9f1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Thu, 7 Mar 2024 11:43:09 +0800
+Subject: [PATCH 0460/1189] aud: add es8326 sound card support
+
+Change-Id: I36aefe7c14dee14346a4d97484ac92c0a706643b
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  9 +++-
+ sound/soc/spacemit/spacemit-snd-card.c | 74 ++++++++++++++++++++++----
+ 2 files changed, 70 insertions(+), 13 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 3b65462deca7..6cfc53b5ba84 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2555,8 +2555,13 @@ spacemit-snd-dma1 {
+ 		status = "ok";
+ 	};
+ 
+-	sound: snd-card@0 {
+-		compatible = "spacemit,spacemit-snd";
++	sound_hdmi: snd-card@0 {
++		compatible = "spacemit,spacemit-snd-hdmi";
++		status = "ok";
++	};
++
++	sound_es8326: snd-card@1 {
++		compatible = "spacemit,spacemit-snd-es8326";
+ 		status = "ok";
+ 	};
+ };
+diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
+index a8ff6a72f6e7..6496050fa99b 100644
+--- a/sound/soc/spacemit/spacemit-snd-card.c
++++ b/sound/soc/spacemit/spacemit-snd-card.c
+@@ -39,7 +39,50 @@ __maybe_unused SND_SOC_DAILINK_DEF(pcm_dma1,
+ __maybe_unused SND_SOC_DAILINK_DEF(pcm_dma_hdmi,
+ 	DAILINK_COMP_ARRAY(COMP_PLATFORM("c08d0400.spacemit-snd-dma-hdmi")));
+ 
+-static struct snd_soc_dai_link spacemit_snd_dai_links[] = {
++__maybe_unused SND_SOC_DAILINK_DEF(es8326,
++	DAILINK_COMP_ARRAY(COMP_CODEC("es8326.2-0019", "ES8326 HiFi")));
++
++struct snd_soc_jack jack;
++static int spacemit_jack_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret;
++	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
++
++	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 |
++			SND_JACK_BTN_1 | SND_JACK_BTN_2, &jack,
++			NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++
++	snd_soc_component_set_jack(component, &jack, NULL);
++
++	return ret;
++}
++
++static struct snd_soc_dai_link spacemit_snd_es8326_dai_links[] = {
++	{
++		.name = "AP SSPA0 PCM",
++		.stream_name = "AP SSPA0 Playback/Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBM_CFM,
++		.init = spacemit_jack_init,
++		SND_SOC_DAILINK_REG(i2s0, es8326, pcm_dma0)
++	},
++};
++
++static struct snd_soc_card spacemit_snd_card_es8326 = {
++	.name = "spacemit-snd-es8326",
++	.owner = THIS_MODULE,
++};
++
++static struct snd_soc_dai_link spacemit_snd_hdmi_dai_links[] = {
+ 	{
+ 		.name = "ADSP SSPA2 PCM",
+ 		.stream_name = "ADSP SSPA2 Playback",
+@@ -47,33 +90,42 @@ static struct snd_soc_dai_link spacemit_snd_dai_links[] = {
+ 			| SND_SOC_DAIFMT_CBM_CFM,
+ 		SND_SOC_DAILINK_REG(sspa2, dummy, pcm_dma_hdmi)
+ 	},
+-
+ };
+ 
+-
+-static struct snd_soc_card spacemit_snd_card = {
+-	.name = "spacemit-snd",
++static struct snd_soc_card spacemit_snd_card_hdmi = {
++	.name = "spacemit-snd-hdmi",
+ 	.owner = THIS_MODULE,
+ };
+ 
+ static int spacemit_snd_pdev_probe(struct platform_device *pdev)
+ {
+ 	int ret;
++	struct snd_soc_card *spacemit_snd_card;
+ 	pr_debug("enter %s\n", __func__);
+-	spacemit_snd_card.dev = &pdev->dev;
+-	spacemit_snd_card.dai_link = &spacemit_snd_dai_links[0];
+-	spacemit_snd_card.num_links = ARRAY_SIZE(spacemit_snd_dai_links);
+ 
++	if (of_device_is_compatible(pdev->dev.of_node, "spacemit,spacemit-snd-hdmi")){
++		spacemit_snd_card = &spacemit_snd_card_hdmi;
++		spacemit_snd_card->dai_link = &spacemit_snd_hdmi_dai_links[0];
++		spacemit_snd_card->num_links = ARRAY_SIZE(spacemit_snd_hdmi_dai_links);
++	} else if (of_device_is_compatible(pdev->dev.of_node, "spacemit,spacemit-snd-es8326")){
++		spacemit_snd_card = &spacemit_snd_card_es8326;
++		spacemit_snd_card->dai_link = &spacemit_snd_es8326_dai_links[0];
++		spacemit_snd_card->num_links = ARRAY_SIZE(spacemit_snd_es8326_dai_links);
++	} else {
++		return 0;
++	}
++	spacemit_snd_card->dev = &pdev->dev;
+ 	printk("spacemit %s\n", __func__);
+-	platform_set_drvdata(pdev, &spacemit_snd_card);
++	platform_set_drvdata(pdev, spacemit_snd_card);
+ 
+-	ret =  devm_snd_soc_register_card(&pdev->dev, &spacemit_snd_card);
++	ret =  devm_snd_soc_register_card(&pdev->dev, spacemit_snd_card);
+ 	printk("spacemit %s, register card ret = %d\n", __func__,ret);
+ 	return ret;
+ }
+ 
+ static struct of_device_id spacemit_snd_dt_ids[] = {
+-	{.compatible = "spacemit,spacemit-snd",},
++	{.compatible = "spacemit,spacemit-snd-hdmi",},
++	{.compatible = "spacemit,spacemit-snd-es8326",},
+ 	{}
+ };
+ 
+-- 
+2.47.1
+

@@ -1,0 +1,25 @@
+From 9c1dfd563bcace306f0148f1da8776b24d6cadbe Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 27 Nov 2024 10:30:55 +0800
+Subject: [PATCH 1145/1189] k1-mainline:defconfig:enable spacemit ir driver
+
+Change-Id: Iffa89dfd4ea6ae0819446dba01d535a499ad1b97
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 0cdba02bc954..4dab170d4d44 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -687,6 +687,7 @@ CONFIG_SPACEMIT_WATCHDOG=y
+ CONFIG_REGULATOR=y
+ CONFIG_RC_CORE=y
+ CONFIG_RC_DEVICES=y
++CONFIG_IR_SPACEMIT=y
+ # CONFIG_MEDIA_CEC_SUPPORT is not set
+ CONFIG_MEDIA_SUPPORT=y
+ # CONFIG_DVB_NET is not set
+-- 
+2.47.1
+

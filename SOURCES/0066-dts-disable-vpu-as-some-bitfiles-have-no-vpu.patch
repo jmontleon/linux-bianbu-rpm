@@ -1,0 +1,25 @@
+From cb3bc66b6e29b023b9f239ba204904518ce3a22e Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 5 Jul 2023 10:53:48 +0800
+Subject: [PATCH 0066/1189] dts: disable vpu as some bitfiles have no vpu
+
+Change-Id: Idcd7a70c5f0a92f145a7e2e670c243a1e76487b8
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 8165ebc8127a..81a52e2cea12 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -588,6 +588,7 @@ vpu: linlon-v5@0x2C100000 {
+ 			interrupts = <120>;
+ 			interrupt-parent = <&intc>;
+ 			resets = <&reset RESET_VPU>;
++                        status = "disabled";
+ 		};
+ 	};
+ 
+-- 
+2.47.1
+

@@ -1,0 +1,60 @@
+From e9f3d8ace433249f0b3c3a793af8c2aeba9da6a3 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 3 Apr 2024 08:52:13 +0800
+Subject: [PATCH 0546/1189] k1x-wdt:fix timeout-setting bug
+
+Change-Id: Ibd0d4090b1823c1c3dcc2a7a42d40eac65d48b05
+---
+ drivers/watchdog/k1x_wdt.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index bb951785e0cf..0136842b01f2 100755
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -175,7 +175,7 @@ static int spa_wdt_set_timeout(struct watchdog_device *wdd, unsigned timeout)
+ 		timeout = CONFIG_SPACEMIT_WATCHDOG_DEFAULT_TIME;
+ 	}
+ 
+-	spa_wdt_write(info, WDT_WMR, timeout);
++	spa_wdt_write(info, WDT_WMR, timeout << DEFAULT_SHIFT);
+ 
+ 	wdd->timeout = timeout;
+ 
+@@ -239,7 +239,7 @@ static int spa_wdt_start(struct watchdog_device *wdd)
+ 
+ 	/* set timeout = 100s */
+ 	spa_wdt_set_timeout(&info->wdt_dev,
+-		(SPACEMIT_WATCHDOG_EXPIRE_TIME << DEFAULT_SHIFT));
++		SPACEMIT_WATCHDOG_EXPIRE_TIME);
+ 
+ 	/* enable counter and reset/interrupt */
+ 	spa_wdt_write(info, WDT_WMER, 0x3);
+@@ -667,11 +667,11 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 	watchdog_set_nowayout(&spa_wdt, nowayout);
+ 
+ 	info->wdt_dev = spa_wdt;
+-	/*ret = watchdog_register_device(&info->wdt_dev);
++	ret = watchdog_register_device(&info->wdt_dev);
+ 	if (ret) {
+ 		dev_err(info->dev, "cannot register watchdog (%d)\n", ret);
+ 		goto err_register_fail;
+-	}*/
++	}
+ 
+ 	info->feed_timeout = ktime_set(SPACEMIT_WATCHDOG_FEED_TIMEOUT, 0);
+ 	hrtimer_init(&info->feed_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+@@ -715,8 +715,8 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 		spa_wdt_stop(&info->wdt_dev);
+ 	}
+ 
+-/*	watchdog_unregister_device(&info->wdt_dev);
+-err_register_fail:*/
++	watchdog_unregister_device(&info->wdt_dev);
++err_register_fail:
+ 	spa_disable_wdt_clk(info);
+ 	clk_put(info->clk);
+ 
+-- 
+2.47.1
+

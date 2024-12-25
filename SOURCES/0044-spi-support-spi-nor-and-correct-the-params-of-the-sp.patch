@@ -1,0 +1,51 @@
+From 708fa889bc8c316306531dbc4ba8b05bdaaeff38 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 13 Jun 2023 10:30:31 +0800
+Subject: [PATCH 0044/1189] spi: support spi-nor and correct the params of the
+ spi controller
+
+    1. the clk of the spi controller is 50MHz
+    2. the width of reg is 4(default)
+
+Change-Id: I36197533138c7e9676a13edafd28af5b76ee2cbf
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 3 ++-
+ arch/riscv/configs/k1-pro_fpga_defconfig | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 6748593aed9f..53953e69b7c7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -167,7 +167,7 @@ pll_clk_400m: clock-pll_clk_400m {
+ 		pll_clk_qspi: clock-pll_spi {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <6250000>;
++			clock-frequency = <50000000>;
+ 			clock-output-names = "pll_qspi";
+ 		};
+ 	};
+@@ -466,6 +466,7 @@ qspi0: spi@2ce00000 {
+ 			interrupts = <96>;
+ 			clocks = <&pll_clk_qspi>;
+ 			resets = <&reset RESET_QSPI0>;
++			reg-io-width = <4>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			status = "disabled";
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 2e1d5a64c0db..54f45049f32d 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -49,6 +49,7 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_VIRTIO_BLK=y
+ CONFIG_BLK_DEV_NVME=y
+-- 
+2.47.1
+

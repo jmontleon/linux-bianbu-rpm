@@ -1,0 +1,34 @@
+From b99e10645c59d4d845ee0cb9d7d8b03525a3319e Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 14:50:28 +0800
+Subject: [PATCH 0445/1189] gt9xx: fix compile warning
+
+Change-Id: I7d03cf16e52cc1f41efccce5f7f77fc07adda166
+---
+ drivers/input/touchscreen/gt9xx_update.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+ mode change 100755 => 100644 drivers/input/touchscreen/gt9xx_update.c
+
+diff --git a/drivers/input/touchscreen/gt9xx_update.c b/drivers/input/touchscreen/gt9xx_update.c
+old mode 100755
+new mode 100644
+index 27205dfc7214..816a697315dc
+--- a/drivers/input/touchscreen/gt9xx_update.c
++++ b/drivers/input/touchscreen/gt9xx_update.c
+@@ -196,9 +196,11 @@ static u8 gup_get_ic_fw_msg(struct i2c_client *client)
+ 	/*  buf[2~5]: 00 06 90 00
+ 	 *  hw_info: 00 90 06 00
+ 	 */
+-	for (i = 0; i < 4; i++)
++	for (i = 0; i < 4; i++) {
+ 		update_msg.ic_fw_msg.hw_info[i] = buf[GTP_ADDR_LENGTH + 3 - i];
+-		dev_dbg(&client->dev,
++	}
++
++	dev_dbg(&client->dev,
+ 			"IC Hardware info:%02x%02x%02x%02x",
+ 			update_msg.ic_fw_msg.hw_info[0],
+ 			update_msg.ic_fw_msg.hw_info[1],
+-- 
+2.47.1
+

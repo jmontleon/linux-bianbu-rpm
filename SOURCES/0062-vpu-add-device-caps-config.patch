@@ -1,0 +1,33 @@
+From 23e7d8669f75729705740932118ff56e1a5d3c5a Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Thu, 29 Jun 2023 20:32:44 +0800
+Subject: [PATCH 0062/1189] vpu: add device caps config
+
+Change-Id: I5d59a43ac5087bbb1614ee561cd6f93baa3c6927
+---
+ drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
+index 1735b3a7ee6c..4e49976cd1aa 100755
+--- a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
++++ b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
+@@ -113,7 +113,6 @@ int mvx_ext_if_construct(struct mvx_ext_if *ext,
+ {
+ 	int ret;
+ 	const char name[] = "mvx";
+-
+ 	ext->dev = dev;
+ 	ext->cache = cache;
+ 	ext->client_ops = client_ops;
+@@ -141,6 +140,7 @@ int mvx_ext_if_construct(struct mvx_ext_if *ext,
+ 	strncpy(ext->vdev.name, name, sizeof(ext->vdev.name));
+ 
+ 	video_set_drvdata(&ext->vdev, ext);
++	ext->vdev.device_caps = V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_VIDEO_OUTPUT_MPLANE | V4L2_CAP_VIDEO_CAPTURE_MPLANE;
+ 
+ 	ret = video_register_device(&ext->vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret != 0) {
+-- 
+2.47.1
+

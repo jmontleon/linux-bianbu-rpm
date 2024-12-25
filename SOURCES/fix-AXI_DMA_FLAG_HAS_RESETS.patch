@@ -1,0 +1,13 @@
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index 094d7e34998d..6ebe9aab8869 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -1690,7 +1690,7 @@ static const struct of_device_id dw_dma_of_id_table[] = {
+ 		.data = (void *)AXI_DMA_FLAG_HAS_RESETS,
+ 	}, {
+ 		.compatible = "spacemit,k1pro-axi-dma",
+-		.data = (void *)AXI_DMA_FLAG_HAS_RE
++		.data = (void *)AXI_DMA_FLAG_HAS_RESETS,
+ 	},
+ 	{}
+ };

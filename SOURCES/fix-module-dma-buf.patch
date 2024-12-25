@@ -1,0 +1,9 @@
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index baceb07e0b6d..5510b709d408 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -1448,3 +1448,4 @@ module_platform_driver(cpp_driver);
+ 
+ MODULE_DESCRIPTION("SPACEMIT Camera Post Process Driver");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(DMA_BUF);

@@ -1,0 +1,38 @@
+From f44214096801a0a36517c9ce1836b0e7360c4ef9 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 16 Apr 2024 14:09:10 +0800
+Subject: [PATCH 0600/1189] usb: f_tcm: submit bot cmd with flags consistent
+ with usbg_submit_cmd
+
+Fix reference count error when release the se_cmd.
+
+Change-Id: I909ac4e8ef0037653e0bb2d84508d36d81af34a3
+---
+ drivers/usb/gadget/function/f_tcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
+index f7cf77ae9246..0c1eaf3c48fc 100755
+--- a/drivers/usb/gadget/function/f_tcm.c
++++ b/drivers/usb/gadget/function/f_tcm.c
+@@ -1440,7 +1440,7 @@ static void bot_cmd_work(struct work_struct *work)
+ 	struct se_cmd *se_cmd;
+ 	struct tcm_usbg_nexus *tv_nexus;
+ 	struct usbg_tpg *tpg;
+-	int dir;
++	int dir, flags = (TARGET_SCF_UNKNOWN_SIZE | TARGET_SCF_ACK_KREF);
+ 
+ 	se_cmd = &cmd->se_cmd;
+ 	tpg = cmd->fu->tpg;
+@@ -1457,7 +1457,7 @@ static void bot_cmd_work(struct work_struct *work)
+ 
+ 	target_submit_cmd(se_cmd, tv_nexus->tvn_se_sess,
+ 			  cmd->cmd_buf, cmd->sense_iu.sense, cmd->unpacked_lun,
+-			  cmd->data_len, cmd->prio_attr, dir, 0);
++			  cmd->data_len, cmd->prio_attr, dir, flags);
+ 	return;
+ 
+ out:
+-- 
+2.47.1
+

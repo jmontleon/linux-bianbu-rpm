@@ -1,0 +1,647 @@
+From 9debf9f1dc7f0689fa93e6f3949580eae6817757 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 10 Jan 2024 15:15:40 +0800
+Subject: [PATCH 0340/1189] k1x:pmic: refactoring code to support new dcdc
+
+support sy8810l pmic ic
+
+Change-Id: I8709bf5b9af4def2da06788f4bcac7eb31b8f76e
+---
+ drivers/mfd/spacemit-mfd.c                 | 103 +++++----------------
+ drivers/pinctrl/spacemit-pmic-pinctrl.c    |  76 ++++++---------
+ drivers/regulator/spacemit-regulator.c     |  63 ++++++-------
+ include/linux/mfd/spacemit/pm853.h         |  21 +++--
+ include/linux/mfd/spacemit/spacemit_pmic.h |  36 ++++---
+ include/linux/mfd/spacemit/spm8821.h       |  35 +++++--
+ include/linux/mfd/spacemit/sy8810l.h       |  67 ++++++++++++++
+ 7 files changed, 218 insertions(+), 183 deletions(-)
+ create mode 100644 include/linux/mfd/spacemit/sy8810l.h
+
+diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
+index 3599d7602cfb..cb697b6befa6 100644
+--- a/drivers/mfd/spacemit-mfd.c
++++ b/drivers/mfd/spacemit-mfd.c
+@@ -11,52 +11,29 @@
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+ 
+ SPM8821_REGMAP_CONFIG;
+-SPM8821_CHIP_ID_REG;
+ SPM8821_IRQS_DESC;
+ SPM8821_IRQ_CHIP_DESC;
+ SPM8821_POWER_KEY_RESOURCES_DESC;
+ SPM8821_RTC_RESOURCES_DESC;
+ SPM8821_MFD_CELL;
++SPM8821_MFD_MATCH_DATA;
+ 
+ PM853_MFD_CELL;
+ PM853_REGMAP_CONFIG;
+-PM853_CHIP_ID_REG;
++PM853_MFD_MATCH_DATA;
+ 
++SY8810L_MFD_CELL;
++SY8810L_REGMAP_CONFIG;
++SY8810L_MFD_MATCH_DATA;
+ 
+ static const struct of_device_id spacemit_pmic_of_match[] = {
+-	{ .compatible = "spacemit,spm8821" , .data = (void *)&spm8821_id_reg },
+-	{ .compatible = "spacemit,pm853" , .data = (void *)&pm853_id_reg },
++	{ .compatible = "spacemit,spm8821" , .data = (void *)&spm8821_mfd_match_data },
++	{ .compatible = "spacemit,pm853" , .data = (void *)&pm853_mfd_match_data },
++	{ .compatible = "spacemit,sy8810l" , .data = (void *)&sy8810l_mfd_match_data },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, spacemit_pmic_of_match);
+ 
+-static int __spacemit_pmic_read_u8(struct i2c_client *c, u8 reg, u8 *val)
+-{
+-	struct i2c_msg msg[2];
+-	int ret;
+-	u8 buf;
+-
+-	msg[0].addr = c->addr;
+-	msg[0].flags = 0;
+-	msg[0].len = 1;
+-	msg[0].buf = &reg;
+-
+-	msg[1].addr = c->addr;
+-	msg[1].flags = I2C_M_RD;
+-	msg[1].len = 1;
+-	msg[1].buf = (char *)&buf;
+-
+-	ret = i2c_transfer(c->adapter, msg, 2);
+-	if (ret < 0) {
+-		dev_err(&c->dev, "i2c read transfer error: %d\n", ret);
+-		return ret;
+-	}
+-
+-	*val = buf;
+-
+-	return 0;
+-}
+-
+ static int spacemit_prepare_sub_pmic(struct spacemit_pmic *pmic)
+ {
+ 	struct i2c_client *client = pmic->i2c;
+@@ -86,11 +63,11 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ {
+ 	int ret;
+ 	int nr_cells;
+-	unsigned char pmic_id;
+-	struct chip_id_reg *pmic_id_reg;
++	struct device_node *np;
+ 	struct spacemit_pmic *pmic;
+ 	const struct mfd_cell *cells;
+ 	const struct of_device_id *of_id;
++	struct mfd_match_data *match_data;
+ 
+ 	pmic = devm_kzalloc(&client->dev, sizeof(*pmic), GFP_KERNEL);
+ 	if (!pmic) {
+@@ -104,61 +81,25 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 		return -ENODEV;
+ 	}
+ 
+-	pmic_id_reg = (struct chip_id_reg *)of_id->data;
+-
+-	if (pmic_id_reg->reg_num == 1) {
+-		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->device_id_reg, &pmic_id);
+-		if (ret) {
+-			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
+-			return -EINVAL;
+-		}
+-
+-		pmic->variant = pmic_id;
+-	} else {
+-		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->user_id_reg, &pmic_id);
+-		if (ret) {
+-			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
+-			return -EINVAL;
+-		}
+-
+-		pmic->variant = pmic_id;
+-
+-		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->version_id_reg, &pmic_id);
+-		if (ret) {
+-			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
+-			return -EINVAL;
+-		}
++	/* find the property in device node */
++	np = of_find_compatible_node(NULL, NULL, of_id->compatible);
++	if (!np)
++		return 0;
+ 
+-		pmic->variant = ((pmic->variant) << 8) | pmic_id;
++	of_node_put(np);
+ 
+-		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->device_id_reg, &pmic_id);
+-		if (ret) {
+-			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
+-			return -EINVAL;
+-		}
++	match_data = (struct mfd_match_data *)of_id->data;
+ 
+-		pmic->variant = ((pmic->variant) << 8) | pmic_id;
+-	}
++	pmic->regmap_cfg = match_data->regmap_cfg;
++	pmic->regmap_irq_chip = match_data->regmap_irq_chip;
++	cells = match_data->mfd_cells;
++	nr_cells = match_data->nr_cells;
+ 
+-	switch (pmic->variant) {
+-	case SPM8821_ID:
+-		pmic->regmap_cfg = &spm8821_regmap_config;
+-		pmic->regmap_irq_chip = &spm8821_irq_chip;
+-		cells = spm8821;
+-		nr_cells = ARRAY_SIZE(spm8821);
+-		break;
+-	case PM853_ID:
+-		pmic->regmap_cfg = &pm853_regmap_config;
+-		cells = pm853;
+-		nr_cells = ARRAY_SIZE(pm853);
++	if (strcmp(match_data->name, "pm853") == 0) {
+ 		pmic->sub = devm_kzalloc(&client->dev, sizeof(struct spacemit_sub_pmic), GFP_KERNEL);
+ 		if (!pmic->sub)
+ 			return -ENOMEM;
+-		break;
+-	default:
+-		pr_err("%s:%d, Unsupported SPACEMIT ID :%d\n",
+-				__func__, __LINE__, pmic->variant);
+-		return -EINVAL;
++
+ 	}
+ 
+ 	pmic->i2c = client;
+diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+index 2246d18cd6d6..95325137fedb 100644
+--- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
++++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+@@ -39,6 +39,7 @@ struct spacemit_pctl {
+ 	int funcdesc_nums, confdesc_nums;
+ 	const struct pin_func_desc *func_desc;
+ 	const struct pin_config_desc *config_desc;
++	char *name;
+ };
+ 
+ static const struct pinctrl_ops spacemit_gpio_pinctrl_ops = {
+@@ -102,19 +103,14 @@ static int spacemit_pmx_gpio_set_direction(struct pinctrl_dev *pctldev,
+ {
+ 	int ret;
+ 	struct spacemit_pctl *pctl = pinctrl_dev_get_drvdata(pctldev);
+-	struct spacemit_pmic *pmic = dev_get_drvdata(pctl->dev->parent);
+ 
+-	switch (pmic->variant) {
+-	case SPM8821_ID:
++	if (strcmp(pctl->name, "spm8821") == 0)
+ 		/* when input == true, it means that we should set this pin
+ 		 * as gpioin, so we should pass function(0) to set_mux
+ 		 */
+ 		ret = spacemit_gpio_pinmux_set(pctldev, !input, offset);
+-		break;
+-	default:
+-	       dev_err(pctl->dev, "unsupported Spacemit pmic ID: %d\n", pmic->variant);
+-	       return -EINVAL;
+-	}
++	else
++		return -EINVAL;
+ 
+ 	return ret;
+ }
+@@ -152,7 +148,6 @@ static int spacemit_gpio_get_direction(struct gpio_chip *chip,
+ 	int i, ret;
+ 	unsigned int val, direction = 0;
+ 	struct spacemit_pctl *pctl = gpiochip_get_data(chip);
+-	struct spacemit_pmic *pmic = dev_get_drvdata(pctl->dev->parent);
+ 
+ 	/* read the function set register */
+ 	for (i = 0; i < pctl->funcdesc_nums; ++i) {
+@@ -170,15 +165,10 @@ static int spacemit_gpio_get_direction(struct gpio_chip *chip,
+ 		}
+ 	}
+ 
+-	switch (pmic->variant) {
+-	case SPM8821_ID:
++	if (strcmp(pctl->name, "spm8821") == 0)
+ 		return !direction;
+-	default:
+-	       dev_err(pctl->dev, "unsupported Spacemit pmic ID: %d\n", pmic->variant);
+-	       return -EINVAL;
+-	}
+-
+-	return -EINVAL;
++	else
++		return -EINVAL;
+ }
+ 
+ static void spacemit_gpio_set(struct gpio_chip *chip, unsigned int offset,
+@@ -286,43 +276,43 @@ static const struct pinconf_ops spacemit_gpio_pinconf_ops = {
+ 	.pin_config_group_set	= spacemit_pconf_group_set,
+ };
+ 
++static const struct of_device_id spacemit_pmic_pinctrl_of_match[] = {
++	{ .compatible = "pmic,pinctrl,spm8821", .data = (void *)&spm8821_pinctrl_match_data },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, spacemit_pmic_pinctrl_of_match);
++
+ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
+ {
+-	int nfunc, i, numfuncdesc, res, numpinconf;
++	int i, res;
+ 	struct spacemit_pctl *pctl;
+ 	unsigned int npins;
+ 	const char **pin_names;
+ 	unsigned int *pin_nums;
+ 	struct pinctrl_pin_desc *pins;
+-	const char **pinmux_functions;
++	const struct of_device_id *of_id;
+ 	struct spacemit_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
+-	const struct pin_func_desc *pinfuncdesc;
+-	const struct pin_config_desc *pinconfdesc;
+-
+-	switch (pmic->variant) {
+-	case SPM8821_ID:
+-		pinmux_functions = spm8821_pinmux_functions;
+-		nfunc = ARRAY_SIZE(spm8821_pinmux_functions);
+-		pinfuncdesc = spm8821_pinfunc_desc;
+-		numfuncdesc = ARRAY_SIZE(spm8821_pinfunc_desc);
+-		pinconfdesc = spm8821_pinconfig_desc;
+-		numpinconf = ARRAY_SIZE(spm8821_pinconfig_desc);
+-	       break;
+-	default:
+-	       pr_err("unsupported Spacemit pmic ID: %d\n", pmic->variant);
+-	       return -EINVAL;
++	struct pinctrl_match_data *match_data;
++
++	of_id = of_match_device(spacemit_pmic_pinctrl_of_match, &pdev->dev);
++	if (!of_id) {
++		pr_err("Unable to match OF ID\n");
++		return -ENODEV;
+ 	}
+ 
++	match_data = (struct pinctrl_match_data *)of_id->data;
++
+ 	pctl = devm_kzalloc(&pdev->dev, sizeof(*pctl), GFP_KERNEL);
+ 	if (!pctl)
+ 		return -ENOMEM;
+ 
++	pctl->name = match_data->name;
+ 	pctl->dev = &pdev->dev;
+ 	pctl->regmap = pmic->regmap;
+-	pctl->func_desc = pinfuncdesc;
+-	pctl->funcdesc_nums = numfuncdesc;
+-	pctl->config_desc = pinconfdesc;
+-	pctl->confdesc_nums = numpinconf;
++	pctl->func_desc = match_data->pinfunc_desc;
++	pctl->funcdesc_nums = match_data->nr_pin_fuc_desc;
++	pctl->config_desc = match_data->pinconf_desc;
++	pctl->confdesc_nums = match_data->nr_pin_conf_desc;
+ 	dev_set_drvdata(&pdev->dev, pctl);
+ 
+ 	if (of_property_read_u32(pdev->dev.of_node, "spacemit,npins", &npins))
+@@ -366,8 +356,8 @@ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
+ 					     "Failed to register group");
+ 	}
+ 
+-	for (i = 0; i < nfunc; ++i) {
+-		res = pinmux_generic_add_function(pctl->pctldev, pinmux_functions[i],
++	for (i = 0; i < match_data->nr_pin_mux; ++i) {
++		res = pinmux_generic_add_function(pctl->pctldev, match_data->pinmux_funcs[i],
+ 						  pin_names, npins, pctl);
+ 		if (res < 0)
+ 			return dev_err_probe(pctl->dev, res,
+@@ -398,12 +388,6 @@ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id spacemit_pmic_pinctrl_of_match[] = {
+-	{ .compatible = "pmic,pinctrl,spm8821" },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(of, spacemit_pmic_pinctrl_of_match);
+-
+ static struct platform_driver spacemit_pmic_pinctrl_driver = {
+ 	.probe = spacemit_pmic_pinctrl_probe,
+ 	.driver = {
+diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
+index 78be25672386..d4943521ab3c 100644
+--- a/drivers/regulator/spacemit-regulator.c
++++ b/drivers/regulator/spacemit-regulator.c
+@@ -17,13 +17,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+ 
+-static const struct of_device_id spacemit_regulator_of_match[] = {
+-	{ .compatible = "pmic,regulator,spm8821" , },
+-	{ .compatible = "pmic,regulator,pm853" , },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(of, spacemit_regulator_of_match);
+-
+ static const struct regulator_ops pmic_dcdc_ldo_ops = {
+ 	.list_voltage		= regulator_list_voltage_linear_range,
+ 	.map_voltage		= regulator_map_voltage_linear_range,
+@@ -42,45 +35,53 @@ static const struct regulator_ops pmic_switch_ops = {
+ };
+ 
+ SPM8821_BUCK_LINER_RANGE;SPM8821_LDO_LINER_RANGE;SPM8821_REGULATOR_DESC;
++SPM8821_REGULATOR_MATCH_DATA;
+ 
+ PM853_BUCK_LINER_RANGE1;PM853_BUCK_LINER_RANGE2;PM853_LDO_LINER_RANGE1;
+ PM853_LDO_LINER_RANGE2;PM853_LDO_LINER_RANGE3;PM853_LDO_LINER_RANGE4;
+-PM853_REGULATOR_DESC;
++PM853_REGULATOR_DESC;PM853_REGULATOR_MATCH_DATA;
++
++SY8810L_BUCK_LINER_RANGE;SY8810L_REGULATOR_DESC;SY8810L_REGULATOR_MATCH_DATA;
++
++static const struct of_device_id spacemit_regulator_of_match[] = {
++	{ .compatible = "pmic,regulator,spm8821", .data = (void *)&spm8821_regulator_match_data },
++	{ .compatible = "pmic,regulator,pm853", .data = (void *)&pm853_regulator_match_data },
++	{ .compatible = "pmic,regulator,sy8810l", .data = (void *)&sy8810l_regulator_match_data },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, spacemit_regulator_of_match);
+ 
+ static int spacemit_regulator_probe(struct platform_device *pdev)
+ {
+ 	struct regulator_config config = {};
+ 	struct spacemit_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
+ 	struct i2c_client *client;
+-	const struct regulator_desc *regulators;
++	const struct of_device_id *of_id;
++	struct regulator_match_data *match_data;
+ 	struct regulator_dev *regulator_dev;
+-	int i, nregulators;
+-
+-	switch (pmic->variant) {
+-	case SPM8821_ID:
+-		client = pmic->i2c;
+-		regulators = spm8821_reg;
+-		nregulators = ARRAY_SIZE(spm8821_reg);
+-
+-		config.dev = &client->dev;
+-		config.regmap = pmic->regmap;
+-	       break;
+-	case PM853_ID:
+-		client = pmic->sub->power_page;
+-		regulators = pm853_reg;
+-		nregulators = ARRAY_SIZE(pm853_reg);
++	int i;
++
++	of_id = of_match_device(spacemit_regulator_of_match, &pdev->dev);
++	if (!of_id) {
++		pr_err("Unable to match OF ID\n");
++		return -ENODEV;
++	}
++
++	match_data = (struct regulator_match_data *)of_id->data;
+ 
++	client = pmic->i2c;
++	config.dev = &client->dev;
++	config.regmap = pmic->regmap;
++
++	if (strcmp(match_data->name, "pm853") == 0) {
++		client = pmic->sub->power_page;
+ 		config.dev = &pmic->i2c->dev;
+-		config.regmap = pmic->sub->power_regmap;
+-		break;
+-	default:
+-	       pr_err("unsupported Spacemit pmic ID: %d\n", pmic->variant);
+-	       return -EINVAL;
++		config.regmap = pmic->sub->power_regmap;	
+ 	}
+ 
+-	for (i = 0; i < nregulators; ++i) {
++	for (i = 0; i < match_data->nr_desc; ++i) {
+ 		regulator_dev = devm_regulator_register(&pdev->dev,
+-				regulators + i, &config);
++				match_data->desc + i, &config);
+ 		if (IS_ERR(regulator_dev)) {
+ 			pr_err("failed to register %d regulator\n", i);
+ 			return PTR_ERR(regulator_dev);
+diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
+index 43d4e7e01fc5..173d78e73eea 100644
+--- a/include/linux/mfd/spacemit/pm853.h
++++ b/include/linux/mfd/spacemit/pm853.h
+@@ -106,12 +106,6 @@ enum PM853_reg {
+ 
+ #define SPACEMIT_PM853_MAX_REG		0xf1
+ 
+-#define PM853_CHIP_ID_REG							\
+-	static const struct chip_id_reg pm853_id_reg = {			\
+-		.reg_num = 1,						\
+-		.device_id_reg = 0x0,					\
+-	};
+-
+ #define PM853_MFD_CELL	\
+ 	static const struct mfd_cell pm853[] = {				\
+ 		{								\
+@@ -316,4 +310,19 @@ static const struct regulator_desc pm853_reg[] = {	\
+ 	PM853_DESC_SWITCH(PM853_ID_LDO5_SW, "SWITCH_REG1", "vcc_sys", PM853_LDO_BUCK_EN_REG3, PM853_SW_EN_MSK),		\
+ };
+ 
++#define PM853_MFD_MATCH_DATA				\
++static struct mfd_match_data pm853_mfd_match_data = {	\
++	.regmap_cfg = &pm853_regmap_config,		\
++	.mfd_cells = pm853,				\
++	.nr_cells = ARRAY_SIZE(pm853),			\
++	.name = "pm853",				\
++};
++
++#define PM853_REGULATOR_MATCH_DATA					\
++static struct regulator_match_data pm853_regulator_match_data = {	\
++	.desc = pm853_reg,						\
++	.nr_desc = ARRAY_SIZE(pm853_reg),				\
++	.name = "pm853",						\
++};
++
+ #endif
+diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
+index 6b98a1c37d97..2976ce88bb2e 100644
+--- a/include/linux/mfd/spacemit/spacemit_pmic.h
++++ b/include/linux/mfd/spacemit/spacemit_pmic.h
+@@ -17,10 +17,8 @@ struct spacemit_pmic {
+ 	struct i2c_client		*i2c;
+ 	struct regmap_irq_chip_data	*irq_data;
+ 	struct regmap			*regmap;
+-	unsigned int			variant;
+ 	const struct regmap_config	*regmap_cfg;
+ 	const struct regmap_irq_chip	*regmap_irq_chip;
+-
+ 	/**
+ 	 * this is only used for pm853
+ 	 */
+@@ -169,17 +167,32 @@ struct rtc_regdesc {
+ 	} rtc_ctl;
+ };
+ 
+-/* chip id */
+-struct chip_id_reg {
+-	unsigned char device_id_reg;
+-	unsigned char version_id_reg;
+-	unsigned char user_id_reg;
+-	unsigned char reg_num;
++/* mfd: match data */
++struct mfd_match_data {
++	const struct regmap_config *regmap_cfg;
++	const struct regmap_irq_chip *regmap_irq_chip;
++	const struct mfd_cell *mfd_cells;
++	int nr_cells;
++	const char *name;
+ };
+ 
+-/* pmic ID configuration */
+-#define SPM8821_ID			0x0
+-#define PM853_ID			0x50
++/* regulator: match data */
++struct regulator_match_data {
++	int nr_desc;
++	const struct regulator_desc *desc;
++	const char *name;
++};
++
++/* pinctrl: match data */
++struct pinctrl_match_data {
++	int nr_pin_mux;
++	const char **pinmux_funcs;
++	int nr_pin_fuc_desc;
++	const struct pin_func_desc *pinfunc_desc;
++	int nr_pin_conf_desc;
++	const struct pin_config_desc *pinconf_desc;
++	const char *name;
++};
+ 
+ /* common regulator defination */
+ #define SPM8XX_DESC_COMMON(_id, _match, _supply, _nv, _vr, _vm, _er, _em, _lr, _ops)       \
+@@ -269,5 +282,6 @@ struct chip_id_reg {
+ 
+ #include "spm8821.h"
+ #include "pm853.h"
++#include "sy8810l.h"
+ 
+ #endif /* __SPACEMIT_PMIC_H__ */
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+index ef4b326edfaa..cb2c26193905 100644
+--- a/include/linux/mfd/spacemit/spm8821.h
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -76,14 +76,6 @@ enum SPM8821_reg {
+ #define SPM8821_SWITCH_CTRL_REG		0x59
+ #define SPM8821_SWTICH_EN_MASK		0x1
+ 
+-#define SPM8821_CHIP_ID_REG							\
+-	static const struct chip_id_reg spm8821_id_reg = {			\
+-		.reg_num = 3,						\
+-		.device_id_reg = 0xa0,					\
+-		.version_id_reg = 0xa1,					\
+-		.user_id_reg = 0xa2,					\
+-	};
+-
+ #define SPM8821_REGMAP_CONFIG	\
+ 	static const struct regmap_config spm8821_regmap_config = {	\
+ 		.reg_bits = 8,	\
+@@ -754,4 +746,31 @@ static const struct rtc_regdesc spm8821_regdesc = {		\
+ 		},								\
+ 	};
+ 
++#define SPM8821_MFD_MATCH_DATA					\
++static struct mfd_match_data spm8821_mfd_match_data = {		\
++	.regmap_cfg = &spm8821_regmap_config,			\
++	.regmap_irq_chip = &spm8821_irq_chip,			\
++	.mfd_cells = spm8821,					\
++	.nr_cells = ARRAY_SIZE(spm8821),			\
++	.name = "spm8821",					\
++};
++
++#define SPM8821_PINCTRL_MATCH_DATA				\
++static struct pinctrl_match_data spm8821_pinctrl_match_data = {				\
++	.nr_pin_mux = ARRAY_SIZE(spm8821_pinmux_functions),	\
++	.pinmux_funcs = spm8821_pinmux_functions,		\
++	.nr_pin_fuc_desc = ARRAY_SIZE(spm8821_pinfunc_desc),	\
++	.pinfunc_desc = spm8821_pinfunc_desc,			\
++	.nr_pin_conf_desc = ARRAY_SIZE(spm8821_pinconfig_desc),	\
++	.pinconf_desc = spm8821_pinconfig_desc,			\
++	.name = "spm8821",					\
++};
++
++#define SPM8821_REGULATOR_MATCH_DATA					\
++static struct regulator_match_data spm8821_regulator_match_data = {	\
++	.nr_desc = ARRAY_SIZE(spm8821_reg),				\
++	.desc = spm8821_reg,						\
++	.name = "spm8821",						\
++};
++
+ #endif /* __SPM8821_H__ */
+diff --git a/include/linux/mfd/spacemit/sy8810l.h b/include/linux/mfd/spacemit/sy8810l.h
+new file mode 100644
+index 000000000000..091d4446b1eb
+--- /dev/null
++++ b/include/linux/mfd/spacemit/sy8810l.h
+@@ -0,0 +1,67 @@
++#ifndef __SY8810L_H__
++#define __SY8810L_H__
++
++enum SY8810L_reg {
++	SY8810L_ID_DCDC1,
++};
++
++#define SPACEMIT_SY8810L_MAX_REG	0x2
++
++#define SY8810L_BUCK_VSEL_MASK		0x3f
++#define SY8810L_BUCK_EN_MASK		0x80
++
++#define SY8810L_BUCK_CTRL_REG		0x1
++#define SY8810L_BUCK_VSEL_REG		0x0
++
++#define SY8810L_REGMAP_CONFIG	\
++	static const struct regmap_config sy8810l_regmap_config = {	\
++		.reg_bits = 8,	\
++		.val_bits = 8,	\
++		.max_register = SPACEMIT_SY8810L_MAX_REG,	\
++		.cache_type = REGCACHE_RBTREE,	\
++	};
++
++/* regulator configuration */
++#define SY8810L_DESC(_id, _match, _supply, _nv, _vr, _vm, _er, _em, _lr)	\
++	SPM8XX_DESC_COMMON(_id, _match, _supply, _nv, _vr, _vm, _er, _em, _lr,	\
++			&pmic_dcdc_ldo_ops)
++
++#define SY8810L_BUCK_LINER_RANGE					\
++static const struct linear_range sy8810l_buck_ranges[] = {		\
++        REGULATOR_LINEAR_RANGE(600000, 0x0, 0x5a, 10000),		\
++};
++
++#define SY8810L_REGULATOR_DESC		\
++static const struct regulator_desc sy8810l_reg[] = {	\
++	/* BUCK */		\
++	SY8810L_DESC(SY8810L_ID_DCDC1, "EDCDC_REG1", "dcdc1",		\
++			91, SY8810L_BUCK_VSEL_REG, SY8810L_BUCK_VSEL_MASK,	\
++			SY8810L_BUCK_CTRL_REG, SY8810L_BUCK_EN_MASK,		\
++			sy8810l_buck_ranges),	\
++};
++
++/* mfd configuration */
++#define SY8810L_MFD_CELL	\
++	static const struct mfd_cell sy8810l[] = {				\
++		{								\
++			.name = "spacemit-regulator@sy8810l",			\
++			.of_compatible = "pmic,regulator,sy8810l",		\
++		},								\
++	};
++
++#define SY8810L_MFD_MATCH_DATA					\
++static struct mfd_match_data sy8810l_mfd_match_data = {		\
++	.regmap_cfg = &sy8810l_regmap_config,			\
++	.mfd_cells = sy8810l,					\
++	.nr_cells = ARRAY_SIZE(sy8810l),			\
++	.name = "sy8810l",					\
++};
++
++#define SY8810L_REGULATOR_MATCH_DATA					\
++static struct regulator_match_data sy8810l_regulator_match_data = {	\
++	.nr_desc = ARRAY_SIZE(sy8810l_reg),				\
++	.desc = sy8810l_reg,						\
++	.name = "sy8810l",						\
++};
++
++#endif
+-- 
+2.47.1
+

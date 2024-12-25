@@ -1,0 +1,82 @@
+From 44438ea8f75c50df1d3d96bc7ec4081ed0e083c2 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Thu, 11 Jul 2024 17:57:28 +0800
+Subject: [PATCH 0817/1189] i2c: fix warn_on when system power off
+
+err log:
+[86986.624014] ------------[ cut here ]------------
+[86986.628713] Voluntary context switch within RCU read-side critical section!
+[86986.628727] WARNING: CPU: 0 PID: 1 at kernel/rcu/tree_plugin.h:320 rcu_note_context_switch+0x414/0x446
+[86986.628751] Modules linked in: 8852bs
+[86986.628760] CPU: 0 PID: 1 Comm: shutdown Not tainted 6.6.36 #1.0.5+20240705210817
+[86986.628768] Hardware name: spacemit k1-x deb1 board (DT)
+[86986.628770] epc : rcu_note_context_switch+0x414/0x446
+[86986.628776]  ra : rcu_note_context_switch+0x414/0x446
+[86986.628780] epc : ffffffff800875ea ra : ffffffff800875ea sp : ffffffc8000736b0
+[86986.628785]  gp : ffffffff822f3380 tp : ffffffd900410000 t0 : ffffffff8203af00
+[86986.628789]  t1 : 0000000000000001 t2 : ffffffffffffffff s0 : ffffffc8000736f0
+[86986.628793]  s1 : ffffffda75eb2980 a0 : 000000000000003f a1 : ffffffff8208ab60
+[86986.628797]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : 0000000000000000
+[86986.628800]  a5 : 0000000000000000 a6 : ffffffff8201ab08 a7 : ffffffc8000730f0
+[86986.628803]  s2 : ffffffd900410000 s3 : 0000000000000000 s4 : 0000000000000000
+[86986.628807]  s5 : ffffffff822d2910 s6 : ffffffff82333988 s7 : ffffffff82333988
+[86986.628810]  s8 : 0000000000000000 s9 : 0000000000000002 s10: ffffffd900410000
+[86986.628813]  s11: ffffffc800073838 t3 : 0000000000000001 t4 : ffffffffffffffff
+[86986.628817]  t5 : 0000000000000000 t6 : ffffffc8000734a8
+[86986.628819] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+[86986.628824] [<ffffffff800875ea>] rcu_note_context_switch+0x414/0x446
+[86986.628831] [<ffffffff810aa0e2>] __schedule+0x7e/0x816
+[86986.628843] [<ffffffff810aa8c2>] schedule+0x48/0xd2
+[86986.628850] [<ffffffff810afa3a>] schedule_timeout+0x72/0x16c
+[86986.628856] [<ffffffff810ab0e4>] __wait_for_common+0xd4/0x1c4
+[86986.628863] [<ffffffff810ab20e>] wait_for_completion_timeout+0x18/0x20
+[86986.628871] [<ffffffff80b3a300>] spacemit_i2c_xfer+0x1ba/0x14ee
+[86986.628883] [<ffffffff80b33550>] __i2c_transfer+0x19a/0x652
+[86986.628890] [<ffffffff80b33a62>] i2c_transfer+0x5a/0x98
+[86986.628896] [<ffffffff809a1aba>] regmap_i2c_read+0x4e/0x7e
+[86986.628906] [<ffffffff8099cca4>] _regmap_raw_read+0xc2/0x240
+[86986.628912] [<ffffffff8099ce50>] _regmap_bus_read+0x2e/0x64
+[86986.628918] [<ffffffff8099bb24>] _regmap_read+0x40/0x122
+[86986.628924] [<ffffffff8099c120>] _regmap_update_bits+0x98/0xd6
+[86986.628929] [<ffffffff8099d44a>] regmap_update_bits_base+0x40/0x66
+[86986.628935] [<ffffffff809af9d8>] spacemit_restart_notify+0x68/0xb4
+[86986.628943] [<ffffffff80038680>] notifier_call_chain+0x3c/0x100
+[86986.628952] [<ffffffff8003882a>] atomic_notifier_call_chain+0x28/0x3e
+[86986.628959] [<ffffffff8003a35a>] do_kernel_restart+0x1e/0x26
+[86986.628966] [<ffffffff80004904>] machine_restart+0xc/0xe
+[86986.628974] [<ffffffff8003a472>] kernel_restart+0x6e/0x8c
+[86986.628980] [<ffffffff8003a6a0>] __do_sys_reboot+0xba/0x1a4
+[86986.628987] [<ffffffff8003a86c>] __riscv_sys_reboot+0x16/0x1e
+[86986.628995] [<ffffffff810a7d7c>] do_trap_ecall_u+0xba/0x12e
+[86986.629003] [<ffffffff810b11c0>] ret_from_exception+0x0/0x64
+[86986.629010] ---[ end trace 0000000000000000 ]---
+
+Change-Id: Iae244655e7f915c7ded42facfe46dea12404a395
+---
+ drivers/i2c/busses/i2c-k1x.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index eda79cfb2422..f0b6e9d36fe3 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1245,15 +1245,12 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)
+ 	 * software power down command to pmic via i2c interface
+ 	 * with local irq disabled, so just enter PIO mode at once
+ 	*/
+-	if (unlikely(irqs_disabled()
++	if (unlikely(spacemit_i2c_restart_notify == true
+ #ifdef CONFIG_DEBUG_FS
+ 		|| spacemit_i2c->dbgfs_mode == SPACEMIT_I2C_MODE_PIO
+ #endif
+ 		)) {
+ 
+-		if(!spacemit_i2c_restart_notify)
+-			dev_warn(spacemit_i2c->dev, "%s: i2c transfer called with irq off!\n", __func__);
+-
+ 		spacemit_i2c->msgs = msgs;
+ 		spacemit_i2c->num = num;
+ 
+-- 
+2.47.1
+

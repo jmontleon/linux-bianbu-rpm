@@ -1,0 +1,19 @@
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+index 9245ee407c29..cf5b9302c439 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+@@ -300,13 +300,12 @@
+ 
+ void dpu_dump_fps(struct spacemit_dpu *dpu)
+ {
+-	struct timespec64 cur_tm, tmp_tm;
++	struct timespec64 cur_tm;
+ 
+ 	if (!dpu->enable_dump_fps)
+ 		return;
+ 
+ 	ktime_get_real_ts64(&cur_tm);
+-	tmp_tm = timespec64_sub(cur_tm, dpu->last_tm);
+ 	dpu->last_tm.tv_sec = cur_tm.tv_sec;
+ 	dpu->last_tm.tv_nsec = cur_tm.tv_nsec;
+ }

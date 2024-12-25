@@ -1,0 +1,78 @@
+From 92fab1b03c79194f348c8649dee1d6ba314c6d0b Mon Sep 17 00:00:00 2001
+From: Dengbo <bo.deng@spacemit.com>
+Date: Wed, 29 Nov 2023 13:51:00 +0800
+Subject: [PATCH 0169/1189] gpu: Compatible with gpu umd driver
+
+Fix weston rendering null issue
+
+Change-Id: I41197262a052e911aabe44609658d6c93444b73e
+---
+ drivers/gpu/drm/img-rogue/Makefile         | 4 +++-
+ drivers/gpu/drm/img-rogue/config_kernel.h  | 8 ++++++--
+ drivers/gpu/drm/img-rogue/config_kernel.mk | 4 ++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/Makefile b/drivers/gpu/drm/img-rogue/Makefile
+index dddabeed1d0b..e78553430ce3 100644
+--- a/drivers/gpu/drm/img-rogue/Makefile
++++ b/drivers/gpu/drm/img-rogue/Makefile
+@@ -143,7 +143,9 @@ pvrsrvkm-y += \
+  dma_support.o \
+  vmm_type_stub.o \
+  spacemit/sysconfig.o \
+- spacemit/spacemit_init.o
++ spacemit/spacemit_init.o \
++ server_rgxkicksync_bridge.o \
++ rgxkicksync.o
+ pvrsrvkm-$(CONFIG_ARM)   += osfunc_arm.o
+ pvrsrvkm-$(CONFIG_ARM64) += osfunc_arm64.o
+ pvrsrvkm-$(CONFIG_EVENT_TRACING) += trace_events.o pvr_gputrace.o
+diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
+index c1850e8277f5..a35c16b120bb 100644
+--- a/drivers/gpu/drm/img-rogue/config_kernel.h
++++ b/drivers/gpu/drm/img-rogue/config_kernel.h
+@@ -2,13 +2,12 @@
+ #define RGX_FW_FILENAME "rgx.fw"
+ #define RGX_SH_FILENAME "rgx.sh"
+ #define PVR_BUILD_DIR "spacemit"
+-#define PVR_BUILD_TYPE "debug"
++#define PVR_BUILD_TYPE "release"
+ #define PVRSRV_MODNAME "pvrsrvkm"
+ #define PVRSYNC_MODNAME "pvr_sync"
+ #define SUPPORT_RGX 1
+ #define PVRSRV_MAX_DEVICES 4
+ #define PVRSRV_HWPERF_COUNTERS_PERBLK 12
+-#define DEBUG
+ #define RGX_BVNC_CORE_KM_HEADER "cores/rgxcore_km_36.29.52.182.h"
+ #define RGX_BNC_CONFIG_KM_HEADER "configs/rgxconfig_km_36.V.52.182.h"
+ #define PVRSRV_NEED_PVR_DPF
+@@ -196,3 +195,8 @@
+ #define PVRSRV_RGX_LOG2_CLIENT_CCB_MAX_SIZE_TDM 17
+ #define PVRSRV_RGX_LOG2_CLIENT_CCB_MAX_SIZE_RDM 15
+ #define SUPPORT_BUFFER_SYNC 1
++#define PVRSRV_ENABLE_SYNC_POISONING 1
++#define SUPPORT_RGXKICKSYNC_BRIDGE
++#define SUPPORT_TQ
++#define TRACK_FW_BOOT
++#define LMA
+diff --git a/drivers/gpu/drm/img-rogue/config_kernel.mk b/drivers/gpu/drm/img-rogue/config_kernel.mk
+index 83b78b3fabc2..7a87f2823526 100644
+--- a/drivers/gpu/drm/img-rogue/config_kernel.mk
++++ b/drivers/gpu/drm/img-rogue/config_kernel.mk
+@@ -19,11 +19,11 @@ override KERNEL_CROSS_COMPILE := riscv64-unknown-linux-gnu-
+ override WINDOW_SYSTEM := wayland
+ override PVRSRV_MODNAME := pvrsrvkm
+ override PVR_BUILD_DIR := spacemit
+-override PVR_BUILD_TYPE := debug
++override PVR_BUILD_TYPE := release
+ override SUPPORT_RGX := 1
+ override PVR_SYSTEM := spacemit
+ override PVR_LOADER :=
+-override BUILD := debug
++override BUILD := release
+ override SORT_BRIDGE_STRUCTS := 1
+ override DEBUGLINK := 1
+ override RGX_BNC := 36.V.52.182
+-- 
+2.47.1
+

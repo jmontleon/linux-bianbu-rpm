@@ -1,0 +1,41 @@
+From c52c6607a8b9933d90f4b8aa5822f899fb3a925e Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@spacemit.com>
+Date: Thu, 16 May 2024 16:12:47 +0800
+Subject: [PATCH 0662/1189] dts: enable hdmi sound card for deb2/MINI-PC
+
+Change-Id: I9fdc45a98acf5795d246b0adf684bb211d1f6e26
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 4 ++++
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 378285002b37..265faa63a740 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -734,3 +734,7 @@ &i2s0 {
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+         status = "okay";
+ };
++
++&sound_hdmi {
++	status = "okay";
++};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 3c97d82a8be3..2dc265057fad 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -933,6 +933,10 @@ &cls1_trip2 {
+ 	temperature = <115000>;
+ };
+ 
++&sound_hdmi {
++	status = "okay";
++};
++
+ &watchdog {
+ 	spa,wdt-enable-restart-handler;
+ };
+-- 
+2.47.1
+

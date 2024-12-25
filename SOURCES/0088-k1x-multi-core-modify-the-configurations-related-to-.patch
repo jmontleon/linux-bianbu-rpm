@@ -1,0 +1,98 @@
+From 449be72d6140e6f62800d5a8a7854d61593bdb04 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 21 Aug 2023 16:13:37 +0800
+Subject: [PATCH 0088/1189] k1x:multi-core: modify the configurations related
+ to multi-core
+
+Change-Id: I49aded2456b15fcbb5e251ee9f2339c493c2eb50
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 4 ++--
+ arch/riscv/configs/k1-x_fpga_defconfig | 3 +++
+ arch/riscv/kernel/cpu_ops_sbi.c        | 7 +++----
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index e56826126bd8..483e0c5f5324 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -155,7 +155,7 @@ &cpu1_intc  3 &cpu1_intc  7
+ 				&cpu2_intc  3 &cpu2_intc  7
+ 				&cpu3_intc  3 &cpu3_intc  7
+ 			>;
+-			reg = <0x0 0x14000000 0x0 0x00010000>;
++			reg = <0x0 0xE4000000 0x0 0x00010000>;
+ 			clint,has-no-64bit-mmio;
+ 		};
+ 
+@@ -169,7 +169,7 @@ &cpu1_intc 0xffffffff &cpu1_intc 9
+ 				&cpu2_intc 0xffffffff &cpu2_intc 9
+ 				&cpu3_intc 0xffffffff &cpu3_intc 9
+ 			>;
+-			reg = <0x0 0x10000000 0x0 0x04000000>;
++			reg = <0x0 0xE0000000 0x0 0x04000000>;
+ 			reg-names = "control";
+ 			riscv,max-priority = <7>;
+ 			riscv,ndev = <159>;
+diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
+index a6bd78539626..a93c66aa8f70 100644
+--- a/arch/riscv/configs/k1-x_fpga_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_defconfig
+@@ -28,6 +28,7 @@ CONFIG_SOC_SPACEMIT_K1X=y
+ CONFIG_SOC_SPACEMIT_K1_FPGA=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+@@ -50,6 +51,7 @@ CONFIG_FAILOVER=y
+ # CONFIG_ETHTOOL_NETLINK is not set
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_ARM_SCMI_PROTOCOL=y
+ # CONFIG_ARM_SCMI_POWER_DOMAIN is not set
+ # CONFIG_ARM_SCPI_POWER_DOMAIN is not set
+ CONFIG_MTD=y
+@@ -90,6 +92,7 @@ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
++CONFIG_CLINT_TIMER=y
+ # CONFIG_SURFACE_PLATFORMS is not set
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
+diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
+index bb69c108c2ef..f968e5186c8b 100644
+--- a/arch/riscv/kernel/cpu_ops_sbi.c
++++ b/arch/riscv/kernel/cpu_ops_sbi.c
+@@ -100,7 +100,6 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)
+ 	if (rc == SBI_HSM_STATE_STOPPED)
+ 		return 0;
+ #else
+-        int err;
+         unsigned long start, end;
+ 
+         /*
+@@ -112,8 +111,8 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)
+         end = start + msecs_to_jiffies(100);
+         do {
+                 rc = sbi_hsm_hart_get_status(hartid);
+-                if (err == SBI_HSM_STATE_STOPPED) {
+-                        pr_info("CPU%d killed (polled %d ms)\n", cpu,
++                if (rc == SBI_HSM_STATE_STOPPED) {
++                        pr_info("CPU%d killed (polled %d ms)\n", cpuid,
+                                 jiffies_to_msecs(jiffies - start));
+                         return 0;
+                 }
+@@ -122,7 +121,7 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)
+         } while (time_before(jiffies, end));
+ 
+         pr_warn("CPU%d may not have shut down cleanly (AFFINITY_INFO reports %d)\n",
+-                        cpu, err);
++                        cpuid, rc);
+         rc = -ETIMEDOUT;
+ 
+ #endif
+-- 
+2.47.1
+

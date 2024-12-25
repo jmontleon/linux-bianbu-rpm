@@ -1,0 +1,48 @@
+From c02e6d3695181df2ece0443cbc6b82806a0237a9 Mon Sep 17 00:00:00 2001
+From: goumin <min.gou@spacemit.com>
+Date: Wed, 5 Jun 2024 16:46:23 +0800
+Subject: [PATCH 0857/1189] Linux:For the Power button shutdown, add support
+ for displaying a system prompt.
+
+Change-Id: Ib9f6cf335155c0cd0ad3387ea37f2d558da3b6c4
+---
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index ef12ee374d36..c054d3087527 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -156,12 +156,29 @@ spacemit_lid:spacemit_lid {
+ 	};
+ };
+ 
++&pinctrl {
++	pinctrl_uart3_0: uart3_0_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_81,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))      /* uart3_txd */
++			K1X_PADCONF(GPIO_82,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))      /* uart3_rxd */
++			/* K1X_PADCONF(GPIO_83,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))*/  /* uart3_cts_n */
++			/* K1X_PADCONF(GPIO_84,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))*/  /* uart3_rts_n */
++		>;
++	};
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart0_2>;
+ 	status = "okay";
+ };
+ 
++&uart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart3_0>;
++	status = "okay";
++};
++
+ &pwm14 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm14_1>;
+-- 
+2.47.1
+

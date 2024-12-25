@@ -1,0 +1,34 @@
+From 7f00769edf0c3cd9b8339f2bef04105b25c34f6e Mon Sep 17 00:00:00 2001
+From: wangchu <chu.wang@spacemit.com>
+Date: Mon, 11 Sep 2023 15:28:39 +0800
+Subject: [PATCH 0104/1189] rm udma log
+
+Change-Id: Ic9338da9226e233a5ebf2cc49ca4d28e931442bb
+---
+ drivers/dma/udma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
+index ed22b2d30923..9a62f5e4b779 100644
+--- a/drivers/dma/udma.c
++++ b/drivers/dma/udma.c
+@@ -314,7 +314,6 @@ static int dma_memcpy(dma_addr_t dst, dma_addr_t src, size_t size)
+ 		return -1;
+ 	}
+ 
+-	dev_info(dma_dev->dev, "dma src:%lx  dst:%lx\n", (size_t)src, (size_t)dst);
+ 	dma_tx->callback		= dma_callback_func;//set call back function
+ 	dma_tx->callback_param		= NULL;
+ 	if (dma_submit_error(dma_tx->tx_submit(dma_tx))){
+@@ -405,7 +404,7 @@ static int dma_init(void)
+ 	dma_cap_set(DMA_MEMCPY, mask);//direction:memory to memory
+ 	dma_chan = dma_request_channel(mask,NULL,NULL); //request a dma channel
+ 	if (!dma_chan) {
+-		dev_err(dma_dev->dev, "dma request failed\n");
++		printk(KERN_ERR"dma request failed\n");
+ 		return -1;
+ 	}
+ 
+-- 
+2.47.1
+

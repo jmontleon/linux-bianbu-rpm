@@ -1,0 +1,33 @@
+From 8c1c8dd8a89c57623b8d5c3c2f86302491fe5344 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 21 Dec 2023 15:16:26 +0800
+Subject: [PATCH 0213/1189] k1x:pm: open the configuration of pm-domain driver
+
+Change-Id: Ie833850d1839f7fce59ff03f53ad6719774032b0
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 0dc7257d0c72..7832abc9f33d 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -31,6 +31,7 @@ CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
++CONFIG_PM=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+@@ -345,6 +346,7 @@ CONFIG_DMABUF_HEAPS_CMA=y
+ CONFIG_SPACEMIT_K1X_CCU=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
++CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+ CONFIG_RESET_CONTROLLER=y
+-- 
+2.47.1
+

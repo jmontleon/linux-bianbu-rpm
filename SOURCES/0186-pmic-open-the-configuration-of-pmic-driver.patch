@@ -1,0 +1,27 @@
+From c69693ec350bf93e2d8d86ec6127af0caf80a555 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Sun, 17 Dec 2023 17:05:13 +0800
+Subject: [PATCH 0186/1189] pmic: open the configuration of pmic driver
+
+Change-Id: I953077a8096b36e5143af557ed99e838ef9d6baa
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 7d0e5a00ced8..21e0a78a93a8 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -144,6 +144,9 @@ CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_K1X=y
+ # CONFIG_HWMON is not set
+ CONFIG_MFD_SYSCON=y
++CONFIG_MFD_SPACEMIT_PMIC=y
++CONFIG_REGULATOR=y
++CONFIG_REGULATOR_SPACEMIT=y
+ # CONFIG_MEDIA_CEC_SUPPORT is not set
+ CONFIG_MEDIA_SUPPORT=y
+ # CONFIG_DVB_NET is not set
+-- 
+2.47.1
+

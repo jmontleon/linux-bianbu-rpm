@@ -1,0 +1,29 @@
+From f525ba89c69c0c5f77931abe5ea19de044e21340 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 16 Apr 2024 16:41:03 +0800
+Subject: [PATCH 0597/1189] clean compile warning:
+
+drivers/remoteproc/k1x-rproc.c:585:13: warning: unused variable 'ret' [-Wunused-variable]
+  585 |         int ret;
+      |             ^~~
+
+Change-Id: I0f6a030c4a06287cddbeabf956406c4ed02d6e50
+---
+ drivers/remoteproc/k1x-rproc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index 6f8bbe1849ef..bc49fcc5ca5f 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -582,7 +582,6 @@ static int spacemit_rproc_suspend(struct device *dev)
+ 
+ static int spacemit_rproc_resume(struct device *dev)
+ {
+-	int ret;
+ 	unsigned int val;
+ 	struct rproc *rproc;
+ 	struct spacemit_rproc *srproc;
+-- 
+2.47.1
+

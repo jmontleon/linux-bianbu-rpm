@@ -1,0 +1,90 @@
+From 1de88a0a01e047c99ce2da4a7ad35c257e8b43b0 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 15 Apr 2024 16:13:06 +0800
+Subject: [PATCH 0587/1189] mmc: sdhci-of-k1x: add get aib clk, avoid disable
+ as clk_ignore_unused
+
+Change-Id: I31a759dc36d7993411f7cb228b39ef2eaf29a49c
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  5 +++--
+ drivers/mmc/host/sdhci-of-k1x.c        | 13 +++++++++++++
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8e369aac1a0f..6bcff6cc1d69 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1793,8 +1793,9 @@ sdhci0: sdh@d4280000 {
+ 					 <&reset RESET_SDH0>;
+ 			reset-names = "sdh_axi", "sdh0";
+ 			clocks = <&ccu CLK_SDH0>,
+-					 <&ccu CLK_SDH_AXI>;
+-			clock-names = "sdh-io", "sdh-core";
++					 <&ccu CLK_SDH_AXI>,
++					 <&ccu CLK_AIB>;
++			clock-names = "sdh-io", "sdh-core","aib-clk";
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
+ 			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index 9588dca97a10..e113c881d475 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -140,6 +140,7 @@ static struct sdhci_host* sdio_host;
+ struct sdhci_spacemit {
+ 	struct clk *clk_core;
+ 	struct clk *clk_io;
++	struct clk *clk_aib;
+ 	struct reset_control *reset;
+ 	unsigned char power_mode;
+ 	struct pinctrl_state *pin;
+@@ -1584,6 +1585,10 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ 	if (!IS_ERR(spacemit->clk_core))
+ 		clk_prepare_enable(spacemit->clk_core);
+ 
++	spacemit->clk_aib = devm_clk_get(dev, "aib-clk");
++	if (!IS_ERR(spacemit->clk_aib))
++		clk_prepare_enable(spacemit->clk_aib);
++
+ 	spacemit->reset = devm_reset_control_array_get_optional_shared(dev);
+ 	if (IS_ERR(spacemit->reset)) {
+ 		dev_err(dev, "failed to get reset control\n");
+@@ -1702,6 +1707,8 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ err_of_parse:
+ 	reset_control_assert(spacemit->reset);
+ err_rst_get:
++	if (!IS_ERR(spacemit->clk_aib))
++		clk_disable_unprepare(spacemit->clk_aib);
+ 	clk_disable_unprepare(spacemit->clk_io);
+ 	clk_disable_unprepare(spacemit->clk_core);
+ err_clk_get:
+@@ -1722,6 +1729,8 @@ static int spacemit_sdhci_remove(struct platform_device *pdev)
+ 	sdhci_remove_host(host, 1);
+ 
+ 	reset_control_assert(spacemit->reset);
++	if (!IS_ERR(spacemit->clk_aib))
++		clk_disable_unprepare(spacemit->clk_aib);
+ 	clk_disable_unprepare(spacemit->clk_io);
+ 	clk_disable_unprepare(spacemit->clk_core);
+ 
+@@ -1794,6 +1803,8 @@ static int spacemit_sdhci_runtime_suspend(struct device *dev)
+ 	spin_unlock_irqrestore(&host->lock, flags);
+ 
+ 	clk_disable_unprepare(spacemit->clk_io);
++	if (!IS_ERR(spacemit->clk_aib))
++		clk_disable_unprepare(spacemit->clk_aib);
+ 	if (!IS_ERR(spacemit->clk_core))
+ 		clk_disable_unprepare(spacemit->clk_core);
+ 
+@@ -1809,6 +1820,8 @@ static int spacemit_sdhci_runtime_resume(struct device *dev)
+ 	u32 reg;
+ 
+ 	clk_prepare_enable(spacemit->clk_io);
++	if (!IS_ERR(spacemit->clk_aib))
++		clk_prepare_enable(spacemit->clk_aib);
+ 	if (!IS_ERR(spacemit->clk_core))
+ 		clk_prepare_enable(spacemit->clk_core);
+ 
+-- 
+2.47.1
+

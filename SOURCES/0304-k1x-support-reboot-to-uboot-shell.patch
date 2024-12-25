@@ -1,0 +1,37 @@
+From 06446085ab7a13f3316f55088802e0b13a1fdc70 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Wed, 3 Jan 2024 21:15:03 +0800
+Subject: [PATCH 0304/1189] k1x: support reboot to uboot shell
+
+Change-Id: I1115df32a17312deac642c9fd2a11ce677481468
+---
+ drivers/soc/spacemit/spacemit_reboot.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/soc/spacemit/spacemit_reboot.c b/drivers/soc/spacemit/spacemit_reboot.c
+index 21286b4a72b4..7375ec3c387a 100755
+--- a/drivers/soc/spacemit/spacemit_reboot.c
++++ b/drivers/soc/spacemit/spacemit_reboot.c
+@@ -13,7 +13,9 @@
+ #include <linux/io.h>
+ 
+ #define RESET_REG_VALUE 0x55a
++#define RESET_REG_VALUE1 0x55f
+ static char *rebootcmd = "bootloader";
++static char *shellcmd = "uboot";
+ 
+ struct spacemit_reboot_ctrl {
+ 	void __iomem *base;
+@@ -29,6 +31,9 @@ static int k1x_reset_handler(struct notifier_block *this, unsigned long mode,
+ 	if(cmd != NULL && !strcmp(cmd, rebootcmd))
+ 		writel(RESET_REG_VALUE, info->base);
+ 
++	if(cmd != NULL && !strcmp(cmd, shellcmd))
++                writel(RESET_REG_VALUE1, info->base);
++
+ 	return NOTIFY_DONE;
+ }
+ 
+-- 
+2.47.1
+

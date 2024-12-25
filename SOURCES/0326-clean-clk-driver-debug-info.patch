@@ -1,0 +1,36 @@
+From 34418b8f60d78012392a25efc646a7568e5cecf1 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:18:30 +0800
+Subject: [PATCH 0326/1189] clean clk driver debug info
+
+Change-Id: I65b928f54020c3428d0ffbe9bfaa2cbb49894ea5
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 85b18f08919c..3ba4c8c7b648 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -1382,7 +1382,8 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)
+ 	int ret;
+ 	struct spacemit_k1x_clk *clk_info;
+ 	struct clk_hw_onecell_data *hw_clks = &spacemit_k1x_hw_clks;
+-	LOG_INFO("init clock");
++
++	//LOG_INFO("init clock");
+ 	if (of_device_is_compatible(np, "spacemit,k1x-clock")){
+ 		clk_info = &k1x_clock_controller;
+ 
+@@ -1435,7 +1436,7 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)
+ 		}
+ 	}
+ 	ret = spacemit_ccu_probe(np, clk_info, hw_clks);
+-	LOG_INFO("init clock finish");
++	//LOG_INFO("init clock finish");
+ 	if (ret)
+ 		return;
+ out:
+-- 
+2.47.1
+

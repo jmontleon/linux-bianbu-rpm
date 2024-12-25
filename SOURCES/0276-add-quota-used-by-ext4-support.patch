@@ -1,0 +1,26 @@
+From 47dced5c7a7fe5bfd65973dda3012310928e24a0 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Fri, 29 Dec 2023 20:02:04 +0800
+Subject: [PATCH 0276/1189] add quota used by ext4 support
+
+Change-Id: Ib837c7513a2e724d831766027d7feac53e0061bf
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index dd9fc84861ac..8d1080112600 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -392,6 +392,8 @@ CONFIG_XFS_POSIX_ACL=y
+ CONFIG_BTRFS_FS=y
+ CONFIG_BTRFS_FS_POSIX_ACL=y
+ CONFIG_F2FS_FS=y
++CONFIG_QUOTA=y
++CONFIG_QUOTA_NETLINK_INTERFACE=y
+ CONFIG_AUTOFS4_FS=y
+ CONFIG_FUSE_FS=y
+ CONFIG_OVERLAY_FS=y
+-- 
+2.47.1
+

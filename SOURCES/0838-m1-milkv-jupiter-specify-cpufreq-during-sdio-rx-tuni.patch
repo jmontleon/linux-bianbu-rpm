@@ -1,0 +1,26 @@
+From e2bd079abbc72fa494557c8e43e7cfe602375580 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 25 Jul 2024 17:37:30 +0800
+Subject: [PATCH 0838/1189] m1: milkv-jupiter: specify cpufreq during sdio rx
+ tuning
+
+Change-Id: I514e0885932f5012550fd93ab0b9615645180bf1
+---
+ arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+index 72dd1a73262a..983e75be1293 100644
+--- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+@@ -724,6 +724,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
++	spacemit,rx_tuning_freq = <1600000>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+-- 
+2.47.1
+

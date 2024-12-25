@@ -1,0 +1,52 @@
+From 179b386402dfccd3067e7a44d0d272a7820f0b12 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 16 Apr 2024 16:40:25 +0800
+Subject: [PATCH 0596/1189] clean compile warning:
+
+drivers/mailbox/spacemit/k1x-mailbox.c: In function 'k1x_mailbox_suspend_noirq':
+drivers/mailbox/spacemit/k1x-mailbox.c:230:34: warning: unused variable 'mbox' [-Wunused-variable]
+  230 |         struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+      |                                  ^~~~
+drivers/mailbox/spacemit/k1x-mailbox.c:229:13: warning: unused variable 'ret' [-Wunused-variable]
+  229 |         int ret;
+      |             ^~~
+
+Change-Id: Iebd6746118d5670754ea80c39136b4dfc8a139c4
+---
+ drivers/mailbox/spacemit/k1x-mailbox.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
+index 220f15d4b1a5..4a7d53e367b1 100644
+--- a/drivers/mailbox/spacemit/k1x-mailbox.c
++++ b/drivers/mailbox/spacemit/k1x-mailbox.c
+@@ -226,20 +226,24 @@ MODULE_DEVICE_TABLE(of, spacemit_mailbox_of_match);
+ #ifdef CONFIG_PM_SLEEP
+ static int k1x_mailbox_suspend_noirq(struct device *dev)
+ {
++#if 0
+ 	int ret;
+ 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+ 
+-//	ret = reset_control_assert(mbox->reset);
++	ret = reset_control_assert(mbox->reset);
++#endif
+ 
+ 	return 0;
+ }
+ 
+ static int k1x_mailbox_resume_noirq(struct device *dev)
+ {
++#if 0
+ 	int ret;
+ 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+ 
+-//	ret = reset_control_deassert(mbox->reset);
++	ret = reset_control_deassert(mbox->reset);
++#endif
+ 
+ 	return 0;
+ }
+-- 
+2.47.1
+

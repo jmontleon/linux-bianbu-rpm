@@ -1,0 +1,29 @@
+From 112d4bd444a73e5bd07943adbe894f5179be7b00 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 25 May 2023 14:56:16 +0800
+Subject: [PATCH 0030/1189] usb: dwc3: modify DMA capability
+
+Change-Id: Ibea2f1e19752884356d1dd8dff1d2813225ecf8d
+---
+ drivers/usb/dwc3/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index f219c82e9619..7565a44cc9d8 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -2197,6 +2197,11 @@ static int dwc3_probe(struct platform_device *pdev)
+ 		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+ 		if (ret)
+ 			goto err_disable_clks;
++	} else if(!dwc->sysdev_is_parent &&
++		IS_ENABLED(CONFIG_SOC_SPACEMIT_K1PRO)) {
++		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(40));
++		if (ret)
++			goto disable_clks;
+ 	}
+ 
+ 	/*
+-- 
+2.47.1
+

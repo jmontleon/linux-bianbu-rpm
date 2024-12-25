@@ -1,0 +1,33 @@
+From 021c336cb42e525aff32dd9eb7acb24f07d42392 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 7 Aug 2023 10:49:44 +0800
+Subject: [PATCH 0079/1189] ubi: kconfig: enable ubi configuration
+
+Change-Id: I30eb99906363f8cacd490998ba68242887cac2eb
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 4477997de09c..21e81c0e5093 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -64,6 +64,7 @@ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_SPI_NAND=y
+ CONFIG_MTD_SPI_NOR=y
++CONFIG_MTD_UBI=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_VIRTIO_BLK=y
+ CONFIG_BLK_DEV_NVME=y
+@@ -228,6 +229,7 @@ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_HUGETLBFS=y
+ # CONFIG_EFIVAR_FS is not set
++CONFIG_UBIFS_FS=y
+ CONFIG_NFS_FS=y
+ CONFIG_NFS_V4=y
+ CONFIG_NFS_SWAP=y
+-- 
+2.47.1
+

@@ -1,0 +1,35 @@
+From 5bf8aa7a9c0123da6bbf7d2be7ef21371813275b Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 14 Jun 2024 12:03:10 +0800
+Subject: [PATCH 0719/1189] config: enable kasan to memory debug
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: Ic41981e539ccb396f7e7c6860b36344c83ec98c5
+---
+ arch/riscv/configs/k1_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 0e80860184b9..a3ae0af87899 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -44,6 +44,7 @@ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1X=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=8
++CONFIG_THREAD_SIZE_ORDER=2
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_CPU_IDLE=y
+@@ -765,6 +766,8 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_FS=y
++CONFIG_KASAN=y
++CONFIG_KASAN_INLINE=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+-- 
+2.47.1
+

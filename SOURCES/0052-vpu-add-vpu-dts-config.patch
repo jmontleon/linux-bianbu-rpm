@@ -1,0 +1,32 @@
+From e8c86981899cee17480d612ab71133821d7e3a7d Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Tue, 27 Jun 2023 20:08:24 +0800
+Subject: [PATCH 0052/1189] vpu: add vpu dts config
+
+Change-Id: I5a74deacd96bd8b7398e9664840dad34d0fc97d3
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 1f123fd033ac..190dc5ea02e8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -539,6 +539,14 @@ esos_rproc: esos_rproc@0 {
+ 			firmware-name = "esos.elf";
+ 			status = "okay";
+ 		};
++
++		vpu: linlon-v5@0x2C100000 {
++			compatible = "arm china,linlon-v5";
++			reg = <0x0 0x2C100000 0x0 0x10000>;
++			interrupts = <120>;
++			interrupt-parent = <&intc>;
++			resets = <&reset RESET_VPU>;
++		};
+ 	};
+ 
+ 	pmu {
+-- 
+2.47.1
+

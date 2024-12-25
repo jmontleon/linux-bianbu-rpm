@@ -1,0 +1,104 @@
+From 87e1dbebb5fdcd3e51375a95538cfb987405cbba Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 4 Jan 2024 04:55:16 +0800
+Subject: [PATCH 0309/1189] fix dead-lock bug between reset and clk
+
+there is a global spinlock between reset and clk, if locked in reset,
+then print some debug information, maybe dead-lock when uart driver
+try to disable clk.
+
+Backtrace stopped: frame did not save the PC
+(gdb) thread 4
+[Switching to thread 4 (Thread 4)]
+#0  cpu_relax () at ./arch/riscv/include/asm/vdso/processor.h:22
+22      ./arch/riscv/include/asm/vdso/processor.h: No such file or directory.
+(gdb) bt
+#0  cpu_relax () at ./arch/riscv/include/asm/vdso/processor.h:22
+#1  arch_spin_lock (lock=lock@entry=0xffffffff81a57cd0 <enable_lock>) at ./include/asm-generic/spinlock.h:49
+#2  do_raw_spin_lock (lock=lock@entry=0xffffffff81a57cd0 <enable_lock>) at ./include/linux/spinlock.h:186
+#3  0xffffffff80aa21ce in __raw_spin_lock_irqsave (lock=0xffffffff81a57cd0 <enable_lock>) at ./include/linux/spinlock_api_smp.h:111
+#4  _raw_spin_lock_irqsave (lock=lock@entry=0xffffffff81a57cd0 <enable_lock>) at kernel/locking/spinlock.c:162
+#5  0xffffffff80563416 in clk_enable_lock () at ./include/linux/spinlock.h:325
+#6  0xffffffff805648de in clk_core_disable_lock (core=0xffffffd900512500) at drivers/clk/clk.c:1062
+#7  0xffffffff8056527e in clk_disable (clk=<optimized out>) at drivers/clk/clk.c:1084
+#8  clk_disable (clk=0xffffffd9048b5100) at drivers/clk/clk.c:1079
+#9  0xffffffff8059e5d4 in serial_pxa_console_write (co=<optimized out>, s=0xffffffff81a68250 <text> "[   14.708612] [RESET][spacemit_reset_set][373]:assert = 1, id = 59 \n", count=<optimized out>)
+    at drivers/tty/serial/pxa_k1x.c:1724
+#10 0xffffffff8004a34c in call_console_driver (dropped_text=0xffffffff81a68650 <dropped_text> "", len=69,
+    text=0xffffffff81a68250 <text> "[   14.708612] [RESET][spacemit_reset_set][373]:assert = 1, id = 59 \n", con=0xffffffff81964c10 <serial_pxa_console>) at kernel/printk/printk.c:1942
+#11 console_emit_next_record (con=con@entry=0xffffffff81964c10 <serial_pxa_console>, ext_text=<optimized out>, dropped_text=0xffffffff81a68650 <dropped_text> "", handover=0xffffffc80578baa7,
+    text=0xffffffff81a68250 <text> "[   14.708612] [RESET][spacemit_reset_set][373]:assert = 1, id = 59 \n") at kernel/printk/printk.c:2731
+#12 0xffffffff8004a49a in console_flush_all (handover=0xffffffc80578baa7, next_seq=<synthetic pointer>, do_cond_resched=false) at kernel/printk/printk.c:2793
+#13 console_unlock () at kernel/printk/printk.c:2860
+#14 0xffffffff8004b388 in vprintk_emit (facility=facility@entry=0, level=<optimized out>, level@entry=-1, dev_info=dev_info@entry=0x0, fmt=<optimized out>, args=<optimized out>)
+    at kernel/printk/printk.c:2268
+#15 0xffffffff8004b3ae in vprintk_default (fmt=<optimized out>, args=<optimized out>) at kernel/printk/printk.c:2279
+#16 0xffffffff8004b646 in vprintk (fmt=fmt@entry=0xffffffff813be470 "\001\066[RESET][%s][%d]:assert = %d, id = %d \n", args=args@entry=0xffffffc80578bbd8) at kernel/printk/printk_safe.c:50
+#17 0xffffffff80a880d6 in _printk (fmt=fmt@entry=0xffffffff813be470 "\001\066[RESET][%s][%d]:assert = %d, id = %d \n") at kernel/printk/printk.c:2289
+#18 0xffffffff80a90bb6 in spacemit_reset_set (rcdev=rcdev@entry=0xffffffff81f563a8 <k1x_reset_controller+8>, id=id@entry=59, assert=assert@entry=true) at drivers/reset/reset-spacemit-k1x.c:373
+#19 0xffffffff805823b6 in spacemit_reset_update (assert=true, id=59, rcdev=0xffffffff81f563a8 <k1x_reset_controller+8>) at drivers/reset/reset-spacemit-k1x.c:401
+#20 spacemit_reset_update (assert=true, id=59, rcdev=0xffffffff81f563a8 <k1x_reset_controller+8>) at drivers/reset/reset-spacemit-k1x.c:387
+#21 spacemit_reset_assert (rcdev=0xffffffff81f563a8 <k1x_reset_controller+8>, id=59) at drivers/reset/reset-spacemit-k1x.c:413
+#22 0xffffffff8058158e in reset_control_assert (rstc=0xffffffd902b2f280) at drivers/reset/core.c:485
+#23 0xffffffff807ccf96 in cpp_disable_clocks (cpp_dev=cpp_dev@entry=0xffffffd904cc9040) at drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c:960
+#24 0xffffffff807cd0b2 in cpp_release_hardware (cpp_dev=cpp_dev@entry=0xffffffd904cc9040) at drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c:1038
+#25 0xffffffff807cd990 in cpp_close_node (sd=<optimized out>, fh=<optimized out>) at drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c:1135
+#26 0xffffffff8079525e in subdev_close (file=0xffffffd906645d00) at drivers/media/v4l2-core/v4l2-subdev.c:105
+#27 0xffffffff8078e49e in v4l2_release (inode=<optimized out>, filp=0xffffffd906645d00) at drivers/media/v4l2-core/v4l2-dev.c:459
+#28 0xffffffff80154974 in __fput (file=0xffffffd906645d00) at fs/file_table.c:320
+#29 0xffffffff80154aa2 in ____fput (work=<optimized out>) at fs/file_table.c:348
+#30 0xffffffff8002677e in task_work_run () at kernel/task_work.c:179
+#31 0xffffffff800053b4 in resume_user_mode_work (regs=0xffffffc80578bee0) at ./include/linux/resume_user_mode.h:49
+#32 do_work_pending (regs=0xffffffc80578bee0, thread_info_flags=<optimized out>) at arch/riscv/kernel/signal.c:478
+#33 0xffffffff800039c6 in handle_exception () at arch/riscv/kernel/entry.S:374
+Backtrace stopped: frame did not save the PC
+(gdb) thread 1
+[Switching to thread 1 (Thread 1)]
+#0  0xffffffff80047e9c in arch_spin_lock (lock=lock@entry=0xffffffff81a57cd8 <g_cru_lock>) at ./include/asm-generic/spinlock.h:49
+49      ./include/asm-generic/spinlock.h: No such file or directory.
+(gdb) bt
+#0  0xffffffff80047e9c in arch_spin_lock (lock=lock@entry=0xffffffff81a57cd8 <g_cru_lock>) at ./include/asm-generic/spinlock.h:49
+#1  do_raw_spin_lock (lock=lock@entry=0xffffffff81a57cd8 <g_cru_lock>) at ./include/linux/spinlock.h:186
+#2  0xffffffff80aa21ce in __raw_spin_lock_irqsave (lock=0xffffffff81a57cd8 <g_cru_lock>) at ./include/linux/spinlock_api_smp.h:111
+#3  _raw_spin_lock_irqsave (lock=0xffffffff81a57cd8 <g_cru_lock>) at kernel/locking/spinlock.c:162
+#4  0xffffffff8056c4cc in ccu_mix_disable (hw=0xffffffff81956858 <sdh2_clk+120>) at ./include/linux/spinlock.h:325
+#5  0xffffffff80564832 in clk_core_disable (core=0xffffffd900529900) at drivers/clk/clk.c:1051
+#6  clk_core_disable (core=0xffffffd900529900) at drivers/clk/clk.c:1031
+#7  0xffffffff805648e6 in clk_core_disable_lock (core=0xffffffd900529900) at drivers/clk/clk.c:1063
+#8  0xffffffff8056527e in clk_disable (clk=<optimized out>) at drivers/clk/clk.c:1084
+#9  clk_disable (clk=clk@entry=0xffffffd904fafa80) at drivers/clk/clk.c:1079
+#10 0xffffffff808bb898 in clk_disable_unprepare (clk=0xffffffd904fafa80) at ./include/linux/clk.h:1085
+#11 0xffffffff808bb916 in spacemit_sdhci_runtime_suspend (dev=<optimized out>) at drivers/mmc/host/sdhci-of-k1x.c:1469
+#12 0xffffffff8066e8e2 in pm_generic_runtime_suspend (dev=<optimized out>) at drivers/base/power/generic_ops.c:25
+#13 0xffffffff80670398 in __rpm_callback (cb=cb@entry=0xffffffff8066e8ca <pm_generic_runtime_suspend>, dev=dev@entry=0xffffffd9018a2810) at drivers/base/power/runtime.c:395
+#14 0xffffffff806704b8 in rpm_callback (cb=cb@entry=0xffffffff8066e8ca <pm_generic_runtime_suspend>, dev=dev@entry=0xffffffd9018a2810) at drivers/base/power/runtime.c:529
+#15 0xffffffff80670bdc in rpm_suspend (dev=0xffffffd9018a2810, rpmflags=<optimized out>) at drivers/base/power/runtime.c:672
+#16 0xffffffff806716de in pm_runtime_work (work=0xffffffd9018a2948) at drivers/base/power/runtime.c:974
+#17 0xffffffff800236f4 in process_one_work (worker=worker@entry=0xffffffd9013ee9c0, work=0xffffffd9018a2948) at kernel/workqueue.c:2289
+#18 0xffffffff80023ba6 in worker_thread (__worker=0xffffffd9013ee9c0) at kernel/workqueue.c:2436
+#19 0xffffffff80028bb2 in kthread (_create=0xffffffd9017de840) at kernel/kthread.c:376
+#20 0xffffffff80003934 in handle_exception () at arch/riscv/kernel/entry.S:249
+Backtrace stopped: frame did not save the PC
+(gdb)
+
+Change-Id: Ia95b41ffd6c1893c9c5e9c1c9fc0c155ea902d2c
+---
+ drivers/reset/reset-spacemit-k1x.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 636aeea6cae4..efdf290e4589 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -370,8 +370,6 @@ static void spacemit_reset_set(struct reset_controller_dev *rcdev,
+ 	u32 value;
+ 	struct spacemit_reset *reset = to_spacemit_reset(rcdev);
+ 
+-	LOG_INFO("assert = %d, id = %d ", assert, id);
+-
+ 	value = spacemit_reset_read(reset, id);
+ 	if(assert == true) {
+ 		value &= ~ reset->signals[id].mask;
+-- 
+2.47.1
+

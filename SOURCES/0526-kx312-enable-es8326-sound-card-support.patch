@@ -1,0 +1,51 @@
+From fffcd840bd79272f2bee60596fafa9859666761a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Wed, 27 Mar 2024 11:28:50 +0800
+Subject: [PATCH 0526/1189] kx312: enable es8326 sound card support
+
+Change-Id: I0f7dda5a26086473786845129f59faeed8da7193
+---
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts | 23 +++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 2b497173ae3a..17afe1f49c91 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -189,6 +189,19 @@ mac_address1: mac_address1@6 {
+ 			reg = <0x6 6>;
+ 		};
+ 	};
++
++	es8326@19{
++		compatible = "everest,es8326";
++		reg = <0x19>;
++		#sound-dai-cells = <0>;
++		interrupt-parent = <&gpio>;
++		interrupts = <126 1>;
++		spk-ctl-gpio = <&gpio 127 0>;
++		everest,jack-detect-inverted;
++		everest,mic1-src = [44];
++		everest,mic2-src = [66];
++		status = "okay";
++	};
+ };
+ 
+ &i2c4 {
+@@ -627,3 +640,13 @@ &cls0_trip4 {
+ &cls1_trip4 {
+ 	temperature = <115000>;
+ };
++
++&spacemit_i2s {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sspa0_0>;
++	status = "okay";
++};
++
++&sound_es8326 {
++	status = "okay";
++};
+-- 
+2.47.1
+

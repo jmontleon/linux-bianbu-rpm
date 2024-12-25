@@ -1,0 +1,33 @@
+From 923ed1234f316813a355fb99b3c93478f90130c5 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 22 May 2023 12:39:14 +0800
+Subject: [PATCH 0025/1189] kconfig: enable cma for k1-pro board
+
+Change-Id: I71fef276009a8c84d704a210e6515a4db0b9b8c0
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 542267ac4e14..1dd9b6a758a6 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -30,6 +30,7 @@ CONFIG_RISCV_SBI_V01=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
++CONFIG_CMA=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+ CONFIG_UNIX=y
+@@ -134,6 +135,7 @@ CONFIG_X509_CERTIFICATE_PARSER=y
+ CONFIG_PKCS7_MESSAGE_PARSER=y
+ CONFIG_SYSTEM_TRUSTED_KEYRING=y
+ CONFIG_XZ_DEC=y
++CONFIG_DMA_CMA=y
+ CONFIG_PRINTK_TIME=y
+ CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
+ CONFIG_CONSOLE_LOGLEVEL_QUIET=8
+-- 
+2.47.1
+

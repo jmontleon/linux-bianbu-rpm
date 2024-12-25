@@ -1,0 +1,94 @@
+From c945f6464695d86b2e7e82d272bea809ab8f9408 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Sat, 2 Dec 2023 20:43:44 +0800
+Subject: [PATCH 0172/1189] k1x-dma:add clk&reset control in dma driver
+
+Change-Id: Idc9da0e335d7e27ae6c1108c4e27248c24a4a171
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  2 ++
+ drivers/dma/mmp_pdma_k1x.c             | 28 ++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 20ee9895f4c2..bbf70b5040ba 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -579,6 +579,8 @@ pdma0: pdma@d4000000 {
+ 			reg = <0x0 0xd4000000 0x0 0x4000>;
+ 			interrupts = <72>;
+ 			interrupt-parent = <&intc>;
++			clocks = <&ccu CLK_DMA>;
++			resets = <&reset RESET_DMA>;
+ 			#dma-cells= <2>;
+ 			#dma-channels = <16>;
+ 			max-burst-size = <64>;
+diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
+index 91dbc85f4f5a..8d45bccbbca1 100644
+--- a/drivers/dma/mmp_pdma_k1x.c
++++ b/drivers/dma/mmp_pdma_k1x.c
+@@ -15,6 +15,8 @@
+ #include <linux/device.h>
+ #include <linux/platform_data/mmp_dma.h>
+ #include <linux/dmapool.h>
++#include <linux/clk.h>
++#include <linux/reset.h>
+ #include <linux/of_device.h>
+ #include <linux/of_dma.h>
+ #include <linux/of.h>
+@@ -158,6 +160,8 @@ struct mmp_pdma_device {
+ 	int				nr_reserved_channels;
+ 	struct reserved_chan		*reserved_channels;
+ 	s32				lpm_qos;
++	struct clk			*clk;
++	struct reset_control		*resets;
+ 	struct freq_qos_request		qos_idle;
+ 	int				max_burst_size;
+ 	void __iomem			*base;
+@@ -1285,6 +1289,9 @@ static int mmp_pdma_remove(struct platform_device *op)
+ 
+ 	dma_async_device_unregister(&pdev->device);
+ 
++	reset_control_assert(pdev->resets);
++	clk_disable_unprepare(pdev->clk);
++
+ 	kfree(pdev->reserved_channels);
+ 	platform_set_drvdata(op, NULL);
+ 
+@@ -1401,6 +1408,23 @@ static int mmp_pdma_probe(struct platform_device *op)
+ 	if (IS_ERR(pdev->base))
+ 		return PTR_ERR(pdev->base);
+ 
++	pdev->clk = devm_clk_get(pdev->dev,NULL);
++	if(IS_ERR(pdev->clk))
++		return PTR_ERR(pdev->clk);
++
++	ret = clk_prepare_enable(pdev->clk);
++	if (ret)
++		return dev_err_probe(pdev->dev, ret, "could not enable dma bus clock\n");
++
++	pdev->resets = devm_reset_control_get_optional(pdev->dev,NULL);
++	if(IS_ERR(pdev->resets)) {
++		ret = PTR_ERR(pdev->resets);
++		goto err_rst;
++	}
++	ret = reset_control_deassert(pdev->resets);
++	if(ret)
++		goto err_rst;
++
+ 	of_id = of_match_device(mmp_pdma_dt_ids, pdev->dev);
+ 
+ 	if (of_id) {
+@@ -1552,6 +1576,10 @@ static int mmp_pdma_probe(struct platform_device *op)
+ 	platform_set_drvdata(op, pdev);
+ 	dev_info(pdev->device.dev, "initialized %d channels\n", dma_channels);
+ 	return 0;
++
++err_rst:
++	clk_disable_unprepare(pdev->clk);
++	return ret;
+ }
+ 
+ #ifdef CONFIG_PM
+-- 
+2.47.1
+

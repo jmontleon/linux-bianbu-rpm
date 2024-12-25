@@ -1,0 +1,111 @@
+From b775703a132e9b48472afe3212af645b6f67d4d0 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 29 Jun 2023 09:06:23 +0800
+Subject: [PATCH 0057/1189] scmi: support arm's scmi protocol for spacemit
+ platform
+
+Change-Id: Ib797b2696207a5c1bf10a5feadfcad0814e196d3
+---
+ .../boot/dts/spacemit/spacemit-scmi.dtsi      | 46 +++++++++++++++++++
+ arch/riscv/configs/k1-pro_fpga_defconfig      |  4 ++
+ drivers/firmware/arm_scmi/Kconfig             |  2 +-
+ 3 files changed, 51 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+new file mode 100644
+index 000000000000..cb0da2c8e700
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+@@ -0,0 +1,46 @@
++/ {
++	sram {
++		compatible = "mmio-sram";
++		/* 256k */
++		reg = <0x0 0x2f900000 0x0 0x40000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x2f900000 0x40000>;
++
++		/* channel 0*/
++		cpu_scp_lpri0: scp-sram@2f900000 {
++			compatible = "arm,scmi-shmem";
++			reg = <0x0 0x80>;
++		};
++
++		/* channel 1*/
++		cpu_scp_lpri1: scp-sram@2f900080 {
++			compatible = "arm,scmi-shmem";
++			reg = <0x80 0x80>;
++		};
++
++		/* channel 2*/
++		cpu_scp_lpri2: scp-sram@2f900100 {
++			compatible = "arm,scmi-shmem";
++			reg = <0x100 0x80>;
++		};
++
++		/* channel 3*/
++		cpu_scp_lpri3: scp-sram@2f900180 {
++			compatible = "arm,scmi-shmem";
++			reg = <0x180 0x80>;
++		};
++	};
++
++	firmware {
++		scmi {
++			compatible = "arm,scmi";
++			mbox-names = "tx", "rx";
++			mboxes = <&mailbox 0 &mailbox 2>;
++			shmem = <&cpu_scp_lpri0 &cpu_scp_lpri0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++	};
++};
++
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index b4c1ba470ce7..4a2eb68d581e 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -48,6 +48,8 @@ CONFIG_PCI=y
+ CONFIG_PCIE_SPACEMIT=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_ARM_SCMI_PROTOCOL=m
++# CONFIG_ARM_SCMI_POWER_DOMAIN is not set
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_SPI_NOR=y
+@@ -56,6 +58,7 @@ CONFIG_VIRTIO_BLK=y
+ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_MULTIPATH=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
++CONFIG_SRAM=y
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+@@ -164,6 +167,7 @@ CONFIG_SPACEMIT_MAILBOX=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_REMOTEPROC=y
+ CONFIG_SPACEMIT_REMOTEPROC=y
++# CONFIG_RESET_SCMI is not set
+ # CONFIG_NVMEM is not set
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+index dabd874641d0..1af5a73a6c96 100644
+--- a/drivers/firmware/arm_scmi/Kconfig
++++ b/drivers/firmware/arm_scmi/Kconfig
+@@ -3,7 +3,7 @@ menu "ARM System Control and Management Interface Protocol"
+ 
+ config ARM_SCMI_PROTOCOL
+ 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
+-	depends on ARM || ARM64 || COMPILE_TEST
++	depends on ARM || ARM64 || COMPILE_TEST || SOC_SPACEMIT
+ 	help
+ 	  ARM System Control and Management Interface (SCMI) protocol is a
+ 	  set of operating system-independent software interfaces that are
+-- 
+2.47.1
+

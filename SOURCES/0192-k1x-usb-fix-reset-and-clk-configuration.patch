@@ -1,0 +1,37 @@
+From 17371a55c14050a520ace8423db90b8cb7717500 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 18 Dec 2023 16:10:48 +0800
+Subject: [PATCH 0192/1189] k1x: usb: fix reset and clk configuration
+
+Change-Id: Ifa39469bb29425a9144b8904b12e600c6432a5f8
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 687941d10c52..dbb94923050b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1352,7 +1352,7 @@ usbphy: usbphy@c0940000 {
+ 			reg = <0x0 0xc0940000 0x0 0x200>;
+ 			spacemit,phy-name = "mv-usb-phy";
+ 			spacemit,pll-lock-bypass;
+-			clocks = <&ccu CLK_USB_P1>;
++			clocks = <&ccu CLK_USB_AXI>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1363,8 +1363,8 @@ udc: udc@c0900100 {
+ 			interrupt-parent = <&intc>;
+ 			spacemit,udc-name = "mv-udc";
+ 			spacemit,otg-force-a-bus-req;
+-			resets = <&reset RESET_USBP1_AXI>;
+-			clocks = <&ccu CLK_USB_P1>;
++			resets = <&reset RESET_USB_AXI>;
++			clocks = <&ccu CLK_USB_AXI>;
+ 			usb-phy = <&usbphy>;
+ 			status = "disabled";
+ 		};
+-- 
+2.47.1
+

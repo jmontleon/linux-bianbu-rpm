@@ -1,0 +1,31 @@
+From dace18526150294c27cd2c36e5fc7e57273bf781 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Sun, 28 Apr 2024 21:36:30 +0800
+Subject: [PATCH 0618/1189] nvme: change the segment size of io request queue
+ for nvme on k1
+
+  Because the swiotlb buffer size is 512k, for nvme ssd devices,
+  the maximum length of a single dma sg in the io request queue can only be 512k.
+
+Change-Id: I7b02572742dd5b9ff26de6e469dce71c20741aae
+---
+ drivers/nvme/host/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index a970168a3014..ef4d273de693 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2188,6 +2188,9 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
+ 	nvme_set_chunk_sectors(ns, id, &lim);
+ 	if (!nvme_update_disk_info(ns, id, &lim))
+ 		capacity = 0;
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++	blk_queue_max_segment_size(ns->disk->queue, 0x80000);
++#endif
+ 	nvme_config_discard(ns, &lim);
+ 	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
+ 	    ns->head->ids.csi == NVME_CSI_ZNS)
+-- 
+2.47.1
+

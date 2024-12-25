@@ -1,0 +1,141 @@
+From beb03c58bb83e87a8a4be68564340b7b0dd62238 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 31 Oct 2023 10:52:03 +0800
+Subject: [PATCH 0138/1189] k1x: cpuidle: synchronize relevant patches from
+ k1pro
+
+Change-Id: If44f5885a84e0575084d951cafdcea92a2a124e7
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 44 +++++++++++++++++++++++++-
+ drivers/clocksource/timer-k1x.c        |  2 +-
+ 2 files changed, 44 insertions(+), 2 deletions(-)
+ mode change 100755 => 100644 drivers/clocksource/timer-k1x.c
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 0560b405e126..bb9a1660c5c5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -37,12 +37,15 @@ cpu_0: cpu@0 {
+ 			cpu-tlb = "1024 4-ways";
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
++			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++
+ 			cpu0_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+ 				compatible = "riscv,cpu-intc";
+ 				interrupt-controller;
+ 			};
+ 		};
++
+ 		cpu_1: cpu@1 {
+ 			device_type = "cpu";
+ 			reg = <1>;
+@@ -58,6 +61,7 @@ cpu_1: cpu@1 {
+ 			cpu-tlb = "1024 4-ways";
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
++			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+ 
+ 			cpu1_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -65,6 +69,7 @@ cpu1_intc: interrupt-controller {
+ 				interrupt-controller;
+ 			};
+ 		};
++
+ 		cpu_2: cpu@2 {
+ 			device_type = "cpu";
+ 			reg = <2>;
+@@ -80,6 +85,7 @@ cpu_2: cpu@2 {
+ 			cpu-tlb = "1024 4-ways";
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
++			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+ 
+ 			cpu2_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -87,6 +93,7 @@ cpu2_intc: interrupt-controller {
+ 				interrupt-controller;
+ 			};
+ 		};
++
+ 		cpu_3: cpu@3 {
+ 			device_type = "cpu";
+ 			reg = <3>;
+@@ -102,6 +109,7 @@ cpu_3: cpu@3 {
+ 			cpu-tlb = "1024 4-ways";
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
++			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+ 
+ 			cpu3_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -109,6 +117,40 @@ cpu3_intc: interrupt-controller {
+ 				interrupt-controller;
+ 			};
+ 		};
++
++		idle-states {
++			CPU_NONRET: cpu-nonret {
++				compatible = "riscv,idle-state";
++				idle-state-name = "riscv,cpu-nonret";
++				riscv,sbi-suspend-param = <0x90000000>;
++				local-timer-stop;
++				entry-latency-us = <200>;
++				exit-latency-us = <500>;
++				min-residency-us = <950>;
++			};
++
++			CLUSTER_NONRET: cluster-nonret {
++				compatible = "riscv,idle-state";
++				idle-state-name = "riscv,cluster-nonret";
++				riscv,sbi-suspend-param = <0x91000000>;
++				local-timer-stop;
++				entry-latency-us = <600>;
++				exit-latency-us = <1100>;
++				min-residency-us = <2700>;
++				wakeup-latency-us = <1500>;
++			};
++
++			TOP_NONRET: top-nonret {
++				compatible = "riscv,idle-state";
++				idle-state-name = "riscv,top-nonret";
++				riscv,sbi-suspend-param = <0x92000000>;
++				local-timer-stop;
++				entry-latency-us = <700>;
++				exit-latency-us = <1200>;
++				min-residency-us = <2800>;
++				wakeup-latency-us = <1600>;
++			};
++		};
+ 	};
+ 
+ 	clocks {
+@@ -448,7 +490,7 @@ timer0: timer@d4014000 {
+ 			reg = <0x0 0xd4014000 0x0 0xc8>;
+ 			spacemit,timer-id = <0>;
+ 			spacemit,timer-fastclk-frequency = <3250000>;
+-			spacemit,timer-apb-frequency = <52000000>;
++			spacemit,timer-apb-frequency = <10000000>;
+ 			spacemit,timer-frequency = <32768>;
+ 			clocks = <&pll_clk_timer>;
+ 			status = "ok";
+diff --git a/drivers/clocksource/timer-k1x.c b/drivers/clocksource/timer-k1x.c
+old mode 100755
+new mode 100644
+index 765e06164798..8daddf9cc46f
+--- a/drivers/clocksource/timer-k1x.c
++++ b/drivers/clocksource/timer-k1x.c
+@@ -531,7 +531,7 @@ int __init spacemit_timer_setup(struct spacemit_timer_evt *evt)
+ 		evt->irqa.name = "broadcast-timer";
+ 		evt->ced.features |= CLOCK_EVT_FEAT_DYNIRQ;
+ 		evt->ced.cpumask = cpu_possible_mask;
+-		ret = request_irq(evt->ced.irq, timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL, "broadcast-timer", evt->irqa.dev_id);
++		ret = request_irq(evt->ced.irq, timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL | IRQF_ONESHOT, "broadcast-timer", evt->irqa.dev_id);
+ 		if (ret < 0)
+ 			return ret;
+ 		clockevents_config_and_register(&evt->ced,
+-- 
+2.47.1
+

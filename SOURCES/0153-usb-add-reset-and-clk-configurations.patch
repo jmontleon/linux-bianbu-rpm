@@ -1,0 +1,141 @@
+From 6b9a240fa0b02067f778b916bd7bbe4feac56344 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 17 Nov 2023 15:49:08 +0800
+Subject: [PATCH 0153/1189] usb: add reset and clk configurations
+
+Change-Id: Iaf2eafd8ca61504ef958bbcb0cfc77d2f74c029b
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 18 +++++++-----------
+ drivers/usb/dwc3/dwc3-spacemit.c       |  2 +-
+ drivers/usb/gadget/udc/k1x_ci_udc.h    |  3 +++
+ drivers/usb/gadget/udc/k1x_udc_core.c  | 16 +++++++++++++++-
+ 4 files changed, 26 insertions(+), 13 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 30ac61cb020f..4f94b38b2c04 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -296,13 +296,6 @@ pll_clk_emac_ptp: clock-pll_clk_emac_ptp {
+ 			clock-output-names = "pll_clk_emac_ptp";
+ 		};
+ 
+-		pll_clk_usb: clock-pll_clk_usb {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <50000000>;
+-			clock-output-names = "pll_clk_usb";
+-		};
+-
+ 		pll_clk_pwm: clock-pll_clk_pwm {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -698,7 +691,7 @@ usbphy: usbphy@c0940000 {
+ 			reg = <0x0 0xc0940000 0x0 0x200>;
+ 			spacemit,phy-name = "mv-usb-phy";
+ 			spacemit,pll-lock-bypass;
+-			clocks = <&pll_clk_usb>;
++			clocks = <&ccu CLK_USB_P1>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -709,7 +702,8 @@ udc: udc@c0900100 {
+ 			interrupt-parent = <&intc>;
+ 			spacemit,udc-name = "mv-udc";
+ 			spacemit,otg-force-a-bus-req;
+-			clocks = <&pll_clk_usb>;
++			resets = <&reset RESET_USBP1_AXI>;
++			clocks = <&ccu CLK_USB_P1>;
+ 			usb-phy = <&usbphy>;
+ 			status = "disabled";
+ 		};
+@@ -718,8 +712,10 @@ usbdrd3: usb3@0 {
+ 			compatible = "spacemit,k1-x-dwc3";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+-			//resets = <&reset RESET_USB31>;
+-			//reset-names = "ctl_rst";
++			resets = <&reset RESET_USB3_0>;
++			reset-names = "ctl_rst";
++			clocks = <&ccu CLK_USB30>;
++			clock-names = "usbdrd30";
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <149>;
+ 			ranges;
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 0f4ddbaef791..6da8db13f776 100755
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -157,7 +157,7 @@ static const struct dwc3_spacemit_driverdata spacemit_k1pro_drvdata = {
+ 
+ static const struct dwc3_spacemit_driverdata spacemit_k1x_drvdata = {
+ 	.clk_names = { "usbdrd30" },
+-	.num_clks = 0,
++	.num_clks = 1,
+ 	.suspend_clk_idx = -1,
+ };
+ 
+diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
+index 04dc2479682b..0eedd4de92d2 100755
+--- a/drivers/usb/gadget/udc/k1x_ci_udc.h
++++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
+@@ -234,6 +234,9 @@ struct mv_udc {
+ 	/* some SOC has mutiple clock sources for USB*/
+ 	struct clk      *clk;
+ 
++	/* reset control for USB */
++	struct reset_control *reset;
++
+ 	/* power supply used to detect charger type */
+ 	struct power_supply udc_psy;
+ 
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index 546292b3c778..9dcd8b769e9c 100755
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -35,6 +35,7 @@
+ #include <asm/unaligned.h>
+ #include <dt-bindings/usb/k1x_ci_usb.h>
+ #include <linux/power_supply.h>
++#include <linux/reset.h>
+ #include <linux/extcon.h>
+ #include <linux/extcon-provider.h>
+ 
+@@ -2296,7 +2297,7 @@ static int mv_udc_remove(struct platform_device *pdev)
+ 			udc->ep_dqh, udc->ep_dqh_dma);
+ 
+ 	mv_udc_disable(udc);
+-
++	reset_control_assert(udc->reset);
+ 	clk_unprepare(udc->clk);
+ 
+ 	/* free dev, wait for the release() finished */
+@@ -2403,6 +2404,17 @@ static int mv_udc_probe(struct platform_device *pdev)
+ 		return retval;
+ 	}
+ 
++	udc->reset = devm_reset_control_array_get_optional_shared(&pdev->dev);
++	if (IS_ERR(udc->reset)) {
++		dev_err(&pdev->dev, "failed to get reset control\n");
++		retval = PTR_ERR(udc->reset);
++		goto err_rst_get;
++	}
++
++	retval = reset_control_deassert(udc->reset);
++	if (retval)
++		goto err_rst_get;
++
+ 	udc->op_regs =
+ 		(struct mv_op_regs __iomem *)((unsigned long)udc->cap_regs
+ 		+ (readl(&udc->cap_regs->caplength_hciversion)
+@@ -2580,6 +2592,8 @@ static int mv_udc_probe(struct platform_device *pdev)
+ 	dma_free_coherent(&pdev->dev, udc->ep_dqh_size,
+ 			udc->ep_dqh, udc->ep_dqh_dma);
+ err_disable_clock:
++	reset_control_assert(udc->reset);
++err_rst_get:
+ 	mv_udc_disable_internal(udc);
+ 	the_controller = NULL;
+ 	return retval;
+-- 
+2.47.1
+

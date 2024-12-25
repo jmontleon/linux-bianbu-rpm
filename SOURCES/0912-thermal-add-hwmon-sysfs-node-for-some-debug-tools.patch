@@ -1,0 +1,36 @@
+From 1324eb6eadda8f1cc95937314fac1e9677923cec Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 13 Aug 2024 14:05:59 +0800
+Subject: [PATCH 0912/1189] thermal: add hwmon sysfs node for some debug tools
+
+Change-Id: I812d0b4d77603615e47db19952a4965deba475dc
+---
+ drivers/thermal/k1x-thermal.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/thermal/k1x-thermal.c b/drivers/thermal/k1x-thermal.c
+index 02b8a577daed..9c66a0a23b1b 100644
+--- a/drivers/thermal/k1x-thermal.c
++++ b/drivers/thermal/k1x-thermal.c
+@@ -9,6 +9,7 @@
+ #include <linux/of_device.h>
+ #include <linux/thermal.h>
+ #include <linux/reset.h>
++#include "thermal_hwmon.h"
+ #include "k1x-thermal.h"
+ 
+ #define MAX_SENSOR_NUMBER		5
+@@ -303,6 +304,10 @@ static int k1x_thermal_probe(struct platform_device *pdev)
+ 			return ret;
+ 		}
+ 
++		/* register the thermal sensor to hwmon */
++		if (devm_thermal_add_hwmon_sysfs(s->sdesc[i].tzd))
++			dev_warn(dev, "Failed to add hwmon sysfs attributes\n");
++
+ 		/* enable sensor low & higth threshold interrupt */
+ 		enable_sensor_irq(s->sdesc + i);
+ 	}
+-- 
+2.47.1
+

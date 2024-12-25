@@ -1,0 +1,27 @@
+From acee55c35f4533e45bb56b5bf674e7ead988ad1d Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sun, 31 Dec 2023 12:16:34 +0800
+Subject: [PATCH 0289/1189] clear compile warning
+
+Change-Id: I7b4081af91167cac3465c3bc69a361b5cbbce578
+---
+ drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+index c44ec6e736e6..fc3f70ac129d 100755
+--- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
++++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+@@ -641,8 +641,7 @@ static int cam_sensor_read(struct cam_i2c_data *data,
+ err:
+ 	cam_info("%s: Failed reading register 0x%02x!", __func__, reg);
+ #if 1
+-	int i;
+-	for (i=0; i<1000; i++) {
++	for (int i=0; i<1000; i++) {
+ 		msleep(1000);
+ 		if (i % 60 == 0)
+ 			cam_info("sleep %ds", i);
+-- 
+2.47.1
+

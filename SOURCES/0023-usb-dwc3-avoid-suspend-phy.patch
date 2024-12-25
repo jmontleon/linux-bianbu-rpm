@@ -1,0 +1,26 @@
+From 57ff28bca65c2d8fdb4a94b6bd47fc07d01a2e01 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 16 May 2023 16:29:33 +0800
+Subject: [PATCH 0023/1189] usb: dwc3: avoid suspend phy
+
+Change-Id: I3a9a77a5aa8976be0b9ae6cf32fdc4b15fa5ffc2
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 81a51bb8f69f..ae3ae0fad51b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -293,6 +293,8 @@ dwc3@2cb00000 {
+ 				maximum-speed = "high-speed";
+ 				snps,hsphy_interface = "ulpi";
+ 				dr_mode = "otg";
++				snps,dis_u2_susphy_quirk;
++				snps,dis_u3_susphy_quirk;
+ 			};
+ 		};
+ 
+-- 
+2.47.1
+

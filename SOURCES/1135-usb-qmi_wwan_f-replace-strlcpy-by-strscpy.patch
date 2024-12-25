@@ -1,0 +1,28 @@
+From ef5c22bb5f9bc3326c67fc5afd0a7a2a15999621 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:48:30 +0800
+Subject: [PATCH 1135/1189] usb:qmi_wwan_f: replace strlcpy by strscpy
+
+Change-Id: I73d6f2e80edc81de7f32852942fe944bc4d28ed4
+---
+ drivers/net/usb/qmi_wwan_f.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
+index 08dd67d30996..3f540f3c0cf8 100644
+--- a/drivers/net/usb/qmi_wwan_f.c
++++ b/drivers/net/usb/qmi_wwan_f.c
+@@ -1761,8 +1761,8 @@ static void ql_net_get_drvinfo(struct net_device *net, struct ethtool_drvinfo *i
+ {
+     /* Inherit standard device info */
+     usbnet_get_drvinfo(net, info);
+-    strlcpy(info->driver, driver_name, sizeof(info->driver));
+-    strlcpy(info->version, VERSION_NUMBER, sizeof(info->version));
++    strscpy(info->driver, driver_name, sizeof(info->driver));
++    strscpy(info->version, VERSION_NUMBER, sizeof(info->version));
+ }
+ 
+ static struct ethtool_ops ql_net_ethtool_ops;
+-- 
+2.47.1
+

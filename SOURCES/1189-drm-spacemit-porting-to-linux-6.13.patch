@@ -1,0 +1,72 @@
+From ea415f90ab40a6e76a3fac954d5abfcd7934edc7 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 6 Dec 2024 13:46:56 +0800
+Subject: [PATCH 1189/1189] drm: spacemit: porting to linux-6.13
+
+Change-Id: Ifa9dd04764dc4644ee7061f0871055aadb600f0e
+---
+ drivers/gpu/drm/spacemit/Kconfig        | 1 +
+ drivers/gpu/drm/spacemit/spacemit_drm.c | 8 +++++---
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/Kconfig b/drivers/gpu/drm/spacemit/Kconfig
+index 491298d6df0d..f213b586010f 100644
+--- a/drivers/gpu/drm/spacemit/Kconfig
++++ b/drivers/gpu/drm/spacemit/Kconfig
+@@ -10,6 +10,7 @@ config DRM_SPACEMIT
+ 	select DRM_PANEL
+ 	select VIDEOMODE_HELPERS
+ 	select BACKLIGHT_CLASS_DEVICE
++	select DRM_CLIENT_SELECTION
+ 	select GKI_FIX_WORKAROUND if DRM_SPACEMIT=m
+ 	depends on DRM
+ 	default n
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index de942a9bf89f..f408f85da95a 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -6,13 +6,14 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_crtc_helper.h>
+-#include <drm/drm_aperture.h>
++#include <linux/aperture.h>
+ #include <drm/drm_framebuffer.h>
+ #include <drm/drm_debugfs.h>
+ #include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_fbdev_dma.h>
+ #include <drm/drm_ioctl.h>
+ #include <drm/drm_of.h>
++#include <drm/drm_client_setup.h>
+ #include <linux/component.h>
+ #include <linux/mutex.h>
+ #include <linux/of_graph.h>
+@@ -201,6 +202,7 @@ static struct drm_driver spacemit_drm_drv = {
+ 	.fops = &spacemit_drm_fops,
+ 	.dumb_create = spacemit_gem_dumb_create,
+ 	.gem_prime_import_sg_table = spacemit_gem_prime_import_sg_table,
++	DRM_FBDEV_DMA_DRIVER_OPS,
+ #ifdef CONFIG_DEBUG_FS
+ 	.debugfs_init		= spacemit_drm_debugfs_init,
+ #endif
+@@ -220,7 +222,7 @@ static int spacemit_drm_bind(struct device *dev)
+ 
+ 	DRM_DEBUG("%s()\n", __func__);
+ 	/* Remove existing drivers that may own the framebuffer memory. */
+-	err = drm_aperture_remove_framebuffers(&spacemit_drm_drv);
++	err =aperture_remove_all_conflicting_devices(spacemit_drm_drv.name);
+ 	if (err) {
+ 		DRM_ERROR("Failed to remove existing framebuffers - %d.\n", err);
+ 		return err;
+@@ -266,7 +268,7 @@ static int spacemit_drm_bind(struct device *dev)
+ 	if (err < 0)
+ 		goto err_kms_helper_poll_fini;
+ 
+-	drm_fbdev_dma_setup(drm, 32);
++	drm_client_setup(drm, NULL);
+ 
+ 	return 0;
+ 
+-- 
+2.47.1
+

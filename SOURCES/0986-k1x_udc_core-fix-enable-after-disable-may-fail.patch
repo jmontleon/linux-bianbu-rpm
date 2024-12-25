@@ -1,0 +1,38 @@
+From 1b0bb2d7cb45f326739761c30c32e343ffc0abb1 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Fri, 30 Aug 2024 17:54:05 +0800
+Subject: [PATCH 0986/1189] k1x_udc_core: fix enable after disable may fail
+
+Change-Id: Iadbbed7fbc707f47b2b8b694928398baefbc54f8
+---
+ drivers/usb/gadget/udc/k1x_udc_core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index f05ef390979f..8686609442be 100644
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -626,6 +626,8 @@ static int mv_ep_enable(struct usb_ep *_ep,
+ 	return -EINVAL;
+ }
+ 
++static void mv_ep_fifo_flush(struct usb_ep *_ep);
++
+ static int  mv_ep_disable(struct usb_ep *_ep)
+ {
+ 	struct mv_udc *udc;
+@@ -675,6 +677,11 @@ static int  mv_ep_disable(struct usb_ep *_ep)
+ 	/* nuke all pending requests (does flush) */
+ 	nuke(ep, -ESHUTDOWN);
+ 
++	/* prevent done in nuke initiate prime again,
++	 * which will cause next ep_enable fail.
++	 */
++	mv_ep_fifo_flush(_ep);
++
+ 	ep->ep.desc = NULL;
+ 	ep->stopped = 1;
+ 
+-- 
+2.47.1
+

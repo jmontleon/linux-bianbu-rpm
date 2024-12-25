@@ -1,0 +1,54 @@
+From f7f7369a37c2ccca66522a3ca22fdf14bbaa1911 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 5 Sep 2023 19:41:50 +0800
+Subject: [PATCH 0099/1189] turn off CONFIG_PM for debug
+
+Change-Id: If7a92d7e779138ac6e15574c1747a2d0291b33a2
+---
+ arch/riscv/configs/k1-x_fpga_1x4_defconfig | 2 --
+ arch/riscv/configs/k1-x_fpga_2x2_defconfig | 2 --
+ 2 files changed, 4 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+index f9cb64c8971e..2a78b43c72a9 100644
+--- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+@@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+-CONFIG_PM=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+@@ -89,7 +88,6 @@ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
+ # CONFIG_SURFACE_PLATFORMS is not set
+-# CONFIG_CLINT_TIMER is not set
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
+ CONFIG_GENERIC_PHY=y
+diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+index f9cb64c8971e..2a78b43c72a9 100644
+--- a/arch/riscv/configs/k1-x_fpga_2x2_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+@@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+-CONFIG_PM=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+@@ -89,7 +88,6 @@ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
+ # CONFIG_SURFACE_PLATFORMS is not set
+-# CONFIG_CLINT_TIMER is not set
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
+ CONFIG_GENERIC_PHY=y
+-- 
+2.47.1
+

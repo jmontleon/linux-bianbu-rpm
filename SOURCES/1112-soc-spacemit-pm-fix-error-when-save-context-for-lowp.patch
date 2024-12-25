@@ -1,0 +1,52 @@
+From faaf6b8df8321fb9e27a6836eab97be414c6eefd Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:17:12 +0800
+Subject: [PATCH 1112/1189] soc: spacemit-pm: fix error when save context for
+ lowpower process
+
+Change-Id: I0423a5eebb3cdcfcbb33b9b6ad858a3dac7a5635
+---
+ drivers/soc/spacemit/pm/platform_pm.c          | 7 +++++--
+ drivers/soc/spacemit/pm_domain/k1x-pm_domain.c | 1 +
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/spacemit/pm/platform_pm.c b/drivers/soc/spacemit/pm/platform_pm.c
+index 7498d689d86f..4175e127ea3d 100644
+--- a/drivers/soc/spacemit/pm/platform_pm.c
++++ b/drivers/soc/spacemit/pm/platform_pm.c
+@@ -15,7 +15,8 @@
+ 
+ static void _suspend_save_csrs(struct suspend_context *context)
+ {
+-	context->scratch = csr_read(CSR_SCRATCH);
++	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
++		context->envcfg = csr_read(CSR_ENVCFG);
+ 	context->tvec = csr_read(CSR_TVEC);
+ 	context->ie = csr_read(CSR_IE);
+ 
+@@ -36,7 +37,9 @@ static void _suspend_save_csrs(struct suspend_context *context)
+ 
+ static void _suspend_restore_csrs(struct suspend_context *context)
+ {
+-	csr_write(CSR_SCRATCH, context->scratch);
++	csr_write(CSR_SCRATCH, 0);
++	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
++		csr_write(CSR_ENVCFG, context->envcfg);
+ 	csr_write(CSR_TVEC, context->tvec);
+ 	csr_write(CSR_IE, context->ie);
+ 
+diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 6f8fbe5ba67e..0b2fe9c1d0c2 100644
+--- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -14,6 +14,7 @@
+ #include <linux/of_address.h>
+ #include <linux/of_clk.h>
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <linux/regmap.h>
+ #include <linux/pm_qos.h>
+-- 
+2.47.1
+

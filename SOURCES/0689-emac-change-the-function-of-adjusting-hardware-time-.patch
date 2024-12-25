@@ -1,0 +1,63 @@
+From 9510c8c28432eefce717b5e896a9f97822468bcd Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 5 Jun 2024 11:32:54 +0800
+Subject: [PATCH 0689/1189] emac: change the function of adjusting hardware
+ time freq to adjfine for kernel 6.6
+
+Change-Id: Ia01a9d23d21446b03a8ba7ba990ce0fe43acf044
+---
+ arch/riscv/configs/k1_defconfig          |  2 +-
+ drivers/net/ethernet/spacemit/emac_ptp.c | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index cc91def35366..cbf92466583f 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -309,6 +309,7 @@ CONFIG_VIRTIO_NET=y
+ # CONFIG_NET_VENDOR_SOLARFLARE is not set
+ # CONFIG_NET_VENDOR_SMSC is not set
+ # CONFIG_NET_VENDOR_SOCIONEXT is not set
++CONFIG_K1X_EMAC=y
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_SUNPLUS is not set
+ # CONFIG_NET_VENDOR_SYNOPSYS is not set
+@@ -317,7 +318,6 @@ CONFIG_VIRTIO_NET=y
+ # CONFIG_NET_VENDOR_WANGXUN is not set
+ # CONFIG_NET_VENDOR_WIZNET is not set
+ # CONFIG_NET_VENDOR_XILINX is not set
+-CONFIG_PHYLIB=y
+ CONFIG_REALTEK_PHY=y
+ CONFIG_CAN_FLEXCAN=y
+ CONFIG_USB_USBNET=y
+diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
+index dd0c163f5d8b..8e46faa13747 100755
+--- a/drivers/net/ethernet/spacemit/emac_ptp.c
++++ b/drivers/net/ethernet/spacemit/emac_ptp.c
+@@ -220,6 +220,14 @@ static int emac_adjust_freq(struct ptp_clock_info *ptp, s32 ppb)
+ 	return 0;
+ }
+ 
++static int emac_adjust_fine(struct ptp_clock_info *ptp, long scaled_ppm)
++{
++	s32 ppb;
++
++	ppb = scaled_ppm_to_ppb(scaled_ppm);
++	return emac_adjust_freq(ptp, ppb);
++}
++
+ /**
+  * emac_adjust_time
+  *
+@@ -323,7 +331,7 @@ static struct ptp_clock_info emac_ptp_clock_ops = {
+ 	.n_per_out = 0,
+ 	.n_pins = 0,
+ 	.pps = 0,
+-	.adjfreq = emac_adjust_freq,
++	.adjfine = emac_adjust_fine,
+ 	.adjtime = emac_adjust_time,
+ 	.gettime64 = emac_get_time,
+ 	.settime64 = emac_set_time,
+-- 
+2.47.1
+

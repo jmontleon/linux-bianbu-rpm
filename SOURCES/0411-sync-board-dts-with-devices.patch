@@ -1,0 +1,84 @@
+From 93b8c6bb54761deb501b39b73ae5acaca6a4939d Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 2 Feb 2024 12:34:28 +0800
+Subject: [PATCH 0411/1189] sync board dts with devices
+
+Change-Id: I1232bb8c0fec5c0e7922ddc942a08ee40251cdb2
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 10 ++++++++--
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts | 10 ++++++++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 9ce0e21faa79..d4d938fa2aa7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -151,7 +151,7 @@ wlan_pwrseq: wlan-pwrseq {
+ 
+ 		bt_pwrseq: bt-pwrseq {
+ 			compatible = "spacemit,bt-pwrseq";
+-			reset-gpios     = <&gpio 118 0>;
++			reset-gpios     = <&gpio 63 0>;
+ 		};
+ 	};
+ };
+@@ -162,6 +162,12 @@ &uart0 {
+ 	status = "okay";
+ };
+ 
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2>;
++	status = "okay";
++};
++
+ &pwm14 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm14_1>;
+@@ -428,7 +434,7 @@ &pinctrl {
+ 	pinctrl-single,gpio-range = <
+ 		&range GPIO_49  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range GPIO_58  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+-		&range GPIO_63  2 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
++		&range GPIO_63  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_65  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_66  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range PRI_TDI  2 (MUX_MODE1 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 00e89208ddbb..c85feab7a44d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -151,7 +151,7 @@ wlan_pwrseq: wlan-pwrseq {
+ 
+ 		bt_pwrseq: bt-pwrseq {
+ 			compatible = "spacemit,bt-pwrseq";
+-			reset-gpios     = <&gpio 118 0>;
++			reset-gpios     = <&gpio 63 0>;
+ 		};
+ 	};
+ };
+@@ -162,6 +162,12 @@ &uart0 {
+ 	status = "okay";
+ };
+ 
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2>;
++	status = "okay";
++};
++
+ &pwm14 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm14_1>;
+@@ -481,7 +487,7 @@ &pinctrl {
+ 	pinctrl-single,gpio-range = <
+ 		&range GPIO_49  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range GPIO_58  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+-		&range GPIO_63  2 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
++		&range GPIO_63  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_65  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_66  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range PRI_TDI  2 (MUX_MODE1 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+-- 
+2.47.1
+

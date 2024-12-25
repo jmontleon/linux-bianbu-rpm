@@ -1,0 +1,155 @@
+From d1608b7cb2faba3fe994f225d989c3fac0924127 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 15 Mar 2024 09:45:17 +0800
+Subject: [PATCH 0550/1189] k1:spi:jion the pm domain framework to achieve
+ power management of spi modules
+
+Change-Id: Iedb10b0ff7742cab490b2d61b0ff41d077bd5527
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  9 +++--
+ drivers/spi/spi-k1x.c                  | 52 ++++++++++++++------------
+ 2 files changed, 35 insertions(+), 26 deletions(-)
+ mode change 100755 => 100644 drivers/spi/spi-k1x.c
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index e65dd2188ac8..433379936f86 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1001,7 +1001,8 @@ spi0: spi@d4026000 {
+ 			dmas = <&pdma0 19 1
+ 				&pdma0 18 1>;
+ 			dma-names = "rx", "tx";
+-			/* k1x,ssp-lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>; */
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			cpuidle,pm-runtime,sleep;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <56>;
+ 			clocks = <&ccu CLK_SSPA0>;
+@@ -1021,7 +1022,8 @@ spi1: spi@d4026800 {
+ 			dmas = <&pdma0 21 1
+ 				&pdma0 20 1>;
+ 			dma-names = "rx", "tx";
+-			/* k1x,ssp-lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>; */
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			cpuidle,pm-runtime,sleep;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <57>;
+ 			clocks = <&ccu CLK_SSPA1>;
+@@ -1041,7 +1043,8 @@ spi3: spi@d401c000 {
+ 			dmas = <&pdma0 17 1
+ 				&pdma0 16 1>;
+ 			dma-names = "rx", "tx";
+-			/* k1x,ssp-lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>; */
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			cpuidle,pm-runtime,sleep;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <55>;
+ 			clocks = <&ccu CLK_SSP3>;
+diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
+old mode 100755
+new mode 100644
+index ff2590b18862..f013b91d6c09
+--- a/drivers/spi/spi-k1x.c
++++ b/drivers/spi/spi-k1x.c
+@@ -416,7 +416,7 @@ static irqreturn_t ssp_int(int irq, void *dev_id)
+ 	 * interrupt is enabled).
+ 	 */
+ 	if (pm_runtime_suspended(&drv_data->pdev->dev))
+-        return IRQ_NONE;
++		return IRQ_NONE;
+ 
+ 	/*
+ 	 * If the device is not yet in RPM suspended state and we get an
+@@ -944,7 +944,7 @@ static int k1x_spi_probe(struct platform_device *pdev)
+ 		goto out_error_clk_check;
+ 	}
+ 
+-    drv_data->reset = devm_reset_control_get_optional(dev, NULL);
++    	drv_data->reset = devm_reset_control_get_optional(dev, NULL);
+ 	if (IS_ERR_OR_NULL(drv_data->reset)) {
+ 		dev_err(&pdev->dev, "Failed to get spi's reset\n");
+ 		goto out_error_clk_check;
+@@ -998,7 +998,7 @@ static int k1x_spi_probe(struct platform_device *pdev)
+ 	clk_set_rate(drv_data->clk, master->max_speed_hz);
+ 	master->max_speed_hz = clk_get_rate(drv_data->clk);
+ 	clk_prepare_enable(drv_data->clk);
+-    reset_control_deassert(drv_data->reset);
++    	reset_control_deassert(drv_data->reset);
+ 
+ 	/* Load default SSP configuration */
+ 	k1x_spi_write(drv_data, TOP_CTRL, 0);
+@@ -1031,7 +1031,7 @@ static int k1x_spi_probe(struct platform_device *pdev)
+ 	return status;
+ 
+ out_error_clock_enabled:
+-    reset_control_assert(drv_data->reset);
++    	reset_control_assert(drv_data->reset);
+ 	clk_disable_unprepare(drv_data->clk);
+ 	k1x_spi_dma_release(drv_data);
+ 	free_irq(drv_data->irq, drv_data);
+@@ -1055,7 +1055,7 @@ static int k1x_spi_remove(struct platform_device *pdev)
+ 	k1x_spi_write(drv_data, TOP_CTRL, 0);
+ 	k1x_spi_write(drv_data, FIFO_CTRL, 0); /* whether need this line? */
+ 
+-    reset_control_assert(drv_data->reset);
++    	reset_control_assert(drv_data->reset);
+ 	clk_disable_unprepare(drv_data->clk);
+ 
+ 	/* Release DMA */
+@@ -1124,29 +1124,35 @@ static int k1x_spi_resume(struct device *dev)
+ #endif
+ 
+ #ifdef CONFIG_PM
+-static int k1x_spi_runtime_suspend(struct device *dev)
+-{
+-	struct spi_driver_data *drv_data = dev_get_drvdata(dev);
+-
+-    reset_control_assert(drv_data->reset);
+-	clk_disable_unprepare(drv_data->clk);
+-	return 0;
+-}
+-
+-static int k1x_spi_runtime_resume(struct device *dev)
+-{
+-	struct spi_driver_data *drv_data = dev_get_drvdata(dev);
++/** static int k1x_spi_runtime_suspend(struct device *dev)
++ * {
++ *	struct spi_driver_data *drv_data = dev_get_drvdata(dev);
++ *
++ *	reset_control_assert(drv_data->reset);
++ *	clk_disable_unprepare(drv_data->clk);
++ *
++ *	return 0;
++ *}
++ */
+ 
+-	clk_prepare_enable(drv_data->clk);
+-    reset_control_deassert(drv_data->reset);
+-	return 0;
+-}
++/**
++ * static int k1x_spi_runtime_resume(struct device *dev)
++ * {
++ *	struct spi_driver_data *drv_data = dev_get_drvdata(dev);
++ *
++ *	clk_prepare_enable(drv_data->clk);
++ *	reset_control_deassert(drv_data->reset);
++ *	return 0;
++ *}
++ */
+ #endif
+ 
+ static const struct dev_pm_ops k1x_spi_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(k1x_spi_suspend, k1x_spi_resume)
+-	SET_RUNTIME_PM_OPS(k1x_spi_runtime_suspend,
+-			   k1x_spi_runtime_resume, NULL)
++	/**
++	 * SET_RUNTIME_PM_OPS(k1x_spi_runtime_suspend,
++	 *		   k1x_spi_runtime_resume, NULL)
++	 */
+ };
+ 
+ static struct platform_driver driver = {
+-- 
+2.47.1
+

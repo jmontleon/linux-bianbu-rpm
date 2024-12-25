@@ -1,0 +1,90 @@
+From c3a3e5347d57e85a3cbb51bb7c031c1516d8012a Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 20 May 2024 10:42:10 +0800
+Subject: [PATCH 0668/1189] k1: wireless: disable power-always-on
+
+Change-Id: If668eeb6b851af5012e810c1dda293581be84cac
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 1 -
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts | 1 -
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 1 -
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    | 1 -
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    | 1 -
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   | 1 -
+ 6 files changed, 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 265faa63a740..c92a1eaebf46 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -140,7 +140,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&dcdc_3>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index df21933b1c3d..0cf7fe78a1eb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -139,7 +139,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&dcdc_3>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index aeb2346fc14a..a8c34b2219e4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&dcdc_3>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 6da20d963215..ae0789c853cc 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&dcdc_3>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 2dc265057fad..ac2766711bf3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&ldo_7>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 48a32dcdf338..8347f9c77b9e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -138,7 +138,6 @@ rf_pwrseq: rf-pwrseq {
+ 		io-supply = <&dcdc_3>;
+ 		io_voltage = <1800000>;
+ 		pwr-gpios  = <&gpio 67 0>;
+-		power-always-on;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan-pwrseq {
+-- 
+2.47.1
+

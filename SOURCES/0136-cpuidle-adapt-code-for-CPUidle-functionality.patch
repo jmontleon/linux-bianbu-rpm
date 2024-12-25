@@ -1,0 +1,188 @@
+From e09fdd6a4446e38a1f513124fe98dd1aa67a72bc Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 16 Oct 2023 15:40:56 +0800
+Subject: [PATCH 0136/1189] cpuidle: adapt code for CPUidle functionality
+
+1. dw_apb_timer: revert the change-id:I586ebcec8e3b03cec44a1845b1bee36b79c14d0e and add a spinlock
+    in funcion: apbt_next_event & dw_apb_clockevent_irq
+2. irq-sifive-plic: Modify the basic address offset and size to fit the SPACEMIT plat
+3. irq-sifive-plic: when performing irq binding operations, it is best
+     to write down the sclaim register
+
+Change-Id: Id13e5e17384726183fd98d232b5edfab838f6134
+---
+ drivers/clocksource/dw_apb_timer.c | 26 +++++++++------------
+ drivers/irqchip/irq-sifive-plic.c  | 37 ++++++++++++++++++++++++------
+ include/linux/dw_apb_timer.h       |  2 ++
+ 3 files changed, 43 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
+index 41eb691b471b..6a5186e13a11 100644
+--- a/drivers/clocksource/dw_apb_timer.c
++++ b/drivers/clocksource/dw_apb_timer.c
+@@ -34,6 +34,8 @@
+ #define APBTMR_CONTROL_MODE_PERIODIC	(1 << 1)
+ #define APBTMR_CONTROL_INT		(1 << 2)
+ 
++static raw_spinlock_t dw_apb_timer_lock;
++
+ static inline struct dw_apb_clock_event_device *
+ ced_to_dw_apb_ced(struct clock_event_device *evt)
+ {
+@@ -83,17 +85,10 @@ static irqreturn_t dw_apb_clockevent_irq(int irq, void *data)
+ 		return IRQ_NONE;
+ 	}
+ 
++	raw_spin_lock(&dw_ced->timer_lock);
+ 	if (dw_ced->eoi)
+ 		dw_ced->eoi(&dw_ced->timer);
+-
+-	/* disable the timer & interrupt in one-shot mode */
+-	ctrl = apbt_readl(&dw_ced->timer, APBTMR_N_CONTROL);
+-	if (!(ctrl & APBTMR_CONTROL_MODE_PERIODIC)) {
+-		ctrl = apbt_readl_relaxed(&dw_ced->timer, APBTMR_N_CONTROL);
+-		ctrl &= ~APBTMR_CONTROL_ENABLE;
+-		ctrl |= APBTMR_CONTROL_INT;
+-		apbt_writel_relaxed(&dw_ced->timer, ctrl, APBTMR_N_CONTROL);
+-	}
++	raw_spin_unlock(&dw_ced->timer_lock);
+ 
+ 	evt->event_handler(evt);
+ 	return IRQ_HANDLED;
+@@ -197,20 +192,20 @@ static int apbt_next_event(unsigned long delta,
+ 	u32 ctrl;
+ 	struct dw_apb_clock_event_device *dw_ced = ced_to_dw_apb_ced(evt);
+ 
++	raw_spin_lock(&dw_ced->timer_lock);
++
+ 	/* Disable timer */
+ 	ctrl = apbt_readl_relaxed(&dw_ced->timer, APBTMR_N_CONTROL);
+ 	ctrl &= ~APBTMR_CONTROL_ENABLE;
+ 	apbt_writel_relaxed(&dw_ced->timer, ctrl, APBTMR_N_CONTROL);
+ 
+-	/* clear the pending */
+-	apbt_readl_relaxed(&dw_ced->timer, APBTMR_N_EOI);
+-
+ 	/* write new count */
+ 	apbt_writel_relaxed(&dw_ced->timer, delta, APBTMR_N_LOAD_COUNT);
+ 	ctrl |= APBTMR_CONTROL_ENABLE;
+-	ctrl &= ~APBTMR_CONTROL_INT;
+ 	apbt_writel_relaxed(&dw_ced->timer, ctrl, APBTMR_N_CONTROL);
+ 
++	raw_spin_unlock(&dw_ced->timer_lock);
++
+ 	return 0;
+ }
+ 
+@@ -243,6 +238,8 @@ dw_apb_clockevent_init(int cpu, const char *name, unsigned rating,
+ 	if (!dw_ced)
+ 		return NULL;
+ 
++	raw_spin_lock_init(&dw_ced->timer_lock);
++
+ 	dw_ced->timer.base = base;
+ 	dw_ced->timer.irq = irq;
+ 	dw_ced->timer.freq = freq;
+@@ -267,8 +264,7 @@ dw_apb_clockevent_init(int cpu, const char *name, unsigned rating,
+ 	dw_ced->ced.name = name;
+ 
+ 	dw_ced->eoi = apbt_eoi;
+-	err = request_irq(irq, dw_apb_clockevent_irq,
+-			  IRQF_TIMER | IRQF_IRQPOLL | IRQF_NOBALANCING,
++	err = request_irq(irq, dw_apb_clockevent_irq, IRQF_ONESHOT,
+ 			  dw_ced->ced.name, &dw_ced->ced);
+ 	if (err) {
+ 		pr_err("failed to request timer irq\n");
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index bf69a4802b71..a648f7458a0b 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -40,27 +40,38 @@
+  * We always hardwire it to one in Linux.
+  */
+ #define PRIORITY_BASE			0
+-#define     PRIORITY_PER_ID		4
++#define PRIORITY_PER_ID			4
+ 
+ /*
+  * Each hart context has a vector of interrupt enable bits associated with it.
+  * There's one bit for each interrupt source.
+  */
++#ifdef CONFIG_SOC_SPACEMIT
++#define CONTEXT_ENABLE_BASE		0x2080
++#define CONTEXT_ENABLE_SIZE		0x100
++#else
+ #define CONTEXT_ENABLE_BASE		0x2000
+-#define     CONTEXT_ENABLE_SIZE		0x80
++#define CONTEXT_ENABLE_SIZE		0x80
++#endif
+ 
+ /*
+  * Each hart context has a set of control registers associated with it.  Right
+  * now there's only two: a source priority threshold over which the hart will
+  * take an interrupt, and a register to claim interrupts.
+  */
++#ifdef CONFIG_SOC_SPACEMIT
++#define CONTEXT_BASE			0x201000
++#define CONTEXT_SIZE			0x2000
++#else
+ #define CONTEXT_BASE			0x200000
+-#define     CONTEXT_SIZE		0x1000
+-#define     CONTEXT_THRESHOLD		0x00
+-#define     CONTEXT_CLAIM		0x04
++#define CONTEXT_SIZE			0x1000
++#endif
++
++#define CONTEXT_THRESHOLD		0x00
++#define CONTEXT_CLAIM			0x04
+ 
+-#define	PLIC_DISABLE_THRESHOLD		0x7
+-#define	PLIC_ENABLE_THRESHOLD		0
++#define PLIC_DISABLE_THRESHOLD		0x7
++#define PLIC_ENABLE_THRESHOLD		0
+ 
+ #define PLIC_QUIRK_EDGE_INTERRUPT	0
+ 
+@@ -110,7 +121,19 @@ static void plic_toggle(struct plic_handler *handler, int hwirq, int enable)
+ 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&handler->enable_lock, flags);
++
++#ifdef CONFIG_SOC_SPACEMIT
++	if (!enable)
++		writel(hwirq, handler->hart_base + CONTEXT_CLAIM);
++#endif
++
+ 	__plic_toggle(handler->enable_base, hwirq, enable);
++
++#ifdef CONFIG_SOC_SPACEMIT
++	if (enable)
++		writel(hwirq, handler->hart_base + CONTEXT_CLAIM);
++#endif
++
+ 	raw_spin_unlock_irqrestore(&handler->enable_lock, flags);
+ }
+ 
+diff --git a/include/linux/dw_apb_timer.h b/include/linux/dw_apb_timer.h
+index f8811c46b89e..0351c2987038 100644
+--- a/include/linux/dw_apb_timer.h
++++ b/include/linux/dw_apb_timer.h
+@@ -12,6 +12,7 @@
+ 
+ #include <linux/clockchips.h>
+ #include <linux/clocksource.h>
++#include <linux/spinlock.h>
+ #include <linux/interrupt.h>
+ 
+ #define APBTMRS_REG_SIZE       0x14
+@@ -26,6 +27,7 @@ struct dw_apb_clock_event_device {
+ 	struct clock_event_device		ced;
+ 	struct dw_apb_timer			timer;
+ 	void					(*eoi)(struct dw_apb_timer *);
++	raw_spinlock_t				timer_lock;
+ };
+ 
+ struct dw_apb_clocksource {
+-- 
+2.47.1
+

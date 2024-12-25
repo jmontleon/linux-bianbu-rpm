@@ -1,0 +1,33 @@
+From 5fade86586e7f7d235ba897a47216408623984e2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E6=9D=8E=E5=88=A9=E5=86=9B?= <lijun.li@spacemit.com>
+Date: Fri, 25 Oct 2024 11:01:02 +0800
+Subject: [PATCH 1034/1189] "display: modify the initcall sequence of the hdmi
+ driver to late_initcall, as the initialization process for suspend to disk is
+ late_initcall_sync, need to ensure that the hdmi driver probe before suspend
+ to disk.""
+
+This reverts commit 97017bd6b25b1d6f8a07d75cca9d11e1064d4808.
+
+Reason for revert: <INSERT REASONING HERE>
+
+Change-Id: I2867753c3e4ffdf425b61cd52d3aa9890f88c6cb
+---
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index 3cef50d9f8b9..7531fe51cb45 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -1104,7 +1104,7 @@ static int spacemit_hdmi_driver_init(void)
+ {
+        return platform_driver_register(&spacemit_hdmi_driver);
+ }
+-late_initcall_sync(spacemit_hdmi_driver_init);
++late_initcall(spacemit_hdmi_driver_init);
+ 
+ MODULE_DESCRIPTION("Spacemit HDMI Driver");
+ MODULE_LICENSE("GPL v2");
+-- 
+2.47.1
+

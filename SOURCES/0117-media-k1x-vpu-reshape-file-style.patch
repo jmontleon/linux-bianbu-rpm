@@ -1,0 +1,368 @@
+From 06502cf817948d98a5d449e35b98ad9ca325ad91 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 6 Dec 2024 09:05:37 +0800
+Subject: [PATCH 0117/1189] media: k1x/vpu: reshape file style
+
+---
+ drivers/media/platform/spacemit/vpu_k1x/Kbuild |  0
+ .../media/platform/spacemit/vpu_k1x/Kconfig    | 18 +++++++++---------
+ .../media/platform/spacemit/vpu_k1x/Makefile   |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_dev.c    |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_dev.h    |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_hwreg.c  |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_hwreg.h  |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v500.c      |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v500.h      |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.c   |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.h   |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v550.c      |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v550.h      |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v61.c       |  0
+ .../spacemit/vpu_k1x/dev/mvx_hwreg_v61.h       |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_lsid.c   |  0
+ .../platform/spacemit/vpu_k1x/dev/mvx_lsid.h   |  0
+ .../spacemit/vpu_k1x/dev/mvx_scheduler.c       |  0
+ .../spacemit/vpu_k1x/dev/mvx_scheduler.h       |  0
+ .../vpu_k1x/external/fw_v2/mve_protocol_def.h  |  0
+ .../vpu_k1x/external/fw_v3/mve_protocol_def.h  |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_bitops.h  |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_buffer.c  |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_buffer.h  |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware.c         |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware.h         |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware_cache.c   |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware_cache.h   |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware_priv.h    |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware_v2.c      |  0
+ .../spacemit/vpu_k1x/if/mvx_firmware_v3.c      |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_if.c      |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_if.h      |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.c     |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.h     |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_secure.c  |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_secure.h  |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_session.c |  0
+ .../platform/spacemit/vpu_k1x/if/mvx_session.h |  0
+ .../vpu_k1x/if/v4l2/mvx-v4l2-controls.h        |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_ext_if.h      |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c    |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.h |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c  |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.h  |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c   |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.h   |  0
+ .../vpu_k1x/if/v4l2/mvx_v4l2_session.c         |  0
+ .../vpu_k1x/if/v4l2/mvx_v4l2_session.h         |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c |  0
+ .../spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.h |  0
+ .../platform/spacemit/vpu_k1x/mvx_driver.c     |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_dvfs.c |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_dvfs.h |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_log.c  |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_log.h  |  0
+ .../platform/spacemit/vpu_k1x/mvx_log_group.c  |  0
+ .../platform/spacemit/vpu_k1x/mvx_log_group.h  |  0
+ .../platform/spacemit/vpu_k1x/mvx_log_ram.h    |  0
+ .../platform/spacemit/vpu_k1x/mvx_pm_runtime.c |  0
+ .../platform/spacemit/vpu_k1x/mvx_pm_runtime.h |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_seq.c  |  0
+ .../media/platform/spacemit/vpu_k1x/mvx_seq.h  |  0
+ 64 files changed, 9 insertions(+), 9 deletions(-)
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/Kbuild
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/Kconfig
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/Makefile
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_bitops.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_priv.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v3.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_if.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_driver.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_log.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_log_ram.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.h
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_seq.c
+ mode change 100755 => 100644 drivers/media/platform/spacemit/vpu_k1x/mvx_seq.h
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/Kbuild b/drivers/media/platform/spacemit/vpu_k1x/Kbuild
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/Kconfig b/drivers/media/platform/spacemit/vpu_k1x/Kconfig
+old mode 100755
+new mode 100644
+index 4b722305e1f5..342e677adf5c
+--- a/drivers/media/platform/spacemit/vpu_k1x/Kconfig
++++ b/drivers/media/platform/spacemit/vpu_k1x/Kconfig
+@@ -1,12 +1,12 @@
+ config VIDEO_LINLON_K1X
+ 	tristate "Linlon VPU support."
+-	depends on VIDEO_DEV
+-#    depends on VIDEO_V4L2
+-    select VIDEOBUF2_VMALLOC
+-    select VIDEOBUF2_CORE
+-    select DMA_SHARED_BUFFER
+-    select VIDEOBUF2_MEMOPS
+-    select VIDEOBUF2_DMA_SG
++	depends on VIDEO_DEV && SOC_SPACEMIT_K1X
++#	depends on VIDEO_V4L2
++	select VIDEOBUF2_VMALLOC
++	select VIDEOBUF2_CORE
++	select DMA_SHARED_BUFFER
++	select VIDEOBUF2_MEMOPS
++	select VIDEOBUF2_DMA_SG
+ 	default n
+ 	help
+ 	  This enables support for the Linlon VPU family.
+@@ -16,11 +16,11 @@ config VIDEO_LINLON_FTRACE_K1X
+ 	bool "Send kernel space logs to ftrace."
+ 	default n
+ 	help
+-		Send kernel space logs to ftrace.
++	  Send kernel space logs to ftrace.
+ 
+ config VIDEO_LINLON_PRINT_FILE_K1X
+ 	depends on VIDEO_LINLON_K1X
+ 	bool "Append file and line number to kernel space log messages."
+ 	default y
+ 	help
+-		Append file and line number to kernel space log messages.
++	  Append file and line number to kernel space log messages.
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/Makefile b/drivers/media/platform/spacemit/vpu_k1x/Makefile
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v500.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v52_v76.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v550.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg_v61.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.h b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_bitops.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_bitops.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_priv.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_priv.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v3.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v3.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_if.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_if.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_driver.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_driver.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log_ram.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_log_ram.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_seq.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_seq.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_seq.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_seq.h
+old mode 100755
+new mode 100644
+-- 
+2.47.1
+

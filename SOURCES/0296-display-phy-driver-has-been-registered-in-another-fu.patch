@@ -1,0 +1,27 @@
+From fe08c30ffa974af7f70186b84234f3a6150a72ac Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 30 Dec 2023 18:35:45 +0800
+Subject: [PATCH 0296/1189] display phy driver has been registered in another
+ function
+
+Change-Id: I2fa7c84953ec5fa41a0fd1249b6f2ee2118212d8
+---
+ drivers/gpu/drm/spacemit/spacemit_dphy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.c b/drivers/gpu/drm/spacemit/spacemit_dphy.c
+index 9f5ab0d3b47a..adecacaee824 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dphy.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dphy.c
+@@ -146,7 +146,7 @@ struct platform_driver spacemit_dphy_driver = {
+ 	}
+ };
+ 
+-module_platform_driver(spacemit_dphy_driver);
++//module_platform_driver(spacemit_dphy_driver);
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Spacemit MIPI DSI PHY driver");
+-- 
+2.47.1
+

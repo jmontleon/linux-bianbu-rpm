@@ -1,0 +1,42 @@
+From e1cea788d60bb2c50e750f13d9aebfa2ee884f24 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Wed, 11 Oct 2023 13:41:18 +0800
+Subject: [PATCH 0130/1189] k1x:enable dmabuf
+
+1.enable dmabuf
+2.enable dmabuf-system heap /dev/dma_heap/syste
+3.enable dmabuf-cma heap /dev/dma_heap/linux,cma
+4.enable cma debugfs/sysfs debug
+
+Change-Id: I99d4484d72cde230bcdf0211653a3e89e8329cf7
+Signed-off-by: fuqiang <qiang.fu@spacemit.com>
+---
+ arch/riscv/configs/k1-x_fpga_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
+index eb7052d75b63..a6eec5b6c8a3 100644
+--- a/arch/riscv/configs/k1-x_fpga_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_defconfig
+@@ -36,6 +36,8 @@ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+ CONFIG_CMA=y
++CONFIG_CMA_DEBUGFS=y
++CONFIG_CMA_SYSFS=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+ CONFIG_UNIX=y
+@@ -313,6 +315,9 @@ CONFIG_USERSPACE_DMA=y
+ CONFIG_SYNC_FILE=y
+ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
++CONFIG_DMABUF_HEAPS=y
++CONFIG_DMABUF_HEAPS_SYSTEM=y
++CONFIG_DMABUF_HEAPS_CMA=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
+ # CONFIG_SURFACE_PLATFORMS is not set
+-- 
+2.47.1
+

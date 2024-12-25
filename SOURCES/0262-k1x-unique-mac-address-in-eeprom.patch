@@ -1,0 +1,251 @@
+From 06e1e3bd2ad361ea5aa135bfab8e6491c52ead0a Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Thu, 28 Dec 2023 10:21:09 +0800
+Subject: [PATCH 0262/1189] k1x: unique mac address in eeprom
+
+Change-Id: I476a051c0cc0e9284be2908b42022916266ee8fd
+---
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts | 33 +++++++++++++
+ arch/riscv/configs/k1-x_evb_defconfig     |  4 +-
+ drivers/misc/eeprom/at24.c                | 57 +++++++----------------
+ drivers/net/ethernet/spacemit/k1x-emac.c  |  2 +-
+ 4 files changed, 54 insertions(+), 42 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 5c66017a82f2..832220c92d6c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -449,6 +449,33 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	status = "okay";
+ };
+ 
++&i2c6 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_i2c6_1>;
++        status = "okay";
++
++	eeprom@50{
++                compatible = "atmel,24c02";
++                reg = <0x50>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		eeprom_1v8-supply = <&ldo_11>;
++		vin-supply-names = "eeprom_1v8";
++                power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
++		status = "okay";
++
++		mac_address0: mac_address0@0 {
++			reg = <0x0 6>;
++		};
++
++		mac_address1: mac_address1@0 {
++                        reg = <0x6 6>;
++                };
++
++        };
++};
++
+ /* eMMC */
+ &sdhci2 {
+ 	bus-width = <8>;
+@@ -485,6 +512,9 @@ &eth0 {
+ 
+         ref-clock-from-phy;
+ 
++	nvmem-cells = <&mac_address0>;
++	nvmem-cell-names = "mac-address";
++
+         clk-tuning-enable;
+         clk-tuning-by-delayline;
+         tx-phase = <20>;
+@@ -523,6 +553,9 @@ &eth1 {
+ 
+         ref-clock-from-phy;
+ 
++	nvmem-cells = <&mac_address1>;
++        nvmem-cell-names = "mac-address";
++
+         clk-tuning-enable;
+         clk-tuning-by-delayline;
+         tx-phase = <20>;
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 6188bf070a77..dd0c19a0c127 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -76,6 +76,7 @@ CONFIG_VIRTIO_BLK=y
+ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
+ CONFIG_SRAM=y
++CONFIG_EEPROM_AT24=y
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+@@ -150,6 +151,8 @@ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_I2C_CHARDEV=y
+ CONFIG_I2C_SPACEMIT_K1X=y
+ # CONFIG_I2C_BRCMSTB is not set
++CONFIG_I2C_SLAVE=y
++CONFIG_I2C_SLAVE_EEPROM=y
+ CONFIG_SPI=y
+ CONFIG_SPI_K1X=y
+ CONFIG_SPI_K1X_QSPI=y
+@@ -380,7 +383,6 @@ CONFIG_RESET_CONTROLLER=y
+ CONFIG_RESET_K1X_SPACEMIT=y
+ CONFIG_GENERIC_PHY=y
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
+-# CONFIG_NVMEM is not set
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+ CONFIG_AUTOFS4_FS=y
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 0a7c7f29406c..edd1f8fc0a63 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -465,14 +465,16 @@ static int at24_read(void *priv, unsigned int off, void *val, size_t count)
+ 		ret = at24_regmap_read(at24, buf + i, off + i, count);
+ 		if (ret < 0) {
+ 			mutex_unlock(&at24->lock);
+-			pm_runtime_put(dev);
++			pm_runtime_mark_last_busy(dev);
++			pm_runtime_put_autosuspend(dev);
+ 			return ret;
+ 		}
+ 	}
+ 
+ 	mutex_unlock(&at24->lock);
+ 
+-	pm_runtime_put(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ 
+ 	if (unlikely(at24->read_post))
+ 		at24->read_post(off, buf, i);
+@@ -509,7 +511,8 @@ static int at24_write(void *priv, unsigned int off, void *val, size_t count)
+ 		ret = at24_regmap_write(at24, buf, off, count);
+ 		if (ret < 0) {
+ 			mutex_unlock(&at24->lock);
+-			pm_runtime_put(dev);
++			pm_runtime_mark_last_busy(dev);
++			pm_runtime_put_autosuspend(dev);
+ 			return ret;
+ 		}
+ 		buf += ret;
+@@ -519,7 +522,8 @@ static int at24_write(void *priv, unsigned int off, void *val, size_t count)
+ 
+ 	mutex_unlock(&at24->lock);
+ 
+-	pm_runtime_put(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ 
+ 	return 0;
+ }
+@@ -705,10 +709,6 @@ static int at24_probe(struct i2c_client *client)
+ 	at24->offset_adj = at24_get_offset_adj(flags, byte_len);
+ 	at24->client_regmaps[0] = regmap;
+ 
+-	at24->vcc_reg = devm_regulator_get(dev, "vcc");
+-	if (IS_ERR(at24->vcc_reg))
+-		return PTR_ERR(at24->vcc_reg);
+-
+ 	writable = !(flags & AT24_FLAG_READONLY);
+ 	if (writable) {
+ 		at24->write_max = min_t(unsigned int,
+@@ -758,38 +758,16 @@ static int at24_probe(struct i2c_client *client)
+ 
+ 	i2c_set_clientdata(client, at24);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
+-	if (full_power) {
+-		err = regulator_enable(at24->vcc_reg);
+-		if (err) {
+-			dev_err(dev, "Failed to enable vcc regulator\n");
+-			return err;
+-		}
+ 
+-		pm_runtime_set_active(dev);
+-	}
+-	pm_runtime_enable(dev);
+-
+-	/*
+-	 * Perform a one-byte test read to verify that the chip is functional,
+-	 * unless powering on the device is to be avoided during probe (i.e.
+-	 * it's powered off right now).
+-	 */
+-	if (full_power) {
+-		err = at24_read(at24, 0, &test_byte, 1);
+-		if (err) {
+-			pm_runtime_disable(dev);
+-			if (!pm_runtime_status_suspended(dev))
+-				regulator_disable(at24->vcc_reg);
+-			return -ENODEV;
+-		}
+-	}
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_set_autosuspend_delay(dev, 10);
++ 	pm_runtime_enable(dev);
++ 
++	pm_runtime_get_sync(dev);
+ 
+ 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+ 	if (IS_ERR(at24->nvmem)) {
+ 		pm_runtime_disable(dev);
+-		if (!pm_runtime_status_suspended(dev))
+-			regulator_disable(at24->vcc_reg);
+ 		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+ 				     "failed to register nvmem\n");
+ 	}
+@@ -798,7 +776,8 @@ static int at24_probe(struct i2c_client *client)
+ 	if (cdata == &at24_data_spd)
+ 		at24_probe_temp_sensor(client);
+ 
+-	pm_runtime_idle(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ 
+ 	if (writable)
+ 		dev_info(dev, "%u byte %s EEPROM, writable, %u bytes/write\n",
+@@ -816,8 +795,6 @@ static void at24_remove(struct i2c_client *client)
+ 
+ 	pm_runtime_disable(&client->dev);
+ 	if (acpi_dev_state_d0(&client->dev)) {
+-		if (!pm_runtime_status_suspended(&client->dev))
+-			regulator_disable(at24->vcc_reg);
+ 		pm_runtime_set_suspended(&client->dev);
+ 	}
+ }
+@@ -827,7 +804,7 @@ static int __maybe_unused at24_suspend(struct device *dev)
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 	struct at24_data *at24 = i2c_get_clientdata(client);
+ 
+-	return regulator_disable(at24->vcc_reg);
++	return 0;
+ }
+ 
+ static int __maybe_unused at24_resume(struct device *dev)
+@@ -835,7 +812,7 @@ static int __maybe_unused at24_resume(struct device *dev)
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 	struct at24_data *at24 = i2c_get_clientdata(client);
+ 
+-	return regulator_enable(at24->vcc_reg);
++	return 0;
+ }
+ 
+ static const struct dev_pm_ops at24_pm_ops = {
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 2c92ce5c460c..1d0de6d19c04 100755
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2504,7 +2504,7 @@ static int emac_config_dt(struct platform_device *pdev, struct emac_priv *priv)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *res;
+-	char *mac_addr = NULL;
++	u8 mac_addr[ETH_ALEN] = {0};
+ 	u32 tx_phase, rx_phase;
+ 	u32 ctrl_reg;
+ 	int ret;
+-- 
+2.47.1
+

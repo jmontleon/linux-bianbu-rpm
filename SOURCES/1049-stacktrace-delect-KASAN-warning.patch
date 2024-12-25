@@ -1,0 +1,75 @@
+From 42b1ab19ddfc736b2297e6e90ae47aceac105c9d Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 30 Oct 2024 15:01:25 +0800
+Subject: [PATCH 1049/1189] stacktrace: delect KASAN warning
+
+2024-10-26T17:47:08.370644+08:00 M1-MUSE-BOOK kernel: BUG: KASAN: stack-out-of-bounds in walk_stackframe+0x27a/0x2ec
+2024-10-26T17:47:08.370735+08:00 M1-MUSE-BOOK kernel: Read of size 8 at addr ffffffc8121f3b88 by task gnome-system-mo/29287
+2024-10-26T17:47:08.370758+08:00 M1-MUSE-BOOK kernel:
+2024-10-26T17:47:08.370770+08:00 M1-MUSE-BOOK kernel: CPU: 1 PID: 29287 Comm: gnome-system-mo Tainted: G        W          6.6.36 #20241025175156
+2024-10-26T17:47:08.370782+08:00 M1-MUSE-BOOK kernel: Hardware name: M1-MUSE-BOOK (DT)
+2024-10-26T17:47:08.370795+08:00 M1-MUSE-BOOK kernel: Call Trace:
+2024-10-26T17:47:08.370806+08:00 M1-MUSE-BOOK kernel: [<ffffffff8000cd28>] dump_backtrace+0x1c/0x24
+2024-10-26T17:47:08.370812+08:00 M1-MUSE-BOOK kernel: [<ffffffff82fa48a8>] show_stack+0x2c/0x38
+2024-10-26T17:47:08.370820+08:00 M1-MUSE-BOOK kernel: [<ffffffff82fe1d6e>] dump_stack_lvl+0x3c/0x54
+2024-10-26T17:47:08.370828+08:00 M1-MUSE-BOOK kernel: [<ffffffff82fac564>] print_report+0x19e/0x4b4
+2024-10-26T17:47:08.370838+08:00 M1-MUSE-BOOK kernel: [<ffffffff8062b218>] kasan_report+0xbc/0x170
+2024-10-26T17:47:08.370847+08:00 M1-MUSE-BOOK kernel: [<ffffffff8062cb3e>] __asan_report_load8_noabort+0x12/0x1a
+2024-10-26T17:47:08.370853+08:00 M1-MUSE-BOOK kernel: [<ffffffff8000cc42>] walk_stackframe+0x27a/0x2ec
+2024-10-26T17:47:08.370861+08:00 M1-MUSE-BOOK kernel: [<ffffffff8000ce6c>] __get_wchan+0x13c/0x1c2
+2024-10-26T17:47:08.370871+08:00 M1-MUSE-BOOK kernel: [<ffffffff800d905c>] get_wchan+0x86/0xd6
+2024-10-26T17:47:08.370880+08:00 M1-MUSE-BOOK kernel: [<ffffffff808124e0>] proc_pid_wchan+0xea/0x112
+2024-10-26T17:47:08.370889+08:00 M1-MUSE-BOOK kernel: [<ffffffff808146d4>] proc_single_show+0xdc/0x1b0
+2024-10-26T17:47:08.370895+08:00 M1-MUSE-BOOK kernel: [<ffffffff8070a1b0>] seq_read_iter+0x26c/0xcf4
+2024-10-26T17:47:08.370901+08:00 M1-MUSE-BOOK kernel: [<ffffffff8070ad58>] seq_read+0x120/0x19c
+2024-10-26T17:47:08.370909+08:00 M1-MUSE-BOOK kernel: [<ffffffff8069467a>] vfs_read+0x20c/0x644
+2024-10-26T17:47:08.370917+08:00 M1-MUSE-BOOK kernel: [<ffffffff8069646c>] ksys_read+0xe2/0x1aa
+2024-10-26T17:47:08.370924+08:00 M1-MUSE-BOOK kernel: [<ffffffff8069659a>] __riscv_sys_read+0x66/0x8c
+2024-10-26T17:47:08.370931+08:00 M1-MUSE-BOOK kernel: [<ffffffff8000bf26>] syscall_handler+0x64/0xf0
+2024-10-26T17:47:08.370938+08:00 M1-MUSE-BOOK kernel: [<ffffffff82fe2460>] do_trap_ecall_u+0x9c/0x9e
+2024-10-26T17:47:08.370944+08:00 M1-MUSE-BOOK kernel: [<ffffffff83001df6>] ret_from_exception+0x0/0x6e
+2024-10-26T17:47:08.370951+08:00 M1-MUSE-BOOK kernel:
+2024-10-26T17:47:08.370959+08:00 M1-MUSE-BOOK kernel: The buggy address belongs to the virtual mapping at
+2024-10-26T17:47:08.370965+08:00 M1-MUSE-BOOK kernel:  [ffffffc8121f0000, ffffffc8121f5000) created by:
+2024-10-26T17:47:08.370973+08:00 M1-MUSE-BOOK kernel:  kernel_clone+0xaa/0x8ac
+2024-10-26T17:47:08.370980+08:00 M1-MUSE-BOOK kernel:
+2024-10-26T17:47:08.370987+08:00 M1-MUSE-BOOK kernel: The buggy address belongs to the physical page:
+2024-10-26T17:47:08.370995+08:00 M1-MUSE-BOOK kernel: page:0000000053006164 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x222afe
+2024-10-26T17:47:08.371003+08:00 M1-MUSE-BOOK kernel: memcg:ffffffd926967782
+2024-10-26T17:47:08.371184+08:00 M1-MUSE-BOOK kernel: flags: 0x4000000000000000(zone=1)
+2024-10-26T17:47:08.371245+08:00 M1-MUSE-BOOK kernel: page_type: 0xffffffff()
+2024-10-26T17:47:08.371269+08:00 M1-MUSE-BOOK kernel: raw: 4000000000000000 0000000000000000 0000000000000122 0000000000000000
+2024-10-26T17:47:08.371281+08:00 M1-MUSE-BOOK kernel: raw: 0000000000000000 0000000000000000 00000001ffffffff ffffffd926967782
+2024-10-26T17:47:08.371293+08:00 M1-MUSE-BOOK kernel: page dumped because: kasan: bad access detected
+2024-10-26T17:47:08.371301+08:00 M1-MUSE-BOOK kernel:
+2024-10-26T17:47:08.371308+08:00 M1-MUSE-BOOK kernel: Memory state around the buggy address:
+2024-10-26T17:47:08.371315+08:00 M1-MUSE-BOOK kernel:  ffffffc8121f3a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+2024-10-26T17:47:08.371321+08:00 M1-MUSE-BOOK kernel:  ffffffc8121f3b00: f1 f1 f1 f1 00 f2 f2 f2 00 00 00 00 00 00 00 00
+2024-10-26T17:47:08.371327+08:00 M1-MUSE-BOOK kernel: >ffffffc8121f3b80: 00 f2 f2 f2 f2 f2 00 00 00 00 00 00 00 00 00 00
+2024-10-26T17:47:08.371333+08:00 M1-MUSE-BOOK kernel:                       ^
+2024-10-26T17:47:08.371341+08:00 M1-MUSE-BOOK kernel:  ffffffc8121f3c00: 00 00 00 00 f3 f3 f3 f3 00 00 00 00 00 00 00 00
+2024-10-26T17:47:08.371348+08:00 M1-MUSE-BOOK kernel:  ffffffc8121f3c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+2024-10-26T17:47:08.371354+08:00 M1-MUSE-BOOK kernel: ==================================================================
+
+Change-Id: If6d382f0551ec1b5f15c91fdb5e0e568bc674b4d
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ arch/riscv/kernel/stacktrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index 153a2db4c5fa..622dd8e1ea6a 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -28,7 +28,7 @@ static inline int fp_is_valid(unsigned long fp, unsigned long sp)
+ 	return !(fp < low || fp > high || fp & 0x07);
+ }
+ 
+-void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
++void notrace __no_sanitize_address walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+ 			     bool (*fn)(void *, unsigned long), void *arg)
+ {
+ 	unsigned long fp, sp, pc;
+-- 
+2.47.1
+

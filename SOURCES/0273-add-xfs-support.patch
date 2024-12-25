@@ -1,0 +1,27 @@
+From 8bc332b3ca0449b394e7c804b208b393b17bbd15 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Fri, 29 Dec 2023 19:59:29 +0800
+Subject: [PATCH 0273/1189] add xfs support
+
+Change-Id: Ib2041015bc346eee1518127f52a78384aa5d9dd9
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index e75f3a89930e..a488042d919a 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -386,6 +386,9 @@ CONFIG_GENERIC_PHY=y
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_XFS_FS=y
++CONFIG_XFS_QUOTA=y
++CONFIG_XFS_POSIX_ACL=y
+ CONFIG_AUTOFS4_FS=y
+ CONFIG_FUSE_FS=y
+ CONFIG_OVERLAY_FS=y
+-- 
+2.47.1
+

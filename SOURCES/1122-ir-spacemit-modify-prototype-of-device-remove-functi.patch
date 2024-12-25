@@ -1,0 +1,34 @@
+From 5361146fb4fe7a7b91e341a3c495bb9c2d30c8e7 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:26:23 +0800
+Subject: [PATCH 1122/1189] ir: spacemit: modify prototype of device remove
+ function
+
+Change-Id: I3c5e017681917d4cb0836f1e5690667ee34b2cf5
+---
+ drivers/media/rc/ir-spacemit.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
+index 0005461aad9d..9fe3fbf3fdca 100644
+--- a/drivers/media/rc/ir-spacemit.c
++++ b/drivers/media/rc/ir-spacemit.c
+@@ -283,14 +283,12 @@ static int spacemit_ir_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_ir_remove(struct platform_device *pdev)
++static void spacemit_ir_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_ir *ir = platform_get_drvdata(pdev);
+ 
+ 	rc_unregister_device(ir->rc);
+ 	spacemit_ir_hw_exit(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static void spacemit_ir_shutdown(struct platform_device *pdev)
+-- 
+2.47.1
+

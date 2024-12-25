@@ -1,0 +1,84 @@
+From b0146263b041c0463eb95c9384bc1c831e3846ad Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Sat, 23 Dec 2023 15:20:24 +0800
+Subject: [PATCH 0232/1189] clock: enable some clocks for cpu, remove cpu core
+ clk divider
+
+Change-Id: Ic066995557d81171a6c674c8910968d721d1ace3
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 12 ++++++++----
+ drivers/clk/spacemit/ccu_mix.h          | 19 +++++++++++++++++++
+ 2 files changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 17b7e653d34e..57f068a2a533 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -945,9 +945,9 @@ static SPACEMIT_CCU_MUX(cpu_c0_hi_clk, "cpu_c0_hi_clk", cpu_c0_hi_parent_names,
+ static const char * const cpu_c0_parent_names[] = { "pll1_d4_614p4", "pll1_d3_819p2", "pll1_d6_409p6",
+ 	"pll1_d5_491p52", "pll1_d2_1228p8", "pll3_d3", "pll2_d3", "cpu_c0_hi_clk"
+ };
+-static SPACEMIT_CCU_DIV_FC_MUX(cpu_c0_core_clk, "cpu_c0_core_clk", cpu_c0_parent_names,
++static SPACEMIT_CCU_MUX_FC(cpu_c0_core_clk, "cpu_c0_core_clk", cpu_c0_parent_names,
+ 	BASE_TYPE_APMU, APMU_CPU_C0_CLK_CTRL,
+-	3, 3, BIT(12),
++	BIT(12),
+ 	0, 3,
+ 	0);
+ static SPACEMIT_CCU_DIV(cpu_c0_ace_clk, "cpu_c0_ace_clk", "cpu_c0_core_clk",
+@@ -968,9 +968,9 @@ static SPACEMIT_CCU_MUX(cpu_c1_hi_clk, "cpu_c1_hi_clk", cpu_c1_hi_parent_names,
+ static const char * const cpu_c1_parent_names[] = { "pll1_d4_614p4", "pll1_d3_819p2", "pll1_d6_409p6",
+ 	"pll1_d5_491p52", "pll1_d2_1228p8", "pll3_d3", "pll2_d3", "cpu_c1_hi_clk"
+ };
+-static SPACEMIT_CCU_DIV_FC_MUX(cpu_c1_pclk, "cpu_c1_pclk", cpu_c1_parent_names,
++static SPACEMIT_CCU_MUX_FC(cpu_c1_pclk, "cpu_c1_pclk", cpu_c1_parent_names,
+ 	BASE_TYPE_APMU, APMU_CPU_C1_CLK_CTRL,
+-	3, 3, BIT(12),
++	BIT(12),
+ 	0, 3,
+ 	0);
+ static SPACEMIT_CCU_DIV(cpu_c1_ace_clk, "cpu_c1_ace_clk", "cpu_c1_pclk",
+@@ -1193,6 +1193,10 @@ static struct clk_hw_table bootup_enable_clk_table[] = {
+ 	{"pll1_d48_51p2", 	CLK_PLL1_51P2},
+ 	{"pll1_d48_51p2_ap",	CLK_PLL1_51P2_AP},
+ 	{"pll1_d96_25p6", 	CLK_PLL1_25P6},
++	{"pll3_d1", 	CLK_PLL3_D1},
++	{"pll3_d2", 	CLK_PLL3_D2},
++	{"pll3_d3", 	CLK_PLL3_D3},
++	{"pll2_d3", 	CLK_PLL2_D3},
+ };
+ 
+ void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
+diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
+index 6e417f4f56f4..d75862e838f4 100755
+--- a/drivers/clk/spacemit/ccu_mix.h
++++ b/drivers/clk/spacemit/ccu_mix.h
+@@ -307,6 +307,25 @@ struct ccu_mix {
+ 							  _flags|CLK_GET_RATE_NOCACHE),		\
+ 		},							\
+ 	}
++
++#define SPACEMIT_CCU_MUX_FC(_struct, _name, _parents, _base_type, _reg_ctrl,		\
++						  _fc, _muxshift, _muxwidth, _flags)					\
++	struct ccu_mix _struct = {					\
++		.mux	= CCU_MUX_INIT(_muxshift, _muxwidth, NULL, 0), \
++		.common = { 					\
++			.reg_type = CLK_DIV_TYPE_1REG_FC_V2,	\
++			.reg_ctrl		= _reg_ctrl,			\
++			.fc 			= _fc,		   \
++			.base_type		= _base_type,		\
++			.parent_names	= _parents, 		\
++			.num_parents	= ARRAY_SIZE(_parents), 	\
++			.hw.init	= CLK_HW_INIT_PARENTS(_name,		\
++							  _parents, 	\
++							  &ccu_mix_ops, \
++							  _flags|CLK_GET_RATE_NOCACHE), 	\
++		},							\
++	}
++
+ static inline struct ccu_mix *hw_to_ccu_mix(struct clk_hw *hw)
+ {
+ 	struct ccu_common *common = hw_to_ccu_common(hw);
+-- 
+2.47.1
+

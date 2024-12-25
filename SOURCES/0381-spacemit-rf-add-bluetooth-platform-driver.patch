@@ -1,0 +1,595 @@
+From 8145a497c01f5f045964688f868d3fbd63b383b4 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 15 Jan 2024 21:04:41 +0800
+Subject: [PATCH 0381/1189] spacemit-rf: add bluetooth platform driver
+
+Change-Id: Ida78d5e22ab44143e31a354216c421c97c93f93c
+---
+ drivers/soc/spacemit/spacemit-rf/Makefile     |   2 +-
+ .../soc/spacemit/spacemit-rf/spacemit-bt.c    | 196 ++++++++++++++++++
+ .../spacemit/spacemit-rf/spacemit-pwrseq.c    | 113 ++++++----
+ .../spacemit/spacemit-rf/spacemit-pwrseq.h    |  24 +++
+ .../soc/spacemit/spacemit-rf/spacemit-wlan.c  |  38 ++--
+ 5 files changed, 317 insertions(+), 56 deletions(-)
+ create mode 100755 drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+ create mode 100755 drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
+
+diff --git a/drivers/soc/spacemit/spacemit-rf/Makefile b/drivers/soc/spacemit/spacemit-rf/Makefile
+index 522245a0ba52..c2cb0d17295f 100755
+--- a/drivers/soc/spacemit/spacemit-rf/Makefile
++++ b/drivers/soc/spacemit/spacemit-rf/Makefile
+@@ -3,4 +3,4 @@
+ # Makefile for wifi bluetooth power controller drivers
+ #
+ 
+-obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o
++obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o spacemit-bt.o
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+new file mode 100755
+index 000000000000..34e89a7f7ace
+--- /dev/null
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+@@ -0,0 +1,196 @@
++/*
++ * spacemit-bt.c -- power on/off bt part of SoC
++ *
++ * Copyright 2023, Spacemit Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++ 
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/gpio.h>
++#include <linux/err.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/rfkill.h>
++#include <linux/gpio/consumer.h>
++#include <linux/platform_device.h>
++#include "spacemit-pwrseq.h"
++
++struct bt_pwrseq {
++	struct device		*dev;
++	bool power_state;
++	u32 power_on_delay_ms;
++
++	struct gpio_desc *reset_n;
++	struct clk *ext_clk;
++	struct rfkill *rfkill;
++};
++
++static int spacemit_bt_on(struct bt_pwrseq *pwrseq, bool on_off)
++{
++	struct spacemit_pwrseq *parent_pwrseq = spacemit_get_pwrseq();
++
++	if (!pwrseq || IS_ERR(pwrseq->reset_n))
++		return 0;
++
++	if (on_off){
++		if(parent_pwrseq)
++			spacemit_power_on(parent_pwrseq, 1);
++		gpiod_set_value(pwrseq->reset_n, 1);
++		if (pwrseq->power_on_delay_ms)
++			msleep(pwrseq->power_on_delay_ms);
++	}else{
++		gpiod_set_value(pwrseq->reset_n, 0);
++		if(parent_pwrseq)
++			spacemit_power_on(parent_pwrseq, 0);
++	}
++
++	pwrseq->power_state = on_off;
++	return 0;
++}
++
++static int spacemit_bt_set_block(void *data, bool blocked)
++{
++	struct bt_pwrseq *pwrseq = data;
++	int ret;
++
++	if (blocked != pwrseq->power_state) {
++		dev_warn(pwrseq->dev, "block state already is %d\n", blocked);
++		return 0;
++	}
++
++	dev_info(pwrseq->dev, "set block: %d\n", blocked);
++	ret = spacemit_bt_on(pwrseq, !blocked);
++	if (ret) {
++		dev_err(pwrseq->dev, "set block failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static const struct rfkill_ops spacemit_bt_rfkill_ops = {
++	.set_block = spacemit_bt_set_block,
++};
++
++static int spacemit_bt_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct bt_pwrseq *pwrseq;
++	int ret;
++
++	pwrseq = devm_kzalloc(dev, sizeof(*pwrseq), GFP_KERNEL);
++	if (!pwrseq)
++		return -ENOMEM;
++
++	pwrseq->dev = dev;
++	platform_set_drvdata(pdev, pwrseq);
++
++	pwrseq->reset_n = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
++	if (IS_ERR(pwrseq->reset_n) &&
++		PTR_ERR(pwrseq->reset_n) != -ENOENT &&
++		PTR_ERR(pwrseq->reset_n) != -ENOSYS) {
++		return PTR_ERR(pwrseq->reset_n);
++	}
++
++	pwrseq->ext_clk = devm_clk_get(dev, "clock");
++	if (IS_ERR_OR_NULL(pwrseq->ext_clk)){
++		dev_dbg(dev, "failed get ext clock\n");
++	} else {
++		ret = clk_prepare_enable(pwrseq->ext_clk);
++		if (ret < 0)
++			dev_warn(dev, "can't enable clk\n");
++	}
++
++	if(device_property_read_u32(dev, "power-on-delay-ms",
++				 &pwrseq->power_on_delay_ms))
++		pwrseq->power_on_delay_ms = 10;
++
++	pwrseq->rfkill = rfkill_alloc("spacemit-bt", dev, RFKILL_TYPE_BLUETOOTH,
++				    &spacemit_bt_rfkill_ops, pwrseq);
++	if (!pwrseq->rfkill) {
++		dev_err(dev, "failed alloc bt rfkill\n");
++		ret = -ENOMEM;
++		goto alloc_err;
++	}
++
++	rfkill_set_states(pwrseq->rfkill, true, false);
++
++	ret = rfkill_register(pwrseq->rfkill);
++	if (ret) {
++		dev_err(dev, "failed register bt rfkill\n");
++		goto register_err;
++	}
++
++	return 0;
++
++register_err:
++	if (pwrseq->rfkill)
++		rfkill_destroy(pwrseq->rfkill);
++alloc_err:
++	if (!IS_ERR_OR_NULL(pwrseq->ext_clk))
++		clk_disable_unprepare(pwrseq->ext_clk);
++	return ret;
++}
++
++static int spacemit_bt_remove(struct platform_device *pdev)
++{
++	struct bt_pwrseq *pwrseq = platform_get_drvdata(pdev);
++
++	if (pwrseq->rfkill) {
++		rfkill_unregister(pwrseq->rfkill);
++		rfkill_destroy(pwrseq->rfkill);
++	}
++
++	if (!IS_ERR_OR_NULL(pwrseq->ext_clk))
++		clk_disable_unprepare(pwrseq->ext_clk);
++
++	return 0;
++}
++
++static const struct of_device_id spacemit_bt_ids[] = {
++	{ .compatible = "spacemit,bt-pwrseq" },
++	{ /* Sentinel */ }
++};
++
++#ifdef CONFIG_PM_SLEEP
++static int spacemit_bt_suspend(struct device *dev)
++{
++	return 0;
++}
++
++static int spacemit_bt_resume(struct device *dev)
++{
++	return 0;
++}
++
++static const struct dev_pm_ops spacemit_bt_dev_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(spacemit_bt_suspend, spacemit_bt_resume)
++};
++
++#define DEV_PM_OPS	(&spacemit_bt_dev_pm_ops)
++#else
++#define DEV_PM_OPS	NULL
++#endif /* CONFIG_PM_SLEEP */
++
++static struct platform_driver spacemit_bt_driver = {
++	.probe		= spacemit_bt_probe,
++	.remove	= spacemit_bt_remove,
++	.driver	= {
++		.owner	= THIS_MODULE,
++		.name	= "spacemit-bt",
++		.of_match_table	= spacemit_bt_ids,
++	},
++};
++
++module_platform_driver(spacemit_bt_driver);
++
++MODULE_DESCRIPTION("spacemit bt pwrseq driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
+index cc7d910cd0bc..4e1b5129ef15 100755
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
+@@ -22,19 +22,14 @@
+ #include <linux/of_platform.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/platform_device.h>
++#include "spacemit-pwrseq.h"
+ 
+-struct spacemit_pwrseq {
+-	struct device		*dev;
+-	bool clk_enabled;
+-	u32 power_on_delay_ms;
+-
+-	struct clk *ext_clk;
+-	struct gpio_descs *pwr_gpios;
+-	struct regulator *vdd_supply;
+-	struct regulator *io_supply;
+-	int	vdd_voltage;
+-	int io_voltage;
+-};
++struct spacemit_pwrseq *pwrseq_data;
++
++struct spacemit_pwrseq *spacemit_get_pwrseq(void)
++{
++	return pwrseq_data;
++}
+ 
+ static void spacemit_set_gpios_value(struct spacemit_pwrseq *pwrseq,
+ 						int value)
+@@ -87,38 +82,44 @@ static int spacemit_regulator_set_voltage_if_supported(struct regulator *regulat
+ }
+ 
+ static void spacemit_regulator_on(struct spacemit_pwrseq *pwrseq,
+-						struct regulator *regulator, bool on_off)
++						struct regulator *regulator, int volt, bool on_off)
+ {
+ 	struct device *dev = pwrseq->dev;
+-	int ret;
++	int ret, min_uV, max_uV;
+ 
+ 	if(on_off){
++		/*
++		 * mostly, vdd voltage is 3.3V, io voltage is 1.8V or 3.3V.
++		 * maybe need support 1.2V io signaling later.
++		 */
+ 		if(regulator == pwrseq->io_supply){
+-			ret = spacemit_regulator_set_voltage_if_supported(regulator,
+-						1700000, pwrseq->io_voltage, 1950000);
++			min_uV = max(volt - 100000, 1700000);
++			max_uV = min(volt + 150000, 3300000);
+ 		}else{
+-			ret = spacemit_regulator_set_voltage_if_supported(regulator,
+-						2700000, pwrseq->vdd_voltage, 3600000);
++			min_uV = max(volt - 300000, 2700000);
++			max_uV = min(volt + 200000, 3600000);
+ 		}
+ 
++		ret = spacemit_regulator_set_voltage_if_supported(regulator,
++					min_uV, volt, max_uV);
+ 		if (ret < 0) {
+-			dev_err(dev, "set vdd_supply voltage failed!\n");
++			dev_err(dev, "set voltage failed!\n");
+ 			return;
+ 		}
+ 
+ 		ret = regulator_enable(regulator);
+ 		if (ret < 0) {
+-			dev_err(dev, "enable vdd_supply failed\n");
++			dev_err(dev, "enable failed\n");
+ 			return;
+ 		}
+ 
+ 		ret = regulator_get_voltage(regulator);
+ 		if (ret < 0) {
+-			dev_err(dev, "get vdd_supply voltage failed\n");
++			dev_err(dev, "get voltage failed\n");
+ 			return;
+ 		}
+ 
+-		dev_info(dev, "check vdd_supply voltage: %d\n", ret);
++		dev_info(dev, "check voltage: %d\n", ret);
+ 	}else{
+ 		regulator_disable(regulator);
+ 	}
+@@ -128,10 +129,10 @@ static void spacemit_pre_power_on(struct spacemit_pwrseq *pwrseq,
+ 						bool on_off)
+ {
+ 	if(!IS_ERR(pwrseq->vdd_supply))
+-		spacemit_regulator_on(pwrseq, pwrseq->vdd_supply, on_off);
++		spacemit_regulator_on(pwrseq, pwrseq->vdd_supply, pwrseq->vdd_voltage, on_off);
+ 
+ 	if(!IS_ERR(pwrseq->io_supply))
+-		spacemit_regulator_on(pwrseq, pwrseq->io_supply, on_off);
++		spacemit_regulator_on(pwrseq, pwrseq->io_supply, pwrseq->io_voltage, on_off);
+ }
+ 
+ static void spacemit_post_power_on(struct spacemit_pwrseq *pwrseq,
+@@ -153,23 +154,36 @@ static void spacemit_post_power_on(struct spacemit_pwrseq *pwrseq,
+ void spacemit_power_on(struct spacemit_pwrseq *pwrseq,
+ 						bool on_off)
+ {
++	mutex_lock(&pwrseq->pwrseq_mutex);
+ 	if(on_off){
+-		spacemit_pre_power_on(pwrseq, on_off);
+-		spacemit_set_gpios_value(pwrseq, on_off);
+-		if (pwrseq->power_on_delay_ms)
+-			msleep(pwrseq->power_on_delay_ms);
+-		spacemit_post_power_on(pwrseq, on_off);
++		if (!atomic_read(&pwrseq->pwrseq_count)){
++			dev_info(pwrseq->dev, "turn power on\n");
++			spacemit_pre_power_on(pwrseq, on_off);
++			spacemit_set_gpios_value(pwrseq, on_off);
++			if (pwrseq->power_on_delay_ms)
++				msleep(pwrseq->power_on_delay_ms);
++			spacemit_post_power_on(pwrseq, on_off);
++		}
++		atomic_inc(&pwrseq->pwrseq_count);
+ 	}else{
+-		spacemit_post_power_on(pwrseq, on_off);
+-		spacemit_set_gpios_value(pwrseq, on_off);
+-		spacemit_pre_power_on(pwrseq, on_off);
++		if (atomic_read(&pwrseq->pwrseq_count)){
++			if (!atomic_dec_return(&pwrseq->pwrseq_count)){
++				dev_info(pwrseq->dev, "turn power off\n");
++				spacemit_post_power_on(pwrseq, on_off);
++				spacemit_set_gpios_value(pwrseq, on_off);
++				spacemit_pre_power_on(pwrseq, on_off);
++			}
++		}else{
++			dev_err(pwrseq->dev, "already power off, please check\n");
++		}
+ 	}
++	mutex_unlock(&pwrseq->pwrseq_mutex);
+ }
+ 
+ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ {
+-	struct device		*dev = &pdev->dev;
+-	struct device_node	*node = dev->of_node;
++	struct device *dev = &pdev->dev;
++	struct device_node *node = dev->of_node;
+ 	struct spacemit_pwrseq *pwrseq;
+ 	int ret;
+ 
+@@ -186,7 +200,7 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ 			return -EPROBE_DEFER;
+ 		dev_dbg(dev, "No vdd regulator found\n");
+ 	}else{
+-		if (!device_property_read_u32(dev, "vdd_voltage", &pwrseq->vdd_voltage)) {
++		if (device_property_read_u32(dev, "vdd_voltage", &pwrseq->vdd_voltage)) {
+ 			pwrseq->vdd_voltage = 3300000;
+ 			dev_dbg(dev, "failed get vdd voltage,use default value (%u)\n", pwrseq->vdd_voltage);
+ 		}
+@@ -198,7 +212,7 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ 			return -EPROBE_DEFER;
+ 		dev_dbg(dev, "No io regulator found\n");
+ 	}else{
+-		if (!device_property_read_u32(dev, "io_voltage", &pwrseq->io_voltage)) {
++		if (device_property_read_u32(dev, "io_voltage", &pwrseq->io_voltage)) {
+ 			pwrseq->io_voltage = 1800000;
+ 			dev_dbg(dev, "failed get io voltage,use default value (%u)\n", pwrseq->io_voltage);
+ 		}
+@@ -218,8 +232,12 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ 		return PTR_ERR(pwrseq->ext_clk);
+ 	}
+ 
+-	device_property_read_u32(dev, "power-on-delay-ms",
+-				 &pwrseq->power_on_delay_ms);
++	if(device_property_read_u32(dev, "power-on-delay-ms",
++				 &pwrseq->power_on_delay_ms))
++		pwrseq->power_on_delay_ms = 10;
++
++	if(device_property_read_bool(dev, "power-always-on"))
++		pwrseq->always_on = true;
+ 
+ 	if (node) {
+ 		ret = of_platform_populate(node, NULL, NULL, dev);
+@@ -233,19 +251,28 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	spacemit_power_on(pwrseq, 1);
++	pwrseq_data = pwrseq;
++
++	mutex_init(&pwrseq->pwrseq_mutex);
++	atomic_set(&pwrseq->pwrseq_count, 0);
++
++	if(pwrseq->always_on)
++		spacemit_power_on(pwrseq, 1);
++
+ 	return 0;
+ }
+ 
+ static int spacemit_pwrseq_remove(struct platform_device *pdev)
+ {
+-	struct spacemit_pwrseq	*pwrseq = platform_get_drvdata(pdev);
++	struct spacemit_pwrseq *pwrseq = platform_get_drvdata(pdev);
+ 
+-	of_platform_depopulate(&pdev->dev);
++	if(pwrseq->always_on)
++		spacemit_power_on(pwrseq, 0);
+ 
+-	if (pwrseq->ext_clk >= 0)
+-		clk_disable_unprepare(pwrseq->ext_clk);
++	mutex_destroy(&pwrseq->pwrseq_mutex);
++	of_platform_depopulate(&pdev->dev);
+ 
++	pwrseq_data = NULL;
+ 	return 0;
+ }
+ 
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
+new file mode 100755
+index 000000000000..75cd875d4e67
+--- /dev/null
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
+@@ -0,0 +1,24 @@
++#ifndef __SPACEMIT_PWRSEQ_H
++#define __SPACEMIT_PWRSEQ_H
++
++struct spacemit_pwrseq {
++	struct device		*dev;
++	bool clk_enabled;
++	u32 power_on_delay_ms;
++
++	struct clk *ext_clk;
++	struct gpio_descs *pwr_gpios;
++	struct regulator *vdd_supply;
++	struct regulator *io_supply;
++	int	vdd_voltage;
++	int io_voltage;
++
++	bool always_on;
++
++	struct mutex pwrseq_mutex;
++	atomic_t pwrseq_count;
++};
++
++void spacemit_power_on(struct spacemit_pwrseq *pwrseq, bool on_off);
++struct spacemit_pwrseq *spacemit_get_pwrseq(void);
++#endif
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+index ffa3d0eb6054..2c6a5fa4d3e6 100755
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+@@ -19,6 +19,7 @@
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
++#include "spacemit-pwrseq.h"
+ 
+ struct wlan_pwrseq {
+ 	struct device		*dev;
+@@ -27,11 +28,12 @@ struct wlan_pwrseq {
+ 
+ 	struct gpio_desc *regon;
+ 	struct gpio_desc *hostwake;
++
++	struct mutex wlan_mutex;
+ };
+ 
+ static struct wlan_pwrseq *pdata = NULL;
+ static int spacemit_wlan_on(struct wlan_pwrseq *pwrseq, bool on_off);
+-static DEFINE_MUTEX(spacemit_wlan_mutex);
+ 
+ void spacemit_wlan_set_power(bool on_off)
+ {
+@@ -41,14 +43,13 @@ void spacemit_wlan_set_power(bool on_off)
+ 	if (!pwrseq)
+ 		return;
+ 
+-	mutex_lock(&spacemit_wlan_mutex);
++	mutex_lock(&pwrseq->wlan_mutex);
+ 	if (on_off != pwrseq->power_state) {
+ 		ret = spacemit_wlan_on(pwrseq, on_off);
+ 		if (ret)
+ 			dev_err(pwrseq->dev, "set power failed\n");
+ 	}
+-
+-	mutex_unlock(&spacemit_wlan_mutex);
++	mutex_unlock(&pwrseq->wlan_mutex);
+ }
+ EXPORT_SYMBOL_GPL(spacemit_wlan_set_power);
+ 
+@@ -84,15 +85,21 @@ EXPORT_SYMBOL_GPL(spacemit_wlan_get_oob_irq_flags);
+ 
+ static int spacemit_wlan_on(struct wlan_pwrseq *pwrseq, bool on_off)
+ {
++	struct spacemit_pwrseq *parent_pwrseq = spacemit_get_pwrseq();
++
+ 	if (!pwrseq || IS_ERR(pwrseq->regon))
+ 		return 0;
+ 
+ 	if (on_off){
++		if(parent_pwrseq)
++			spacemit_power_on(parent_pwrseq, 1);
+ 		gpiod_set_value(pwrseq->regon, 1);
+ 		if (pwrseq->power_on_delay_ms)
+ 			msleep(pwrseq->power_on_delay_ms);
+ 	}else{
+ 		gpiod_set_value(pwrseq->regon, 0);
++		if(parent_pwrseq)
++			spacemit_power_on(parent_pwrseq, 0);
+ 	}
+ 
+ 	pwrseq->power_state = on_off;
+@@ -101,7 +108,7 @@ static int spacemit_wlan_on(struct wlan_pwrseq *pwrseq, bool on_off)
+ 
+ static int spacemit_wlan_probe(struct platform_device *pdev)
+ {
+-	struct device		*dev = &pdev->dev;
++	struct device *dev = &pdev->dev;
+ 	struct wlan_pwrseq *pwrseq;
+ 
+ 	pwrseq = devm_kzalloc(dev, sizeof(*pwrseq), GFP_KERNEL);
+@@ -109,32 +116,39 @@ static int spacemit_wlan_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	pwrseq->dev = dev;
+-	pdata = pwrseq;
+ 	platform_set_drvdata(pdev, pwrseq);
+ 
+-	pwrseq->regon = devm_gpiod_get_index(dev, "regon",
+-							0, GPIOD_OUT_LOW);
++	pwrseq->regon = devm_gpiod_get(dev, "regon", GPIOD_OUT_LOW);
+ 	if (IS_ERR(pwrseq->regon) &&
+ 		PTR_ERR(pwrseq->regon) != -ENOENT &&
+ 		PTR_ERR(pwrseq->regon) != -ENOSYS) {
+ 		return PTR_ERR(pwrseq->regon);
+ 	}
+ 
+-	pwrseq->hostwake = devm_gpiod_get_index(dev, "hostwake",
+-							1, GPIOD_IN);
++	pwrseq->hostwake = devm_gpiod_get(dev, "hostwake", GPIOD_IN);
+ 	if (IS_ERR(pwrseq->hostwake) &&
+ 		PTR_ERR(pwrseq->hostwake) != -ENOENT &&
+ 		PTR_ERR(pwrseq->hostwake) != -ENOSYS) {
+ 		return PTR_ERR(pwrseq->hostwake);
+ 	}
+ 
+-	device_property_read_u32(dev, "power-on-delay-ms",
+-				 &pwrseq->power_on_delay_ms);
++	if(device_property_read_u32(dev, "power-on-delay-ms",
++				 &pwrseq->power_on_delay_ms))
++		pwrseq->power_on_delay_ms = 10;
++
++	mutex_init(&pwrseq->wlan_mutex);
++	pdata = pwrseq;
++
+ 	return 0;
+ }
+ 
+ static int spacemit_wlan_remove(struct platform_device *pdev)
+ {
++	struct wlan_pwrseq *pwrseq = platform_get_drvdata(pdev);
++
++	mutex_destroy(&pwrseq->wlan_mutex);
++	pdata = NULL;
++
+ 	return 0;
+ }
+ 
+-- 
+2.47.1
+

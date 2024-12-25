@@ -1,0 +1,61 @@
+From 6856f8e685a29afe27107af53c30ddb6bf078cff Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 13 Sep 2023 09:44:16 +0800
+Subject: [PATCH 0107/1189] update for support tcm
+
+Change-Id: I6be53bbb49061a8c535ef9e03227761fd2e03bd8
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 7 +++----
+ drivers/misc/tcm.c                     | 1 +
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 84fbf029e632..2cf7c73f9f6a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -20,7 +20,7 @@ aliases {
+ 	cpus: cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-		timebase-frequency = <50000000>;
++		timebase-frequency = <10000000>;
+ 		cpu_0: cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0>;
+@@ -36,7 +36,6 @@ cpu_0: cpu@0 {
+ 			cpu-tlb = "1024 4-ways";
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
+-
+ 			cpu0_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+ 				compatible = "riscv,cpu-intc";
+@@ -343,11 +342,11 @@ sdhci2: sdh@d4281000 {
+ 		};
+ 
+ 		tcm: tcm@0xd8000000 {
+-			compatible = "spacemit,k1-pro-tcm";
++			compatible = "spacemit,k1-x-tcm";
+ 			reg = <0x0 0xd8000000 0x0 0x80000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+-			ranges = <0x0 0x0 0xbe000000 0x80000>;
++			ranges = <0x0 0x0 0xd8000000 0x80000>;
+ 			no-memory-wc;
+ 
+ 			core0_tcm@0 {
+diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
+index fa0cb2aabee0..40c401b06e2f 100644
+--- a/drivers/misc/tcm.c
++++ b/drivers/misc/tcm.c
+@@ -506,6 +506,7 @@ static struct miscdevice tcm_misc_device = {
+ 
+ static const struct of_device_id tcm_dt_ids[] = {
+ 	{ .compatible = "spacemit,k1-pro-tcm", .data = NULL },
++	{ .compatible = "spacemit,k1-x-tcm", .data = NULL },
+ 	{}
+ };
+ 
+-- 
+2.47.1
+

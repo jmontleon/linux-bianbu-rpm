@@ -1,0 +1,98 @@
+From 4d0d5b707781ccde5a87985fa0f1a9cd81f46fbc Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Thu, 4 Jan 2024 09:32:52 +0800
+Subject: [PATCH 0307/1189] fix/gpu: memory leak when launch weston
+
+sync framework will call PVRSRVDeviceSyncOpen to allocate psConnection
+and hOsPrivateData which has no chance to release these kernel buffer.
+
+Change-Id: Ibcb8c255f5c5de9861b22ef7cb560f585f2daf66
+---
+ drivers/gpu/drm/img-rogue/Makefile            |  4 +++-
+ drivers/gpu/drm/img-rogue/connection_server.c |  1 +
+ drivers/gpu/drm/img-rogue/connection_server.h |  1 +
+ drivers/gpu/drm/img-rogue/module_common.c     | 14 +++++++++++++-
+ 4 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/Makefile b/drivers/gpu/drm/img-rogue/Makefile
+index e78553430ce3..f9116dfef0ed 100644
+--- a/drivers/gpu/drm/img-rogue/Makefile
++++ b/drivers/gpu/drm/img-rogue/Makefile
+@@ -145,7 +145,9 @@ pvrsrvkm-y += \
+  spacemit/sysconfig.o \
+  spacemit/spacemit_init.o \
+  server_rgxkicksync_bridge.o \
+- rgxkicksync.o
++ rgxkicksync.o \
++ pvr_sync_ioctl_common.o \
++ pvr_sync_ioctl_drm.o
+ pvrsrvkm-$(CONFIG_ARM)   += osfunc_arm.o
+ pvrsrvkm-$(CONFIG_ARM64) += osfunc_arm64.o
+ pvrsrvkm-$(CONFIG_EVENT_TRACING) += trace_events.o pvr_gputrace.o
+diff --git a/drivers/gpu/drm/img-rogue/connection_server.c b/drivers/gpu/drm/img-rogue/connection_server.c
+index efb0a97675a7..559a4be802d8 100644
+--- a/drivers/gpu/drm/img-rogue/connection_server.c
++++ b/drivers/gpu/drm/img-rogue/connection_server.c
+@@ -203,6 +203,7 @@ PVRSRV_ERROR PVRSRVCommonConnectionConnect(void **ppvPrivData, void *pvOSData)
+ 	/* Allocate connection data area, no stats since process not registered yet */
+ 	psConnection = OSAllocZMemNoStats(sizeof(*psConnection));
+ 	PVR_LOG_RETURN_IF_NOMEM(psConnection, "psConnection");
++	psConnection->bSyncConnection = IMG_FALSE;
+ 
+ 	/* Allocate process statistics as early as possible to catch all allocs */
+ #if defined(PVRSRV_ENABLE_PROCESS_STATS) && !defined(PVRSRV_DEBUG_LINUX_MEMORY_STATS)
+diff --git a/drivers/gpu/drm/img-rogue/connection_server.h b/drivers/gpu/drm/img-rogue/connection_server.h
+index 95660832a9a3..d9eb515c2e5a 100644
+--- a/drivers/gpu/drm/img-rogue/connection_server.h
++++ b/drivers/gpu/drm/img-rogue/connection_server.h
+@@ -110,6 +110,7 @@ typedef struct _CONNECTION_DATA_
+ 	/* List navigation for deferred freeing of connection data */
+ 	struct _CONNECTION_DATA_	**ppsThis;
+ 	struct _CONNECTION_DATA_	*psNext;
++	IMG_BOOL            bSyncConnection;
+ } CONNECTION_DATA;
+ 
+ #include "osconnection_server.h"
+diff --git a/drivers/gpu/drm/img-rogue/module_common.c b/drivers/gpu/drm/img-rogue/module_common.c
+index 3ca0947653c8..1f454c91fdb0 100644
+--- a/drivers/gpu/drm/img-rogue/module_common.c
++++ b/drivers/gpu/drm/img-rogue/module_common.c
+@@ -624,6 +624,7 @@ static int PVRSRVDeviceSyncOpen(PVRSRV_DEVICE_NODE *psDeviceNode,
+ 		iErr = -ENOMEM;
+ 		goto fail_alloc_connection;
+ 	}
++	psConnection->bSyncConnection = IMG_TRUE;
+ #if (PVRSRV_DEVICE_INIT_MODE == PVRSRV_LINUX_DEV_INIT_ON_CONNECT)
+ 	psConnectionPriv->pvConnectionData = (void*)psConnection;
+ #else
+@@ -686,6 +687,7 @@ static int PVRSRVDeviceSyncOpen(PVRSRV_DEVICE_NODE *psDeviceNode,
+ void PVRSRVDeviceRelease(PVRSRV_DEVICE_NODE *psDeviceNode,
+                          struct drm_file *psDRMFile)
+ {
++	CONNECTION_DATA *psConnection = NULL;
+ 	PVR_UNREFERENCED_PARAMETER(psDeviceNode);
+ 
+ 	if (psDRMFile->driver_priv)
+@@ -717,8 +719,18 @@ void PVRSRVDeviceRelease(PVRSRV_DEVICE_NODE *psDeviceNode,
+ 				pvr_sync_close(psConnectionPriv->pvSyncConnectionData);
+ #endif
+ #endif
++			psConnection = psConnectionPriv->pvConnectionData;
++			if (psConnection->bSyncConnection == IMG_TRUE)
++			{
++				if (psConnection->hOsPrivateData != NULL)
++				{
++					OSConnectionPrivateDataDeInit(psConnection->hOsPrivateData);
++					psConnection->hOsPrivateData = NULL;
++				}
++				kfree(psConnection);
++				psConnection = NULL;
++			}
+ 		}
+-
+ 		kfree(psDRMFile->driver_priv);
+ 		psDRMFile->driver_priv = NULL;
+ 	}
+-- 
+2.47.1
+

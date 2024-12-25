@@ -1,0 +1,188 @@
+From f06987cfd2f4ac2fefcb19d19945259149fa6499 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Fri, 5 Jan 2024 18:21:47 +0800
+Subject: [PATCH 0316/1189] display: Support hdmi 1080p
+
+Change-Id: I6efa94596170bceb46d3dcbf4cd03de30c949e8d
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi   | 17 ++++----
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 51 +++++++++++++++++++-----
+ 2 files changed, 50 insertions(+), 18 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 79dcc0687d64..832cd20b2add 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2096,7 +2096,7 @@ dpu_online2: port@c0340000 {
+ 			spacemit-dpu-min-mclk = <40960000>;
+ 			status = "ok";
+ 
+-			dpu_online2_out: endpoint@0 {
++			dpu_online2_out_dsi: endpoint@0 {
+ 				remote-endpoint = <&dsi2_in>;
+ 			};
+ 
+@@ -2119,6 +2119,8 @@ dpu_online2: port@c0440000 {
+ 			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
+ 			clocks = <&ccu CLK_HDMI>;
+ 			clock-names = "hmclk";
++			assigned-clocks = <&ccu CLK_HDMI>;
++			assigned-clock-parents = <&ccu CLK_PLL1_409P6>;
+ 			resets = <&reset RESET_HDMI>;
+ 			reset-names= "hdmi_reset";
+ 			power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
+@@ -2126,8 +2128,8 @@ dpu_online2: port@c0440000 {
+ 			ip = "spacemit-saturn";
+ 			status = "ok";
+ 
+-			dpu_online2_out: endpoint@0 {
+-				remote-endpoint = <&hdmi_in_vop>;
++			dpu_online2_out_hdmi: endpoint@0 {
++				remote-endpoint = <&hdmi_in_dpu>;
+ 			};
+ 
+ 			dpu_offline0_out: endpoint@1 {
+@@ -2143,9 +2145,9 @@ hdmi: hdmi@C0400500 {
+ 			hdmi_in: port {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-				hdmi_in_vop: endpoint@0 {
++				hdmi_in_dpu: endpoint@0 {
+ 					reg = <0>;
+-					remote-endpoint = <&dpu_online2_out>;
++					remote-endpoint = <&dpu_online2_out_hdmi>;
+ 				};
+ 			};
+ 		};
+@@ -2171,13 +2173,14 @@ dsi2_out: endpoint {
+ 						remote-endpoint = <&dphy2_in>;
+ 					};
+ 				};
+-
++				/*
+ 				port@1 {
+ 					reg = <1>;
+ 					dsi2_in: endpoint {
+-						remote-endpoint = <&dpu_online2_out>;
++						remote-endpoint = <&dpu_online2_out_dsi>;
+ 					};
+ 				};
++				*/
+ 			};
+ 		};
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index aa5987fe4a97..736c901cfaf3 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -154,17 +154,38 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 			   struct drm_display_mode *mode)
+ {
+ 	void __iomem *hdmi_addr = (void __iomem *)ioremap(0xC0400500, 1);
+-	// hdmi config
+-	writel(0x40, hdmi_addr + 0x34);
+-	writel(0x20200000, hdmi_addr + 0xe8);
+-	writel(0x508d425a, hdmi_addr + 0xec);
+-	writel(0x861, hdmi_addr + 0xf0);
+-	writel(0x3, hdmi_addr + 0xe4);
+-
+-	writel(0x28008320, hdmi_addr + 0x20);
+-	writel(0x1e00a20d, hdmi_addr + 0x24);
+-	writel(0x0e404000, hdmi_addr + 0x28);
++	u32 value;
+ 
++	// hdmi config
++	if (mode->hdisplay > 1024) {
++		// 1920x1080
++		writel(0x4d, hdmi_addr + 0x34);
++		writel(0x20200000, hdmi_addr + 0xe8);
++		writel(0x509D453E, hdmi_addr + 0xec);
++		writel(0x821, hdmi_addr + 0xf0);
++		writel(0x3, hdmi_addr + 0xe4);
++
++		udelay(2);
++		value = readl_relaxed(hdmi_addr + 0xe4);
++		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
++
++		writel(0x30184000, hdmi_addr + 0x28);
++	} else {
++		// 640x480
++		writel(0x40, hdmi_addr + 0x34);
++		writel(0x20200000, hdmi_addr + 0xe8);
++		writel(0x508d425a, hdmi_addr + 0xec);
++		writel(0x861, hdmi_addr + 0xf0);
++		writel(0x3, hdmi_addr + 0xe4);
++
++		udelay(2);
++		value = readl_relaxed(hdmi_addr + 0xe4);
++		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
++
++		writel(0x28008320, hdmi_addr + 0x20);
++		writel(0x1e00a20d, hdmi_addr + 0x24);
++		writel(0x0e404000, hdmi_addr + 0x28);
++	}
+ 
+ 	spacemit_hdmi_config_video_timing(hdmi, mode);
+ 
+@@ -180,6 +201,7 @@ static void spacemit_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+ 	DRM_INFO("%s()\n", __func__);
++
+ 	/* Store the display mode for plugin/DPMS poweron events */
+ 	drm_mode_copy(&hdmi->previous_mode, adj_mode);
+ }
+@@ -188,6 +210,7 @@ static void spacemit_hdmi_encoder_enable(struct drm_encoder *encoder)
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+ 	DRM_INFO("%s()\n", __func__);
++
+ 	spacemit_hdmi_set_pwr_mode(hdmi, NORMAL);
+ 	spacemit_hdmi_setup(hdmi, &hdmi->previous_mode);
+ }
+@@ -195,7 +218,7 @@ static void spacemit_hdmi_encoder_enable(struct drm_encoder *encoder)
+ static void spacemit_hdmi_encoder_disable(struct drm_encoder *encoder)
+ {
+ 	struct spacemit_hdmi *hdmi = encoder_to_spacemit_hdmi(encoder);
+-
++	DRM_INFO("%s()\n", __func__);
+ 	spacemit_hdmi_set_pwr_mode(hdmi, LOWER_PWR);
+ }
+ 
+@@ -234,6 +257,7 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)
+ 	// struct edid *edid;
+ 	int ret = 0;
+ 
++	ret = drm_add_modes_noedid(connector, 1920, 1080);
+ 	return ret;
+ }
+ 
+@@ -313,6 +337,8 @@ static int spacemit_hdmi_bind(struct device *dev, struct device *master,
+ 	// int irq;
+ 	int ret;
+ 
++	DRM_INFO("%s()\n", __func__);
++
+ 	hdmi = devm_kzalloc(dev, sizeof(*hdmi), GFP_KERNEL);
+ 	if (!hdmi)
+ 		return -ENOMEM;
+@@ -338,6 +364,8 @@ static void spacemit_hdmi_unbind(struct device *dev, struct device *master,
+ {
+ 	struct spacemit_hdmi *hdmi = dev_get_drvdata(dev);
+ 
++	DRM_INFO("%s()\n", __func__);
++
+ 	hdmi->connector.funcs->destroy(&hdmi->connector);
+ }
+ 
+@@ -354,6 +382,7 @@ static int spacemit_hdmi_probe(struct platform_device *pdev)
+ 
+ static int spacemit_hdmi_remove(struct platform_device *pdev)
+ {
++	DRM_INFO("%s()\n", __func__);
+ 	component_del(&pdev->dev, &spacemit_hdmi_ops);
+ 
+ 	return 0;
+-- 
+2.47.1
+

@@ -1,0 +1,62 @@
+From 05299fa0a8b918acd85056b2e8e174d4ce1b93f8 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 22 Mar 2024 17:30:21 +0800
+Subject: [PATCH 0508/1189] mmc: sdhci-of-k1x: improve the tuning window select
+
+Change-Id: Iacb934c00e24aa4ec0407bc896d96a76a82aa9d5
+---
+ drivers/mmc/host/sdhci-of-k1x.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index f6789060bb98..762577c63db9 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -1039,7 +1039,8 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)
+ 	u32 ier;
+ 	unsigned long flags = 0;
+ 	int err = 0;
+-	struct tuning_window *window;
++	int i, j, len;
++	struct tuning_window tmp;
+ 	struct mmc_host *mmc = host->mmc;
+ 	struct k1x_sdhci_platdata *pdata = mmc->parent->platform_data;
+ 	struct rx_tuning *rxtuning = &pdata->rxtuning;
+@@ -1049,7 +1050,6 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)
+ 	ier = sdhci_readl(host, SDHCI_INT_ENABLE);
+ 	spacemit_sdhci_clear_set_irqs(host, ier, SDHCI_INT_DATA_AVAIL);
+ 
+-	window = &rxtuning->windows[WINDOW_1ST];
+ 	min = SDHC_RX_TUNE_DELAY_MIN;
+ 	do {
+ 		/* find the mininum delay first which can pass tuning */
+@@ -1097,13 +1097,19 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)
+ 		pr_notice("%s: pass window [%d %d) \n", mmc_hostname(host->mmc), min, max);
+ 		/* store the top 3 window */
+ 		if ((max - min) >= rxtuning->window_limit) {
+-			window->max_delay = max;
+-			window->min_delay = min;
+-			window->type = MIDDLE_WINDOW;
+-			if (window == &rxtuning->windows[WINDOW_3RD])
+-				break;
+-			else
+-				window++;
++			tmp.max_delay = max;
++			tmp.min_delay = min;
++			tmp.type = MIDDLE_WINDOW;
++			for (i = 0; i < CANDIDATE_WIN_NUM; i++) {
++				len = rxtuning->windows[i].max_delay - rxtuning->windows[i].min_delay;
++				if ((tmp.max_delay - tmp.min_delay) > len) {
++					for (j = CANDIDATE_WIN_NUM - 1; j > i; j--) {
++						rxtuning->windows[j] = rxtuning->windows[j-1];
++					}
++					rxtuning->windows[i] = tmp;
++					break;
++				}
++			}
+ 		}
+ 		min = max + SDHC_RX_TUNE_DELAY_STEP;
+ 	} while (min < SDHC_RX_TUNE_DELAY_MAX);
+-- 
+2.47.1
+

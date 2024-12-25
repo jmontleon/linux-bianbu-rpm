@@ -1,0 +1,411 @@
+From 746dcb7ea05327f2a4f0d79d6c28d2acd72336ef Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Sat, 30 Dec 2023 20:23:54 +0800
+Subject: [PATCH 0287/1189] support camera to draw, when use 2GB DDR (dtsi and
+ defconfig)
+
+Change-Id: I09edab1f2d96fa49f74439376512871101a67e46
+---
+ .../dts/spacemit/k1-x-camera-reserved-mm.dtsi |  17 ++
+ .../boot/dts/spacemit/k1-x-camera-sdk.dtsi    | 187 ++++++++++++++++++
+ .../dts/spacemit/k1-x-camera-sensor-evb.dtsi  |  73 +++++++
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |   3 +-
+ .../riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi |  26 ++-
+ arch/riscv/configs/k1-x_evb_defconfig         |   6 +
+ 6 files changed, 297 insertions(+), 15 deletions(-)
+ create mode 100755 arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi
+ create mode 100755 arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
+ create mode 100755 arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi
+new file mode 100755
+index 000000000000..06b6ea8fa83e
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2023 SPACEMIT Micro Limited
++ */
++
++/ {
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		spacemitzreserved: spacemit-mmz-@50000000 {
++			no-map;
++			reg = <0x0 0x50000000 0x0 0x28000000>;
++		};
++	};
++};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
+new file mode 100755
+index 000000000000..152c93fd60ff
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
+@@ -0,0 +1,187 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2023 SPACEMIT Micro Limited
++ */
++
++//#include "k1-x-camera-reserved-mm.dtsi"
++#include "k1-x-camera-sensor-evb.dtsi"
++
++&soc {
++	plat-cam {
++		compatible = "spacemit,plat-cam", "simple-bus";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	csiphy0: csiphy@d420a000 {
++		compatible = "spacemit,csi-dphy";
++		cell-index = <0>;
++		reg = <0x0 0xd420a000 0x0 0x13f>;
++		reg-names = "csiphy-regs";
++		clocks = <&ccu CLK_CCIC1PHY>;
++		clock-names = "csi_dphy";
++		resets = <&reset RESET_CCIC1_PHY>;
++		reset-names = "cphy_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	csiphy1: csiphy@d420a800 {
++		compatible = "spacemit,csi-dphy";
++		cell-index = <1>;
++		reg = <0x0 0xd420a800 0x0 0x13f>;
++		reg-names = "csiphy-regs";
++		clocks = <&ccu CLK_CCIC2PHY>;
++		clock-names = "csi_dphy";
++		resets = <&reset RESET_CCIC2_PHY>;
++		reset-names = "cphy_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "disable";
++	};
++
++	csiphy2: csiphy@d4206000 {
++		compatible = "spacemit,csi-dphy";
++		cell-index = <2>;
++		spacemit,bifmode-enable;
++		reg = <0x0 0xd4206000 0x0 0x13f>;
++		reg-names = "csiphy-regs";
++		clocks = <&ccu CLK_CCIC3PHY>;
++		clock-names = "csi_dphy";
++		resets = <&reset RESET_CCIC3_PHY>;
++		reset-names = "cphy_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	ccic0: ccic@d420a000 {
++		compatible = "spacemit,k1xccic";
++		cell-index = <0>;
++		spacemit,csiphy = <&csiphy0>;
++		reg = <0x0 0xd420a000 0x0 0x3ff>;
++		reg-names = "ccic-regs";
++		interrupt-parent = <&intc>;
++		interrupts = <81>;
++		interrupt-names = "ipe-irq";
++		clocks = <&ccu CLK_CSI>,
++				<&ccu CLK_CCIC_4X>,
++				<&ccu CLK_ISP_BUS>;
++		clock-names = "csi_func", "ccic_func", "isp_axi";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_CSI>,
++				<&reset RESET_CCIC_4X>, <&reset RESET_ISP_CI>;
++		reset-names = "isp_ahb_reset", "csi_reset",
++				"ccic_4x_reset", "isp_ci_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	ccic1: ccic@d420a800 {
++		compatible = "spacemit,k1xccic";
++		cell-index = <1>;
++		spacemit,csiphy = <&csiphy2>;
++		reg = <0x0 0xd420a800 0x0 0x3ff>;
++		reg-names = "ccic-regs";
++		interrupt-parent = <&intc>;
++		interrupts = <82>;
++		interrupt-names = "ipe-irq";
++		clocks = <&ccu CLK_CSI>, <&ccu CLK_CCIC_4X>,
++				<&ccu CLK_ISP_BUS>;
++		clock-names = "csi_func", "ccic_func",
++				"isp_axi";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_CSI>,
++				<&reset RESET_CCIC_4X>, <&reset RESET_ISP_CI>;
++		reset-names = "isp_ahb_reset", "csi_reset",
++				"ccic_4x_reset", "isp_ci_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	ccic2: ccic@d4206000 {
++		compatible = "spacemit,k1xccic";
++		cell-index = <2>;
++		spacemit,csiphy = <&csiphy2>;
++		reg = <0x0 0xd4206000 0x0 0x3ff>;
++		reg-names = "ccic-regs";
++		interrupt-parent = <&intc>;
++		interrupts = <83>;
++		interrupt-names = "ipe-irq";
++		clocks = <&ccu CLK_CSI>, <&ccu CLK_CCIC_4X>,
++				<&ccu CLK_ISP_BUS>;
++		clock-names = "csi_func", "ccic_func",
++				"isp_axi";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_CSI>,
++				<&reset RESET_CCIC_4X>, <&reset RESET_ISP_CI>;
++		reset-names = "isp_ahb_reset", "csi_reset",
++				"ccic_4x_reset", "isp_ci_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	isp: isp@C0230000 {
++		compatible = "spacemit,k1xisp";
++		reg = <0x0 0xC0230000 0x0 0x12700>;
++		reg-names = "isp";
++		interrupt-parent = <&intc>;
++		interrupts = <79>, <85>;
++		interrupt-names = "feisp-irq", "feisp-dma-irq";
++		clocks = <&ccu CLK_ISP>,
++				<&ccu CLK_ISP_BUS>,
++				<&ccu CLK_DPU_MCLK>;
++		clock-names = "isp_func", "isp_axi", "dpu_mclk";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_ISP>,
++				<&reset RESET_ISP_CI>, <&reset RESET_LCD_MCLK>;
++		reset-names = "isp_ahb_reset", "isp_reset",
++				"isp_ci_reset", "lcd_mclk_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	vi: vi@C0230000 {
++		compatible = "spacemit,k1xvi";
++		reg = <0x0 0xc0230000 0x0 0x14000>;
++		reg-names = "vi";
++		interrupt-parent = <&intc>;
++		interrupts = <79>, <85>;
++		interrupt-names = "feisp-irq", "feisp-dma-irq";
++		clocks = <&ccu CLK_ISP>, <&ccu CLK_ISP_BUS>,
++				<&ccu CLK_DPU_MCLK>;
++		clock-names = "isp_func", "isp_axi",
++				"dpu_mclk";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_ISP>,
++				<&reset RESET_ISP_CI>, <&reset RESET_LCD_MCLK>;
++		reset-names = "isp_ahb_reset", "isp_reset",
++				"isp_ci_reset", "lcd_mclk_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	cpp: cpp@C02f0000 {
++		compatible = "spacemit,k1xcpp";
++		reg = <0x0 0xC02f0000 0x0 0x7fff>;
++		reg-names = "cpp";
++		interrupt-parent = <&intc>;
++		interrupts = <84>;
++		interrupt-names = "cpp";
++		clocks = <&ccu CLK_ISP_CPP>, <&ccu CLK_ISP_BUS>,
++				<&ccu CLK_DPU_MCLK>;
++		clock-names = "cpp_func", "isp_axi",
++				"dpu_mclk";
++		resets = <&reset RESET_ISP_AHB>, <&reset RESET_ISP_CPP>,
++				<&reset RESET_ISP_CI>, <&reset RESET_LCD_MCLK>;
++		reset-names = "isp_ahb_reset", "isp_cpp_reset",
++				"isp_ci_reset", "lcd_mclk_reset";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++}; /* soc */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
+new file mode 100755
+index 000000000000..bcefb96ad6b2
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2023 SPACEMIT Micro Limited
++ */
++#include <dt-bindings/gpio/gpio.h>
++#include "k1-x_pinctrl.dtsi"
++
++&soc {
++	/* imx315 */
++	backsensor: cam_sensor@0 {
++		cell-index = <0>;
++		twsi-index = <0>;
++		dphy-index = <0>;
++		compatible = "spacemit,cam-sensor";
++		clocks = <&ccu CLK_CAMM0>;
++		clock-names = "cam_mclk0";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_camera0>;
++		pwdn-gpios = <&gpio 113 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio 111 GPIO_ACTIVE_HIGH>;
++		//dphy-entries = <5>;
++		//dphy-settings = <0x00000001 0xa2848888 0x00001500 0x000000ff 0x1001>;
++		/*
++		afvdd28-supply = <&ldo_12>;
++		avdd28-supply = <&ldo_10>;
++		dvdd12-supply = <&ldo_20>;
++		iovdd18-supply = <&ldo_11>;
++		cam-supply-names = "afvdd28", "avdd28", "dvdd12", "iovdd18";
++		*/
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	/* gc2375h */
++	backsensor_aux: cam_sensor@1 {
++		cell-index = <1>;
++		twsi-index = <1>;
++		dphy-index = <2>;
++		compatible = "spacemit,cam-sensor";
++		clocks = <&ccu CLK_CAMM1>;
++		clock-names = "cam_mclk1";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_camera1>;
++		//dphy-entries = <5>;
++		//dphy-settings = <0x00000001 0xa2848888 0x00001500 0x000000ff 0x1001>;
++		pwdn-gpios = <&gpio 114 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio 112 GPIO_ACTIVE_HIGH>;
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++
++	/* S5K5E3 */
++	frontsensor: cam_sensor@2 {
++		cell-index = <2>;
++		twsi-index = <1>;
++		dphy-index = <2>;
++		compatible = "spacemit,cam-sensor";
++		clocks = <&ccu CLK_CAMM2>;
++		clock-names = "cam_mclk2";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_camera2>;
++		//dphy-entries = <5>;
++		//dphy-settings = <0x00000001 0xa2848888 0x00001500 0x000000ff 0x1001>;
++		pwdn-gpios = <&gpio 122 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio 121 GPIO_ACTIVE_HIGH>;
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
++		status = "okay";
++	};
++};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 4b5cb07ff1d1..8c0bb0c85e03 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -434,7 +434,7 @@ area_reserved@80000000 {
+ 		};
+ 	};
+ 
+-	soc {
++	soc: soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+@@ -1917,6 +1917,7 @@ jpu@c02f8000 {
+ 				<&reset RESET_ISP>,
+ 				<&reset RESET_ISP_AHB>;
+ 			reset-names = "jpg_reset", "lcd_mclk_reset", "isp_ci_reset", "freset", "sreset";
++
+ 			jpu,cclk-max-frequency = /bits/ 64 <1000000000>;
+ 			jpu,cclk-min-frequency = <409000000>;
+ 			jpu,cclk-default-frequency = <614000000>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index b59bc3cc155b..a868772b580a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -326,14 +326,15 @@ pinctrl_mn_clk_2: mn_clk_2_grp {
+             K1X_PADCONF(GPIO_44,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* mn_clk */
+         >;
+     };
+-
++    pinctrl_i2c1: i2c1_grp {
++        pinctrl-single,pins =<
++            K1X_PADCONF(GPIO_56,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_scl */
++            K1X_PADCONF(GPIO_57,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_sda */
++        >;
++    };
+     pinctrl_camera2: camera2_grp {
+         pinctrl-single,pins =<
+             K1X_PADCONF(GPIO_120,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* cam_mclk2 */
+-            K1X_PADCONF(GPIO_118,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c7_scl */
+-            K1X_PADCONF(GPIO_119,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c7_sda */
+-            K1X_PADCONF(GPIO_121,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera2_rst */
+-            K1X_PADCONF(GPIO_122,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera2_pdn */
+         >;
+     };
+ 
+@@ -849,24 +850,21 @@ pinctrl_one_wire_1: one_wire_1_grp {
+             K1X_PADCONF(GPIO_47,   MUX_MODE5, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))   /* one_wire */
+         >;
+     };
+-
+-    pinctrl_camera0: camera0_grp {
++    pinctrl_i2c0: i2c0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_53,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* cam_mclk0 */
+             K1X_PADCONF(GPIO_54,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c0_scl */
+             K1X_PADCONF(GPIO_55,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c0_sda */
+-            K1X_PADCONF(GPIO_111,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera0_rst */
+-            K1X_PADCONF(GPIO_113,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera0_pdn */
++        >;
++    };
++    pinctrl_camera0: camera0_grp {
++        pinctrl-single,pins =<
++            K1X_PADCONF(GPIO_53,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* cam_mclk0 */
+         >;
+     };
+ 
+     pinctrl_camera1: camera1_grp {
+         pinctrl-single,pins =<
+             K1X_PADCONF(GPIO_58,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* cam_mclk1 */
+-            K1X_PADCONF(GPIO_56,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_scl */
+-            K1X_PADCONF(GPIO_57,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_sda */
+-            K1X_PADCONF(GPIO_112,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera1_rst */
+-            K1X_PADCONF(GPIO_114,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* camera1_pdn */
+         >;
+     };
+ 
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 7d6a82194ba4..a6a15ec391f8 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -220,6 +220,12 @@ CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_RADIO_ADAPTERS is not set
+ CONFIG_VIDEO_LINLON_K1X=y
+ CONFIG_SPACEMIT_V2D=y
++CONFIG_SPACEMIT_K1X_CAMERA_V2=y
++CONFIG_SPACEMIT_K1X_VI_V2=y
++CONFIG_SPACEMIT_K1X_VI_IOMMU=y
++CONFIG_SPACEMIT_K1X_ISP_V2=y
++CONFIG_SPACEMIT_K1X_CPP_V2=y
++CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ # CONFIG_CXD2880_SPI_DRV is not set
+ # CONFIG_MEDIA_TUNER_E4000 is not set
+ # CONFIG_MEDIA_TUNER_FC0011 is not set
+-- 
+2.47.1
+

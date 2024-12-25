@@ -1,0 +1,126 @@
+From cd5a9ac6481b42b979b732cf71eb6e37ecdedac8 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 26 Dec 2023 11:01:22 +0800
+Subject: [PATCH 0249/1189] k1x:add k1x-soc rtc driver and clk&reset interface
+
+Change-Id: I751ec10994c8c671fcd27594be70bb1f2d5a99dc
+---
+ arch/riscv/configs/k1-x_evb_defconfig |  2 ++
+ drivers/rtc/Kconfig                   |  2 +-
+ drivers/rtc/rtc-sa1100.c              | 18 ++++++++++++++++++
+ drivers/rtc/rtc-sa1100.h              |  1 +
+ 4 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 772b6af95d4d..5a3c0747d9ac 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -353,6 +353,8 @@ CONFIG_MMC=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_PLTFM=y
+ CONFIG_MMC_SDHCI_OF_K1X=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_DRV_SA1100=y
+ CONFIG_DMADEVICES=y
+ CONFIG_MMP_PDMA_DRIVER=y
+ CONFIG_MMP_PDMA_SPACEMIT_K1X=y
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index a60bcc791a48..f32fba669c07 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -1488,7 +1488,7 @@ config RTC_DRV_EP93XX
+ 
+ config RTC_DRV_SA1100
+ 	tristate "SA11x0/PXA2xx/PXA910"
+-	depends on ARCH_SA1100 || ARCH_PXA || ARCH_MMP
++	depends on ARCH_SA1100 || ARCH_PXA || ARCH_MMP || SOC_SPACEMIT_K1X
+ 	help
+ 	  If you say Y here you will get access to the real time clock
+ 	  built into your SA11x0 or PXA2xx CPU.
+diff --git a/drivers/rtc/rtc-sa1100.c b/drivers/rtc/rtc-sa1100.c
+index 13799b1abca1..65a38e5541c4 100644
+--- a/drivers/rtc/rtc-sa1100.c
++++ b/drivers/rtc/rtc-sa1100.c
+@@ -20,6 +20,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
+ #include <linux/rtc.h>
+ #include <linux/init.h>
+ #include <linux/fs.h>
+@@ -80,7 +81,10 @@ static irqreturn_t sa1100_rtc_interrupt(int irq, void *dev_id)
+ 
+ 	/* update irq data & counter */
+ 	if (rtsr & RTSR_AL)
++	{
+ 		events |= RTC_AF | RTC_IRQF;
++		printk("rtc hit alarm\n");
++	}
+ 	if (rtsr & RTSR_HZ)
+ 		events |= RTC_UF | RTC_IRQF;
+ 
+@@ -186,6 +190,10 @@ int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info)
+ 	ret = clk_prepare_enable(info->clk);
+ 	if (ret)
+ 		return ret;
++
++	ret = reset_control_deassert(info->reset);
++	if(ret)
++		goto free_clk;
+ 	/*
+ 	 * According to the manual we should be able to let RTTR be zero
+ 	 * and then a default diviser for a 32.768KHz clock is used.
+@@ -207,6 +215,7 @@ int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info)
+ 
+ 	ret = devm_rtc_register_device(info->rtc);
+ 	if (ret) {
++		reset_control_assert(info->reset);
+ 		clk_disable_unprepare(info->clk);
+ 		return ret;
+ 	}
+@@ -236,6 +245,10 @@ int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info)
+ 	writel_relaxed(RTSR_AL | RTSR_HZ, info->rtsr);
+ 
+ 	return 0;
++
++free_clk:
++	clk_disable_unprepare(info->clk);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(sa1100_rtc_init);
+ 
+@@ -274,6 +287,10 @@ static int sa1100_rtc_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	info->reset = devm_reset_control_get_optional(&pdev->dev, NULL);
++	if(IS_ERR(info->reset))
++		return PTR_ERR(info->reset);
++
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+@@ -305,6 +322,7 @@ static void sa1100_rtc_remove(struct platform_device *pdev)
+ 		spin_lock_irq(&info->lock);
+ 		writel_relaxed(0, info->rtsr);
+ 		spin_unlock_irq(&info->lock);
++		reset_control_assert(info->reset);
+ 		clk_disable_unprepare(info->clk);
+ 	}
+ }
+diff --git a/drivers/rtc/rtc-sa1100.h b/drivers/rtc/rtc-sa1100.h
+index cc724f5b07bc..db39caa64824 100644
+--- a/drivers/rtc/rtc-sa1100.h
++++ b/drivers/rtc/rtc-sa1100.h
+@@ -17,6 +17,7 @@ struct sa1100_rtc {
+ 	int			irq_alarm;
+ 	struct rtc_device	*rtc;
+ 	struct clk		*clk;
++	struct reset_control	*reset;
+ };
+ 
+ int sa1100_rtc_init(struct platform_device *pdev, struct sa1100_rtc *info);
+-- 
+2.47.1
+

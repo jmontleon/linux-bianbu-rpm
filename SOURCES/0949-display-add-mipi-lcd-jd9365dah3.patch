@@ -1,0 +1,448 @@
+From 2b1335b76e08f19b3674782a219fec28ea2479ff Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Tue, 20 Aug 2024 21:13:01 +0800
+Subject: [PATCH 0949/1189] display: add mipi lcd jd9365dah3
+
+Change-Id: Ibdd0f35d74accb900440b6ade712a32d05960f3c
+---
+ .../dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts  |  73 ++++-
+ .../dts/spacemit/lcd/lcd_jd9365dah3_mipi.dtsi | 277 ++++++++++++++++++
+ 2 files changed, 349 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365dah3_mipi.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index d32b7bcf78d1..cbd9913e5f06 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -6,7 +6,7 @@
+ #include "k1-x.dtsi"
+ //#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+-#include "lcd/lcd_icnl9951r_mipi.dtsi"
++#include "lcd/lcd_jd9365dah3_mipi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ //#include "k1-x_opp_table.dtsi"
+@@ -206,12 +206,50 @@ &uart2 {
+ 	status = "okay";
+ };
+ 
++&pwm14 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm14_1>;
++	status = "okay";
++};
++
++&dpu_online2_dsi {
++	memory-region = <&dpu_resv>;
++	spacemit-dpu-bitclk = <614400000>;
++	dsi_1v2-supply = <&ldo_5>;
++	dsi_1v8-supply = <&ldo_11>;
++	vin-supply-names = "dsi_1v2", "dsi_1v8";
++	status = "okay";
++};
++
++&dsi2 {
++	status = "okay";
++
++	panel2: panel2@0 {
++		status = "okay";
++		compatible = "spacemit,mipi-panel2";
++		reg = <0>;
++
++		gpios-reset = <30>;
++		gpios-dc = <34 42>;
++		gpios-avdd = <35 36>;
++		gpios-bl = <31>;
++		id = <2>;
++		delay-after-reset = <10>;
++		force-attached = "lcd_jd9365dah3_mipi";
++	};
++};
++
++&lcds {
++	status = "okay";
++};
++
+ &i2c0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c0>;
+ 	spacemit,i2c-fast-mode;
+ 	status = "okay";
+ };
++
+ &i2c1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c1>;
+@@ -764,6 +802,7 @@ flash@0 {
+ 		status = "okay";
+ 	};
+ };
++
+ /* MIPI CSI1, clk lane1, Fixme: frontsensor gc2375h */
+ &backsensor {
+ 	af_2v8-supply = <&ldo_3>;
+@@ -793,6 +832,7 @@ &backsensor_aux {
+ 
+ 	status = "disabled";
+ };
++
+ /* MIPI CSI3 data line0,1 clk lane3, Fixme: backsensor gc5035 */
+ &frontsensor {
+ 	af_2v8-supply = <&ldo_3>;
+@@ -815,14 +855,17 @@ &frontsensor {
+ 
+ 	status = "okay";
+ };
++
+ &csiphy0 {
+ 
+ 	status = "okay";
+ };
++
+ &csiphy1 {
+ 
+ 	status = "disabled";
+ };
++
+ &csiphy2 {
+ 
+ 	status = "okay";
+@@ -833,16 +876,19 @@ &ccic0 {
+ 
+ 	status = "okay";
+ };
++
+ &ccic1 {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ 
+ 	status = "okay";
+ };
++
+ &ccic2 {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ 
+ 	status = "okay";
+ };
++
+ &isp {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+@@ -855,6 +901,31 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
++
++&pwm_bl {
++	pwms = <&pwm14 2000>;
++	brightness-levels = <
++		0   20  20  20  21  21  21  22  22  22  23  23  23  24  24  24
++		25  25  25  26  26  26  27  27  27  28  28  29  29  30  30  31
++		32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47
++		48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63
++		64  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79
++		80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95
++		96  97  98  99  100 101 102 103 104 105 106 107 108 109 110 111
++		112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127
++		128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
++		144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159
++		160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175
++		176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
++		192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207
++		208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
++		224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239
++		240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255
++	>;
++	default-brightness-level = <50>;
++	status = "okay";
++};
++
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365dah3_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365dah3_mipi.dtsi
+new file mode 100644
+index 000000000000..de33a0d5cb0e
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365dah3_mipi.dtsi
+@@ -0,0 +1,277 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/ { lcds: lcds {
++        lcd_jd9365dah3_mipi: lcd_jd9365dah3_mipi {
++                dsi-work-mode = <1>; /* video burst mode*/
++                dsi-lane-number = <4>;
++                dsi-color-format = "rgb888";
++                width-mm = <108>;
++                height-mm = <172>;
++                use-dcs-write;
++
++                /*mipi info*/
++                height = <1280>;
++                width = <800>;
++                hfp = <40>;
++                hbp = <20>;
++                hsync = <20>;
++                vfp = <20>;
++                vbp = <8>;
++                vsync = <4>;
++                fps = <60>;
++                work-mode = <0>;
++                rgb-mode = <3>;
++                lane-number = <4>;
++                phy-bit-clock = <614400000>;
++                split-enable = <0>;
++                eotp-enable = <0>;
++                burst-mode = <2>;
++                esd-check-enable = <0>;
++
++                /* DSI_CMD, DSI_MODE, timeout, len, cmd */
++                initial-command = [
++                        39 01 00 02 E0 00
++                        39 01 00 02 E1 93
++                        39 01 00 02 E2 65
++                        39 01 00 02 E3 F8
++                        39 01 00 02 80 03
++                        39 01 00 02 E0 01
++                        39 01 00 02 00 00
++                        39 01 00 02 01 40
++                        39 01 00 02 03 10
++                        39 01 00 02 04 47
++                        39 01 00 02 0C 74
++                        39 01 00 02 17 00
++                        39 01 00 02 18 D7
++                        39 01 00 02 19 01
++                        39 01 00 02 1A 00
++                        39 01 00 02 1B D7
++                        39 01 00 02 1C 01
++                        39 01 00 02 24 FE
++                        39 01 00 02 25 40
++                        39 01 00 02 35 28
++                        39 01 00 02 37 69
++                        39 01 00 02 38 05
++                        39 01 00 02 39 08
++                        39 01 00 02 3A 0A
++                        39 01 00 02 3C 78
++                        39 01 00 02 3D FF
++                        39 01 00 02 3E FF
++                        39 01 00 02 3F FF
++                        39 01 00 02 40 06
++                        39 01 00 02 41 A0
++                        39 01 00 02 43 14
++                        39 01 00 02 44 08
++                        39 01 00 02 45 20
++                        39 01 00 02 4B 04
++                        39 01 00 02 55 02
++                        39 01 00 02 57 A9
++                        39 01 00 02 59 0A
++                        39 01 00 02 5A 2D
++                        39 01 00 02 5B 19
++                        39 01 00 02 5C 15
++                        39 01 00 02 5D 7C
++                        39 01 00 02 5E 6C
++                        39 01 00 02 5F 5F
++                        39 01 00 02 60 54
++                        39 01 00 02 61 50
++                        39 01 00 02 62 43
++                        39 01 00 02 63 46
++                        39 01 00 02 64 2F
++                        39 01 00 02 65 48
++                        39 01 00 02 66 46
++                        39 01 00 02 67 44
++                        39 01 00 02 68 5F
++                        39 01 00 02 69 49
++                        39 01 00 02 6A 4C
++                        39 01 00 02 6B 3D
++                        39 01 00 02 6C 36
++                        39 01 00 02 6D 29
++                        39 01 00 02 6E 18
++                        39 01 00 02 6F 0C
++                        39 01 00 02 70 7C
++                        39 01 00 02 71 6C
++                        39 01 00 02 72 5F
++                        39 01 00 02 73 54
++                        39 01 00 02 74 50
++                        39 01 00 02 75 43
++                        39 01 00 02 76 46
++                        39 01 00 02 77 2F
++                        39 01 00 02 78 48
++                        39 01 00 02 79 46
++                        39 01 00 02 7A 44
++                        39 01 00 02 7B 5F
++                        39 01 00 02 7C 49
++                        39 01 00 02 7D 4C
++                        39 01 00 02 7E 3D
++                        39 01 00 02 7F 36
++                        39 01 00 02 80 29
++                        39 01 00 02 81 18
++                        39 01 00 02 82 0C
++                        39 01 00 02 E0 02
++                        39 01 00 02 00 5F
++                        39 01 00 02 01 5F
++                        39 01 00 02 02 52
++                        39 01 00 02 03 51
++                        39 01 00 02 04 50
++                        39 01 00 02 05 4B
++                        39 01 00 02 06 4A
++                        39 01 00 02 07 49
++                        39 01 00 02 08 48
++                        39 01 00 02 09 47
++                        39 01 00 02 0A 46
++                        39 01 00 02 0B 45
++                        39 01 00 02 0C 44
++                        39 01 00 02 0D 40
++                        39 01 00 02 0E 41
++                        39 01 00 02 0F 5F
++                        39 01 00 02 10 5F
++                        39 01 00 02 11 5F
++                        39 01 00 02 12 5F
++                        39 01 00 02 13 5F
++                        39 01 00 02 14 5F
++                        39 01 00 02 15 5F
++                        39 01 00 02 16 5F
++                        39 01 00 02 17 5F
++                        39 01 00 02 18 52
++                        39 01 00 02 19 51
++                        39 01 00 02 1A 50
++                        39 01 00 02 1B 4B
++                        39 01 00 02 1C 4A
++                        39 01 00 02 1D 49
++                        39 01 00 02 1E 48
++                        39 01 00 02 1F 47
++                        39 01 00 02 20 46
++                        39 01 00 02 21 45
++                        39 01 00 02 22 44
++                        39 01 00 02 23 40
++                        39 01 00 02 24 41
++                        39 01 00 02 25 5F
++                        39 01 00 02 26 5F
++                        39 01 00 02 27 5F
++                        39 01 00 02 28 5F
++                        39 01 00 02 29 5F
++                        39 01 00 02 2A 5F
++                        39 01 00 02 2B 5F
++                        39 01 00 02 2C 1F
++                        39 01 00 02 2D 1F
++                        39 01 00 02 2E 12
++                        39 01 00 02 2F 00
++                        39 01 00 02 30 01
++                        39 01 00 02 31 08
++                        39 01 00 02 32 09
++                        39 01 00 02 33 0A
++                        39 01 00 02 34 0B
++                        39 01 00 02 35 04
++                        39 01 00 02 36 05
++                        39 01 00 02 37 06
++                        39 01 00 02 38 07
++                        39 01 00 02 39 11
++                        39 01 00 02 3A 10
++                        39 01 00 02 3B 1F
++                        39 01 00 02 3C 1F
++                        39 01 00 02 3D 1F
++                        39 01 00 02 3E 1F
++                        39 01 00 02 3F 1F
++                        39 01 00 02 40 1F
++                        39 01 00 02 41 1F
++                        39 01 00 02 42 1F
++                        39 01 00 02 43 1F
++                        39 01 00 02 44 12
++                        39 01 00 02 45 00
++                        39 01 00 02 46 01
++                        39 01 00 02 47 08
++                        39 01 00 02 48 09
++                        39 01 00 02 49 0A
++                        39 01 00 02 4A 0B
++                        39 01 00 02 4B 04
++                        39 01 00 02 4C 05
++                        39 01 00 02 4D 06
++                        39 01 00 02 4E 07
++                        39 01 00 02 4F 11
++                        39 01 00 02 50 10
++                        39 01 00 02 51 1F
++                        39 01 00 02 52 1F
++                        39 01 00 02 53 1F
++                        39 01 00 02 54 1F
++                        39 01 00 02 55 1F
++                        39 01 00 02 56 1F
++                        39 01 00 02 57 1F
++                        39 01 00 02 58 40
++                        39 01 00 02 59 00
++                        39 01 00 02 5A 00
++                        39 01 00 02 5B 10
++                        39 01 00 02 5C 02
++                        39 01 00 02 5D 50
++                        39 01 00 02 5E 01
++                        39 01 00 02 5F 02
++                        39 01 00 02 60 50
++                        39 01 00 02 61 05
++                        39 01 00 02 62 02
++                        39 01 00 02 63 04
++                        39 01 00 02 64 64
++                        39 01 00 02 65 65
++                        39 01 00 02 66 08
++                        39 01 00 02 67 73
++                        39 01 00 02 68 04
++                        39 01 00 02 69 04
++                        39 01 00 02 6A 64
++                        39 01 00 02 6B 08
++                        39 01 00 02 6C 00
++                        39 01 00 02 6D 00
++                        39 01 00 02 6E 00
++                        39 01 00 02 6F 88
++                        39 01 00 02 70 00
++                        39 01 00 02 71 00
++                        39 01 00 02 72 06
++                        39 01 00 02 73 7B
++                        39 01 00 02 74 00
++                        39 01 00 02 75 0C
++                        39 01 00 02 76 00
++                        39 01 00 02 77 5D
++                        39 01 00 02 78 17
++                        39 01 00 02 79 10
++                        39 01 00 02 7A 00
++                        39 01 00 02 7B 00
++                        39 01 00 02 7C 00
++                        39 01 00 02 7D 03
++                        39 01 00 02 7E 7B
++                        39 01 00 02 E0 04
++                        39 01 00 02 2C 6B
++                        39 01 00 02 35 0A
++                        39 01 00 02 E0 00
++                        39 01 78 02 11 00
++                        39 01 05 02 29 00
++                        39 01 00 02 35 00
++                ];
++
++                sleep-in-command = [
++                        39 01 78 01 28
++                        39 01 78 01 10
++                ];
++                sleep-out-command = [
++                        39 01 96 01 11
++                        39 01 32 01 29
++                ];
++                read-id-command = [
++                        37 01 00 01 01
++                        14 01 00 01 04
++                ];
++
++                display-timings {
++                        timing0 {
++                                clock-frequency = <76800000>;
++                                hactive = <800>;
++                                hfront-porch = <40>;
++                                hback-porch = <20>;
++                                hsync-len = <20>;
++                                vactive = <1280>;
++                                vfront-porch = <20>;
++                                vback-porch = <8>;
++                                vsync-len = <4>;
++                                vsync-active = <1>;
++                                hsync-active = <1>;
++                        };
++                };
++        };
++};};
+-- 
+2.47.1
+

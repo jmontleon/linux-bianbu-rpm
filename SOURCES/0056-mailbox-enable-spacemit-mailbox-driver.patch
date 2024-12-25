@@ -1,0 +1,527 @@
+From 21296d9c21c593f854aa3acdcc2a5fc92ffc06cd Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 29 Jun 2023 09:01:48 +0800
+Subject: [PATCH 0056/1189] mailbox: enable spacemit mailbox driver
+
+Change-Id: If9bd59b3168665aa85af896d0b224e0cd8336f36
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi    |  13 +
+ arch/riscv/configs/k1-pro_fpga_defconfig    |   2 +
+ drivers/mailbox/Kconfig                     |   8 +
+ drivers/mailbox/Makefile                    |   2 +
+ drivers/mailbox/spacemit/Makefile           |   1 +
+ drivers/mailbox/spacemit/spacemit-mailbox.c | 284 ++++++++++++++++++++
+ drivers/mailbox/spacemit/spacemit_mailbox.h | 138 ++++++++++
+ 7 files changed, 448 insertions(+)
+ create mode 100644 drivers/mailbox/spacemit/Makefile
+ create mode 100644 drivers/mailbox/spacemit/spacemit-mailbox.c
+ create mode 100644 drivers/mailbox/spacemit/spacemit_mailbox.h
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 036776e05c69..075b87276c8b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -246,6 +246,19 @@ uart0: serial@2cea0000 {
+ 			status = "disabled";
+ 		};
+ 
++		mailbox: mailbox@2f824000 {
++			compatible = "spacemit,k1-pro-mailbox";
++			reg = <0x0 0x2f824000 0x0 0x4000>;
++			interrupt-parent = <&intc>;
++			interrupts = <48>;
++			#mbox-cells = <1>;
++			clocks = <&ccu CLK_MBOX>;
++			clock-names = "core";
++			resets = <&reset RESET_MCU_MAILBOX>;
++			reset-names = "core_reset";
++			status = "okay";
++		};
++
+ 		dma: dma-controller@2ce40000 {
+ 			compatible = "spacemit,k1pro-axi-dma";
+ 			reg = <0x0 0x2ce40000 0x0 0x10000>;
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index a209ded8df1e..b4c1ba470ce7 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -159,6 +159,8 @@ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
++CONFIG_MAILBOX=y
++CONFIG_SPACEMIT_MAILBOX=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_REMOTEPROC=y
+ CONFIG_SPACEMIT_REMOTEPROC=y
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index 8ecba7fb999e..2c71777f70db 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -306,4 +306,12 @@ config THEAD_TH1520_MBOX
+ 	  kernel is running, and E902 core used for power management among other
+ 	  things.
+ 
++config SPACEMIT_MAILBOX
++	tristate "Spacemit Message Box"
++	depends on SOC_SPACEMIT
++	help
++	  Mailbox implementation for the hardware message box present in
++	  various Spacemit SoCs. This mailbox is used for communication
++	  between the application CPUs and the power management coprocessor.
++
+ endif
+diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+index 5f4f5b0ce2cc..e56088f04363 100644
+--- a/drivers/mailbox/Makefile
++++ b/drivers/mailbox/Makefile
+@@ -66,3 +66,5 @@ obj-$(CONFIG_QCOM_CPUCP_MBOX)	+= qcom-cpucp-mbox.o
+ obj-$(CONFIG_QCOM_IPCC)		+= qcom-ipcc.o
+ 
+ obj-$(CONFIG_THEAD_TH1520_MBOX)	+= mailbox-th1520.o
++
++obj-$(CONFIG_SPACEMIT_MAILBOX)	+= spacemit/
+diff --git a/drivers/mailbox/spacemit/Makefile b/drivers/mailbox/spacemit/Makefile
+new file mode 100644
+index 000000000000..482e1c15fe73
+--- /dev/null
++++ b/drivers/mailbox/spacemit/Makefile
+@@ -0,0 +1 @@
++obj-y += spacemit-mailbox.o
+diff --git a/drivers/mailbox/spacemit/spacemit-mailbox.c b/drivers/mailbox/spacemit/spacemit-mailbox.c
+new file mode 100644
+index 000000000000..c40a3b00f242
+--- /dev/null
++++ b/drivers/mailbox/spacemit/spacemit-mailbox.c
+@@ -0,0 +1,284 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/mailbox_controller.h>
++#include <linux/mailbox_client.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_irq.h>
++#include <linux/platform_device.h>
++#include <linux/reset.h>
++#include <linux/spinlock.h>
++#include "spacemit_mailbox.h"
++
++#define mbox_dbg(mbox, ...)	dev_dbg((mbox)->controller.dev, __VA_ARGS__)
++
++static irqreturn_t spacemit_mbox_irq(int irq, void *dev_id)
++{
++	struct spacemit_mailbox *mbox = dev_id;
++	struct mbox_chan *chan;
++	unsigned int status, msg;
++	int i, j;
++
++	/* we fixed user0 as the richos */
++	/* and we are fixed using new_msg irq */
++	status = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_status)
++		& readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_en_set);
++
++	if (!(status & 0xff))
++		return IRQ_NONE;
++
++	for (i = 0; i < SPACEMIT_NUM_CHANNELS; ++i) {
++		chan = &mbox->controller.chans[i];
++
++		/* new msg irq */
++		if (!(status & (1 << (i * 2))))
++			continue;
++
++		/* clear the fifo */
++		while (readl((void __iomem *)&mbox->regs->msg_status[i])) {
++			msg = readl((void __iomem *)&mbox->regs->mbox_msg[i]);
++			mbox_dbg(mbox, "Channel %d received 0x%08x\n", i, msg);
++			mbox_chan_received_data(chan, &msg);
++		}
++
++		/* clear the irq pending */
++		j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++		j |= (1 << (i * 2));
++		writel(j, (void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int spacemit_chan_send_data(struct mbox_chan *chan, void *data)
++{
++	struct spacemit_mailbox *mbox = chan->con_priv;
++	unsigned int chan_num = chan - mbox->controller.chans;
++
++	/* send data */
++	writel(*((unsigned int *)data), (void __iomem *)&mbox->regs->mbox_msg[chan_num]);
++
++	mbox_dbg(mbox, "Channel %d sent 0x%08x\n", chan_num, *((unsigned int *)data));
++
++	return 0;
++}
++
++static int spacemit_chan_startup(struct mbox_chan *chan)
++{
++
++	struct spacemit_mailbox *mbox = chan->con_priv;
++	unsigned int chan_num = chan - mbox->controller.chans;
++	unsigned int msg, j;
++
++	/* if this channel is tx, we should not enable the interrupt */
++	if (chan->cl->tx_prepare != NULL)
++		return 0;
++
++	/* clear the fifo */
++	while (readl((void __iomem *)&mbox->regs->msg_status[chan_num])) {
++		msg = readl((void __iomem *)&mbox->regs->mbox_msg[chan_num]);
++	}
++
++	spin_lock(&mbox->lock);
++
++	/* clear pending */
++	j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++	j |= (1 << (chan_num * 2));
++	writel(j, (void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++
++	/* enable new msg irq */
++	j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_en_set);
++	j |= (1 << (chan_num * 2));
++	writel(j, (void __iomem *)&mbox->regs->mbox_irq[0].irq_en_set);
++
++	spin_unlock(&mbox->lock);
++
++	return 0;
++}
++
++static void spacemit_chan_shutdown(struct mbox_chan *chan)
++{
++	struct spacemit_mailbox *mbox = chan->con_priv;
++	unsigned int chan_num = chan - mbox->controller.chans;
++	unsigned int msg, j;
++
++	if (chan->cl->tx_prepare != NULL)
++		return ;
++
++	spin_lock(&mbox->lock);
++
++	/* disable new msg irq */
++	j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_en_clr);
++	j |= (1 << (chan_num * 2));
++	writel(j, (void __iomem *)&mbox->regs->mbox_irq[0].irq_en_clr);
++
++	/* flush the fifo */
++	while (readl((void __iomem *)&mbox->regs->msg_status[chan_num])) {
++		msg = readl((void __iomem *)&mbox->regs->mbox_msg[chan_num]);
++	}
++
++	/* clear pending */
++	j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++	j |= (1 << (chan_num * 2));
++	writel(j, (void __iomem *)&mbox->regs->mbox_irq[0].irq_status_clr);
++
++	spin_unlock(&mbox->lock);
++}
++
++static bool spacemit_chan_last_tx_done(struct mbox_chan *chan)
++{
++	unsigned int j;
++	struct spacemit_mailbox *mbox = chan->con_priv;
++	unsigned int chan_num = chan - mbox->controller.chans;
++
++	spin_lock(&mbox->lock);
++
++	j = readl((void __iomem *)&mbox->regs->mbox_irq[0].irq_status);
++
++	spin_unlock(&mbox->lock);
++
++	return !((j >> (2 * chan_num)) & 0x1);
++}
++
++static bool spacemit_chan_peek_data(struct mbox_chan *chan)
++{
++	struct spacemit_mailbox *mbox = chan->con_priv;
++	unsigned int chan_num = chan - mbox->controller.chans;
++
++	return readl((void __iomem *)&mbox->regs->msg_status[chan_num]);
++}
++
++static const struct mbox_chan_ops spacemit_chan_ops = {
++	.send_data    = spacemit_chan_send_data,
++	.startup      = spacemit_chan_startup,
++	.shutdown     = spacemit_chan_shutdown,
++	.last_tx_done = spacemit_chan_last_tx_done,
++	.peek_data    = spacemit_chan_peek_data,
++};
++
++static int spacemit_mailbox_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct mbox_chan *chans;
++	struct spacemit_mailbox *mbox;
++	int i, ret;
++
++	mbox = devm_kzalloc(dev, sizeof(*mbox), GFP_KERNEL);
++	if (!mbox)
++		return -ENOMEM;
++
++	chans = devm_kcalloc(dev, SPACEMIT_NUM_CHANNELS, sizeof(*chans), GFP_KERNEL);
++	if (!chans)
++		return -ENOMEM;
++
++	for (i = 0; i < SPACEMIT_NUM_CHANNELS; ++i)
++		chans[i].con_priv = mbox;
++
++	mbox->regs = (mbox_reg_desc_t *)devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(mbox->regs)) {
++		ret = PTR_ERR(mbox->regs);
++		dev_err(dev, "Failed to map MMIO resource: %d\n", ret);
++		return -EINVAL;
++	}
++
++	mbox->clk = devm_clk_get(dev, "core");
++	if (IS_ERR(mbox->clk)) {
++		ret = PTR_ERR(mbox->clk);
++		dev_err(dev, "Failed to get clock: %d\n", ret);
++		return -EINVAL;
++	}
++
++	mbox->reset = devm_reset_control_get_exclusive(dev, "core_reset");
++	if (IS_ERR(mbox->reset)) {
++		ret = PTR_ERR(mbox->reset);
++		dev_err(dev, "Failed to get reset: %d\n", ret);
++		return -EINVAL;
++	}
++
++	/* enable clk */
++	ret = clk_prepare_enable(mbox->clk);
++	if (ret) {
++		dev_err(dev, "Failed to enable clock: %d\n", ret);
++		return ret;
++	}
++
++	/* deasser clk  */
++	ret = reset_control_deassert(mbox->reset);
++	if (ret) {
++		dev_err(dev, "Failed to deassert reset: %d\n", ret);
++		clk_disable_unprepare(mbox->clk);
++		return -EINVAL;
++	}
++
++	/* deassert module */
++	ret = readl((void __iomem *)&mbox->regs->mbox_sysconfig);
++	ret |= 0x1;
++	writel(ret, (void __iomem *)&mbox->regs->mbox_sysconfig);
++
++	/* request irq */
++	ret = devm_request_irq(dev, platform_get_irq(pdev, 0),
++			       spacemit_mbox_irq, 0, dev_name(dev), mbox);
++	if (ret) {
++		dev_err(dev, "Failed to register IRQ handler: %d\n", ret);
++		reset_control_assert(mbox->reset);
++		clk_disable_unprepare(mbox->clk);
++	}
++
++	/* register the mailbox controller */
++	mbox->controller.dev           = dev;
++	mbox->controller.ops           = &spacemit_chan_ops;
++	mbox->controller.chans         = chans;
++	mbox->controller.num_chans     = SPACEMIT_NUM_CHANNELS;
++	mbox->controller.txdone_irq    = false;
++	mbox->controller.txdone_poll   = true;
++	mbox->controller.txpoll_period = 5;
++
++	spin_lock_init(&mbox->lock);
++	platform_set_drvdata(pdev, mbox);
++
++	ret = mbox_controller_register(&mbox->controller);
++	if (ret) {
++		dev_err(dev, "Failed to register controller: %d\n", ret);
++		reset_control_assert(mbox->reset);
++		clk_disable_unprepare(mbox->clk);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int spacemit_mailbox_remove(struct platform_device *pdev)
++{
++	struct spacemit_mailbox *mbox = platform_get_drvdata(pdev);
++
++	mbox_controller_unregister(&mbox->controller);
++	clk_disable_unprepare(mbox->clk);
++
++	return 0;
++}
++
++static const struct of_device_id spacemit_mailbox_of_match[] = {
++	{ .compatible = "spacemit,k1-pro-mailbox", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, spacemit_mailbox_of_match);
++
++static struct platform_driver spacemit_mailbox_driver = {
++	.driver = {
++		.name = "spacemit-mailbox",
++		.of_match_table = spacemit_mailbox_of_match,
++	},
++	.probe  = spacemit_mailbox_probe,
++	.remove = spacemit_mailbox_remove,
++};
++module_platform_driver(spacemit_mailbox_driver);
++
++MODULE_DESCRIPTION("spacemit Message Box driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mailbox/spacemit/spacemit_mailbox.h b/drivers/mailbox/spacemit/spacemit_mailbox.h
+new file mode 100644
+index 000000000000..d64379e21514
+--- /dev/null
++++ b/drivers/mailbox/spacemit/spacemit_mailbox.h
+@@ -0,0 +1,138 @@
++#ifndef __SPACEMIT_MAILBOX_H__
++#define __SPACEMIT_MAILBOX_H__
++
++#include <linux/kernel.h>
++#include <linux/mailbox_controller.h>
++#include <linux/spinlock.h>
++
++#define SPACEMIT_NUM_CHANNELS	4
++
++#define IRQ_NEW_MSG_MASK	0x1
++#define IRQ_NOT_FULL_MASK	0x2
++
++
++/* mailbox register description */
++/* mailbox sysconfig */
++typedef union mbox_sysconfig {
++	unsigned int val;
++	struct {
++		unsigned int resetn:1;
++		unsigned int reserved:31;
++	} bits;
++} mbox_sysconfig_t;
++
++
++typedef union mbox_msg {
++	unsigned int val;
++	struct {
++		unsigned int msg:32;
++	} bits;
++} mbox_msg_t;
++
++typedef union mbox_fifo_status {
++	unsigned int val;
++	struct {
++		unsigned int is_full:1;
++		unsigned int reserved:31;
++	} bits;
++} mbox_fifo_status_t;
++
++
++typedef union mbox_msg_status {
++	unsigned int val;
++	struct {
++		unsigned int num_msg:4;
++		unsigned int reserved:28;
++	} bits;
++} mbox_msg_status_t;
++
++typedef union mbox_irq_status {
++	unsigned int val;
++	struct {
++		unsigned int new_msg0_status:1;
++		unsigned int not_msg0_full:1;
++		unsigned int new_msg1_status:1;
++		unsigned int not_msg1_full:1;
++		unsigned int new_msg2_status:1;
++		unsigned int not_msg2_full:1;
++		unsigned int new_msg3_status:1;
++		unsigned int not_msg3_full:1;
++		unsigned int reserved:24;
++	} bits;
++} mbox_irq_status_t;
++
++typedef union mbox_irq_status_clr {
++	unsigned int val;
++	struct {
++		unsigned int new_msg0_clr:1;
++		unsigned int not_msg0_full_clr:1;
++		unsigned int new_msg1_clr:1;
++		unsigned int not_msg1_full_clr:1;
++		unsigned int new_msg2_clr:1;
++		unsigned int not_msg2_full_clr:1;
++		unsigned int new_msg3_clr:1;
++		unsigned int not_msg3_full_clr:1;
++		unsigned int reserved:24;
++	} bits;
++} mbox_irq_status_clr_t;
++
++typedef union mbox_irq_enable_set {
++	unsigned int val;
++	struct {
++		unsigned int new_msg0_irq_en:1;
++		unsigned int not_msg0_full_irq_en:1;
++		unsigned int new_msg1_irq_en:1;
++		unsigned int not_msg1_full_irq_en:1;
++		unsigned int new_msg2_irq_en:1;
++		unsigned int not_msg2_full_irq_en:1;
++		unsigned int new_msg3_irq_en:1;
++		unsigned int not_msg3_full_irq_en:1;
++		unsigned int reserved:24;
++	} bits;
++} mbox_irq_enable_set_t;
++
++typedef union mbox_irq_enable_clr {
++	unsigned int val;
++	struct {
++		unsigned int new_msg0_irq_clr:1;
++		unsigned int not_msg0_full_irq_clr:1;
++		unsigned int new_msg1_irq_clr:1;
++		unsigned int not_msg1_full_irq_clr:1;
++		unsigned int new_msg2_irq_clr:1;
++		unsigned int not_msg2_full_irq_clr:1;
++		unsigned int new_msg3_irq_clr:1;
++		unsigned int not_msg3_full_irq_clr:1;
++		unsigned int reserved:24;
++	} bits;
++} mbox_irq_enable_clr_t;
++
++typedef struct mbox_irq {
++	mbox_irq_status_t irq_status;
++	mbox_irq_status_clr_t irq_status_clr;
++	mbox_irq_enable_set_t irq_en_set;
++	mbox_irq_enable_clr_t irq_en_clr;
++} mbox_irq_t;
++
++typedef struct mbox_reg_desc {
++	unsigned int mbox_version; /* 0x00 */
++	unsigned int reserved0[3]; /* 0x4 0x8 0xc */
++	mbox_sysconfig_t mbox_sysconfig; /* 0x10 */
++	unsigned int reserved1[11]; /* 0x14, 0x18, 0x1c, 0x20, 0x24, 0x28, 0x2c, 0x30, 0x34, 0x38, 0x3c */
++	mbox_msg_t mbox_msg[4]; /* 0x40, 0x44, 0x48, 0x4c */
++	unsigned int reserved2[12];
++	mbox_fifo_status_t fifo_status[4]; /* 0x80, 0x84, 0x88, 0x8c */
++	unsigned int reserved3[12];
++	mbox_msg_status_t msg_status[4]; /* 0xc0 */
++	unsigned int reserved4[12];
++	mbox_irq_t mbox_irq[2]; /* 0x100 */
++} mbox_reg_desc_t;
++
++struct spacemit_mailbox {
++	struct mbox_controller controller;
++	struct clk *clk;
++	struct reset_control *reset;
++	mbox_reg_desc_t *regs;
++	spinlock_t lock;
++};
++
++#endif /* __SPACEMIT_MAILBOX_H__ */
+-- 
+2.47.1
+

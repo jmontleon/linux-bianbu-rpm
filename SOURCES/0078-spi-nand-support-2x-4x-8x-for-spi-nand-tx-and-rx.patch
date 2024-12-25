@@ -1,0 +1,117 @@
+From 1ef362caff777ce734fa1ca5ec1d17507436ed0d Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 31 Jul 2023 20:44:06 +0800
+Subject: [PATCH 0078/1189] spi-nand: support 2x/4x/8x for spi-nand tx and rx
+
+Change-Id: I9fd0bed964427c317d87dcc17adc4926a719b724
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 13 ++++++++++++
+ arch/riscv/configs/k1-pro_fpga_defconfig |  1 +
+ drivers/spi/spi-dw-espi.c                | 27 ++++++++++++++++++++----
+ 3 files changed, 37 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 96105683dd3c..553967ddd92d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -561,6 +561,19 @@ qspi0: spi@2ce00000 {
+ 			status = "disabled";
+ 		};
+ 
++		qspi1: spi@2ce04000 {
++			compatible = "snps,dwc-ssi-1.02a";
++			reg = <0x0 0x2ce04000 0x0 0x4000>;
++			interrupt-parent = <&intc>;
++			interrupts = <97>;
++			clocks = <&pll_clk_qspi>;
++			resets = <&reset RESET_QSPI1>;
++			reg-io-width = <4>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
+                 eth0: ethernet@2cc00000 {
+ 			compatible = "spacemit,k1-pro-ethqos";
+ 			reg = <0x00 0x2cc00000 0x0 0x10000
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index ef9b18b0ed40..4477997de09c 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -62,6 +62,7 @@ CONFIG_ARM_SCMI_PROTOCOL=m
+ CONFIG_ARM_SCMI_POWER_DOMAIN=m
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
++CONFIG_MTD_SPI_NAND=y
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_VIRTIO_BLK=y
+diff --git a/drivers/spi/spi-dw-espi.c b/drivers/spi/spi-dw-espi.c
+index 0ba9100af3ad..3bb27be37451 100755
+--- a/drivers/spi/spi-dw-espi.c
++++ b/drivers/spi/spi-dw-espi.c
+@@ -504,15 +504,16 @@ static bool dw_spi_supports_mem_op(struct spi_mem *mem,
+ 	 * Only support the numbler of io lines used to transfer the cmd 
+ 	 * is 1 in enhanced SPI for now.
+ 	 */
+-	if (op->cmd.buswidth > 1)
++	if (op->addr.buswidth > 1 || op->dummy.buswidth > 1 ||
++		op->cmd.buswidth > 1)
+ 		return false;
+ 
+ 	/* In enhanced SPI 1, 2, 4, 8 all are valid modes. */
+ 	if (op->data.buswidth > 1 && (!(dws->caps & DW_SPI_CAP_EXT_SPI)))
+ 		return false;
+ 
+-	/* Only support upto 60 bit address in enhanced SPI for now. */
+-	if (op->data.buswidth > 1 && op->addr.nbytes > 8)
++	/* Only support upto 32 bit address in enhanced SPI for now. */
++	if (op->data.buswidth > 1 && op->addr.nbytes > 4)
+  		return false;
+ 
+ 	return spi_mem_default_supports_op(mem, op);
+@@ -819,6 +820,7 @@ static int enhanced_transfer(struct dw_spi *dws, struct spi_device *spi,
+ static void update_spi_ctrl0(struct dw_spi *dws, const struct spi_mem_op *op, bool enable)
+ {
+ 	u32 spi_ctrlr0;
++	u32 addr_l = 0;
+ 
+ 	spi_ctrlr0 = dw_readl(dws, DW_SPI_SPI_CTRLR0);
+ 	if (enable) {
+@@ -828,8 +830,9 @@ static void update_spi_ctrl0(struct dw_spi *dws, const struct spi_mem_op *op, bo
+ 		spi_ctrlr0 |= FIELD_PREP(DW_HSSI_SPI_CTRLR0_INST_L_MASK,
+ 					 DW_HSSI_SPI_CTRLR0_INST_L8);
+ 		/* 32 bit address length */
++		addr_l = clamp(op->addr.nbytes * 2, 0, 0xf);
+ 		spi_ctrlr0 |= FIELD_PREP(DW_HSSI_SPI_CTRLR0_ADDR_L_MASK,
+-					 DW_HSSI_SPI_CTRLR0_ADDR_L32);
++					 addr_l);
+ 		/* Enable clock stretching */
+ 		spi_ctrlr0 |= DW_HSSI_SPI_CTRLR0_CLK_STRETCH_EN;
+ 	} else {
+@@ -906,6 +909,22 @@ static int dw_spi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 
+ 	dw_spi_enable_chip(dws, 0);
+ 
++	if (enhanced_spi) {
++		u16 level;
++
++		level = min_t(unsigned int, dws->fifo_len / 2, dws->tx_len);
++		dw_writel(dws, DW_SPI_TXFTLR, level);
++		/*
++		 * In enhanced mode if we are reading then tx_len is 0 as we
++		 * have nothing to transmit. Calculate DW_SPI_RXFTLR with
++		 * rx_len.
++		 */
++		if (dws->rx_len != 0) {
++			level = min_t(u16, dws->fifo_len / 2, dws->rx_len);
++		}
++		dw_writel(dws, DW_SPI_RXFTLR, level - 1);
++    }
++
+     if (dws->caps & DW_SPI_CAP_EXT_SPI)
+ 		update_spi_ctrl0(dws, op, enhanced_spi);
+ 
+-- 
+2.47.1
+

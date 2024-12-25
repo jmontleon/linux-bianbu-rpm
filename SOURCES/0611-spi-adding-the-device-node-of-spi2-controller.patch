@@ -1,0 +1,43 @@
+From da8da827eddf6f20881088fe5ba9da9eb6323025 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Fri, 26 Apr 2024 16:48:21 +0800
+Subject: [PATCH 0611/1189] spi: adding the device node of spi2 controller
+
+Change-Id: Ia0ff741a99e1c8c4c090d6095d114d18fde070a5
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8267f7461be0..a1576fa16ea6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1043,6 +1043,25 @@ spi1: spi@d4026800 {
+ 			status = "disabled";
+ 		};
+ 
++		spi2: spi@f0613000 {
++			compatible = "spacemit,k1x-spi";
++			reg = <0x0 0xf0613000 0x0 0x30>;
++			k1x,ssp-id = <2>;
++			k1x,ssp-clock-rate = <26000000>;
++			k1x,ssp-disable-dma;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			cpuidle,pm-runtime,sleep;
++			interrupt-parent = <&intc>;
++			interrupts = <54>;
++			clocks = <&ccu CLK_SEC_SSP2>;
++			resets = <&reset RESET_SEC_SSP2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			interconnects = <&dram_range0>;
++			interconnect-names = "dma-mem";
++			status = "disabled";
++		};
++
+ 		spi3: spi@d401c000 {
+ 			compatible = "spacemit,k1x-spi";
+ 			reg = <0x0 0xd401c000 0x0 0x30>;
+-- 
+2.47.1
+

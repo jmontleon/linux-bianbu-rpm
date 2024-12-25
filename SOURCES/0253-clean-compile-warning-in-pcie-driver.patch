@@ -1,0 +1,44 @@
+From 5e234cc04e9a48c329cb8330d3e96de65fea3cad Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Dec 2023 17:36:59 +0800
+Subject: [PATCH 0253/1189] clean compile warning in pcie driver
+
+Change-Id: I9137f9b6888777af5dc998f77430cfc4a87e3997
+---
+ drivers/pci/controller/dwc/pcie-k1x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index b8301c35ed15..a29772252ba8 100755
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -731,7 +731,7 @@ static irqreturn_t k1x_pcie_irq_handler(int irq, void *arg)
+ 	struct k1x_pcie *k1x = arg;
+ 	int num;
+ 	u32 reg, reg_ahb;
+-	u8 chan;
++	__maybe_unused u8 chan;
+ #if 0
+ 	DMA_DIRC dirc = DMA_READ;
+ 	DMA_INT_TYPE type;
+@@ -819,7 +819,7 @@ static void k1x_pcie_ep_init(struct dw_pcie_ep *ep)
+ 	k1x_pcie_enable_wrapper_interrupts(k1x);
+ }
+ 
+-static void k1x_pcie_ep_enable_irq(struct dw_pcie_ep *ep)
++__maybe_unused static void k1x_pcie_ep_enable_irq(struct dw_pcie_ep *ep)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+ 	struct k1x_pcie *k1x = to_k1x_pcie(pci);
+@@ -827,7 +827,7 @@ static void k1x_pcie_ep_enable_irq(struct dw_pcie_ep *ep)
+ 	k1x_pcie_enable_wrapper_interrupts(k1x);
+ }
+ 
+-static void k1x_pcie_ep_disable_irq(struct dw_pcie_ep *ep)
++__maybe_unused static void k1x_pcie_ep_disable_irq(struct dw_pcie_ep *ep)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+ 	struct k1x_pcie *k1x = to_k1x_pcie(pci);
+-- 
+2.47.1
+

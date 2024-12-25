@@ -1,0 +1,298 @@
+From 936608c99ff518edba7db738dcac44b687d4e6b9 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 2 Jan 2024 15:44:26 +0800
+Subject: [PATCH 0294/1189] k1x:pmic: refine some code
+
+1. add the function of reading the version/user/debug id
+2. fix bug of pinfunc_desc
+
+Change-Id: I583d8e4882fb456438c3ee5a97201df1f7ac96e9
+---
+ drivers/mfd/spacemit-mfd.c                 | 48 +++++++++++----
+ include/linux/mfd/spacemit/pm853.h         |  8 ++-
+ include/linux/mfd/spacemit/spacemit_pmic.h | 11 +++-
+ include/linux/mfd/spacemit/spm8821.h       | 69 ++++++++++++----------
+ 4 files changed, 91 insertions(+), 45 deletions(-)
+
+diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
+index e85b75533a61..6a9c15f2a273 100644
+--- a/drivers/mfd/spacemit-mfd.c
++++ b/drivers/mfd/spacemit-mfd.c
+@@ -11,13 +11,15 @@
+ 
+ SPM8821_MFD_CELL;
+ SPM8821_REGMAP_CONFIG;
++SPM8821_CHIP_ID_REG;
+ 
+ PM853_MFD_CELL;
+ PM853_REGMAP_CONFIG;
++PM853_CHIP_ID_REG;
+ 
+ static const struct of_device_id spacemit_pmic_of_match[] = {
+-	{ .compatible = "spacemit,spm8821" , .data = (void *)SPACEMIT_SPM8821_ID_REG },
+-	{ .compatible = "spacemit,pm853" , .data = (void *)SPACEMIT_PM853_ID_REG },
++	{ .compatible = "spacemit,spm8821" , .data = (void *)&spm8821_id_reg },
++	{ .compatible = "spacemit,pm853" , .data = (void *)&pm853_id_reg },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, spacemit_pmic_of_match);
+@@ -77,7 +79,7 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 	int ret;
+ 	int nr_cells;
+ 	unsigned char pmic_id;
+-	unsigned long pmic_id_reg;
++	struct chip_id_reg *pmic_id_reg;
+ 	struct spacemit_pmic *pmic;
+ 	const struct mfd_cell *cells;
+ 	const struct of_device_id *of_id;
+@@ -94,15 +96,41 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 		return -ENODEV;
+ 	}
+ 
+-	pmic_id_reg = (unsigned long)of_id->data;
++	pmic_id_reg = (struct chip_id_reg *)of_id->data;
+ 
+-	ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg, &pmic_id);
+-	if (ret) {
+-		pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
+-		return -EINVAL;
+-	}
++	if (pmic_id_reg->reg_num == 1) {
++		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->device_id_reg, &pmic_id);
++		if (ret) {
++			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
++			return -EINVAL;
++		}
++
++		pmic->variant = pmic_id;
++	} else {
++		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->user_id_reg, &pmic_id);
++		if (ret) {
++			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
++			return -EINVAL;
++		}
++
++		pmic->variant = pmic_id;
+ 
+-	pmic->variant = pmic_id;
++		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->version_id_reg, &pmic_id);
++		if (ret) {
++			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
++			return -EINVAL;
++		}
++
++		pmic->variant = ((pmic->variant) << 8) | pmic_id;
++
++		ret = __spacemit_pmic_read_u8(client, (unsigned char)pmic_id_reg->device_id_reg, &pmic_id);
++		if (ret) {
++			pr_err("%s:%d, read pmic id failed\n", __func__, __LINE__);
++			return -EINVAL;
++		}
++
++		pmic->variant = ((pmic->variant) << 8) | pmic_id;
++	}
+ 
+ 	switch (pmic->variant) {
+ 	case SPM8821_ID:
+diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
+index 0d04ad1341eb..c08585b530b1 100644
+--- a/include/linux/mfd/spacemit/pm853.h
++++ b/include/linux/mfd/spacemit/pm853.h
+@@ -32,8 +32,6 @@ enum PM853_reg {
+ 	PM853_ID_LDO5_SW,
+ };
+ 
+-#define SPACEMIT_PM853_ID_REG		0x0
+-
+ #define PM853_LDO_BUCK_EN_REG0		0x11
+ #define PM853_LDO_BUCK_EN_REG1		0x12
+ #define PM853_LDO_BUCK_EN_REG2		0x13
+@@ -108,6 +106,12 @@ enum PM853_reg {
+ 
+ #define SPACEMIT_PM853_MAX_REG		0xf1
+ 
++#define PM853_CHIP_ID_REG							\
++	static const struct chip_id_reg pm853_id_reg = {			\
++		.reg_num = 1,						\
++		.device_id_reg = 0x0,					\
++	};
++
+ #define PM853_MFD_CELL	\
+ 	static const struct mfd_cell pm853[] = {				\
+ 		{								\
+diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
+index f69b15655f75..9bf12dd93d58 100644
+--- a/include/linux/mfd/spacemit/spacemit_pmic.h
++++ b/include/linux/mfd/spacemit/spacemit_pmic.h
+@@ -17,7 +17,7 @@ struct spacemit_pmic {
+ 	struct i2c_client		*i2c;
+ 	struct regmap_irq_chip_data	*irq_data;
+ 	struct regmap			*regmap;
+-	unsigned char			variant;
++	unsigned int			variant;
+ 	const struct regmap_config	*regmap_cfg;
+ 	const struct regmap_irq_chip	*regmap_irq_chip;
+ 
+@@ -81,8 +81,15 @@ struct pin_config_desc {
+ 	} itype;
+ };
+ 
++struct chip_id_reg {
++	unsigned char device_id_reg;
++	unsigned char version_id_reg;
++	unsigned char user_id_reg;
++	unsigned char reg_num;
++};
++
+ /* pmic ID configuration */
+-#define SPM8821_ID			0x1
++#define SPM8821_ID			0x0
+ #define PM853_ID			0x50
+ 
+ /* common regulator defination */
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+index 1473ac595925..47027e14314e 100644
+--- a/include/linux/mfd/spacemit/spm8821.h
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -22,7 +22,6 @@ enum SPM8821_reg {
+ 	SPM8821_ID_SWITCH1,
+ };
+ 
+-#define SPACEMIT_SPM8821_ID_REG		0x0
+ #define SPACEMIT_SPM8821_MAX_REG	0xA8
+ 
+ #define SPM8821_BUCK_VSEL_MASK		0xff
+@@ -77,6 +76,14 @@ enum SPM8821_reg {
+ #define SPM8821_SWITCH_CTRL_REG		0x59
+ #define SPM8821_SWTICH_EN_MASK		0x1
+ 
++#define SPM8821_CHIP_ID_REG							\
++	static const struct chip_id_reg spm8821_id_reg = {			\
++		.reg_num = 3,						\
++		.device_id_reg = 0xa0,					\
++		.version_id_reg = 0xa1,					\
++		.user_id_reg = 0xa2,					\
++	};
++
+ /* mfd configuration */
+ #define SPM8821_MFD_CELL	\
+ 	static const struct mfd_cell spm8821[] = {				\
+@@ -215,85 +222,85 @@ static const struct pin_func_desc spm8821_pinfunc_desc[] = {	\
+ 	/* PIN0 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(0, "gpioout", 0x8, 0x3, 1, 0, 0, 0, 0),			\
+ 	/* PIN0 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(0, "exten", 0x8, 0x3, 0x10, 1, 0xa, 0x7, 0x0),			\
++	SPM8XX_DESC_PIN_FUNC_COM(0, "exten", 0x8, 0x3, 0x3, 1, 0xa, 0x7, 0x0),			\
+ 	/* PIN0 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(0, "pwrctrl", 0x8, 0x3, 0x10, 1, 0xa, 0x7, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(0, "pwrctrl", 0x8, 0x3, 0x3, 1, 0xa, 0x7, 0x1),		\
+ 	/* PIN0 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(0, "sleep", 0x8, 0x3, 0x10, 1, 0xa, 0x7, 0x2),			\
++	SPM8XX_DESC_PIN_FUNC_COM(0, "sleep", 0x8, 0x3, 0x3, 1, 0xa, 0x7, 0x2),			\
+ 	/* PIN0 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(0, "nreset", 0x8, 0x3, 0x10, 1, 0xa, 0x7, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(0, "nreset", 0x8, 0x3, 0x3, 1, 0xa, 0x7, 0x3),		\
+ 	/* PIN0 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(0, "adcin", 0x8, 0x3, 0x10, 1, 0xa, 0x7, 0x4),			\
++	SPM8XX_DESC_PIN_FUNC_COM(0, "adcin", 0x8, 0x3, 0x3, 1, 0xa, 0x7, 0x4),			\
+ 	/* PIN1 gpioin */				\
+ 	SPM8XX_DESC_PIN_FUNC_COM(1, "gpioin", 0x8, 0xc, 0, 0, 0, 0, 0),				\
+ 	/* PIN1 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(1, "gpioout", 0x8, 0xc, 1, 0, 0, 0, 0),			\
+ 	/* PIN1 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(1, "exten", 0x8, 0xc, 0x10, 1, 0xa, 0x38, 0x0),		\
++	SPM8XX_DESC_PIN_FUNC_COM(1, "exten", 0x8, 0xc, 0x3, 1, 0xa, 0x38, 0x0),		\
+ 	/* PIN1 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(1, "pwrctrl", 0x8, 0xc, 0x10, 1, 0xa, 0x38, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(1, "pwrctrl", 0x8, 0xc, 0x3, 1, 0xa, 0x38, 0x1),		\
+ 	/* PIN1 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(1, "sleep", 0x8, 0xc, 0x10, 1, 0xa, 0x38, 0x2),		\
++	SPM8XX_DESC_PIN_FUNC_COM(1, "sleep", 0x8, 0xc, 0x3, 1, 0xa, 0x38, 0x2),		\
+ 	/* PIN1 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(1, "nreset", 0x8, 0xc, 0x10, 1, 0xa, 0x38, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(1, "nreset", 0x8, 0xc, 0x3, 1, 0xa, 0x38, 0x3),		\
+ 	/* PIN1 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(1, "adcin", 0x8, 0xc, 0x10, 1, 0xa, 0x38, 0x4),		\
++	SPM8XX_DESC_PIN_FUNC_COM(1, "adcin", 0x8, 0xc, 0x3, 1, 0xa, 0x38, 0x4),		\
+ 	/* PIN2 gpioin */				\
+ 	SPM8XX_DESC_PIN_FUNC_COM(2, "gpioin", 0x8, 0x30, 0, 0, 0, 0, 0),			\
+ 	/* PIN2 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(2, "gpioout", 0x8, 0x30, 1, 0, 0, 0, 0),			\
+ 	/* PIN2 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(2, "exten", 0x8, 0x30, 0x10, 1, 0xb, 0x7, 0x0),		\
++	SPM8XX_DESC_PIN_FUNC_COM(2, "exten", 0x8, 0x30, 0x3, 1, 0xb, 0x7, 0x0),		\
+ 	/* PIN2 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(2, "pwrctrl", 0x8, 0x30, 0x10, 1, 0xb, 0x7, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(2, "pwrctrl", 0x8, 0x30, 0x3, 1, 0xb, 0x7, 0x1),		\
+ 	/* PIN2 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(2, "sleep", 0x8, 0x30, 0x10, 1, 0xb, 0x7, 0x2),		\
++	SPM8XX_DESC_PIN_FUNC_COM(2, "sleep", 0x8, 0x30, 0x3, 1, 0xb, 0x7, 0x2),		\
+ 	/* PIN2 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(2, "nreset", 0x8, 0x30, 0x10, 1, 0xb, 0x7, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(2, "nreset", 0x8, 0x30, 0x3, 1, 0xb, 0x7, 0x3),		\
+ 	/* PIN2 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(2, "adcin", 0x8, 0x30, 0x10, 1, 0xb, 0x7, 0x4),		\
++	SPM8XX_DESC_PIN_FUNC_COM(2, "adcin", 0x8, 0x30, 0x3, 1, 0xb, 0x7, 0x4),		\
+ 	/* PIN3 gpioin */				\
+ 	SPM8XX_DESC_PIN_FUNC_COM(3, "gpioin", 0x9, 0x3, 0, 0, 0, 0, 0),			\
+ 	/* PIN3 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(3, "gpioout", 0x9, 0x3, 1, 0, 0, 0, 0),			\
+ 	/* PIN3 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(3, "exten", 0x9, 0x3, 0x10, 1, 0xb, 0x38, 0x0),		\
++	SPM8XX_DESC_PIN_FUNC_COM(3, "exten", 0x9, 0x3, 0x3, 1, 0xb, 0x38, 0x0),		\
+ 	/* PIN3 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(3, "pwrctrl", 0x9, 0x3, 0x10, 1, 0xb, 0x38, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(3, "pwrctrl", 0x9, 0x3, 0x3, 1, 0xb, 0x38, 0x1),		\
+ 	/* PIN3 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(3, "sleep", 0x9, 0x3, 0x10, 1, 0xb, 0x38, 0x2),		\
++	SPM8XX_DESC_PIN_FUNC_COM(3, "sleep", 0x9, 0x3, 0x3, 1, 0xb, 0x38, 0x2),		\
+ 	/* PIN3 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(3, "nreset", 0x9, 0x3, 0x10, 1, 0xb, 0x38, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(3, "nreset", 0x9, 0x3, 0x3, 1, 0xb, 0x38, 0x3),		\
+ 	/* PIN3 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(3, "adcin", 0x9, 0x3, 0x10, 1, 0xb, 0x38, 0x4),		\
++	SPM8XX_DESC_PIN_FUNC_COM(3, "adcin", 0x9, 0x3, 0x3, 1, 0xb, 0x38, 0x4),		\
+ 	/* PIN4 gpioin */				\
+ 	SPM8XX_DESC_PIN_FUNC_COM(4, "gpioin", 0x9, 0xc, 0, 0, 0, 0, 0),			\
+ 	/* PIN4 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(4, "gpioout", 0x9, 0xc, 1, 0, 0, 0, 0),			\
+ 	/* PIN4 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(4, "exten", 0x9, 0xc, 0x10, 1, 0xc, 0x7, 0x0),		\
++	SPM8XX_DESC_PIN_FUNC_COM(4, "exten", 0x9, 0xc, 0x3, 1, 0xc, 0x7, 0x0),		\
+ 	/* PIN4 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(4, "pwrctrl", 0x9, 0xc, 0x10, 1, 0xc, 0x7, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(4, "pwrctrl", 0x9, 0xc, 0x3, 1, 0xc, 0x7, 0x1),		\
+ 	/* PIN4 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(4, "sleep", 0x9, 0xc, 0x10, 1, 0xc, 0x7, 0x2),		\
++	SPM8XX_DESC_PIN_FUNC_COM(4, "sleep", 0x9, 0xc, 0x3, 1, 0xc, 0x7, 0x2),		\
+ 	/* PIN4 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(4, "nreset", 0x9, 0xc, 0x10, 1, 0xc, 0x7, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(4, "nreset", 0x9, 0xc, 0x3, 1, 0xc, 0x7, 0x3),		\
+ 	/* PIN4 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(4, "adcin", 0x9, 0xc, 0x10, 1, 0xc, 0x7, 0x4),		\
++	SPM8XX_DESC_PIN_FUNC_COM(4, "adcin", 0x9, 0xc, 0x3, 1, 0xc, 0x7, 0x4),		\
+ 	/* PIN5 gpioin */				\
+ 	SPM8XX_DESC_PIN_FUNC_COM(5, "gpioin", 0x9, 0x30, 0, 0, 0, 0, 0),			\
+ 	/* PIN5 gpioout*/					\
+ 	SPM8XX_DESC_PIN_FUNC_COM(5, "gpioout", 0x9, 0x30, 1, 0, 0, 0, 0),			\
+ 	/* PIN5 exten */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(5, "exten", 0x9, 0x30, 0x10, 1, 0xc, 0x38, 0x0),		\
++	SPM8XX_DESC_PIN_FUNC_COM(5, "exten", 0x9, 0x30, 0x3, 1, 0xc, 0x38, 0x0),		\
+ 	/* PIN5 pwrctrl */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(5, "pwrctrl", 0x9, 0x30, 0x10, 1, 0xc, 0x38, 0x1),		\
++	SPM8XX_DESC_PIN_FUNC_COM(5, "pwrctrl", 0x9, 0x30, 0x3, 1, 0xc, 0x38, 0x1),		\
+ 	/* PIN5 sleep */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(5, "sleep", 0x9, 0x30, 0x10, 1, 0xc, 0x38, 0x2),		\
++	SPM8XX_DESC_PIN_FUNC_COM(5, "sleep", 0x9, 0x30, 0x3, 1, 0xc, 0x38, 0x2),		\
+ 	/* PIN5 nreset */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(5, "nreset", 0x9, 0x30, 0x10, 1, 0xc, 0x38, 0x3),		\
++	SPM8XX_DESC_PIN_FUNC_COM(5, "nreset", 0x9, 0x30, 0x3, 1, 0xc, 0x38, 0x3),		\
+ 	/* PIN5 adcin */					\
+-	SPM8XX_DESC_PIN_FUNC_COM(5, "adcin", 0x9, 0x30, 0x10, 1, 0xc, 0x38, 0x4),		\
++	SPM8XX_DESC_PIN_FUNC_COM(5, "adcin", 0x9, 0x30, 0x3, 1, 0xc, 0x38, 0x4),		\
+ };
+ 
+ #define SPM8821_PIN_CINFIG_DESC				\
+-- 
+2.47.1
+

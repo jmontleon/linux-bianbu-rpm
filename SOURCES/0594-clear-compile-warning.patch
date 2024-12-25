@@ -1,0 +1,41 @@
+From be6184e5ada8720d64e83681d00ebd0156184dbd Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 16 Apr 2024 16:24:37 +0800
+Subject: [PATCH 0594/1189] clear compile warning:
+
+arch/riscv/kernel/module.c: In function 'add_relocation_to_accumulate':
+arch/riscv/kernel/module.c:684:9: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  684 |         bool found = false;
+      |         ^~~~
+
+Change-Id: Ia77d3d297c2e87feecfcdd151b6da15092108bb7
+---
+ arch/riscv/kernel/module.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+index 1cd461f3d872..d1251d510fb2 100644
+--- a/arch/riscv/kernel/module.c
++++ b/arch/riscv/kernel/module.c
+@@ -662,6 +662,8 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 	struct hlist_head *current_head;
+ 	struct used_bucket *bucket;
+ 	unsigned long hash;
++	bool found = false;
++	struct relocation_head *rel_head_iter;
+ 
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+ 
+@@ -680,9 +682,6 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 	 * Search for the relocation_head for the relocations that happen at the
+ 	 * provided location
+ 	 */
+-	bool found = false;
+-	struct relocation_head *rel_head_iter;
+-
+ 	hlist_for_each_entry(rel_head_iter, current_head, node) {
+ 		if (rel_head_iter->location == location) {
+ 			found = true;
+-- 
+2.47.1
+

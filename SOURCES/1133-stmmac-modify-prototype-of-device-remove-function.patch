@@ -1,0 +1,82 @@
+From e22a8f7eff263a744229c4a8590c864b2de912e8 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:45:52 +0800
+Subject: [PATCH 1133/1189] stmmac: modify prototype of device remove function
+
+Change-Id: I1041c38a052eeed79694a5120076e7d3a21ff696
+---
+ .../ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c    | 10 +++-------
+ drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c   |  4 +---
+ 2 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
+index 79405467c127..3ea400caf74f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
+@@ -153,15 +153,13 @@ static int dwc_qos_probe(struct platform_device *pdev,
+ 	return err;
+ }
+ 
+-static int dwc_qos_remove(struct platform_device *pdev)
++static void dwc_qos_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
+ 
+ 	clk_disable_unprepare(priv->plat->pclk);
+ 	clk_disable_unprepare(priv->plat->stmmac_clk);
+-
+-	return 0;
+ }
+ 
+ static const struct dwc_eth_dwmac_data dwc_qos_data = {
+@@ -276,7 +274,7 @@ static int spacemit_ethqos_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_ethqos_remove(struct platform_device *pdev)
++static void spacemit_ethqos_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_ethqos *ethqos = get_stmmac_bsp_priv(&pdev->dev);
+     struct net_device *ndev = platform_get_drvdata(pdev);
+@@ -300,8 +298,6 @@ static int spacemit_ethqos_remove(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "failed to remove subdriver: %d\n", err);
+ 
+ 	stmmac_remove_config_dt(pdev, priv->plat);
+-
+-	return err;
+ }
+ 
+ static const struct of_device_id spacemit_ethqos_match[] = {
+@@ -322,4 +318,4 @@ static struct platform_driver spacemit_ethqos_driver = {
+ module_platform_driver(spacemit_ethqos_driver);
+ 
+ MODULE_DESCRIPTION("Spacemit Quality-of-Service driver");
+-MODULE_LICENSE("GPL v2");
+\ No newline at end of file
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
+index 0694ab2b9f03..3bb4481bb1cf 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
+@@ -293,7 +293,7 @@ static int spacemit_dwmac_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_dwmac_remove(struct platform_device *pdev)
++static void spacemit_dwmac_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
+@@ -302,8 +302,6 @@ static int spacemit_dwmac_remove(struct platform_device *pdev)
+ 	stmmac_pltfr_remove(pdev);
+ 	reset_control_assert(spacemit_plat_dat->gmac_dma_rstc);
+ 	reset_control_assert(spacemit_plat_dat->gmac_csr_rstc);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver spacemit_dwmac_driver = {
+-- 
+2.47.1
+

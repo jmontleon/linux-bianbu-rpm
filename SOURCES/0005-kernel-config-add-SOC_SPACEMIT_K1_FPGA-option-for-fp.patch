@@ -1,0 +1,43 @@
+From 6caaae0c0d8955fe55090b2302f95b1cc5b78d48 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@space-t.cn>
+Date: Tue, 14 Mar 2023 15:25:15 +0800
+Subject: [PATCH 0005/1189] kernel config: add SOC_SPACEMIT_K1_FPGA option for
+ fpga platform
+
+Change-Id: I2194508ae350e7e216d88b128e394b46de2ec018
+---
+ arch/riscv/Kconfig.socs | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index afbddd38d9e1..e54cb34140e4 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -105,9 +105,7 @@ choice
+ 
+ endchoice
+ 
+-endif
+-
+-if SOC_SPACEMIT && SOC_SPACEMIT_K1
++if SOC_SPACEMIT_K1
+ 
+ choice
+ 	prompt "Spacemit K1 serial SOCs"
+@@ -130,6 +128,13 @@ choice
+ 		  This enables support for Spacemit k1-max Platform Hardware.
+ endchoice
+ 
++config SOC_SPACEMIT_K1_FPGA
++	bool "Spacemit K1 serial SoC FPGA platform"
++	default n
++	help
++	  This enable FPGA platform for K1 SoCs.
++
++endif
+ endif
+ 
+ endmenu # "SoC selection"
+-- 
+2.47.1
+

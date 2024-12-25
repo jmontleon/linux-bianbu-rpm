@@ -1,0 +1,38 @@
+From 2f8a6828b9d9fe9d7aecdb837c803d8723e436a8 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Mon, 28 Oct 2024 09:16:08 +0800
+Subject: [PATCH 1095/1189] es8326: cleanup unused code
+
+Change-Id: Idfcb81cfd153d9b0e20c1e06c5752d8877f2aa75
+---
+ sound/soc/codecs/es8326.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index d5d246a03bb9..f2d489a95637 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -945,20 +945,12 @@ static void es8326_jack_detect_handler(struct work_struct *work)
+ 		es8326_disable_micbias(es8326->component);
+ 		if (es8326->jack->status & SND_JACK_HEADPHONE) {
+ 			dev_dbg(comp->dev, "Report hp remove event\n");
+-			#ifdef SPACEMIT_CONFIG_CODEC_ES8326
+-			es8326_enable_spk(es8326, true);
+-			#endif
+ 			snd_soc_jack_report(es8326->jack, 0,
+ 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2);
+ 			snd_soc_jack_report(es8326->jack, 0, SND_JACK_HEADSET);
+ 			/* mute adc when mic path switch */
+-			#ifdef SPACEMIT_CONFIG_CODEC_ES8326
+-			regmap_write(es8326->regmap, ES8326_ADC1_SRC, es8326->mic1_src);
+-			regmap_write(es8326->regmap, ES8326_ADC2_SRC, es8326->mic2_src);
+-			#else
+ 			regmap_write(es8326->regmap, ES8326_ADC1_SRC, 0x44);
+ 			regmap_write(es8326->regmap, ES8326_ADC2_SRC, 0x66);
+-			#endif
+ 		}
+ 		es8326->hp = 0;
+ 		regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x01);
+-- 
+2.47.1
+

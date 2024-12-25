@@ -1,0 +1,1155 @@
+From ed2b2846231f532424915ee5fc367c5b3035d80e Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Wed, 25 Oct 2023 16:10:48 +0800
+Subject: [PATCH 0137/1189] update k1x vpu driver
+
+1.follow A commit : Release-16 on 2023-10-13 21:37
+2.verify : can decode and encode normally on FPGA test
+
+Change-Id: I758e5571a843df3dc02df12fccbbbb38f2ceb172
+Signed-off-by: fuqiang <qiang.fu@spacemit.com>
+---
+ .../spacemit/vpu_k1x/dev/mvx_scheduler.c      |  31 ++-
+ .../vpu_k1x/external/fw_v2/mve_protocol_def.h |   3 +-
+ .../vpu_k1x/external/fw_v3/mve_protocol_def.h |   3 +-
+ .../platform/spacemit/vpu_k1x/if/mvx_buffer.c |  26 +-
+ .../platform/spacemit/vpu_k1x/if/mvx_buffer.h |   2 +
+ .../spacemit/vpu_k1x/if/mvx_firmware.h        |  14 +
+ .../spacemit/vpu_k1x/if/mvx_firmware_v2.c     | 247 +++++++++++++-----
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.c    |  52 +++-
+ .../platform/spacemit/vpu_k1x/if/mvx_mmu.h    |  20 +-
+ .../spacemit/vpu_k1x/if/mvx_session.c         |  40 +--
+ .../vpu_k1x/if/v4l2/mvx-v4l2-controls.h       |   3 +-
+ .../vpu_k1x/if/v4l2/mvx_v4l2_buffer.c         |   7 +
+ .../platform/spacemit/vpu_k1x/mvx_dvfs.c      |  45 ++++
+ .../platform/spacemit/vpu_k1x/mvx_dvfs.h      |  11 +
+ 14 files changed, 399 insertions(+), 105 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
+index dfe28ce4379e..534c7ff41f51 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
+@@ -46,6 +46,7 @@
+ #include "mvx_seq.h"
+ #include "mvx_pm_runtime.h"
+ #include "mvx_log_group.h"
++#include "mvx_dvfs.h"
+ 
+ /****************************************************************************
+  * Static functions
+@@ -751,7 +752,14 @@ void mvx_sched_handle_irq(struct mvx_sched *sched,
+ 			mutex_unlock(isession->mutex);
+ 	}
+ 
+-	queue_work(sched->sched_queue, &sched->sched_task);
++	ret = mutex_lock_interruptible(&sched->mutex);
++	if (ret != 0)
++		return;
++
++	if (!list_empty(&sched->pending)) {
++		queue_work(sched->sched_queue, &sched->sched_task);
++	}
++	mutex_unlock(&sched->mutex);
+ }
+ 
+ void mvx_sched_terminate(struct mvx_sched *sched,
+@@ -816,12 +824,13 @@ static int resume_session(struct mvx_sched *sched,
+     return 0;
+ }
+ 
+-static void switch_out_session(struct mvx_sched *sched, struct mvx_sched_session *sched_session)
++static void switch_out_session(struct mvx_sched *sched, unsigned int lsid_id)
+ {
+     int i;
+     int ret;
+     struct mvx_session *session = NULL;
+     struct mvx_if_session *isession = NULL;
++    struct mvx_sched_session *sched_session = sched->lsid[lsid_id].session;
+     int wait_count = 20;
+ 
+     if (sched_session != NULL) {
+@@ -846,7 +855,7 @@ static void switch_out_session(struct mvx_sched *sched, struct mvx_sched_session
+ 
+     mutex_lock(&sched->mutex);
+     for (i = 0; i < wait_count; i++) {
+-        if (session != NULL && session->switched_in == false) {
++        if (sched->lsid[lsid_id].session != NULL && session != NULL && session->switched_in == false) {
+             MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
+                     "%p finish switch_out session LSID. lsid=%u.", session, sched_session->lsid->lsid);
+             break;
+@@ -856,8 +865,10 @@ static void switch_out_session(struct mvx_sched *sched, struct mvx_sched_session
+ 
+         mutex_lock(&sched->mutex);
+ 
+-        MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
+-                "%p wait switch_out session LSID. lsid=%u. loop=%d", session, sched_session->lsid->lsid, i);
++        if (sched->lsid[lsid_id].session != NULL && session != NULL) {
++            MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
++                    "%p wait switch_out session LSID. lsid=%u. loop=%d, switch_in=%d", session, sched_session->lsid->lsid, i, session->switched_in);
++        }
+     }
+ }
+ 
+@@ -900,12 +911,15 @@ void mvx_sched_suspend(struct mvx_sched *sched)
+ 
+     mutex_lock(&sched->mutex);
+     sched->is_suspend = true;
++    mvx_dvfs_suspend_session();
+ 
+     for (i = 0; i < sched->nlsid; i++) {
+         if (sched->lsid[i].session != NULL) {
+-            switch_out_session(sched, sched->lsid[i].session);
+-            mvx_lsid_terminate(sched->lsid[i].session->lsid);
+-            suspend_session(sched, sched->lsid[i].session);
++            switch_out_session(sched, i);
++            if (sched->lsid[i].session != NULL) {
++                mvx_lsid_terminate(sched->lsid[i].session->lsid);
++                suspend_session(sched, sched->lsid[i].session);
++            }
+         }
+     }
+ 
+@@ -925,5 +939,6 @@ void mvx_sched_resume(struct mvx_sched *sched)
+         }
+     }
+     sched->is_suspend = false;
++    mvx_dvfs_resume_session();
+     mutex_unlock(&sched->mutex);
+ }
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
+index 57030cece21b..c3b8ef2a347c 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
+@@ -1140,7 +1140,8 @@ struct mve_buffer_frame_afbc
+                                                                         set the afbc_width_in_superblocks. If the
+                                                                         value is zero, or if this bit is set, then
+                                                                         the MVE sets an appropriate value. */
+-
++        #define MVE_BUFFER_FRAME_AFBC_BLOCK_SPLIT       (0x00000040) /* For Superblock layout, block_split mode
++                                                                        should be enabled*/
+ };
+ 
+ /*
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
+index 514bde9fbfc6..8ec9e51c57c0 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
+@@ -1139,7 +1139,8 @@ struct mve_buffer_frame_afbc
+                                                                         set the afbc_width_in_superblocks. If the
+                                                                         value is zero, or if this bit is set, then
+                                                                         the MVE sets an appropriate value. */
+-
++        #define MVE_BUFFER_FRAME_AFBC_BLOCK_SPLIT       (0x00000040) /* For Superblock layout, block_split mode
++                                                                        should be enabled*/
+ };
+ 
+ /*
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
+index 57922a3d91a3..be23b7b55004 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
+@@ -301,12 +301,28 @@ int mvx_buffer_synch(struct mvx_buffer *buf,
+ {
+ 	int i;
+ 	int ret;
+-
++	int page_count = 0;
+ 	for (i = 0; i < buf->nplanes; i++) {
+-		struct mvx_buffer_plane *plane = &buf->planes[i];
+-
+-		if (plane->pages != NULL) {
+-			ret = mvx_mmu_synch_pages(plane->pages, dir);
++        struct mvx_buffer_plane *plane = &buf->planes[i];
++        /*calculate page offset of plane, follow as 'mvx_buffer_va' */
++        int page_off = (plane->offset + plane->pages->offset) >> PAGE_SHIFT;
++        /*calculate page end of plane if filled is valid */
++        int page_off_end = plane->pages->count;
++        if (plane->filled) {
++            page_off_end = (plane->offset + plane->pages->offset + plane->filled + PAGE_SIZE -1 ) >> PAGE_SHIFT;
++        }
++        page_count = page_off_end - page_off;
++        if (page_count + page_off > plane->pages->count) {
++            page_count = plane->pages->count - page_off;
++        }
++        MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_INFO,
++            "plane [%d] sync pages: %p, dir: %d, page offset: %d, pages %d",
++            i,
++            plane->pages->pages[0],
++            buf->dir,
++            page_off, page_count);
++        if (plane->pages != NULL) {
++			ret = mvx_mmu_synch_pages(plane->pages, dir, page_off, page_count);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
+index c035e23bab4c..9b26bf95569d 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
+@@ -230,7 +230,9 @@ struct mvx_corrupt_buffer {
+ #define MVX_BUFFER_FRAME_FLAG_PFRAME        0x40000000
+ #define MVX_BUFFER_FRAME_FLAG_BFRAME        0x80000000
+ 
++#define MVX_BUFFER_AFBC_BLOCK_SPLIT         0x10000000
+ 
++#define MVX_BUFFER_FLAG_DISABLE_CACHE_MAINTENANCE 0x01000000 /*disable cache maintenance for buffer */
+ /****************************************************************************
+  * External functions
+  ****************************************************************************/
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
+index 0ef9d4172667..4dc2a93a8973 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
+@@ -55,6 +55,15 @@
+  * Firmware communication types
+  ****************************************************************************/
+ 
++/**
++ * enum mvx_fw_buffer_attr
++ */
++enum mvx_fw_buffer_attr {
++	MVX_FW_BUF_CACHEABLE,
++	MVX_FW_BUF_UNCACHEABLE,
++	MVX_FW_BUF_ATTR_NUM,
++};
++
+ /**
+  * enum mvx_fw_state - Firmware state.
+  */
+@@ -753,6 +762,11 @@ struct mvx_fw {
+ 	unsigned int msg_pending;
+ 	uint32_t latest_used_region_protected_pages;
+ 	uint32_t latest_used_region_outbuf_pages;
++	phys_addr_t buf_pa_addr[MVX_FW_REGION_PRINT_RAM+1];
++	enum mvx_fw_buffer_attr buf_attr[MVX_FW_REGION_PRINT_RAM+1];
++
++	int (*map_op[MVX_FW_BUF_ATTR_NUM])(struct mvx_fw *fw, void **data, enum mvx_fw_region region);
++	void (*unmap_op[MVX_FW_BUF_ATTR_NUM])(struct mvx_fw *fw, void **data, enum mvx_fw_region region);
+ 
+ 	struct {
+ 		/**
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+index ee83f959729c..e4c2c1d4c57a 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
+@@ -32,7 +32,6 @@
+ /****************************************************************************
+  * Includes
+  ****************************************************************************/
+-
+ #include <linux/dma-buf.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/string.h>
+@@ -282,15 +281,19 @@ static int read_message(struct mvx_fw *fw,
+ 			unsigned int *code,
+ 			void *data,
+ 			size_t *size,
+-			enum mvx_log_fwif_channel channel)
++			enum mvx_log_fwif_channel channel,
++			enum mvx_fw_buffer_attr mve_buf_attr,
++			enum mvx_fw_buffer_attr host_buf_attr)
+ {
+ 	struct mve_msg_header header;
+ 	unsigned int rpos;
+ 	ssize_t capacity;
+ 
+-	dma_sync_single_for_cpu(fw->dev,
+-				virt_to_phys(mve),
+-				MVE_PAGE_SIZE, DMA_FROM_DEVICE);
++	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		dma_sync_single_for_cpu(fw->dev,
++			virt_to_phys(mve),
++			MVE_PAGE_SIZE, DMA_FROM_DEVICE);
++	}
+ 
+ 	rpos = host->out_rpos;
+ 
+@@ -317,6 +320,11 @@ static int read_message(struct mvx_fw *fw,
+ 	rpos = read32n(mve->out_data, rpos, (uint32_t *)&header,
+ 		       sizeof(header));
+ 
++	if (!((header.code >= 1001 && header.code <= 1013) || (header.code >= 2001 && header.code <= 2019) || (header.code >= 3001 && header.code <= 3004))) {
++		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING, "read_message header. header.size=%d, rpos=%d, code=%d, capacity=%zu", header.size, host->out_rpos, header.code, capacity);
++		return 0;
++	}
++
+ 	/* Make sure there is enough space for both header and message. */
+ 	capacity -= DIV_ROUND_UP(sizeof(header) + header.size,
+ 				 sizeof(uint32_t));
+@@ -343,10 +351,12 @@ static int read_message(struct mvx_fw *fw,
+ 	 * Make sure the read pointer has been written before the cache is
+ 	 * flushed.
+ 	 */
+-	wmb();
+-	dma_sync_single_for_device(fw->dev,
++	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		wmb();
++		dma_sync_single_for_device(fw->dev,
+ 				   virt_to_phys(&host->out_rpos),
+ 				   sizeof(host->out_rpos), DMA_TO_DEVICE);
++	}
+ 
+ 	*code = header.code;
+ 	*size = header.size;
+@@ -405,15 +415,19 @@ static int write_message(struct mvx_fw *fw,
+ 			 unsigned int code,
+ 			 void *data,
+ 			 size_t size,
+-			 enum mvx_log_fwif_channel channel)
++			 enum mvx_log_fwif_channel channel,
++			 enum mvx_fw_buffer_attr mve_buf_attr,
++			 enum mvx_fw_buffer_attr host_buf_attr)
+ {
+ 	struct mve_msg_header header = { .code = code, .size = size };
+ 	ssize_t capacity;
+ 	unsigned int wpos;
+ 
+-	dma_sync_single_for_cpu(fw->dev,
++	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		dma_sync_single_for_cpu(fw->dev,
+ 				virt_to_phys(&mve->in_rpos),
+ 				sizeof(mve->in_rpos), DMA_FROM_DEVICE);
++	}
+ 
+ 	wpos = host->in_wpos;
+ 
+@@ -438,10 +452,12 @@ static int write_message(struct mvx_fw *fw,
+ 	 * Make sure all message data has been written before the cache is
+ 	 * flushed.
+ 	 */
+-	wmb();
+-	dma_sync_single_for_device(fw->dev,
++	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		wmb();
++		dma_sync_single_for_device(fw->dev,
+ 				   virt_to_phys(host),
+ 				   MVE_PAGE_SIZE, DMA_TO_DEVICE);
++	}
+ 
+ 	host->in_wpos = wpos;
+ 
+@@ -449,10 +465,12 @@ static int write_message(struct mvx_fw *fw,
+ 	 * Make sure the write pointer has been written before the cache is
+ 	 * flushed.
+ 	 */
+-	wmb();
+-	dma_sync_single_for_device(fw->dev,
++	if (host_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		wmb();
++		dma_sync_single_for_device(fw->dev,
+ 				   virt_to_phys(&host->in_wpos),
+ 				   sizeof(host->in_wpos), DMA_TO_DEVICE);
++	}
+ 
+ 	/* Log firmware message. */
+ 	MVX_LOG_EXECUTE(&mvx_log_fwif_if, MVX_LOG_INFO,
+@@ -859,7 +877,9 @@ static int get_buffer(struct mvx_fw *fw,
+ 		      struct mve_comm_area_mve *mve,
+ 		      enum mvx_direction dir,
+ 		      struct mvx_fw_msg *msg,
+-		      enum mvx_log_fwif_channel channel)
++		      enum mvx_log_fwif_channel channel,
++		      enum mvx_fw_buffer_attr mve_buf_attr,
++		      enum mvx_fw_buffer_attr host_buf_attr)
+ {
+ 	unsigned int code;
+ 	union {
+@@ -874,7 +894,7 @@ static int get_buffer(struct mvx_fw *fw,
+ 	struct mvx_v4l2_session *vsession =
+ 		           container_of(session, struct mvx_v4l2_session, session);
+ 
+-	ret = read_message(fw, host, mve, &code, &fw_msg, &size, channel);
++	ret = read_message(fw, host, mve, &code, &fw_msg, &size, channel, mve_buf_attr, host_buf_attr);
+ 	if (ret <= 0)
+ 		return ret;
+ 
+@@ -924,7 +944,7 @@ static int get_message_v2(struct mvx_fw *fw,
+ 	struct mvx_session *session = fw->session;
+ 
+ 	ret = read_message(fw, fw->msg_host, fw->msg_mve, &code, &fw_msg,
+-			   &size, MVX_LOG_FWIF_CHANNEL_MESSAGE);
++			   &size, MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 	if (ret <= 0)
+ 		return ret;
+ 
+@@ -956,12 +976,12 @@ static int get_message_v2(struct mvx_fw *fw,
+ 	case MVE_RESPONSE_CODE_INPUT:
+ 		ret = get_buffer(fw, fw->buf_in_host, fw->buf_in_mve,
+ 				 MVX_DIR_INPUT, msg,
+-				 MVX_LOG_FWIF_CHANNEL_INPUT_BUFFER);
++				 MVX_LOG_FWIF_CHANNEL_INPUT_BUFFER, fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE], fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]);
+ 		break;
+ 	case MVE_RESPONSE_CODE_OUTPUT:
+ 		ret = get_buffer(fw, fw->buf_out_host, fw->buf_out_mve,
+ 				 MVX_DIR_OUTPUT, msg,
+-				 MVX_LOG_FWIF_CHANNEL_OUTPUT_BUFFER);
++				 MVX_LOG_FWIF_CHANNEL_OUTPUT_BUFFER, fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE], fw->buf_attr[MVX_FW_REGION_BUF_OUT_HOST]);
+ 		break;
+ 	case MVE_BUFFER_CODE_PARAM:
+ 		ret = convert_buffer_param(fw, msg, &fw_msg.buffer_param);
+@@ -1122,7 +1142,9 @@ static int put_buffer_general(struct mvx_fw *fw,
+ 			    struct mve_comm_area_host *host,
+ 			    struct mve_comm_area_mve *mve,
+ 			    struct mvx_fw_msg *msg,
+-			    enum mvx_log_fwif_channel channel)
++			    enum mvx_log_fwif_channel channel,
++			    enum mvx_fw_buffer_attr mve_buf_attr,
++			    enum mvx_fw_buffer_attr host_buf_attr)
+ {
+     int ret;
+     struct mve_buffer_general g = { 0 };
+@@ -1136,7 +1158,7 @@ static int put_buffer_general(struct mvx_fw *fw,
+ 
+     memcpy(&g.config, &buf->general.config, sizeof(buf->general.config));
+     ret = write_message(fw, host, mve, MVE_BUFFER_CODE_GENERAL, &g,
+-			    sizeof(g), channel);
++			    sizeof(g), channel, mve_buf_attr, host_buf_attr);
+ 
+ 	return ret;
+ }
+@@ -1145,7 +1167,9 @@ static int put_buffer_frame(struct mvx_fw *fw,
+ 			    struct mve_comm_area_host *host,
+ 			    struct mve_comm_area_mve *mve,
+ 			    struct mvx_fw_msg *msg,
+-			    enum mvx_log_fwif_channel channel)
++			    enum mvx_log_fwif_channel channel,
++			    enum mvx_fw_buffer_attr mve_buf_attr,
++			    enum mvx_fw_buffer_attr host_buf_attr)
+ {
+ 	struct mve_buffer_frame f = { 0 };
+ 	struct mvx_buffer *buf = msg->buf;
+@@ -1346,10 +1370,13 @@ static int put_buffer_frame(struct mvx_fw *fw,
+ 		if (buf->flags & MVX_BUFFER_AFBC_32X8_SUPERBLOCK)
+ 			afbc->afbc_params |=
+ 				MVE_BUFFER_FRAME_AFBC_32X8_SUPERBLOCK;
++		if (buf->flags & MVX_BUFFER_AFBC_BLOCK_SPLIT)
++			afbc->afbc_params |=
++				MVE_BUFFER_FRAME_AFBC_BLOCK_SPLIT;
+ 	}
+ 
+ 	ret = write_message(fw, host, mve, MVE_BUFFER_CODE_FRAME,
+-			    &f, sizeof(f), channel);
++			    &f, sizeof(f), channel, mve_buf_attr, host_buf_attr);
+ 
+ 	return ret;
+ }
+@@ -1358,7 +1385,9 @@ static int put_buffer_bitstream(struct mvx_fw *fw,
+ 				struct mve_comm_area_host *host,
+ 				struct mve_comm_area_mve *mve,
+ 				struct mvx_fw_msg *msg,
+-				enum mvx_log_fwif_channel channel)
++				enum mvx_log_fwif_channel channel,
++				enum mvx_fw_buffer_attr mve_buf_attr,
++				enum mvx_fw_buffer_attr host_buf_attr)
+ {
+ 	struct mve_buffer_bitstream b = { 0 };
+ 	struct mvx_buffer *buf = msg->buf;
+@@ -1387,7 +1416,7 @@ static int put_buffer_bitstream(struct mvx_fw *fw,
+ 	}
+ 
+ 	ret = write_message(fw, host, mve, MVE_BUFFER_CODE_BITSTREAM, &b,
+-			    sizeof(b), channel);
++			    sizeof(b), channel, mve_buf_attr, host_buf_attr);
+ 
+ 	return ret;
+ }
+@@ -1705,7 +1734,7 @@ static int put_fw_opt(struct mvx_fw *fw,
+ 	ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 			    MVE_REQUEST_CODE_SET_OPTION,
+ 			    opt, offsetof(typeof(*opt), data) + size,
+-			    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++			    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 
+ 	if (ret == 0)
+ 		fw->msg_pending++;
+@@ -1720,7 +1749,7 @@ static int put_fw_buf_param(struct mvx_fw *fw,
+ 	return write_message(fw, fw->buf_in_host, fw->buf_in_mve,
+ 			     MVE_BUFFER_CODE_PARAM,
+ 			     param, offsetof(typeof(*param), data) + size,
+-			     MVX_LOG_FWIF_CHANNEL_MESSAGE);
++			     MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE], fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]);
+ }
+ 
+ static int put_message_v2(struct mvx_fw *fw,
+@@ -1736,7 +1765,7 @@ static int put_message_v2(struct mvx_fw *fw,
+ 
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    code, NULL, 0,
+-				    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		if (ret == 0)
+ 			fw->msg_pending++;
+ 
+@@ -1751,19 +1780,19 @@ static int put_message_v2(struct mvx_fw *fw,
+ 
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    MVE_REQUEST_CODE_JOB, &job, sizeof(job),
+-				    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		break;
+ 	}
+ 	case MVX_FW_CODE_SWITCH_OUT: {
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    MVE_REQUEST_CODE_SWITCH, NULL, 0,
+-				    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		break;
+ 	}
+ 	case MVX_FW_CODE_PING: {
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    MVE_REQUEST_CODE_PING, NULL, 0,
+-				    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		break;
+ 	}
+ 	case MVX_FW_CODE_SET_OPTION: {
+@@ -2436,12 +2465,12 @@ static int put_message_v2(struct mvx_fw *fw,
+ 		case MVX_DIR_INPUT:
+ 			ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 					    MVE_REQUEST_CODE_INPUT_FLUSH, NULL,
+-					    0, MVX_LOG_FWIF_CHANNEL_MESSAGE);
++					    0, MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 			break;
+ 		case MVX_DIR_OUTPUT:
+ 			ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 					    MVE_REQUEST_CODE_OUTPUT_FLUSH, NULL,
+-					    0, MVX_LOG_FWIF_CHANNEL_MESSAGE);
++					    0, MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 			break;
+ 		default:
+ 			MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
+@@ -2459,25 +2488,31 @@ static int put_message_v2(struct mvx_fw *fw,
+ 		struct mve_comm_area_host *host;
+ 		struct mve_comm_area_mve *mve;
+ 		enum mvx_log_fwif_channel channel;
++		enum mvx_fw_buffer_attr mve_buf_attr;
++		enum mvx_fw_buffer_attr host_buf_attr;
+ 
+ 		if (msg->buf->dir == MVX_DIR_INPUT) {
+ 			host = fw->buf_in_host;
+ 			mve = fw->buf_in_mve;
++			mve_buf_attr = fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE];
++			host_buf_attr = fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST];
+ 			channel = MVX_LOG_FWIF_CHANNEL_INPUT_BUFFER;
+ 		} else {
+ 			host = fw->buf_out_host;
+ 			mve = fw->buf_out_mve;
++			mve_buf_attr = fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE];
++			host_buf_attr = fw->buf_attr[MVX_FW_REGION_BUF_OUT_HOST];
+ 			channel = MVX_LOG_FWIF_CHANNEL_OUTPUT_BUFFER;
+ 		}
+ 
+ 		if (mvx_is_frame(msg->buf->format))
+             if ((msg->buf->flags & MVX_BUFFER_FRAME_FLAG_GENERAL) == MVX_BUFFER_FRAME_FLAG_GENERAL) {
+-                ret = put_buffer_general(fw, host, mve, msg, channel);
++                ret = put_buffer_general(fw, host, mve, msg, channel, mve_buf_attr, host_buf_attr);
+             } else {
+-                ret = put_buffer_frame(fw, host, mve, msg, channel);
++                ret = put_buffer_frame(fw, host, mve, msg, channel, mve_buf_attr, host_buf_attr);
+             }
+ 		else
+-			ret = put_buffer_bitstream(fw, host, mve, msg, channel);
++			ret = put_buffer_bitstream(fw, host, mve, msg, channel, mve_buf_attr, host_buf_attr);
+ 
+ 		break;
+ 	}
+@@ -2506,7 +2541,7 @@ static int put_message_v2(struct mvx_fw *fw,
+ 
+ 			ret = write_message(fw, host, mve,
+ 					    MVE_BUFFER_CODE_FRAME,
+-					    &f, sizeof(f), channel);
++					    &f, sizeof(f), channel, fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE], fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]);
+ 		} else {
+ 			struct mve_buffer_bitstream b = {
+ 				.host_handle        = MVX_FW_CODE_EOS,
+@@ -2518,7 +2553,7 @@ static int put_message_v2(struct mvx_fw *fw,
+ 
+ 			ret = write_message(fw, host, mve,
+ 					    MVE_BUFFER_CODE_BITSTREAM, &b,
+-					    sizeof(b), channel);
++					    sizeof(b), channel, fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE], fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]);
+ 		}
+ 
+ 		break;
+@@ -2526,14 +2561,14 @@ static int put_message_v2(struct mvx_fw *fw,
+ 	case MVX_FW_CODE_DUMP: {
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    MVE_REQUEST_CODE_DUMP, NULL,
+-				    0, MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    0, MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		fw->msg_pending++;
+ 		break;
+ 	}
+ 	case MVX_FW_CODE_DEBUG: {
+ 		ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 				    MVE_REQUEST_CODE_DEBUG, &msg->arg,
+-				    sizeof(msg->arg), MVX_LOG_FWIF_CHANNEL_MESSAGE);
++				    sizeof(msg->arg), MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 		fw->msg_pending++;
+ 		break;
+ 	}
+@@ -2848,9 +2883,11 @@ static int handle_rpc_v2(struct mvx_fw *fw)
+ 	struct mve_rpc_communication_area *rpc_area = fw->rpc;
+ 	int ret = 0;
+ 
+-	dma_sync_single_for_cpu(fw->dev,
++	if (fw->buf_attr[MVX_FW_REGION_RPC] == MVX_FW_BUF_CACHEABLE) {
++		dma_sync_single_for_cpu(fw->dev,
+ 				virt_to_phys(rpc_area), sizeof(*rpc_area),
+ 				DMA_FROM_DEVICE);
++	}
+ 
+ 	if (rpc_area->state == MVE_RPC_STATE_PARAM) {
+ 		ret = 1;
+@@ -2898,11 +2935,13 @@ static int handle_rpc_v2(struct mvx_fw *fw)
+ 		rpc_area->state = MVE_RPC_STATE_RETURN;
+ 
+ 		/* Make sure state is written before memory is flushed. */
+-		wmb();
+-		dma_sync_single_for_device(
+-			fw->dev,
+-			virt_to_phys(rpc_area), sizeof(*rpc_area),
+-			DMA_TO_DEVICE);
++		if (fw->buf_attr[MVX_FW_REGION_RPC] == MVX_FW_BUF_CACHEABLE) {
++			wmb();
++			dma_sync_single_for_device(
++				fw->dev,
++				virt_to_phys(rpc_area), sizeof(*rpc_area),
++				DMA_TO_DEVICE);
++		}
+ 
+ 		/* Log RPC response. */
+ 		MVX_LOG_EXECUTE(&mvx_log_fwif_if, MVX_LOG_INFO,
+@@ -3016,6 +3055,63 @@ static int map_msq(struct mvx_fw *fw,
+ 	return 0;
+ }
+ 
++static int map_msq_uncache(struct mvx_fw *fw,
++		void **data,
++		enum mvx_fw_region region)
++{
++	phys_addr_t page;
++	mvx_mmu_va begin;
++	mvx_mmu_va end;
++	void* vir_addr = NULL;
++	int ret;
++
++	/* Get virtual address where the message queue is to be mapped. */
++	ret = fw->ops.get_region(region, &begin, &end);
++	if (ret != 0)
++		return ret;
++
++	/* Allocate page and store Linux logical address in 'data'. */
++	page = mvx_mmu_dma_alloc_coherent(fw->dev, &vir_addr);
++	if (page == 0) {
++		return -ENOMEM;
++	}
++
++	/* Memory map region. */
++	ret = mvx_mmu_map_pa(fw->mmu, begin, page, MVE_PAGE_SIZE,
++			MVX_ATTR_SHARED_RW, MVX_ACCESS_READ_WRITE);
++	if (ret != 0) {
++		mvx_mmu_dma_free_coherent(fw->dev, page, vir_addr);
++		return ret;
++	}
++
++	*data = vir_addr;
++	fw->buf_pa_addr[region] = page;
++
++	return 0;
++}
++
++static void unmap_msq_uncache(struct mvx_fw *fw,
++		void **data,
++		enum mvx_fw_region region)
++{
++	int ret;
++	mvx_mmu_va begin;
++	mvx_mmu_va end;
++
++	if (*data == NULL)
++		return;
++
++	ret = fw->ops.get_region(region, &begin, &end);
++	if (ret == 0) {
++		mvx_mmu_unmap_va(fw->mmu, begin, MVE_PAGE_SIZE);
++	}
++
++	mvx_mmu_dma_free_coherent(fw->dev, fw->buf_pa_addr[region], *data);
++
++	*data = NULL;
++	fw->buf_pa_addr[region] = 0;
++}
++
+ #ifdef MVX_FW_DEBUG_ENABLE
+ static void unmap_fw_print_ram(struct mvx_fw *fw,
+ 		      void **data,
+@@ -3076,13 +3172,14 @@ static void unmap_protocol_v2(struct mvx_fw *fw)
+ 	struct hlist_node *tmp;
+ 	int bkt;
+ 
+-	unmap_msq(fw, &fw->msg_host, MVX_FW_REGION_MSG_HOST);
+-	unmap_msq(fw, &fw->msg_mve, MVX_FW_REGION_MSG_MVE);
+-	unmap_msq(fw, &fw->buf_in_host, MVX_FW_REGION_BUF_IN_HOST);
+-	unmap_msq(fw, &fw->buf_in_mve, MVX_FW_REGION_BUF_IN_MVE);
+-	unmap_msq(fw, &fw->buf_out_host, MVX_FW_REGION_BUF_OUT_HOST);
+-	unmap_msq(fw, &fw->buf_out_mve, MVX_FW_REGION_BUF_OUT_MVE);
+-	unmap_msq(fw, &fw->rpc, MVX_FW_REGION_RPC);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_MSG_HOST]](fw, &fw->msg_host, MVX_FW_REGION_MSG_HOST);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_MSG_MVE]](fw, &fw->msg_mve, MVX_FW_REGION_MSG_MVE);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]](fw, &fw->buf_in_host, MVX_FW_REGION_BUF_IN_HOST);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE]](fw, &fw->buf_in_mve, MVX_FW_REGION_BUF_IN_MVE);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_BUF_OUT_HOST]](fw, &fw->buf_out_host, MVX_FW_REGION_BUF_OUT_HOST);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE]](fw, &fw->buf_out_mve, MVX_FW_REGION_BUF_OUT_MVE);
++	fw->unmap_op[fw->buf_attr[MVX_FW_REGION_RPC]](fw, &fw->rpc, MVX_FW_REGION_RPC);
++
+ #ifdef MVX_FW_DEBUG_ENABLE
+ 	unmap_fw_print_ram(fw, &fw->fw_print_ram, MVX_FW_REGION_PRINT_RAM);
+ #endif
+@@ -3099,31 +3196,31 @@ static int map_protocol_v2(struct mvx_fw *fw)
+ {
+ 	int ret;
+ 
+-	ret = map_msq(fw, &fw->msg_host, MVX_FW_REGION_MSG_HOST);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_MSG_HOST]](fw, &fw->msg_host, MVX_FW_REGION_MSG_HOST);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->msg_mve, MVX_FW_REGION_MSG_MVE);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_MSG_MVE]](fw, &fw->msg_mve, MVX_FW_REGION_MSG_MVE);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->buf_in_host, MVX_FW_REGION_BUF_IN_HOST);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST]](fw, &fw->buf_in_host, MVX_FW_REGION_BUF_IN_HOST);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->buf_in_mve, MVX_FW_REGION_BUF_IN_MVE);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE]](fw, &fw->buf_in_mve, MVX_FW_REGION_BUF_IN_MVE);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->buf_out_host, MVX_FW_REGION_BUF_OUT_HOST);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_BUF_OUT_HOST]](fw, &fw->buf_out_host, MVX_FW_REGION_BUF_OUT_HOST);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->buf_out_mve, MVX_FW_REGION_BUF_OUT_MVE);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE]](fw, &fw->buf_out_mve, MVX_FW_REGION_BUF_OUT_MVE);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+-	ret = map_msq(fw, &fw->rpc, MVX_FW_REGION_RPC);
++	ret = fw->map_op[fw->buf_attr[MVX_FW_REGION_RPC]](fw, &fw->rpc, MVX_FW_REGION_RPC);
+ 	if (ret != 0)
+ 		goto unmap_fw;
+ 
+@@ -3147,10 +3244,13 @@ static void print_pair(char *name_in,
+ 		       struct mve_comm_area_host *host,
+ 		       struct mve_comm_area_mve *mve,
+ 		       int ind,
+-		       struct seq_file *s)
++		       struct seq_file *s,
++		       enum mvx_fw_buffer_attr mve_buf_attr)
+ {
+-	dma_sync_single_for_cpu(device, virt_to_phys(mve),
++	if (mve_buf_attr == MVX_FW_BUF_CACHEABLE) {
++		dma_sync_single_for_cpu(device, virt_to_phys(mve),
+ 				MVE_PAGE_SIZE, DMA_FROM_DEVICE);
++	}
+ 	mvx_seq_printf(s, name_in, ind, "wr=%10d, rd=%10d, avail=%10d\n",
+ 		       host->in_wpos, mve->in_rpos,
+ 		       (uint16_t)(host->in_wpos - mve->in_rpos));
+@@ -3165,13 +3265,13 @@ static int print_stat_v2(struct mvx_fw *fw,
+ {
+ 	print_pair("Msg host->mve", "Msg host<-mve",
+ 		   fw->dev, fw->msg_host, fw->msg_mve,
+-		   ind, s);
++		   ind, s, fw->buf_attr[MVX_FW_REGION_MSG_MVE]);
+ 	print_pair("Inbuf host->mve", "Inbuf host<-mve",
+ 		   fw->dev, fw->buf_in_host, fw->buf_in_mve,
+-		   ind, s);
++		   ind, s, fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE]);
+ 	print_pair("Outbuf host->mve", "Outbuf host<-mve",
+ 		   fw->dev, fw->buf_out_host, fw->buf_out_mve,
+-		   ind, s);
++		   ind, s, fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE]);
+ 
+ 	return 0;
+ }
+@@ -3198,8 +3298,10 @@ static void print_debug_v2(struct mvx_fw *fw)
+ 	struct mve_rpc_communication_area *rpc_area = fw->rpc;
+ 	union mve_rpc_params *p = &rpc_area->params;
+ 
+-	dma_sync_single_for_cpu(fw->dev, virt_to_phys(msg_mve),
++	if (fw->buf_attr[MVX_FW_REGION_MSG_MVE] == MVX_FW_BUF_CACHEABLE) {
++		dma_sync_single_for_cpu(fw->dev, virt_to_phys(msg_mve),
+ 				MVE_PAGE_SIZE, DMA_FROM_DEVICE);
++	}
+ 
+ 	MVX_LOG_PRINT_SESSION(&mvx_log_session_if, MVX_LOG_WARNING, fw->session,
+ 			      "Dump message queue. msg={host={out_rpos=%u, in_wpos=%u}, mve={out_wpos=%u, in_rpos=%u}}",
+@@ -3247,7 +3349,7 @@ int mvx_fw_send_idle_ack_v2(struct mvx_fw *fw)
+ 	ret = write_message(fw, fw->msg_host, fw->msg_mve,
+ 			    MVE_REQUEST_CODE_IDLE_ACK,
+ 			    NULL, 0,
+-			    MVX_LOG_FWIF_CHANNEL_MESSAGE);
++			    MVX_LOG_FWIF_CHANNEL_MESSAGE, fw->buf_attr[MVX_FW_REGION_MSG_MVE], fw->buf_attr[MVX_FW_REGION_MSG_HOST]);
+ 
+ 	return ret;
+ }
+@@ -3288,6 +3390,19 @@ int mvx_fw_construct_v2(struct mvx_fw *fw,
+ 	fw->ops_priv.to_mve_profile = mvx_fw_to_mve_profile_v2;
+ 	fw->ops_priv.to_mve_level = mvx_fw_to_mve_level_v2;
+ 
++	fw->buf_attr[MVX_FW_REGION_MSG_HOST] = MVX_FW_BUF_CACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_MSG_MVE] = MVX_FW_BUF_UNCACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_BUF_IN_HOST] = MVX_FW_BUF_CACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_BUF_IN_MVE] = MVX_FW_BUF_CACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_BUF_OUT_HOST] = MVX_FW_BUF_CACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_BUF_OUT_MVE] = MVX_FW_BUF_CACHEABLE;
++	fw->buf_attr[MVX_FW_REGION_RPC] = MVX_FW_BUF_CACHEABLE;
++
++	fw->map_op[MVX_FW_BUF_CACHEABLE] = map_msq;
++	fw->map_op[MVX_FW_BUF_UNCACHEABLE] = map_msq_uncache;
++	fw->unmap_op[MVX_FW_BUF_CACHEABLE] = unmap_msq;
++	fw->unmap_op[MVX_FW_BUF_UNCACHEABLE] = unmap_msq_uncache;
++
+ 	if (major == 2 && minor >= 4)
+ 		fw->ops_priv.send_idle_ack = mvx_fw_send_idle_ack_v2;
+ 
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+index 43733b02b5c7..de777c89a250 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+@@ -672,6 +672,39 @@ phys_addr_t mvx_mmu_alloc_page(struct device *dev)
+     return 0;
+ }
+ 
++phys_addr_t mvx_mmu_dma_alloc_coherent(struct device *dev, void** data)
++{
++	phys_addr_t pa;
++	dma_addr_t dma_handle;
++	int retry = 20;
++	void *virt_addr;
++
++	do {
++		virt_addr = dma_alloc_coherent(dev, PAGE_SIZE, &dma_handle, GFP_KERNEL | __GFP_ZERO | __GFP_RETRY_MAYFAIL);
++	} while(retry-- && virt_addr == NULL);
++
++	if (virt_addr == NULL) {
++		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
++				"dma alloc coherent buffer faild. retry=%d", retry);
++		return 0;
++	}
++
++	pa = (phys_addr_t)dma_handle;
++
++	*data = virt_addr;
++
++	return pa;
++}
++
++void mvx_mmu_dma_free_coherent(struct device *dev,
++		phys_addr_t pa, void* data)
++{
++	if (pa == 0)
++		return;
++
++	dma_free_coherent(dev, PAGE_SIZE, data, (dma_addr_t)pa);
++}
++
+ void mvx_mmu_free_contiguous_pages(struct device *dev, phys_addr_t pa, size_t npages)
+ {
+ 	struct page *page;
+@@ -996,17 +1029,24 @@ size_t mvx_mmu_size_pages(struct mvx_mmu_pages *pages)
+ }
+ 
+ int mvx_mmu_synch_pages(struct mvx_mmu_pages *pages,
+-			enum dma_data_direction dir)
++			enum dma_data_direction dir, int page_off, int page_count)
+ {
+ 	size_t i;
+-
++	if (page_off + page_count > pages->count)
++	{
++		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
++			"Illegal mmu sync offset/size (%d/%d).",
++			page_off, page_count);
++		page_off = 0;
++		page_count = pages->count;
++	}
+ 	if (dir == DMA_FROM_DEVICE) {
+-		for (i = 0; i < pages->count; i += MVX_PAGES_PER_PAGE)
+-			dma_sync_single_for_cpu(pages->dev, pages->pages[i],
++		for (i = 0; i < page_count; i += MVX_PAGES_PER_PAGE)
++			dma_sync_single_for_cpu(pages->dev, pages->pages[page_off+i],
+ 						PAGE_SIZE, DMA_FROM_DEVICE);
+ 	} else if (dir == DMA_TO_DEVICE) {
+-		for (i = 0; i < pages->count; i += MVX_PAGES_PER_PAGE)
+-			dma_sync_single_for_device(pages->dev, pages->pages[i],
++		for (i = 0; i < page_count; i += MVX_PAGES_PER_PAGE)
++			dma_sync_single_for_device(pages->dev, pages->pages[page_off+i],
+ 						   PAGE_SIZE, DMA_TO_DEVICE);
+ 	} else {
+ 		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+index bde1ce4c623c..ab2311f4f6e5 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
+@@ -214,6 +214,24 @@ phys_addr_t mvx_mmu_alloc_page(struct device *dev);
+ void mvx_mmu_free_page(struct device *dev,
+ 		       phys_addr_t pa);
+ 
++/**
++ * mvx_mmu_dma_alloc_coherent() - Allocate one page for non-cacheable attribute.
++ *
++ * dev:	   Pointer to device.
++ * data:   Virtual address for cpu access.
++ * Return: Physical page address or 0.
++ */
++phys_addr_t mvx_mmu_dma_alloc_coherent(struct device *dev, void** data);
++
++/**
++ * mvx_mmu_dma_free_coherent() - Free one page for non-cacheable attribute.
++ *
++ * dev:	   Pointer to device.
++ * pa:     Physical page address or 0.
++ * data:   Virtual address for cpu access.
++ */
++void mvx_mmu_dma_free_coherent(struct device *dev, phys_addr_t pa, void* data);
++
+ /**
+  * mvx_mmu_alloc_pages() - Allocate array of pages.
+  * @dev:	Pointer to device.
+@@ -312,7 +330,7 @@ size_t mvx_mmu_size_pages(struct mvx_mmu_pages *pages);
+  * Return: 0 on success, else error code.
+  */
+ int mvx_mmu_synch_pages(struct mvx_mmu_pages *pages,
+-			enum dma_data_direction dir);
++			enum dma_data_direction dir, int page_off, int page_count);
+ 
+ /**
+  * mvx_mmu_map_pages() - Map an array of pages to a virtual address.
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+index aa6a69af4ed3..3a86d8b30e68 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+@@ -144,6 +144,7 @@ static void send_event_error(struct mvx_session *session,
+ {
+ 	session->error = error;
+ 	wake_up(&session->waitq);
++	MVX_SESSION_WARN(session, "send event error. error=%ld", error);
+ 	session->event(session, MVX_SESSION_EVENT_ERROR,
+ 		       (void *)session->error);
+ }
+@@ -1404,14 +1405,23 @@ static int queue_buffer(struct mvx_session *session,
+ 			return ret;
+ 	}
+ 
+-	if (mapped && (dir == MVX_DIR_OUTPUT))
+-        {
+-            /*no need to do cache invalidate each time for output buffer,
+-	      only invalidate cache when buffer is mapped  */
+-        }
+-        else
+-            ret = mvx_buffer_synch(buf, dma_dir);
+-
++	if (mapped &&
++		((dir == MVX_DIR_OUTPUT) ||
++		 (dir == MVX_DIR_INPUT &&
++		  mvx_is_frame(port->format) &&
++		  (buf->flags & MVX_BUFFER_FLAG_DISABLE_CACHE_MAINTENANCE))))
++	{
++		/*
++		1. no need to do cache invalidate each time for output buffer,
++				only invalidate cache when buffer is mapped
++		2. no need to do cache clean for input buffer, if there is
++			on cpu write/read usage.
++		*/
++	}
++	else
++	{
++		ret = mvx_buffer_synch(buf, dma_dir);
++	}
+ 	if (ret != 0)
+ 		return ret;
+ 
+@@ -1590,11 +1600,10 @@ static void fw_bin_ready(struct mvx_fw_bin *bin,
+ 	if (ret != 0)
+ 		goto unregister_csession;
+ 
+-	if (lock_failed == 0)
++	ret = mvx_session_put(session);
++	if (ret == 0 && lock_failed == 0)
+ 		mutex_unlock(session->isession.mutex);
+ 
+-	mvx_session_put(session);
+-
+ 	return;
+ 
+ unregister_csession:
+@@ -1606,10 +1615,9 @@ static void fw_bin_ready(struct mvx_fw_bin *bin,
+ 	mvx_fw_cache_put(session->cache, bin);
+ 	session->fw_bin = NULL;
+ 
+-	if (lock_failed == 0)
++	ret = mvx_session_put(session);
++	if (ret == 0 && lock_failed == 0)
+ 		mutex_unlock(session->isession.mutex);
+-
+-	mvx_session_put(session);
+ }
+ 
+ static int calc_afbc_size(struct mvx_session *session,
+@@ -1723,10 +1731,10 @@ static int try_format(struct mvx_session *session,
+ 		if (dir == MVX_DIR_INPUT) {
+ 			/* it is basically a worst-case calcualtion based on a size rounded up to tile size*/
+ 			int s1 = calc_afbc_size(session, format, *width,
+-					       *height, true, true, false, //*height, false, false, false,
++					       *height, false, false, false, //*height, false, false, false,
+ 					       *interlaced);
+ 			int s2 = calc_afbc_size(session, format, *width,
+-					       *height, true, true, true, //*height, false, false, false,
++					       *height, false, false, true, //*height, false, false, false,
+ 					       *interlaced);
+ 			int s = max_t(unsigned int, s1, s2);
+ 			if (s < 0)
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
+index 7fd35b8f1f71..79bf62f3510a 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
+@@ -130,8 +130,9 @@
+ #define V4L2_BUF_FLAG_MVX_AFBC_TILED_HEADERS    0x01000000
+ #define V4L2_BUF_FLAG_MVX_AFBC_TILED_BODY       0x02000000
+ #define V4L2_BUF_FLAG_MVX_AFBC_32X8_SUPERBLOCK  0x04000000
++#define V4L2_BUF_FLAG_MVX_AFBC_BLOCK_SPLIT      0x08000000
+ 
+-
++#define V4L2_BUF_FLAG_MVX_DISABLE_CACHE_MAINTENANCE 0x50000000 /*disable cache maintenance for buffer.*/
+ 
+ /****************************************************************************
+  * HDR color description.
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
+index 7d7903c616e2..c2f24c768d72 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
+@@ -188,6 +188,10 @@ static int update_mvx_flags(struct mvx_buffer *buf,
+     if (flags & V4L2_BUF_FLAG_LAST)
+         buf->flags |= MVX_BUFFER_EOS;
+ 
++    if ((flags & V4L2_BUF_FLAG_MVX_DISABLE_CACHE_MAINTENANCE) == V4L2_BUF_FLAG_MVX_DISABLE_CACHE_MAINTENANCE)
++    {
++        buf->flags |= MVX_BUFFER_FLAG_DISABLE_CACHE_MAINTENANCE;
++    }
+     if (mvx_is_afbc(buf->format)) {
+         if ((flags & V4L2_BUF_FLAG_MVX_AFBC_TILED_HEADERS) == V4L2_BUF_FLAG_MVX_AFBC_TILED_HEADERS)
+             buf->flags |= MVX_BUFFER_AFBC_TILED_HEADERS;
+@@ -197,6 +201,9 @@ static int update_mvx_flags(struct mvx_buffer *buf,
+ 
+         if ((flags & V4L2_BUF_FLAG_MVX_AFBC_32X8_SUPERBLOCK) == V4L2_BUF_FLAG_MVX_AFBC_32X8_SUPERBLOCK)
+             buf->flags |= MVX_BUFFER_AFBC_32X8_SUPERBLOCK;
++
++        if ((flags & V4L2_BUF_FLAG_MVX_AFBC_BLOCK_SPLIT) == V4L2_BUF_FLAG_MVX_AFBC_BLOCK_SPLIT)
++            buf->flags |= MVX_BUFFER_AFBC_BLOCK_SPLIT;
+     } else if (mvx_is_bitstream(buf->format)) {
+         if (buf->dir == MVX_DIR_INPUT) {
+             //decode bitstream port
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+index fabb9b7a391c..6ea4ebd19322 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+@@ -136,6 +136,8 @@ struct mvx_dvfs_ctx_t
+     unsigned long cur_state;
+     struct thermal_cooling_device *cdev;
+ #endif
++
++    bool sched_suspend;
+ };
+ 
+ /* A list containing all registered sessions */
+@@ -426,6 +428,11 @@ static void update_sessions(void)
+         return;
+     }
+ 
++    if (mvx_dvfs_ctx.sched_suspend == true) {
++        up(&dvfs_sem);
++        return;
++    }
++
+     list_for_each_safe(entry, safe, &sessions)
+     {
+         session = list_entry(entry, struct session, list);
+@@ -990,6 +997,7 @@ void mvx_dvfs_init(struct device *dev)
+         mvx_dvfs_ctx.down_step_freq = ratio(mvx_dvfs_ctx.max_freq, DOWN_STEP_PERCENT);
+         mvx_dvfs_ctx.min_freq = vpufclk_freqtable[0].freq;
+         min_vmin_level = vpufclk_freqtable[0].vmin_level;
++        mvx_dvfs_ctx.sched_suspend = false;
+ 
+         /*Use the max clk freq with min vmin as bottom freq of dvfs */
+         for (i=1; i<FREQ_TABLE_SIZE; i++)
+@@ -1294,3 +1302,40 @@ void mvx_dvfs_session_update_ddr_qos(const mvx_session_id session_id, uint32_t r
+ #endif
+ }
+ 
++void mvx_dvfs_suspend_session(void)
++{
++    int sem_failed;
++
++    sem_failed = down_interruptible(&dvfs_sem);
++    if (sem_failed)
++    {
++        MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
++                "DVFS semaphore was not obtained, sem_failed=%d", sem_failed);
++    }
++
++    mvx_dvfs_ctx.sched_suspend = true;
++
++    if (!sem_failed)
++    {
++        up(&dvfs_sem);
++    }
++}
++
++void mvx_dvfs_resume_session(void)
++{
++    int sem_failed;
++
++    sem_failed = down_interruptible(&dvfs_sem);
++    if (sem_failed)
++    {
++        MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
++                "DVFS semaphore was not obtained, sem_failed=%d", sem_failed);
++    }
++
++    mvx_dvfs_ctx.sched_suspend = false;
++
++    if (!sem_failed)
++    {
++        up(&dvfs_sem);
++    }
++}
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
+index f97b6f04b8bd..900eb8987db1 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
++++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
+@@ -87,4 +87,15 @@ void mvx_dvfs_unregister_session(const mvx_session_id session_id);
+ void mvx_dvfs_estimate_ddr_bandwidth(struct estimate_ddr_input* input, struct estimate_ddr_output* output);
+ 
+ void mvx_dvfs_session_update_ddr_qos(const mvx_session_id session_id, uint32_t read_value, uint32_t write_value);
++
++/**
++ * Suspend dvfs thread to adjust vpu clk when device enters suspend state.
++ */
++void mvx_dvfs_suspend_session(void);
++
++/**
++ * Resume dvfs thread to adjust vpu clk when device resumes from suspend state.
++ */
++void mvx_dvfs_resume_session(void);
++
+ #endif /* MVX_DVFS_H */
+-- 
+2.47.1
+

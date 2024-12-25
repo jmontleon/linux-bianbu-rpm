@@ -1,0 +1,60 @@
+From 989d2a057fd0249c53a789efb4c386e9449e3e91 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Thu, 29 Jun 2023 20:33:35 +0800
+Subject: [PATCH 0063/1189] vpu: remove severity and drain file node for probe
+ error, fix it later
+
+Change-Id: I13b2dec7297900c0e89ec789dc22f5e363b13c03
+---
+ drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c | 1 +
+ drivers/media/vpu/mvx_log.c                 | 8 ++++----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
+index ae84b0b5f5a4..da602881b63f 100755
+--- a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
++++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
+@@ -326,6 +326,7 @@ static int update_v4l2_bytesused(struct mvx_v4l2_buffer *vbuf)
+ 		b->planes[i].bytesused =
+ 			buf->planes[i].filled + buf->planes[i].offset;
+ 		b->planes[i].data_offset = buf->planes[i].offset;
++		//printk("--David-- bytesused = %d filled = %d\n",buf->planes[i].filled, b->planes[i].bytesused);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/media/vpu/mvx_log.c b/drivers/media/vpu/mvx_log.c
+index 5f095b55b90f..a6f36ab71fbf 100755
+--- a/drivers/media/vpu/mvx_log.c
++++ b/drivers/media/vpu/mvx_log.c
+@@ -900,24 +900,24 @@ int mvx_log_group_add(struct mvx_log *log,
+ 	group->dentry->d_inode->i_private = group;
+ 
+ 	/* Create <group>/severity. */
+-	debugfs_create_u32("severity", 0600, group->dentry,
++	/*debugfs_create_u32("severity", 0600, group->dentry,
+ 				    &group->severity);
+ 	if (IS_ERR_OR_NULL(dentry)) {
+ 		pr_err("MVX: Failed to create '%s/severity' value.\n",
+ 		       name);
+ 		ret = -ENOMEM;
+ 		goto error;
+-	}
++	}*/
+ 
+ 	/* Create <group>/drain. */
+-	debugfs_create_file("drain", 0600, group->dentry, NULL,
++	/*debugfs_create_file("drain", 0600, group->dentry, NULL,
+ 				     &group_drain_fops);
+ 	if (IS_ERR_OR_NULL(dentry)) {
+ 		pr_err("MVX: Failed to create '%s/severity' value.\n",
+ 		       name);
+ 		ret = -ENOMEM;
+ 		goto error;
+-	}
++	}*/
+ 
+ 	return 0;
+ 
+-- 
+2.47.1
+

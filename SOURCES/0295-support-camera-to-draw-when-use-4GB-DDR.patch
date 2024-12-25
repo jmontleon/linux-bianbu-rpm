@@ -1,0 +1,134 @@
+From a7d28db54e11e344b85c3a38eaa17a42244066b9 Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Tue, 2 Jan 2024 18:44:38 +0800
+Subject: [PATCH 0295/1189] support camera to draw, when use 4GB DDR
+
+Change-Id: I36a63d96630c462f93083c169a49cc3c3dbdc194
+---
+ .../platform/spacemit/camera/cam_cpp/cpp_iommu.c |  6 ++++--
+ .../platform/spacemit/camera/cam_plat/cam_plat.c | 16 ++++++++++++++++
+ .../platform/spacemit/camera/cam_plat/cam_plat.h |  3 +++
+ .../platform/spacemit/camera/vi/k1xvi/fe_isp.c   |  8 +++++---
+ 4 files changed, 28 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+index 2b65726e1314..f5d37c404e35 100755
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+@@ -623,7 +623,7 @@ static int __iommu_fill_ttb_by_sg(struct sg_table *sgt, uint32_t offset,
+ 		else
+ 			temp_offset = 0;
+ 
+-		start_addr = ((sg_phys(sg) + temp_offset) >> 12) << 12;
++		start_addr = ((phys_cpu2cam(sg_phys(sg)) + temp_offset) >> 12) << 12;
+ 
+ 		temp_length = temp_size - offset;
+ 		if (temp_length >= length)
+@@ -631,7 +631,7 @@ static int __iommu_fill_ttb_by_sg(struct sg_table *sgt, uint32_t offset,
+ 		else
+ 			temp_offset = sg_dma_len(sg);
+ 
+-		end_addr = ((sg_phys(sg) + temp_offset + 0xfff) >> 12) << 12;
++		end_addr = ((phys_cpu2cam(sg_phys(sg)) + temp_offset + 0xfff) >> 12) << 12;
+ 
+ 		for (dmad = start_addr; dmad < end_addr; dmad += 0x1000)
+ 			tt_base[tt_size++] = (dmad >> 12) & 0x3fffff;
+@@ -822,6 +822,8 @@ void cpp_iommu_unregister(struct cpp_device *cpp_dev)
+ 	size = IOMMU_TRANS_TAB_MAX_NUM * sizeof(uint32_t) * CPP_IOMMU_CH_NUM;
+ 	dmam_free_coherent(&cpp_dev->pdev->dev, size, mmu_dev->rsvd_cpu_addr,
+ 			   mmu_dev->rsvd_dma_addr);
++	dmam_free_coherent(&cpp_dev->pdev->dev, size, mmu_dev->to_cpu_addr,
++			   mmu_dev->to_dma_addr);
+ 	devm_kfree(&(cpp_dev->pdev->dev), cpp_dev->mmu_dev);
+ 	cpp_dev->mmu_dev = NULL;
+ 
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+index a3b4b47f7ffe..89ff5c3c8a1d 100755
+--- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
++++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+@@ -27,6 +27,22 @@ struct plat_cam_device {
+ #define to_plat_cam_dev(v4l2_dev)	\
+ 	(struct plat_cam_device *)(v4l2_dev)
+ 
++unsigned long phys_cam2cpu(unsigned long phys_addr)
++{
++	if (phys_addr >= 0x80000000UL) {
++		phys_addr += 0x80000000UL;
++	}
++	return phys_addr;
++}
++
++unsigned long phys_cpu2cam(unsigned long phys_addr)
++{
++	if (phys_addr >= 0x100000000UL) {
++		phys_addr -= 0x80000000UL;
++	}
++	return phys_addr;
++}
++
+ static void plat_cam_sd_notify(struct v4l2_subdev *sd,
+ 			       unsigned int notification, void *arg)
+ {
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
+index f9aaf8ca0604..3889c92e30a7 100755
+--- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
++++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
+@@ -166,6 +166,9 @@ struct ccic_irq_data {
+ #define subdev_to_plat_csd(subdev) \
+ 	container_of(subdev, struct plat_cam_subdev, sd)
+ 
++unsigned long phys_cam2cpu(unsigned long phys_addr);
++unsigned long phys_cpu2cam(unsigned long phys_addr);
++
+ int plat_cam_register_subdev(struct plat_cam_subdev *csd);
+ 
+ int plat_cam_unregister_subdev(struct plat_cam_subdev *csd);
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+index e4536bdaa26b..bd6158892e0a 100755
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+@@ -491,6 +491,7 @@ static void fe_isp_set_clk(struct isp_context *isp_ctx, int clk_mode)
+ }
+ 
+ #ifdef CONFIG_SPACEMIT_K1X_VI_IOMMU
++
+ static uint32_t fe_isp_fill_trans_tab_by_sg(uint32_t *tt_base, struct sg_table *sgt,
+ 					    uint32_t offset, uint32_t length)
+ {
+@@ -511,14 +512,14 @@ static uint32_t fe_isp_fill_trans_tab_by_sg(uint32_t *tt_base, struct sg_table *
+ 			temp_offset = offset - temp_size + sg_dma_len(sg);
+ 		else
+ 			temp_offset = 0;
+-		start_addr = ((sg_phys(sg) + temp_offset) >> 12) << 12;
++		start_addr = ((phys_cpu2cam(sg_phys(sg)) + temp_offset) >> 12) << 12;
+ 
+ 		temp_length = temp_size - offset;
+ 		if (temp_length >= length)
+ 			temp_offset = sg_dma_len(sg) - temp_length + length;
+ 		else
+ 			temp_offset = sg_dma_len(sg);
+-		end_addr = ((sg_phys(sg) + temp_offset + 0xfff) >> 12) << 12;
++		end_addr = ((phys_cpu2cam(sg_phys(sg)) + temp_offset + 0xfff) >> 12) << 12;
+ 
+ 		for (dmad = start_addr; dmad < end_addr; dmad += 0x1000)
+ 			tt_base[tt_size++] = (dmad >> 12) & 0x3fffff;
+@@ -576,6 +577,7 @@ static dma_addr_t spm_vb2_buf_paddr(struct vb2_buffer *vb, unsigned int plane_no
+ 		isp_mmu_call(isp_ctx->mmu_dev, enable_channel, tid);
+ 		paddr = (dma_addr_t)isp_ctx->mmu_dev->ops->get_sva(isp_ctx->mmu_dev, tid, offset);
+ 	}
++
+ 	return paddr;
+ }
+ #endif
+@@ -5221,7 +5223,7 @@ void *fe_isp_create_ctx(struct platform_device *pdev)
+ 		cam_err("failed to alloc mem for mmu reserved");
+ 		return NULL;
+ 	}
+-	isp_ctx->rsvd_phy_addr = virt_to_phys(isp_ctx->rsvd_vaddr);
++	isp_ctx->rsvd_phy_addr = phys_cpu2cam(virt_to_phys(isp_ctx->rsvd_vaddr));
+ 	cam_info("rsvd_phy_addr=0x%llx size=%d", (uint64_t)isp_ctx->rsvd_phy_addr, MMU_RESERVED_MEM_SIZE);
+ 	memset(isp_ctx->rsvd_vaddr, 0xff, MMU_RESERVED_MEM_SIZE);
+ 
+-- 
+2.47.1
+

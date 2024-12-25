@@ -1,0 +1,30 @@
+From 51f0a1cec56c8bf79c8b08c558f771e34563eb93 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Tue, 23 Jul 2024 10:20:31 +0800
+Subject: [PATCH 0832/1189] k1x:adjust crypto alloc buffer and set mask turns
+
+Change-Id: I74af70fbf141609db59c263ab4f54d4ea44fc20d
+---
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 89f97994a819..0016813dab0a 100644
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -1734,6 +1734,12 @@ static int crypto_engine_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_err(dev, "Unable to set dma mask\n");
++		return ret;
++	}
++
+ 	in_buffer = dma_alloc_noncoherent(dev, SPACEMIT_AES_BUFFER_LEN, &dma_addr_in, DMA_TO_DEVICE, GFP_KERNEL);
+ 	out_buffer = dma_alloc_noncoherent(dev, SPACEMIT_AES_BUFFER_LEN, &dma_addr_out, DMA_FROM_DEVICE, GFP_KERNEL);
+ 	ctrl = kmalloc(sizeof(struct aes_clk_reset_ctrl), GFP_KERNEL);
+-- 
+2.47.1
+

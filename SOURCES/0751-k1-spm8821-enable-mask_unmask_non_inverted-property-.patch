@@ -1,0 +1,29 @@
+From 42f24d06c4a00c1c58cc2c3b972aefc7ccfb5050 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 19 Jun 2024 21:16:06 +0800
+Subject: [PATCH 0751/1189] k1:spm8821:enable mask_unmask_non_inverted property
+ to set the right interrupt enable bit
+
+Change-Id: I080e202ec9e5973d715c93db44caae767a6eac64
+---
+ include/linux/mfd/spacemit/spm8821.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+index 5266e47be514..857963217853 100644
+--- a/include/linux/mfd/spacemit/spm8821.h
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -643,8 +643,10 @@ static const struct regmap_irq_chip spm8821_irq_chip = {	\
+ 	.num_regs = 7,						\
+ 	.status_base = SPM8821_E_STATUS_REG_BASE,		\
+ 	.mask_base = SPM8821_E_EN_REG_BASE,			\
++	.unmask_base = SPM8821_E_EN_REG_BASE,			\
+ 	.ack_base = SPM8821_E_STATUS_REG_BASE,			\
+ 	.init_ack_masked = true,				\
++	.mask_unmask_non_inverted = true,			\
+ };
+ 
+ /* power-key */
+-- 
+2.47.1
+

@@ -1,0 +1,44 @@
+From 305fcee89941dd33c3290058efd3334151605b47 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:28:52 +0800
+Subject: [PATCH 0333/1189] clean crypto driver debug info
+
+Change-Id: I9e30650c0c61a1bdafd6a79a6bc69c0c3ce7c17f
+---
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 23fce0365a95..a13aa2cd4938 100755
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -1202,7 +1202,7 @@ static ssize_t engine_store(struct device *dev,
+ 		return count;
+ 	}
+ 
+-	dev_info(dev,"engine_store (0x%lx,0x%lx)-->(0x%lx,0x%lx)\n",pddr1,pddr2,(unsigned long)pt,(unsigned long)ct);
++	dev_dbg(dev,"engine_store (0x%lx,0x%lx)-->(0x%lx,0x%lx)\n",pddr1,pddr2,(unsigned long)pt,(unsigned long)ct);
+ 	aes_test_for_nsaid(pt,ct,index);
+ 	engine[(int)index].ddr_type = NORMAL_DDR;
+ 
+@@ -1274,7 +1274,7 @@ static int crypto_engine_probe(struct platform_device *pdev)
+ 			dev_err_once(dev,"engine_mem ioremap failed. pyh_addr=0x%08x,pyh_size=0x%08x\n",addr_range[0], addr_range[1]);
+ 			goto err_ioremap;
+ 		}
+-		dev_info(dev, "map %s successful. pyh_addr=0x%08x,pyh_size=0x%08x, vir_addr=0x%lx\n", obj_name,addr_range[0], addr_range[1],engine[0].engine_base);
++		dev_dbg(dev, "map %s successful. pyh_addr=0x%08x,pyh_size=0x%08x, vir_addr=0x%lx\n", obj_name,addr_range[0], addr_range[1],engine[0].engine_base);
+ 
+ 		engine_irq = irq_of_parse_and_map(np, i);
+ 		if (!engine_irq) {
+@@ -1307,7 +1307,7 @@ static int crypto_engine_probe(struct platform_device *pdev)
+ 				sram_reserved[sram_index].sram_start = addr_range[0];
+ 				sram_reserved[sram_index].sram_end = addr_range[1];
+ 				sram_reserved[sram_index].sram_size = addr_range[1] - addr_range[0];
+-				dev_info(dev, "sram_%d : 0x%lx 0x%lx 0x%lx\n", sram_index,sram_reserved[sram_index].sram_start,
++				dev_dbg(dev, "sram_%d : 0x%lx 0x%lx 0x%lx\n", sram_index,sram_reserved[sram_index].sram_start,
+ 					sram_reserved[sram_index].sram_end,sram_reserved[sram_index].sram_size);
+ 				sram_index ++;
+ 			}
+-- 
+2.47.1
+

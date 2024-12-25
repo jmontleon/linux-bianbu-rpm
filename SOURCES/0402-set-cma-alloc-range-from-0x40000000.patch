@@ -1,0 +1,60 @@
+From 0a85d68a4162842232998b225eefe79c018cf74f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 26 Jan 2024 18:33:14 +0800
+Subject: [PATCH 0402/1189] set cma alloc range from 0x40000000
+
+Change-Id: I64fa15c02e56ccc630b5f1e7b28159712d4ec6b7
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts | 4 ++--
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts  | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 711d0821232a..6753a69f14be 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -90,8 +90,8 @@ reserved-memory {
+ 
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+-			/* alloc memory from 0x60000000~0x80000000 */
+-			alloc-ranges = <0 0x60000000 0 0x20000000>;
++			/* alloc memory from 0x40000000~0x80000000 */
++			alloc-ranges = <0 0x40000000 0 0x40000000>;
+ 			/* size of cma buffer is 384MByte */
+ 			size = <0 0x18000000>;
+ 			/* start address is 1Mbyte aligned */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index edf46cb24229..e1f09d76656e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -90,8 +90,8 @@ reserved-memory {
+ 
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+-			/* alloc memory from 0x60000000~0x80000000 */
+-			alloc-ranges = <0 0x60000000 0 0x20000000>;
++			/* alloc memory from 0x40000000~0x80000000 */
++			alloc-ranges = <0 0x40000000 0 0x40000000>;
+ 			/* size of cma buffer is 384MByte */
+ 			size = <0 0x18000000>;
+ 			/* start address is 1Mbyte aligned */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 2f515ac38d7a..4a8fe6e16bbb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -90,8 +90,8 @@ reserved-memory {
+ 
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+-			/* alloc memory from 0x60000000~0x80000000 */
+-			alloc-ranges = <0 0x60000000 0 0x20000000>;
++			/* alloc memory from 0x40000000~0x80000000 */
++			alloc-ranges = <0 0x40000000 0 0x40000000>;
+ 			/* size of cma buffer is 384MByte */
+ 			size = <0 0x18000000>;
+ 			/* start address is 1Mbyte aligned */
+-- 
+2.47.1
+

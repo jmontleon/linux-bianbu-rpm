@@ -1,0 +1,55 @@
+From 2708b697c4f32c318f23e654cdd91b3fffd605fe Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 15 May 2023 20:19:39 +0800
+Subject: [PATCH 0021/1189] dts: dwc3: add dts config for k1-pro
+
+Change-Id: Id23ca86537a4f9109cd1be5a4c53518eb44c131c
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 332cfa7fa59a..81a51bb8f69f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -274,6 +274,28 @@ core3_tcm@60000 {
+ 			};
+ 		};
+ 
++		usbdrd3: usb3@0 {
++			compatible = "spacemit,k1-pro-dwc3";
++			#address-cells = <2>;
++			#size-cells = <2>;
++			resets = <&reset RESET_USB_GMAC_GSR>,
++					 <&reset RESET_USB_GMAC2VBUS>,
++					 <&reset RESET_USB31>;
++			reset-names = "soft_rst", "bus_rst", "ctl_rst";
++			ranges;
++			status = "disabled";
++
++			dwc3@2cb00000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0x2cb00000 0x0 0x10000>;
++				interrupt-parent = <&intc>;
++				interrupts = <90>;
++				maximum-speed = "high-speed";
++				snps,hsphy_interface = "ulpi";
++				dr_mode = "otg";
++			};
++		};
++
+ 		qspi0: spi@2ce00000 {
+                        compatible = "snps,dwc-ssi-1.02a";
+                        reg = <0x0 0x2ce00000 0x0 0x4000>;
+@@ -286,6 +308,8 @@ qspi0: spi@2ce00000 {
+                        status = "disabled";
+                };
+ 
++
++
+ 	};
+ };
+ 
+-- 
+2.47.1
+

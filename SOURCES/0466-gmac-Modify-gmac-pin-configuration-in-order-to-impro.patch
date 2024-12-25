@@ -1,0 +1,76 @@
+From 567bb2a2ff9f48a15bc70411375de52b65acdab9 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 11 Mar 2024 20:40:27 +0800
+Subject: [PATCH 0466/1189] gmac: Modify gmac pin configuration in order to
+ improve signal quality
+
+Change-Id: I6ec8c271496a7192d41eddbd47191a7d107f454b
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 44 +++++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 764c1c2a7a5c..60e125d35312 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -496,6 +496,48 @@ K1X_PADCONF(GPIO_47,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* r_uart0
+ 			K1X_PADCONF(GPIO_48,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* r_uart0_rx */
+ 		>;
+ 	};
++
++	pinctrl_gmac0: gmac0_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_00,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rxdv */
++			K1X_PADCONF(GPIO_01,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d0 */
++			K1X_PADCONF(GPIO_02,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d1 */
++			K1X_PADCONF(GPIO_03,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_clk */
++			K1X_PADCONF(GPIO_04,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d2 */
++			K1X_PADCONF(GPIO_05,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d3 */
++			K1X_PADCONF(GPIO_06,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d0 */
++			K1X_PADCONF(GPIO_07,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d1 */
++			K1X_PADCONF(GPIO_08,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx */
++			K1X_PADCONF(GPIO_09,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d2 */
++			K1X_PADCONF(GPIO_10,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d3 */
++			K1X_PADCONF(GPIO_11,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_en */
++			K1X_PADCONF(GPIO_12,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac0_mdc */
++			K1X_PADCONF(GPIO_13,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac0_mdio */
++			K1X_PADCONF(GPIO_14,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_int_n */
++			K1X_PADCONF(GPIO_45,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_clk_ref */
++		>;
++	};
++
++	pinctrl_gmac1: gmac1_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_29,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rxdv */
++			K1X_PADCONF(GPIO_30,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d0 */
++			K1X_PADCONF(GPIO_31,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d1 */
++			K1X_PADCONF(GPIO_32,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_clk */
++			K1X_PADCONF(GPIO_33,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d2 */
++			K1X_PADCONF(GPIO_34,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d3 */
++			K1X_PADCONF(GPIO_35,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_tx_d0 */
++			K1X_PADCONF(GPIO_36,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_tx_d1 */
++			K1X_PADCONF(GPIO_37,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx */
++			K1X_PADCONF(GPIO_38,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_tx_d2 */
++			K1X_PADCONF(GPIO_39,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_tx_d3 */
++			K1X_PADCONF(GPIO_40,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_tx_en */
++			K1X_PADCONF(GPIO_41,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_mdc */
++			K1X_PADCONF(GPIO_42,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS0))   /* gmac1_mdio */
++			K1X_PADCONF(GPIO_43,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_int_n */
++			K1X_PADCONF(GPIO_46,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_clk_ref */
++		>;
++	};
+ };
+ 
+ &gpio{
+@@ -627,7 +669,7 @@ &eth0 {
+ 
+ 	clk-tuning-enable;
+ 	clk-tuning-by-delayline;
+-	tx-phase = <90>;
++	tx-phase = <60>;
+ 	rx-phase = <73>;
+ 
+ 	nvmem-cells = <&mac_address0>;
+-- 
+2.47.1
+

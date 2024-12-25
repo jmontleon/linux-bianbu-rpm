@@ -1,0 +1,166 @@
+From 5b7bcc3633042331de100afaf97f0fea865fd0a7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Sun, 17 Dec 2023 18:34:04 +0800
+Subject: [PATCH 0184/1189] clock/reset: fix pwm clk/reset reg bit
+
+Change-Id: I92fa46b1f8b804355cd48ab9343c40d89c5f5543
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 38 ++++++++++++-------------
+ drivers/reset/reset-spacemit-k1x.c      | 38 ++++++++++++-------------
+ 2 files changed, 38 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 423bcd4055bf..29b5e8733af8 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -470,79 +470,79 @@ static SPACEMIT_CCU_MUX_GATE(pwm0_clk, "pwm0_clk", pwm_parent_names,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm1_clk, "pwm1_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM1_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm2_clk, "pwm2_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM2_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm3_clk, "pwm3_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM3_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm4_clk, "pwm4_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM4_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm5_clk, "pwm5_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM5_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm6_clk, "pwm6_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM6_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm7_clk, "pwm7_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM7_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm8_clk, "pwm8_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM8_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm9_clk, "pwm9_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM9_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm10_clk, "pwm10_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM10_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm11_clk, "pwm11_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM11_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm12_clk, "pwm12_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM12_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm13_clk, "pwm13_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM13_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm14_clk, "pwm14_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM14_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm15_clk, "pwm15_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM15_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm16_clk, "pwm16_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM16_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm17_clk, "pwm17_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM17_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm18_clk, "pwm18_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM18_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm19_clk, "pwm19_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM19_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static const char *ssp_parent_names[] = { "pll1_d384_6p4", "pll1_d192_12p8", "pll1_d96_25p6",
+ 	"pll1_d48_51p2", "pll1_d768_3p2", "pll1_d1536_1p6", "pll1_d3072_0p8"
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 6befeaebd4f4..f05e7d851cdf 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -164,25 +164,25 @@ static const struct spacemit_reset_signal
+ 	[RESET_UART2]   = { APBC_UART2_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_GPIO]    = { APBC_GPIO_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_PWM0]    = { APBC_PWM0_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM1]    = { APBC_PWM1_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM2]    = { APBC_PWM2_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM3]    = { APBC_PWM3_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM4]    = { APBC_PWM4_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM5]    = { APBC_PWM5_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM6]    = { APBC_PWM6_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM7]    = { APBC_PWM7_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM8]    = { APBC_PWM8_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM9]    = { APBC_PWM9_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM10]   = { APBC_PWM10_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM11]   = { APBC_PWM11_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM12]   = { APBC_PWM12_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM13]   = { APBC_PWM13_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM14]   = { APBC_PWM14_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM15]   = { APBC_PWM15_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM16]   = { APBC_PWM16_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM17]   = { APBC_PWM17_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM18]   = { APBC_PWM18_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM19]   = { APBC_PWM19_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM1]    = { APBC_PWM1_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM2]    = { APBC_PWM2_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM3]    = { APBC_PWM3_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM4]    = { APBC_PWM4_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM5]    = { APBC_PWM5_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM6]    = { APBC_PWM6_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM7]    = { APBC_PWM7_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM8]    = { APBC_PWM8_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM9]    = { APBC_PWM9_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM10]   = { APBC_PWM10_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM11]   = { APBC_PWM11_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM12]   = { APBC_PWM12_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM13]   = { APBC_PWM13_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM14]   = { APBC_PWM14_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM15]   = { APBC_PWM15_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM16]   = { APBC_PWM16_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM17]   = { APBC_PWM17_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM18]   = { APBC_PWM18_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM19]   = { APBC_PWM19_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_SSP3]    = { APBC_SSP3_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_UART3]   = { APBC_UART3_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_RTC]     = { APBC_RTC_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-- 
+2.47.1
+

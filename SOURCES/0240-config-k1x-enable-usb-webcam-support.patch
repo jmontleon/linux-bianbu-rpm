@@ -1,0 +1,26 @@
+From 27677d9bd0651631545ab6822339fb81eff3f8b8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 25 Dec 2023 12:30:58 +0800
+Subject: [PATCH 0240/1189] config: k1x: enable usb webcam support
+
+Change-Id: Ia670a1306c9bb35c9a590c88906619a387ff4741
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index ce2541938b37..a0ca9cdade3d 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -167,6 +167,8 @@ CONFIG_REGULATOR_SPACEMIT=y
+ CONFIG_MEDIA_SUPPORT=y
+ # CONFIG_DVB_NET is not set
+ # CONFIG_DVB_DYNAMIC_MINORS is not set
++CONFIG_MEDIA_USB_SUPPORT=y
++CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_RADIO_ADAPTERS is not set
+ CONFIG_VIDEO_LINLON_K1X=y
+ CONFIG_SPACEMIT_V2D=y
+-- 
+2.47.1
+

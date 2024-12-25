@@ -1,0 +1,39 @@
+From 7ec0bf274e98984de1c04d31d1eabf76550aa55a Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 15 Aug 2024 16:52:03 +0800
+Subject: [PATCH 0938/1189] k1-x_MUSE-Book: enable otg for usb0
+
+Change-Id: I7a7500b1b6f2c3f18f8b4178b8691a78a5595896
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index 7c16c526e860..eed13a50e1ef 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -694,7 +694,21 @@ &usbphy {
+ 	status = "okay";
+ };
+ 
++&otg {
++	usb-role-switch;
++	role-switch-user-control;
++	role-switch-default-mode = "host";
++	status = "okay";
++};
++
++&udc {
++	spacemit,udc-mode = <MV_USB_MODE_OTG>;
++	status = "okay";
++};
++
++
+ &ehci {
++	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.1
+

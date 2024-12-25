@@ -1,0 +1,103 @@
+From c49a5f53fb2349740a3700690e2994a87de51768 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 4 Sep 2023 13:45:34 +0800
+Subject: [PATCH 0097/1189] hotplug: we'd better flush the local & l2 cache
+ when one cpu going to die
+
+Change-Id: I64e4158a8669af577abf1ab5018a7bdb424941aa
+---
+ arch/riscv/include/asm/sbi.h      | 3 +++
+ arch/riscv/kernel/cpu-hotplug.c   | 8 ++++++++
+ arch/riscv/kernel/sbi.c           | 9 +++++++++
+ drivers/clocksource/timer-riscv.c | 9 +++++++++
+ 4 files changed, 29 insertions(+)
+
+diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+index 6c82318065cf..62e1d715ec4b 100644
+--- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -53,6 +53,9 @@ enum sbi_ext_base_fid {
+ 	SBI_EXT_BASE_GET_MVENDORID,
+ 	SBI_EXT_BASE_GET_MARCHID,
+ 	SBI_EXT_BASE_GET_MIMPID,
++#if defined(CONFIG_SOC_SPACEMIT_K1PRO) || defined(CONFIG_SOC_SPACEMIT_K1X)
++	SBI_EXT_BASE_FLUSH_CACHE_ALL,
++#endif
+ };
+ 
+ enum sbi_ext_time_fid {
+diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
+index a1e38ecfc8be..864e68faee73 100644
+--- a/arch/riscv/kernel/cpu-hotplug.c
++++ b/arch/riscv/kernel/cpu-hotplug.c
+@@ -68,8 +68,16 @@ void __noreturn arch_cpu_idle_dead(void)
+ {
+ 	idle_task_exit();
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1PRO) || defined(CONFIG_SOC_SPACEMIT_K1X)
++	sbi_flush_local_dcache_all();
++#endif
++
+ 	cpuhp_ap_report_dead();
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1PRO) || defined(CONFIG_SOC_SPACEMIT_K1X)
++	sbi_flush_local_dcache_all();
++#endif
++
+ 	cpu_ops->cpu_stop();
+ 	/* It should never reach here */
+ 	BUG();
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index 1989b8cade1b..d122546c6910 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -416,6 +416,15 @@ int sbi_remote_hfence_vvma(const struct cpumask *cpu_mask,
+ }
+ EXPORT_SYMBOL(sbi_remote_hfence_vvma);
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1PRO) || defined(CONFIG_SOC_SPACEMIT_K1X)
++void sbi_flush_local_dcache_all(void)
++{
++	sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_FLUSH_CACHE_ALL, 0,
++			0, 0, 0, 0, 0);
++}
++EXPORT_SYMBOL(sbi_flush_local_dcache_all);
++#endif
++
+ /**
+  * sbi_remote_hfence_vvma_asid() - Execute HFENCE.VVMA instructions on given
+  * remote harts for current guest virtual address range belonging to a specific
+diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+index 48ce50c5f5e6..96c122fbe43a 100644
+--- a/drivers/clocksource/timer-riscv.c
++++ b/drivers/clocksource/timer-riscv.c
+@@ -167,6 +167,13 @@ static int __init riscv_timer_init_common(void)
+ 		return -ENODEV;
+ 	}
+ 
++#ifdef CONFIG_SOC_SPACEMIT
++	if (riscv_isa_extension_available(NULL, SSTC)) {
++		pr_info("Timer interrupt in S-mode is available via sstc extension\n");
++		static_branch_enable(&riscv_sstc_available);
++	}
++#endif
++
+ 	error = clocksource_register_hz(&riscv_clocksource, riscv_timebase);
+ 	if (error) {
+ 		pr_err("RISCV timer registration failed [%d]\n", error);
+@@ -183,10 +190,12 @@ static int __init riscv_timer_init_common(void)
+ 		return error;
+ 	}
+ 
++#ifndef CONFIG_SOC_SPACEMIT
+ 	if (riscv_isa_extension_available(NULL, SSTC)) {
+ 		pr_info("Timer interrupt in S-mode is available via sstc extension\n");
+ 		static_branch_enable(&riscv_sstc_available);
+ 	}
++#endif
+ 
+ 	error = cpuhp_setup_state(CPUHP_AP_RISCV_TIMER_STARTING,
+ 			 "clockevents/riscv/timer:starting",
+-- 
+2.47.1
+

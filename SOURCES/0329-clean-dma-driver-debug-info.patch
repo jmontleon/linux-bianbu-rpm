@@ -1,0 +1,49 @@
+From 09623040428aefd444aec4d4488cba844c43b5f3 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Jan 2024 08:25:03 +0800
+Subject: [PATCH 0329/1189] clean dma driver debug info
+
+Change-Id: I4ef0640b0afb079a84c4320ad7c37872da72a72f
+---
+ drivers/dma/mmp_pdma_k1x.c | 4 ++--
+ drivers/dma/udma.c         | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
+index 5c79fb733ca0..943a05f7b0a1 100644
+--- a/drivers/dma/mmp_pdma_k1x.c
++++ b/drivers/dma/mmp_pdma_k1x.c
+@@ -1473,7 +1473,7 @@ static int mmp_pdma_probe(struct platform_device *op)
+ 	pdev->dma_channels = dma_channels;
+ 
+ 	pdev->max_burst_size = max_burst_size;
+-	dev_info(pdev->dev, "set max burst size to %d\n", max_burst_size);
++	dev_dbg(pdev->dev, "set max burst size to %d\n", max_burst_size);
+ 
+ #ifdef CONFIG_PM
+ 	pm_runtime_enable(&op->dev);
+@@ -1556,7 +1556,7 @@ static int mmp_pdma_probe(struct platform_device *op)
+ 	}
+ 
+ 	platform_set_drvdata(op, pdev);
+-	dev_info(pdev->device.dev, "initialized %d channels\n", dma_channels);
++	dev_dbg(pdev->device.dev, "initialized %d channels\n", dma_channels);
+ 	return 0;
+ 
+ err_rst:
+diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
+index 9a62f5e4b779..07e7b49554d5 100644
+--- a/drivers/dma/udma.c
++++ b/drivers/dma/udma.c
+@@ -412,7 +412,7 @@ static int dma_init(void)
+ 	dma_set_mask(dma_dev->dev, DMA_BIT_MASK(32));
+ 
+ 	INIT_LIST_HEAD(&dmabuf_list);
+-	dev_info(dma_dev->dev, "dma channel id = %d\n",dma_chan->chan_id);
++	dev_dbg(dma_dev->dev, "dma channel id = %d\n",dma_chan->chan_id);
+ 	mutex_init(&dma_mutex);
+ 
+ 	return 0;
+-- 
+2.47.1
+

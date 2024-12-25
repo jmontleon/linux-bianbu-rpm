@@ -1,0 +1,494 @@
+From 7742be5d5b8ffbc0759615cdb8af348701d78f1a Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Thu, 30 Mar 2023 17:16:23 +0800
+Subject: [PATCH 0010/1189] add k1pro reset-controller driver and config
+
+Change-Id: I70cdcf14b0b5d3d2cb1b8a21b49caaf3fb671226
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi |  11 +-
+ drivers/reset/Kconfig                    |   6 +
+ drivers/reset/Makefile                   |   1 +
+ drivers/reset/k1-pro-reset.c             | 274 +++++++++++++++++++++++
+ include/dt-bindings/reset/k1-pro-reset.h | 134 +++++++++++
+ 5 files changed, 425 insertions(+), 1 deletion(-)
+ create mode 100755 drivers/reset/k1-pro-reset.c
+ create mode 100755 include/dt-bindings/reset/k1-pro-reset.h
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index e0d63ef9c7f7..b933c8d446c0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -168,13 +168,22 @@ ccu:clock-controller@2f020000 {
+ 		    #address-cells = <0x1>;
+ 		    #size-cells = <0x1>;
+ 			compatible = "spacemit,k1pro-ccu";
+-			reg = <0x0 0x2f020000 0x0 0x4000 0x0 0x2f024000 0x0 0x4000>;
++			reg = <0x0 0x2f020000 0x0 0x4000>, <0x0 0x2f800000 0x0 0xc000>;
+ 			clocks = <&osc_clk_24m>, <&pll_clk_sys>, <&pll_clk_gmac>, <&pll_clk_i2s>, <&pll_ddr>, <&in_clk_32k>, <&pll_clk_400m>;
+ 			clock-names = "osc_clk_24m", "pll_clk_sys", "pll_clk_gmac", "pll_clk_i2s", "pll_ddr", "in_clk_32k", "pll_clk_400m";
+ 			#clock-cells = <1>;
+ 			status = "okay";
+ 		};
+ 
++		reset: reset-controller@18030000 {
++		    #address-cells = <0x1>;
++		    #size-cells = <0x1>;
++			compatible = "spacemit,k1pro-reset";
++			reg = <0x0 0x2f024000 0x0 0x4000>, <0x0 0x2f800000 0x0 0xc000>;
++			#reset-cells = <1>;
++			status = "okay";
++		};
++
+ 		clint0: clint@b4000000 {
+ 			compatible = "riscv,clint0";
+ 			interrupts-extended = <
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 5b3abb6db248..4008f888afc2 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -343,6 +343,12 @@ config RESET_ZYNQMP
+ 	help
+ 	  This enables the reset controller driver for Xilinx ZynqMP SoCs.
+ 
++config RESET_K1_PRO_SPACEMIT
++	tristate "Reset controller driver for Spacemit SoCs"
++	default y
++	help
++	  Support for reset controllers on Spacemit SoCs.
++
+ source "drivers/reset/amlogic/Kconfig"
+ source "drivers/reset/starfive/Kconfig"
+ source "drivers/reset/sti/Kconfig"
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 677c4d1e2632..3b55b68e1992 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -43,3 +43,4 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+ obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
+ obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
+ obj-$(CONFIG_RESET_ZYNQMP) += reset-zynqmp.o
++obj-$(CONFIG_RESET_K1_PRO_SPACEMIT) += k1-pro-reset.o
+\ No newline at end of file
+diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
+new file mode 100755
+index 000000000000..c1ccd6e42048
+--- /dev/null
++++ b/drivers/reset/k1-pro-reset.c
+@@ -0,0 +1,274 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Device Tree support for Spacemit SoCs
++ *
++ * Copyright (c) 2023 Spacemit Inc.
++ */
++#include <linux/mfd/syscon.h>
++#include <linux/mod_devicetable.h>
++#include <linux/of_device.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/reset-controller.h>
++#include <linux/io.h>
++#include <dt-bindings/reset/k1-pro-reset.h>
++
++#define LOG_INFO(fmt, arg...)    pr_info("[K1-RESET][%s][%d]:" fmt "\n", __func__, __LINE__, ##arg)
++
++#define CPU0_SW_RESET000   0x000
++#define CPU1_SW_RESET004   0x004
++#define CPUSUB_SW_RESET008 0x008
++#define SYS_SW_RESET100    0x100
++#define QSPI_SW_RESET104   0x104
++#define UART_SW_RESET108   0x108
++#define I2C_SW_RESET10C    0x10C
++#define TIMER_SW_RESET110  0x110
++#define CAN_SW_RESET114    0x114
++#define I2S_SW_RESET118    0x118
++#define MEM_SW_RESET200    0x200
++#define SERDES_SW_RESET300 0x300
++#define PCIE_SW_RESET304   0x304
++#define SATA_SW_RESET308   0x308
++#define USB_SW_RESET30C    0x30C
++#define XGMII_SW_RESET310  0x310
++#define PHY_SW_RESET314    0x314
++#define VPU_SW_RESET400    0x400
++#define SEC_SW_RESET500    0x500
++#define USB_GMAC_SW_RESET600  0x600
++#define DDR_MBUS_SW_RESET700  0x700
++//mcu regs
++#define MCU_SW_RESET100  0x100
++
++
++struct k1pro_reset_signal {
++    u32 offset;
++    u32 bit;
++};
++
++struct k1pro_reset_variant {
++    const struct k1pro_reset_signal *signals;
++    u32 signals_num;
++    struct reset_control_ops ops;
++};
++
++struct k1pro_reset {
++    struct reset_controller_dev rcdev;
++    void __iomem *reg_base;
++    void __iomem *mcu_reg_base;
++    const struct k1pro_reset_signal *signals;
++};
++
++static const struct k1pro_reset_signal
++    k1pro_reset_signals[RESET_NUMBER] = {
++    [RESET_CPUC0C1]     = { CPU0_SW_RESET000, BIT(5) },
++    [RESET_CPUC0C2]     = { CPU0_SW_RESET000, BIT(6) },
++    [RESET_CPUC0C3]     = { CPU0_SW_RESET000, BIT(7) },
++    [RESET_CPUC0TCM]    = { CPU0_SW_RESET000, BIT(8) },
++    [RESET_CPUC1APB]    = { CPU1_SW_RESET004, BIT(0) },
++    [RESET_CPUC1L2C]    = { CPU1_SW_RESET004, BIT(1) },
++    [RESET_CPUC1PIC]    = { CPU1_SW_RESET004, BIT(2) },
++    [RESET_CPUC1ACEM]   = { CPU1_SW_RESET004, BIT(3) },
++    [RESET_CPUC1C0]     = { CPU1_SW_RESET004, BIT(4) },
++    [RESET_CPUC1C1]     = { CPU1_SW_RESET004, BIT(5) },
++    [RESET_CPUC1C2]     = { CPU1_SW_RESET004, BIT(6) },
++    [RESET_CPUC1C3]     = { CPU1_SW_RESET004, BIT(7) },
++    [RESET_CPU_GSR]     = { CPUSUB_SW_RESET008, BIT(0) },
++    [RESET_CPU_CCI]     = { CPUSUB_SW_RESET008, BIT(1) },
++    [RESET_SERDES2CPU]  = { CPUSUB_SW_RESET008, BIT(2) },
++    [RESET_SYS_GSR]     = { SYS_SW_RESET100, BIT(0) },
++    [RESET_MBOX]        = { SYS_SW_RESET100, BIT(1) },
++    [RESET_SPINLOCK]    = { SYS_SW_RESET100, BIT(2) },
++    [RESET_DMAC]        = { SYS_SW_RESET100, BIT(3) },
++    [RESET_GPIO]        = { SYS_SW_RESET100, BIT(4) },
++    [RESET_WDT]         = { SYS_SW_RESET100, BIT(5) },
++    [RESET_PWM]         = { SYS_SW_RESET100, BIT(6) },
++    [RESET_PVTC]        = { SYS_SW_RESET100, BIT(7) },
++    [RESET_BMU]         = { SYS_SW_RESET100, BIT(8) },
++    [RESET_SYSREG]      = { SYS_SW_RESET100, BIT(9) },
++    [RESET_QSPI0]       = { QSPI_SW_RESET104, BIT(0) },
++    [RESET_QSPI1]       = { QSPI_SW_RESET104, BIT(1) },
++    [RESET_QSPI2]       = { QSPI_SW_RESET104, BIT(2) },
++    [RESET_UART0]       = { UART_SW_RESET108, BIT(0) },
++    [RESET_UART1]       = { UART_SW_RESET108, BIT(1) },
++    [RESET_UART2]       = { UART_SW_RESET108, BIT(2) },
++    [RESET_UART3]       = { UART_SW_RESET108, BIT(3) },
++    [RESET_UART4]       = { UART_SW_RESET108, BIT(4) },
++    [RESET_I2C0]        = { I2C_SW_RESET10C, BIT(0) },
++    [RESET_I2C1]        = { I2C_SW_RESET10C, BIT(1) },
++    [RESET_I2C2]        = { I2C_SW_RESET10C, BIT(2) },
++    [RESET_I2C3]        = { I2C_SW_RESET10C, BIT(3) },
++    [RESET_I2C4]        = { I2C_SW_RESET10C, BIT(4) },
++    [RESET_TIMER]       = { TIMER_SW_RESET110, BIT(0) },
++    [RESET_CAN]         = { CAN_SW_RESET114, BIT(0) },
++    [RESET_I2S0]        = { I2S_SW_RESET118, BIT(0) },
++    [RESET_I2S1]        = { I2S_SW_RESET118, BIT(1) },
++    [RESET_MEM_GSR]     = { MEM_SW_RESET200, BIT(0) },
++    [RESET_SDIO0]       = { MEM_SW_RESET200, BIT(1) },
++    [RESET_SDIO1]       = { MEM_SW_RESET200, BIT(2) },
++    [RESET_EMMC0]       = { MEM_SW_RESET200, BIT(3) },
++    [RESET_EMMC1]       = { MEM_SW_RESET200, BIT(4) },
++    [RESET_MEM2MBUS]    = { MEM_SW_RESET200, BIT(5) },
++    [RESET_SERDES_GSR]  = { SERDES_SW_RESET300, BIT(0) },
++    [RESET_SERDES2MBUS] = { SERDES_SW_RESET300, BIT(1) },
++    [RESET_PCIE0_POWERUP]   = { PCIE_SW_RESET304, BIT(0) },
++    [RESET_PCIE0_PERST]     = { PCIE_SW_RESET304, BIT(1) },
++    [RESET_PCIE1_POWERUP]   = { PCIE_SW_RESET304, BIT(2) },
++    [RESET_PCIE1_PERST]     = { PCIE_SW_RESET304, BIT(3) },
++    [RESET_PCIE2_POWERUP]   = { PCIE_SW_RESET304, BIT(4) },
++    [RESET_PCIE2_PERST]     = { PCIE_SW_RESET304, BIT(5) },
++    [RESET_PCIE3_POWERUP]   = { PCIE_SW_RESET304, BIT(6) },
++    [RESET_PCIE3_PERST]     = { PCIE_SW_RESET304, BIT(7) },
++    [RESET_PCIE4_POWERUP]   = { PCIE_SW_RESET304, BIT(8) },
++    [RESET_PCIE4_PERST]     = { PCIE_SW_RESET304, BIT(9) },
++    [RESET_PCIE5_POWERUP]   = { PCIE_SW_RESET304, BIT(10) },
++    [RESET_PCIE5_PERST]     = { PCIE_SW_RESET304, BIT(11) },
++    [RESET_SATA]        = { SATA_SW_RESET308, BIT(0) },
++    [RESET_SATA_PORT0]  = { SATA_SW_RESET308, BIT(1) },
++    [RESET_SATA_PORT1]  = { SATA_SW_RESET308, BIT(2) },
++    [RESET_SATA_PORT2]  = { SATA_SW_RESET308, BIT(3) },
++    [RESET_SATA_PORT3]  = { SATA_SW_RESET308, BIT(4) },
++    [RESET_USB30_VCC]   = { USB_SW_RESET30C, BIT(0) },
++    [RESET_USB31_VCC]   = { USB_SW_RESET30C, BIT(1) },
++    [RESET_XGMII0]      = { XGMII_SW_RESET310, BIT(0) },
++    [RESET_XGMII1]      = { XGMII_SW_RESET310, BIT(1) },
++    [RESET_COMBO_PHY0]  = { PHY_SW_RESET314, BIT(0) },
++    [RESET_COMBO_PHY1]  = { PHY_SW_RESET314, BIT(1) },
++    [RESET_VPU_GSR]     = { VPU_SW_RESET400, BIT(0) },
++    [RESET_VPU]         = { VPU_SW_RESET400, BIT(1) },
++    [RESET_VBUS2MBUS]   = { VPU_SW_RESET400, BIT(2) },
++    [RESET_SEC_GSR]     = { SEC_SW_RESET500, BIT(0) },
++    [RESET_TRNG]        = { SEC_SW_RESET500, BIT(1) },
++    [RESET_PKE]         = { SEC_SW_RESET500, BIT(2) },
++    [RESET_HASH]        = { SEC_SW_RESET500, BIT(3) },
++    [RESET_SKE_CONFIG]  = { SEC_SW_RESET500, BIT(4) },
++    [RESET_SKE_DMA]     = { SEC_SW_RESET500, BIT(5) },
++    [RESET_SKE_CORE]    = { SEC_SW_RESET500, BIT(6) },
++    [RESET_EFUSE]       = { SEC_SW_RESET500, BIT(7) },
++    [RESET_USB_GMAC_GSR]  = { USB_GMAC_SW_RESET600, BIT(0) },
++    [RESET_USB2_AHB]      = { USB_GMAC_SW_RESET600, BIT(1) },
++    [RESET_USB2_PHY]      = { USB_GMAC_SW_RESET600, BIT(2) },
++    [RESET_USB31]         = { USB_GMAC_SW_RESET600, BIT(3) },
++    [RESET_USB2_PHY_POR]  = { USB_GMAC_SW_RESET600, BIT(4) },
++    [RESET_USB2_PHY_PORT] = { USB_GMAC_SW_RESET600, BIT(5) },
++    [RESET_USB3_PHY_PORT] = { USB_GMAC_SW_RESET600, BIT(6) },
++    [RESET_GMAC_CSR]      = { USB_GMAC_SW_RESET600, BIT(7) },
++    [RESET_GMAC_DMA]      = { USB_GMAC_SW_RESET600, BIT(8) },
++    [RESET_USB_GMAC2VBUS] = { USB_GMAC_SW_RESET600, BIT(9) },
++    [RESET_DDR_GSR]       = { DDR_MBUS_SW_RESET700, BIT(0) },
++    [RESET_DDR0]          = { DDR_MBUS_SW_RESET700, BIT(1) },
++    [RESET_DDR1]          = { DDR_MBUS_SW_RESET700, BIT(2) },
++    [RESET_DDR_PHY0]      = { DDR_MBUS_SW_RESET700, BIT(3) },
++    [RESET_DDR_PHY1]      = { DDR_MBUS_SW_RESET700, BIT(4) },
++    //mcu
++    [RESET_MCU_GSR]       = { MCU_SW_RESET100, BIT(0) },
++    [RESET_MCU_CORE]      = { MCU_SW_RESET100, BIT(1) },
++    [RESET_MCU_BUS]       = { MCU_SW_RESET100, BIT(2) },
++    [RESET_MCU2MBUS]      = { MCU_SW_RESET100, BIT(12) },
++};
++
++static struct k1pro_reset *to_k1pro_reset(
++    struct reset_controller_dev *rcdev)
++{
++    return container_of(rcdev, struct k1pro_reset, rcdev);
++}
++
++static void k1pro_reset_set(struct reset_controller_dev *rcdev,
++    u32 id, bool assert)
++{
++    unsigned int value;
++    struct k1pro_reset *reset = to_k1pro_reset(rcdev);
++    LOG_INFO("assert = %d, id = %d", assert, id);
++
++    if(id >= RESET_MCU_GSR){
++        value = readl(reset->mcu_reg_base + reset->signals[id].offset);
++    } else {
++        value = readl(reset->reg_base + reset->signals[id].offset);
++    }
++
++    if(assert == true) {
++        value &= ~reset->signals[id].bit;
++    } else {
++        value |= reset->signals[id].bit;
++    }
++
++    if(id >= RESET_MCU_GSR){
++        writel(value, reset->mcu_reg_base + reset->signals[id].offset);
++    } else {
++        writel(value, reset->reg_base + reset->signals[id].offset);
++    }
++}
++
++static int k1pro_reset_assert(struct reset_controller_dev *rcdev,
++    unsigned long id)
++{
++    k1pro_reset_set(rcdev, id, true);
++    return 0;
++}
++
++static int k1pro_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
++{
++    k1pro_reset_set(rcdev, id, false);
++    return 0;
++}
++
++static const struct k1pro_reset_variant k1pro_reset_data = {
++    .signals = k1pro_reset_signals,
++    .signals_num = ARRAY_SIZE(k1pro_reset_signals),
++    .ops = {
++        .assert   = k1pro_reset_assert,
++        .deassert = k1pro_reset_deassert,
++    },
++};
++
++static int k1pro_reset_probe(struct platform_device *pdev)
++{
++    struct k1pro_reset *reset;
++    struct device *dev = &pdev->dev;
++    const struct k1pro_reset_variant *variant;
++    LOG_INFO("probe start");
++    variant = of_device_get_match_data(dev);
++    reset = devm_kzalloc(dev, sizeof(*reset), GFP_KERNEL);
++    if (!reset)
++        return -ENOMEM;
++
++    if (!dev->of_node) {
++        pr_err("%s(%d): of node is not exist!\n", __func__, __LINE__);
++        return -ENOMEM;
++    }
++
++    reset->reg_base = of_iomap(dev->of_node, 0);
++    reset->mcu_reg_base = of_iomap(dev->of_node, 1);
++    if (!(reset->reg_base &&  reset->mcu_reg_base)) {
++        pr_err("%s: could not map reset region\n", __func__);
++        return -ENOMEM;
++    }
++
++    reset->signals = variant->signals;
++    reset->rcdev.owner     = THIS_MODULE;
++    reset->rcdev.nr_resets = variant->signals_num;
++    reset->rcdev.ops       = &variant->ops;
++    reset->rcdev.of_node   = dev->of_node;
++    LOG_INFO("register");
++    return devm_reset_controller_register(dev, &reset->rcdev);
++}
++
++static const struct of_device_id k1pro_reset_dt_ids[] = {
++    { .compatible = "spacemit,k1pro-reset", .data = &k1pro_reset_data },
++    { },
++};
++
++static struct platform_driver k1pro_reset_driver = {
++    .probe  = k1pro_reset_probe,
++    .driver = {
++        .name           = "k1pro-reset",
++        .of_match_table = k1pro_reset_dt_ids,
++    },
++};
++
++static int __init k1pro_reset_init(void)
++{
++    return platform_driver_register(&k1pro_reset_driver);
++}
++postcore_initcall(k1pro_reset_init);
++
++
+diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
+new file mode 100755
+index 000000000000..b95a069e1c68
+--- /dev/null
++++ b/include/dt-bindings/reset/k1-pro-reset.h
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#ifndef __DT_BINDINGS_K1_PRO_RST_H__
++#define __DT_BINDINGS_K1_PRO_RST_H__
++
++#define RESET_CPUC0C1       0
++#define RESET_CPUC0C2       1
++#define RESET_CPUC0C3       2
++#define RESET_CPUC0TCM      3
++
++#define RESET_CPUC1APB  4
++#define RESET_CPUC1L2C  5
++#define RESET_CPUC1PIC  6
++#define RESET_CPUC1ACEM 7
++#define RESET_CPUC1C0   8
++#define RESET_CPUC1C1   9
++#define RESET_CPUC1C2   10
++#define RESET_CPUC1C3   11
++
++#define RESET_CPU_GSR    12
++#define RESET_CPU_CCI    13
++#define RESET_SERDES2CPU 14
++
++#define RESET_SYS_GSR   15
++#define RESET_MBOX      16
++#define RESET_SPINLOCK  17
++#define RESET_DMAC      18
++#define RESET_GPIO      19
++#define RESET_WDT       20
++#define RESET_PWM       21
++#define RESET_PVTC      22
++#define RESET_BMU       23
++#define RESET_SYSREG    24
++
++#define RESET_QSPI0     25
++#define RESET_QSPI1     26
++#define RESET_QSPI2     27
++
++#define RESET_UART0     28
++#define RESET_UART1     29
++#define RESET_UART2     30
++#define RESET_UART3     31
++#define RESET_UART4     32
++
++#define RESET_I2C0    33
++#define RESET_I2C1    34
++#define RESET_I2C2    35
++#define RESET_I2C3    36
++#define RESET_I2C4    37
++
++#define RESET_TIMER   38
++
++#define RESET_CAN     39
++
++#define RESET_I2S0    40
++#define RESET_I2S1    41
++
++#define RESET_MEM_GSR  42
++#define RESET_SDIO0    43
++#define RESET_SDIO1    44
++#define RESET_EMMC0    45
++#define RESET_EMMC1    46
++#define RESET_MEM2MBUS 47
++
++#define RESET_SERDES_GSR  48
++#define RESET_SERDES2MBUS 49
++
++#define RESET_PCIE0_POWERUP 50
++#define RESET_PCIE0_PERST   51
++#define RESET_PCIE1_POWERUP 52
++#define RESET_PCIE1_PERST   53
++#define RESET_PCIE2_POWERUP 54
++#define RESET_PCIE2_PERST   55
++#define RESET_PCIE3_POWERUP 56
++#define RESET_PCIE3_PERST   57
++#define RESET_PCIE4_POWERUP 58
++#define RESET_PCIE4_PERST   59
++#define RESET_PCIE5_POWERUP 60
++#define RESET_PCIE5_PERST   61
++
++#define RESET_SATA        62
++#define RESET_SATA_PORT0  63
++#define RESET_SATA_PORT1  64
++#define RESET_SATA_PORT2  65
++#define RESET_SATA_PORT3  66
++
++#define RESET_USB30_VCC   67
++#define RESET_USB31_VCC   68
++
++#define RESET_XGMII0      69
++#define RESET_XGMII1      70
++
++#define RESET_COMBO_PHY0  71
++#define RESET_COMBO_PHY1  72
++
++#define RESET_VPU_GSR     73
++#define RESET_VPU         74
++#define RESET_VBUS2MBUS   75
++
++#define RESET_SEC_GSR     76
++#define RESET_TRNG        77
++#define RESET_PKE         78
++#define RESET_HASH        79
++#define RESET_SKE_CONFIG  80
++#define RESET_SKE_DMA     81
++#define RESET_SKE_CORE    82
++#define RESET_EFUSE       83
++
++#define RESET_USB_GMAC_GSR 84
++#define RESET_USB2_AHB     85
++#define RESET_USB2_PHY     86
++#define RESET_USB31        87
++#define RESET_USB2_PHY_POR 88
++#define RESET_USB2_PHY_PORT  89
++#define RESET_USB3_PHY_PORT  90
++#define RESET_GMAC_CSR       91
++#define RESET_GMAC_DMA       92
++#define RESET_USB_GMAC2VBUS  93
++
++#define RESET_DDR_GSR   94
++#define RESET_DDR0      95
++#define RESET_DDR1      96
++#define RESET_DDR_PHY0  97
++#define RESET_DDR_PHY1  98
++
++//mcu
++#define RESET_MCU_GSR   99
++#define RESET_MCU_CORE  100
++#define RESET_MCU_BUS   101
++#define RESET_MCU2MBUS  102
++
++#define RESET_NUMBER    103
++
++#endif /* __DT_BINDINGS_K1_PRO_RST_H__ */
+-- 
+2.47.1
+

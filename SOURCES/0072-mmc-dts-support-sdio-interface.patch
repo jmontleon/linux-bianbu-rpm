@@ -1,0 +1,45 @@
+From 0af44e819578be80a2d465f95930ab7e8e5ad339 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 26 Jul 2023 14:29:02 +0800
+Subject: [PATCH 0072/1189] mmc: dts: support sdio interface
+
+Change-Id: I4c8029b763ab852185c51df5d8d7e1334d75c04a
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index b8f25e551f16..3aafd37888f3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -430,6 +430,27 @@ sdhci: sd@2ca40000 {
+ 			status = "disabled";
+ 		};
+ 
++		sdio0: sdio@2ca40000 {
++			compatible = "spacemit,k1-pro-sdhci";
++			reg = <0x0 0x2ca40000 0x0 0x10000>;
++			interrupt-parent = <&intc>;
++			interrupts = <84>;
++			resets = <&reset RESET_SDIO0>;
++			reset-names = "sdio_rst";
++			clocks = <&ccu PLL_CLK_400M_2MEM>,
++					 <&ccu CLK_SDIO_HCLK>,
++					 <&ccu CLK_MEM_SYS>;
++			clock-names = "core", "bus", "axi";
++			max-frequency = <400000000>;
++			bus-width = <4>;
++			no-mmc;
++			no-sd;
++			cap-sd-highspeed;
++			cap-sdio-irq;
++			keep-power-in-suspend;
++			status = "disabled";
++		};
++
+ 		i2c0: i2c@2cee0000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+2.47.1
+

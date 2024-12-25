@@ -1,0 +1,35 @@
+From 9d81319cbd6b8f99666682bf2cb6a62a2579810f Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 27 Jul 2023 11:29:39 +0800
+Subject: [PATCH 0075/1189] usb: kconfig: enable dwc2 configuration
+
+Change-Id: I9259213ae4328150f5e19a6541cc3252ea0ee0de
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index d48e7b56b6d3..ef9b18b0ed40 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -183,7 +183,17 @@ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_DWC3=y
+ CONFIG_USB_DWC3_ULPI=y
++# CONFIG_USB_DWC3_OMAP is not set
++# CONFIG_USB_DWC3_EXYNOS is not set
++# CONFIG_USB_DWC3_HAPS is not set
++# CONFIG_USB_DWC3_KEYSTONE is not set
++# CONFIG_USB_DWC3_MESON_G12A is not set
+ # CONFIG_USB_DWC3_OF_SIMPLE is not set
++# CONFIG_USB_DWC3_ST is not set
++# CONFIG_USB_DWC3_QCOM is not set
++# CONFIG_USB_DWC3_IMX8MP is not set
++# CONFIG_USB_DWC3_AM62 is not set
++CONFIG_USB_DWC2=y
+ CONFIG_USB_GADGET=y
+ CONFIG_USB_CONFIGFS=y
+ CONFIG_USB_CONFIGFS_MASS_STORAGE=y
+-- 
+2.47.1
+

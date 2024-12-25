@@ -1,0 +1,58 @@
+From 6ea4fdfdfaa2bff67f64d5b731981e13e5b5d34b Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Thu, 4 Jan 2024 11:22:31 +0800
+Subject: [PATCH 0306/1189] fix cpp clk timeout
+
+Change-Id: I4686adc39ea1b5c1c8fe5be691ca40f8c6e19280
+---
+ .../media/platform/spacemit/camera/cam_cpp/k1x_cpp.c   | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index 509130104a48..fe0f677dc5c7 100755
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -888,12 +888,12 @@ static int cpp_update_clock_rate(struct cpp_device *cpp_dev,
+ 			cam_err("fnc clk round rate failed: %ld", clk_val);
+ 			return -EINVAL;
+ 		}
+-
+ 		ret = clk_set_rate(cpp_dev->fnc_clk, clk_val);
+ 		if (ret < 0) {
+ 			cam_err("fnc clk set rate failed: %d", ret);
+ 			return ret;
+ 		}
++
+ 	}
+ 
+ 	if (bus_rate > 0) {
+@@ -902,7 +902,6 @@ static int cpp_update_clock_rate(struct cpp_device *cpp_dev,
+ 			cam_err("bus clk round rate failed: %ld", clk_val);
+ 			return -EINVAL;
+ 		}
+-
+ 		ret = clk_set_rate(cpp_dev->bus_clk, clk_val);
+ 		if (ret < 0) {
+ 			cam_err("bus clk set rate failed: %d", ret);
+@@ -988,14 +987,15 @@ static int cpp_init_hardware(struct cpp_device *cpp_dev)
+ 		return ret;
+ 	}
+ 
+-	ret = cpp_update_clock_rate(cpp_dev, CPP_FNC_DEFAULT_FREQ,
+-				    ISP_BUS_DEFAULT_FREQ);
++
++	ret = cpp_enable_clocks(cpp_dev);
+ 	if (ret) {
+ 		pm_runtime_put_sync(&cpp_dev->pdev->dev);
+ 		return ret;
+ 	}
+ 
+-	ret = cpp_enable_clocks(cpp_dev);
++	ret = cpp_update_clock_rate(cpp_dev, CPP_FNC_DEFAULT_FREQ,
++				    ISP_BUS_DEFAULT_FREQ);
+ 	if (ret) {
+ 		pm_runtime_put_sync(&cpp_dev->pdev->dev);
+ 		return ret;
+-- 
+2.47.1
+
