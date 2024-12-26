@@ -1003,10 +1003,13 @@ Patch0106: 0006-Update-for-v2.0.patch
 Patch0107: 0007-Update-for-v2.0.1.patch
 Patch0108: 0008-Update-for-v2.0.2.patch
 Patch0109: 0009-Update-for-v2.0.4.patch
-Patch0110: 0010-spacemit-fixes-and-workarounds.patch
-Patch0111: 0011-remove-trace_printk.patch
-Patch0112: 0012-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch0113: 0013-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch0110: 0010-Add-missing-file.patch
+Patch0111: 0011-Add-PREEMPT-RT-patch.patch
+Patch0112: 0012-spacemit-fixes-and-workarounds.patch
+Patch0113: 0013-remove-trace_printk.patch
+Patch0114: 0014-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch0115: 0015-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch0116: 0016-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
 
 
 
@@ -1771,10 +1774,13 @@ ApplyOptionalPatch 0006-Update-for-v2.0.patch
 ApplyOptionalPatch 0007-Update-for-v2.0.1.patch
 ApplyOptionalPatch 0008-Update-for-v2.0.2.patch
 ApplyOptionalPatch 0009-Update-for-v2.0.4.patch
-ApplyOptionalPatch 0010-spacemit-fixes-and-workarounds.patch
-ApplyOptionalPatch 0011-remove-trace_printk.patch
-ApplyOptionalPatch 0012-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-ApplyOptionalPatch 0013-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 0010-Add-missing-file.patch
+ApplyOptionalPatch 0011-Add-PREEMPT-RT-patch.patch
+ApplyOptionalPatch 0012-spacemit-fixes-and-workarounds.patch
+ApplyOptionalPatch 0013-remove-trace_printk.patch
+ApplyOptionalPatch 0014-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 0015-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 0016-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
 
 
 

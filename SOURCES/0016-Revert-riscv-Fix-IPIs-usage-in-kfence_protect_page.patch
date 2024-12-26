@@ -1,0 +1,28 @@
+From de3cfc03c4e53af9756cb9b4da000ae966c8bce6 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Wed, 25 Dec 2024 22:52:53 -0500
+Subject: [PATCH 16/16] Revert "riscv: Fix IPIs usage in kfence_protect_page()"
+
+This reverts commit 6f796a6a396d6f963f2cc8f5edd7dfba2cca097f.
+---
+ arch/riscv/include/asm/kfence.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfence.h
+index d08bf7fb3aee..7388edd88986 100644
+--- a/arch/riscv/include/asm/kfence.h
++++ b/arch/riscv/include/asm/kfence.h
+@@ -22,9 +22,7 @@ static inline bool kfence_protect_page(unsigned long addr, bool protect)
+ 	else
+ 		set_pte(pte, __pte(pte_val(ptep_get(pte)) | _PAGE_PRESENT));
+ 
+-	preempt_disable();
+-	local_flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+-	preempt_enable();
++	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+ 
+ 	return true;
+ }
+-- 
+2.47.0
+
