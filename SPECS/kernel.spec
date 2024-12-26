@@ -168,7 +168,7 @@ Summary: The Linux kernel
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc4.36.3%{?buildid}%{?dist}
+%define specrelease 0.rc4.36.4%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.13.0
 
@@ -2268,10 +2268,9 @@ Patch11194: remove-trace_printk.patch
 Patch11195: k1x_rproc-avoid-creating-busy-looping-mailbox-threads.patch
 Patch11196: Remove-depends-so-PWM_PXA-can-be-enabled.patch
 Patch11197: fix-AXI_DMA_FLAG_HAS_RESETS.patch
-Patch11198: fix-thermal.patch
-Patch11199: fix-k1x_wdt-license-string.patch
-Patch11200: 0001-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-Patch11201: remove-unused-var.patch
+Patch11198: fix-k1x_wdt-license-string.patch
+Patch11199: 0001-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch11200: remove-unused-var.patch
 
 
 
@@ -4306,7 +4305,6 @@ ApplyOptionalPatch remove-trace_printk.patch
 ApplyOptionalPatch k1x_rproc-avoid-creating-busy-looping-mailbox-threads.patch
 ApplyOptionalPatch Remove-depends-so-PWM_PXA-can-be-enabled.patch
 ApplyOptionalPatch fix-AXI_DMA_FLAG_HAS_RESETS.patch
-ApplyOptionalPatch fix-thermal.patch
 ApplyOptionalPatch fix-k1x_wdt-license-string.patch
 ApplyOptionalPatch 0001-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
 ApplyOptionalPatch remove-unused-var.patch
