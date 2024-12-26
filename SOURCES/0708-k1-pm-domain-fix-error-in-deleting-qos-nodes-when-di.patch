@@ -1,7 +1,7 @@
 From 923bf1ff55493d92f01df3730584414992d3f6ae Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 13 Jun 2024 16:01:08 +0800
-Subject: [PATCH 0708/1189] k1:pm-domain:fix error in deleting qos nodes when
+Subject: [PATCH 0708/1200] k1:pm-domain:fix error in deleting qos nodes when
  disconnecting with one pm-domain
 
 Change-Id: I100d82dfcea05f692430f3cdaa8e1f5ab373faca
@@ -25,5 +25,5 @@ index 35d4e03d058c..4a2dd1b2e553 100644
  
  static int spacemit_cpuidle_qos_notfier_call(struct notifier_block *nb, unsigned long action, void *data)
 -- 
-2.47.1
+2.47.0
 

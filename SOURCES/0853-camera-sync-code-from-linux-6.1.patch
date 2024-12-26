@@ -1,7 +1,7 @@
 From 6ddd9f1f9fe8744caa155c2e62d4d8105f8eb439 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Mon, 5 Aug 2024 17:00:56 +0800
-Subject: [PATCH 0853/1189] camera: sync code from linux-6.1
+Subject: [PATCH 0853/1200] camera: sync code from linux-6.1
 
 1. muse card: verify camera success
 2. Muse-Pi:camera: support mclk/pwdn/rst pin multiplex for production test
@@ -330,5 +330,5 @@ index 7eb45f5d85e7..d70ed1bba223 100644
  	atomic_t usr_cnt;
  	struct mutex lock;	/* Protects streaming, format, interval */
 -- 
-2.47.1
+2.47.0
 

@@ -1,7 +1,7 @@
 From 8a7d96214360d26ae92285e16a9088bebb057eb1 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Fri, 29 Dec 2023 20:20:38 +0800
-Subject: [PATCH 0269/1189] vpu can use when RAM > 2GB
+Subject: [PATCH 0269/1200] vpu can use when RAM > 2GB
 
 1.add interface phys_vpu2cpu and phys_cpu2vpu
 2.before phys_to_virt, use phys_vpu2cpu
@@ -348,5 +348,5 @@ index 3a86d8b30e68..76739a3b1edc 100644
  
  	session->csession = session->client_ops->register_session(
 -- 
-2.47.1
+2.47.0
 

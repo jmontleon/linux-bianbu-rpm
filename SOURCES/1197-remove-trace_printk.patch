@@ -1,3 +1,15 @@
+From a1d23ef1ea7c19fb9ac0675a8078c3d9ea69d4d2 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:24:28 -0500
+Subject: [PATCH 1197/1200] remove trace_printk
+
+---
+ drivers/gpu/drm/spacemit/dpu/dpu_debug.c                  | 2 --
+ drivers/hwtracing/stm/dummy_stm.c                         | 2 --
+ drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h | 1 -
+ drivers/media/platform/spacemit/vpu_k1x/mvx_log.c         | 3 ---
+ 4 files changed, 8 deletions(-)
+
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 index 9245ee407c29..3d0587207ac9 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
@@ -62,3 +74,6 @@ index 1f7706a8332d..6bbac6c5cedd 100644
  		}
  	}
  }
+-- 
+2.47.0
+

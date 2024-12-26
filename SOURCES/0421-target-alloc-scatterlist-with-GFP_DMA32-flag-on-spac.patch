@@ -1,7 +1,7 @@
 From 21d9c71b67ea1b0d29d2047da2185f9c04d19464 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Feb 2024 11:59:21 +0800
-Subject: [PATCH 0421/1189] target: alloc scatterlist with GFP_DMA32 flag on
+Subject: [PATCH 0421/1200] target: alloc scatterlist with GFP_DMA32 flag on
  spacemit k1x platform
 
 Change-Id: Ie5d9270a36044ef2064dc2bb880d6a992286ae36
@@ -24,5 +24,5 @@ index 2e7ea227b77a..3c618a9be37a 100644
  	return *sgl ? 0 : -ENOMEM;
  }
 -- 
-2.47.1
+2.47.0
 

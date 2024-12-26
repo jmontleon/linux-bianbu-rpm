@@ -1,7 +1,7 @@
 From db4bc07782decbaf1b6999f56b315a993de1d5e1 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 30 Oct 2024 15:45:49 +0800
-Subject: [PATCH 1050/1189] gpu: fix slab-use-after-free err
+Subject: [PATCH 1050/1200] gpu: fix slab-use-after-free err
 
 log:
 [ 3165.945852] ==================================================================
@@ -105,5 +105,5 @@ index 1f454c91fdb0..bd6a6e9ebcc9 100644
  				if (psConnection->hOsPrivateData != NULL)
  				{
 -- 
-2.47.1
+2.47.0
 

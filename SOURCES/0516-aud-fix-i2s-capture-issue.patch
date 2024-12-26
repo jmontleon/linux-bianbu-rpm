@@ -1,7 +1,7 @@
 From 24a80cc969b2e315e745b64b6459c5671cab8bd8 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Mar 2024 15:34:21 +0800
-Subject: [PATCH 0516/1189] aud: fix i2s capture issue
+Subject: [PATCH 0516/1200] aud: fix i2s capture issue
 
 Change-Id: Icd955ea5a1ef7a8c9d9b02be1ccfcedba49a6694
 ---
@@ -375,5 +375,5 @@ index a87c8d612a53..ec7ab403a612 100755
  		dev_err(&pdev->dev, "failed to register DAI\n");
  		return ret;
 -- 
-2.47.1
+2.47.0
 

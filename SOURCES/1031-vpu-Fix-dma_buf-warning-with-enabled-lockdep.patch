@@ -1,7 +1,7 @@
 From 55867d14e0d5a29a38e451e671bf655cb095d3c3 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 24 Oct 2024 15:02:49 +0800
-Subject: [PATCH 1031/1189] vpu: Fix dma_buf warning with enabled lockdep
+Subject: [PATCH 1031/1200] vpu: Fix dma_buf warning with enabled lockdep
 
 Change-Id: Iafec5527d7f255c6224b14bd2a945cd1c3243773
 ---
@@ -49,5 +49,5 @@ index b50c19f83ece..a6d174a03b4f 100644
  detach:
  	dma_buf_detach(dmabuf, attach);
 -- 
-2.47.1
+2.47.0
 

@@ -1,7 +1,7 @@
 From 87e1dbebb5fdcd3e51375a95538cfb987405cbba Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jan 2024 04:55:16 +0800
-Subject: [PATCH 0309/1189] fix dead-lock bug between reset and clk
+Subject: [PATCH 0309/1200] fix dead-lock bug between reset and clk
 
 there is a global spinlock between reset and clk, if locked in reset,
 then print some debug information, maybe dead-lock when uart driver
@@ -100,5 +100,5 @@ index 636aeea6cae4..efdf290e4589 100644
  	if(assert == true) {
  		value &= ~ reset->signals[id].mask;
 -- 
-2.47.1
+2.47.0
 

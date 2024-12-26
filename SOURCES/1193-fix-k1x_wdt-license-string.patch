@@ -1,3 +1,12 @@
+From 47b2261039d94fc316280b53db72737b0aae65fb Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:22:32 -0500
+Subject: [PATCH 1193/1200] fix k1x_wdt license string
+
+---
+ drivers/watchdog/k1x_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
 index 6d6691e24699..fd06316a38bc 100644
 --- a/drivers/watchdog/k1x_wdt.c
@@ -10,3 +19,6 @@ index 6d6691e24699..fd06316a38bc 100644
 +MODULE_LICENSE("GPL v2");
  MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
  MODULE_ALIAS("platform:soc-wdt");
+-- 
+2.47.0
+

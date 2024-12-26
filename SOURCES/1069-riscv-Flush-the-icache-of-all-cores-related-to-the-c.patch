@@ -1,7 +1,7 @@
 From a0e718262bbd3cc5ce150c2c244589d80bdf4710 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 2 Nov 2024 10:29:50 +0800
-Subject: [PATCH 1069/1189] riscv: Flush the icache of all cores related to the
+Subject: [PATCH 1069/1200] riscv: Flush the icache of all cores related to the
  current process
 
 there is an invalid instrucation crash when run node.js:
@@ -45,5 +45,5 @@ index d77afe05578f..8a7902fb3d35 100644
  	return 0;
  }
 -- 
-2.47.1
+2.47.0
 

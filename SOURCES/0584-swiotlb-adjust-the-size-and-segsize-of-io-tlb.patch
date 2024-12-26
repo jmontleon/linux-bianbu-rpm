@@ -1,7 +1,7 @@
 From cc37de83ba22e813dbc1b3e99dea0800084edfb2 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 11 Apr 2024 17:22:05 +0800
-Subject: [PATCH 0584/1189] swiotlb: adjust the size and segsize of io tlb
+Subject: [PATCH 0584/1200] swiotlb: adjust the size and segsize of io tlb
 
 Increase the maximum allowable number of contiguous slabs to 256,
 because the PCIe may try allocate 512Kbyte buffer.
@@ -28,5 +28,5 @@ index 3dae0f592063..29a64f4d0b6f 100644
  /*
   * log of the size of each IO TLB slab.  The number of slabs is command line
 -- 
-2.47.1
+2.47.0
 

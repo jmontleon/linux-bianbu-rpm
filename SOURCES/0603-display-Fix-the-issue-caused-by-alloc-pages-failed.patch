@@ -1,7 +1,7 @@
 From a1007c867a3e0d733aac3a5cc32fba68a44221c7 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 18 Apr 2024 19:52:01 +0800
-Subject: [PATCH 0603/1189] display: Fix the issue caused by alloc pages failed
+Subject: [PATCH 0603/1200] display: Fix the issue caused by alloc pages failed
 
 Change-Id: I3833327fa573c423f86af0c7e2dc766905118a9e
 ---
@@ -32,5 +32,5 @@ index 9b5772a05556..eb48f233ec07 100644
  	spacemit_obj->vmap_cnt = 0;
  	mutex_init(&spacemit_obj->vmap_lock);
 -- 
-2.47.1
+2.47.0
 

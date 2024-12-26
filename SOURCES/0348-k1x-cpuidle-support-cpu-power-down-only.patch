@@ -1,7 +1,7 @@
 From db5e594cd0b5f718bdf87fdfaf1b15a11058afd2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 11 Jan 2024 08:59:44 +0800
-Subject: [PATCH 0348/1189] k1x:cpuidle: support cpu power-down only
+Subject: [PATCH 0348/1200] k1x:cpuidle: support cpu power-down only
 
 we bind the irq of broadcast timer on cpu0
 
@@ -101,5 +101,5 @@ index c66416af37e6..d76803988baf 100644
  		ret = request_irq(evt->ced.irq, timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL | IRQF_ONESHOT, "broadcast-timer", evt->irqa.dev_id);
  		if (ret < 0)
 -- 
-2.47.1
+2.47.0
 

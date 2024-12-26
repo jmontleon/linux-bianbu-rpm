@@ -1,3 +1,15 @@
+From 1777451beda43c17789fe74f995a212b47cc5f82 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:23:29 -0500
+Subject: [PATCH 1195/1200] fix wrong style comments
+
+---
+ include/uapi/media/k1x/cam_sensor_uapi.h      |  8 ++++----
+ include/uapi/media/k1x/k1x_ccic_uapi.h        |  2 +-
+ include/uapi/media/k1x/k1x_isp_drv_uapi.h     | 19 ++++++++++---------
+ include/uapi/media/k1x/k1x_media_bus_format.h |  8 ++++----
+ 4 files changed, 19 insertions(+), 18 deletions(-)
+
 diff --git a/include/uapi/media/k1x/cam_sensor_uapi.h b/include/uapi/media/k1x/cam_sensor_uapi.h
 index fd9a222ed1ef..d4baaa00de30 100644
 --- a/include/uapi/media/k1x/cam_sensor_uapi.h
@@ -123,3 +135,6 @@ index 562d89886028..5eee9054f5a0 100644
  #define MEDIA_BUS_FMT_YVYU10_1_5X10_D1		0x3111
  #define MEDIA_BUS_FMT_YVYU10_1_5X10_D2		0x3112
  #define MEDIA_BUS_FMT_YVYU10_1_5X10_D3		0x3113
+-- 
+2.47.0
+

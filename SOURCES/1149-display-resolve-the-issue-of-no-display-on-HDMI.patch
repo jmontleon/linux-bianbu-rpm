@@ -1,7 +1,7 @@
 From 9a15a3789946e801332c8a21edac8ab307758bfe Mon Sep 17 00:00:00 2001
 From: zhenglilang <lilang.zheng@spacemit.com>
 Date: Mon, 2 Dec 2024 17:42:00 +0800
-Subject: [PATCH 1149/1189] display: resolve the issue of no display on HDMI
+Subject: [PATCH 1149/1200] display: resolve the issue of no display on HDMI
 
 When spacemit_drm_fops is not configured with
 .fop_flags = FOP_UNSIGNED_OFFSET,
@@ -26,5 +26,5 @@ index 4c7b372a2d3e..1e2b74024f40 100644
  
  const struct vm_operations_struct spacemit_gem_vm_ops = {
 -- 
-2.47.1
+2.47.0
 

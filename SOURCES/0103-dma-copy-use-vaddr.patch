@@ -1,7 +1,7 @@
 From 78276de9c67dce7f108c9b8a62d7fbb13129b69b Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 2 Jun 2023 17:51:08 +0800
-Subject: [PATCH 0103/1189] dma copy use vaddr
+Subject: [PATCH 0103/1200] dma copy use vaddr
 
 Change-Id: Id04f8a2223feae196245c49984897d10f52a3fc4
 ---
@@ -279,5 +279,5 @@ index 35845e949fde..ed22b2d30923 100644
  	dma_dev = dma_chan->device;
  	dma_set_mask(dma_dev->dev, DMA_BIT_MASK(32));
 -- 
-2.47.1
+2.47.0
 

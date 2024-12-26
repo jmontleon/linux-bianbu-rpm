@@ -1,7 +1,7 @@
 From e3e2bc002cebd6c57d9e1f4ce190e1aeeaef055f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Aug 2024 11:30:28 +0800
-Subject: [PATCH 0946/1189] k1:pinctrl: we'd better clean the edge-detect
+Subject: [PATCH 0946/1200] k1:pinctrl: we'd better clean the edge-detect
  pending first before enable the irq
 
 fiex bug like:
@@ -90,5 +90,5 @@ index 553b2d627b00..e2c2ffd9d50e 100644
  	if (ret < 0)
  		goto free;
 -- 
-2.47.1
+2.47.0
 

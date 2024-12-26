@@ -1,7 +1,7 @@
 From 59c9c86c7320e1dfff47598571f6ada1ce919865 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 26 Apr 2024 18:02:15 +0800
-Subject: [PATCH 0612/1189] aud: fix codec persistent noise issue when switch
+Subject: [PATCH 0612/1200] aud: fix codec persistent noise issue when switch
  hdmi and codec snd-card
 
 Change-Id: Ieb54436ede453a8616895e10c530369c711c31ac
@@ -299,5 +299,5 @@ index 4e08f9fe3c79..779ea0a14c66 100755
  	.copy_user		= spacemit_snd_pcm_copy,
  };
 -- 
-2.47.1
+2.47.0
 

@@ -1,7 +1,7 @@
 From 0a49704da79fda4dc4290e886978ae0ae87bcf15 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 21 Nov 2024 20:15:13 +0800
-Subject: [PATCH 1139/1189] build: disable character output display during the
+Subject: [PATCH 1139/1200] build: disable character output display during the
  kernel compilation
 
 the output is as follows printing by openssl:
@@ -34,5 +34,5 @@ index f6fa4d8d75e0..6d70e323eb8c 100644
  $(obj)/signing_key.pem: $(obj)/x509.genkey FORCE
  	$(call if_changed,gen_key)
 -- 
-2.47.1
+2.47.0
 

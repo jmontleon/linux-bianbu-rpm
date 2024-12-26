@@ -1,7 +1,7 @@
 From edc82464622755176a26a6b6a93445064882e0cf Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 14 May 2024 14:41:47 +0800
-Subject: [PATCH 0652/1189] qspi: fix the bug the actual clk frequency not
+Subject: [PATCH 0652/1200] qspi: fix the bug the actual clk frequency not
  equal the set frequency
 
   The correct way to set the frequency of qspi
@@ -81,5 +81,5 @@ index b517b96cd999..467b6fa53145 100644
  	/* rest qspi */
  	qspi_reset(qspi);
 -- 
-2.47.1
+2.47.0
 

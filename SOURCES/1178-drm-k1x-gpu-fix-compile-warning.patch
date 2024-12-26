@@ -1,7 +1,7 @@
 From 590025d61595937a9e2e85023be79d4da2bc0ddc Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:29:40 +0800
-Subject: [PATCH 1178/1189] drm: k1x/gpu: fix compile warning
+Subject: [PATCH 1178/1200] drm: k1x/gpu: fix compile warning
 
 Change-Id: Id5a0c173537d94f0bd7ffa4341f59e2c32bf131a
 ---
@@ -97,5 +97,5 @@ index 119dc69a57c4..7673229d2827 100644
  	RGX_CLIENT_CCB          *psClientCCB = FWCommonContextGetClientCCB(psComputeContext->psServerCommonContext);
  	IMG_UINT32              ui32IntJobRef = OSAtomicIncrement(&psDevInfo->iCCBSubmissionOrdinal);
 -- 
-2.47.1
+2.47.0
 

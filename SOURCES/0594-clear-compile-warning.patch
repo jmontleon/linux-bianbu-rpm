@@ -1,7 +1,7 @@
 From be6184e5ada8720d64e83681d00ebd0156184dbd Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:24:37 +0800
-Subject: [PATCH 0594/1189] clear compile warning:
+Subject: [PATCH 0594/1200] clear compile warning:
 
 arch/riscv/kernel/module.c: In function 'add_relocation_to_accumulate':
 arch/riscv/kernel/module.c:684:9: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
@@ -37,5 +37,5 @@ index 1cd461f3d872..d1251d510fb2 100644
  		if (rel_head_iter->location == location) {
  			found = true;
 -- 
-2.47.1
+2.47.0
 

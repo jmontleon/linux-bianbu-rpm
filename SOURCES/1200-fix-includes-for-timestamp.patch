@@ -1,3 +1,12 @@
+From ac375662a81fd255df852c15d07aba38ad19b3a6 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:26:26 -0500
+Subject: [PATCH 1200/1200] fix includes for timestamp
+
+---
+ include/uapi/linux/videodev2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
 index e7c4dce39007..6b225422d7f5 100644
 --- a/include/uapi/linux/videodev2.h
@@ -11,3 +20,6 @@ index e7c4dce39007..6b225422d7f5 100644
  #endif
  #include <linux/compiler.h>
  #include <linux/ioctl.h>
+-- 
+2.47.0
+

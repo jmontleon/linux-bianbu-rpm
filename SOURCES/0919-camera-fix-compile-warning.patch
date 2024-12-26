@@ -1,7 +1,7 @@
 From 7d46ff2ea4e2babc7d1b6c2a2ee22fa0882ba53a Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 14:16:48 +0800
-Subject: [PATCH 0919/1189] camera: fix compile warning
+Subject: [PATCH 0919/1200] camera: fix compile warning
 
 Change-Id: I173e1bfc3ecf27ca069ca4ba1734c69f582fbbd5
 ---
@@ -30,5 +30,5 @@ index affac933649a..606f8977f55a 100644
  		if (pipe_dev->isp_reg_mem[user_regs->mem_index].config) {
  			if (pipe_dev->isp_reg_mem[user_regs->mem_index].mem.fd != user_regs->mem.fd) {
 -- 
-2.47.1
+2.47.0
 

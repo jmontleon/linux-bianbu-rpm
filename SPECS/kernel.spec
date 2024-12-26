@@ -2260,17 +2260,17 @@ Patch11186: 1186-can-k1-flexcan-fix-error-on-driver.remove.patch
 Patch11187: 1187-wireless-rtl8852bs-porting-to-linux-6.13.patch
 Patch11188: 1188-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
 Patch11189: 1189-drm-spacemit-porting-to-linux-6.13.patch
-Patch11190: SERIAL_8250_PXA.patch
-Patch11191: fix-wrong-style-comments.patch
-Patch11192: timestamp-fix.patch
-Patch11193: fix-module-dma-buf.patch
-Patch11194: remove-trace_printk.patch
-Patch11195: k1x_rproc-avoid-creating-busy-looping-mailbox-threads.patch
-Patch11196: Remove-depends-so-PWM_PXA-can-be-enabled.patch
-Patch11197: fix-AXI_DMA_FLAG_HAS_RESETS.patch
-Patch11198: fix-k1x_wdt-license-string.patch
-Patch11199: 0001-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-Patch11200: remove-unused-var.patch
+Patch11190: 1190-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch11191: 1191-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch11192: 1192-Fix-AXI_DMA_FLAG_HAS_RESETS.patch
+Patch11193: 1193-fix-k1x_wdt-license-string.patch
+Patch11194: 1194-fix-module-dma_buf-ns.patch
+Patch11195: 1195-fix-wrong-style-comments.patch
+Patch11196: 1196-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch11197: 1197-remove-trace_printk.patch
+Patch11198: 1198-remove-unused-var.patch
+Patch11199: 1199-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+Patch11200: 1200-fix-includes-for-timestamp.patch
 
 
 
@@ -4297,17 +4297,17 @@ ApplyOptionalPatch 1186-can-k1-flexcan-fix-error-on-driver.remove.patch
 ApplyOptionalPatch 1187-wireless-rtl8852bs-porting-to-linux-6.13.patch
 ApplyOptionalPatch 1188-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
 ApplyOptionalPatch 1189-drm-spacemit-porting-to-linux-6.13.patch
-ApplyOptionalPatch SERIAL_8250_PXA.patch
-ApplyOptionalPatch fix-wrong-style-comments.patch
-ApplyOptionalPatch timestamp-fix.patch
-ApplyOptionalPatch fix-module-dma-buf.patch
-ApplyOptionalPatch remove-trace_printk.patch
-ApplyOptionalPatch k1x_rproc-avoid-creating-busy-looping-mailbox-threads.patch
-ApplyOptionalPatch Remove-depends-so-PWM_PXA-can-be-enabled.patch
-ApplyOptionalPatch fix-AXI_DMA_FLAG_HAS_RESETS.patch
-ApplyOptionalPatch fix-k1x_wdt-license-string.patch
-ApplyOptionalPatch 0001-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-ApplyOptionalPatch remove-unused-var.patch
+ApplyOptionalPatch 1190-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 1191-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 1192-Fix-AXI_DMA_FLAG_HAS_RESETS.patch
+ApplyOptionalPatch 1193-fix-k1x_wdt-license-string.patch
+ApplyOptionalPatch 1194-fix-module-dma_buf-ns.patch
+ApplyOptionalPatch 1195-fix-wrong-style-comments.patch
+ApplyOptionalPatch 1196-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1197-remove-trace_printk.patch
+ApplyOptionalPatch 1198-remove-unused-var.patch
+ApplyOptionalPatch 1199-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1200-fix-includes-for-timestamp.patch
 
 
 

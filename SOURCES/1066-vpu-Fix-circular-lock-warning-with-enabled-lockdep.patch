@@ -1,7 +1,7 @@
 From 88082679addacf8f290142c54046d5f3bf013a77 Mon Sep 17 00:00:00 2001
 From: mengbinghan <binghan.meng@spacemit.com>
 Date: Mon, 4 Nov 2024 17:55:16 +0800
-Subject: [PATCH 1066/1189] vpu: Fix circular lock warning with enabled lockdep
+Subject: [PATCH 1066/1200] vpu: Fix circular lock warning with enabled lockdep
 
 log:
 [   16.643159] ======================================================
@@ -91,5 +91,5 @@ index fd07c7c65a27..b1b457dbcfd3 100644
  		if (vsession->port[i].q_set != false) {
  			vb2_queue_release(&vsession->port[i].vb2_queue);
 -- 
-2.47.1
+2.47.0
 

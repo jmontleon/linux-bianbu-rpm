@@ -1,7 +1,7 @@
 From 9a313aa407fd5ff1f87920fa2e143acf3ab52fc7 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 23 Aug 2024 09:36:50 +0800
-Subject: [PATCH 0953/1189] usb: typec: husb239: fix possible NULL pointer
+Subject: [PATCH 0953/1200] usb: typec: husb239: fix possible NULL pointer
  dereference when detecting orient
 
 Change-Id: I39dee89494b729db70c7e78d1b66cc10dcafed05
@@ -24,5 +24,5 @@ index ce26f53fa713..4c0b565c40d8 100644
  	if (ret)
  		return ret;
 -- 
-2.47.1
+2.47.0
 

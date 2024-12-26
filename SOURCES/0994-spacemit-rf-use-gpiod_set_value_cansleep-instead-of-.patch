@@ -1,7 +1,7 @@
 From 6c966c89d44202a8382282637589299d95dfcc3b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 10 Sep 2024 20:39:21 +0800
-Subject: [PATCH 0994/1189] spacemit-rf: use gpiod_set_value_cansleep() instead
+Subject: [PATCH 0994/1200] spacemit-rf: use gpiod_set_value_cansleep() instead
  of gpiod_set_value()
 
 Change-Id: I3496f04edcf451f50de51eb183d116348e66e8e1
@@ -67,5 +67,5 @@ index c7a553ba5f76..f9bb8130088c 100644
  			spacemit_power_on(pwrseq->parent, 0);
  	}
 -- 
-2.47.1
+2.47.0
 

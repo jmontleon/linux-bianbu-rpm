@@ -1,7 +1,7 @@
 From 1cae207e3721abb1814c808c77da22f4a0a7046b Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 3 Jan 2024 08:57:33 +0800
-Subject: [PATCH 0297/1189] pci: add initialization phy of pcie for k1x
+Subject: [PATCH 0297/1200] pci: add initialization phy of pcie for k1x
 
 Change-Id: I7ae828acec4eae6de9b18c8a5788eadacd3e0fbd
 ---
@@ -480,5 +480,5 @@ index a29772252ba8..160e1b2099f7 100755
  	if (is_pcie_init == 0) {
  		reg = k1x_pcie_readl(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD);
 -- 
-2.47.1
+2.47.0
 

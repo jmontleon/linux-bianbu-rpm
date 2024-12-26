@@ -1,7 +1,7 @@
 From ddbdfffada525cef7852d72395a8bfc092c3d624 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Sat, 22 Jun 2024 10:44:47 +0800
-Subject: [PATCH 0763/1189] kconfig: add config ARCH_FORCE_MAX_ORDER to fix
+Subject: [PATCH 0763/1200] kconfig: add config ARCH_FORCE_MAX_ORDER to fix
  default max_order
 
 1. fix default max_order 11 to avoid kmalloc failed when enable kasan
@@ -41,5 +41,5 @@ index 4ed238261f2a..f0e3ae64e0e7 100644
  	def_bool !NUMA
  
 -- 
-2.47.1
+2.47.0
 

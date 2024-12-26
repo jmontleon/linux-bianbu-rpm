@@ -1,7 +1,7 @@
 From a1cae682db69d8a26cd26f96d4b4bef7bfa8ca78 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 30 May 2023 11:44:19 +0800
-Subject: [PATCH 0035/1189] mmc: modify reset card only once
+Subject: [PATCH 0035/1200] mmc: modify reset card only once
 
 reset control will cause system halt, so just deassert during
 probe() until fix bug about reset control
@@ -72,5 +72,5 @@ index f334efd373c4..765b4e729c46 100644
 +MODULE_AUTHOR("Wilson Wan <long.wan@spacemit.com>");
  MODULE_LICENSE("GPL v2");
 -- 
-2.47.1
+2.47.0
 

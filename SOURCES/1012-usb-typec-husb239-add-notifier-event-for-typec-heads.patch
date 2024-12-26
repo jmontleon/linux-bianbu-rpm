@@ -1,7 +1,7 @@
 From b4dba1f394ed704e61777fe16f04b27a721dd694 Mon Sep 17 00:00:00 2001
 From: xuhaodong <haodong.xu@spacemit.com>
 Date: Wed, 11 Sep 2024 11:48:20 +0800
-Subject: [PATCH 1012/1189] usb:typec:husb239:add notifier event for typec
+Subject: [PATCH 1012/1200] usb:typec:husb239:add notifier event for typec
  headset
 
 Change-Id: I77427a012da42cfb10ab871ecd6a66d13b737aff
@@ -38,5 +38,5 @@ index 1f78b3082570..e40a6d082714 100644
  		gpiod_set_value(husb239->mic_gpiod, 0);
  		husb239->audio_online = false;
 -- 
-2.47.1
+2.47.0
 

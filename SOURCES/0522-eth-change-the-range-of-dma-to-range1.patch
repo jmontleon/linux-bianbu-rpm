@@ -1,7 +1,7 @@
 From 7e66d263a73db19e1f81ad3cfe9fedaf8d34f2a1 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 26 Mar 2024 14:40:41 +0800
-Subject: [PATCH 0522/1189] eth: change the range of dma to range1
+Subject: [PATCH 0522/1200] eth: change the range of dma to range1
 
   As the dma of gmac can access 32 bit range, so it can access
   phy addr 4G~6G(dram 2G~4G).
@@ -34,5 +34,5 @@ index 7e10f8d0e5d5..fe7cb8562aef 100644
  			status = "disabled";
  		};
 -- 
-2.47.1
+2.47.0
 

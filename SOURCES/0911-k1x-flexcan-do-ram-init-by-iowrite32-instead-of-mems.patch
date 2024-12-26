@@ -1,7 +1,7 @@
 From f05cdc91655650db2d9fc3fad077c8ce6e6e6f0b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 13 Aug 2024 10:06:32 +0800
-Subject: [PATCH 0911/1189] k1x:flexcan do ram init by iowrite32 instead of
+Subject: [PATCH 0911/1200] k1x:flexcan do ram init by iowrite32 instead of
  memset_io
 
 Change-Id: I5384d5564246be1412154005a22e6b2905c2ece6
@@ -82,5 +82,5 @@ index 0b986dd228d9..2634995e5182 100644
  static int flexcan_rx_offload_setup(struct net_device *dev)
  {
 -- 
-2.47.1
+2.47.0
 

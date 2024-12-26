@@ -1,7 +1,7 @@
 From 4bb49a5cba5b8c85e91a599f6ceed6bc915dabe8 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Feb 2024 11:53:23 +0800
-Subject: [PATCH 0420/1189] scatterlist: mask out GFP_DMA32 flag when call
+Subject: [PATCH 0420/1200] scatterlist: mask out GFP_DMA32 flag when call
  kmalloc on spacemit k1x platform
 
 Change-Id: I33222f2906558d36593d26f22c488ac42d34ec56
@@ -26,5 +26,5 @@ index 5bb6b8aff232..f7095f9d0443 100644
  		return NULL;
  
 -- 
-2.47.1
+2.47.0
 

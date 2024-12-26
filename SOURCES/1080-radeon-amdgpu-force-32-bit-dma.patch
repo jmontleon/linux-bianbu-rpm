@@ -1,7 +1,7 @@
 From 1a8534c493b6b8352675a58ab06967fd2a09d9dc Mon Sep 17 00:00:00 2001
 From: Icenowy Zheng <uwu@icenowy.me>
 Date: Fri, 21 Jun 2024 15:10:31 +0800
-Subject: [PATCH 1080/1189] radeon/amdgpu: force 32-bit dma
+Subject: [PATCH 1080/1200] radeon/amdgpu: force 32-bit dma
 
 Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
 ---
@@ -22,5 +22,5 @@ index 6f071e61f764..9b8f9376aa6d 100644
  		dma_bits = 32;
  	if ((rdev->flags & RADEON_IS_PCI) &&
 -- 
-2.47.1
+2.47.0
 

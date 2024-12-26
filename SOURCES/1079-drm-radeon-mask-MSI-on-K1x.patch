@@ -1,7 +1,7 @@
 From 9fe14db6fd33b1367351f800abb24032abcf6e8f Mon Sep 17 00:00:00 2001
 From: Icenowy Zheng <uwu@icenowy.me>
 Date: Fri, 11 Oct 2024 14:19:03 +0800
-Subject: [PATCH 1079/1189] drm/radeon: mask MSI on K1x
+Subject: [PATCH 1079/1200] drm/radeon: mask MSI on K1x
 
 Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
 ---
@@ -25,5 +25,5 @@ index 9961251b44ba..6b6305a2fc0a 100644
  	 * Older chips have a HW limitation, they can only generate 40 bits
  	 * of address for "64-bit" MSIs which breaks on some platforms, notably
 -- 
-2.47.1
+2.47.0
 

@@ -1,3 +1,13 @@
+From 47123d6c5181550d8b980fbe0f2a7d9533a3a4ed Mon Sep 17 00:00:00 2001
+From: Yanko Kaneti <yaneti@declera.com>
+Date: Wed, 2 Oct 2024 09:35:31 -0400
+Subject: [PATCH 1191/1200] k1x_rproc: avoid creating busy looping mailbox
+ threads
+
+---
+ drivers/remoteproc/k1x-rproc.c | 51 +++++-----------------------------
+ 1 file changed, 7 insertions(+), 44 deletions(-)
+
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
 index 8d0c318b5a39..36d3d17d4221 100644
 --- a/drivers/remoteproc/k1x-rproc.c
@@ -115,3 +125,6 @@ index 8d0c318b5a39..36d3d17d4221 100644
  }
  
  static struct platform_driver spacemit_rproc_driver = {
+-- 
+2.47.0
+

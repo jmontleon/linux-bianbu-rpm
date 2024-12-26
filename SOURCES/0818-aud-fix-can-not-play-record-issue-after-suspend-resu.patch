@@ -1,7 +1,7 @@
 From 1693b991e3af817651521275673dcb9397111cc8 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Mon, 15 Jul 2024 16:27:35 +0800
-Subject: [PATCH 0818/1189] aud: fix can not play/record issue after
+Subject: [PATCH 0818/1200] aud: fix can not play/record issue after
  suspend/resume on sound setting interface
 
 Change-Id: I47d82199c833e489141917eb11984f92b6361500
@@ -28,5 +28,5 @@ index 57764c40652e..b6bc02edcb85 100644
  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  	case SNDRV_PCM_TRIGGER_RESUME:
 -- 
-2.47.1
+2.47.0
 

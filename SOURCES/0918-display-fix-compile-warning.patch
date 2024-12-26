@@ -1,7 +1,7 @@
 From fef271765c5f9172ddfdd168ba5f3528af366ff7 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 15:46:29 +0800
-Subject: [PATCH 0918/1189] display: fix compile warning
+Subject: [PATCH 0918/1200] display: fix compile warning
 
 Change-Id: I4debd5bc0d4236f3f915d2b90dbd7524e2329c7e
 ---
@@ -25,5 +25,5 @@ index 9c5733d051e6..40ff51db3957 100644
  	pages = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
  	tmp = pages;
 -- 
-2.47.1
+2.47.0
 

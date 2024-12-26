@@ -1,7 +1,7 @@
 From 0fc039a8637a5fd0c2184419c038202438d79b89 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 12 Sep 2024 19:03:49 +0800
-Subject: [PATCH 0996/1189] k1:pm_domain:lcd: don't open the power-switch again
+Subject: [PATCH 0996/1200] k1:pm_domain:lcd: don't open the power-switch again
  if it has opened in uboot
 
 Change-Id: Iced956e183b3558a0f8296969cbb59a42e8e2be0
@@ -24,5 +24,5 @@ index 49f4f6dd8345..3bb94f430bc6 100644
  			/* this is the sw type */
  			regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], spd->param.reg_pwr_ctrl, &val);
 -- 
-2.47.1
+2.47.0
 

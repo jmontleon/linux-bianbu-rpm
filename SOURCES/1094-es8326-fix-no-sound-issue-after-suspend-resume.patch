@@ -1,7 +1,7 @@
 From a268edaeb0f69b1e4e4810e7b00338697d48cca4 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 25 Oct 2024 10:47:35 +0800
-Subject: [PATCH 1094/1189] es8326: fix no sound issue after suspend/resume
+Subject: [PATCH 1094/1200] es8326: fix no sound issue after suspend/resume
 
 Change-Id: I57bab21d811ed1aff8688dba4772d37e3ef39904
 ---
@@ -93,5 +93,5 @@ index b4aa20f40b10..d5d246a03bb9 100644
  	.probe = es8326_i2c_probe,
  	.shutdown = es8326_i2c_shutdown,
 -- 
-2.47.1
+2.47.0
 

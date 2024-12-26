@@ -1,3 +1,12 @@
+From df49e818708aeb59f7e75343bae9af0bfebbc844 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:22:04 -0500
+Subject: [PATCH 1192/1200] Fix AXI_DMA_FLAG_HAS_RESETS
+
+---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
 index 094d7e34998d..6ebe9aab8869 100644
 --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
@@ -11,3 +20,6 @@ index 094d7e34998d..6ebe9aab8869 100644
  	},
  	{}
  };
+-- 
+2.47.0
+

@@ -1,7 +1,7 @@
 From d9f8688627ac6dfc990a91fa90de55f323fa6951 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Fri, 29 Nov 2024 16:14:41 +0800
-Subject: [PATCH 1156/1189] gpu: make sure gpu probe before display
+Subject: [PATCH 1156/1200] gpu: make sure gpu probe before display
 
 Change-Id: Iadfc9fda2674d7ee753f54dc941e8797e9667ab4
 ---
@@ -20,5 +20,5 @@ index 4cf76a3e4c55..4e3e09786b89 100644
 +device_initcall(pvr_init);
  module_exit(pvr_exit);
 -- 
-2.47.1
+2.47.0
 

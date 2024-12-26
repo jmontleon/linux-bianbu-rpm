@@ -1,7 +1,7 @@
 From 9a2a8563b4a26c1909b798ead37533e3aba66d68 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sat, 23 Dec 2023 17:51:57 +0800
-Subject: [PATCH 0237/1189] clock: fix qspi_clk issue, only set fc bit when
+Subject: [PATCH 0237/1200] clock: fix qspi_clk issue, only set fc bit when
  setting mux
 
 Change-Id: Ic97960f51cfbf62f8cb02e8ec25aedee8f12e24b
@@ -56,5 +56,5 @@ index d75862e838f4..636ae25a4656 100755
  #define SPACEMIT_CCU_DIV_FC_WITH_GATE(_struct, _name, _parent, _base_type, _reg_ctrl,		\
  					  _mshift, _mwidth, _fc, _gate_mask, _val_enable, _val_disable,			\
 -- 
-2.47.1
+2.47.0
 

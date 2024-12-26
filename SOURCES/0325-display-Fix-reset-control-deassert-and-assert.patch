@@ -1,7 +1,7 @@
 From 3a9752000038453fa90bbc46e3b7098676c05a15 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 8 Jan 2024 21:55:53 +0800
-Subject: [PATCH 0325/1189] display: Fix reset control deassert and assert
+Subject: [PATCH 0325/1200] display: Fix reset control deassert and assert
 
 Change-Id: I11c0e0a3436682de58430bdf5e06f5f36c70a2ed
 ---
@@ -134,5 +134,5 @@ index d971d41a923c..cef69a81392f 100644
  		if (result < 0) {
  			DRM_DEV_INFO(dev, "Failed to deassert hdmi_reset: %d\n", result);
 -- 
-2.47.1
+2.47.0
 

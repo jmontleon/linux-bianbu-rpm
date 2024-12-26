@@ -1,7 +1,7 @@
 From 61ac010f0072a27895d07d595e70ae97051b982f Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 19 Aug 2024 21:13:42 +0800
-Subject: [PATCH 0944/1189] display: fix the issue while the i2c communication
+Subject: [PATCH 0944/1200] display: fix the issue while the i2c communication
  is failed
 
 Change-Id: Icb7572d8f282d243d403c7a445dd5dcf4e037756
@@ -42,5 +42,5 @@ index 677187c7fcbc..3c019801dd8f 100644
  	schedule_delayed_work(&lt9711->detect_work,
  				msecs_to_jiffies(2000));
 -- 
-2.47.1
+2.47.0
 

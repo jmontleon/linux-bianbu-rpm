@@ -1,7 +1,7 @@
 From f04cab89699277c57b55d15377fa2b71b36de854 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 31 May 2024 17:27:13 +0800
-Subject: [PATCH 0787/1189] display: modify the method for obtaining hdmi edid
+Subject: [PATCH 0787/1200] display: modify the method for obtaining hdmi edid
 
 Change-Id: I2426563e402900043340d4ad7e6a68884e5211eb
 ---
@@ -80,5 +80,5 @@ index 5745275bbb7b..7839300311fe 100644
  	for(i = 0; i < EDID_LENGTH; i += 4){
  		DRM_INFO("EDID 0x%x: 0x%x, 0x%x, 0x%x, 0x%x\r\n", i,
 -- 
-2.47.1
+2.47.0
 

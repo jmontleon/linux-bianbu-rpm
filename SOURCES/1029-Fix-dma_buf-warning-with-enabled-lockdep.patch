@@ -1,7 +1,7 @@
 From a797a56ab692bff924ef68f25ac502a9897f3597 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Wed, 23 Oct 2024 13:45:43 +0800
-Subject: [PATCH 1029/1189] Fix dma_buf warning with enabled lockdep
+Subject: [PATCH 1029/1200] Fix dma_buf warning with enabled lockdep
 
 Fix:
 WARNING: CPU: 4 PID: 1697 at drivers/dma-buf/dma-buf.c:1109 dma_buf_map_attachment+0x7e/0xcc
@@ -73,5 +73,5 @@ index 619b9b5b4e4d..d11e71f7b299 100644
  	OSFreeMem(psPrivData->pasDevPhysAddr);
  errFreePrivData:
 -- 
-2.47.1
+2.47.0
 

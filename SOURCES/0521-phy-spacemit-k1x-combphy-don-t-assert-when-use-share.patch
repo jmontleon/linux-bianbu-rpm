@@ -1,7 +1,7 @@
 From 66b0a4c3c8a3054794269818793e990b8227d488 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:29:07 +0800
-Subject: [PATCH 0521/1189] phy-spacemit-k1x-combphy: don't assert when use
+Subject: [PATCH 0521/1200] phy-spacemit-k1x-combphy: don't assert when use
  shared reset
 
 Change-Id: I128f3c0c98aab58b1710fcdf2abf7d58076a2232
@@ -27,5 +27,5 @@ index b8a9581acd51..374c621dff79 100644
  	if (IS_ERR(priv->phy)) {
  		dev_err(dev, "failed to create combphy\n");
 -- 
-2.47.1
+2.47.0
 

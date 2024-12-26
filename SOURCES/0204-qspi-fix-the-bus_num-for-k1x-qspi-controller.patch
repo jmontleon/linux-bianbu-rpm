@@ -1,7 +1,7 @@
 From 6470777ed41ff964a77cfdaafa38e438eb73634a Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 20 Dec 2023 20:35:43 +0800
-Subject: [PATCH 0204/1189] qspi: fix the bus_num for k1x qspi controller
+Subject: [PATCH 0204/1200] qspi: fix the bus_num for k1x qspi controller
 
   When the bus_num of qspi is the same as the bus_num of spi0,
   If the spi0 driver has been registered,
@@ -26,5 +26,5 @@ index fc05c66d3b99..d036bff3ed12 100644
  			interrupts = <117>;
  			interrupt-parent = <&intc>;
 -- 
-2.47.1
+2.47.0
 

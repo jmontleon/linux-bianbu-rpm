@@ -1,7 +1,7 @@
 From 4399a5b6c5adf080657073d6de715d988cc24c74 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 31 Jan 2024 11:11:43 +0800
-Subject: [PATCH 0405/1189] performance optimize
+Subject: [PATCH 0405/1200] performance optimize
 
 1. change HZ from 100 to 250, to improve realtime response
 2. disable KMEMLEAK debug which may make performance worse
@@ -99,5 +99,5 @@ index 20bea54d79fb..7e72cda06519 100644
  CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
  CONFIG_DEBUG_ATOMIC_SLEEP=y
 -- 
-2.47.1
+2.47.0
 

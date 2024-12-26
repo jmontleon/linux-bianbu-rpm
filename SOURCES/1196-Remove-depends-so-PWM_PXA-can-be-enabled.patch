@@ -1,3 +1,12 @@
+From defbf893f57580047d0396a4ca69e6e76e1dba46 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:24:04 -0500
+Subject: [PATCH 1196/1200] Remove depends so PWM_PXA can be enabled
+
+---
+ drivers/pwm/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
 index f0e1eb4a2c8d..29ce848605ed 100644
 --- a/drivers/pwm/Kconfig
@@ -10,3 +19,6 @@ index f0e1eb4a2c8d..29ce848605ed 100644
  	depends on HAS_IOMEM
  	help
  	  Generic PWM framework driver for PXA.
+-- 
+2.47.0
+

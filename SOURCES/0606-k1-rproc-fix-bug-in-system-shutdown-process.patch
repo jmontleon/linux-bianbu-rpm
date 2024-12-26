@@ -1,7 +1,7 @@
 From bb086d9c4379591cd36693bc01b31fafdae1a362 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 22 Apr 2024 11:14:23 +0800
-Subject: [PATCH 0606/1189] k1:rproc: fix bug in system shutdown process
+Subject: [PATCH 0606/1200] k1:rproc: fix bug in system shutdown process
 
 1. we should not release the resources of mailbox in rproc driver to avoid
    exceptions in mailbox's interrupt callback
@@ -27,5 +27,5 @@ index bc49fcc5ca5f..319497971f20 100644
  }
  
 -- 
-2.47.1
+2.47.0
 

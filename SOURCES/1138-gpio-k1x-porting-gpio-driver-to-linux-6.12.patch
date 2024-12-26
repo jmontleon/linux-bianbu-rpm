@@ -1,7 +1,7 @@
 From 773eb54b5b29ffd2355665cca7dc27dafdb6f564 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:54:13 +0800
-Subject: [PATCH 1138/1189] gpio: k1x: porting gpio driver to linux-6.12
+Subject: [PATCH 1138/1200] gpio: k1x: porting gpio driver to linux-6.12
 
 Change-Id: If54fd2c889dacde35680303cbf08a330d55b98ac
 ---
@@ -26,5 +26,5 @@ index d3b05144ad3b..a3bb171d8e9c 100644
  	/* clear all GPIO edge detects */
  	for (i = 0; i < k1x_chip->nbank; i++) {
 -- 
-2.47.1
+2.47.0
 

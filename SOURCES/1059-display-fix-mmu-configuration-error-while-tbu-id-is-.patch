@@ -1,7 +1,7 @@
 From a86fa56885c6fd5378b9418adab17884cb8544e3 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 1 Nov 2024 14:30:09 +0800
-Subject: [PATCH 1059/1189] display: fix mmu configuration error while tbu id
+Subject: [PATCH 1059/1200] display: fix mmu configuration error while tbu id
  is greater than 2
 
 Change-Id: I1aebfab93e1e7c01a94579b99baf109be3fd1b83
@@ -32,5 +32,5 @@ index 220eb8fc726f..04e87abdaf67 100644
  		CONFIG_RDMA_ADDR_REG(priv, 1, rdma_id, tbu.tbu_va[1]);
  		CONFIG_RDMA_ADDR_REG(priv, 2, rdma_id, tbu.tbu_va[2]);
 -- 
-2.47.1
+2.47.0
 

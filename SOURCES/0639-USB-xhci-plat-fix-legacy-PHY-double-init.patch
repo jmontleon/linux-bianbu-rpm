@@ -1,7 +1,7 @@
 From 66693a8a69ed25f2b4fcddb35eafc9bccadac052 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 20:20:57 +0800
-Subject: [PATCH 0639/1189] USB: xhci-plat: fix legacy PHY double init
+Subject: [PATCH 0639/1200] USB: xhci-plat: fix legacy PHY double init
 
 Divers such as dwc3 which manages PHYs themself as the PHYs would
 be initialised twice, something which specifically can lead to
@@ -35,5 +35,5 @@ index e6c9006bd568..d2c8d821cb41 100644
  	 */
  	of_match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
 -- 
-2.47.1
+2.47.0
 

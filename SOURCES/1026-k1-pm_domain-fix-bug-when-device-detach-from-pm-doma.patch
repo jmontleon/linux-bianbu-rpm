@@ -1,7 +1,7 @@
 From 4d4718c9ae8ed29e9411bf53e920645c0aa4b7c5 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 18 Oct 2024 20:04:39 +0800
-Subject: [PATCH 1026/1189] k1:pm_domain: fix bug when device detach from
+Subject: [PATCH 1026/1200] k1:pm_domain: fix bug when device detach from
  pm-domain
 
 Change-Id: I8a6cb18e2897d9eae2a53f817b10ea61a046510d
@@ -24,5 +24,5 @@ index 3bb94f430bc6..6f8fbe5ba67e 100644
  
  	dev_pm_qos_remove_request(&pos->req);
 -- 
-2.47.1
+2.47.0
 

@@ -1,7 +1,7 @@
 From ab3cb9d24304dbf8dc6df047f186e38067664286 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 24 Jul 2024 17:03:14 +0800
-Subject: [PATCH 0835/1189] spacemit-rf: modify default value of poweron delay
+Subject: [PATCH 0835/1200] spacemit-rf: modify default value of poweron delay
 
 Change-Id: Ibfd47033566c9d3112c6cee27e9a1f2f384c74c7
 ---
@@ -22,5 +22,5 @@ index 4e1b5129ef15..fe9cd20545ef 100644
  	if(device_property_read_bool(dev, "power-always-on"))
  		pwrseq->always_on = true;
 -- 
-2.47.1
+2.47.0
 

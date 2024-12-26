@@ -1,7 +1,7 @@
 From 67735f8c0521bfacfcb258d8f8838ab89877e981 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:39:12 +0800
-Subject: [PATCH 1129/1189] nvme: remove segment buffer size limit
+Subject: [PATCH 1129/1200] nvme: remove segment buffer size limit
 
 Change-Id: I826be53dd5999197b5f0405aa79953543472d82a
 ---
@@ -23,5 +23,5 @@ index ef4d273de693..a970168a3014 100644
  	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
  	    ns->head->ids.csi == NVME_CSI_ZNS)
 -- 
-2.47.1
+2.47.0
 

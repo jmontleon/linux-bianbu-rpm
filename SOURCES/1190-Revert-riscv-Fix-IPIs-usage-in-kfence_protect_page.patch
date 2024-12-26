@@ -1,7 +1,8 @@
 From 6384b0e955f09d3554a4ac5f1d5a47903e7326f3 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Tue, 24 Dec 2024 17:15:33 -0500
-Subject: [PATCH] Revert "riscv: Fix IPIs usage in kfence_protect_page()"
+Subject: [PATCH 1190/1200] Revert "riscv: Fix IPIs usage in
+ kfence_protect_page()"
 
 This reverts commit b3431a8bb336cece8adc452437befa7d4534b2fd.
 ---
@@ -24,5 +25,5 @@ index d08bf7fb3aee..7388edd88986 100644
  	return true;
  }
 -- 
-2.47.1
+2.47.0
 

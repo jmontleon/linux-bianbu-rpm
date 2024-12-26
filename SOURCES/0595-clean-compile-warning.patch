@@ -1,7 +1,7 @@
 From d6cb1bfa74d1ca869dc870124e12ee7548693a7d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:29:57 +0800
-Subject: [PATCH 0595/1189] clean compile warning:
+Subject: [PATCH 0595/1200] clean compile warning:
 
 drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c:560:13: warning: 'mvx_pm_enable_clk' defined but not used [-Wunused-function]
   560 | static void mvx_pm_enable_clk(struct device *dev)
@@ -37,5 +37,5 @@ index 49a0f6c09a8e..ec949dfd3803 100644
  static int mvx_pm_poweron(struct device *dev)
  {
 -- 
-2.47.1
+2.47.0
 

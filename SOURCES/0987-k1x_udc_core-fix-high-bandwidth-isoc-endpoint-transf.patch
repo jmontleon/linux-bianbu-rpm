@@ -1,7 +1,7 @@
 From 51c2cf3ceca13f7b3819fa05f71711b1a7b98c43 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 30 Aug 2024 17:54:41 +0800
-Subject: [PATCH 0987/1189] k1x_udc_core: fix high-bandwidth isoc endpoint
+Subject: [PATCH 0987/1200] k1x_udc_core: fix high-bandwidth isoc endpoint
  transfer bug
 
 1. Fix high bandwidth isoc DATA sequence, current implementation
@@ -78,5 +78,5 @@ index 8686609442be..551f6d4bc19f 100644
  		if (mult > 3)
  			goto en_done;
 -- 
-2.47.1
+2.47.0
 

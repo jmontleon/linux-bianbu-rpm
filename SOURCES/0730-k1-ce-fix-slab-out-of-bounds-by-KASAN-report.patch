@@ -1,7 +1,7 @@
 From 4f7882fd5332692c968943ae9af2a64b05d7df5c Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 19 Jun 2024 14:32:42 +0800
-Subject: [PATCH 0730/1189] k1: ce: fix slab-out-of-bounds by KASAN report
+Subject: [PATCH 0730/1200] k1: ce: fix slab-out-of-bounds by KASAN report
 
 err log:
 ==================================================================
@@ -154,5 +154,5 @@ index 170157219152..224f1fe62ebd 100755
  	return ce_aes_process_nblocks_noalign(index, ct, pt, blocks, &skey1, &skey2,
  				E_AES_XTS, IV, E_AES_DECRYPT);
 -- 
-2.47.1
+2.47.0
 

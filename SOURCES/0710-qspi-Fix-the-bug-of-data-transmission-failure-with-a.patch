@@ -1,7 +1,7 @@
 From c861248a5b59c5e034c93fd267a901d41b6b7631 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 11 Jun 2024 16:51:12 +0800
-Subject: [PATCH 0710/1189] qspi: Fix the bug of data transmission failure with
+Subject: [PATCH 0710/1200] qspi: Fix the bug of data transmission failure with
  a length >= 125 bytes and not multiples of 4
 
 Change-Id: I8e056adfdedcf0dad9f32c5d4d28a65ef381b4ac
@@ -27,5 +27,5 @@ index 467b6fa53145..c5a6d46597c0 100644
  	mutex_unlock(&qspi->lock);
  
 -- 
-2.47.1
+2.47.0
 

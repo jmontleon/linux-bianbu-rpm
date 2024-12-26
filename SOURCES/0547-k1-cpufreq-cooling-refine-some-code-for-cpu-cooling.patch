@@ -1,7 +1,7 @@
 From 0cd6da883cc0face570c4738e7ae918f2010c177 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 3 Apr 2024 19:39:15 +0800
-Subject: [PATCH 0547/1189] k1:cpufreq-cooling: refine some code for cpu
+Subject: [PATCH 0547/1200] k1:cpufreq-cooling: refine some code for cpu
  cooling
 
 1. we'd better acquire the lock throughout the entire CPU frequency modulation process
@@ -337,5 +337,5 @@ index 6d47a155d9d7..5fd734cffa0a 100644
  
  	dev_pm_opp_put_opp_table(opp_table);
 -- 
-2.47.1
+2.47.0
 

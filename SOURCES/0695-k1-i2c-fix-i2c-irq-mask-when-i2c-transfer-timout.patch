@@ -1,7 +1,7 @@
 From 4e5092382d8ef30528006971359e9a090e4f8bd9 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 29 May 2024 19:43:55 +0800
-Subject: [PATCH 0695/1189] k1: i2c: fix i2c irq mask when i2c transfer timout
+Subject: [PATCH 0695/1200] k1: i2c: fix i2c irq mask when i2c transfer timout
 
 error log as follows:
 [414274.216456] i2c-spacemit-k1x d401d800.i2c: msg completion timeout
@@ -46,5 +46,5 @@ index 88c302cb584d..eda79cfb2422 100644
  	ret = spacemit_i2c_prepare_dma(spacemit_i2c);
  	if (ret) {
 -- 
-2.47.1
+2.47.0
 

@@ -1,7 +1,7 @@
 From f443b1e9c4521be810f9d48c31c1aabee43acd33 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 21 Jun 2024 15:42:47 +0800
-Subject: [PATCH 0762/1189] fix-regulator:do not load the driver asynchronously
+Subject: [PATCH 0762/1200] fix-regulator:do not load the driver asynchronously
  for platform spacemit
 
 if this driver load asynchronously, the drivers that rely on it to
@@ -27,5 +27,5 @@ index 1cb647ed70c6..07185ee5ae93 100644
  	},
  };
 -- 
-2.47.1
+2.47.0
 

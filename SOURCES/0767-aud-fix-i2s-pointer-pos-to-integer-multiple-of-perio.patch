@@ -1,7 +1,7 @@
 From c292d3e9b40d359bcd793bb181c7a357754d6121 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 25 Jun 2024 16:03:31 +0800
-Subject: [PATCH 0767/1189] aud: fix i2s pointer pos to integer multiple of
+Subject: [PATCH 0767/1200] aud: fix i2s pointer pos to integer multiple of
  period_size
 
 improve rhythmbox playback noise issue, it caused by datasize > avail and nonblock
@@ -35,5 +35,5 @@ index 487b0e3a4cc2..d248f7509686 100644
  		runtime->delay = bytes_to_frames(runtime, state.in_flight_bytes);
  	}
 -- 
-2.47.1
+2.47.0
 

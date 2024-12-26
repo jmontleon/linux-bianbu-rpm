@@ -1,7 +1,7 @@
 From 7bc29aa87f072698f63ea5c71158e950e3789508 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 26 Jun 2024 13:43:33 +0800
-Subject: [PATCH 0776/1189] at24: clean compile warning
+Subject: [PATCH 0776/1200] at24: clean compile warning
 
 Change-Id: Ib0d8bda66bc11c42ab5547c18b41456bca17c777
 ---
@@ -33,5 +33,5 @@ index 7f04beddbfbf..74ad6f5caab4 100644
  	if (acpi_dev_state_d0(&client->dev)) {
  		pm_runtime_set_suspended(&client->dev);
 -- 
-2.47.1
+2.47.0
 

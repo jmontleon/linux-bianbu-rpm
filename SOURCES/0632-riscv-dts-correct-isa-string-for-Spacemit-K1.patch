@@ -1,7 +1,7 @@
 From d122b0a962c01bf6c97eb06bfefa8c63fbac2a55 Mon Sep 17 00:00:00 2001
 From: Yangyu Chen <cyy@cyyself.name>
 Date: Tue, 7 May 2024 02:54:40 +0000
-Subject: [PATCH 0632/1189] riscv: dts: correct isa string for Spacemit K1
+Subject: [PATCH 0632/1200] riscv: dts: correct isa string for Spacemit K1
 
 s and u for Supervisor and User Mode support in ISA string is not in the RISC-V ISA Spec.
 So we should remove it. And Spacemit X60 supports Zicond, which I tested by hand.
@@ -90,5 +90,5 @@ index 670eea84e986..5ae09a32ebd2 100644
  			i-cache-block-size = <64>;
  			i-cache-size = <32768>;
 -- 
-2.47.1
+2.47.0
 

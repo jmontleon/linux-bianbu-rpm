@@ -1,7 +1,7 @@
 From c099b23b0a8f8101fd299d11c9444310a73f9fb8 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 29 Aug 2024 18:40:43 +0800
-Subject: [PATCH 0985/1189] k1x_udc_core: fix missing STATUS IN in control out
+Subject: [PATCH 0985/1200] k1x_udc_core: fix missing STATUS IN in control out
  transfer
 
 ep0_state should not be modified outside of handle_setup_packet() and
@@ -32,5 +32,5 @@ index dae5be9edbc3..f05ef390979f 100644
  	list_add_tail(&req->queue, &ep->queue);
  	spin_unlock_irqrestore(&udc->lock, flags);
 -- 
-2.47.1
+2.47.0
 
