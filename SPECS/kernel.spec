@@ -2260,17 +2260,22 @@ Patch11186: 1186-can-k1-flexcan-fix-error-on-driver.remove.patch
 Patch11187: 1187-wireless-rtl8852bs-porting-to-linux-6.13.patch
 Patch11188: 1188-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
 Patch11189: 1189-drm-spacemit-porting-to-linux-6.13.patch
-Patch11190: 1190-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-Patch11191: 1191-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch11192: 1192-Fix-AXI_DMA_FLAG_HAS_RESETS.patch
-Patch11193: 1193-fix-k1x_wdt-license-string.patch
-Patch11194: 1194-fix-module-dma_buf-ns.patch
-Patch11195: 1195-fix-wrong-style-comments.patch
-Patch11196: 1196-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-Patch11197: 1197-remove-trace_printk.patch
-Patch11198: 1198-remove-unused-var.patch
-Patch11199: 1199-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-Patch11200: 1200-fix-includes-for-timestamp.patch
+Patch11190: 1190-camera-fix-compilation-problems-and-run-imx415-in-de.patch
+Patch11191: 1191-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
+Patch11192: 1192-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
+Patch11193: 1193-thermal-k1-Correct-a-typo-in-the-code.patch
+Patch11194: 1194-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
+Patch11195: 1195-media-k1-camera-fix-some-compile-warnings.patch
+Patch11196: 1196-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch11197: 1197-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch11198: 1198-fix-module-dma_buf-ns.patch
+Patch11199: 1199-fix-wrong-style-comments.Patch
+Patch11200: 1200-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch11201: 1201-remove-trace_printk.patch
+Patch11202: 1202-remove-unused-var.patch
+Patch11203: 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+Patch11204: 1204-fix-includes-for-timestamp.patch
+
 
 
 
@@ -4297,17 +4302,21 @@ ApplyOptionalPatch 1186-can-k1-flexcan-fix-error-on-driver.remove.patch
 ApplyOptionalPatch 1187-wireless-rtl8852bs-porting-to-linux-6.13.patch
 ApplyOptionalPatch 1188-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
 ApplyOptionalPatch 1189-drm-spacemit-porting-to-linux-6.13.patch
-ApplyOptionalPatch 1190-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-ApplyOptionalPatch 1191-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-ApplyOptionalPatch 1192-Fix-AXI_DMA_FLAG_HAS_RESETS.patch
-ApplyOptionalPatch 1193-fix-k1x_wdt-license-string.patch
-ApplyOptionalPatch 1194-fix-module-dma_buf-ns.patch
-ApplyOptionalPatch 1195-fix-wrong-style-comments.patch
-ApplyOptionalPatch 1196-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1197-remove-trace_printk.patch
-ApplyOptionalPatch 1198-remove-unused-var.patch
-ApplyOptionalPatch 1199-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1200-fix-includes-for-timestamp.patch
+ApplyOptionalPatch 1190-camera-fix-compilation-problems-and-run-imx415-in-de.patch
+ApplyOptionalPatch 1191-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
+ApplyOptionalPatch 1192-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
+ApplyOptionalPatch 1193-thermal-k1-Correct-a-typo-in-the-code.patch
+ApplyOptionalPatch 1194-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
+ApplyOptionalPatch 1195-media-k1-camera-fix-some-compile-warnings.patch
+ApplyOptionalPatch 1196-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 1197-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 1198-fix-module-dma_buf-ns.patch
+ApplyOptionalPatch 1199-fix-wrong-style-comments.patch
+ApplyOptionalPatch 1200-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1201-remove-trace_printk.patch
+ApplyOptionalPatch 1202-remove-unused-var.patch
+ApplyOptionalPatch 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1204-fix-includes-for-timestamp.patch
 
 
 

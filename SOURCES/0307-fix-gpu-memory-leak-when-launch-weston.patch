@@ -1,7 +1,7 @@
-From 4d0d5b707781ccde5a87985fa0f1a9cd81f46fbc Mon Sep 17 00:00:00 2001
+From 605ae4ba44c1ebd1e4bc7c0999c102cdaa9fb610 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Thu, 4 Jan 2024 09:32:52 +0800
-Subject: [PATCH 0307/1200] fix/gpu: memory leak when launch weston
+Subject: [PATCH 0307/1204] fix/gpu: memory leak when launch weston
 
 sync framework will call PVRSRVDeviceSyncOpen to allocate psConnection
 and hOsPrivateData which has no chance to release these kernel buffer.
