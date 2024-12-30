@@ -162,13 +162,13 @@ Summary: The Linux kernel
 %define specrpmversion 6.13.0
 %define specversion 6.13.0
 %define patchversion 6.13
-%define pkgrelease 0.rc4.36
+%define pkgrelease 0.rc5.42
 %define kversion 6
-%define tarfile_release 6.13-rc4
+%define tarfile_release 6.13-rc5
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc4.36.5%{?buildid}%{?dist}
+%define specrelease 0.rc5.42%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.13.0
 
@@ -2269,7 +2269,7 @@ Patch11195: 1195-media-k1-camera-fix-some-compile-warnings.patch
 Patch11196: 1196-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
 Patch11197: 1197-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
 Patch11198: 1198-fix-module-dma_buf-ns.patch
-Patch11199: 1199-fix-wrong-style-comments.Patch
+Patch11199: 1199-fix-wrong-style-comments.patch
 Patch11200: 1200-Remove-depends-so-PWM_PXA-can-be-enabled.patch
 Patch11201: 1201-remove-trace_printk.patch
 Patch11202: 1202-remove-unused-var.patch
@@ -6599,9 +6599,27 @@ fi\
 #
 #
 %changelog
-* Mon Dec 23 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.36]
+* Mon Dec 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.42]
 - x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
 - kernel.spec: update license field (Scott Weaver)
+
+* Mon Dec 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.41]
+- Linux v6.13.0-0.rc5
+
+* Sun Dec 29 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.059dd502b263.40]
+- Linux v6.13.0-0.rc4.059dd502b263
+
+* Sat Dec 28 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.fd0584d220fe.39]
+- Linux v6.13.0-0.rc4.fd0584d220fe
+
+* Fri Dec 27 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.d6ef8b40d075.38]
+- Linux v6.13.0-0.rc4.d6ef8b40d075
+
+* Wed Dec 25 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.9b2ffa6148b1.37]
+- Linux v6.13.0-0.rc4.9b2ffa6148b1
+
+* Tue Dec 24 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.f07044dd0df0.36]
+- Linux v6.13.0-0.rc4.f07044dd0df0
 
 * Mon Dec 23 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.35]
 - Linux v6.13.0-0.rc4
