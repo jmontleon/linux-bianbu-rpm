@@ -1,7 +1,7 @@
 From 6c31699d61792848fb50d92cd787315c909fdba1 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 20:20:57 +0800
-Subject: [PATCH 0639/1204] USB: xhci-plat: fix legacy PHY double init
+Subject: [PATCH 0639/1205] USB: xhci-plat: fix legacy PHY double init
 
 Divers such as dwc3 which manages PHYs themself as the PHYs would
 be initialised twice, something which specifically can lead to

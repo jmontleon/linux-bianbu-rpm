@@ -2275,6 +2275,7 @@ Patch11201: 1201-remove-trace_printk.patch
 Patch11202: 1202-remove-unused-var.patch
 Patch11203: 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 Patch11204: 1204-fix-includes-for-timestamp.patch
+Patch11205: 1205-remove-debug-rdinit-from-m1-bpi.patch
 
 
 
@@ -4317,6 +4318,7 @@ ApplyOptionalPatch 1201-remove-trace_printk.patch
 ApplyOptionalPatch 1202-remove-unused-var.patch
 ApplyOptionalPatch 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 ApplyOptionalPatch 1204-fix-includes-for-timestamp.patch
+ApplyOptionalPatch 1205-remove-debug-rdinit-from-m1-bpi.patch
 
 
 

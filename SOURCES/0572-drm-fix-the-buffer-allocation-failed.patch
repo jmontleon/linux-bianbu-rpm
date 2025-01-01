@@ -1,7 +1,7 @@
 From d7037856cc7572db678eaebecd4971a01ccbd295 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Apr 2024 14:24:13 +0800
-Subject: [PATCH 0572/1204] drm: fix the buffer allocation failed
+Subject: [PATCH 0572/1205] drm: fix the buffer allocation failed
 
 All memory may be allocated for cache data, then, if __GFP_NORETRY set
 and __GFP_RECLAIM cleared, the buffer allocation will be failed, cause
