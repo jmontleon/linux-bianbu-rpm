@@ -1,4 +1,4 @@
-From 932b8fe38cf4d52bf8cfe1e49c0010653a315deb Mon Sep 17 00:00:00 2001
+From fceb272da51036e1c50d664b2edd4bd2fb7813b7 Mon Sep 17 00:00:00 2001
 From: James Deng <james.deng@spacemit.com>
 Date: Tue, 22 Oct 2024 19:42:58 +0800
 Subject: [PATCH 06/16] Update for v2.0
@@ -1799,10 +1799,10 @@ index fc9ee6c7de4a..4d872e73f71d 100644
  # CONFIG_RCU_TRACE is not set
  # CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 6c71add013bf..4465f9932418 100644
+index 5da948b07058..c4128748d448 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -1184,6 +1184,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
+@@ -1185,6 +1185,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
  	cpu = rq->mq_ctx->cpu;
  	if (llist_add(&rq->ipi_list, &per_cpu(blk_cpu_done, cpu)))
  		smp_call_function_single_async(cpu, &per_cpu(blk_cpu_csd, cpu));
@@ -1810,7 +1810,7 @@ index 6c71add013bf..4465f9932418 100644
  }
  
  static void blk_mq_raise_softirq(struct request *rq)
-@@ -3426,6 +3427,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
+@@ -3427,6 +3428,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
  	}
  
  	WRITE_ONCE(rq->state, MQ_RQ_IDLE);
