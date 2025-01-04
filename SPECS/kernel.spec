@@ -580,8 +580,8 @@ Summary: The Linux kernel
 %ifarch riscv64
 %define asmarch riscv
 %define hdrarch riscv
-%define make_target Image.gz
-%define kernel_image arch/riscv/boot/Image.gz
+%define make_target vmlinuz.efi
+%define kernel_image arch/riscv/boot/vmlinuz.efi
 %endif
 
 # Should make listnewconfig fail if there's config options
@@ -2266,16 +2266,17 @@ Patch11192: 1192-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
 Patch11193: 1193-thermal-k1-Correct-a-typo-in-the-code.patch
 Patch11194: 1194-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
 Patch11195: 1195-media-k1-camera-fix-some-compile-warnings.patch
-Patch11196: 1196-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-Patch11197: 1197-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch11198: 1198-fix-module-dma_buf-ns.patch
-Patch11199: 1199-fix-wrong-style-comments.patch
-Patch11200: 1200-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-Patch11201: 1201-remove-trace_printk.patch
-Patch11202: 1202-remove-unused-var.patch
-Patch11203: 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-Patch11204: 1204-fix-includes-for-timestamp.patch
-Patch11205: 1205-remove-debug-rdinit-from-m1-bpi.patch
+Patch11196: 1196-riscv-k1-dts-remove-some-reserved-memory-region.patch
+Patch11197: 1197-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch11198: 1198-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch11199: 1199-fix-module-dma_buf-ns.patch
+Patch11120: 1200-fix-wrong-style-comments.patch
+Patch11201: 1201-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch11202: 1202-remove-trace_printk.patch
+Patch11203: 1203-remove-unused-var.patch
+Patch11204: 1204-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+Patch11205: 1205-fix-includes-for-timestamp.patch
+Patch11206: 1206-remove-debug-rdinit-from-m1-bpi.patch
 
 
 
@@ -4309,16 +4310,17 @@ ApplyOptionalPatch 1192-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
 ApplyOptionalPatch 1193-thermal-k1-Correct-a-typo-in-the-code.patch
 ApplyOptionalPatch 1194-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
 ApplyOptionalPatch 1195-media-k1-camera-fix-some-compile-warnings.patch
-ApplyOptionalPatch 1196-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-ApplyOptionalPatch 1197-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-ApplyOptionalPatch 1198-fix-module-dma_buf-ns.patch
-ApplyOptionalPatch 1199-fix-wrong-style-comments.patch
-ApplyOptionalPatch 1200-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1201-remove-trace_printk.patch
-ApplyOptionalPatch 1202-remove-unused-var.patch
-ApplyOptionalPatch 1203-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1204-fix-includes-for-timestamp.patch
-ApplyOptionalPatch 1205-remove-debug-rdinit-from-m1-bpi.patch
+ApplyOptionalPatch 1196-riscv-k1-dts-remove-some-reserved-memory-region.patch
+ApplyOptionalPatch 1197-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 1198-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 1199-fix-module-dma_buf-ns.patch
+ApplyOptionalPatch 1200-fix-wrong-style-comments.patch
+ApplyOptionalPatch 1201-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1202-remove-trace_printk.patch
+ApplyOptionalPatch 1203-remove-unused-var.patch
+ApplyOptionalPatch 1204-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1205-fix-includes-for-timestamp.patch
+ApplyOptionalPatch 1206-remove-debug-rdinit-from-m1-bpi.patch
 
 
 
