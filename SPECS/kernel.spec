@@ -162,13 +162,13 @@ Summary: The Linux kernel
 %define specrpmversion 6.13.0
 %define specversion 6.13.0
 %define patchversion 6.13
-%define pkgrelease 0.rc5.42
+%define pkgrelease 0.rc6.48
 %define kversion 6
-%define tarfile_release 6.13-rc5
+%define tarfile_release 6.13-rc6
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc5.42%{?buildid}%{?dist}
+%define specrelease 0.rc6.48%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.13.0
 
@@ -6603,9 +6603,30 @@ fi\
 #
 #
 %changelog
-* Mon Dec 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.42]
+* Mon Jan 06 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-0.rc6.48]
+- Revert "vmstat: disable vmstat_work on vmstat_cpu_down_prep()" (Linus Torvalds)
+
+* Mon Jan 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.48]
 - x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
 - kernel.spec: update license field (Scott Weaver)
+
+* Mon Jan 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.47]
+- Linux v6.13.0-0.rc6
+
+* Sun Jan 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.ab75170520d4.46]
+- Linux v6.13.0-0.rc5.ab75170520d4
+
+* Sat Jan 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.63676eefb7a0.45]
+- Linux v6.13.0-0.rc5.63676eefb7a0
+
+* Fri Jan 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.0bc21e701a6f.44]
+- Linux v6.13.0-0.rc5.0bc21e701a6f
+
+* Thu Jan 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.56e6a3499e14.43]
+- Linux v6.13.0-0.rc5.56e6a3499e14
+
+* Tue Dec 31 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.ccb98ccef0e5.42]
+- Linux v6.13.0-0.rc5.ccb98ccef0e5
 
 * Mon Dec 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.41]
 - Linux v6.13.0-0.rc5

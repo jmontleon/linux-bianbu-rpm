@@ -77,13 +77,14 @@
  kernel/rh_messages.c                               | 414 ++++++++++++++++
  kernel/rh_messages.h                               | 326 +++++++++++++
  kernel/rh_waived.c                                 | 104 ++++
+ mm/vmstat.c                                        |   3 +-
  scripts/mod/modpost.c                              |   8 +
  scripts/tags.sh                                    |   2 +
  security/integrity/platform_certs/load_uefi.c      |   6 +-
  security/lockdown/Kconfig                          |  13 +
  security/lockdown/lockdown.c                       |   1 +
  security/security.c                                |  12 +
- 85 files changed, 2764 insertions(+), 218 deletions(-)
+ 86 files changed, 2765 insertions(+), 220 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
 index 3872bc6ec49d..b98a019b0dd0 100644
@@ -190,7 +191,7 @@ index 000000000000..fd77bd5c97e2
 +
 +endmenu
 diff --git a/Makefile b/Makefile
-index 48e89108aa58..9116bd960c6e 100644
+index 7904d5d88088..d21098c084ed 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -2096,10 +2097,10 @@ index a85d190942bd..b974ea81b62c 100644
  
  	/* initialize this in the identify path to cover controller resets */
 diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 611b02c8a8b3..bd165f2afd7d 100644
+index c4bb8dfe1a45..a17435a61ed3 100644
 --- a/drivers/nvme/host/nvme.h
 +++ b/drivers/nvme/host/nvme.h
-@@ -948,6 +948,7 @@ void nvme_mpath_wait_freeze(struct nvme_subsystem *subsys);
+@@ -953,6 +953,7 @@ void nvme_mpath_wait_freeze(struct nvme_subsystem *subsys);
  void nvme_mpath_start_freeze(struct nvme_subsystem *subsys);
  void nvme_mpath_default_iopolicy(struct nvme_subsystem *subsys);
  void nvme_failover_req(struct request *req);
@@ -2107,7 +2108,7 @@ index 611b02c8a8b3..bd165f2afd7d 100644
  void nvme_kick_requeue_lists(struct nvme_ctrl *ctrl);
  int nvme_mpath_alloc_disk(struct nvme_ctrl *ctrl,struct nvme_ns_head *head);
  void nvme_mpath_add_disk(struct nvme_ns *ns, __le32 anagrpid);
-@@ -990,6 +991,9 @@ static inline bool nvme_ctrl_use_ana(struct nvme_ctrl *ctrl)
+@@ -995,6 +996,9 @@ static inline bool nvme_ctrl_use_ana(struct nvme_ctrl *ctrl)
  static inline void nvme_failover_req(struct request *req)
  {
  }
@@ -4587,8 +4588,28 @@ index 000000000000..84e22b1730cc
 +	return 0;
 +}
 +late_initcall(__add_rh_flag);
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 0889b75cef14..4d016314a56c 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -2148,14 +2148,13 @@ static int vmstat_cpu_online(unsigned int cpu)
+ 	if (!node_state(cpu_to_node(cpu), N_CPU)) {
+ 		node_set_state(cpu_to_node(cpu), N_CPU);
+ 	}
+-	enable_delayed_work(&per_cpu(vmstat_work, cpu));
+ 
+ 	return 0;
+ }
+ 
+ static int vmstat_cpu_down_prep(unsigned int cpu)
+ {
+-	disable_delayed_work_sync(&per_cpu(vmstat_work, cpu));
++	cancel_delayed_work_sync(&per_cpu(vmstat_work, cpu));
+ 	return 0;
+ }
+ 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 94ee49207a45..e1af88a08e5e 100644
+index 7ea59dc4926b..1cea58bf300d 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
 @@ -27,6 +27,7 @@
