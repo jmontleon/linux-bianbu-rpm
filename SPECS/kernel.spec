@@ -2270,7 +2270,7 @@ Patch11196: 1196-riscv-k1-dts-remove-some-reserved-memory-region.patch
 Patch11197: 1197-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
 Patch11198: 1198-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
 Patch11199: 1199-fix-module-dma_buf-ns.patch
-Patch11120: 1200-fix-wrong-style-comments.patch
+Patch11200: 1200-fix-wrong-style-comments.patch
 Patch11201: 1201-Remove-depends-so-PWM_PXA-can-be-enabled.patch
 Patch11202: 1202-remove-trace_printk.patch
 Patch11203: 1203-remove-unused-var.patch
