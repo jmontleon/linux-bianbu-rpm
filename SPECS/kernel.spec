@@ -160,18 +160,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit_2.0.4
-%define specrpmversion 6.6.69
-%define specversion 6.6.69
+%define specrpmversion 6.6.70
+%define specversion 6.6.70
 %define patchversion 6.6
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.6.69
+%define tarfile_release 6.6.70
 # This is needed to do merge window version magic
 %define patchlevel 6
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.6.69
+%define kabiversion 6.6.70
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -1005,11 +1005,16 @@ Patch0108: 0008-Update-for-v2.0.2.patch
 Patch0109: 0009-Update-for-v2.0.4.patch
 Patch0110: 0010-Add-missing-file.patch
 Patch0111: 0011-Add-PREEMPT-RT-patch.patch
-Patch0112: 0012-spacemit-fixes-and-workarounds.patch
-Patch0113: 0013-remove-trace_printk.patch
-Patch0114: 0014-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch0115: 0015-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-Patch0116: 0016-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch0112: 0012-i2c-fix-i2c-transfer-timeout-when-irq-thread.patch
+Patch0113: 0013-i2c-fix-i2c-pio-transfer-timeout-when-reboot.patch
+Patch0114: 0014-update-rt-patch.patch
+Patch0115: 0015-update-rt-defconfig.patch
+Patch0116: 0016-spacemit-fixes-and-workarounds.patch
+Patch0117: 0017-remove-trace_printk.patch
+Patch0118: 0018-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch0119: 0019-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch0120: 0020-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch0121: 0021-riscv-k1-dts-remove-some-reserved-memory-region.patch
 
 
 
@@ -1776,11 +1781,16 @@ ApplyOptionalPatch 0008-Update-for-v2.0.2.patch
 ApplyOptionalPatch 0009-Update-for-v2.0.4.patch
 ApplyOptionalPatch 0010-Add-missing-file.patch
 ApplyOptionalPatch 0011-Add-PREEMPT-RT-patch.patch
-ApplyOptionalPatch 0012-spacemit-fixes-and-workarounds.patch
-ApplyOptionalPatch 0013-remove-trace_printk.patch
-ApplyOptionalPatch 0014-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-ApplyOptionalPatch 0015-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-ApplyOptionalPatch 0016-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 0012-i2c-fix-i2c-transfer-timeout-when-irq-thread.patch
+ApplyOptionalPatch 0013-i2c-fix-i2c-pio-transfer-timeout-when-reboot.patch
+ApplyOptionalPatch 0014-update-rt-patch.patch
+ApplyOptionalPatch 0015-update-rt-defconfig.patch
+ApplyOptionalPatch 0016-spacemit-fixes-and-workarounds.patch
+ApplyOptionalPatch 0017-remove-trace_printk.patch
+ApplyOptionalPatch 0018-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 0019-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 0020-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 0021-riscv-k1-dts-remove-some-reserved-memory-region.patch
 
 
 
@@ -3773,7 +3783,11 @@ fi\
 #
 #
 %changelog
-* Fri Dec 27 2024 Jason Montleon <jason@montleon.com> [6.6.68-200.spacemit_2.0.4
+* Thu Jan 09 2025 Jason Montleon <jason@montleon.com> [6.6.70-200.spacemit_2.0.4]
+- Add new Bianbu patches
+- Remove reserved EFI memory nodes breaking EFI boot
+
+* Fri Dec 27 2024 Jason Montleon <jason@montleon.com> [6.6.68-200.spacemit_2.0.4]
 - Add new bianbu spacemit preempt/missing file patches
 - Revert kfence commit
 

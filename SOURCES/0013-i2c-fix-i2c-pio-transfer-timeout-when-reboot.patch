@@ -1,0 +1,50 @@
+From 57d3d07f912bcb1557086b191661a1c8860c30c3 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Sat, 4 Jan 2025 22:55:32 +0800
+Subject: [PATCH 13/21] i2c: fix i2c pio transfer timeout when reboot
+
+Change-Id: Ia1c47ce5b9d0af6f15321649fdcc823da0345026
+Signed-off-by: lijuan <juan.li@spacemit.com>
+(cherry picked from commit a4c57ca2cca4154fb3427c3b550d4050b4645ac1)
+(cherry picked from commit 3819a53519196cb8687edac1b096d3fbdb5bd09e)
+---
+ drivers/i2c/busses/i2c-k1x.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index 006f396888b9..d3471e6c978a 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -221,6 +221,9 @@ static void spacemit_i2c_unit_init(struct spacemit_i2c_dev *spacemit_i2c)
+ 	/* enable master stop detected */
+ 	cr_val |= CR_MSDE | CR_MSDIE;
+ 
++	/* disable int to use pio xfer mode*/
++	if (unlikely(spacemit_i2c->xfer_mode == SPACEMIT_I2C_MODE_PIO))
++		cr_val &= ~(CR_ALDIE | CR_BEIE | CR_MSDIE | CR_DTEIE);
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_CR, cr_val);
+ }
+ 
+@@ -230,7 +233,10 @@ static void spacemit_i2c_trigger_byte_xfer(struct spacemit_i2c_dev *spacemit_i2c
+ 
+ 	/* send start pulse */
+ 	cr_val &= ~CR_STOP;
+-	cr_val |= CR_START | CR_TB | CR_DTEIE;
++	if (spacemit_i2c->xfer_mode == SPACEMIT_I2C_MODE_PIO)
++		cr_val |= CR_START | CR_TB;
++	else
++		cr_val |= CR_START | CR_TB | CR_DTEIE;
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_CR, cr_val);
+ }
+ 
+@@ -1131,7 +1137,6 @@ static int spacemit_i2c_pio_xfer(struct spacemit_i2c_dev *spacemit_i2c)
+ 
+ 	if (!spacemit_i2c->clk_always_on)
+ 		clk_enable(spacemit_i2c->clk);
+-
+ 	spacemit_i2c_controller_reset(spacemit_i2c);
+ 	udelay(2);
+ 
+-- 
+2.47.0
+

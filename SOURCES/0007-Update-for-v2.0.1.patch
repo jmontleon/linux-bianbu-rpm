@@ -1,7 +1,7 @@
-From 8722165ad6c0365c1f254c8e039856704498dfe7 Mon Sep 17 00:00:00 2001
+From 270c780a5a7ef0924559f8db7e9f9fbc10016bb2 Mon Sep 17 00:00:00 2001
 From: James Deng <james.deng@spacemit.com>
 Date: Tue, 29 Oct 2024 17:49:32 +0800
-Subject: [PATCH 07/16] Update for v2.0.1
+Subject: [PATCH 07/21] Update for v2.0.1
 
 ---
  arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi   |  18 ++-
@@ -908,7 +908,7 @@ index 17ac26e7204b..44d127b51f79 100644
  
  	return val32.byte[dw_sh];
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index d525fa1229d7..30938b795da1 100644
+index 52c8fd3d5c47..c905cb8879eb 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
 @@ -801,7 +801,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
