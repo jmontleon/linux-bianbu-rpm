@@ -162,13 +162,13 @@ Summary: The Linux kernel
 %define specrpmversion 6.13.0
 %define specversion 6.13.0
 %define patchversion 6.13
-%define pkgrelease 0.rc6.48
+%define pkgrelease 0.rc7.55
 %define kversion 6
-%define tarfile_release 6.13-rc6
+%define tarfile_release 6.13-rc7
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc6.48%{?buildid}%{?dist}
+%define specrelease 0.rc7.55%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.13.0
 
@@ -2509,6 +2509,9 @@ Epoch: %{gemini}
 Summary: Real-Time Linux Analysis tools
 Requires: libtraceevent
 Requires: libtracefs
+%ifarch %{cpupowerarchs}
+Requires: %{package_name}-tools-libs = %{version}-%{release}
+%endif
 %description -n rtla
 The rtla meta-tool includes a set of commands that aims to analyze
 the real-time properties of Linux. Instead of testing Linux as a black box,
@@ -2532,7 +2535,7 @@ analysing the logical and timing behavior of Linux.
 
 %package selftests-internal
 Summary: Kernel samples and selftests
-Requires: binutils, bpftool, iproute-tc, nmap-ncat, python3, fuse-libs, keyutils
+Requires: binutils, bpftool, fuse-libs, iproute-tc, iputils, keyutils, nmap-ncat, python3
 %description selftests-internal
 Kernel sample programs and selftests.
 
@@ -2814,7 +2817,7 @@ Requires: kernel-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %{
 %package %{?1:%{1}-}uki-virt\
 Summary: %{variant_summary} unified kernel image for virtual machines\
 Provides: installonlypkg(kernel)\
-Provides: kernel-%{?1:%{1}-}uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): systemd >= 254-1\
@@ -6603,12 +6606,39 @@ fi\
 #
 #
 %changelog
-* Mon Jan 06 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-0.rc6.48]
-- Revert "vmstat: disable vmstat_work on vmstat_cpu_down_prep()" (Linus Torvalds)
+* Mon Jan 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-0.rc7.55]
+- Fedora 6.13 configs part 1 (Justin M. Forbes)
 
-* Mon Jan 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.48]
+* Mon Jan 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.55]
 - x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
 - kernel.spec: update license field (Scott Weaver)
+
+* Mon Jan 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.54]
+- Linux v6.13.0-0.rc7
+
+* Sun Jan 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.b62cef9a5c67.53]
+- Linux v6.13.0-0.rc6.b62cef9a5c67
+
+* Sat Jan 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.77a903cd8e5a.52]
+- Linux v6.13.0-0.rc6.77a903cd8e5a
+
+* Fri Jan 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.2144da25584e.51]
+- RHEL: Set correct config option for CRYPTO_HMAC_S390 (Mete Durlu) [RHEL-24137]
+- redhat/kernel.spec: add iputils to the requires list for selftests-internal (Brian Masney)
+- Linux v6.13.0-0.rc6.2144da25584e
+
+* Thu Jan 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.eea6e4b4dfb8.50]
+- Linux v6.13.0-0.rc6.eea6e4b4dfb8
+
+* Wed Jan 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.09a0fa92e5b4.49]
+- redhat/kernel.spec.template: Require kernel-tools-libs in rtla (Tomas Glozar)
+- redhat: make kernel-debug-uki-virt installable without kernel-debug-core (Vitaly Kuznetsov)
+- redhat/configs: enable CONFIG_USB_XHCI_PCI_RENESAS on RHEL (Desnes Nunes) [RHEL-72093]
+- redhat/configs: Re-enable ZRAM backends and unify configuration (Neal Gompa)
+- Linux v6.13.0-0.rc6.09a0fa92e5b4
+
+* Tue Jan 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.fbfd64d25c7a.48]
+- Linux v6.13.0-0.rc6.fbfd64d25c7a
 
 * Mon Jan 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.47]
 - Linux v6.13.0-0.rc6

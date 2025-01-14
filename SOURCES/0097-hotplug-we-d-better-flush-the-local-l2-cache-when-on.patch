@@ -1,4 +1,4 @@
-From ac53f536cccb06da8ff73fa987d8f2e657ab74f0 Mon Sep 17 00:00:00 2001
+From 88f2abc440bfe66c0c5f8abb7e4b8eb50bd37d6b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
 Subject: [PATCH 0097/1206] hotplug: we'd better flush the local & l2 cache
@@ -13,7 +13,7 @@ Change-Id: I64e4158a8669af577abf1ab5018a7bdb424941aa
  4 files changed, 29 insertions(+)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 6c82318065cf..62e1d715ec4b 100644
+index 3d250824178b..e159910956e7 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
 @@ -53,6 +53,9 @@ enum sbi_ext_base_fid {

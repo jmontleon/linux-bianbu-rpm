@@ -1,4 +1,4 @@
-From cc259666b7d610014561e4ca71364e4260dff4a4 Mon Sep 17 00:00:00 2001
+From 4f6aa825af3937c1c8a9659d3816550706d274d1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 27 Dec 2023 17:01:21 +0800
 Subject: [PATCH 0270/1206] support non-uniform address mapping between
@@ -365,10 +365,10 @@ index 87ba95d003f6..3706fc179110 100644
  		};
  	};
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 77bced64d514..a1fb2d359aac 100644
+index c6d4444d4e94..8954ffccc5a5 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -281,7 +281,12 @@ static void __init setup_bootmem(void)
+@@ -293,7 +293,12 @@ static void __init setup_bootmem(void)
  	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
  
@@ -381,7 +381,7 @@ index 77bced64d514..a1fb2d359aac 100644
  	set_max_mapnr(max_low_pfn - ARCH_PFN_OFFSET);
  
  	reserve_initrd_mem();
-@@ -303,12 +308,7 @@ static void __init setup_bootmem(void)
+@@ -315,12 +320,7 @@ static void __init setup_bootmem(void)
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  
  #ifdef CONFIG_ZONE_DMA32

@@ -1,4 +1,4 @@
-From ed9a24da09ef3fd67d0d851bd77c890abc1099d5 Mon Sep 17 00:00:00 2001
+From 8bba61c50bf5638122093e6bf0e67ac876280779 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
 Subject: [PATCH 0024/1206] riscv: mm: fix reserve cma for platform not having
@@ -27,10 +27,10 @@ index d4a7ca0388c0..773f4a172ea4 100644
  config RUSTC_SUPPORTS_RISCV
  	def_bool y
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fc53ce748c80..dccef5f1c869 100644
+index 8d167e09f1fe..088f9779ec3d 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -302,7 +302,12 @@ static void __init setup_bootmem(void)
+@@ -314,7 +314,12 @@ static void __init setup_bootmem(void)
  	if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  

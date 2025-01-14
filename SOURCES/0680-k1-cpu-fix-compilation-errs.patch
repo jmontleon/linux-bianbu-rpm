@@ -1,4 +1,4 @@
-From 6df306f722adc0e51837af8b36ff624d17df9bb5 Mon Sep 17 00:00:00 2001
+From 2908657797bb6e70b6b44fa0ac920199965bcefa Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 09:58:09 +0800
 Subject: [PATCH 0680/1206] k1: cpu: fix compilation errs
@@ -14,10 +14,10 @@ Change-Id: I28bb2e68a9cd2f5227fa71bc489de27bb4b03463
  2 files changed, 5 insertions(+)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 62e1d715ec4b..46c2490b810e 100644
+index e159910956e7..4db90a6bb174 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
-@@ -452,6 +452,10 @@ void sbi_shutdown(void);
+@@ -453,6 +453,10 @@ void sbi_shutdown(void);
  void sbi_send_ipi(unsigned int cpu);
  int sbi_remote_fence_i(const struct cpumask *cpu_mask);
  

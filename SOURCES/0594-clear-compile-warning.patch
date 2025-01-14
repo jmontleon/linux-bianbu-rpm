@@ -1,4 +1,4 @@
-From c9f246e7030cf510cf6a40bb504c80f36fcfdee5 Mon Sep 17 00:00:00 2001
+From d115bfb528fa40bb86250e3cb265a803699bb5b7 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:24:37 +0800
 Subject: [PATCH 0594/1206] clear compile warning:
@@ -14,7 +14,7 @@ Change-Id: Ia77d3d297c2e87feecfcdd151b6da15092108bb7
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 1cd461f3d872..d1251d510fb2 100644
+index 47d0ebeec93c..866ea691d935 100644
 --- a/arch/riscv/kernel/module.c
 +++ b/arch/riscv/kernel/module.c
 @@ -662,6 +662,8 @@ static int add_relocation_to_accumulate(struct module *me, int type,

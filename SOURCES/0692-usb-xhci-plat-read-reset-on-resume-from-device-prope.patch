@@ -1,4 +1,4 @@
-From 370e71f73a40570a38a41e0d39c3364f39c248af Mon Sep 17 00:00:00 2001
+From ac3b8a3d29b6943b1ca445e61de5bcad47e79755 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 14:37:42 +0800
 Subject: [PATCH 0692/1206] usb: xhci-plat: read reset-on-resume from device
@@ -10,7 +10,7 @@ Change-Id: If185d41fc0f52b2d32450a119e3e2d5a4238876f
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index d2c8d821cb41..c27ee50d4e76 100644
+index 552343f4a9ee..86af8c24a215 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
 @@ -265,6 +265,11 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s

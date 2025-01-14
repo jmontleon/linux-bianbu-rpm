@@ -77,14 +77,13 @@
  kernel/rh_messages.c                               | 414 ++++++++++++++++
  kernel/rh_messages.h                               | 326 +++++++++++++
  kernel/rh_waived.c                                 | 104 ++++
- mm/vmstat.c                                        |   3 +-
  scripts/mod/modpost.c                              |   8 +
  scripts/tags.sh                                    |   2 +
  security/integrity/platform_certs/load_uefi.c      |   6 +-
  security/lockdown/Kconfig                          |  13 +
  security/lockdown/lockdown.c                       |   1 +
  security/security.c                                |  12 +
- 86 files changed, 2765 insertions(+), 220 deletions(-)
+ 85 files changed, 2764 insertions(+), 218 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
 index 3872bc6ec49d..b98a019b0dd0 100644
@@ -191,7 +190,7 @@ index 000000000000..fd77bd5c97e2
 +
 +endmenu
 diff --git a/Makefile b/Makefile
-index 7904d5d88088..d21098c084ed 100644
+index e20a62ad397f..5a30e33b12a0 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -2467,10 +2466,10 @@ index 8947dab132d7..dbf6d414fd4e 100644
  	if (err)
  		goto err_out_driver;
 diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 4b93c0bd1d4b..b98906237306 100644
+index 21ac9b464696..24a92295bd8d 100644
 --- a/drivers/usb/core/hub.c
 +++ b/drivers/usb/core/hub.c
-@@ -5844,6 +5844,13 @@ static void hub_event(struct work_struct *work)
+@@ -5846,6 +5846,13 @@ static void hub_event(struct work_struct *work)
  			(u16) hub->change_bits[0],
  			(u16) hub->event_bits[0]);
  
@@ -4588,26 +4587,6 @@ index 000000000000..84e22b1730cc
 +	return 0;
 +}
 +late_initcall(__add_rh_flag);
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 0889b75cef14..4d016314a56c 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -2148,14 +2148,13 @@ static int vmstat_cpu_online(unsigned int cpu)
- 	if (!node_state(cpu_to_node(cpu), N_CPU)) {
- 		node_set_state(cpu_to_node(cpu), N_CPU);
- 	}
--	enable_delayed_work(&per_cpu(vmstat_work, cpu));
- 
- 	return 0;
- }
- 
- static int vmstat_cpu_down_prep(unsigned int cpu)
- {
--	disable_delayed_work_sync(&per_cpu(vmstat_work, cpu));
-+	cancel_delayed_work_sync(&per_cpu(vmstat_work, cpu));
- 	return 0;
- }
- 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
 index 7ea59dc4926b..1cea58bf300d 100644
 --- a/scripts/mod/modpost.c
