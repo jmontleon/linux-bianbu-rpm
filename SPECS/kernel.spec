@@ -162,13 +162,13 @@ Summary: The Linux kernel
 %define specrpmversion 6.13.0
 %define specversion 6.13.0
 %define patchversion 6.13
-%define pkgrelease 0.rc7.55
+%define pkgrelease 62
 %define kversion 6
-%define tarfile_release 6.13-rc7
+%define tarfile_release 6.13
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc7.55%{?buildid}%{?dist}
+%define specrelease 62%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.13.0
 
@@ -623,9 +623,9 @@ Summary: The Linux kernel
 
 # Architectures we build tools/cpupower on
 %if 0%{?fedora}
-%define cpupowerarchs %{ix86} x86_64 ppc64le aarch64
+%define cpupowerarchs %{ix86} x86_64 ppc64le aarch64 riscv64
 %else
-%define cpupowerarchs i686 x86_64 ppc64le aarch64
+%define cpupowerarchs i686 x86_64 ppc64le aarch64 riscv64
 %endif
 
 # Architectures we build kernel livepatching selftests on
@@ -5822,7 +5822,7 @@ chmod 0755 %{buildroot}%{_libdir}/libcpupower.so*
    %{tools_make} DESTDIR=%{buildroot} install
    popd
    pushd tools/arch/x86/intel_sdsi
-   %{tools_make} CFLAGS="${RPM_OPT_FLAGS}" DESTDIR=%{buildroot} install
+   %{tools_make} CFLAGS="${RPM_OPT_FLAGS}" DESTDIR=%{buildroot} BINDIR=%{_sbindir} install
    popd
 %endif
 pushd tools/thermal/tmon
@@ -6606,12 +6606,47 @@ fi\
 #
 #
 %changelog
-* Mon Jan 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-0.rc7.55]
-- Fedora 6.13 configs part 1 (Justin M. Forbes)
+* Mon Jan 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-62]
+- include/linux: Adjust headers for C23 (Jakub Jelinek)
 
-* Mon Jan 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.55]
+* Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-62]
+- Fix build with merged-sbin (Adam Williamson)
 - x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
 - kernel.spec: update license field (Scott Weaver)
+
+* Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-61]
+- redhat/configs: Disable deprecated CONFIG_LCS option on s390 (Mete Durlu) [RHEL-68296]
+- redhat/configs: make modular/disable NFS support (Dorinda Bassey)
+- redhat/configs: Disable unsafe queuing disciplines (Dorinda Bassey)
+- Linux v6.13.0
+
+* Sun Jan 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.fda5e3f28400.60]
+- Linux v6.13.0-0.rc7.fda5e3f28400
+
+* Sat Jan 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.595523945be0.59]
+- Linux v6.13.0-0.rc7.595523945be0
+
+* Fri Jan 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.9bffa1ad25b8.58]
+- configs: move pending RT configs into rhel/rt/generic (Clark Williams)
+- Turn on PROVE_RAW_LOCK_NESTING for RHEL debug builds (Justin M. Forbes)
+- redhat/Makefile: Fix long dist-full-help execution time (Prarit Bhargava)
+- redhat/self-test: Update data to add HELP_TYPES variable (Prarit Bhargava)
+- redhat/Makefile: Add new dist-help functionality (Prarit Bhargava)
+- Makefile: Do not output LOCALVERSION message for help commands (Prarit Bhargava)
+- Linux v6.13.0-0.rc7.9bffa1ad25b8
+
+* Thu Jan 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.619f0b6fad52.57]
+- Fedora 6.13 configs part 2 (Justin M. Forbes)
+- Fedora 6.13 configs part 1 (Justin M. Forbes)
+
+* Wed Jan 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.619f0b6fad52.56]
+- redhat/configs: enable CONFIG_VFAT_FS as a module (Dorinda Bassey)
+- redhat: create 'debug' addon for UKI (Li Tian)
+- Linux v6.13.0-0.rc7.619f0b6fad52
+
+* Tue Jan 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.c45323b7560e.55]
+- kernel.spec: Build cpupower on riscv64 (Yanko Kaneti)
+- Linux v6.13.0-0.rc7.c45323b7560e
 
 * Mon Jan 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.54]
 - Linux v6.13.0-0.rc7

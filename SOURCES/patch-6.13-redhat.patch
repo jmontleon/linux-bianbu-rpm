@@ -66,6 +66,9 @@
  include/linux/rh_waived.h                          |  19 +
  include/linux/rmi.h                                |   1 +
  include/linux/security.h                           |   5 +
+ include/linux/stdarg.h                             |  10 +
+ include/linux/stddef.h                             |   2 +
+ include/linux/types.h                              |   2 +
  init/main.c                                        |   3 +
  kernel/Makefile                                    |   1 +
  kernel/bpf/core.c                                  |   5 +
@@ -83,7 +86,7 @@
  security/lockdown/Kconfig                          |  13 +
  security/lockdown/lockdown.c                       |   1 +
  security/security.c                                |  12 +
- 85 files changed, 2764 insertions(+), 218 deletions(-)
+ 88 files changed, 2778 insertions(+), 218 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
 index 3872bc6ec49d..b98a019b0dd0 100644
@@ -190,7 +193,7 @@ index 000000000000..fd77bd5c97e2
 +
 +endmenu
 diff --git a/Makefile b/Makefile
-index e20a62ad397f..5a30e33b12a0 100644
+index b9464c88ac72..1d97c5162532 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -2667,7 +2670,7 @@ index eb2937599cb0..7860721ef2f6 100644
  #ifdef CONFIG_PERF_EVENTS
  LSM_HOOK(int, 0, perf_event_open, struct perf_event_attr *attr, int type)
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 94acbacdcdf1..e4e6fc1bd393 100644
+index b3a643435357..54c09d4c6f38 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -426,6 +426,7 @@ struct module {
@@ -2678,7 +2681,7 @@ index 94acbacdcdf1..e4e6fc1bd393 100644
  	struct kobject *holders_dir;
  
  	/* Exported symbols */
-@@ -1023,4 +1024,8 @@ static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
+@@ -1024,4 +1025,8 @@ static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
  
  #endif  /* CONFIG_MODULES && CONFIG_KALLSYMS */
  
@@ -3414,6 +3417,59 @@ index cbdba435b798..c5c300c4f90b 100644
  static inline int lsm_fill_user_ctx(struct lsm_ctx __user *uctx,
  				    u32 *uctx_len, void *val, size_t val_len,
  				    u64 id, u64 flags)
+diff --git a/include/linux/stdarg.h b/include/linux/stdarg.h
+index c8dc7f4f390c..af7eb0ed138e 100644
+--- a/include/linux/stdarg.h
++++ b/include/linux/stdarg.h
+@@ -3,7 +3,17 @@
+ #define _LINUX_STDARG_H
+ 
+ typedef __builtin_va_list va_list;
++#if defined(__STDC_VERSION__) && __STDC_VERSION__ > 201710L
++#define va_start(v, ...) __builtin_va_start(v, 0)
++#ifdef __has_builtin
++#if __has_builtin(__builtin_c23_va_start)
++#undef va_start
++#define va_start(...)	__builtin_c23_va_start(__VA_ARGS__)
++#endif
++#endif
++#else
+ #define va_start(v, l)	__builtin_va_start(v, l)
++#endif
+ #define va_end(v)	__builtin_va_end(v)
+ #define va_arg(v, T)	__builtin_va_arg(v, T)
+ #define va_copy(d, s)	__builtin_va_copy(d, s)
+diff --git a/include/linux/stddef.h b/include/linux/stddef.h
+index 929d67710cc5..16508c74fca9 100644
+--- a/include/linux/stddef.h
++++ b/include/linux/stddef.h
+@@ -7,10 +7,12 @@
+ #undef NULL
+ #define NULL ((void *)0)
+ 
++#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+ enum {
+ 	false	= 0,
+ 	true	= 1
+ };
++#endif
+ 
+ #undef offsetof
+ #define offsetof(TYPE, MEMBER)	__builtin_offsetof(TYPE, MEMBER)
+diff --git a/include/linux/types.h b/include/linux/types.h
+index 2d7b9ae8714c..f62dca96c7f1 100644
+--- a/include/linux/types.h
++++ b/include/linux/types.h
+@@ -32,7 +32,9 @@ typedef __kernel_timer_t	timer_t;
+ typedef __kernel_clockid_t	clockid_t;
+ typedef __kernel_mqd_t		mqd_t;
+ 
++#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+ typedef _Bool			bool;
++#endif
+ 
+ typedef __kernel_uid32_t	uid_t;
+ typedef __kernel_gid32_t	gid_t;
 diff --git a/init/main.c b/init/main.c
 index 00fac1170294..17ff0814a8d1 100644
 --- a/init/main.c
@@ -4147,7 +4203,7 @@ index 000000000000..bb69e8965748
 +}
 diff --git a/kernel/rh_messages.h b/kernel/rh_messages.h
 new file mode 100644
-index 000000000000..d445a2da4180
+index 000000000000..647d7b9a4fe9
 --- /dev/null
 +++ b/kernel/rh_messages.h
 @@ -0,0 +1,326 @@
@@ -4233,8 +4289,8 @@ index 000000000000..d445a2da4180
 +	"nft_compat",
 +	"nicpf",
 +	"nicvf",
-+	"nvmet-fc",
-+	"nvmet-tcp",
++	"nvmet_fc",
++	"nvmet_tcp",
 +	"team",
 +	0     /* Terminating entry */
 +};
@@ -4419,6 +4475,7 @@ index 000000000000..d445a2da4180
 +	{ 0x15B3, 0x100e, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x15B3, 0x100f, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x15B3, 0x1010, PCI_ANY_ID, PCI_ANY_ID },
++	{ 0x15B3, 0x1025, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x15B3, 0xA2DF, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0064, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0065, PCI_ANY_ID, PCI_ANY_ID },
@@ -4455,7 +4512,6 @@ index 000000000000..d445a2da4180
 +	{ 0x1000, 0x0071, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0073, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0079, PCI_ANY_ID, PCI_ANY_ID },
-+	{ 0x15B3, 0xA2DC, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x006E, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0080, PCI_ANY_ID, PCI_ANY_ID },
 +	{ 0x1000, 0x0081, PCI_ANY_ID, PCI_ANY_ID },

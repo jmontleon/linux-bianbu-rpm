@@ -1,4 +1,4 @@
-From e801332490efa1fe44364f05b954c62a4a5c90aa Mon Sep 17 00:00:00 2001
+From 5d63dc23103da699834e9a4d6ad0bd08ffaef861 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 21 Dec 2023 20:39:40 +0800
 Subject: [PATCH 0222/1206] k1x:cpufreq: support cpufreq function
@@ -7,10 +7,10 @@ Change-Id: I0b2253f9a44c1343caf530bf3c223ed01175b562
 ---
  arch/riscv/boot/dts/spacemit/k1-x.dtsi | 107 +++++++++++++++----------
  arch/riscv/configs/k1-x_evb_defconfig  |   4 +
- drivers/cpufreq/Kconfig                |   9 +++
+ drivers/cpufreq/Kconfig                |  11 +++
  drivers/cpufreq/Makefile               |   1 +
  drivers/cpufreq/spacemit-cpufreq.c     |  41 ++++++++++
- 5 files changed, 118 insertions(+), 44 deletions(-)
+ 5 files changed, 120 insertions(+), 44 deletions(-)
  create mode 100644 drivers/cpufreq/spacemit-cpufreq.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
@@ -242,10 +242,10 @@ index 20b3bd511f97..f4921d020f1d 100644
  CONFIG_MODULE_UNLOAD=y
  # CONFIG_BLK_DEBUG_FS is not set
 diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index 92a83a9bb2e1..10007b6d6418 100644
+index 26e98fea991a..8d8c2e447be8 100644
 --- a/drivers/cpufreq/Kconfig
 +++ b/drivers/cpufreq/Kconfig
-@@ -325,6 +325,15 @@ config QORIQ_CPUFREQ
+@@ -325,6 +325,17 @@ config QORIQ_CPUFREQ
  	  This adds the CPUFreq driver support for Freescale QorIQ SoCs
  	  which are capable of changing the CPU's frequency dynamically.
  
@@ -258,9 +258,11 @@ index 92a83a9bb2e1..10007b6d6418 100644
 +	  This adds the CPUFreq driver support for Freescale QorIQ SoCs
 +	  which are capable of changing the CPU's frequency dynamically.
 +
- endif
- 
++endif
++
  config ACPI_CPPC_CPUFREQ
+ 	tristate "CPUFreq driver based on the ACPI CPPC spec"
+ 	depends on ACPI_PROCESSOR
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
 index d35a28dd9463..9100a37277bb 100644
 --- a/drivers/cpufreq/Makefile

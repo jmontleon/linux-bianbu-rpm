@@ -1,4 +1,4 @@
-From d69662068493c6b83253228c8fd512ab5041d41a Mon Sep 17 00:00:00 2001
+From ef68a0a346560294d8f4ef5bc79aa519357b2b25 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 9 Jul 2024 20:52:24 +0800
 Subject: [PATCH 0882/1206] spi-nor: supporting FM25Q64AI3 spi nor flash
@@ -25,7 +25,7 @@ index 5dd9c35f6b6f..cd9320cda798 100644
  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
  
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 66949d9f0cc5..ddadf68a9f41 100644
+index b6f374ded390..30befb059dcc 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
 @@ -1980,6 +1980,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {

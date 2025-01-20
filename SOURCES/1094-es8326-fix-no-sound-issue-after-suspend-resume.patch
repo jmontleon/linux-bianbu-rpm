@@ -1,4 +1,4 @@
-From a6d4a0b0df9edd11ff0d0bbb1f5387c26ad0faf6 Mon Sep 17 00:00:00 2001
+From 66d524031e06cca22d867a2f59d416415275e8ed Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 25 Oct 2024 10:47:35 +0800
 Subject: [PATCH 1094/1206] es8326: fix no sound issue after suspend/resume
@@ -9,7 +9,7 @@ Change-Id: I57bab21d811ed1aff8688dba4772d37e3ef39904
  1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index b4aa20f40b10..d5d246a03bb9 100644
+index 618b196ec154..14ddced248a3 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -22,6 +22,7 @@
@@ -20,7 +20,7 @@ index b4aa20f40b10..d5d246a03bb9 100644
  #endif
  
  struct es8326_priv {
-@@ -1256,7 +1257,7 @@ static void es8326_init(struct snd_soc_component *component)
+@@ -1271,7 +1272,7 @@ static void es8326_init(struct snd_soc_component *component)
  
  static int es8326_resume(struct snd_soc_component *component)
  {
@@ -29,7 +29,7 @@ index b4aa20f40b10..d5d246a03bb9 100644
  	unsigned int reg;
  
  	regcache_cache_only(es8326->regmap, false);
-@@ -1276,15 +1277,15 @@ static int es8326_resume(struct snd_soc_component *component)
+@@ -1291,15 +1292,15 @@ static int es8326_resume(struct snd_soc_component *component)
  	regmap_write(es8326->regmap, ES8326_ADC2_SRC, es8326->mic2_src);
  #endif
  
@@ -48,7 +48,7 @@ index b4aa20f40b10..d5d246a03bb9 100644
  		if (es8326->irq > 0)
  			es8326_irq(es8326->irq, es8326);
  		else
-@@ -1294,9 +1295,9 @@ static int es8326_resume(struct snd_soc_component *component)
+@@ -1309,9 +1310,9 @@ static int es8326_resume(struct snd_soc_component *component)
  	return 0;
  }
  
@@ -60,7 +60,7 @@ index b4aa20f40b10..d5d246a03bb9 100644
  
  	cancel_delayed_work_sync(&es8326->jack_detect_work);
  	es8326_disable_micbias(component);
-@@ -1546,8 +1547,10 @@ static void es8326_remove(struct snd_soc_component *component)
+@@ -1561,8 +1562,10 @@ static void es8326_remove(struct snd_soc_component *component)
  static const struct snd_soc_component_driver soc_component_dev_es8326 = {
  	.probe		= es8326_probe,
  	.remove		= es8326_remove,
@@ -71,7 +71,7 @@ index b4aa20f40b10..d5d246a03bb9 100644
  	.set_bias_level = es8326_set_bias_level,
  	.set_jack	= es8326_set_jack,
  	.dapm_widgets	= es8326_dapm_widgets,
-@@ -1712,11 +1715,20 @@ static const struct acpi_device_id es8326_acpi_match[] = {
+@@ -1727,11 +1730,20 @@ static const struct acpi_device_id es8326_acpi_match[] = {
  MODULE_DEVICE_TABLE(acpi, es8326_acpi_match);
  #endif
  
