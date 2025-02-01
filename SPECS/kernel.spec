@@ -150,7 +150,7 @@ Summary: The Linux kernel
 #  kernel release. (This includes prepatch or "rc" releases.)
 # Set released_kernel to 0 when the upstream source tarball contains an
 #  unreleased kernel development snapshot.
-%global released_kernel 0
+%global released_kernel 1
 # Set debugbuildsenabled to 1 to build separate base and debug kernels
 #  (on supported architectures). The kernel-debug-* subpackages will
 #  contain the debug kernel.
@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.0
-%define specversion 6.13.0
+%define specrpmversion 6.13.1
+%define specversion 6.13.1
 %define patchversion 6.13
-%define pkgrelease 62
+%define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13
+%define tarfile_release 6.13.1
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 62%{?buildid}%{?dist}
+%define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.0
+%define kabiversion 6.13.1
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -711,7 +711,7 @@ BuildRequires: kmod, bash, coreutils, tar, git-core, which
 BuildRequires: bzip2, xz, findutils, m4, perl-interpreter, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk, %compression
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc, bison, flex, gcc-c++
 %if 0%{?fedora}
-BuildRequires: rust, rust-src, bindgen
+BuildRequires: rust, rust-src, bindgen, rustfmt
 %endif
 BuildRequires: net-tools, hostname, bc, elfutils-devel
 BuildRequires: dwarves
@@ -4461,14 +4461,6 @@ for i in *.config; do
 done
 %endif
 
-# Adjust FIPS module name for RHEL
-%if 0%{?rhel}
-%{log_msg "Adjust FIPS module name for RHEL"}
-for i in *.config; do
-  sed -i 's/CONFIG_CRYPTO_FIPS_NAME=.*/CONFIG_CRYPTO_FIPS_NAME="Red Hat Enterprise Linux %{rhel} - Kernel Cryptographic API"/' $i
-done
-%endif
-
 %{log_msg "Set process_configs.sh $OPTS"}
 cp %{SOURCE81} .
 OPTS=""
@@ -5822,7 +5814,7 @@ chmod 0755 %{buildroot}%{_libdir}/libcpupower.so*
    %{tools_make} DESTDIR=%{buildroot} install
    popd
    pushd tools/arch/x86/intel_sdsi
-   %{tools_make} CFLAGS="${RPM_OPT_FLAGS}" DESTDIR=%{buildroot} BINDIR=%{_sbindir} install
+   %{tools_make} CFLAGS="${RPM_OPT_FLAGS}" DESTDIR=%{buildroot} install
    popd
 %endif
 pushd tools/thermal/tmon
@@ -6606,13 +6598,52 @@ fi\
 #
 #
 %changelog
-* Mon Jan 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-62]
-- include/linux: Adjust headers for C23 (Jakub Jelinek)
-
-* Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-62]
-- Fix build with merged-sbin (Adam Williamson)
-- x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
+* Sat Feb 01 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.1-0]
+- media: ov08x40: Don't log ov08x40_check_hwcfg() errors twice (Hans de Goede)
+- media: ov08x40: Add missing '\n' to ov08x40_check_hwcfg() error messages (Hans de Goede)
+- media: ov08x40: Add missing ov08x40_identify_module() call on stream-start (Hans de Goede)
+- media: ov08x40: Improve ov08x40_[read|write]_reg() error returns (Hans de Goede)
+- media: ov08x40: Improve ov08x40_identify_module() error logging (Hans de Goede)
+- media: ov08x40: Move ov08x40_identify_module() function up (Hans de Goede)
+- media: ov08x40: Get clock on ACPI platforms too (Hans de Goede)
+- media: ov08x40: Get reset GPIO and regulators on ACPI platforms too (Hans de Goede)
+- media: ov08x40: Move fwnode_graph_get_next_endpoint() call up (Hans de Goede)
+- media: ov08x40: Properly turn sensor on/off when runtime-suspended (Hans de Goede)
+- Turn on drivers for INTEL_THC_HID (Justin M. Forbes)
+- HID: intel-thc-hid: fix build errors in um mode (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: fix potential memory corruption (Even Xu)
+- HID: intel-thc-hid: intel-thc: Fix error code in thc_i2c_subip_init() (Dan Carpenter)
+- HID: intel-thc-hid: intel-quicki2c: Add PM implementation (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: Complete THC QuickI2C driver (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: Add HIDI2C protocol implementation (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: Add THC QuickI2C ACPI interfaces (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: Add THC QuickI2C driver hid layer (Even Xu)
+- HID: intel-thc-hid: intel-quicki2c: Add THC QuickI2C driver skeleton (Even Xu)
+- HID: intel-thc-hid: intel-quickspi: Add PM implementation (Even Xu)
+- HID: intel-thc-hid: intel-quickspi: Complete THC QuickSPI driver (Xinpeng Sun)
+- HID: intel-thc-hid: intel-quickspi: Add HIDSPI protocol implementation (Even Xu)
+- HID: intel-thc-hid: intel-quickspi: Add THC QuickSPI ACPI interfaces (Even Xu)
+- HID: intel-thc-hid: intel-quickspi: Add THC QuickSPI driver hid layer (Even Xu)
+- HID: intel-thc-hid: intel-quickspi: Add THC QuickSPI driver skeleton (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC I2C config interfaces (Even Xu)
+- HID: intel-thc-hid: intel-thc: Add THC SPI config interfaces (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC interrupt handler (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC LTR interfaces (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC DMA interfaces (Even Xu)
+- HID: intel-thc-hid: intel-thc: Add APIs for interrupt (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC PIO operation APIs (Xinpeng Sun)
+- HID: intel-thc-hid: intel-thc: Add THC registers definition (Xinpeng Sun)
+- HID: intel-thc-hid: Add basic THC driver skeleton (Xinpeng Sun)
+- HID: THC: Add documentation (Even Xu)
+- redhat: fix modules.order target (Scott Weaver)
 - kernel.spec: update license field (Scott Weaver)
+- x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
+- Initial setup for stable Fedora releases (Justin M. Forbes)
+- Turn off CONFIG_ARM_TIMER_SP804 for automotive (Justin M. Forbes)
+- Set ARM_TIMER_SP804 (Justin M. Forbes)
+- redhat/configs: enable addtional sa8775 related Kconfigs (Brian Masney)
+- redhat: Add rustfmt to deps (Peter Robinson)
+- Linux v6.13.1
 
 * Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-61]
 - redhat/configs: Disable deprecated CONFIG_LCS option on s390 (Mete Durlu) [RHEL-68296]
