@@ -1,0 +1,836 @@
+From a504f0640b125b1d32ddbc9359d455758306cb0b Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Sat, 23 Dec 2023 17:07:22 +0800
+Subject: [PATCH 0234/1451] display: Support lcd icnl9911c mipi
+
+Change-Id: I06bc4a982580edc2c56cf984d4039db9325a0d84
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  22 ++
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     |  38 +++
+ .../dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi  | 100 ++++++++
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c     | 222 +++---------------
+ .../gpu/drm/spacemit/dsi/spacemit_dptc_drv.h  |   3 +
+ drivers/gpu/drm/spacemit/spacemit_dpu.c       |  70 ++++--
+ drivers/gpu/drm/spacemit/spacemit_dpu.h       |  16 +-
+ drivers/gpu/drm/spacemit/spacemit_dsi.h       |   2 +-
+ .../gpu/drm/spacemit/spacemit_mipi_panel.c    |  36 +--
+ .../gpu/drm/spacemit/spacemit_mipi_panel.h    |   6 +-
+ 10 files changed, 295 insertions(+), 220 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 3e35c7b4f2e1..74cc13f7c05d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1735,6 +1735,28 @@ dpu_online2: port@c0340000 {
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <90>, <89>;
+ 			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
++			clocks = <&ccu CLK_DPU_PXCLK>,
++				<&ccu CLK_DPU_MCLK>,
++				<&ccu CLK_DPU_HCLK>,
++				<&ccu CLK_DPU_ESC>,
++				<&ccu CLK_DPU_BIT>;
++			clock-names = "pxclk", "mclk", "hclk", "escclk", "bitclk";
++			assigned-clocks = <&ccu CLK_DPU_PXCLK>,
++				<&ccu CLK_DPU_MCLK>,
++				<&ccu CLK_DPU_HCLK>,
++				<&ccu CLK_DPU_ESC>,
++				<&ccu CLK_DPU_BIT>;
++			assigned-clock-parents = <&ccu CLK_PLL1_614>,
++				<&ccu CLK_PLL1_307P2>,
++				<0>,
++				<&ccu CLK_PLL1_51P2_AP>,
++				<&ccu CLK_PLL1_1228>;
++			resets = <&reset RESET_MIPI>,
++				<&reset RESET_LCD_MCLK>,
++				<&reset RESET_LCD>,
++				<&reset RESET_DSI_ESC>;
++			reset-names= "dsi_reset", "mclk_reset", "lcd_reset","esc_reset";
++			power-domains = <&power K1X_PMU_LCD_PWR_DOMAIN>;
+ 			pipeline-id = <ONLINE2>;
+ 			ip = "spacemit-saturn";
+ 			spacemit-dpu-min-mclk = <40960000>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 5c00290281c4..f8c0f0460333 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -5,6 +5,7 @@
+ 
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
++#include "lcd/lcd_icnl9911c_mipi.dtsi"
+ / {
+ 	model = "spacemit k1-x evb board";
+ 
+@@ -70,6 +71,10 @@ core3 {
+ 		};
+ 	};
+ 
++	lcds: lcds {
++		status = "ok";
++	};
++
+ 	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x00000000 0x0 0x80000000>;
+@@ -92,6 +97,13 @@ linux,cma@70000000 {
+ 			/* besides hardware, dma for ex. buffer can be used by memory management */
+ 			reusable;
+ 		};
++
++		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
++		dpu_resv: dpu_reserved@27000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0x27000000 0x0 0x00060000>;
++			no-map;
++		};
+ 	};
+ 
+ 	chosen {
+@@ -119,6 +131,32 @@ vcc4v0_baseboard: vcc4v0-baseboard {
+ 	};
+ };
+ 
++&dpu_online2 {
++	memory-region = <&dpu_resv>;
++	lcd_2v8-supply = <&ldo_13>;
++	lcd_1v8-supply = <&ldo_15>;
++	dsi_1v2-supply = <&ldo_17>;
++	vin-supply-names = "lcd_2v8", "lcd_1v8", "dsi_1v2";
++	status = "okay";
++};
++
++&dsi2 {
++	status = "okay";
++
++	panel2: panel2@0 {
++		status = "ok";
++		compatible = "spacemit,mipi-panel2";
++		reg = <0>;
++
++		gpios-te = <91>;
++		gpios-bl = <23>;
++		gpios-reset = <24>;
++		gpios-dc = <21 22>;
++		id = <2>;
++		force-attached = "lcd_icnl9911c_mipi";
++	};
++};
++
+ &i2c8 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+new file mode 100644
+index 000000000000..78207f36e6eb
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/ { lcds {
++	lcd_icnl9911c_mipi: lcd_icnl9911c_mipi {
++		dsi-work-mode = <1>; /* video burst mode*/
++		dsi-lane-number = <4>;
++		dsi-color-format = "rgb888";
++		phy-bit-clock = <911000>;	/* kbps */
++		phy-escape-clock = <52000>;/* kHz */
++
++		width-mm = <72>;
++		height-mm = <126>;
++
++		use-dcs-write;
++
++		/*mipi info*/
++		height = <1600>;
++		width = <720>;
++		hfp = <48>;
++		hbp = <48>;
++		hsync = <4>;
++		vfp = <150>;
++		vbp = <32>;
++		vsync = <4>;
++		fps = <60>;
++		work-mode = <0>;
++		rgb-mode = <3>;
++		lane-number = <4>;
++		phy-freq = <624000>;
++		split-enable = <0>;
++		eotp-enable = <0>;
++		burst-mode = <2>;
++		esd-check-enable = <0>;
++
++		/* DSI_CMD, DSI_MODE, timeout, len, cmd */
++		initial-command = [
++			39 01 00 03 F0 5A 59
++			39 01 00 03 F1 A5 A6
++			39 01 00 21 B0 83 82 86 87 06 07 04 05 33 33 33 33 20 00 00 77 00 00 3F 05 04 03 02 01 02 03 04 00 00 00 00 00
++			39 01 00 1e B1 13 91 8E 81 20 00 00 77 00 00 04 08 54 00 00 00 44 40 02 01 40 02 01 40 02 01 40 02 01
++			39 01 00 12 B2 54 C4 82 05 40 02 01 40 02 01 05 05 54 0C 0C 0D 0B
++			39 01 00 20 B3 12 00 00 00 00 26 26 91 91 91 91 3C 26 00 18 01 02 08 20 30 08 09 44 20 40 20 40 08 09 22 33
++			39 01 00 1D B4 03 00 00 06 1E 1F 0C 0E 10 12 14 16 04 03 03 03 03 03 03 03 03 03 FF FF FC 00 00 00
++			39 01 00 1D B5 03 00 00 07 1E 1F 0D 0F 11 13 15 17 05 03 03 03 03 03 03 03 03 03 FF FF FC 00 00 00
++			39 01 00 19 B8 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++			39 01 00 03 BA 6B 6B
++			39 01 00 0E BB 01 05 09 11 0D 19 1D 55 25 69 00 21 25
++			39 01 00 0F BC 00 00 00 00 02 20 FF 00 03 33 01 73 33 02
++			39 01 00 0B BD E9 02 4F CF 72 A4 08 44 AE 15
++			39 01 00 0D BE 7D 7D 5A 46 0C 77 43 07 0E 0E 00 00
++			39 01 00 09 BF 07 25 07 25 7F 00 11 04
++			39 01 00 0D C0 10 FF FF FF FF FF 00 FF 00 00 00 00
++			39 01 00 14 C1 C0 20 20 96 04 32 32 04 2A 40 36 00 07 CF FF FF C0 00 C0
++			39 01 00 02 C2 00
++			39 01 00 10 C2 CC 01 10 00 01 30 02 21 43 00 01 30 02 21 43
++			39 01 00 0D C3 06 00 FF 00 FF 00 00 81 01 00 00 00
++			39 01 00 0D C4 84 03 2B 41 00 3C 00 03 03 3E 00 00
++			39 01 00 0C C5 03 1C C0 C0 40 10 42 44 0F 0A 14
++			39 01 00 0B C6 87 A0 2A 29 29 00 64 37 08 04
++			39 01 00 17 C7 F7 D3 BA A5 80 63 36 8B 56 2A FF CE 23 F4 D3 A4 86 5A 1A 7F E4 00
++			39 01 00 17 C8 F7 D3 BA A5 80 63 36 8B 56 2A FF CE 23 F4 D3 A4 86 5A 1A 7F E4 00
++			39 01 00 09 D0 80 0D FF 0F 61 0B 08 0C
++			39 01 00 0E D2 42 0C 30 01 80 26 04 00 00 C3 00 00 00
++			39 01 00 03 F1 5A 59
++			39 01 00 03 F0 A5 A6
++			39 01 00 02 35 00
++			39 01 96 01 11
++			39 01 32 01 29
++		];
++		sleep-in-command = [
++			39 01 00 02 26 08
++			39 01 78 01 28
++			39 01 78 01 10
++		];
++		sleep-out-command = [
++			39 01 96 01 11
++			39 01 32 01 29
++		];
++		read-id-command = [
++			37 01 00 01 01
++			14 01 00 01 04
++		];
++
++		display-timings {
++			timing0 {
++				clock-frequency = <87870000>;
++				hactive = <720>;
++				hfront-porch = <48>;
++				hback-porch = <48>;
++				hsync-len = <4>;
++				vactive = <1600>;
++				vfront-porch = <150>;
++				vback-porch = <32>;
++				vsync-len = <4>;
++				vsync-active = <1>;
++				hsync-active = <1>;
++			};
++		};
++	};
++};};
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index ee2ca88f1555..3c01527a98d8 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -164,6 +164,22 @@ const u32 saturn_le_rdma_fixed_fbcmem_sizes[] = {
+ 	32 * 1024,
+ };
+ 
++static atomic_t mclk_cnt = ATOMIC_INIT(0);;
++bool dpu_mclk_exclusive_get(void)
++{
++	if (0 == atomic_cmpxchg(&mclk_cnt, 0, 1))
++		return true;
++	else
++		return false;
++}
++EXPORT_SYMBOL(dpu_mclk_exclusive_get);
++
++void dpu_mclk_exclusive_put(void)
++{
++	atomic_set(&mclk_cnt, 0);
++}
++EXPORT_SYMBOL(dpu_mclk_exclusive_put);
++
+ struct spacemit_hw_device spacemit_dp_devices[DP_MAX_DEVICES] = {
+ 	[SATURN] = {
+ 		.base = NULL,		/* Parsed by dts */
+@@ -200,7 +216,6 @@ EXPORT_SYMBOL(spacemit_dp_devices);
+ 
+ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ {
+-#if 0
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 
+ 	clk_ctx->pxclk = of_clk_get_by_name(np, "pxclk");
+@@ -237,11 +252,10 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ 		dpu->min_mclk = DPU_MCLK_DEFAULT;
+ 
+ 	if (of_property_read_bool(np, "spacemit-dpu-auto-fc"))
+-		dpu->enable_auto_fc = 1;
++		dpu->enable_auto_fc = 0;
+ 
+ 	if (of_property_read_u32(np, "spacemit-dpu-bitclk", &dpu->bitclk))
+ 		dpu->bitclk = DPU_BITCLK_DEFAULT;
+-#endif
+ 	return 0;
+ }
+ 
+@@ -407,7 +421,6 @@ int dpu_calc_plane_mclk_bw(struct drm_plane *plane, \
+ 
+ static int dpu_update_clocks(struct spacemit_dpu *dpu, uint64_t mclk)
+ {
+-#if 0
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 	uint64_t cur_mclk = 0;
+ 	int ret = 0;
+@@ -435,7 +448,7 @@ static int dpu_update_clocks(struct spacemit_dpu *dpu, uint64_t mclk)
+ 
+ 		return 0;
+ 	}
+-#endif
++
+ 	return 0;
+ }
+ 
+@@ -453,7 +466,6 @@ static int dpu_update_bw(struct spacemit_dpu *dpu, uint64_t bw)
+ 
+ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ {
+-#if 0
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 	struct drm_crtc *crtc = &dpu->crtc;
+ 	struct drm_display_mode *mode = &crtc->mode;
+@@ -467,6 +479,10 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ 	clk_prepare_enable(clk_ctx->bitclk);
+ 
+ 	set_clk_val = mode->clock * 1000;
++	DRM_INFO("pxclk set_clk_val %lld\n", set_clk_val);
++	set_clk_val = DPU_PXCLK_DEFAULT;
++	DRM_INFO("pxclk default %lld\n", set_clk_val);
++
+ 	if (set_clk_val) {
+ 		set_clk_val = clk_round_rate(clk_ctx->pxclk, set_clk_val);
+ 		clk_val = clk_get_rate(clk_ctx->pxclk);
+@@ -501,15 +517,23 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ 		DRM_DEBUG("bitclk=%lld\n", clk_val);
+ 	}
+ 
++	clk_val = clk_get_rate(clk_ctx->pxclk);
++	DRM_INFO("pxclk=%lld\n", clk_val);
++	clk_val = clk_get_rate(clk_ctx->mclk);
++	DRM_INFO("mclk=%lld\n", clk_val);
++	clk_val = clk_get_rate(clk_ctx->hclk);
++	DRM_INFO("hclk=%lld\n", clk_val);
++	clk_val = clk_get_rate(clk_ctx->escclk);
++	DRM_INFO("escclk=%lld\n", clk_val);
++	clk_val = clk_get_rate(clk_ctx->bitclk);
++	DRM_INFO("bitclk=%lld\n", clk_val);
++
+ 	trace_dpu_enable_clocks(dpu->dev_id);
+-#endif
+ 	return 0;
+-
+ }
+ 
+ static int dpu_disable_clocks(struct spacemit_dpu *dpu)
+ {
+-#if 0
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 
+ 	trace_dpu_disable_clocks(dpu->dev_id);
+@@ -519,7 +543,6 @@ static int dpu_disable_clocks(struct spacemit_dpu *dpu)
+ 	clk_disable_unprepare(clk_ctx->hclk);
+ 	clk_disable_unprepare(clk_ctx->escclk);
+ 	clk_disable_unprepare(clk_ctx->bitclk);
+-#endif
+ 	return 0;
+ }
+ 
+@@ -1011,179 +1034,7 @@ static u32 saturn_conf_dpuctrl_scaling(struct spacemit_dpu *dpu)
+ }
+ 
+ void spacemit_update_hdr_matrix(struct drm_plane *plane, struct spacemit_plane_state *spacemit_pstate){
+-	struct spacemit_drm_private *priv = plane->dev->dev_private;
+-	struct spacemit_hw_device *hwdev = priv->hwdev;
+-	struct drm_property_blob * blob = spacemit_pstate->hdr_coefs_blob_prop;
+-	u32 module_base = LP0_BASE_ADDR + spacemit_pstate->rdma_id * LP_SIZE;
+-	int val;
+-	int *coef_data;
+-	
+-	return;
+ 
+-	if (blob){
+-		coef_data = (int *)blob->data;
+-
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_0, 0xDF);
+-
+-		//set the value of hdr_coefs[0] to m_ngain_to_full
+-		val = dpu_read_reg(hwdev, PREPIPE_LAYER_PROC_X_REG, module_base, v.layer_proc_reg_77);
+-		val |= coef_data[0];
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_77, val);
+-		//set the value of to hdr_coefs[1] to m_nfront_tmootf_shift_bits and hdr_coefs[2] to m_nfront_tmootf_rgb_mode
+-		val = dpu_read_reg(hwdev, PREPIPE_LAYER_PROC_X_REG, module_base, v.layer_proc_reg_35);
+-		val |=coef_data[1]<<16 | coef_data[2]<<21;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_35, val);
+-
+-		//set the value of hdr_coefs[3] ~ hdr_coefs[66] to m_pfront_tmootf_gain_table0 ~ 63
+-		val = coef_data[3] | coef_data[4] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_3, val);
+-		val = coef_data[5] | coef_data[6] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_4, val);
+-		val = coef_data[7] | coef_data[8] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_5, val);
+-		val = coef_data[9] | coef_data[10] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_6, val);
+-		val = coef_data[11] | coef_data[12] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_7, val);
+-		val = coef_data[13] | coef_data[14] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_8, val);
+-		val = coef_data[15] | coef_data[16] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_9, val);
+-		val = coef_data[17] | coef_data[18] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_10, val);
+-		val = coef_data[19] | coef_data[20] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_11, val);
+-		val = coef_data[21] | coef_data[22] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_12, val);
+-		val = coef_data[23] | coef_data[24] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_13, val);
+-		val = coef_data[25] | coef_data[26] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_14, val);
+-		val = coef_data[27] | coef_data[28] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_15, val);
+-		val = coef_data[29] | coef_data[30] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_16, val);
+-		val = coef_data[31] | coef_data[32] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_17, val);
+-		val = coef_data[33] | coef_data[34] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_18, val);
+-		val = coef_data[35] | coef_data[36] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_19, val);
+-		val = coef_data[37] | coef_data[38] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_20, val);
+-		val = coef_data[39] | coef_data[40] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_21, val);
+-		val = coef_data[41] | coef_data[42] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_22, val);
+-		val = coef_data[43] | coef_data[44] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_23, val);
+-		val = coef_data[45] | coef_data[46] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_24, val);
+-		val = coef_data[47] | coef_data[48] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_25, val);
+-		val = coef_data[49] | coef_data[50] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_26, val);
+-		val = coef_data[51] | coef_data[52] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_27, val);
+-		val = coef_data[53] | coef_data[54] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_28, val);
+-		val = coef_data[55] | coef_data[56] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_29, val);
+-		val = coef_data[57] | coef_data[58] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_30, val);
+-		val = coef_data[59] | coef_data[60] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_31, val);
+-		val = coef_data[61] | coef_data[62] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_32, val);
+-		val = coef_data[63] | coef_data[64] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_33, val);
+-		val = coef_data[65] | coef_data[66] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_34, val);
+-
+-		//set the value of hdr_coefs[67] to m_pfront_tmootf_gain_table64
+-		val = dpu_read_reg(hwdev, PREPIPE_LAYER_PROC_X_REG, module_base, v.layer_proc_reg_35);
+-		val |= coef_data[67];
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_35, val);
+-
+-		//set the value of to hdr_coefs[68] to m_nend_tmootf_shift_bits and hdr_coefs[70] to m_nend_tmootf_rgb_mode
+-		val = dpu_read_reg(hwdev, PREPIPE_LAYER_PROC_X_REG, module_base, v.layer_proc_reg_68);
+-		val |=coef_data[68]<<16 | coef_data[69]<<21;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_68, val);
+-
+-		//set the value of hdr_coefs[70] ~ hdr_coefs[133] to m_pend_tmootf_gain_table0 ~ 63
+-		val = coef_data[70] | coef_data[71] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_36, val);
+-		val = coef_data[72] | coef_data[73] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_37, val);
+-		val = coef_data[74] | coef_data[75] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_38, val);
+-		val = coef_data[76] | coef_data[77] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_39, val);
+-		val = coef_data[78] | coef_data[79] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_40, val);
+-		val = coef_data[80] | coef_data[81] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_41, val);
+-		val = coef_data[82] | coef_data[83] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_42, val);
+-		val = coef_data[84] | coef_data[85] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_43, val);
+-		val = coef_data[86] | coef_data[87] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_44, val);
+-		val = coef_data[88] | coef_data[89] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_45, val);
+-		val = coef_data[90] | coef_data[91] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_46, val);
+-		val = coef_data[92] | coef_data[93] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_47, val);
+-		val = coef_data[94] | coef_data[95] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_48, val);
+-		val = coef_data[96] | coef_data[97] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_49, val);
+-		val = coef_data[98] | coef_data[99] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_50, val);
+-		val = coef_data[100] | coef_data[101] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_51, val);
+-		val = coef_data[102] | coef_data[103] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_52, val);
+-		val = coef_data[104] | coef_data[105] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_53, val);
+-		val = coef_data[106] | coef_data[107] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_54, val);
+-		val = coef_data[108] | coef_data[109] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_55, val);
+-		val = coef_data[110] | coef_data[111] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_56, val);
+-		val = coef_data[112] | coef_data[113] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_57, val);
+-		val = coef_data[114] | coef_data[115] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_58, val);
+-		val = coef_data[116] | coef_data[117] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_59, val);
+-		val = coef_data[118] | coef_data[119] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_60, val);
+-		val = coef_data[120] | coef_data[121] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_61, val);
+-		val = coef_data[122] | coef_data[123] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_62, val);
+-		val = coef_data[124] | coef_data[125] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_63, val);
+-		val = coef_data[126] | coef_data[127] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_64, val);
+-		val = coef_data[128] | coef_data[129] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_65, val);
+-		val = coef_data[130] | coef_data[131] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_66, val);
+-		val = coef_data[132] | coef_data[133] << 16;
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_67, val);
+-
+-		//set the value of hdr_coefs[134] to m_pend_tmootf_gain_table64
+-		val = dpu_read_reg(hwdev, PREPIPE_LAYER_PROC_X_REG, module_base, v.layer_proc_reg_68);
+-		val |= coef_data[134];
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_68, val);
+-	}
+-	else{
+-		write_to_cmdlist(PREPIPE_LAYER_PROC_X_REG, module_base, layer_proc_reg_0, 0x00);
+-	}
+ }
+ 
+ static u32 saturn_conf_dpuctrl_rdma(struct spacemit_dpu *dpu)
+@@ -1460,7 +1311,6 @@ static void saturn_init_regs(struct spacemit_dpu *dpu)
+ 	dpu_write_reg(hwdev, OUTCTRL_TOP_X_REG, base, vsp, 1);
+ 	dpu_write_reg(hwdev, OUTCTRL_TOP_X_REG, base, h_active, mode->hdisplay);
+ 	dpu_write_reg(hwdev, OUTCTRL_TOP_X_REG, base, v_active, mode->vdisplay);
+-	dpu_write_reg(hwdev, OUTCTRL_TOP_X_REG, base, disp_ready_man_en, 0);
+ 
+ 	dpu_write_reg(hwdev, OUTCTRL_TOP_X_REG, base, user, 2); /* RGB888 */
+ 
+@@ -1559,7 +1409,9 @@ static int dpu_init(struct spacemit_dpu *dpu)
+ 	unsigned int timeout = 1000;
+ 	struct spacemit_drm_private *priv = dpu->crtc.dev->dev_private;
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
++#ifdef CONFIG_SPACEMIT_FPGA
+ 	void __iomem *addr = (void __iomem *)ioremap(0xD4282800, 100);
++#endif
+ 
+ 	trace_dpu_init(dpu->dev_id);
+ 
+@@ -1572,9 +1424,11 @@ static int dpu_init(struct spacemit_dpu *dpu)
+ 	if (timeout == 0)
+ 		DRM_ERROR("%s wait cfg ready done timeout\n", __func__);
+ 
+-	//for spacemit FPGA: enable PMU
++#ifdef CONFIG_SPACEMIT_FPGA
++	//for FPGA: enable PMU
+ 	writel(0xffa1ffff, addr + 0x44);
+ 	writel(0xFF65FF05, addr + 0x4c);
++#endif
+ 
+ 	saturn_init_regs(dpu);
+ 	saturn_setup_dma_top(dpu);
+diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
+index 9cc4d49856b5..527e6c135900 100644
+--- a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
++++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
+@@ -7,7 +7,10 @@
+ #ifndef _DPTC_DRV_H_
+ #define _DPTC_DRV_H_
+ 
++
++#ifdef CONFIG_SPACEMIT_FPGA
+ #define DPTC_DPHY_TEST 1
++#endif
+ 
+ typedef enum
+ {
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index 810b1d4ded71..224e8c52d10f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -37,22 +37,6 @@ LIST_HEAD(dpu_core_head);
+ static int spacemit_dpu_init(struct spacemit_dpu *dpu);
+ static int spacemit_dpu_uninit(struct spacemit_dpu *dpu);
+ 
+-static atomic_t mclk_cnt = ATOMIC_INIT(0);;
+-bool dpu_mclk_exclusive_get(void)
+-{
+-	if (0 == atomic_cmpxchg(&mclk_cnt, 0, 1))
+-		return true;
+-	else
+-		return false;
+-}
+-EXPORT_SYMBOL(dpu_mclk_exclusive_get);
+-
+-void dpu_mclk_exclusive_put(void)
+-{
+-	atomic_set(&mclk_cnt, 0);
+-}
+-EXPORT_SYMBOL(dpu_mclk_exclusive_put);
+-
+ static int spacemit_crtc_atomic_check_color_matrix(struct drm_crtc *crtc,
+ 					  struct drm_crtc_state *state)
+ {
+@@ -886,6 +870,9 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ #endif
+ 	const char *str;
+ 	u32 dpu_id;
++	int result;
++
++	DRM_INFO("spacemit_dpu_probe\n");
+ 
+ 	if (!dev->of_node) {
+ 		DRM_DEV_ERROR(dev, "can't find dpu devices\n");
+@@ -925,6 +912,23 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	}
+ #endif
+ 
++	dpu->dsi_reset = devm_reset_control_get_exclusive(&pdev->dev, "dsi_reset");
++	if (IS_ERR_OR_NULL(dpu->dsi_reset)) {
++		DRM_DEV_ERROR(dev, "not found dsi_reset\n");
++	}
++	dpu->mclk_reset = devm_reset_control_get_exclusive(&pdev->dev, "mclk_reset");
++	if (IS_ERR_OR_NULL(dpu->mclk_reset)) {
++		DRM_DEV_ERROR(dev, "not found mclk_reset\n");
++	}
++	dpu->lcd_reset = devm_reset_control_get_exclusive(&pdev->dev, "lcd_reset");
++	if (IS_ERR_OR_NULL(dpu->lcd_reset)) {
++		DRM_DEV_ERROR(dev, "not found lcd_reset\n");
++	}
++	dpu->esc_reset = devm_reset_control_get_exclusive(&pdev->dev, "esc_reset");
++	if (IS_ERR_OR_NULL(dpu->esc_reset)) {
++		DRM_DEV_ERROR(dev, "not found esc_reset\n");
++	}
++
+ 	/*
+ 	 * To keep bootloader logo on, below operations must be
+ 	 * done in probe func as power domain framework will turn
+@@ -934,6 +938,40 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	if (spacemit_dpu_logo_booton)
+ 		pm_runtime_get_sync(&pdev->dev);
+ 
++	result = reset_control_assert(dpu->esc_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to assert esc_reset: %d\n", result);
++	}
++	result = reset_control_assert(dpu->lcd_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to assert lcd_reset: %d\n", result);
++	}
++	result = reset_control_assert(dpu->mclk_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to assert mclk_reset: %d\n", result);
++	}
++	result = reset_control_assert(dpu->dsi_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to assert dsi_reset: %d\n", result);
++	}
++	udelay(2);
++	result = reset_control_deassert(dpu->dsi_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to deassert dsi_reset: %d\n", result);
++	}
++	result = reset_control_deassert(dpu->mclk_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to deassert mclk_reset: %d\n", result);
++	}
++	result = reset_control_deassert(dpu->lcd_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to deassert lcd_reset: %d\n", result);
++	}
++	result = reset_control_deassert(dpu->esc_reset);
++	if (result < 0) {
++		DRM_DEV_ERROR(dev, "Failed to deassert esc_reset: %d\n", result);
++	}
++
+ 	return component_add(dev, &dpu_component_ops);
+ }
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+index a32ecd1a08e4..0fa8b56e4624 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+@@ -15,7 +15,7 @@
+ #include <linux/bug.h>
+ #include <video/videomode.h>
+ #include <linux/workqueue.h>
+-
++#include <linux/reset.h>
+ #include <drm/drm_atomic_uapi.h>
+ #include <drm/drm_print.h>
+ #include <drm/drm_crtc.h>
+@@ -56,6 +56,7 @@
+ #define DPU_STOP_TIMEOUT		(2000)
+ #define DPU_CTRL_MAX_TIMING_INTER1	(0xf)
+ 
++/*
+ #define DPU_PXCLK_DEFAULT	98000000
+ #define DPU_MCLK_DEFAULT	307000000
+ #define DPU_MCLK_MAX		614400000
+@@ -63,6 +64,15 @@
+ #define DPU_AXICLK_DEFAULT	409000000
+ #define DPU_ESCCLK_DEFAULT	52000000
+ #define DPU_BITCLK_DEFAULT	624000000
++*/
++
++#define DPU_PXCLK_DEFAULT	88000000
++#define DPU_MCLK_DEFAULT	307200000
++#define DPU_MCLK_MAX		614400000
++#define DPU_MCLK_MIN		40960000
++#define DPU_AXICLK_DEFAULT	409000000
++#define DPU_ESCCLK_DEFAULT	51200000
++#define DPU_BITCLK_DEFAULT	614400000
+ 
+ #define MAX_SCALER_NUMS		1
+ 
+@@ -127,6 +137,10 @@ struct spacemit_dpu {
+ 	uint64_t cur_bw;
+ 	struct drm_property *color_matrix_property;
+ 	uint32_t bitclk;
++	struct reset_control *dsi_reset;
++	struct reset_control *mclk_reset;
++	struct reset_control *lcd_reset;
++	struct reset_control *esc_reset;
+ #ifdef CONFIG_SPACEMIT_DEBUG
+ 	bool (*is_dpu_running)(struct spacemit_dpu* dpu);
+ 	struct notifier_block nb;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
+index e2696925709e..f9fdc4d30090 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dsi.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
+@@ -43,7 +43,7 @@
+ #define AUTO_WC_DIS_DEFAULT 0
+ #define VSYNC_RST_EN_DEFAULT 1
+ 
+-#define MAX_TX_CMD_COUNT 100
++#define MAX_TX_CMD_COUNT 256
+ #define MAX_RX_DATA_COUNT 64
+ 
+ enum spacemit_mipi_burst_mode{
+diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+index 3c84b5b9dee2..387d27187b14 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
++++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+@@ -120,7 +120,8 @@ static int spacemit_panel_unprepare(struct drm_panel *p)
+ 		gpio_direction_output(panel->gpio_bl, 0);
+ 	}
+ 	msleep(150);
+-	gpio_direction_output(panel->gpio_dc, 0);
++	gpio_direction_output(panel->gpio_dc[0], 0);
++	gpio_direction_output(panel->gpio_dc[1], 0);
+ 
+ 	if (panel->vdd_1v2) {
+ 		regulator_disable(panel->vdd_1v2);
+@@ -175,9 +176,10 @@ static int spacemit_panel_prepare(struct drm_panel *p)
+ 
+ 	DRM_INFO("%s()\n", __func__);
+ 
+-	spacemit_prepare_regulator(panel);
++	// spacemit_prepare_regulator(panel);
+ 
+-	gpio_direction_output(panel->gpio_dc, 1);
++	gpio_direction_output(panel->gpio_dc[0], 1);
++	gpio_direction_output(panel->gpio_dc[1], 1);
+ 
+ 	if(panel->gpio_bl != INVALID_GPIO) {
+ 		gpio_direction_output(panel->gpio_bl, 1);
+@@ -308,13 +310,15 @@ static int spacemit_mipi_dsi_set_maximum_return_packet_size(struct mipi_dsi_devi
+ 					    u16 value)
+ {
+ 	u8 tx[2] = { value & 0xff, value >> 8 };
+-	struct mipi_dsi_msg msg = {
+-		.channel = dsi->channel,
+-		.type = MIPI_DSI_SET_MAXIMUM_RETURN_PACKET_SIZE,
+-		.tx_len = sizeof(tx),
+-		.tx_buf = tx,
+-	};
+-	int ret = mipi_dsi_device_transfer(dsi, &msg);
++	int ret;
++	struct mipi_dsi_msg msg = {0x0};
++
++	msg.channel = dsi->channel;
++	msg.type = MIPI_DSI_SET_MAXIMUM_RETURN_PACKET_SIZE;
++	msg.tx_len = sizeof(tx);
++	msg.tx_buf = tx;
++
++	ret = mipi_dsi_device_transfer(dsi, &msg);
+ 
+ 	return (ret < 0) ? ret : 0;
+ }
+@@ -593,14 +597,16 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
+ 		}
+ 	}
+ 
+-	ret = of_property_read_u32(dev->of_node, "gpios-dc", &panel->gpio_dc);
+-	if (ret || !gpio_is_valid(panel->gpio_dc)) {
+-		dev_dbg(dev, "Missing dt property: gpio_dc\n");
+-		panel->gpio_dc = INVALID_GPIO;
++	ret = of_property_read_u32_array(dev->of_node, "gpios-dc", panel->gpio_dc, 2);
++	if (ret || !gpio_is_valid(panel->gpio_dc[0]) || !gpio_is_valid(panel->gpio_dc[1])) {
++		dev_err(dev, "Missing dt property: gpios-dc\n");
++		return -EINVAL;
+ 	} else {
+-		ret = gpio_request(panel->gpio_dc, NULL);
++		ret = gpio_request(panel->gpio_dc[0], NULL);
++		ret |= gpio_request(panel->gpio_dc[1], NULL);
+ 		if (ret) {
+ 			pr_err("gpio_dc request fail\n");
++			return ret;
+ 		}
+ 	}
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
+index 842ef1a70a55..76050d2b4f02 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
++++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
+@@ -20,8 +20,8 @@
+ 
+ #define INVALID_GPIO 0xFFFFFFFF
+ 
+-#define LCD_PANEL_RESET_CNT 4
+-#define LCD_DELAY_AFTER_RESET 50
++#define LCD_PANEL_RESET_CNT 2
++#define LCD_DELAY_AFTER_RESET 100
+ 
+ enum {
+ 	CMD_CODE_INIT = 0,
+@@ -83,7 +83,7 @@ struct spacemit_panel {
+ 	struct regulator *vdd_2v8;
+ 	u32 gpio_reset;
+ 	u32 gpio_bl;
+-	u32 gpio_dc;
++	u32 gpio_dc[2];
+ 	atomic_t enable_refcnt;
+ 	atomic_t prepare_refcnt;
+ 	u32 reset_toggle_cnt;
+-- 
+2.47.0
+

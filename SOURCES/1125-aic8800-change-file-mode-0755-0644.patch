@@ -1,0 +1,527 @@
+From 383f0784d096989fd75add5c9649934610a23414 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 30 Aug 2024 17:11:35 +0800
+Subject: [PATCH 1125/1451] aic8800: change file mode 0755->0644
+
+Change-Id: I78387acba94d047cb2e21ef7b7fee386cb6641f4
+---
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c     | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d80.c   | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800dc.c    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.c    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_export.h    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_helper.c    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_main.c      | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.c    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.h    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_verify.c    | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.c           | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.h           | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aicusb.c            | 0
+ drivers/net/wireless/aic8800/aic8800_bsp/aicusb.h            | 0
+ drivers/net/wireless/aic8800/aic8800_btlpm/aic8800_btlpm.c   | 0
+ drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.c       | 0
+ drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.c       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.c     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.h     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.c     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.h     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/hal_desc.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/ipc_compat.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.c         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/ipc_shared.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/lmac_mac.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/lmac_msg.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/lmac_types.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/reg_access.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.c       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.c     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.h     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_compat.h      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.h     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_defs.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_events.h      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.c         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.c  | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.h  | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.h      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.h      | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.c         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_prof.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.c       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.c          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.h          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.h          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.h         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.c       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.h       | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.c          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.h          | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version.h     | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version_gen.h | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.c    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.h    | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.c        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.h        | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.c         | 0
+ drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.h         | 0
+ 103 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d80.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800dc.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_export.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_helper.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_main.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_verify.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aicusb.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_bsp/aicusb.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_btlpm/aic8800_btlpm.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/hal_desc.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/ipc_compat.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/ipc_shared.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/lmac_mac.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/lmac_msg.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/lmac_types.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/reg_access.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_compat.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_defs.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_events.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_prof.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version_gen.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.h
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d80.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d80.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800dc.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800dc.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_export.h b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_export.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_helper.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_helper.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_main.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_main.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.h b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_txrxif.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_verify.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_verify.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.c b/drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.h b/drivers/net/wireless/aic8800/aic8800_bsp/aicsdio.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aicusb.c b/drivers/net/wireless/aic8800/aic8800_bsp/aicusb.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aicusb.h b/drivers/net/wireless/aic8800/aic8800_bsp/aicusb.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_btlpm/aic8800_btlpm.c b/drivers/net/wireless/aic8800/aic8800_btlpm/aic8800_btlpm.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.c b/drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.h b/drivers/net/wireless/aic8800/aic8800_btusb/aic_btusb.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aic_vendor.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800d80.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_8800dc.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_tcp_ack.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_txrxif.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.h b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/hal_desc.h b/drivers/net/wireless/aic8800/aic8800_fdrv/hal_desc.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_compat.h b/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_compat.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.c b/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.h b/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_host.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_shared.h b/drivers/net/wireless/aic8800/aic8800_fdrv/ipc_shared.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_mac.h b/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_mac.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_msg.h b/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_msg.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_types.h b/drivers/net/wireless/aic8800/aic8800_fdrv/lmac_types.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/reg_access.h b/drivers/net/wireless/aic8800/aic8800_fdrv/reg_access.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_bfmer.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cfgfile.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_cmds.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_compat.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_compat.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_defs.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_defs.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_dini.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_events.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_events.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_fw_trace.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_gki.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_irqs.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mesh.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mod_params.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_mu_group.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_pci.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_platform.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_prof.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_prof.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_radar.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_rx.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_strs.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_testmode.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_utils.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_v7.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version_gen.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_version_gen.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.h b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_wakelock.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.c b/drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.h b/drivers/net/wireless/aic8800/aic8800_fdrv/sdio_host.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.c b/drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.h b/drivers/net/wireless/aic8800/aic8800_fdrv/usb_host.h
+old mode 100755
+new mode 100644
+-- 
+2.47.0
+

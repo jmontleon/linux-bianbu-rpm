@@ -1,0 +1,92 @@
+From 8c43242baa116a870036026f4e8c536e65898270 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 22 Oct 2024 16:47:59 +0800
+Subject: [PATCH 1192/1451] rtl8852be: fix the warning of checking wireless
+ device mutex
+
+[ 3963.105593] WARNING: CPU: 1 PID: 2387 at net/wireless/nl80211.c:19473 cfg80211_ch_switch_started_notify+0x10a/0x11e
+[ 3963.105617] Modules linked in: btusb btintel btbcm binfmt_misc 8852be ip_tables autofs4
+[ 3963.105639] CPU: 1 PID: 2387 Comm: disp_eng_share_ Tainted: G        W          6.6.36 #2.0~rc7.2+20241019010736
+[ 3963.105647] Hardware name: M1-MUSE-BOOK (DT)
+[ 3963.105651] epc : cfg80211_ch_switch_started_notify+0x10a/0x11e
+[ 3963.105658]  ra : cfg80211_ch_switch_started_notify+0x108/0x11e
+[ 3963.105663] epc : ffffffff80f0e8f0 ra : ffffffff80f0e8ee sp : ffffffc80392bba0
+[ 3963.105669]  gp : ffffffff82341fe0 tp : ffffffd92f578000 t0 : ffffffc80392bc18
+[ 3963.105672]  t1 : ffffffd915290960 t2 : 0000000000000000 s0 : ffffffc80392bbf0
+[ 3963.105676]  s1 : 0000000000000000 a0 : 0000000000000000 a1 : ffffffffffffffff
+[ 3963.105679]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : ffffffda75060908
+[ 3963.105683]  a5 : ffffffff8122d908 a6 : 00000000000003e8 a7 : ffffffd915290988
+[ 3963.105686]  s2 : ffffffd9090e3000 s3 : ffffffd915290000 s4 : ffffffc80392bbf8
+[ 3963.105690]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+[ 3963.105693]  s8 : ffffffd915299000 s9 : 0000000000000000 s10: 0000000000000000
+[ 3963.105696]  s11: 0000000000000000 t3 : 0000000000000001 t4 : ffffffff827bb0a0
+[ 3963.105700]  t5 : 0000000000000000 t6 : ffffffc80392bc38
+[ 3963.105703] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[ 3963.105707] [<ffffffff80f0e8f0>] cfg80211_ch_switch_started_notify+0x10a/0x11e
+[ 3963.107477] RTW: rtw_tkip_decrypt(wlP1p1s0) no_gkey_bc_cnt:2, no_gkey_mc_cnt:0
+[ 3963.105718] [<ffffffff028ed328>] rtw_cfg80211_ch_switch_notify+0xa0/0xaa [8852be]
+[ 3963.109774] [<ffffffff0293f52c>] start_clnt_join+0xf0/0x200 [8852be]
+[ 3963.113776] [<ffffffff0292ceb8>] _connect_msg_hdlr+0x652/0xa4a [8852be]
+[ 3963.117768] [<ffffffff02a06642>] cur_req_hdl+0x30/0x3a [8852be]
+[ 3963.121763] [<ffffffff02a06e7c>] msg_dispatch+0x238/0x3e4 [8852be]
+[ 3963.125767] [<ffffffff02a0a76e>] dispr_thread_loop_hdl+0x26a/0x2e4 [8852be]
+[ 3963.129769] [<ffffffff02a0a7f8>] dispr_share_thread_loop_hdl+0x10/0x18 [8852be]
+[ 3963.133776] [<ffffffff02a04226>] share_thread_hdl+0xa0/0x194 [8852be]
+[ 3963.137769] [<ffffffff80041260>] kthread+0xda/0xf6
+[ 3963.137782] [<ffffffff80fc0bce>] ret_from_fork+0xe/0x1c
+
+Change-Id: I8e8f5a3c2cbe734c4482acecfff6222389572f41
+---
+ .../realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c         | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
+index 3d4cf4cfa785..6f6772b66a1e 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
+@@ -228,6 +228,7 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
+ 					u8 ht, bool started)
+ {
+ 	struct wiphy *wiphy = adapter_to_wiphy(adapter);
++	struct net_device *ndev = adapter->pnetdev;
+ 	u8 ret = _SUCCESS;
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+ 	unsigned int link_id = 0;
+@@ -243,8 +244,10 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
+ 	if (ret != _SUCCESS)
+ 		goto exit;
+ 
++
+ 	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
+ 	if (started) {
++		mutex_lock(&ndev->ieee80211_ptr->mtx);
+ 		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 3, 0)) || defined(CONFIG_MLD_KERNEL_PATCH)
+ 		cfg80211_ch_switch_started_notify(adapter->pnetdev, &chdef, link_id, 0, false, punct_bitmap);
+ 		#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+@@ -261,6 +264,7 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
+ 		#else
+ 		cfg80211_ch_switch_started_notify(adapter->pnetdev, &chdef, 0);
+ 		#endif
++		mutex_unlock(&ndev->ieee80211_ptr->mtx);
+ 		goto exit;
+ 	}
+ 	#endif
+@@ -268,6 +272,7 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
+ 	if (!rtw_cfg80211_allow_ch_switch_notify(adapter))
+ 		goto exit;
+ 
++	mutex_lock(&ndev->ieee80211_ptr->mtx);
+ 	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 3, 0)) || defined(CONFIG_MLD_KERNEL_PATCH)
+ 	cfg80211_ch_switch_notify(adapter->pnetdev, &chdef, link_id, punct_bitmap);
+ 	#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 2))
+@@ -276,6 +281,7 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
+ 	#else
+ 	cfg80211_ch_switch_notify(adapter->pnetdev, &chdef);
+ 	#endif
++	mutex_unlock(&ndev->ieee80211_ptr->mtx);
+ 
+ #else
+ 	int freq = rtw_bch2freq(rtw_chdef->band, rtw_chdef->chan);
+-- 
+2.47.0
+

@@ -1,0 +1,40 @@
+From f0f4536d22ac6f7ed6dd013828961e2071a28a56 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 4 Sep 2023 11:47:33 +0800
+Subject: [PATCH 0094/1451] ethernet: change the phy-mode config from device
+ tree
+
+Change-Id: If45be64ade633a977b33586e37c5e51a1f94a7ba
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 75e2c0650642..9565809f9ab3 100755
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2091,9 +2091,9 @@ static int emac_mii_reset(struct mii_bus *bus)
+ 		}
+ 
+ 		rst_gpio = of_get_named_gpio(np, "emac,reset-gpio", 0);
+-		//if (rst_gpio < 0) 
++		//if (rst_gpio < 0)
+ 		//	return 0;
+-			
++
+ 		active_state = of_property_read_bool(np,
+ 						     "emac,reset-active-low");
+ 		of_property_read_u32_array(np,
+@@ -2243,8 +2243,7 @@ static int emac_phy_connect(struct net_device *dev)
+ 
+ 	of_get_phy_mode(np, &priv->phy_interface);
+ 	pr_info("priv phy_interface = %d\n", priv->phy_interface);
+-	priv->phy_interface = PHY_INTERFACE_MODE_RMII;
+-	
++
+ 	emac_phy_interface_config(priv);
+ 
+ 	phydev = of_phy_connect(dev, np,
+-- 
+2.47.0
+

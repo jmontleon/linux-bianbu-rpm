@@ -1,0 +1,52 @@
+From 7c97c077a2c0c87b87e0ac201bb5db0dc6b959d9 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 13 Jun 2024 15:58:10 +0800
+Subject: [PATCH 0747/1451] rproc:do not automatically load and start rcpu
+
+Change-Id: I66fe2fa29ed270bbef6d40917b409facf55c280d
+---
+ drivers/remoteproc/k1x-rproc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index d529e28a4b8b..6512bace3fbc 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -621,12 +621,16 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
+ 	register_platform_pm_ops(&rproc_platform_pm_ops);
+ #endif
+ 
+-	rproc->auto_boot = true;
+ 	ret = devm_rproc_add(dev, rproc);
+ 	if (ret) {
+ 		dev_err(dev, "rproc_add failed\n");
+ 	}
+ 
++	ret = rproc_boot(rproc);
++	if (ret) {
++		dev_err(dev, "rproc_boot failed\n");
++	}
++
+ 	return ret;
+ }
+ 
+@@ -658,6 +662,7 @@ static int spacemit_rproc_remove(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_PM_SLEEP
+ 	unregister_rpmsg_driver(&rpmsg_rcpu_pm_client);
++	unregister_platform_pm_ops(&rproc_platform_pm_ops);
+ #endif
+ 	return 0;
+ }
+@@ -702,7 +707,7 @@ static __init int spacemit_rproc_driver_init(void)
+ {
+ 	return platform_driver_register(&spacemit_rproc_driver);
+ }
+-subsys_initcall(spacemit_rproc_driver_init);
++device_initcall(spacemit_rproc_driver_init);
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("sapcemit remote processor control driver");
+-- 
+2.47.0
+

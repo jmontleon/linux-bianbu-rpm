@@ -1,0 +1,85 @@
+From dd24b96817c8659fb6e1891cc5bee0bf7ff0bfcc Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Wed, 11 Dec 2024 10:54:56 +0800
+Subject: [PATCH 1369/1451] k1-x_ZT001H:dts: verify bf2257 sensor okay
+
+Change-Id: I6bb0199eb87a31d6d9bdaeb97e3978dabeb11873
+---
+ arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts b/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
+index 460bcbaf4003..a16632b50e5e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
+@@ -846,7 +846,6 @@ &pwm_bl {
+ };
+ 
+ /* MIPI CSI1, clk lane1, Fixme: frontsensor gc08a8 */
+-/*
+ &backsensor {
+ 	af_2v8-supply = <&ldo_3>;
+ 	avdd_2v8-supply = <&ldo_2>;
+@@ -858,28 +857,26 @@ &backsensor {
+ 
+ 	twsi-index = <0>;
+ 
+-	status = "okay";
++	status = "disabled";
+ };
+-*/
++
+ /* MIPI CSI3 data line2,3 clk lane2 */
+-/*
+ &backsensor_aux {
+ 	//af_2v8-supply = <&ldo_3>;
+ 	avdd_2v8-supply = <&ldo_2>;
+ 	dovdd_1v8-supply = <&ldo_7>;
+ 	//dvdd_1v2-supply = <&ldo_6>;
+ 
+-	pwdn-gpios = <&gpio 114 0>;
++	//pwdn-gpios = <&gpio 114 0>;
+ 	reset-gpios = <&gpio 112 0>;
+ 
+ 	twsi-index = <1>;
+ 
+-	status = "disabled";
++	status = "okay";
+ };
+-*/
++
+ 
+ /* MIPI CSI3 data line0,1 clk lane3, Fixme: backsensor gc13a0 */
+-/*
+ &frontsensor {
+ 	af_2v8-supply = <&ldo_3>;
+ 	avdd_2v8-supply = <&ldo_2>;
+@@ -896,7 +893,7 @@ &frontsensor {
+ 
+ 	twsi-index = <1>;
+ 
+-	status = "okay";
++	status = "disabled";
+ };
+ &csiphy0 {
+ 
+@@ -907,7 +904,7 @@ &csiphy1 {
+ 	status = "disabled";
+ };
+ &csiphy2 {
+-
++	spacemit,bifmode-enable;
+ 	status = "okay";
+ };
+ 
+@@ -937,7 +934,6 @@ &cpp {
+ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+-*/
+ 
+ &rcpu {
+ 	pinctrl-names = "default";
+-- 
+2.47.0
+

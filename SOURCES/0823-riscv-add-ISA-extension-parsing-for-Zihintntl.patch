@@ -1,0 +1,50 @@
+From e1e807b9a8531f61e9748d51eaba2d2a4da9f782 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:48 -0500
+Subject: [PATCH 0823/1451] riscv: add ISA extension parsing for Zihintntl
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add parsing for Zihintntl ISA extension[1] that was ratified in commit
+0dc91f5 ("Zihintntl is ratified") of riscv-isa-manual[2].
+
+Link: https://drive.google.com/file/d/13_wsN8YmRfH8YWysFyTX-DjTkCnBd9hj/view [1]
+Link: https://github.com/riscv/riscv-isa-manual/commit/0dc91f505e6d [2]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-13-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: Ib3b07e9f83ba6a41420854a73092a43a32386fd3
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 6a6ee93a3c9a..97d106fa0f54 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -80,6 +80,7 @@
+ #define RISCV_ISA_EXT_ZVKT		65
+ #define RISCV_ISA_EXT_ZFH		66
+ #define RISCV_ISA_EXT_ZFHMIN		67
++#define RISCV_ISA_EXT_ZIHINTNTL		68
+ 
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 31bb2cc84661..cec962f97d67 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -282,6 +282,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+ 	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+ 	__RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
++	__RISCV_ISA_EXT_DATA(zihintntl, RISCV_ISA_EXT_ZIHINTNTL),
+ 	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+ 	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
+ 	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+-- 
+2.47.0
+

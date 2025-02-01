@@ -1,0 +1,27 @@
+From bf7f478e66034137cfab118ee6f550a6ea0f2bcf Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 9 Jan 2025 14:14:27 +0800
+Subject: [PATCH 1433/1451] drm: POWERVR_ROGUE_NULLDRMDISP should depned on DRM
+ and POWERVR_ROGUE
+
+Change-Id: Ib993e38bebce0f87f53c305081a80ea18d4a70ae
+---
+ drivers/gpu/drm/nulldisp/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/nulldisp/Kconfig b/drivers/gpu/drm/nulldisp/Kconfig
+index b912475b3c22..3227e10a5ff3 100644
+--- a/drivers/gpu/drm/nulldisp/Kconfig
++++ b/drivers/gpu/drm/nulldisp/Kconfig
+@@ -2,7 +2,7 @@
+ config POWERVR_ROGUE_NULLDRMDISP
+ 	tristate "null drm disp"
+ 	default n
++	depends on DRM && POWERVR_ROGUE
+ 	select DRM_KMS_HELPER
+-	depends on POWERVR_ROGUE
+         help
+           This enables powervr null drm display driver
+-- 
+2.47.0
+

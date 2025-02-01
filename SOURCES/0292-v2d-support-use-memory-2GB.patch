@@ -1,0 +1,41 @@
+From 9ce56b0657dd9706cd0c343894c29fdf9b72ccc2 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Tue, 2 Jan 2024 11:06:20 +0800
+Subject: [PATCH 0292/1451] v2d: support use memory > 2GB
+
+Change-Id: I3c598a06e040b2207a25771ad77771e21a1e5be7
+---
+ drivers/media/platform/spacemit/v2d/v2d_iommu.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/v2d/v2d_iommu.c b/drivers/media/platform/spacemit/v2d/v2d_iommu.c
+index 60d2ba66901e..f26ea816a679 100644
+--- a/drivers/media/platform/spacemit/v2d/v2d_iommu.c
++++ b/drivers/media/platform/spacemit/v2d/v2d_iommu.c
+@@ -9,6 +9,14 @@
+ 
+ struct v2d_iommu_res sV2dIommuRes;
+ 
++unsigned long phys_cpu2v2d(unsigned long phys_addr)
++{
++	if (phys_addr >= 0x100000000UL) {
++		phys_addr -= 0x80000000UL;
++	}
++	return phys_addr;
++}
++
+ static u32 __read_reg(struct v2d_iommu_res *res, u64 offset)
+ {
+ 	return readl(res->base + offset + V2D_IOMMU_BASE_OFFSET);
+@@ -185,7 +193,7 @@ int v2d_iommu_map_sg(unsigned long iova, struct scatterlist *sg, unsigned int ne
+ 		goto out_iova_err;
+ 
+ 	for_each_sg(sg, s, nents, i) {
+-		paddr = page_to_phys(sg_page(s)) + s->offset;
++		paddr = phys_cpu2v2d(page_to_phys(sg_page(s))) + s->offset;
+ 		size = s->length;
+ 		if (!IS_ALIGNED(s->offset, res->page_size)) {
+ 			pr_err("v2d iommu paddr not aligned: iova %lx, paddr %llx, size %lx\n",
+-- 
+2.47.0
+

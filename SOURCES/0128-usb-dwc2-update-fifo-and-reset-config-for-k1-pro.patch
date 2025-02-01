@@ -1,0 +1,54 @@
+From f17b09095fe0b43034f574bfb5c3b27941cf8ab2 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 9 Oct 2023 16:34:31 +0800
+Subject: [PATCH 0128/1451] usb: dwc2: update fifo and reset config for k1-pro
+
+Change-Id: I7e44ea763684f5ac8e2441a09f481f1a1d0a7677
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 10 +++++-----
+ drivers/usb/dwc2/params.c                |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 8b8e6fdf1727..86b3f0871337 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -470,13 +470,13 @@ usbotg: usb2@2cb40000 {
+ 			reg = <0x0 0x2cb40000 0x0 0x40000>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <91>;
+-			resets = <&reset RESET_USB20_HOST_HRESETN>,
+-					 <&reset RESET_USB20_HOST_PRSTN>;
++			resets = <&reset RESET_USB20_OTG_HRESETN>,
++					 <&reset RESET_USB20_OTG_PRSTN>;
+ 			reset-names = "dwc2", "dwc2-ecc";
+ 			dr_mode = "otg";
+-			g-np-tx-fifo-size = <256>;
+-			g-rx-fifo-size = <280>;
+-			g-tx-fifo-size = <128 128 64 64>;
++			g-np-tx-fifo-size = <32>;
++			g-rx-fifo-size = <544>;
++			g-tx-fifo-size = <768 256 256 64 64>;
+ 			status = "disabled";
+ 		};
+ 
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 4e8a8db5498c..00bd6b533721 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -273,9 +273,9 @@ static void dwc2_set_spacemit_params(struct dwc2_hsotg *hsotg)
+ 	p->otg_caps.hnp_support = false;
+ 	p->otg_caps.srp_support = false;
+ 	p->speed = DWC2_SPEED_PARAM_HIGH;
+-	p->host_rx_fifo_size = 280;
+-	p->host_nperio_tx_fifo_size = 256;
+-	p->host_perio_tx_fifo_size = 256;
++	p->host_rx_fifo_size = 790;
++	p->host_nperio_tx_fifo_size = 384;
++	p->host_perio_tx_fifo_size = 768;
+ 	p->phy_type = DWC2_PHY_TYPE_PARAM_ULPI;
+ 	//p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
+ 	//p->phy_utmi_width = 16;
+-- 
+2.47.0
+

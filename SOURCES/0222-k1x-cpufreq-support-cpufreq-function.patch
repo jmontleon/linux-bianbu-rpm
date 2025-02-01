@@ -1,0 +1,321 @@
+From 28ca378ec73c188d1207376b783fa4ca041f0da0 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 21 Dec 2023 20:39:40 +0800
+Subject: [PATCH 0222/1451] k1x:cpufreq: support cpufreq function
+
+Change-Id: I0b2253f9a44c1343caf530bf3c223ed01175b562
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 107 +++++++++++++++----------
+ arch/riscv/configs/k1-x_evb_defconfig  |   4 +
+ drivers/cpufreq/Kconfig                |   9 +++
+ drivers/cpufreq/Makefile               |   1 +
+ drivers/cpufreq/spacemit-cpufreq.c     |  41 ++++++++++
+ 5 files changed, 118 insertions(+), 44 deletions(-)
+ create mode 100644 drivers/cpufreq/spacemit-cpufreq.c
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 85ae26c7b10e..e078f2aa577a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -46,8 +46,10 @@ cpu_0: cpu@0 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C0_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster0>;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu0_intc: interrupt-controller {
+@@ -72,8 +74,10 @@ cpu_1: cpu@1 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C0_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster0>;
+ 			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu1_intc: interrupt-controller {
+@@ -98,9 +102,11 @@ cpu_2: cpu@2 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C0_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+-			operating-points-v2 = <&clst1_core_opp_table>;
++			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu2_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -124,9 +130,11 @@ cpu_3: cpu@3 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C0_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C0_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+-			operating-points-v2 = <&clst1_core_opp_table>;
++			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu3_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -150,8 +158,10 @@ cpu_4: cpu@4 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C1_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu4_intc: interrupt-controller {
+@@ -176,8 +186,10 @@ cpu_5: cpu@5 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C1_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu5_intc: interrupt-controller {
+@@ -202,8 +214,10 @@ cpu_6: cpu@6 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C1_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu6_intc: interrupt-controller {
+@@ -228,8 +242,10 @@ cpu_7: cpu@7 {
+ 			d-cache-sets = <512>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
++			clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clocks = <&ccu CLK_CPU_C1_CORE>;
++			assigned-clock-parents = <&ccu CLK_CPU_C1_HI>;
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
+-			clocks = <&pll_clk_cluster1>;
+ 			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu7_intc: interrupt-controller {
+@@ -294,71 +310,74 @@ TOP_NONRET: top-nonret {
+ 		clst0_core_opp_table: opp_table0 {
+ 			compatible = "operating-points-v2";
+ 			opp-shared;
+-
+-			opp819000000 {
+-				opp-hz = /bits/ 64 <819000000>;
+-				opp-microvolt = <900000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
++/**
++ *			opp819000000 {
++ *				opp-hz = /bits/ 64 <819000000>;
++ *				opp-microvolt = <950000>;
++ *				clock-latency-ns = <200000>;
++ *			};
++ */
+ 			opp1000000000 {
+ 				opp-hz = /bits/ 64 <1000000000>;
+-				opp-microvolt = <900000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
+ 
+ 			opp1066000000 {
+ 				opp-hz = /bits/ 64 <1066000000>;
+-				opp-microvolt = <900000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
+ 
+-			opp1228000000 {
+-				opp-hz = /bits/ 64 <1228000000>;
+-				opp-microvolt = <900000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp1600000000 {
+-				opp-hz = /bits/ 64 <1600000000>;
+-				opp-microvolt = <900000>;
++			opp1228800000 {
++				opp-hz = /bits/ 64 <1228800000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
++/**
++ *			opp1600000000 {
++ *				opp-hz = /bits/ 64 <1600000000>;
++ *				opp-microvolt = <950000>;
++ *				clock-latency-ns = <200000>;
++ *			};
++ */
+ 		};
+ 
+ 		clst1_core_opp_table: opp_table1 {
+ 			compatible = "operating-points-v2";
+ 			opp-shared;
+-
+-			opp819000000 {
+-				opp-hz = /bits/ 64 <819000000>;
+-				opp-microvolt = <900000>;
+-				clock-latency-ns = <200000>;
+-			};
++/**
++ *			opp819000000 {
++ *				opp-hz = /bits/ 64 <819000000>;
++ *				opp-microvolt = <950000>;
++ *				clock-latency-ns = <200000>;
++ *			};
++ */
+ 
+ 			opp1000000000 {
+ 				opp-hz = /bits/ 64 <1000000000>;
+-				opp-microvolt = <900000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
+ 
+ 			opp1066000000 {
+ 				opp-hz = /bits/ 64 <1066000000>;
+-				opp-microvolt = <900000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
+ 
+-			opp1228000000 {
+-				opp-hz = /bits/ 64 <1228000000>;
+-				opp-microvolt = <900000>;
++			opp1228800000 {
++				opp-hz = /bits/ 64 <1228800000>;
++				opp-microvolt = <950000>;
+ 				clock-latency-ns = <200000>;
+ 			};
+ 
+-			opp1600000000 {
+-				opp-hz = /bits/ 64 <1600000000>;
+-				opp-microvolt = <900000>;
+-				clock-latency-ns = <200000>;
+-			};
++/**			opp1600000000 {
++ *				opp-hz = /bits/ 64 <1600000000>;
++ *				opp-microvolt = <950000>;
++ *				clock-latency-ns = <200000>;
++ *			};
++ */
+ 		};
+ 	};
+ 
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 20b3bd511f97..f4921d020f1d 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -33,6 +33,10 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
++CONFIG_CPU_FREQ=y
++# CONFIG_ARM_BRCMSTB_AVS_CPUFREQ is not set
++# CONFIG_ARM_MEDIATEK_CPUFREQ_HW is not set
++CONFIG_SPACEMIT_K1X_CPUFREQ=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+index 9b793c137faa..0696f0117df0 100644
+--- a/drivers/cpufreq/Kconfig
++++ b/drivers/cpufreq/Kconfig
+@@ -312,5 +312,14 @@ config QORIQ_CPUFREQ
+ 	  This adds the CPUFreq driver support for Freescale QorIQ SoCs
+ 	  which are capable of changing the CPU's frequency dynamically.
+ 
++config SPACEMIT_K1X_CPUFREQ
++	tristate "CPU frequency scaling driver for Spacemit K1X"
++	depends on OF && COMMON_CLK
++	select CPUFREQ_DT
++	select CPUFREQ_DT_PLATDEV
++	help
++	  This adds the CPUFreq driver support for Freescale QorIQ SoCs
++	  which are capable of changing the CPU's frequency dynamically.
++
+ endif
+ endmenu
+diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+index ef8510774913..67ae8c7ef714 100644
+--- a/drivers/cpufreq/Makefile
++++ b/drivers/cpufreq/Makefile
+@@ -107,3 +107,4 @@ obj-$(CONFIG_LOONGSON2_CPUFREQ)		+= loongson2_cpufreq.o
+ obj-$(CONFIG_SH_CPU_FREQ)		+= sh-cpufreq.o
+ obj-$(CONFIG_SPARC_US2E_CPUFREQ)	+= sparc-us2e-cpufreq.o
+ obj-$(CONFIG_SPARC_US3_CPUFREQ)		+= sparc-us3-cpufreq.o
++obj-$(CONFIG_SPACEMIT_K1X_CPUFREQ)	+= spacemit-cpufreq.o
+diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
+new file mode 100644
+index 000000000000..4f1a46727280
+--- /dev/null
++++ b/drivers/cpufreq/spacemit-cpufreq.c
+@@ -0,0 +1,41 @@
++#include <linux/cpufreq.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/cpumask.h>
++#include <linux/clk/clk-conf.h>
++
++static int spacemit_processor_notifier(struct notifier_block *nb,
++				   unsigned long event, void *data)
++{
++	int cpu;
++	struct device *cpu_dev;
++	struct cpufreq_policy *policy = data;
++
++	if (event == CPUFREQ_CREATE_POLICY) {
++		cpu = cpumask_first(policy->related_cpus);
++		cpu_dev = get_cpu_device(cpu);
++		of_clk_set_defaults(cpu_dev->of_node, false);
++	}
++
++	return 0;
++}
++
++static struct notifier_block spacemit_processor_notifier_block = {
++	.notifier_call = spacemit_processor_notifier,
++};
++
++static int __init spacemit_processor_driver_init(void)
++{
++	int ret;
++
++	ret = cpufreq_register_notifier(&spacemit_processor_notifier_block, CPUFREQ_POLICY_NOTIFIER);
++	if (ret) {
++		pr_err("register cpufreq notifier failed\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++arch_initcall(spacemit_processor_driver_init);
+-- 
+2.47.0
+

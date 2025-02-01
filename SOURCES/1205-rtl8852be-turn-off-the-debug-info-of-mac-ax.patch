@@ -1,0 +1,37 @@
+From 7ff728c0f09f5d0cc92f04d30a8b63a2e2dfea2b Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Fri, 25 Oct 2024 10:01:38 +0800
+Subject: [PATCH 1205/1451] rtl8852be: turn off the debug info of mac ax
+
+Change-Id: Ia0a8e87e18f9e6bedb394b2855717b181df3ff8a
+---
+ .../net/wireless/realtek/rtl8852be/phl/hal_g6/mac/errors.h  | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/mac/errors.h b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/mac/errors.h
+index 1c6268ca63b2..c32d88de6105 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/mac/errors.h
++++ b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/mac/errors.h
+@@ -203,6 +203,8 @@
+ 	adapter->pltfm_cb->msg_print(adapter->drv_adapter, _PHL_ALWAYS_,  __VA_ARGS__)
+ #endif
+ 
++#undef MAC_AX_DBG_MSG_EN
++#define MAC_AX_DBG_MSG_EN 0
+ #if MAC_AX_DBG_MSG_EN
+ 
+ #undef PLTFM_MSG_ALWAYS
+@@ -310,6 +312,10 @@ do {									\
+ 
+ #else
+ 
++#undef PLTFM_MSG_ALWAYS
++
++#define	MAC_DBG_MSG(...)	do {} while (0)
++
+ /* Disable debug msg  */
+ #define PLTFM_MSG_ALWAYS(...)	do {} while (0)
+ #define PLTFM_MSG_ERR(...)	do {} while (0)
+-- 
+2.47.0
+

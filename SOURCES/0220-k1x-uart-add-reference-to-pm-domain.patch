@@ -1,0 +1,107 @@
+From 0d5ad7d0a38e3c0fefb34b0244cdd49ac8cea1d5 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 21 Dec 2023 20:10:19 +0800
+Subject: [PATCH 0220/1451] k1x-uart add reference to pm-domain
+
+Change-Id: I8254402c87945723eabd12349a3c1a891add246a
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 27 ++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9bd4057a7e61..af11e2fd37d4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -641,6 +641,9 @@ uart0: serial@d4017000 {
+ 			clocks = <&ccu CLK_UART1>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART1>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "ok";
+ 		};
+ 
+@@ -652,6 +655,9 @@ uart2: uart@d4017100 {
+ 			clocks = <&ccu CLK_UART2>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART2>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -663,6 +669,9 @@ uart3: uart@d4017200 {
+ 			clocks = <&ccu CLK_UART3>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART3>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -674,6 +683,9 @@ uart4: uart@d4017300 {
+ 			clocks = <&ccu CLK_UART4>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART4>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -685,6 +697,9 @@ uart5: uart@d4017400 {
+ 			clocks = <&ccu CLK_UART5>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART5>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -696,6 +711,9 @@ uart6: uart@d4017500 {
+ 			clocks = <&ccu CLK_UART6>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART6>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -707,6 +725,9 @@ uart7: uart@d4017600 {
+ 			clocks = <&ccu CLK_UART7>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART7>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -718,6 +739,9 @@ uart8: uart@d4017700 {
+ 			clocks = <&ccu CLK_UART8>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART8>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -729,6 +753,9 @@ uart9: uart@d4017800 {
+ 			clocks = <&ccu CLK_UART9>;
+ 			clk-fpga = <14750000>;
+ 			resets = <&reset RESET_UART9>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,35 @@
+From f63e613df32671d1800090bd598117a107eab4e0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Fri, 12 Jan 2024 23:12:29 +0800
+Subject: [PATCH 0362/1451] dts: add audio snd-card support
+
+Change-Id: I731e34a26327dc57caa623b1750423292888c182
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 749c0fd1b465..467516103dcb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2350,4 +2350,17 @@ pmu {
+ 			 */
+ 			<0x0 0x0 0xffffffff 0xffffff00 0x0007fff8>;
+ 	};
++
++	spacemit-snd-pcm {
++		compatible = "spacemit,spacemit-snd-pcm";
++	};
++
++	spacemit-snd-sspa {
++		compatible = "spacemit,spacemit-snd-sspa";
++	};
++
++	sound: snd-card@0 {
++		compatible = "spacemit,spacemit-snd";
++		status = "ok";
++	};
+ };
+-- 
+2.47.0
+

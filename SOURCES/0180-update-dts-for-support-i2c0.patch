@@ -1,0 +1,53 @@
+From 16dc34f8e71aecefa8342cd643cf86a491a58115 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 7 Dec 2023 18:14:26 +0800
+Subject: [PATCH 0180/1451] update dts for support i2c0
+
+Change-Id: I3ac9b708e80cced9f110afe8d74ea1d6f5a69c9c
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 29 ++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index a12b9115a2de..6eaea6e6bfdb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -801,6 +801,35 @@ spi3: spi@d401c000 {
+ 			status = "disabled";
+ 		};
+ 
++		i2c0: i2c@d4010800 {
++			/* for i2c0 used id 0 */
++			compatible = "spacemit,k1x-i2c";
++			spacemit,adapter-id = <0>;
++			reg = <0x0 0xd4010800 0x0 0x38>;
++			/* usually i2c client has only 1 reg field */
++			#address-cells = <1>;
++			#size-cells = <0>;
++			interrupt-parent = <&intc>;
++			interrupts = <36>;
++			clocks = <&pll_clk_i2c>;
++			/*
++			dmas = <&pdma0 AP2_I2C4_RX 1
++				&pdma0 AP2_I2C4_TX 1>;
++			dma-names = "rx", "tx";
++			*/
++			spacemit,dma-disable;
++			spacemit,i2c-fast-mode;
++			/* spacemit,i2c-high-mode; */
++			spacemit,i2c-master-code = /bits/ 8 <0x0e>;
++			spacemit,i2c-clk-rate = <32000000>;
++			spacemit,i2c-lcr = <0x82c469f>;
++			spacemit,i2c-wcr = <0x142a>;
++			spacemit,clk-always-on;
++			/* apb clock: 26MHz or 52MHz */
++			spacemit,apb_clock = <52000000>;
++			status = "okay";
++		};
++
+ 		i2c4: i2c@d4012800 {
+ 			/* for i2c3 used id 4 */
+ 			compatible = "spacemit,k1x-i2c";
+-- 
+2.47.0
+

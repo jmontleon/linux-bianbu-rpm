@@ -1,0 +1,45 @@
+From 9781fb90ca5492329c1aebe259a6da96cd3b2dc5 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Wed, 20 Dec 2023 20:06:29 +0800
+Subject: [PATCH 0206/1451] k1x:dtsi:linlon-vpu: update config
+
+1.enable
+2.add reset/clock/power-domain config
+
+Change-Id: Icdfbe73f39bf6bbf10e8715350381472876e7b10
+Signed-off-by: fuqiang <qiang.fu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index edf4021b2d79..2ed647ea848a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -8,6 +8,7 @@
+ #include <dt-bindings/reset/spacemit-k1x-reset.h>
+ #include <dt-bindings/clock/spacemit-k1x-clock.h>
+ #include <dt-bindings/display/spacemit-dpu.h>
++#include <dt-bindings/pmu/k1x_pmu.h>
+ 
+ / {
+ 	compatible = "spacemit,k1-x";
+@@ -1617,7 +1618,14 @@ linlon-v5@c0500000 {
+ 			reg = <0x0 0xC0500000 0x0 0x10000>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <74>;
+-			status = "disabled";
++			clocks = <&ccu CLK_VPU>;
++			clock-names = "vpu_clk";
++			assigned-clocks = <&ccu CLK_VPU>;
++			assigned-clock-parents = <&ccu CLK_PLL1_819>;
++			assigned-clock-rates = <819200000>;
++			power-domains = <&power K1X_PMU_VPU_PWR_DOMAIN>;
++			resets = <&reset RESET_VPU>;
++			status = "okay";
+ 		};
+ 
+ 		v2d@c0100000 {
+-- 
+2.47.0
+

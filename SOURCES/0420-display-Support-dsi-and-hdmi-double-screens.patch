@@ -1,0 +1,964 @@
+From 2abd42ce7b09b9fd5169c9fd1c2e393a0c58f793 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Sun, 4 Feb 2024 15:30:41 +0800
+Subject: [PATCH 0420/1451] display: Support dsi and hdmi double screens
+
+Change-Id: I852ae307b3ef4076fbf2164b2048ef09ff6a15af
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi       | 146 +++++++++----------
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts   |  15 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts   |  15 +-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts    |  17 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_fpga.dts   |   2 +-
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c    | 124 ++++++++--------
+ drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c |   4 +-
+ drivers/gpu/drm/spacemit/spacemit_cmdlist.c  |  22 ++-
+ drivers/gpu/drm/spacemit/spacemit_cmdlist.h  |  11 +-
+ drivers/gpu/drm/spacemit/spacemit_dmmu.c     |  44 +++---
+ drivers/gpu/drm/spacemit/spacemit_dmmu.h     |  22 +--
+ drivers/gpu/drm/spacemit/spacemit_dpu.c      |   4 +-
+ drivers/gpu/drm/spacemit/spacemit_dpu.h      |   3 +-
+ drivers/gpu/drm/spacemit/spacemit_drm.c      |   5 +
+ drivers/gpu/drm/spacemit/spacemit_drm.h      |   2 +
+ 15 files changed, 230 insertions(+), 206 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index b4a70985e67a..a2aabfbae464 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2176,14 +2176,19 @@ jpu@c02f8000 {
+ 			status = "okay";
+ 		};
+ 
+-		/*
+-		display-subsystem {
++		display-subsystem-dsi {
+ 			compatible = "spacemit,saturn-le";
+ 			reg = <0 0xC0340000 0 0x2A000>;
+-			ports = <&dpu_online2>;
++			ports = <&dpu_online2_dsi>;
+ 		};
+ 
+-		dpu_online2: port@c0340000 {
++		display-subsystem-hdmi {
++			compatible = "spacemit,saturn-hdmi";
++			reg = <0 0xc0440000 0 0x2A000>;
++			ports = <&dpu_online2_hdmi>;
++		};
++
++		dpu_online2_dsi: port@c0340000 {
+ 			compatible = "spacemit,dpu-online2";
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <90>, <89>;
+@@ -2213,62 +2218,14 @@ dpu_online2: port@c0340000 {
+ 			pipeline-id = <ONLINE2>;
+ 			ip = "spacemit-saturn";
+ 			spacemit-dpu-min-mclk = <40960000>;
+-			status = "ok";
++			status = "disabled";
+ 
+-			dpu_online2_out_dsi: endpoint@0 {
++			dpu_online2_dsi_out: endpoint@0 {
+ 				remote-endpoint = <&dsi2_in>;
+ 			};
+ 
+-			dpu_offline0_out: endpoint@1 {
+-				remote-endpoint = <&wb0_in>;
+-			};
+-		};
+-		*/
+-
+-		display-subsystem {
+-			compatible = "spacemit,saturn-hdmi";
+-			reg = <0 0xc0440000 0 0x2A000>;
+-			ports = <&dpu_online2>;
+-		};
+-
+-		dpu_online2: port@c0440000 {
+-			compatible = "spacemit,dpu-online2";
+-			interrupt-parent = <&intc>;
+-			interrupts = <139>, <138>;
+-			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
+-			clocks = <&ccu CLK_HDMI>;
+-			clock-names = "hmclk";
+-			assigned-clocks = <&ccu CLK_HDMI>;
+-			assigned-clock-parents = <&ccu CLK_PLL1_491>;
+-			assigned-clock-rates = <491520000>;
+-			resets = <&reset RESET_HDMI>;
+-			reset-names= "hdmi_reset";
+-			power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
+-			pipeline-id = <ONLINE2>;
+-			ip = "spacemit-saturn";
+-			status = "ok";
+-
+-			dpu_online2_out_hdmi: endpoint@0 {
+-				remote-endpoint = <&hdmi_in_dpu>;
+-			};
+-
+-			dpu_offline0_out: endpoint@1 {
+-				remote-endpoint = <&wb0_in>;
+-			};
+-		};
+-
+-		hdmi: hdmi@C0400500 {
+-			compatible = "spacemit,hdmi";
+-			reg = <0 0xC0400500 0 0x200>;
+-			status = "disabled";
+-
+-			hdmi_in: port {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				hdmi_in_dpu: endpoint@0 {
+-					reg = <0>;
+-					remote-endpoint = <&dpu_online2_out_hdmi>;
+-				};
++			dpu_offline0_dsi_out: endpoint@1 {
++				// remote-endpoint = <&wb0_in>;
+ 			};
+ 		};
+ 
+@@ -2293,46 +2250,89 @@ dsi2_out: endpoint {
+ 						remote-endpoint = <&dphy2_in>;
+ 					};
+ 				};
+-				/*
++
+ 				port@1 {
+ 					reg = <1>;
+ 					dsi2_in: endpoint {
+-						remote-endpoint = <&dpu_online2_out_dsi>;
++						remote-endpoint = <&dpu_online2_dsi_out>;
+ 					};
+ 				};
+-				*/
++
++			};
++		};
++
++		dphy2: dphy2@d421a800 {
++			compatible = "spacemit,dsi2-phy";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0 0xD421A800 0 0x200>;
++			ip = "spacemit-dphy";
++			dev-id = <2>;
++			status = "okay";
++
++			port@1 {
++				reg = <1>;
++				dphy2_in: endpoint {
++					remote-endpoint = <&dsi2_out>;
++				};
+ 			};
+ 		};
+ 
+ 		wb0 {
+ 			compatible = "spacemit,wb0";
+ 			dev-id = <2>;
+-			status = "ok";
++			status = "okay";
++
+ 			ports {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				port@0 {
+ 					reg = <0>;
+ 					wb0_in: endpoint {
+-						remote-endpoint = <&dpu_offline0_out>;
++						remote-endpoint = <&dpu_offline0_dsi_out>;
+ 					};
+ 				};
+ 			};
+ 		};
+ 
+-		dphy2: dphy2@d421a800 {
+-			compatible = "spacemit,dsi2-phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0xD421A800 0 0x200>;
+-			ip = "spacemit-dphy";
+-			dev-id = <2>;
+-			status = "ok";
++		dpu_online2_hdmi: port@c0440000 {
++			compatible = "spacemit,dpu-online2";
++			interrupt-parent = <&intc>;
++			interrupts = <139>, <138>;
++			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
++			clocks = <&ccu CLK_HDMI>;
++			clock-names = "hmclk";
++			assigned-clocks = <&ccu CLK_HDMI>;
++			assigned-clock-parents = <&ccu CLK_PLL1_491>;
++			assigned-clock-rates = <491520000>;
++			resets = <&reset RESET_HDMI>;
++			reset-names= "hdmi_reset";
++			power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
++			pipeline-id = <ONLINE2>;
++			ip = "spacemit-saturn";
++			status = "disabled";
+ 
+-			port@1 {
+-				reg = <1>;
+-				dphy2_in: endpoint {
+-					remote-endpoint = <&dsi2_out>;
++			dpu_online2_hdmi_out: endpoint@0 {
++				remote-endpoint = <&hdmi_in>;
++			};
++
++			dpu_offline0_hdmi_out: endpoint@1 {
++				remote-endpoint = <&wb0_in>;
++			};
++
++		};
++
++		hdmi: hdmi@C0400500 {
++			compatible = "spacemit,hdmi";
++			reg = <0 0xC0400500 0 0x200>;
++			status = "disabled";
++
++			port {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				hdmi_in: endpoint@0 {
++					reg = <0>;
++					remote-endpoint = <&dpu_online2_hdmi_out>;
+ 				};
+ 			};
+ 		};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index d4d938fa2aa7..d67883295def 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -104,7 +104,7 @@ linux,cma {
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+ 		dpu_resv: dpu_reserved@27000000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x00060000>;
++			reg = <0x0 0x27000000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+@@ -171,14 +171,14 @@ &uart2 {
+ &pwm14 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm14_1>;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+-&dpu_online2 {
++&dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &dsi2 {
+@@ -201,6 +201,11 @@ &lcds {
+ 	status = "disabled";
+ };
+ 
++&dpu_online2_hdmi {
++	memory-region = <&dpu_resv>;
++	status = "okay";
++};
++
+ &hdmi{
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_hdmi_0>;
+@@ -751,7 +756,7 @@ &pwm_bl {
+ 	>;
+ 	default-brightness-level = <100>;
+ 
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ /* imx315 */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index c85feab7a44d..450659023bd5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -104,7 +104,7 @@ linux,cma {
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+ 		dpu_resv: dpu_reserved@27000000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x00060000>;
++			reg = <0x0 0x27000000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+@@ -171,14 +171,14 @@ &uart2 {
+ &pwm14 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm14_1>;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+-&dpu_online2 {
++&dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	dsi_1v2-supply = <&ldo_17>;
+ 	vin-supply-names = "dsi_1v2";
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &dsi2 {
+@@ -201,6 +201,11 @@ &lcds {
+ 	status = "disabled";
+ };
+ 
++&dpu_online2_hdmi {
++	memory-region = <&dpu_resv>;
++	status = "okay";
++};
++
+ &hdmi{
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_hdmi_0>;
+@@ -804,7 +809,7 @@ &pwm_bl {
+ 	>;
+ 	default-brightness-level = <100>;
+ 
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ /* imx315 */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index bacbc2342a5b..5ab8cc0249e4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -104,7 +104,7 @@ linux,cma {
+ 		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
+ 		dpu_resv: dpu_reserved@27000000 {
+ 			compatible = "shared-dma-pool";
+-			reg = <0x0 0x27000000 0x0 0x00060000>;
++			reg = <0x0 0x27000000 0x0 0x000C0000>;
+ 			no-map;
+ 		};
+ 	};
+@@ -144,16 +144,16 @@ sdio_pwrseq: sdio-pwrseq {
+ &pwm1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm1_2>;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+-&dpu_online2 {
++&dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	lcd_2v8-supply = <&ldo_13>;
+ 	lcd_1v8-supply = <&ldo_15>;
+ 	dsi_1v2-supply = <&ldo_17>;
+ 	vin-supply-names = "lcd_2v8", "lcd_1v8", "dsi_1v2";
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &dsi2 {
+@@ -176,6 +176,11 @@ &lcds {
+ 	status = "disabled";
+ };
+ 
++&dpu_online2_hdmi {
++	memory-region = <&dpu_resv>;
++	status = "okay";
++};
++
+ &hdmi{
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_hdmi_0>;
+@@ -734,7 +739,7 @@ flash@0 {
+ };
+ 
+ &pwm_bl {
+-	pwms = <&pwm14 20156>;
++	pwms = <&pwm1 20156>;
+ 	brightness-levels = <
+ 		0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15
+ 		16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+@@ -755,7 +760,7 @@ &pwm_bl {
+ 	>;
+ 	default-brightness-level = <100>;
+ 
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ /* imx315 */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+index f6f596fd5b90..51d8f1adf3df 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+@@ -94,7 +94,7 @@ chosen {
+ 
+ };
+ 
+-&dpu_online2 {
++&dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	status = "okay";
+ };
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index aceab41a1b3c..e128246cb6e5 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -617,29 +617,32 @@ void spacemit_update_csc_matrix(struct drm_plane *plane, struct drm_plane_state
+ 	u32 module_base;
+ 	int color_encoding = plane->state->color_encoding;
+ 	int color_range = plane->state->color_range;
++	struct spacemit_drm_private *priv = plane->dev->dev_private;
+ 	int value;
+ 
+ 	module_base = RDMA0_BASE_ADDR + rdma_id * RDMA_SIZE;
+ 
+ 	if ((color_encoding != old_state->color_encoding) || (color_range != old_state->color_range)){
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][0] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][1] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX0, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX0, value);
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][2] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][3] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX1, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX1, value);
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][4] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][5] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX2, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX2, value);
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][6] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][7] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX3, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX3, value);
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][8] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][9] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX4, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX4, value);
+ 		value = (spacemit_yuv2rgb_coefs[color_encoding][color_range][10] & 0x3FFF) | ((spacemit_yuv2rgb_coefs[color_encoding][color_range][11] & 0x3FFF) << 14);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, CSC_MATRIX5, value);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, CSC_MATRIX5, value);
+ 	}
+ }
+ 
+ static void saturn_conf_scaler_x(struct drm_plane_state *state)
+ {
+ 	struct spacemit_plane_state *spacemit_plane_state = to_spacemit_plane_state(state);
++	struct drm_plane *plane = state->plane;
++	struct spacemit_drm_private *priv = plane->dev->dev_private;
+ 	u32 in_width, in_height, out_width, out_height;
+ 	uint32_t hor_delta_phase, ver_delta_phase;
+ 	int64_t hor_init_phase, ver_init_phase;
+@@ -668,8 +671,8 @@ static void saturn_conf_scaler_x(struct drm_plane_state *state)
+ 	hor_delta_phase = in_width * 65536 / out_width;
+ 	ver_delta_phase = in_height * 65536 / out_height;
+ 
+-	write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_7, hor_delta_phase); //0x10000
+-	write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_8, ver_delta_phase); //0x5555
++	write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_7, hor_delta_phase); //0x10000
++	write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_8, ver_delta_phase); //0x5555
+ 
+ 	//TODO: start cor
+ 	hor_init_phase = ((int64_t)hor_delta_phase - 65536) >> 1;
+@@ -679,46 +682,47 @@ static void saturn_conf_scaler_x(struct drm_plane_state *state)
+ 	DRM_DEBUG("hor_init_phase:%lld ver_init_phase:%lld\n", hor_init_phase, ver_init_phase);
+ 
+ 	if (hor_init_phase >= 0) {
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_3, hor_init_phase & 0x00000000ffffffff);  //0x0
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_4, 0);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_3, hor_init_phase & 0x00000000ffffffff);  //0x0
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_4, 0);
+ 	} else { //convert to positive value if negative
+ 		hor_init_phase += 8589934592;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_3, hor_init_phase & 0x00000000ffffffff);
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_4, (hor_init_phase & 0x0000000100000000) >> 32);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_3, hor_init_phase & 0x00000000ffffffff);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_4, (hor_init_phase & 0x0000000100000000) >> 32);
+ 	}
+ 
+ 	if (ver_init_phase >= 0) {
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_5, ver_init_phase & 0x00000000ffffffff);
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_6, 0);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_5, ver_init_phase & 0x00000000ffffffff);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_6, 0);
+ 	} else { //convert to positive value if negative
+ 		ver_init_phase += 8589934592;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_5, ver_init_phase & 0x00000000ffffffff);
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_6, (ver_init_phase & 0x0000000100000000) >> 32);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_5, ver_init_phase & 0x00000000ffffffff);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_6, (ver_init_phase & 0x0000000100000000) >> 32);
+ 	}
+ 
+ 	// enable both ver and hor
+-	write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_0, in_width << 8 | 0x1 << 1 | 0x1);
+-	write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_1, out_width << 16 | in_height);
+-	write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_2, out_height);
++	write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_0, in_width << 8 | 0x1 << 1 | 0x1);
++	write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_1, out_width << 16 | in_height);
++	write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_2, out_height);
+ 
+ 	/* Config RDMA scaling regs */
+ 	module_base = RDMA0_BASE_ADDR + spacemit_plane_state->rdma_id * RDMA_SIZE;
+ 
+ 	ver_init_phase = ((int64_t)ver_delta_phase - 65536) / 2;
+ 	if (ver_init_phase >= 0) {
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_LOW, ver_init_phase & 0x00000000ffffffff);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_HIGH, 0);  //TODO: only 1 bit, read then write??
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_LOW, ver_init_phase & 0x00000000ffffffff);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_HIGH, 0);  //TODO: only 1 bit, read then write??
+ 	} else { //convert to positive value if negative
+ 		ver_init_phase += 8589934592;
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_LOW, ver_init_phase & 0x00000000ffffffff);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_HIGH, (ver_init_phase & 0x0000000100000000) >> 32);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_LOW, ver_init_phase & 0x00000000ffffffff);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_INIT_PHASE_V_HIGH, (ver_init_phase & 0x0000000100000000) >> 32);
+ 	}
+ 
+-	write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_SCL_RATIO_V, 0x1 << 20 | ver_delta_phase);
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_SCL_RATIO_V, 0x1 << 20 | ver_delta_phase);
+ }
+ 
+ void saturn_conf_scaler_coefs(struct drm_plane *plane, struct spacemit_plane_state *spacemit_pstate){
+ 	struct drm_property_blob * blob = spacemit_pstate->scale_coefs_blob_prop;
++	struct spacemit_drm_private *priv = plane->dev->dev_private;
+ 	int scale_num = 192;
+ 	u32 module_base;
+ 	int val;
+@@ -743,57 +747,57 @@ void saturn_conf_scaler_coefs(struct drm_plane *plane, struct spacemit_plane_sta
+ 		}
+ 
+ 		val  = (coef_data[0] & 0xFFFF) | coef_data[1] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_9, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_9, val);
+ 		val  = (coef_data[2] & 0xFFFF) | coef_data[3] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_10, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_10, val);
+ 		val  = (coef_data[4] & 0xFFFF) | coef_data[5] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_11, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_11, val);
+ 		val  = (coef_data[6] & 0xFFFF) | coef_data[7] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_12, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_12, val);
+ 		val  = (coef_data[8] & 0xFFFF) | coef_data[9] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_13, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_13, val);
+ 		val  = (coef_data[10] & 0xFFFF) | coef_data[11] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_14, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_14, val);
+ 		val  = (coef_data[12] & 0xFFFF) | coef_data[13] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_15, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_15, val);
+ 		val  = (coef_data[14] & 0xFFFF) | coef_data[15] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_16, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_16, val);
+ 		val  = (coef_data[16] & 0xFFFF) | coef_data[17] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_17, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_17, val);
+ 		val  = (coef_data[18] & 0xFFFF) | coef_data[19] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_18, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_18, val);
+ 		val  = (coef_data[20] & 0xFFFF) | coef_data[21] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_19, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_19, val);
+ 		val  = (coef_data[22] & 0xFFFF) | coef_data[23] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_20, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_20, val);
+ 		val  = (coef_data[24] & 0xFFFF) | coef_data[25] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_21, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_21, val);
+ 		val  = (coef_data[26] & 0xFFFF) | coef_data[27] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_22, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_22, val);
+ 		val  = (coef_data[28] & 0xFFFF) | coef_data[29] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_23, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_23, val);
+ 		val  = (coef_data[30] & 0xFFFF) | coef_data[31] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_24, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_24, val);
+ 		val  = (coef_data[32] & 0xFFFF) | coef_data[33] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_25, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_25, val);
+ 		val  = (coef_data[34] & 0xFFFF) | coef_data[35] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_26, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_26, val);
+ 		val  = (coef_data[36] & 0xFFFF) | coef_data[37] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_27, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_27, val);
+ 		val  = (coef_data[38] & 0xFFFF) | coef_data[39] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_28, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_28, val);
+ 		val  = (coef_data[40] & 0xFFFF) | coef_data[41] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_29, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_29, val);
+ 		val  = (coef_data[42] & 0xFFFF) | coef_data[43] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_30, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_30, val);
+ 		val  = (coef_data[44] & 0xFFFF) | coef_data[45] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_31, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_31, val);
+ 		val  = (coef_data[46] & 0xFFFF) | coef_data[47] << 16;
+-		write_to_cmdlist(SCALER_X_REG, module_base, disp_scl_reg_32, val);
++		write_to_cmdlist(priv, SCALER_X_REG, module_base, disp_scl_reg_32, val);
+ 	}
+ }
+ 
+-static void spacemit_set_afbc_info(uint64_t modifier, u32 module_base)
++static void spacemit_set_afbc_info(struct spacemit_drm_private *priv, uint64_t modifier, u32 module_base)
+ {
+ 	bool ret = false;
+ 	u8 tile_type = 0;
+@@ -807,7 +811,7 @@ static void spacemit_set_afbc_info(uint64_t modifier, u32 module_base)
+ 		return;
+ 	}
+ 
+-	write_to_cmdlist(RDMA_PATH_X_REG, module_base, AFBC_CFG, tile_type << 3 | block_size << 2 | yuv_transform << 1 | split_mode);
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, AFBC_CFG, tile_type << 3 | block_size << 2 | yuv_transform << 1 | split_mode);
+ 
+ 	return;
+ }
+@@ -885,17 +889,17 @@ void spacemit_plane_update_hw_channel(struct drm_plane *plane)
+ 		/* Set RDMA regs */
+ 		module_base = RDMA0_BASE_ADDR + rdma_id * RDMA_SIZE;
+ 		val = 0x0 << 26 | 0x0 << 25 | 0xf << 17 | 0x0 << 15 | channel << 12 | 0x0 << 7 | 0xf << 2 | (is_afbc ? 1 : 0);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LAYER_CTRL, val);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, COMPSR_Y_OFST, crtc_y);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_SCL_RATIO_V, 0x0 << 20);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_IMG_SIZE, fb->height << 16 | fb->width);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LAYER_CTRL, val);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, COMPSR_Y_OFST, crtc_y);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_SCL_RATIO_V, 0x0 << 20);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_IMG_SIZE, fb->height << 16 | fb->width);
+ 		val = src_y + src_h;
+ 
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_CROP_POS_START, src_y << 16 | src_x);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_CROP_POS_START, src_y << 16 | src_x);
+ 		val = ((val - 1) << 16) | (src_x + src_w - 1);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_CROP_POS_END, val);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_ALPHA01, 0x0 << 16 | 0x0);
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, LEFT_ALPHA23, 0x0 << 16 | 0x0);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_CROP_POS_END, val);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_ALPHA01, 0x0 << 16 | 0x0);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_ALPHA23, 0x0 << 16 | 0x0);
+ 
+ 		saturn_write_fbcmem_regs(state, rdma_id, module_base, NULL);
+ 
+@@ -910,10 +914,10 @@ void spacemit_plane_update_hw_channel(struct drm_plane *plane)
+ 			uv_swap = 1;
+ 		}
+ 
+-		write_to_cmdlist(RDMA_PATH_X_REG, module_base, ROT_MODE, val << 7 | uv_swap << 6 | spacemit_plane_state->format);
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, ROT_MODE, val << 7 | uv_swap << 6 | spacemit_plane_state->format);
+ 
+ 		if (fb->modifier) {
+-			spacemit_set_afbc_info(fb->modifier, module_base);
++			spacemit_set_afbc_info(priv, fb->modifier, module_base);
+ 		}
+ 
+ 		if (spacemit_plane_state->use_scl){
+diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
+index 9e2e0bbe672e..d759c9ac46dd 100644
+--- a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
++++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
+@@ -172,12 +172,14 @@ void inline saturn_write_fbcmem_regs(struct drm_plane_state *state, u32 rdma_id,
+ 				     u32 module_base, volatile RDMA_PATH_X_REG *rdma_regs)
+ {
+ 	struct drm_crtc_state *crtc_state = state->crtc->state;
++	struct drm_crtc *crtc = crtc_state->crtc;
++	struct spacemit_drm_private *priv = crtc->dev->dev_private;
+ 	const struct spacemit_dpu_rdma *rdmas = to_spacemit_crtc_state(crtc_state)->rdmas;
+ 	u32 size  = rdmas[rdma_id].fbcmem.size;// / FBCMEM_UNIT;
+ 	u32 start = rdmas[rdma_id].fbcmem.start;// / FBCMEM_UNIT;
+ 	bool map   = rdmas[rdma_id].fbcmem.map;
+ 
+-	write_to_cmdlist(RDMA_PATH_X_REG, module_base, FBC_MEM_SIZE, map << 28 | start << 16 | size);
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, FBC_MEM_SIZE, map << 28 | start << 16 | size);
+ 
+ 	return;
+ }
+diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.c b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
+index e06c3820e542..266fd2cdf821 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
++++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
+@@ -18,9 +18,6 @@
+ #define CL_HEADER_SZ sizeof(struct cmdlist_header)
+ #define CL_ROW_SZ    sizeof(struct cmdlist_row)
+ 
+-struct cmdlist_reg cmdlist_regs[CMDLIST_REGS_NUM] = { 0 };
+-int cmdlist_num = 0;
+-
+ static inline struct
+ spacemit_plane_state *cl_to_spacemit_pstate(const struct cmdlist *cl)
+ {
+@@ -56,7 +53,8 @@ void cmdlist_regs_packing(struct drm_plane *plane) {
+ 	struct spacemit_plane_state *spacemit_pstate = to_spacemit_plane_state(plane->state);
+ 	struct cmdlist *cl = &spacemit_pstate->cl;
+ 	struct cmdlist_row *row;
+-	struct cmdlist_reg *regs = cmdlist_regs;
++	struct spacemit_drm_private *priv = plane->dev->dev_private;
++	struct cmdlist_reg *regs = priv->cmdlist_regs;
+ 	int i;
+ 
+ 	cl->size = PER_CMDLIST_SIZE;
+@@ -67,28 +65,28 @@ void cmdlist_regs_packing(struct drm_plane *plane) {
+ 		return;
+ 	}
+ 
+-	sort(regs, cmdlist_num, sizeof(struct cmdlist_reg), cmdlist_reg_cmp, cmdlist_reg_swap);
+-	for (i = 0; i < cmdlist_num; i++) {
++	sort(regs, priv->cmdlist_num, sizeof(struct cmdlist_reg), cmdlist_reg_cmp, cmdlist_reg_swap);
++	for (i = 0; i < priv->cmdlist_num; i++) {
+ 		DRM_DEBUG("cmdlist_reg, regs[%d] = {0x%02x, 0x%02x}", i, regs[i].offset, regs[i].value);
+ 	}
+ 
+-	DRM_DEBUG("-----cmdlist_regs_packing----- cmdlist_num = %u, rch_id = %d, ch_y = %u\n",
+-		  cmdlist_num, spacemit_pstate->rdma_id, spacemit_pstate->state.crtc_y);
++	DRM_DEBUG("-----cmdlist_regs_packing----- priv->cmdlist_num = %u, rch_id = %d, ch_y = %u\n",
++		  priv->cmdlist_num, spacemit_pstate->rdma_id, spacemit_pstate->state.crtc_y);
+ 
+ 	row = (struct cmdlist_row *)((char *)cl->va + CL_HEADER_SZ);
+-	for (i = 0; i < cmdlist_num;) {
++	for (i = 0; i < priv->cmdlist_num;) {
+ 		row->module_cfg_addr = regs[i].offset >> 2;
+ 		row->module_regs[0] = regs[i].value;
+ 		row->module_cfg_num = 1;
+ 		row->module_cfg_strobe = 0xf;
+-		if (i + 1 < cmdlist_num) {
++		if (i + 1 < priv->cmdlist_num) {
+ 			if (regs[i + 1].offset - regs[i].offset == sizeof(u32)) {
+ 				row->module_regs[1] = regs[i + 1].value;
+ 				row->module_cfg_num = 2;
+ 				row->module_cfg_strobe = 0xff;
+ 			}
+ 		}
+-		if (i + 2 < cmdlist_num) {
++		if (i + 2 < priv->cmdlist_num) {
+ 			if (regs[i + 2].offset - regs[i].offset == sizeof(u32) * 2) {
+ 				row->module_regs[2] = regs[i + 2].value;
+ 				row->module_cfg_num = 3;
+@@ -102,7 +100,7 @@ void cmdlist_regs_packing(struct drm_plane *plane) {
+ 		cl->nod_len++;
+ 		row = (struct cmdlist_row *)((char *)row + CL_ROW_SZ);
+ 	}
+-	cmdlist_num = 0; //clear cmdlist_regs buffer
++	priv->cmdlist_num = 0; //clear cmdlist_regs buffer
+ 	DRM_DEBUG("-----cmdlist_regs_packing----- row_num = %d\n", row->module_cfg_num);
+ }
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.h b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
+index eb649fef2e94..6c2a1d929403 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
++++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
+@@ -57,15 +57,12 @@ struct cmdlist_reg {
+     uint32_t value;
+ };
+ 
+-extern struct cmdlist_reg cmdlist_regs[CMDLIST_REGS_NUM];
+-extern int cmdlist_num;
+-
+ #define dpu_offsetof(TYPE, MEMBER)  ((size_t)&((TYPE *)0)->v.MEMBER)
+-#define write_to_cmdlist(module_name, module_base, reg, val) \
++#define write_to_cmdlist(priv, module_name, module_base, reg, val) \
+ { \
+-    u32 offset = module_base + dpu_offsetof(module_name, reg); \
+-    cmdlist_regs[cmdlist_num].value = val; \
+-    cmdlist_regs[cmdlist_num++].offset = offset; \
++	u32 offset = module_base + dpu_offsetof(module_name, reg); \
++	priv->cmdlist_regs[priv->cmdlist_num].value = val; \
++	priv->cmdlist_regs[priv->cmdlist_num++].offset = offset; \
+ }
+ 
+ void cmdlist_regs_packing(struct drm_plane *plane);
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
+index cceedeaeb8e6..e91853cf0092 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
+@@ -52,17 +52,17 @@ int spacemit_dmmu_map(struct drm_framebuffer *fb, struct dpu_mmu_tbl *mmu_tbl, u
+ 	if (!wb && priv->contig_mem) {
+ 		phys_addr_t contig_pa = sg_dma_address(sgt->sgl);
+ 
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_Ctrl, 0x0);
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_Ctrl, 0x0);
+ #if defined (CONFIG_ARM64) || defined (CONFIG_ARM_LPAE)
+-		CONFIG_RDMA_ADDR_REG(0, rdma_id, contig_pa);
+-		CONFIG_RDMA_ADDR_REG(1, rdma_id, (contig_pa + fb->offsets[1]));
+-		CONFIG_RDMA_ADDR_REG(2, rdma_id, (contig_pa + fb->offsets[2]));
++		CONFIG_RDMA_ADDR_REG(priv, 0, rdma_id, contig_pa);
++		CONFIG_RDMA_ADDR_REG(priv, 1, rdma_id, (contig_pa + fb->offsets[1]));
++		CONFIG_RDMA_ADDR_REG(priv, 2, rdma_id, (contig_pa + fb->offsets[2]));
+ #else
+-		CONFIG_RDMA_ADDR_REG_32(0, rdma_id, contig_pa);
+-		CONFIG_RDMA_ADDR_REG_32(1, rdma_id, (contig_pa + fb->offsets[1]));
+-		CONFIG_RDMA_ADDR_REG_32(2, rdma_id, (contig_pa + fb->offsets[2]));
++		CONFIG_RDMA_ADDR_REG_32(priv, 0, rdma_id, contig_pa);
++		CONFIG_RDMA_ADDR_REG_32(priv, 1, rdma_id, (contig_pa + fb->offsets[1]));
++		CONFIG_RDMA_ADDR_REG_32(priv, 2, rdma_id, (contig_pa + fb->offsets[2]));
+ #endif
+-		write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 				 LEFT_RDMA_STRIDE0, (fb->pitches[1] << 16) | fb->pitches[0]);
+ 
+ 		return 0;
+@@ -110,27 +110,27 @@ int spacemit_dmmu_map(struct drm_framebuffer *fb, struct dpu_mmu_tbl *mmu_tbl, u
+ 		CONFIG_WB_ADDR_REG(hwdev, 1, tbu.tbu_va[1]);
+ 		dpu_write_reg(hwdev, WB_TOP_REG, WB0_TOP_BASE_ADDR, \
+ 				wb_wdma_stride, (fb->pitches[1] << 16) | fb->pitches[0]);
+-		CONFIG_TBU_REGS(hwdev, 0, tbu_id);
+-		CONFIG_TBU_REGS(hwdev, 1, tbu_id);
+-		CONFIG_TBU_REGS(hwdev, 2, tbu_id);
++		CONFIG_TBU_REGS(priv, hwdev, 0, tbu_id);
++		CONFIG_TBU_REGS(priv, hwdev, 1, tbu_id);
++		CONFIG_TBU_REGS(priv, hwdev, 2, tbu_id);
+ 		dpu_write_reg(hwdev, MMU_REG, MMU_BASE_ADDR, v.TBU[tbu_id].TBU_Ctrl, val);
+ 	} else {
+ 		val = val | (DPU_QOS_URGENT << 8);
+ #if defined (CONFIG_ARM64) || defined (CONFIG_ARM_LPAE)
+-		CONFIG_RDMA_ADDR_REG(0, rdma_id, tbu.tbu_va[0]);
+-		CONFIG_RDMA_ADDR_REG(1, rdma_id, tbu.tbu_va[1]);
+-		CONFIG_RDMA_ADDR_REG(2, rdma_id, tbu.tbu_va[2]);
++		CONFIG_RDMA_ADDR_REG(priv, 0, rdma_id, tbu.tbu_va[0]);
++		CONFIG_RDMA_ADDR_REG(priv, 1, rdma_id, tbu.tbu_va[1]);
++		CONFIG_RDMA_ADDR_REG(priv, 2, rdma_id, tbu.tbu_va[2]);
+ #else
+-		CONFIG_RDMA_ADDR_REG_32(0, rdma_id, tbu.tbu_va[0]);
+-		CONFIG_RDMA_ADDR_REG_32(1, rdma_id, tbu.tbu_va[1]);
+-		CONFIG_RDMA_ADDR_REG_32(2, rdma_id, tbu.tbu_va[2]);
++		CONFIG_RDMA_ADDR_REG_32(priv, 0, rdma_id, tbu.tbu_va[0]);
++		CONFIG_RDMA_ADDR_REG_32(priv, 1, rdma_id, tbu.tbu_va[1]);
++		CONFIG_RDMA_ADDR_REG_32(priv, 2, rdma_id, tbu.tbu_va[2]);
+ #endif
+-		write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++		write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 				LEFT_RDMA_STRIDE0, (fb->pitches[1] << 16) | fb->pitches[0]);
+-		CONFIG_TBU_REGS(NULL, 0, tbu_id);
+-		CONFIG_TBU_REGS(NULL, 1, tbu_id);
+-		CONFIG_TBU_REGS(NULL, 2, tbu_id);
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_Ctrl, val);
++		CONFIG_TBU_REGS(priv, NULL, 0, tbu_id);
++		CONFIG_TBU_REGS(priv, NULL, 1, tbu_id);
++		CONFIG_TBU_REGS(priv, NULL, 2, tbu_id);
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_Ctrl, val);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.h b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
+index d37d1a30e674..a5998c3565bb 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dmmu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
+@@ -30,7 +30,7 @@
+ 
+ #define TBU_BASE_VA(tbu_id) ((uint64_t)BASE_VA + (uint64_t)VA_STEP_PER_TBU * tbu_id)
+ 
+-#define CONFIG_TBU_REGS(hwdev, reg_id, tbu_id) \
++#define CONFIG_TBU_REGS(priv, hwdev, reg_id, tbu_id) \
+ {\
+ 	struct spacemit_hw_device *hwdev_p = (struct spacemit_hw_device *)hwdev; \
+ 	if (hwdev_p) { \
+@@ -43,32 +43,32 @@
+ 		dpu_write_reg(hwdev_p, MMU_REG, MMU_BASE_ADDR, \
+ 				v.TBU[tbu_id].TBU_SIZE##reg_id, tbu.ttb_size[reg_id]); \
+ 	} else { \
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, \
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, \
+ 				TBU[tbu_id].TBU_Base_Addr##reg_id##_Low, \
+ 				tbu.ttb_pa[reg_id] & 0xFFFFFFFF); \
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, \
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, \
+ 				TBU[tbu_id].TBU_Base_Addr##reg_id## _High, \
+ 				(tbu.ttb_pa[reg_id] >> 32) & 0x3); \
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_VA##reg_id, \
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, TBU[tbu_id].TBU_VA##reg_id, \
+ 				(tbu.tbu_va[reg_id] >> 12) & 0x3FFFFF); \
+-		write_to_cmdlist(MMU_REG, MMU_BASE_ADDR, \
++		write_to_cmdlist(priv, MMU_REG, MMU_BASE_ADDR, \
+ 				TBU[tbu_id].TBU_SIZE##reg_id, tbu.ttb_size[reg_id]); \
+ 	} \
+ }
+ 
+-#define CONFIG_RDMA_ADDR_REG(reg_id, rdma_id, addr) \
++#define CONFIG_RDMA_ADDR_REG(priv, reg_id, rdma_id, addr) \
+ { \
+-	write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 			 LEFT_BASE_ADDR##reg_id##_LOW, addr & 0xFFFFFFFF); \
+-	write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 			 LEFT_BASE_ADDR##reg_id##_HIGH, (addr >> 32) & 0x3); \
+ }
+ 
+-#define CONFIG_RDMA_ADDR_REG_32(reg_id, rdma_id, addr) \
++#define CONFIG_RDMA_ADDR_REG_32(priv, reg_id, rdma_id, addr) \
+ { \
+-	write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 			 LEFT_BASE_ADDR##reg_id##_LOW, addr & 0xFFFFFFFF); \
+-	write_to_cmdlist(RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
++	write_to_cmdlist(priv, RDMA_PATH_X_REG, RDMA_BASE_ADDR(rdma_id), \
+ 			 LEFT_BASE_ADDR##reg_id##_HIGH, 0); \
+ }
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index 521d2cb521fc..912d0840bf3d 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -294,7 +294,7 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
+ {
+ 	struct spacemit_dpu *dpu = crtc_to_dpu(crtc);
+ 
+-	DRM_DEBUG("%s(power on)\n", __func__);
++	DRM_INFO("%s(power on)\n", __func__);
+ 	trace_spacemit_crtc_atomic_enable(dpu->dev_id);
+ 
+ 	/* If bootloader logo is boot on, release its resources first */
+@@ -814,7 +814,7 @@ static int spacemit_dpu_bind(struct device *dev, struct device *master, void *da
+ 	if (ret)
+ 		goto err_destroy_workqueue;
+ 
+-	spacemit_wb_init(drm_dev, &dpu->crtc);
++	// spacemit_wb_init(drm_dev, &dpu->crtc);
+ 
+ 	spacemit_dpu_sysfs_init(dev);
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+index cee729b84120..d57fce633833 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+@@ -67,7 +67,8 @@
+ */
+ 
+ #define DPU_PXCLK_DEFAULT	88000000
+-#define DPU_MCLK_DEFAULT	307200000
++// #define DPU_MCLK_DEFAULT	307200000
++#define DPU_MCLK_DEFAULT	491520000
+ #define DPU_MCLK_MAX		614400000
+ #define DPU_MCLK_MIN		40960000
+ #define DPU_AXICLK_DEFAULT	409000000
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index e9941fb95ce7..a1bdab63e7b7 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -420,6 +420,11 @@ static int spacemit_drm_probe(struct platform_device *pdev)
+ 
+ 	priv->hwdev = (struct spacemit_hw_device *)of_device_get_match_data(&pdev->dev);
+ 
++	priv->cmdlist_num = 0;
++	priv->cmdlist_regs = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!priv->cmdlist_regs)
++		return -ENOMEM;
++
+ 	priv->cmdlist_groups = kzalloc(sizeof(struct cmdlist *) * \
+ 			       priv->hwdev->rdma_nums, GFP_KERNEL);
+ 	if (!priv->cmdlist_groups)
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.h b/drivers/gpu/drm/spacemit/spacemit_drm.h
+index c4d899b5bc9a..f0796bde3030 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.h
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.h
+@@ -40,6 +40,8 @@ struct spacemit_drm_private {
+ 	bool contig_mem;
+ 	int num_pipes;
+ 	struct cmdlist **cmdlist_groups;
++	struct cmdlist_reg *cmdlist_regs;
++	int cmdlist_num;
+ };
+ 
+ extern struct platform_driver spacemit_dpu_driver;
+-- 
+2.47.0
+

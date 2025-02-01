@@ -1,0 +1,46 @@
+From 13fbdc9df0ab7b3e59ae67cc7d2fc40e192a1a43 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 15 Dec 2023 23:15:12 +0800
+Subject: [PATCH 0182/1451] update kconfig to support spacemit k1x timer
+ configuration
+
+Change-Id: I1f234df22bfb8a20e9a066ae0c9e4b22d9fc65dc
+---
+ drivers/clocksource/Kconfig  | 7 +++++++
+ drivers/clocksource/Makefile | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 8208a3d89563..de41ad37f53f 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -134,6 +134,13 @@ config RDA_TIMER
+ 	help
+ 	  Enables the support for the RDA Micro timer driver.
+ 
++config SPACEMIT_K1X_TIMER
++	bool "Spacemit k1x timer driver" if COMPILE_TEST
++	select CLKSRC_MMIO
++	select TIMER_OF
++	help
++	  Enables the support for the spacemit k1x timer driver.
++
+ config SUN4I_TIMER
+ 	bool "Sun4i timer driver" if COMPILE_TEST
+ 	depends on HAS_IOMEM
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index acb277125a50..2c23e18beea2 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -59,7 +59,7 @@ obj-$(CONFIG_MILBEAUT_TIMER)	+= timer-milbeaut.o
+ obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o
+ obj-$(CONFIG_NPCM7XX_TIMER)	+= timer-npcm7xx.o
+ obj-$(CONFIG_RDA_TIMER)		+= timer-rda.o
+-obj-$(CONFIG_SOC_SPACEMIT_K1)	+= timer-k1x.o
++obj-$(CONFIG_SPACEMIT_K1X_TIMER)	+= timer-k1x.o
+ 
+ obj-$(CONFIG_ARC_TIMERS)		+= arc_timer.o
+ obj-$(CONFIG_ARM_ARCH_TIMER)		+= arm_arch_timer.o
+-- 
+2.47.0
+

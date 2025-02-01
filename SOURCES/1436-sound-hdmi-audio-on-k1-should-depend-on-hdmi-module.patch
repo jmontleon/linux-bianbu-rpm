@@ -1,0 +1,27 @@
+From c46152713c7d62a8fa66a3e56e21922983dd0d61 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 9 Jan 2025 14:16:27 +0800
+Subject: [PATCH 1436/1451] sound: hdmi-audio on k1 should depend on hdmi
+ module
+
+Change-Id: I4d253f6cc608a406130bed6ec18744fef89dd60d
+---
+ sound/soc/spacemit/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/spacemit/Kconfig b/sound/soc/spacemit/Kconfig
+index 15e91c6930ae..2662bd260c40 100644
+--- a/sound/soc/spacemit/Kconfig
++++ b/sound/soc/spacemit/Kconfig
+@@ -25,7 +25,7 @@ config SPACEMIT_I2S
+ 
+ config SPACEMIT_HDMIAUDIO
+         tristate "Audio Cpudai HDMI Audio"
+-        depends on SND_SOC_SPACEMIT
++        depends on SND_SOC_SPACEMIT && SPACEMIT_HDMI
+         help
+           Say Y or M here if you want to enable audio data dump function
+ 
+-- 
+2.47.0
+

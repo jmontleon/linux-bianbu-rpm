@@ -1,0 +1,71 @@
+From e9c98d4ed72fde26d9313c62e9355ccd810993bd Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@spacemit.com>
+Date: Mon, 30 Dec 2024 10:48:56 +0800
+Subject: [PATCH 1422/1451] i2c: fix ri2c clock rate incorrect
+
+before: 61.44Hz
+after: 30.72MHz
+
+Change-Id: Ic79e53e2f6ca0766ee43f69d0395b7d63fb7924c
+---
+ drivers/i2c/busses/i2c-k1x.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index 006f396888b9..a29688cb12a5 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1781,14 +1781,13 @@ spacemit_i2c_parse_dt(struct platform_device *pdev, struct spacemit_i2c_dev *spa
+ 			dev_warn(spacemit_i2c->dev,
+ 			"failed to get i2c master code, use default: 0x0e\n");
+ 		}
+-
+-		ret = of_property_read_u32(dnode, "spacemit,i2c-clk-rate",
+-				&spacemit_i2c->clk_rate);
+-		if (ret) {
+-			dev_err(spacemit_i2c->dev,
+-				"failed to get i2c high mode clock rate\n");
+-			return ret;
+-		}
++	}
++	ret = of_property_read_u32(dnode, "spacemit,i2c-clk-rate",
++			&spacemit_i2c->clk_rate);
++	if (ret) {
++		dev_err(spacemit_i2c->dev,
++			"failed to get i2c clock rate\n");
++		return ret;
+ 	}
+ 
+ 	ret = of_property_read_u32(dnode, "spacemit,i2c-lcr", &spacemit_i2c->i2c_lcr);
+@@ -1846,6 +1845,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 	struct rpmsg_device *rpdev;
+ 	struct instance_data *idata;
+ 	const struct of_device_id *of_id;
++	bool rcpu_i2c = false;
+ #endif
+ 	int ret = 0;
+ 
+@@ -1892,7 +1892,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+ 	if (of_get_property(pdev->dev.of_node, "rcpu-i2c", NULL)) {
+-
++		rcpu_i2c = true;
+ 		of_id = of_match_device(r_spacemit_i2c_dt_match, &pdev->dev);
+ 		if (!of_id) {
+ 			pr_err("Unable to match OF ID\n");
+@@ -1939,6 +1939,11 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(spacemit_i2c->clk);
+ 		goto err_dma;
+ 	}
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	if (rcpu_i2c) {
++		clk_set_rate(spacemit_i2c->clk, spacemit_i2c->clk_rate);
++	}
++#endif
+ 	clk_prepare_enable(spacemit_i2c->clk);
+ 
+ 	i2c_set_adapdata(&spacemit_i2c->adapt, spacemit_i2c);
+-- 
+2.47.0
+

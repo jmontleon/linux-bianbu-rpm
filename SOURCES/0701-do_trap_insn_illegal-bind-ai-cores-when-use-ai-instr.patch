@@ -1,0 +1,119 @@
+From f37aa79538c47fd4cc86d0b468fe4e73f72e4a44 Mon Sep 17 00:00:00 2001
+From: wangchu <chu.wang@spacemit.com>
+Date: Tue, 18 Apr 2023 11:18:33 +0800
+Subject: [PATCH 0701/1451] do_trap_insn_illegal: bind ai cores when use ai
+ instruction
+
+Change-Id: Ib551054242131f58699015f28fa30ee976fcbc0f
+---
+ arch/riscv/Kconfig.socs            |  7 +++++++
+ arch/riscv/include/asm/processor.h |  1 +
+ arch/riscv/kernel/cpufeature.c     | 27 +++++++++++++++++++++++++++
+ arch/riscv/kernel/traps.c          | 19 +++++++++++++++++++
+ 4 files changed, 54 insertions(+)
+
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 8bf0ece4b409..486e882c0166 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -162,6 +162,13 @@ config SOC_SPACEMIT_K1_FPGA
+ 	  This enable FPGA platform for K1 SoCs.
+ 
+ endif
++
++config BIND_THREAD_TO_AICORES
++	bool "enable bind ai cores when use AI instruction"
++	default y
++	help
++	  This enable bind ai cores when use AI instruction.
++
+ endif
+ 
+ endmenu # "SoC selection"
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index 4f6af8c6cfa0..3ece36b13db2 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -123,6 +123,7 @@ int riscv_of_parent_hartid(struct device_node *node, unsigned long *hartid);
+ 
+ extern void riscv_fill_hwcap(void);
+ extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
++extern struct cpumask ai_core_mask_get(void);
+ 
+ extern unsigned long signal_minsigstksz __ro_after_init;
+ 
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index bb5fb2b820a2..1a6b0ef09e36 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -80,6 +80,33 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, int bit)
+ }
+ EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
+ 
++struct cpumask ai_core_mask_get(void)
++{
++	struct device_node *node;
++	const char *cpu_ai;
++	struct cpumask	cpu_mask;
++	unsigned long hartid;
++	int rc;
++
++	cpumask_clear(&cpu_mask);
++
++	for_each_of_cpu_node(node) {
++		rc = riscv_of_processor_hartid(node, &hartid);
++		if (rc < 0)
++			continue;
++
++		if (of_property_read_string(node, "cpu-ai", &cpu_ai)) {
++			continue;
++		}
++
++		if(!strcmp(cpu_ai, "true")) {
++			cpumask_set_cpu(hartid, &cpu_mask);
++		}
++	}
++
++	return cpu_mask;
++}
++
+ static bool riscv_isa_extension_check(int id)
+ {
+ 	switch (id) {
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 53c7de4878c2..9049f8626913 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -151,10 +151,29 @@ DO_ERROR_INFO(do_trap_insn_misaligned,
+ DO_ERROR_INFO(do_trap_insn_fault,
+ 	SIGSEGV, SEGV_ACCERR, "instruction access fault");
+ 
++#ifdef CONFIG_BIND_THREAD_TO_AICORES
++#include <linux/cpumask.h>
++#define AI_OPCODE_MASK0  0xFE0000FF
++#define AI_OPCODE_MATCH0 0xE200002B
++#define AI_OPCODE_MASK1  0xFE0000FF
++#define AI_OPCODE_MATCH1 0xE600002B
++#endif
++
+ asmlinkage __visible __trap_section void do_trap_insn_illegal(struct pt_regs *regs)
+ {
+ 	bool handled;
+ 
++#ifdef CONFIG_BIND_THREAD_TO_AICORES
++        if ((regs->epc & AI_OPCODE_MASK0) == AI_OPCODE_MATCH0 ||
++            (regs->epc & AI_OPCODE_MASK1) == AI_OPCODE_MATCH1) {
++                struct cpumask mask;
++                pid_t pid = current->pid;
++				mask = ai_core_mask_get();
++                sched_setaffinity(pid, &mask);
++		return;
++        }
++#endif
++
+ 	if (user_mode(regs)) {
+ 		irqentry_enter_from_user_mode(regs);
+ 
+-- 
+2.47.0
+

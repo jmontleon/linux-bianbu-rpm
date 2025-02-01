@@ -1,0 +1,68 @@
+From 383c6c73ffe8f4f51f1c55d9c44e2e7e62eec4d4 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 15 Sep 2023 10:06:27 +0800
+Subject: [PATCH 0111/1451] k1pro:adjust pwm-driver/config name
+
+Change-Id: I900da4a0302c8b41eaa8c79fe275676707fdadc1
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig       | 2 ++
+ drivers/pwm/Kconfig                            | 6 +++---
+ drivers/pwm/Makefile                           | 2 +-
+ drivers/pwm/{pwm-dwc-k1x.c => pwm-dwc-k1pro.c} | 0
+ 4 files changed, 6 insertions(+), 4 deletions(-)
+ rename drivers/pwm/{pwm-dwc-k1x.c => pwm-dwc-k1pro.c} (100%)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 480feda8cbc8..8b4045821a38 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -225,6 +225,8 @@ CONFIG_SPACEMIT_MAILBOX=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_REMOTEPROC=y
+ CONFIG_SPACEMIT_REMOTEPROC=y
++CONFIG_PWM=y
++CONFIG_PWM_DWC_K1PRO=y
+ # CONFIG_RESET_SCMI is not set
+ # CONFIG_NVMEM is not set
+ CONFIG_EXT4_FS=y
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index 170b71da9b23..256bb5b4f827 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -195,13 +195,13 @@ config PWM_DWC
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called pwm-dwc.
+ 
+-config PWM_DWC_K1X
+-        tristate "DesignWare PWM Controller K1X"
++config PWM_DWC_K1PRO
++        tristate "DesignWare PWM Controller KPRO"
+         help
+           PWM driver for Synopsys DWC PWM Controller load by platform.
+ 
+           To compile this driver as a module, choose M here: the module
+-          will be called pwm-dwc-k1x.
++          will be called pwm-dwc-k1pro.
+ 
+ config PWM_EP93XX
+ 	tristate "Cirrus Logic EP93xx PWM support"
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index 05e45194e318..aa34a12e47bb 100644
+--- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -16,7 +16,7 @@ obj-$(CONFIG_PWM_CLPS711X)	+= pwm-clps711x.o
+ obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
+ obj-$(CONFIG_PWM_CROS_EC)	+= pwm-cros-ec.o
+ obj-$(CONFIG_PWM_DWC)		+= pwm-dwc.o
+-obj-$(CONFIG_PWM_DWC_K1X)	+= pwm-dwc-k1x.o
++obj-$(CONFIG_PWM_DWC_K1pro)	+= pwm-dwc-k1pro.o
+ obj-$(CONFIG_PWM_EP93XX)	+= pwm-ep93xx.o
+ obj-$(CONFIG_PWM_FSL_FTM)	+= pwm-fsl-ftm.o
+ obj-$(CONFIG_PWM_HIBVT)		+= pwm-hibvt.o
+diff --git a/drivers/pwm/pwm-dwc-k1x.c b/drivers/pwm/pwm-dwc-k1pro.c
+similarity index 100%
+rename from drivers/pwm/pwm-dwc-k1x.c
+rename to drivers/pwm/pwm-dwc-k1pro.c
+-- 
+2.47.0
+

@@ -1,0 +1,118 @@
+From 3886f93fa95ae93c00874ee8d2d4f981c6465797 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Sun, 7 Apr 2024 11:54:52 +0800
+Subject: [PATCH 0580/1451] reset: add audio resets
+
+Change-Id: If2c2fae606b869f1c6c13bc9f4cf67f05a2e7b3e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  5 +++--
+ drivers/reset/reset-spacemit-k1x.c            | 20 +++++++++++++++++++
+ .../dt-bindings/reset/spacemit-k1x-reset.h    |  4 +++-
+ 3 files changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 52b5dd3c5066..4f8a0590a441 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -609,8 +609,9 @@ reset: reset-controller@d4050000 {
+ 				<0x0 0xd4282c00 0x0 0x400>,
+ 				<0x0 0xd8440000 0x0 0x98>,
+ 				<0x0 0xc0000000 0x0 0x4280>,
+-				<0x0 0xf0610000 0x0 0x20>;
+-			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2";
++				<0x0 0xf0610000 0x0 0x20>,
++				<0x0 0xc0882000 0x0 0x50>;
++			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2", "rcpu";
+ 			#reset-cells = <1>;
+ 			status = "okay";
+ 		};
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 58780258dc41..14095c381603 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -127,6 +127,10 @@
+ #define APBC2_GPIO_CLK_RST		0x1c
+ /* end of APBC2 register offset */
+ 
++/* RCPU register offset */
++#define RCPU_HDMI_CLK_RST		0x44
++/* end of RCPU register offset */
++
+ enum spacemit_reset_base_type{
+ 	RST_BASE_TYPE_MPMU       = 0,
+ 	RST_BASE_TYPE_APMU       = 1,
+@@ -137,6 +141,7 @@ enum spacemit_reset_base_type{
+ 	RST_BASE_TYPE_DDRC       = 6,
+ 	RST_BASE_TYPE_AUDC       = 7,
+ 	RST_BASE_TYPE_APBC2      = 8,
++	RST_BASE_TYPE_RCPU       = 9,
+ };
+ 
+ struct spacemit_reset_signal {
+@@ -165,6 +170,7 @@ struct spacemit_reset {
+ 	void __iomem *ddrc_base;
+ 	void __iomem *audio_ctrl_base;
+ 	void __iomem *apbc2_base;
++	void __iomem *rcpu_base;
+ 	const struct spacemit_reset_signal *signals;
+ };
+ 
+@@ -275,6 +281,8 @@ static const struct spacemit_reset_signal
+ 	[RESET_SEC_TIMERS0] 	= { APBC2_TIMERS0_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC2 },
+ 	[RESET_SEC_KPC] 	= { APBC2_KPC_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC2 },
+ 	[RESET_SEC_GPIO] 	= { APBC2_GPIO_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC2 },
++	//RCPU
++	[RESET_RCPU_HDMIAUDIO] 	= { RCPU_HDMI_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ };
+ 
+ static struct spacemit_reset *to_spacemit_reset(
+@@ -315,6 +323,9 @@ static u32 spacemit_reset_read(struct spacemit_reset *reset,
+ 		case RST_BASE_TYPE_APBC2:
+ 			base = reset->apbc2_base;
+ 			break;
++		case RST_BASE_TYPE_RCPU:
++			base = reset->rcpu_base;
++			break;
+ 		default:
+ 			base = reset->apbc_base;
+ 			break;
+@@ -356,6 +367,9 @@ static void spacemit_reset_write(struct spacemit_reset *reset, u32 value,
+ 		case RST_BASE_TYPE_APBC2:
+ 			base = reset->apbc2_base;
+ 			break;
++		case RST_BASE_TYPE_RCPU:
++			base = reset->rcpu_base;
++			break;
+ 		default:
+ 			base = reset->apbc_base;
+ 			break;
+@@ -480,6 +494,12 @@ static void spacemit_reset_init(struct device_node *np)
+ 			pr_err("failed to map apbc2 registers\n");
+ 			goto out;
+ 		}
++
++		reset->rcpu_base = of_iomap(np, 8);
++		if (!reset->rcpu_base) {
++			pr_err("failed to map rcpu registers\n");
++			goto out;
++		}
+ 	}
+ 
+ 	reset->lock = &g_cru_lock;
+diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
+index d8074e07e619..ea82147027cf 100644
+--- a/include/dt-bindings/reset/spacemit-k1x-reset.h
++++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
+@@ -112,6 +112,8 @@
+ #define	RESET_SEC_KPC      99
+ #define	RESET_SEC_GPIO     100
+ 
+-#define	RESET_NUMBER       101
++#define RESET_RCPU_HDMIAUDIO 101
++
++#define	RESET_NUMBER       102
+ 
+ #endif /* __DT_BINDINGS_RESET_SAPCEMIT_K1X_H__ */
+-- 
+2.47.0
+

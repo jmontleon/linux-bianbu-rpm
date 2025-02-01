@@ -1,0 +1,674 @@
+From 99b18f510f3a03e85d2e090e085d8ece87125938 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Sat, 6 Jan 2024 16:19:44 +0800
+Subject: [PATCH 0320/1451] k1x:pmic:support power-key driver
+
+Change-Id: Ifd49f342de92762bc71e1a6cf72dfb150667fb18
+---
+ drivers/input/misc/Kconfig           |   9 +
+ drivers/input/misc/Makefile          |   1 +
+ drivers/input/misc/spacemit-pwrkey.c | 142 ++++++++++
+ drivers/mfd/spacemit-mfd.c           |  25 +-
+ include/linux/mfd/spacemit/spm8821.h | 387 ++++++++++++++++++++++++++-
+ 5 files changed, 548 insertions(+), 16 deletions(-)
+ create mode 100644 drivers/input/misc/spacemit-pwrkey.c
+
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index 6ba984d7f0b1..f2b9c4352b49 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -900,6 +900,15 @@ config INPUT_HISI_POWERKEY
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called hisi_powerkey.
+ 
++config INPUT_SPACEMIT_POWERKEY
++	tristate "Spacemit PMIC pwrkey support"
++	depends on MFD_SPACEMIT_PMIC
++	help
++	  Say Y to enable support for PMIC PWRKEY.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called spacemit-pwrkey.
++
+ config INPUT_RAVE_SP_PWRBUTTON
+ 	tristate "RAVE SP Power button Driver"
+ 	depends on RAVE_SP_CORE
+diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+index 04296a4abe8e..46f151415b64 100644
+--- a/drivers/input/misc/Makefile
++++ b/drivers/input/misc/Makefile
+@@ -90,3 +90,4 @@ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
+ obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
+ obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
+ obj-$(CONFIG_INPUT_IDEAPAD_SLIDEBAR)	+= ideapad_slidebar.o
++obj-$(CONFIG_INPUT_SPACEMIT_POWERKEY)	+= spacemit-pwrkey.o
+diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
+new file mode 100644
+index 000000000000..e65d20fbd3ac
+--- /dev/null
++++ b/drivers/input/misc/spacemit-pwrkey.c
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/of.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/input.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/mfd/spacemit/spacemit_pmic.h>
++
++static irqreturn_t pwrkey_fall_irq(int irq, void *_pwr)
++{
++	struct input_dev *pwr = _pwr;
++
++	input_report_key(pwr, KEY_POWER, 1);
++	input_sync(pwr);
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t pwrkey_rise_irq(int irq, void *_pwr)
++{
++	struct input_dev *pwr = _pwr;
++
++	input_report_key(pwr, KEY_POWER, 0);
++	input_sync(pwr);
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t pwrkey_skey_irq(int irq, void *_pwr)
++{
++	/* do nothing by now */
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t pwrkey_lkey_irq(int irq, void *_pwr)
++{
++	/* do nothing by now */
++	return IRQ_HANDLED;
++}
++
++static int spacemit_pwrkey_probe(struct platform_device *pdev)
++{
++	int err;
++	struct input_dev *pwr;
++	int rise_irq, fall_irq, s_key_irq, l_key_irq;
++
++	pwr = devm_input_allocate_device(&pdev->dev);
++	if (!pwr) {
++		dev_err(&pdev->dev, "Can't allocate power button\n");
++		return -ENOMEM;
++	}
++
++	pwr->name = "spacemit pwrkey";
++	pwr->phys = "spacemit_pwrkey/input0";
++	pwr->id.bustype = BUS_HOST;
++	input_set_capability(pwr, EV_KEY, KEY_POWER);
++
++	rise_irq = platform_get_irq(pdev, 0);
++	if (rise_irq < 0)
++		return rise_irq;
++
++	fall_irq = platform_get_irq(pdev, 1);
++	if (fall_irq < 0)
++		return fall_irq;
++
++	s_key_irq = platform_get_irq(pdev, 2);
++	if (s_key_irq < 0)
++		return s_key_irq;
++
++	l_key_irq = platform_get_irq(pdev, 3);
++	if (l_key_irq < 0)
++		return l_key_irq;
++
++	err = devm_request_any_context_irq(&pwr->dev, rise_irq,
++					   pwrkey_rise_irq,
++					   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
++					   "spacemit_pwrkey_rise", pwr);
++	if (err < 0) {
++		dev_err(&pdev->dev, "Can't register rise irq: %d\n", err);
++		return err;
++	}
++
++	err = devm_request_any_context_irq(&pwr->dev, fall_irq,
++					   pwrkey_fall_irq,
++					   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
++					   "spacemit_pwrkey_fall", pwr);
++	if (err < 0) {
++		dev_err(&pdev->dev, "Can't register fall irq: %d\n", err);
++		return err;
++	}
++
++ 	err = devm_request_any_context_irq(&pwr->dev, s_key_irq,
++ 					   pwrkey_skey_irq,
++ 					   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
++ 					   "spacemit_pwrkey_skey", pwr);
++ 	if (err < 0) {
++ 		dev_err(&pdev->dev, "Can't register skey irq: %d\n", err);
++ 		return err;
++ 	}
++ 
++ 	err = devm_request_any_context_irq(&pwr->dev, l_key_irq,
++ 					   pwrkey_lkey_irq,
++ 					   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
++ 					   "spacemit_pwrkey_lkey", pwr);
++ 	if (err < 0) {
++ 		dev_err(&pdev->dev, "Can't register lkey irq: %d\n", err);
++ 		return err;
++ 	}
++ 
++	err = input_register_device(pwr);
++	if (err) {
++		dev_err(&pdev->dev, "Can't register power button: %d\n", err);
++		return err;
++	}
++
++	platform_set_drvdata(pdev, pwr);
++	device_init_wakeup(&pdev->dev, true);
++
++	return 0;
++}
++
++static const struct of_device_id spacemit_pwr_key_id_table[] = {
++	{ .compatible = "pmic,pwrkey,spm8821", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, spacemit_pwr_key_id_table);
++
++static struct platform_driver spacemit_pwrkey_driver = {
++	.probe = spacemit_pwrkey_probe,
++	.driver = {
++		.name = "spacemit-pmic-pwrkey",
++		.of_match_table = of_match_ptr(spacemit_pwr_key_id_table),
++	},
++};
++module_platform_driver(spacemit_pwrkey_driver);
++
++MODULE_DESCRIPTION("SPACEMIT Power Key driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
+index 6a9c15f2a273..4a82233b262b 100644
+--- a/drivers/mfd/spacemit-mfd.c
++++ b/drivers/mfd/spacemit-mfd.c
+@@ -7,16 +7,21 @@
+ #include <linux/of_device.h>
+ #include <linux/regmap.h>
+ #include <linux/reboot.h>
++#include <linux/ioport.h>
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+ 
+-SPM8821_MFD_CELL;
+ SPM8821_REGMAP_CONFIG;
+ SPM8821_CHIP_ID_REG;
++SPM8821_IRQS_DESC;
++SPM8821_IRQ_CHIP_DESC;
++SPM8821_POWER_KEY_RESOURCES_DESC;
++SPM8821_MFD_CELL;
+ 
+ PM853_MFD_CELL;
+ PM853_REGMAP_CONFIG;
+ PM853_CHIP_ID_REG;
+ 
++
+ static const struct of_device_id spacemit_pmic_of_match[] = {
+ 	{ .compatible = "spacemit,spm8821" , .data = (void *)&spm8821_id_reg },
+ 	{ .compatible = "spacemit,pm853" , .data = (void *)&pm853_id_reg },
+@@ -68,6 +73,8 @@ static int spacemit_prepare_sub_pmic(struct spacemit_pmic *pmic)
+ 	if (IS_ERR(sub->power_regmap))
+ 		return PTR_ERR(sub->power_regmap);
+ 
++	regcache_cache_bypass(sub->power_regmap, true);
++
+ 	i2c_set_clientdata(sub->power_page, pmic);
+ 
+ 	return 0;
+@@ -135,7 +142,7 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 	switch (pmic->variant) {
+ 	case SPM8821_ID:
+ 		pmic->regmap_cfg = &spm8821_regmap_config;
+-		/* pmic->regmap_irq_chip = ; */
++		pmic->regmap_irq_chip = &spm8821_irq_chip;
+ 		cells = spm8821;
+ 		nr_cells = ARRAY_SIZE(spm8821);
+ 		break;
+@@ -164,6 +171,8 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 		return PTR_ERR(pmic->regmap);
+ 	}
+ 
++	regcache_cache_bypass(pmic->regmap, true);
++
+ 	/* prepare sub pmic */
+ 	if (pmic->sub) {
+ 		ret = spacemit_prepare_sub_pmic(pmic);
+@@ -176,10 +185,20 @@ static int spacemit_pmic_probe(struct i2c_client *client,
+ 	if (!client->irq) {
+ 		pr_warn("%s:%d, No interrupt supported\n",
+ 				__func__, __LINE__);
++	} else {
++		if (pmic->regmap_irq_chip) {
++			ret = regmap_add_irq_chip(pmic->regmap, client->irq, IRQF_ONESHOT, -1,
++				pmic->regmap_irq_chip, &pmic->irq_data);
++			if (ret) {
++				pr_err("failed to add irqchip %d\n", ret);
++				return ret;
++			}
++		}
+ 	}
+ 
+ 	ret = devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_NONE,
+-			      cells, nr_cells, NULL, 0, NULL);
++			      cells, nr_cells, NULL, 0,
++			      regmap_irq_get_domain(pmic->irq_data));
+ 	if (ret) {
+ 		pr_err("failed to add MFD devices %d\n", ret);
+ 		return -EINVAL;
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+index a58974911566..675edf6a4c4b 100644
+--- a/include/linux/mfd/spacemit/spm8821.h
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -84,19 +84,6 @@ enum SPM8821_reg {
+ 		.user_id_reg = 0xa2,					\
+ 	};
+ 
+-/* mfd configuration */
+-#define SPM8821_MFD_CELL	\
+-	static const struct mfd_cell spm8821[] = {				\
+-		{								\
+-			.name = "spacemit-regulator@spm8821",			\
+-			.of_compatible = "pmic,regulator,spm8821",		\
+-		},								\
+-		{ 								\
+-			.name = "spacemit-pinctrl@spm8821",			\
+-			.of_compatible = "pmic,pinctrl,spm8821",		\
+-		},								\
+-	};
+-
+ #define SPM8821_REGMAP_CONFIG	\
+ 	static const struct regmap_config spm8821_regmap_config = {	\
+ 		.reg_bits = 8,	\
+@@ -315,4 +302,378 @@ static const struct pin_config_desc spm8821_pinconfig_desc[] = \
+ 	SPM8XX_DESC_PIN_CONFIG_COM(5, 0x0, 0x20, 0x1, 0x20, 0x3, 0x30, 0x4, 0xc0, 0x20, 0x5, 0x20, 0x7, 0x30),		\
+ };
+ 
++/* irq description */
++enum IRQ_line {
++	/* reg: 0x91 */
++	SPM8821_E_GPI0,
++	SPM8821_E_GPI1,
++	SPM8821_E_GPI2,
++	SPM8821_E_GPI3,
++	SPM8821_E_GPI4,
++	SPM8821_E_GPI5,
++
++	/* reg: 0x92 */
++	SPM8821_E_ADC_TEMP,
++	SPM8821_E_ADC_EOC,
++	SPM8821_E_ADC_EOS,
++	SPM8821_E_WDT_TO,
++	SPM8821_E_ALARM,
++	SPM8821_E_TICK,
++
++	/* reg: 0x93 */
++	SPM8821_E_LDO_OV,
++	SPM8821_E_LDO_UV,
++	SPM8821_E_LDO_SC,
++	SPM8821_E_SW_SC,
++	SPM8821_E_TEMP_WARN,
++	SPM8821_E_TEMP_SEVERE,
++	SPM8821_E_TEMP_CRIT,
++
++	/* reg: 0x94 */
++	SPM8821_E_BUCK1_OV,
++	SPM8821_E_BUCK2_OV,
++	SPM8821_E_BUCK3_OV,
++	SPM8821_E_BUCK4_OV,
++	SPM8821_E_BUCK5_OV,
++	SPM8821_E_BUCK6_OV,
++
++	/* reg: 0x95 */
++	SPM8821_E_BUCK1_UV,
++	SPM8821_E_BUCK2_UV,
++	SPM8821_E_BUCK3_UV,
++	SPM8821_E_BUCK4_UV,
++	SPM8821_E_BUCK5_UV,
++	SPM8821_E_BUCK6_UV,
++
++	/* reg: 0x96 */
++	SPM8821_E_BUCK1_SC,
++	SPM8821_E_BUCK2_SC,
++	SPM8821_E_BUCK3_SC,
++	SPM8821_E_BUCK4_SC,
++	SPM8821_E_BUCK5_SC,
++	SPM8821_E_BUCK6_SC,
++
++	/* reg: 0x97 */
++	SPM8821_E_PWRON_RINTR,
++	SPM8821_E_PWRON_FINTR,
++	SPM8821_E_PWRON_SINTR,
++	SPM8821_E_PWRON_LINTR,
++	SPM8821_E_PWRON_SDINTR,
++	SPM8821_E_VSYS_OV,
++};
++
++#define SPM8821_E_GPI0_MSK	BIT(0)
++#define SPM8821_E_GPI1_MSK	BIT(1)
++#define SPM8821_E_GPI2_MSK	BIT(2)
++#define SPM8821_E_GPI3_MSK	BIT(3)
++#define SPM8821_E_GPI4_MSK	BIT(4)
++#define SPM8821_E_GPI5_MSK	BIT(5)
++
++#define SPM8821_E_ADC_TEMP_MSK	BIT(0)
++#define SPM8821_E_ADC_EOC_MSK	BIT(1)
++#define SPM8821_E_ADC_EOS_MSK	BIT(2)
++#define SPM8821_E_WDT_TO_MSK	BIT(3)
++#define SPM8821_E_ALARM_MSK	BIT(4)
++#define SPM8821_E_TICK_MSK	BIT(5)
++
++#define SPM8821_E_LDO_OV_MSK	BIT(0)
++#define SPM8821_E_LDO_UV_MSK	BIT(1)
++#define SPM8821_E_LDO_SC_MSK	BIT(2)
++#define SPM8821_E_SW_SC_MSK	BIT(3)
++#define SPM8821_E_TEMP_WARN_MSK	BIT(4)
++#define SPM8821_E_TEMP_SEVERE_MSK	BIT(5)
++#define SPM8821_E_TEMP_CRIT_MSK		BIT(6)
++
++#define SPM8821_E_BUCK1_OV_MSK	BIT(0)
++#define SPM8821_E_BUCK2_OV_MSK	BIT(1)
++#define SPM8821_E_BUCK3_OV_MSK	BIT(2)
++#define SPM8821_E_BUCK4_OV_MSK	BIT(3)
++#define SPM8821_E_BUCK5_OV_MSK	BIT(4)
++#define SPM8821_E_BUCK6_OV_MSK	BIT(5)
++
++#define SPM8821_E_BUCK1_UV_MSK	BIT(0)
++#define SPM8821_E_BUCK2_UV_MSK	BIT(1)
++#define SPM8821_E_BUCK3_UV_MSK	BIT(2)
++#define SPM8821_E_BUCK4_UV_MSK	BIT(3)
++#define SPM8821_E_BUCK5_UV_MSK	BIT(4)
++#define SPM8821_E_BUCK6_UV_MSK	BIT(5)
++
++#define SPM8821_E_BUCK1_SC_MSK	BIT(0)
++#define SPM8821_E_BUCK2_SC_MSK	BIT(1)
++#define SPM8821_E_BUCK3_SC_MSK	BIT(2)
++#define SPM8821_E_BUCK4_SC_MSK	BIT(3)
++#define SPM8821_E_BUCK5_SC_MSK	BIT(4)
++#define SPM8821_E_BUCK6_SC_MSK	BIT(5)
++
++#define SPM8821_E_PWRON_RINTR_MSK	BIT(0)
++#define SPM8821_E_PWRON_FINTR_MSK	BIT(1)
++#define SPM8821_E_PWRON_SINTR_MSK	BIT(2)
++#define SPM8821_E_PWRON_LINTR_MSK	BIT(3)
++#define SPM8821_E_PWRON_SDINTR_MSK	BIT(4)
++#define SPM8821_E_VSYS_OV_MSK		BIT(5)
++
++#define SPM8821_E_STATUS_REG_BASE	0x91
++#define SPM8821_E_EN_REG_BASE		0x98
++
++#define SPM8821_IRQS_DESC				\
++static const struct regmap_irq spm8821_irqs[] = {	\
++	[SPM8821_E_GPI0] = {				\
++		.mask = SPM8821_E_GPI0_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_GPI1] = {				\
++		.mask = SPM8821_E_GPI1_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_GPI2] = {				\
++		.mask = SPM8821_E_GPI2_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_GPI3] = {				\
++		.mask = SPM8821_E_GPI3_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_GPI4] = {				\
++		.mask = SPM8821_E_GPI4_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_GPI5] = {				\
++		.mask = SPM8821_E_GPI5_MSK,		\
++		.reg_offset = 0,			\
++	},						\
++							\
++	[SPM8821_E_ADC_TEMP] = {			\
++		.mask = SPM8821_E_ADC_TEMP_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_ADC_EOC] = {				\
++		.mask = SPM8821_E_ADC_EOC_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_ADC_EOS] = {				\
++		.mask = SPM8821_E_ADC_EOS_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_WDT_TO] = {				\
++		.mask = SPM8821_E_WDT_TO_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_ALARM] = {				\
++		.mask = SPM8821_E_ALARM_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_TICK] = {				\
++		.mask = SPM8821_E_TICK_MSK,		\
++		.reg_offset = 1,			\
++	},						\
++							\
++	[SPM8821_E_LDO_OV] = {				\
++		.mask = SPM8821_E_LDO_OV_MSK,		\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_LDO_UV] = {				\
++		.mask = SPM8821_E_LDO_UV_MSK,		\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_LDO_SC] = {				\
++		.mask = SPM8821_E_LDO_SC_MSK,		\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_SW_SC] = {				\
++		.mask = SPM8821_E_SW_SC_MSK,		\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_TEMP_WARN] = {			\
++		.mask = SPM8821_E_TEMP_WARN_MSK,	\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_TEMP_SEVERE] = {			\
++		.mask = SPM8821_E_TEMP_SEVERE_MSK,	\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_TEMP_CRIT] = {			\
++		.mask = SPM8821_E_TEMP_CRIT_MSK,	\
++		.reg_offset = 2,			\
++	},						\
++							\
++	[SPM8821_E_BUCK1_OV] = {			\
++		.mask = SPM8821_E_BUCK1_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK2_OV] = {			\
++		.mask = SPM8821_E_BUCK2_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK3_OV] = {			\
++		.mask = SPM8821_E_BUCK3_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK4_OV] = {			\
++		.mask = SPM8821_E_BUCK4_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK5_OV] = {			\
++		.mask = SPM8821_E_BUCK5_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK6_OV] = {			\
++		.mask = SPM8821_E_BUCK6_OV_MSK,		\
++		.reg_offset = 3,			\
++	},						\
++							\
++	[SPM8821_E_BUCK1_UV] = {			\
++		.mask = SPM8821_E_BUCK1_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK2_UV] = {			\
++		.mask = SPM8821_E_BUCK2_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK3_UV] = {			\
++		.mask = SPM8821_E_BUCK3_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK4_UV] = {			\
++		.mask = SPM8821_E_BUCK4_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK5_UV] = {			\
++		.mask = SPM8821_E_BUCK5_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK6_UV] = {			\
++		.mask = SPM8821_E_BUCK6_UV_MSK,		\
++		.reg_offset = 4,			\
++	},						\
++							\
++	[SPM8821_E_BUCK1_SC] = {			\
++		.mask = SPM8821_E_BUCK1_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_BUCK2_SC] = {			\
++		.mask = SPM8821_E_BUCK2_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_BUCK3_SC] = {			\
++		.mask = SPM8821_E_BUCK3_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_BUCK4_SC] = {			\
++		.mask = SPM8821_E_BUCK4_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_BUCK5_SC] = {			\
++		.mask = SPM8821_E_BUCK5_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_BUCK6_SC] = {			\
++		.mask = SPM8821_E_BUCK6_SC_MSK,		\
++		.reg_offset = 5,			\
++	},						\
++							\
++	[SPM8821_E_PWRON_RINTR] = {			\
++		.mask = SPM8821_E_PWRON_RINTR_MSK,	\
++		.reg_offset = 6,			\
++	},						\
++							\
++	[SPM8821_E_PWRON_FINTR] = {			\
++		.mask = SPM8821_E_PWRON_FINTR_MSK,	\
++		.reg_offset = 6,			\
++	},						\
++							\
++	[SPM8821_E_PWRON_SINTR] = {			\
++		.mask = SPM8821_E_PWRON_SINTR_MSK,	\
++		.reg_offset = 6,			\
++	},						\
++							\
++	[SPM8821_E_PWRON_LINTR] = {			\
++		.mask = SPM8821_E_PWRON_LINTR_MSK,	\
++		.reg_offset = 6,			\
++	},						\
++							\
++	[SPM8821_E_PWRON_SDINTR] = {			\
++		.mask = SPM8821_E_PWRON_SDINTR_MSK,	\
++		.reg_offset = 6,			\
++	},						\
++							\
++	[SPM8821_E_VSYS_OV] = {				\
++		.mask = SPM8821_E_VSYS_OV_MSK,		\
++		.reg_offset = 6,			\
++	},						\
++};
++
++
++#define SPM8821_IRQ_CHIP_DESC				\
++static const struct regmap_irq_chip spm8821_irq_chip = {	\
++	.name = "spm8821",					\
++	.irqs = spm8821_irqs,					\
++	.num_irqs = ARRAY_SIZE(spm8821_irqs),			\
++	.num_regs = 7,						\
++	.status_base = SPM8821_E_STATUS_REG_BASE,		\
++	.mask_base = SPM8821_E_EN_REG_BASE,			\
++	.ack_base = SPM8821_E_STATUS_REG_BASE,			\
++	.init_ack_masked = true,				\
++	.mask_invert = true,					\
++};
++
++
++/* power-key */
++#define SPM8821_POWER_KEY_RESOURCES_DESC			\
++static const struct resource spm8821_pwrkey_resources[] = {	\
++	DEFINE_RES_IRQ(SPM8821_E_PWRON_RINTR),			\
++	DEFINE_RES_IRQ(SPM8821_E_PWRON_FINTR),			\
++	DEFINE_RES_IRQ(SPM8821_E_PWRON_SINTR),			\
++	DEFINE_RES_IRQ(SPM8821_E_PWRON_LINTR),			\
++};
++
++/* mfd configuration */
++#define SPM8821_MFD_CELL	\
++	static const struct mfd_cell spm8821[] = {				\
++		{								\
++			.name = "spacemit-regulator@spm8821",			\
++			.of_compatible = "pmic,regulator,spm8821",		\
++		},								\
++		{ 								\
++			.name = "spacemit-pinctrl@spm8821",			\
++			.of_compatible = "pmic,pinctrl,spm8821",		\
++		},								\
++		{								\
++			.name = "spacemit-pwrkey@spm8821",			\
++			.of_compatible = "pmic,pwrkey,spm8821",			\
++			.num_resources = ARRAY_SIZE(spm8821_pwrkey_resources),	\
++			.resources = &spm8821_pwrkey_resources[0],		\
++		},								\
++	};
++
+ #endif /* __SPM8821_H__ */
+-- 
+2.47.0
+

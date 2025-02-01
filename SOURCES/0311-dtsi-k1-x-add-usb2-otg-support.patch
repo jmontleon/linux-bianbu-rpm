@@ -1,0 +1,78 @@
+From 3eff35af69eb4b0ceef178587f6cb0de5ca859c8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 4 Jan 2024 19:39:14 +0800
+Subject: [PATCH 0311/1451] dtsi: k1-x: add usb2 otg support
+
+Change-Id: I9fef60a608b73fa79e3d4be04d792c99fcf5b2b2
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 40 ++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 52b4b0cc1c92..7707ded94ea5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1514,6 +1514,17 @@ eth1: ethernet@cac81000 {
+ 			status = "disabled";
+ 		};
+ 
++		extcon: extcon@d428287c {
++			compatible = "spacemit,vbus-id";
++			reg =  <0x0 0xd428287c 0x0 0x4>,
++			       <0x0 0xd4282918 0x0 0x4>;
++			reg-names = "reg_pmuap", "pin_state";
++			interrupts = <106>;
++			interrupt-parent = <&intc>;
++			clocks = <&ccu CLK_USB_AXI>;
++			status = "disabled";
++		};
++
+ 		usbphy: usbphy@c0940000 {
+ 			compatible = "spacemit,usb2-phy";
+ 			reg = <0x0 0xc0940000 0x0 0x200>;
+@@ -1523,6 +1534,20 @@ usbphy: usbphy@c0940000 {
+ 			status = "disabled";
+ 		};
+ 
++		otg: otg@c0900100 {
++			compatible = "spacemit,mv-otg";
++			reg = <0x0 0xc0900100 0x0 0x4000>;
++			interrupts = <105>;
++			interrupt-parent = <&intc>;
++			spacemit,otg-name = "mv-otg";
++			spacemit,otg-force-a-bus-req;
++			clocks = <&ccu CLK_USB_AXI>;
++			resets = <&reset RESET_USB_AXI>;
++			usb-phy = <&usbphy>;
++			extcon = <&extcon>;
++			status = "disabled";
++		};
++
+ 		udc: udc@c0900100 {
+ 			compatible = "spacemit,mv-udc";
+ 			reg = <0x0 0xc0900100 0x0 0x4000>;
+@@ -1535,6 +1560,21 @@ udc: udc@c0900100 {
+ 			usb-phy = <&usbphy>;
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
++			usb-otg = <&otg>;
++			status = "disabled";
++		};
++
++		ehci: ehci@c0900100 {
++			compatible = "spacemit,mv-ehci";
++			reg = <0x0 0xc0900100 0x0 0x4000>;
++			interrupts = <105>;
++			interrupt-parent = <&intc>;
++			spacemit,ehci-name = "mv-ehci";
++			spacemit,otg-force-a-bus-req;
++			resets = <&reset RESET_USB_AXI>;
++			clocks = <&ccu CLK_USB_AXI>;
++			usb-phy = <&usbphy>;
++			usb-otg = <&otg>;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.47.0
+

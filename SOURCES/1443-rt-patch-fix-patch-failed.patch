@@ -1,0 +1,41 @@
+From 0ece254ed7a72dd7c74764318c7da567f7ddfecb Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 13 Jan 2025 10:54:41 +0800
+Subject: [PATCH 1443/1451] rt-patch: fix patch failed
+
+Change-Id: I7356902ec0714e0d89dd0d2e886b54bfcd2d7a13
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ rt-linux/rt-linux-support.patch | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/rt-linux/rt-linux-support.patch b/rt-linux/rt-linux-support.patch
+index c5456e943eb0..0b3f7f167376 100644
+--- a/rt-linux/rt-linux-support.patch
++++ b/rt-linux/rt-linux-support.patch
+@@ -465,18 +465,18 @@ index b1e6d275cda9..9a8d3970da3c 100644
+  }
+  
+ diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+-index 395e58a95299..92a6825c2933 100644
++index 247c53645ec7..1df5d327df54 100644
+ --- a/arch/riscv/Kconfig
+ +++ b/arch/riscv/Kconfig
+-@@ -49,6 +49,7 @@ config RISCV
+- 	select ARCH_SUPPORTS_HUGETLBFS if MMU
++@@ -52,6 +52,7 @@ config RISCV
++ 	select ARCH_SUPPORTS_LTO_CLANG_THIN if LLD_VERSION >= 140000
+  	select ARCH_SUPPORTS_PAGE_TABLE_CHECK if MMU
+  	select ARCH_SUPPORTS_PER_VMA_LOCK if MMU
+ +	select ARCH_SUPPORTS_RT
+  	select ARCH_SUPPORTS_SHADOW_CALL_STACK if HAVE_SHADOW_CALL_STACK
+  	select ARCH_USE_MEMTEST
+  	select ARCH_USE_QUEUED_RWLOCKS
+-@@ -137,6 +138,7 @@ config RISCV
++@@ -140,6 +141,7 @@ config RISCV
+  	select HAVE_PERF_USER_STACK_DUMP
+  	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+  	select HAVE_PREEMPT_DYNAMIC_KEY if !XIP_KERNEL
+-- 
+2.47.0
+

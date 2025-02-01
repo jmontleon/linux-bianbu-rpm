@@ -1,0 +1,46 @@
+From afa2a46e178432bdb4a62c69ba9e938fca0f373f Mon Sep 17 00:00:00 2001
+From: Eric Chan <ericchancf@google.com>
+Date: Sat, 17 Feb 2024 13:12:49 +0000
+Subject: [PATCH 0963/1451] riscv/barrier: Define __{mb,rmb,wmb}
+
+Introduce __{mb,rmb,wmb}, and rely on the generic definitions for
+{mb,rmb,wmb}. Although KCSAN is not supported yet, the definitions can
+be made more consistent with generic instrumentation. Also add a space
+to make the changes pass check by checkpatch.pl.
+Without the space, the error message is as below:
+ERROR: space required after that ',' (ctx:VxV)
+26: FILE: arch/riscv/include/asm/barrier.h:23:
++#define __mb()         RISCV_FENCE(iorw,iorw)
+                                        ^
+
+Change-Id: I35b54626e6bd8df27f6600c2c2cf765a8c48209e
+Signed-off-by: Eric Chan <ericchancf@google.com>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+Link: https://lore.kernel.org/r/20240217131249.3668103-1-ericchancf@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/include/asm/barrier.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+index 110752594228..173b44a989f8 100644
+--- a/arch/riscv/include/asm/barrier.h
++++ b/arch/riscv/include/asm/barrier.h
+@@ -20,9 +20,9 @@
+ 	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
+ 
+ /* These barriers need to enforce ordering on both devices or memory. */
+-#define mb()		RISCV_FENCE(iorw,iorw)
+-#define rmb()		RISCV_FENCE(ir,ir)
+-#define wmb()		RISCV_FENCE(ow,ow)
++#define __mb()		RISCV_FENCE(iorw, iorw)
++#define __rmb()		RISCV_FENCE(ir, ir)
++#define __wmb()		RISCV_FENCE(ow, ow)
+ 
+ /* These barriers do not need to enforce ordering on devices, just memory. */
+ #define __smp_mb()	RISCV_FENCE(rw,rw)
+-- 
+2.47.0
+

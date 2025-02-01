@@ -1,0 +1,44 @@
+From 61f75e9af953a4d9210291dba96ea7ff76ae9370 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 25 Dec 2023 09:31:52 +0800
+Subject: [PATCH 0238/1451] k1x:pm-domain: change the log level of debug info
+
+Change-Id: Ib34670b38870c5fb314f4348da83831c8c6bbebc
+---
+ drivers/soc/spacemit/pm_domain/k1x-pm_domain.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 568a7093be77..2fe67ecd28a5 100644
+--- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -359,7 +359,7 @@ static int spacemit_pd_attach_dev(struct generic_pm_domain *genpd, struct device
+ 	if (!of_property_read_bool(dev->of_node, "regulator,pm-runtime,no-sleep")) {
+ 		count = of_property_count_strings(dev->of_node, "vin-supply-names");
+ 		if (count < 0)
+-			pr_info("no vin-suppuly-names found\n");
++			pr_debug("no vin-suppuly-names found\n");
+ 		else {
+ 			err = of_property_read_string_array(dev->of_node, "vin-supply-names",
+ 				strings, count);
+@@ -565,7 +565,7 @@ static int spacemit_get_pm_domain_parameters(struct device_node *node, struct sp
+ 	err |= of_property_read_u32(node, "use_hw", &pd->param.use_hw);
+ 
+ 	if (err)
+-		pr_warn("get pm domain parameter failed\n");
++		pr_debug("get pm domain parameter failed\n");
+ 
+ 	return 0;
+ }
+@@ -605,7 +605,7 @@ static int spacemit_pm_add_one_domain(struct spacemit_pmu *pmu, struct device_no
+ 	/* get the power supply of the power-domain */
+ 	count = of_property_count_strings(node, "vin-supply-names");
+ 	if (count < 0)
+-		pr_info("no vin-suppuly-names found\n");
++		pr_debug("no vin-suppuly-names found\n");
+ 	else {
+ 		err = of_property_read_string_array(node, "vin-supply-names",
+ 			strings, count);
+-- 
+2.47.0
+

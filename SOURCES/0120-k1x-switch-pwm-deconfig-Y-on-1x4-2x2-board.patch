@@ -1,0 +1,40 @@
+From fd1cc419bb5bbe5993cf3fc00f0630099e859d95 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 22 Sep 2023 14:28:43 +0800
+Subject: [PATCH 0120/1451] k1x:switch pwm-deconfig-->Y on 1x4&2x2 board
+
+Change-Id: I78c432d22f18f908e22ac168c97b733097c55c9e
+---
+ arch/riscv/configs/k1-x_fpga_1x4_defconfig | 2 ++
+ arch/riscv/configs/k1-x_fpga_2x2_defconfig | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+index a9199b2ae807..5354ac132849 100644
+--- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+@@ -144,6 +144,8 @@ CONFIG_UDMABUF=y
+ CONFIG_CLINT_TIMER=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
++CONFIG_PWM=y
++CONFIG_PWM_PXA=y
+ CONFIG_GENERIC_PHY=y
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
+ # CONFIG_NVMEM is not set
+diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+index a9199b2ae807..5354ac132849 100644
+--- a/arch/riscv/configs/k1-x_fpga_2x2_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+@@ -144,6 +144,8 @@ CONFIG_UDMABUF=y
+ CONFIG_CLINT_TIMER=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
++CONFIG_PWM=y
++CONFIG_PWM_PXA=y
+ CONFIG_GENERIC_PHY=y
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
+ # CONFIG_NVMEM is not set
+-- 
+2.47.0
+

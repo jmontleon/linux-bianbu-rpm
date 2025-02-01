@@ -1,0 +1,51 @@
+From 69db5c7657e6ba3a2a25c13f0f1f1d3966136f14 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 13 Oct 2023 14:33:27 +0800
+Subject: [PATCH 0133/1451] k1x: dts: modify the actual reference clock for
+ sdhci
+
+Change-Id: I56458961150f5c27588ef5d1936f60c51d1665fd
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 7515bf9a904e..315ae97bc3a2 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -147,28 +147,28 @@ pll_clk_emac_ptp: clock-pll_clk_emac_ptp {
+ 		pll_clk_sdh0: clock-pll_clk_sdh0 {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <50000000>;
++			clock-frequency = <10000000>;
+ 			clock-output-names = "pll_clk_sdh0";
+ 		};
+ 
+ 		pll_clk_sdh1: clock-pll_clk_sdh1 {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <50000000>;
++			clock-frequency = <10000000>;
+ 			clock-output-names = "pll_clk_sdh1";
+ 		};
+ 
+ 		pll_clk_sdh2: clock-pll_clk_sdh2 {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <50000000>;
++			clock-frequency = <10000000>;
+ 			clock-output-names = "pll_clk_sdh2";
+ 		};
+ 
+ 		pll_clk_axi: clock-pll_clk_axi {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <50000000>;
++			clock-frequency = <10000000>;
+ 			clock-output-names = "pll_clk_axi";
+ 		};
+ 
+-- 
+2.47.0
+

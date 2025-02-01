@@ -1,0 +1,27 @@
+From e722d0ed94854479beec74773975d3bafcdfb75e Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Sat, 30 Dec 2023 17:59:57 +0800
+Subject: [PATCH 0283/1451] k1x-dma:close some unnecessary config
+
+Change-Id: Ib25f8ca399178795d88ae56db3b8d47d3335c26d
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 0e855b58e045..2a17572d8cae 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -406,6 +406,9 @@ CONFIG_DMADEVICES=y
+ CONFIG_MMP_PDMA_DRIVER=y
+ CONFIG_MMP_PDMA_SPACEMIT_K1X=y
+ CONFIG_USERSPACE_DMA=y
++# CONFIG_SH_DMAE_BASE is not set
++# CONFIG_TI_EDMA is not set
++# CONFIG_DMA_OMAP is not set
+ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
+ CONFIG_DMABUF_HEAPS=y
+-- 
+2.47.0
+

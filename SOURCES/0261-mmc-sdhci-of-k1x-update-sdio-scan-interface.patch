@@ -1,0 +1,49 @@
+From 33efeb991431f023a9725c691bc5da76dccd537f Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 27 Dec 2023 17:23:53 +0800
+Subject: [PATCH 0261/1451] mmc: sdhci-of-k1x: update sdio scan interface
+
+Change-Id: Ib9723ebf583d02306b67ed0a532d1dc4f40d468a
+---
+ drivers/mmc/host/sdhci-of-k1x.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index 1c69fd41720a..a3d27cc542b8 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -337,10 +337,20 @@ static void spacemit_save_sdhci_regs(struct sdhci_host *host, u32 cmd)
+ 		read_sdh_regs(host, &pre_com_reg[0], &pre_pri_reg[0]);
+ }
+ 
+-void spacemit_sdio_detect_change(void)
++extern void mmc_stop_host(struct mmc_host *host);
++void spacemit_sdio_detect_change(int enable_scan)
+ {
+-	if (sdio_host)
+-		mmc_detect_change(sdio_host->mmc, 0);
++	if (sdio_host) {
++		sdio_host->mmc->rescan_disable = !enable_scan;
++		if (enable_scan) {
++			mmc_detect_change(sdio_host->mmc, 0);
++		} else {
++			/* stop the sdio card */
++			if (mmc_card_is_removable(sdio_host->mmc) && sdio_host->mmc->card) {
++				mmc_stop_host(sdio_host->mmc);
++			}
++		}
++	}
+ }
+ EXPORT_SYMBOL(spacemit_sdio_detect_change);
+ 
+@@ -1342,6 +1352,7 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ 		if (!(host->mmc->caps2 & MMC_CAP2_NO_SDIO)) {
+ 			pr_notice("sdio: save sdio_host <- %p\n", host);
+ 			sdio_host = host;
++			sdio_host->mmc->rescan_disable = 1;
+ 		}
+ 	}
+ 
+-- 
+2.47.0
+

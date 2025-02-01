@@ -1,0 +1,226 @@
+From b9b0e64bba6e3007af5569290b586f7eefa24673 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 3 Jul 2024 20:42:50 +0800
+Subject: [PATCH 0933/1451] usb: dwc3: support remote wakeup
+
+Change-Id: I2ff34329079550cbe26af9fb354c358baf886ff1
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |   1 +
+ drivers/usb/dwc3/dwc3-spacemit.c       | 128 ++++++++++++++++++++++++-
+ 2 files changed, 126 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 77d5c9df8467..8642e705a40f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1866,6 +1866,7 @@ usbdrd3: usb3@0 {
+ 			compatible = "spacemit,k1-x-dwc3";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
++			reg = <0x0 0xd4282bc8 0x0 0x4>;
+ 			resets = <&reset RESET_USB3_0>;
+ 			reset-names = "ctl_rst";
+ 			clocks = <&ccu CLK_USB30>;
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 9744c10731d1..0ea19d6ea8a0 100644
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (c) 2023 Spacemit Co., Ltd.
+  *
+- * Author: Wilson <long.wan@spacemit.com>
+  */
+ 
+ #include <linux/module.h>
+@@ -18,9 +17,35 @@
+ #include <linux/of_platform.h>
+ #include <linux/reset.h>
+ #include <linux/of_address.h>
++#include <linux/pm_wakeirq.h>
++#include <linux/syscore_ops.h>
++
++#define DWC3_LFPS_WAKE_STATUS		(1 << 29)
++#define DWC3_CDWS_WAKE_STATUS		(1 << 28)
++#define DWC3_ID_WAKE_STATUS			(1 << 27)
++#define DWC3_VBUS_WAKE_STATUS		(1 << 26)
++#define DWC3_LINS1_WAKE_STATUS		(1 << 25)
++#define DWC3_LINS0_WAKE_STATUS		(1 << 24)
++
++#define DWC3_CDWS_WAKE_CLEAR		(1 << 20)
++#define DWC3_ID_WAKE_CLEAR		    (1 << 19)
++#define DWC3_VBUS_WAKE_CLEAR		(1 << 18)
++#define DWC3_LINS1_WAKE_CLEAR		(1 << 17)
++#define DWC3_LINS0_WAKE_CLEAR		(1 << 16)
++#define DWC3_LFPS_WAKE_CLEAR		(1 << 14)
++
++#define DWC3_WAKEUP_INT_MASK		(1 << 15)
++#define DWC3_LFPS_WAKE_MASK			(1 << 13)
++#define DWC3_CDWS_WAKE_MASK			(1 << 12)
++#define DWC3_ID_WAKE_MASK			(1 << 11)
++#define DWC3_VBUS_WAKE_MASK			(1 << 10)
++#define DWC3_LINS1_WAKE_MASK		(1 <<  9)
++#define DWC3_LINS0_WAKE_MASK		(1 <<  8)
+ 
+ #define DWC3_SPACEMIT_MAX_CLOCKS	4
+ 
++static struct dwc3_spacemit *dwc3;
++
+ struct dwc3_spacemit_driverdata {
+ 	const char		*clk_names[DWC3_SPACEMIT_MAX_CLOCKS];
+ 	int			num_clks;
+@@ -44,8 +69,44 @@ struct dwc3_spacemit {
+ 	struct phy		*usb3_generic_phy;
+ 
+ 	bool 		need_notify_disconnect;
++	int	irq;
++	void __iomem *wakeup_reg;
+ };
+ 
++static void dwc3_spacemit_enable_wakeup_irqs(struct dwc3_spacemit *spacemit)
++{
++	u32 reg;
++	reg = readl(spacemit->wakeup_reg);
++	reg |= (DWC3_LFPS_WAKE_MASK | DWC3_LINS0_WAKE_MASK | DWC3_WAKEUP_INT_MASK);
++	writel(reg, spacemit->wakeup_reg);
++}
++
++static void dwc3_spacemit_disable_wakeup_irqs(struct dwc3_spacemit *spacemit)
++{
++	u32 reg;
++	reg = readl(spacemit->wakeup_reg);
++	reg &= ~(DWC3_LFPS_WAKE_MASK | DWC3_LINS0_WAKE_MASK | DWC3_WAKEUP_INT_MASK);
++	writel(reg, spacemit->wakeup_reg);
++}
++
++static void dwc3_spacemit_clear_wakeup_irqs(struct dwc3_spacemit *spacemit)
++{
++	u32 reg;
++	reg = readl(spacemit->wakeup_reg);
++	dev_dbg(spacemit->dev, "wakeup_reg: 0x%x\n", reg);
++	reg |= (DWC3_LFPS_WAKE_CLEAR | DWC3_LINS0_WAKE_CLEAR);
++	writel(reg, spacemit->wakeup_reg);
++}
++
++static irqreturn_t dwc3_spacemit_wakeup_interrupt(int irq, void *_spacemit)
++{
++	struct dwc3_spacemit	*spacemit = _spacemit;
++	dwc3_spacemit_disable_wakeup_irqs(spacemit);
++	dwc3_spacemit_clear_wakeup_irqs(spacemit);
++
++	return IRQ_HANDLED;
++}
++
+ void dwc3_spacemit_clear_disconnect(struct device *dev)
+ {
+ 	struct platform_device *pdev;
+@@ -178,12 +239,35 @@ static int dwc3_spacemit_exit(struct dwc3_spacemit *data)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int dwc3_wake_suspend(void)
++{
++	struct dwc3_spacemit *spacemit = dwc3;
++	if(spacemit){
++		dwc3_spacemit_clear_wakeup_irqs(spacemit);
++		dwc3_spacemit_enable_wakeup_irqs(spacemit);
++	}
++	return 0;
++}
++
++static void dwc3_wake_resume(void)
++{
++	return;
++}
++
++static struct syscore_ops dwc3_wake_syscore_ops = {
++	.suspend = dwc3_wake_suspend,
++	.resume = dwc3_wake_resume,
++};
++#endif
++
+ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ {
+ 	struct dwc3_spacemit	*spacemit;
+ 	struct device		*dev = &pdev->dev;
+ 	struct device_node	*node = dev->of_node;
+ 	const struct dwc3_spacemit_driverdata *driver_data;
++	struct resource		*res;
+ 	int			i, ret;
+ 
+ 	spacemit = devm_kzalloc(dev, sizeof(*spacemit), GFP_KERNEL);
+@@ -200,6 +284,24 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, spacemit);
+ 
++	spacemit->irq = platform_get_irq(pdev, 0);
++	if (spacemit->irq < 0) {
++		dev_err(dev, "missing IRQ resource\n");
++		return -EINVAL;
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "missing wakeup base resource\n");
++		return -ENODEV;
++	}
++
++	spacemit->wakeup_reg = devm_ioremap(&pdev->dev, res->start, resource_size(res));
++	if (!spacemit->wakeup_reg) {
++		dev_err(dev, " wakeup reg ioremap failed\n");
++		return -ENODEV;
++	}
++
+ 	for (i = 0; i < spacemit->num_clks; i++) {
+ 		spacemit->clks[i] = devm_clk_get(dev, spacemit->clk_names[i]);
+ 		if (IS_ERR(spacemit->clks[i])) {
+@@ -238,8 +340,24 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 		goto populate_err;
+ 	}
+ 
++	ret = devm_request_irq(dev, spacemit->irq, dwc3_spacemit_wakeup_interrupt, IRQF_NO_SUSPEND,
++			"dwc3-usb-wakeup", spacemit);
++	if (ret) {
++		dev_err(dev, "failed to request IRQ #%d --> %d\n",
++				spacemit->irq, ret);
++		goto irq_err;
++	}
++
++	device_init_wakeup(dev, true);
++	dev_pm_set_wake_irq(dev, spacemit->irq);
++	dwc3 = spacemit;
++#ifdef CONFIG_PM_SLEEP
++	register_syscore_ops(&dwc3_wake_syscore_ops);
++#endif
+ 	return 0;
+ 
++irq_err:
++	of_platform_depopulate(&pdev->dev);
+ populate_err:
+ 	dwc3_spacemit_exit(spacemit);
+ 	return ret;
+@@ -248,7 +366,12 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ static int dwc3_spacemit_remove(struct platform_device *pdev)
+ {
+ 	struct dwc3_spacemit	*spacemit = platform_get_drvdata(pdev);
+-
++#ifdef CONFIG_PM_SLEEP
++	unregister_syscore_ops(&dwc3_wake_syscore_ops);
++#endif
++	dwc3_spacemit_disable_wakeup_irqs(spacemit);
++	dev_pm_clear_wake_irq(spacemit->dev);
++	device_init_wakeup(spacemit->dev, false);
+ 	of_platform_depopulate(&pdev->dev);
+ 	dwc3_spacemit_exit(spacemit);
+ 
+@@ -346,6 +469,5 @@ static struct platform_driver dwc3_spacemit_driver = {
+ 
+ module_platform_driver(dwc3_spacemit_driver);
+ 
+-MODULE_AUTHOR("Wilson <long.wan@spacemit.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("DesignWare USB3 Spacemit Glue Layer");
+-- 
+2.47.0
+

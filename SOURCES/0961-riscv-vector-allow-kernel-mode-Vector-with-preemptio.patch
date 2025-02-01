@@ -1,0 +1,585 @@
+From f870d778514bb3bd453a4cb7b38bbd306401ee3c Mon Sep 17 00:00:00 2001
+From: Andy Chiu <andy.chiu@sifive.com>
+Date: Mon, 15 Jan 2024 05:59:29 +0000
+Subject: [PATCH 0961/1451] riscv: vector: allow kernel-mode Vector with
+ preemption
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add kernel_vstate to keep track of kernel-mode Vector registers when
+trap introduced context switch happens. Also, provide riscv_v_flags to
+let context save/restore routine track context status. Context tracking
+happens whenever the core starts its in-kernel Vector executions. An
+active (dirty) kernel task's V contexts will be saved to memory whenever
+a trap-introduced context switch happens. Or, when a softirq, which
+happens to nest on top of it, uses Vector. Context retoring happens when
+the execution transfer back to the original Kernel context where it
+first enable preempt_v.
+
+Also, provide a config CONFIG_RISCV_ISA_V_PREEMPTIVE to give users an
+option to disable preemptible kernel-mode Vector at build time. Users
+with constraint memory may want to disable this config as preemptible
+kernel-mode Vector needs extra space for tracking of per thread's
+kernel-mode V context. Or, users might as well want to disable it if all
+kernel-mode Vector code is time sensitive and cannot tolerate context
+switch overhead.
+
+Change-Id: I8ee7f439541e2aeebc93dac8444f15859e3aee63
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20240115055929.4736-11-andy.chiu@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/Kconfig                      |  14 +++
+ arch/riscv/include/asm/asm-prototypes.h |   5 +
+ arch/riscv/include/asm/processor.h      |  30 +++++-
+ arch/riscv/include/asm/simd.h           |  26 ++++-
+ arch/riscv/include/asm/vector.h         |  58 ++++++++++-
+ arch/riscv/kernel/entry.S               |   8 ++
+ arch/riscv/kernel/kernel_mode_vector.c  | 133 ++++++++++++++++++++++--
+ arch/riscv/kernel/process.c             |   3 +
+ arch/riscv/kernel/vector.c              |  31 ++++--
+ 9 files changed, 286 insertions(+), 22 deletions(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index abb339ccd899..fad51225c8da 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -551,6 +551,20 @@ config RISCV_ISA_V_UCOPY_THRESHOLD
+ 	  Prefer using vectorized copy_to_user()/copy_from_user() when the
+ 	  workload size exceeds this value.
+ 
++config RISCV_ISA_V_PREEMPTIVE
++	bool "Run kernel-mode Vector with kernel preemption"
++	depends on PREEMPTION
++	depends on RISCV_ISA_V
++	default y
++	help
++	  Usually, in-kernel SIMD routines are run with preemption disabled.
++	  Functions which envoke long running SIMD thus must yield core's
++	  vector unit to prevent blocking other tasks for too long.
++
++	  This config allows kernel to run SIMD without explicitly disable
++	  preemption. Enabling this config will result in higher memory
++	  consumption due to the allocation of per-task's kernel Vector context.
++
+ config TOOLCHAIN_HAS_ZBB
+ 	bool
+ 	default y
+diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+index be438932f321..cd627ec289f1 100644
+--- a/arch/riscv/include/asm/asm-prototypes.h
++++ b/arch/riscv/include/asm/asm-prototypes.h
+@@ -30,6 +30,11 @@ void xor_regs_5_(unsigned long bytes, unsigned long *__restrict p1,
+ 		 const unsigned long *__restrict p4,
+ 		 const unsigned long *__restrict p5);
+ 
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++asmlinkage void riscv_v_context_nesting_start(struct pt_regs *regs);
++asmlinkage void riscv_v_context_nesting_end(struct pt_regs *regs);
++#endif /* CONFIG_RISCV_ISA_V_PREEMPTIVE */
++
+ #endif /* CONFIG_RISCV_ISA_V */
+ 
+ #define DECLARE_DO_ERROR_INFO(name)	asmlinkage void name(struct pt_regs *regs)
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index 6499472283b7..af6962ccfc2f 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -80,8 +80,35 @@ struct pt_regs;
+  *  - bit 0: indicates whether the in-kernel Vector context is active. The
+  *    activation of this state disables the preemption. On a non-RT kernel, it
+  *    also disable bh.
++ *  - bits 8: is used for tracking preemptible kernel-mode Vector, when
++ *    RISCV_ISA_V_PREEMPTIVE is enabled. Calling kernel_vector_begin() does not
++ *    disable the preemption if the thread's kernel_vstate.datap is allocated.
++ *    Instead, the kernel set this bit field. Then the trap entry/exit code
++ *    knows if we are entering/exiting the context that owns preempt_v.
++ *     - 0: the task is not using preempt_v
++ *     - 1: the task is actively using preempt_v. But whether does the task own
++ *          the preempt_v context is decided by bits in RISCV_V_CTX_DEPTH_MASK.
++ *  - bit 16-23 are RISCV_V_CTX_DEPTH_MASK, used by context tracking routine
++ *     when preempt_v starts:
++ *     - 0: the task is actively using, and own preempt_v context.
++ *     - non-zero: the task was using preempt_v, but then took a trap within.
++ *       Thus, the task does not own preempt_v. Any use of Vector will have to
++ *       save preempt_v, if dirty, and fallback to non-preemptible kernel-mode
++ *       Vector.
++ *  - bit 30: The in-kernel preempt_v context is saved, and requries to be
++ *    restored when returning to the context that owns the preempt_v.
++ *  - bit 31: The in-kernel preempt_v context is dirty, as signaled by the
++ *    trap entry code. Any context switches out-of current task need to save
++ *    it to the task's in-kernel V context. Also, any traps nesting on-top-of
++ *    preempt_v requesting to use V needs a save.
+  */
+-#define RISCV_KERNEL_MODE_V	0x1
++#define RISCV_V_CTX_DEPTH_MASK		0x00ff0000
++
++#define RISCV_V_CTX_UNIT_DEPTH		0x00010000
++#define RISCV_KERNEL_MODE_V		0x00000001
++#define RISCV_PREEMPT_V			0x00000100
++#define RISCV_PREEMPT_V_DIRTY		0x80000000
++#define RISCV_PREEMPT_V_NEED_RESTORE	0x40000000
+ 
+ /* CPU-specific state of a task */
+ struct thread_struct {
+@@ -95,6 +122,7 @@ struct thread_struct {
+ 	u32 vstate_ctrl;
+ 	struct __riscv_v_ext_state vstate;
+ 	unsigned long align_ctl;
++	struct __riscv_v_ext_state kernel_vstate;
+ };
+ 
+ /* Whitelist the fstate from the task_struct for hardened usercopy */
+diff --git a/arch/riscv/include/asm/simd.h b/arch/riscv/include/asm/simd.h
+index 4d699e16c9a9..54efbf523d49 100644
+--- a/arch/riscv/include/asm/simd.h
++++ b/arch/riscv/include/asm/simd.h
+@@ -12,6 +12,7 @@
+ #include <linux/percpu.h>
+ #include <linux/preempt.h>
+ #include <linux/types.h>
++#include <linux/thread_info.h>
+ 
+ #include <asm/vector.h>
+ 
+@@ -28,12 +29,27 @@ static __must_check inline bool may_use_simd(void)
+ 	/*
+ 	 * RISCV_KERNEL_MODE_V is only set while preemption is disabled,
+ 	 * and is clear whenever preemption is enabled.
+-	 *
+-	 * Kernel-mode Vector temporarily disables bh. So we must not return
+-	 * true on irq_disabled(). Otherwise we would fail the lockdep check
+-	 * calling local_bh_enable()
+ 	 */
+-	return !in_hardirq() && !in_nmi() && !irqs_disabled() && !(riscv_v_flags() & RISCV_KERNEL_MODE_V);
++	if (in_hardirq() || in_nmi())
++		return false;
++
++	/*
++	 * Nesting is acheived in preempt_v by spreading the control for
++	 * preemptible and non-preemptible kernel-mode Vector into two fields.
++	 * Always try to match with prempt_v if kernel V-context exists. Then,
++	 * fallback to check non preempt_v if nesting happens, or if the config
++	 * is not set.
++	 */
++	if (IS_ENABLED(CONFIG_RISCV_ISA_V_PREEMPTIVE) && current->thread.kernel_vstate.datap) {
++		if (!riscv_preempt_v_started(current))
++			return true;
++	}
++	/*
++	 * Non-preemptible kernel-mode Vector temporarily disables bh. So we
++	 * must not return true on irq_disabled(). Otherwise we would fail the
++	 * lockdep check calling local_bh_enable()
++	 */
++	return !irqs_disabled() && !(riscv_v_flags() & RISCV_KERNEL_MODE_V);
+ }
+ 
+ #else /* ! CONFIG_RISCV_ISA_V */
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index cf657b93bf14..55c49ca93f78 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -28,10 +28,11 @@ void get_cpu_vector_context(void);
+ void put_cpu_vector_context(void);
+ void riscv_v_thread_free(struct task_struct *tsk);
+ void __init riscv_v_setup_ctx_cache(void);
++void riscv_v_thread_alloc(struct task_struct *tsk);
+ 
+ static inline u32 riscv_v_flags(void)
+ {
+-	return current->thread.riscv_v_flags;
++	return READ_ONCE(current->thread.riscv_v_flags);
+ }
+ 
+ static __always_inline bool has_vector(void)
+@@ -201,14 +202,62 @@ static inline void riscv_v_vstate_set_restore(struct task_struct *task,
+ 	}
+ }
+ 
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++static inline bool riscv_preempt_v_dirty(struct task_struct *task)
++{
++	return !!(task->thread.riscv_v_flags & RISCV_PREEMPT_V_DIRTY);
++}
++
++static inline bool riscv_preempt_v_restore(struct task_struct *task)
++{
++	return !!(task->thread.riscv_v_flags & RISCV_PREEMPT_V_NEED_RESTORE);
++}
++
++static inline void riscv_preempt_v_clear_dirty(struct task_struct *task)
++{
++	barrier();
++	task->thread.riscv_v_flags &= ~RISCV_PREEMPT_V_DIRTY;
++}
++
++static inline void riscv_preempt_v_set_restore(struct task_struct *task)
++{
++	barrier();
++	task->thread.riscv_v_flags |= RISCV_PREEMPT_V_NEED_RESTORE;
++}
++
++static inline bool riscv_preempt_v_started(struct task_struct *task)
++{
++	return !!(task->thread.riscv_v_flags & RISCV_PREEMPT_V);
++}
++
++#else /* !CONFIG_RISCV_ISA_V_PREEMPTIVE */
++static inline bool riscv_preempt_v_dirty(struct task_struct *task) { return false; }
++static inline bool riscv_preempt_v_restore(struct task_struct *task) { return false; }
++static inline bool riscv_preempt_v_started(struct task_struct *task) { return false; }
++#define riscv_preempt_v_clear_dirty(tsk)	do {} while (0)
++#define riscv_preempt_v_set_restore(tsk)	do {} while (0)
++#endif /* CONFIG_RISCV_ISA_V_PREEMPTIVE */
++
+ static inline void __switch_to_vector(struct task_struct *prev,
+ 				      struct task_struct *next)
+ {
+ 	struct pt_regs *regs;
+ 
+-	regs = task_pt_regs(prev);
+-	riscv_v_vstate_save(&prev->thread.vstate, regs);
+-	riscv_v_vstate_set_restore(next, task_pt_regs(next));
++	if (riscv_preempt_v_started(prev)) {
++		if (riscv_preempt_v_dirty(prev)) {
++			__riscv_v_vstate_save(&prev->thread.kernel_vstate,
++					      prev->thread.kernel_vstate.datap);
++			riscv_preempt_v_clear_dirty(prev);
++		}
++	} else {
++		regs = task_pt_regs(prev);
++		riscv_v_vstate_save(&prev->thread.vstate, regs);
++	}
++
++	if (riscv_preempt_v_started(next))
++		riscv_preempt_v_set_restore(next);
++	else
++		riscv_v_vstate_set_restore(next, task_pt_regs(next));
+ }
+ 
+ void riscv_v_vstate_ctrl_init(struct task_struct *tsk);
+@@ -232,6 +281,7 @@ static inline bool riscv_v_vstate_ctrl_user_allowed(void) { return false; }
+ #define riscv_v_vstate_on(regs)			do {} while (0)
+ #define riscv_v_thread_free(tsk)		do {} while (0)
+ #define riscv_v_setup_ctx_cache()		do {} while (0)
++#define riscv_v_thread_alloc(tsk)		do {} while (0)
+ 
+ #endif /* CONFIG_RISCV_ISA_V */
+ 
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index b1a2b26c408c..d143dde853b5 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -83,6 +83,10 @@ SYM_CODE_START(handle_exception)
+ 	/* Load the kernel shadow call stack pointer if coming from userspace */
+ 	scs_load_current_if_task_changed s5
+ 
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++	move a0, sp
++	call riscv_v_context_nesting_start
++#endif
+ 	move a0, sp /* pt_regs */
+ 	la ra, ret_from_exception
+ 
+@@ -139,6 +143,10 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
+ 	 */
+ 	csrw CSR_SCRATCH, tp
+ 1:
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++	move a0, sp
++	call riscv_v_context_nesting_end
++#endif
+ 	REG_L a0, PT_STATUS(sp)
+ 	/*
+ 	 * The current load reservation is effectively part of the processor's
+diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
+index 241a8f834e1c..6afe80c7f03a 100644
+--- a/arch/riscv/kernel/kernel_mode_vector.c
++++ b/arch/riscv/kernel/kernel_mode_vector.c
+@@ -14,10 +14,13 @@
+ #include <asm/vector.h>
+ #include <asm/switch_to.h>
+ #include <asm/simd.h>
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++#include <asm/asm-prototypes.h>
++#endif
+ 
+ static inline void riscv_v_flags_set(u32 flags)
+ {
+-	current->thread.riscv_v_flags = flags;
++	WRITE_ONCE(current->thread.riscv_v_flags, flags);
+ }
+ 
+ static inline void riscv_v_start(u32 flags)
+@@ -27,12 +30,14 @@ static inline void riscv_v_start(u32 flags)
+ 	orig = riscv_v_flags();
+ 	BUG_ON((orig & flags) != 0);
+ 	riscv_v_flags_set(orig | flags);
++	barrier();
+ }
+ 
+ static inline void riscv_v_stop(u32 flags)
+ {
+ 	int orig;
+ 
++	barrier();
+ 	orig = riscv_v_flags();
+ 	BUG_ON((orig & flags) == 0);
+ 	riscv_v_flags_set(orig & ~flags);
+@@ -75,6 +80,117 @@ void put_cpu_vector_context(void)
+ 		preempt_enable();
+ }
+ 
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++static __always_inline u32 *riscv_v_flags_ptr(void)
++{
++	return &current->thread.riscv_v_flags;
++}
++
++static inline void riscv_preempt_v_set_dirty(void)
++{
++	*riscv_v_flags_ptr() |= RISCV_PREEMPT_V_DIRTY;
++}
++
++static inline void riscv_preempt_v_reset_flags(void)
++{
++	*riscv_v_flags_ptr() &= ~(RISCV_PREEMPT_V_DIRTY | RISCV_PREEMPT_V_NEED_RESTORE);
++}
++
++static inline void riscv_v_ctx_depth_inc(void)
++{
++	*riscv_v_flags_ptr() += RISCV_V_CTX_UNIT_DEPTH;
++}
++
++static inline void riscv_v_ctx_depth_dec(void)
++{
++	*riscv_v_flags_ptr() -= RISCV_V_CTX_UNIT_DEPTH;
++}
++
++static inline u32 riscv_v_ctx_get_depth(void)
++{
++	return *riscv_v_flags_ptr() & RISCV_V_CTX_DEPTH_MASK;
++}
++
++static int riscv_v_stop_kernel_context(void)
++{
++	if (riscv_v_ctx_get_depth() != 0 || !riscv_preempt_v_started(current))
++		return 1;
++
++	riscv_preempt_v_clear_dirty(current);
++	riscv_v_stop(RISCV_PREEMPT_V);
++	return 0;
++}
++
++static int riscv_v_start_kernel_context(bool *is_nested)
++{
++	struct __riscv_v_ext_state *kvstate, *uvstate;
++
++	kvstate = &current->thread.kernel_vstate;
++	if (!kvstate->datap)
++		return -ENOENT;
++
++	if (riscv_preempt_v_started(current)) {
++		WARN_ON(riscv_v_ctx_get_depth() == 0);
++		*is_nested = true;
++		get_cpu_vector_context();
++		if (riscv_preempt_v_dirty(current)) {
++			__riscv_v_vstate_save(kvstate, kvstate->datap);
++			riscv_preempt_v_clear_dirty(current);
++		}
++		riscv_preempt_v_set_restore(current);
++		return 0;
++	}
++
++	/* Transfer the ownership of V from user to kernel, then save */
++	riscv_v_start(RISCV_PREEMPT_V | RISCV_PREEMPT_V_DIRTY);
++	if ((task_pt_regs(current)->status & SR_VS) == SR_VS_DIRTY) {
++		uvstate = &current->thread.vstate;
++		__riscv_v_vstate_save(uvstate, uvstate->datap);
++	}
++	riscv_preempt_v_clear_dirty(current);
++	return 0;
++}
++
++/* low-level V context handling code, called with irq disabled */
++asmlinkage void riscv_v_context_nesting_start(struct pt_regs *regs)
++{
++	int depth;
++
++	if (!riscv_preempt_v_started(current))
++		return;
++
++	depth = riscv_v_ctx_get_depth();
++	if (depth == 0 && (regs->status & SR_VS) == SR_VS_DIRTY)
++		riscv_preempt_v_set_dirty();
++
++	riscv_v_ctx_depth_inc();
++}
++
++asmlinkage void riscv_v_context_nesting_end(struct pt_regs *regs)
++{
++	struct __riscv_v_ext_state *vstate = &current->thread.kernel_vstate;
++	u32 depth;
++
++	WARN_ON(!irqs_disabled());
++
++	if (!riscv_preempt_v_started(current))
++		return;
++
++	riscv_v_ctx_depth_dec();
++	depth = riscv_v_ctx_get_depth();
++	if (depth == 0) {
++		if (riscv_preempt_v_restore(current)) {
++			__riscv_v_vstate_restore(vstate, vstate->datap);
++			__riscv_v_vstate_clean(regs);
++			riscv_preempt_v_reset_flags();
++		}
++	}
++}
++#else
++#define riscv_v_start_kernel_context(nested)	(-ENOENT)
++#define riscv_v_stop_kernel_context()		(-ENOENT)
++#endif /* CONFIG_RISCV_ISA_V_PREEMPTIVE */
++
+ /*
+  * kernel_vector_begin(): obtain the CPU vector registers for use by the calling
+  * context
+@@ -90,14 +206,20 @@ void put_cpu_vector_context(void)
+  */
+ void kernel_vector_begin(void)
+ {
++	bool nested = false;
++
+ 	if (WARN_ON(!has_vector()))
+ 		return;
+ 
+ 	BUG_ON(!may_use_simd());
+ 
+-	get_cpu_vector_context();
++	if (riscv_v_start_kernel_context(&nested)) {
++		get_cpu_vector_context();
++		riscv_v_vstate_save(&current->thread.vstate, task_pt_regs(current));
++	}
+ 
+-	riscv_v_vstate_save(&current->thread.vstate, task_pt_regs(current));
++	if (!nested)
++		riscv_v_vstate_set_restore(current, task_pt_regs(current));
+ 
+ 	riscv_v_enable();
+ }
+@@ -117,10 +239,9 @@ void kernel_vector_end(void)
+ 	if (WARN_ON(!has_vector()))
+ 		return;
+ 
+-	riscv_v_vstate_set_restore(current, task_pt_regs(current));
+-
+ 	riscv_v_disable();
+ 
+-	put_cpu_vector_context();
++	if (riscv_v_stop_kernel_context())
++		put_cpu_vector_context();
+ }
+ EXPORT_SYMBOL_GPL(kernel_vector_end);
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index ac064b3969af..51042f48da17 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -186,6 +186,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+ 	*dst = *src;
+ 	/* clear entire V context, including datap for a new task */
+ 	memset(&dst->thread.vstate, 0, sizeof(struct __riscv_v_ext_state));
++	memset(&dst->thread.kernel_vstate, 0, sizeof(struct __riscv_v_ext_state));
+ 	clear_tsk_thread_flag(dst, TIF_RISCV_V_DEFER_RESTORE);
+ 
+ 	return 0;
+@@ -221,6 +222,8 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+ 		p->thread.s[0] = 0;
+ 	}
+ 	p->thread.riscv_v_flags = 0;
++	if (has_vector())
++		riscv_v_thread_alloc(p);
+ 	p->thread.ra = (unsigned long)ret_from_fork;
+ 	p->thread.sp = (unsigned long)childregs; /* kernel sp */
+ 	return 0;
+diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+index f7b4aeb9e457..6727d1d3b8f2 100644
+--- a/arch/riscv/kernel/vector.c
++++ b/arch/riscv/kernel/vector.c
+@@ -22,6 +22,9 @@
+ 
+ static bool riscv_v_implicit_uacc = IS_ENABLED(CONFIG_RISCV_ISA_V_DEFAULT_ENABLE);
+ static struct kmem_cache *riscv_v_user_cachep;
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++static struct kmem_cache *riscv_v_kernel_cachep;
++#endif
+ 
+ unsigned long riscv_v_vsize __read_mostly;
+ EXPORT_SYMBOL_GPL(riscv_v_vsize);
+@@ -56,6 +59,11 @@ void __init riscv_v_setup_ctx_cache(void)
+ 	riscv_v_user_cachep = kmem_cache_create_usercopy("riscv_vector_ctx",
+ 							 riscv_v_vsize, 16, SLAB_PANIC,
+ 							 0, riscv_v_vsize, NULL);
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++	riscv_v_kernel_cachep = kmem_cache_create("riscv_vector_kctx",
++						  riscv_v_vsize, 16,
++						  SLAB_PANIC, NULL);
++#endif
+ }
+ 
+ static bool insn_is_vector(u32 insn_buf)
+@@ -91,24 +99,35 @@ static bool insn_is_vector(u32 insn_buf)
+ 	return false;
+ }
+ 
+-static int riscv_v_thread_zalloc(void)
++static int riscv_v_thread_zalloc(struct kmem_cache *cache,
++				 struct __riscv_v_ext_state *ctx)
+ {
+ 	void *datap;
+ 
+-	datap = kmem_cache_zalloc(riscv_v_user_cachep, GFP_KERNEL);
++	datap = kmem_cache_zalloc(cache, GFP_KERNEL);
+ 	if (!datap)
+ 		return -ENOMEM;
+ 
+-	current->thread.vstate.datap = datap;
+-	memset(&current->thread.vstate, 0, offsetof(struct __riscv_v_ext_state,
+-						    datap));
++	ctx->datap = datap;
++	memset(ctx, 0, offsetof(struct __riscv_v_ext_state, datap));
+ 	return 0;
+ }
+ 
++void riscv_v_thread_alloc(struct task_struct *tsk)
++{
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++	riscv_v_thread_zalloc(riscv_v_kernel_cachep, &tsk->thread.kernel_vstate);
++#endif
++}
++
+ void riscv_v_thread_free(struct task_struct *tsk)
+ {
+ 	if (tsk->thread.vstate.datap)
+ 		kmem_cache_free(riscv_v_user_cachep, tsk->thread.vstate.datap);
++#ifdef CONFIG_RISCV_ISA_V_PREEMPTIVE
++	if (tsk->thread.kernel_vstate.datap)
++		kmem_cache_free(riscv_v_kernel_cachep, tsk->thread.kernel_vstate.datap);
++#endif
+ }
+ 
+ #define VSTATE_CTRL_GET_CUR(x) ((x) & PR_RISCV_V_VSTATE_CTRL_CUR_MASK)
+@@ -180,7 +199,7 @@ bool riscv_v_first_use_handler(struct pt_regs *regs)
+ 	 * context where VS has been off. So, try to allocate the user's V
+ 	 * context and resume execution.
+ 	 */
+-	if (riscv_v_thread_zalloc()) {
++	if (riscv_v_thread_zalloc(riscv_v_user_cachep, &current->thread.vstate)) {
+ 		force_sig(SIGBUS);
+ 		return true;
+ 	}
+-- 
+2.47.0
+

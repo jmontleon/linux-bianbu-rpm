@@ -1,0 +1,45 @@
+From adc28ea3bb0bc80e75106e2b5085a4cabe578416 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@space-t.cn>
+Date: Tue, 14 Mar 2023 13:47:50 +0800
+Subject: [PATCH 0002/1451] add SOC_SPACEMIT_K1 for spacemit k1 serial SOCs
+
+Change-Id: I720a1bc1e1bc88c8af3cfdc80ca3370ba544db1e
+---
+ arch/riscv/Kconfig.socs | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 79b11dda9fc1..15a3e977262b 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -119,6 +119,27 @@ config SOC_SPACEMIT
+ 
+ if SOC_SPACEMIT
+ 
++choice
++	prompt "Spacemit SOCs platform"
++	help
++	  choice Spacemit soc platform
++
++	config SOC_SPACEMIT_K1
++		bool "k1"
++		help
++		  select Spacemit k1 Platform SOCs.
++
++	config SOC_SPACEMIT_K2
++		bool "k2"
++		help
++		  select Spacemit k2 Platform SOCs.
++
++endchoice
++
++endif
++
++if SOC_SPACEMIT && SOC_SPACEMIT_K1
++
+ choice
+ 	prompt "Spacemit K1 serial SOCs"
+ 	help
+-- 
+2.47.0
+

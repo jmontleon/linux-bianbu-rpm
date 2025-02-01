@@ -1,0 +1,27 @@
+From 1ebff04fe3f05428ac5fd2cc344f81a2388620b0 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 19 Jun 2024 18:32:50 +0800
+Subject: [PATCH 0786/1451] reset: change file mode from 0755 to 0644
+
+Change-Id: I7c5c3838394dbcf27158cff6e6d6d5756ba7fbf8
+---
+ drivers/reset/reset-spacemit-k1matrix.c          | 0
+ drivers/reset/reset-spacemit-k1pro.c             | 0
+ include/dt-bindings/reset/spacemit-k1pro-reset.h | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 drivers/reset/reset-spacemit-k1matrix.c
+ mode change 100755 => 100644 drivers/reset/reset-spacemit-k1pro.c
+ mode change 100755 => 100644 include/dt-bindings/reset/spacemit-k1pro-reset.h
+
+diff --git a/drivers/reset/reset-spacemit-k1matrix.c b/drivers/reset/reset-spacemit-k1matrix.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/reset/reset-spacemit-k1pro.c b/drivers/reset/reset-spacemit-k1pro.c
+old mode 100755
+new mode 100644
+diff --git a/include/dt-bindings/reset/spacemit-k1pro-reset.h b/include/dt-bindings/reset/spacemit-k1pro-reset.h
+old mode 100755
+new mode 100644
+-- 
+2.47.0
+

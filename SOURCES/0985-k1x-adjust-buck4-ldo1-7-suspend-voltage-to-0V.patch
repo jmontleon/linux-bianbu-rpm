@@ -1,0 +1,302 @@
+From c47f86c7367ad91ad7b8b85360287dc7203903c3 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 5 Jun 2024 20:54:40 +0800
+Subject: [PATCH 0985/1451] k1x:adjust buck4&ldo1-7 suspend voltage to 0V
+
+Change-Id: I5edbdb61f9b5347b7b5c8f164e9f2b4f9d9e0a92
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 40 ++++++++++++++++++
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 41 +++++++++++++++++++
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    | 41 +++++++++++++++++++
+ 3 files changed, 122 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 5e72498fb1ba..e9d9fb41a96d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -466,6 +466,11 @@ dcdc_4: DCDC_REG4 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
+ 			};
+ 
+ 			dcdc_5: DCDC_REG5 {
+@@ -488,24 +493,44 @@ ldo_1: LDO_REG1 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_2: LDO_REG2 {
+ 				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_3: LDO_REG3 {
+ 				regulator-name = "ldo3";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_4: LDO_REG4 {
+ 				regulator-name = "ldo4";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			/* dldo */
+@@ -514,18 +539,33 @@ ldo_5: LDO_REG5 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_6: LDO_REG6 {
+ 				regulator-name = "ldo6";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_7: LDO_REG7 {
+ 				regulator-name = "ldo7";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_8: LDO_REG8 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 9cdc511f8124..89245a2489ad 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -388,6 +388,11 @@ dcdc_4: DCDC_REG4 {
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
+ 			};
+ 
+ 			dcdc_5: DCDC_REG5 {
+@@ -412,24 +417,45 @@ ldo_1: LDO_REG1 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				/* set the min voltage means will disable this vol in suspend for ldo */
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_2: LDO_REG2 {
+ 				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_3: LDO_REG3 {
+ 				regulator-name = "ldo3";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_4: LDO_REG4 {
+ 				regulator-name = "ldo4";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			/* dldo */
+@@ -438,18 +464,33 @@ ldo_5: LDO_REG5 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_6: LDO_REG6 {
+ 				regulator-name = "ldo6";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_7: LDO_REG7 {
+ 				regulator-name = "ldo7";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_8: LDO_REG8 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 849095162543..9b7e84db64f1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -390,6 +390,11 @@ dcdc_4: DCDC_REG4 {
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
+ 			};
+ 
+ 			dcdc_5: DCDC_REG5 {
+@@ -414,24 +419,45 @@ ldo_1: LDO_REG1 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				/* set the min voltage means will disable this vol in suspend for ldo */
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_2: LDO_REG2 {
+ 				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_3: LDO_REG3 {
+ 				regulator-name = "ldo3";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_4: LDO_REG4 {
+ 				regulator-name = "ldo4";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			/* dldo */
+@@ -440,18 +466,33 @@ ldo_5: LDO_REG5 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+ 				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_6: LDO_REG6 {
+ 				regulator-name = "ldo6";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_7: LDO_REG7 {
+ 				regulator-name = "ldo7";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_8: LDO_REG8 {
+-- 
+2.47.0
+

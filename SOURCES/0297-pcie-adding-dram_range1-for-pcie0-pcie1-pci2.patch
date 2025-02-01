@@ -1,0 +1,44 @@
+From 5ad597e458bc47e6706cd989373166ea0d4d801b Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 3 Jan 2024 16:50:38 +0800
+Subject: [PATCH 0297/1451] pcie: adding dram_range1 for pcie0/pcie1/pci2
+
+Change-Id: I0ff4c17acc51672a602493fc0a774db9d61f067d
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 4c1d27853aad..d00a25f93f2a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1628,6 +1628,8 @@ pcie0_rc: pcie@ca000000 {
+ 			#size-cells = <2>;
+ 			ranges = <0x01000000 0x0 0x80002000 0 0x80002000 0x0 0x100000>,
+ 				<0x02000000 0x0 0x80102000 0 0x80102000 0x0 0x0f000000>;
++			interconnects = <&dram_range1>;
++			interconnect-names = "dma-mem";
+ 
+ 			interrupts = <141>, <145>;
+ 			interrupt-parent = <&intc>;
+@@ -1674,6 +1676,8 @@ pcie1_rc: pcie@ca400000 {
+ 			#size-cells = <2>;
+ 			ranges = <0x01000000 0x0 0x90002000 0 0x90002000 0x0 0x100000>,
+ 				<0x02000000 0x0 0x90102000 0 0x90102000 0x0 0x0f000000>;
++			interconnects = <&dram_range1>;
++			interconnect-names = "dma-mem";
+ 
+ 			interrupts = <142>, <146>;
+ 			interrupt-parent = <&intc>;
+@@ -1720,6 +1724,8 @@ pcie2_rc: pcie@ca800000 {
+ 			#size-cells = <2>;
+ 			ranges = <0x01000000 0x0 0xa0002000 0 0xa0002000 0x0 0x100000>,
+ 				<0x02000000 0x0 0xa0102000 0 0xa0102000 0x0 0x10000000>;
++			interconnects = <&dram_range1>;
++			interconnect-names = "dma-mem";
+ 
+ 			interrupts = <143>, <147>;
+ 			interrupt-parent = <&intc>;
+-- 
+2.47.0
+

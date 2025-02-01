@@ -1,0 +1,80 @@
+From 7a235c1b2e48144b2ad2366d092b227f8e1fdf83 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 3 Jun 2024 09:58:09 +0800
+Subject: [PATCH 0703/1451] k1: cpu: fix compilation errs
+
+1. delare sbi_flush_local_dcache_all()
+2. fix device_node assignment
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I28bb2e68a9cd2f5227fa71bc489de27bb4b03463
+---
+ arch/riscv/include/asm/sbi.h    | 4 ++++
+ arch/riscv/kernel/cpu-hotplug.c | 1 +
+ arch/riscv/kernel/cpu.c         | 6 ++----
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+index a1f38a5a0b6e..4b44a90fe026 100644
+--- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -286,6 +286,10 @@ void sbi_shutdown(void);
+ void sbi_send_ipi(unsigned int cpu);
+ int sbi_remote_fence_i(const struct cpumask *cpu_mask);
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1PRO) || defined(CONFIG_SOC_SPACEMIT_K1X)
++void sbi_flush_local_dcache_all(void);
++#endif
++
+ int sbi_remote_sfence_vma_asid(const struct cpumask *cpu_mask,
+ 				unsigned long start,
+ 				unsigned long size,
+diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
+index 3fccf16f2b82..f43061da1ba5 100644
+--- a/arch/riscv/kernel/cpu-hotplug.c
++++ b/arch/riscv/kernel/cpu-hotplug.c
+@@ -15,6 +15,7 @@
+ #include <asm/cpu_ops.h>
+ #include <asm/numa.h>
+ #include <asm/smp.h>
++#include <asm/sbi.h>
+ 
+ bool cpu_has_hotplug(unsigned int cpu)
+ {
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index 860f3d456234..ebef4e101f7b 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -304,7 +304,7 @@ static int c_show(struct seq_file *m, void *v)
+ {
+ 	unsigned long cpu_id = (unsigned long)v - 1;
+ 	struct riscv_cpuinfo *ci = per_cpu_ptr(&riscv_cpuinfo, cpu_id);
+-	struct device_node *node;
++	struct device_node *node = of_get_cpu_node(cpu_id, NULL);
+ 	const char *compat, *model;
+ 
+ 	seq_printf(m, "processor\t: %lu\n", cpu_id);
+@@ -317,19 +317,17 @@ static int c_show(struct seq_file *m, void *v)
+ 	print_mmu(m);
+ 
+ 	if (acpi_disabled) {
+-		node = of_get_cpu_node(cpu_id, NULL);
+-
+ 		if (!of_property_read_string(node, "compatible", &compat) &&
+ 		    strcmp(compat, "riscv"))
+ 			seq_printf(m, "uarch\t\t: %s\n", compat);
+ 
+-		of_node_put(node);
+ 	}
+ 
+ 	seq_printf(m, "mvendorid\t: 0x%lx\n", ci->mvendorid);
+ 	seq_printf(m, "marchid\t\t: 0x%lx\n", ci->marchid);
+ 	seq_printf(m, "mimpid\t\t: 0x%lx\n", ci->mimpid);
+ 	seq_puts(m, "\n");
++	of_node_put(node);
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

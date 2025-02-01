@@ -1,0 +1,28 @@
+From cfbea499c5f37f096d4cfe3db217c07c57e7ebb6 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 2 Sep 2024 11:13:19 +0800
+Subject: [PATCH 1133/1451] spacemit_onboard_hub: fix Kconfig dependancy
+
+Change-Id: I5e2668023670b1d49872667bc6b0a7e73a6e834b
+---
+ drivers/usb/misc/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
+index 40a93ea313cf..0c19e8ae2ba4 100644
+--- a/drivers/usb/misc/Kconfig
++++ b/drivers/usb/misc/Kconfig
+@@ -321,8 +321,8 @@ config USB_ONBOARD_HUB
+ 
+ config SPACEMIT_ONBOARD_USB_HUB
+ 	tristate "Spacemit onboard USB hub support"
+-	depends on ARCH_SPACEMIT || COMPILE_TEST
+-	default SOC_SPACEMIT_K1X && USB_DWC3_SPACEMIT
++	depends on OF || COMPILE_TEST
++	default SOC_SPACEMIT_K1X
+ 	help
+ 	  Say Y here if you want to support onboard usb hubs on Spacemit
+ 	  platform. If unsure, say Y when compile for Spacemit platform.
+-- 
+2.47.0
+

@@ -1,0 +1,134 @@
+From 0d56fef57e656dfb591892ca5d90ea83ee352f86 Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Mon, 4 Mar 2024 15:18:54 +0800
+Subject: [PATCH 0459/1451] sync camera code from Release-JINDIE-V4.0
+
+Change-Id: I57bf8307a7726bf0b34489d20398e52a92b21ab5
+---
+ .../spacemit/camera/cam_sensor/cam_sensor.c   |  1 -
+ .../spacemit/camera/vi/k1xvi/fe_isp.c         | 31 +++++++++++++++++--
+ .../spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c  |  8 +++++
+ .../spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h  |  1 +
+ 4 files changed, 37 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+index 7cbc95a06324..75ea6a888c18 100755
+--- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
++++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+@@ -413,7 +413,6 @@ static int camsnr_set_mclk_enable(unsigned long arg, struct cam_sensor_device *m
+ 
+ 	if (msnr_dev->mclk) {
+ 		if (clk_enable && !__clk_is_enabled(msnr_dev->mclk)) {
+-			cam_err("%s: mclk enabled ------------- ZRong", __func__);
+ 			ret = clk_prepare_enable(msnr_dev->mclk);
+ 			if (ret < 0)
+ 				return ret;
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+index 06eaa9ef2e51..72e40a72b323 100755
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+@@ -1049,16 +1049,23 @@ static int fe_rawdump_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
+ 	struct csi *csi = NULL;
+ 	struct fe_pipe *pipe = NULL;
+ 	struct isp_context *isp_ctx = v4l2_get_subdevdata(sd);
+-	struct spm_camera_pipeline *sc_pipeline = NULL;
++	struct media_entity *me_pipe0 = (struct media_entity*)isp_ctx->pipes[0];
++	struct media_entity *me_pipe1 = (struct media_entity*)isp_ctx->pipes[1];
++	struct spm_camera_pipeline *sc_pipeline = NULL, *sc_pipeline0 = NULL, *sc_pipeline1 = NULL;
+ 	struct media_pipeline *mpipe = media_entity_pipeline(&sd->entity);
+ 	unsigned int irq_bitmap = 0, cap_to_preview = 0;
+ 	unsigned int vi_flags = 0, clk_high = 0;
+ 	int ret = 0, source = 0, rawdump_only = 0, sensor_id = 0;
+ 
++	BUG_ON(!me_pipe0);
++	BUG_ON(!me_pipe1);
+ 	if (!mpipe) {
+ 		cam_err("%s(%s) pipe was null", __func__, sc_subdev->name);
+ 		return -1;
+ 	}
++
++	sc_pipeline0 = media_pipeline_to_sc_pipeline(me_pipe0);
++	sc_pipeline1 = media_pipeline_to_sc_pipeline(me_pipe1);
+ 	vi_flags = (rawdump->pad_fmts[PAD_IN].format.field >> SPACEMIT_VI_SWITCH_FLAGS_SHIFT) & SPACEMIT_VI_PRI_DATA_MASK;
+ 	cap_to_preview = vi_flags & SPACEMIT_VI_FLAG_BACK_TO_PREVIEW;
+ 	clk_high = vi_flags & SPACEMIT_VI_FLAG_CLK_HIGH;
+@@ -1117,6 +1124,16 @@ static int fe_rawdump_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
+ 		hw_isp_top_enable_rawdump(SC_BLOCK(isp_ctx->pipes[rawdump->idx]), 1, rawdump_only);
+ 		if (isp_ctx->dma_block)
+ 			hw_dma_reset(isp_ctx->dma_block);
++		if (sc_pipeline0 && sc_pipeline1) {
++			if ((sc_pipeline0->is_online_mode && !sc_pipeline1->is_online_mode)
++				|| (!sc_pipeline0->is_online_mode && sc_pipeline1->is_online_mode)) {
++				hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 1);
++			} else {
++				hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 0);
++			}
++		} else {
++			hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 0);
++		}
+ 		if (!cap_to_preview)
+ 			hw_isp_top_shadow_latch(SC_BLOCK(isp_ctx->pipes[rawdump->idx]));
+ 	} else {
+@@ -2299,6 +2316,16 @@ static int fe_pipe_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
+ 		} else {
+ 			hw_isp_top_enable_hw_gap(SC_BLOCK(isp_ctx->pipes[0]), pipe->idx, 0);
+ 		}
++		if (sc_pipeline0 && sc_pipeline1) {
++			if ((sc_pipeline0->is_online_mode && !sc_pipeline1->is_online_mode)
++				|| (!sc_pipeline0->is_online_mode && sc_pipeline1->is_online_mode)) {
++				hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 1);
++			} else {
++				hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 0);
++			}
++		} else {
++				hw_isp_top_set_speed_ctrl(SC_BLOCK(isp_ctx->pipes[0]), 0);
++		}
+ 		if (!cap_to_preview)
+ 			hw_isp_top_shadow_latch(SC_BLOCK(pipe));
+ 	} else {
+@@ -2843,7 +2870,6 @@ static int __fe_isp_s_power(struct v4l2_subdev *sd, int on)
+ #ifdef CONFIG_SPACEMIT_DEBUG
+ 			vi_running_info.b_dev_running = true;
+ #endif
+-			cam_not("ZRong ------------ test");
+ 			hw_isp_top_enable_debug_clk(SC_BLOCK(isp_ctx->pipes[0]), 1);
+ 			hw_isp_top_set_irq_enable(SC_BLOCK(isp_ctx->pipes[0]), ISP_IRQ_G_RST_DONE, 0);
+ 			hw_isp_top_set_irq_enable(SC_BLOCK(isp_ctx->pipes[0]),
+@@ -2857,7 +2883,6 @@ static int __fe_isp_s_power(struct v4l2_subdev *sd, int on)
+ 			hw_isp_top_set_idi_linebuf(SC_BLOCK(isp_ctx->pipes[0]), idi0_fifo_depth, 0, 0);
+ 			hw_isp_top_set_idi_linebuf(SC_BLOCK(isp_ctx->pipes[1]), idi1_fifo_depth, 0, 0);
+ 			hw_dma_reset(isp_ctx->dma_block);
+-			cam_not("ZRong ------------ test");
+ #if IS_ENABLED(CONFIG_DRM_SPACEMIT)
+ 			while (1) {
+ 				if (dpu_mclk_exclusive_get()) {
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
+index c8249f1c4727..631cd87c6fff 100755
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
+@@ -577,3 +577,11 @@ void hw_isp_top_pipe1_debug_dump(struct spm_camera_block *sc_block)
+ 	cam_not("p1 regs dump: reg0.m_nWidth=%d reg0.m_nHeight=%d",
+ 		reg_0.field.m_nwidth, reg_0.field.m_nheight);
+ }
++void hw_isp_top_set_speed_ctrl(struct spm_camera_block *sc_block, unsigned int speed_ctrl)
++{
++	union isp_top_reg_76 reg_76;
++
++	reg_76.value = read32(ISP_TOP_REG(76));
++	reg_76.field.send_speed_ctrl = speed_ctrl;
++	write32(ISP_TOP_REG(76), reg_76.value);
++}
+\ No newline at end of file
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
+index c1a439694ecc..899ae23c3246 100755
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
+@@ -168,4 +168,5 @@ unsigned int hw_isp_top_get_idi_fifo_depth(struct spm_camera_block *sc_block);
+ void hw_isp_top_global_reset(struct spm_camera_block *sc_block);
+ void hw_isp_top_pipe0_debug_dump(struct spm_camera_block *sc_block);
+ void hw_isp_top_pipe1_debug_dump(struct spm_camera_block *sc_block);
++void hw_isp_top_set_speed_ctrl(struct spm_camera_block *sc_block, unsigned int speed_ctrl);
+ #endif
+-- 
+2.47.0
+

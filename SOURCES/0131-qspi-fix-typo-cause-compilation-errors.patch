@@ -1,0 +1,26 @@
+From de6dc6ea52f495b6c01f179e24b0764c6e34de62 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Mon, 16 Oct 2023 09:59:47 +0800
+Subject: [PATCH 0131/1451] qspi: fix typo cause compilation errors
+
+Change-Id: I2b357be6c59048c7a22c3faded93bc9dd6751846
+---
+ drivers/spi/spi-k1x-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
+index 781f8bf91165..dd2339e2928a 100755
+--- a/drivers/spi/spi-k1x-qspi.c
++++ b/drivers/spi/spi-k1x-qspi.c
+@@ -342,7 +342,7 @@ enum qpsi_mode {
+ static ssize_t qspi_info_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	struct k1x_qspi *t_qspi = dev_get_drvdata(dev);
+-	return sprintf(buf, "%s: rx_dma_en=%d, rx_buf_size=0x%x, tx_dma_en=%d, tx_buf_size=0x%x,“
++	return sprintf(buf, "%s: rx_dma_en=%d, rx_buf_size=0x%x, tx_dma_en=%d, tx_buf_size=0x%x,"
+ 				"ahb_read_enable=%d, ahb_buf_size=0x%x\n",
+ 				dev_name(dev),
+ 				t_qspi->rx_dma_enable, t_qspi->rx_buf_size,
+-- 
+2.47.0
+

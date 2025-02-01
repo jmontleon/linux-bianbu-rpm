@@ -1,0 +1,25 @@
+From ac68e776760ff14a1f63abf06f9844a62df005f1 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Sun, 29 Sep 2024 15:43:04 +0800
+Subject: [PATCH 1167/1451] hung task: set hung timeout 120s
+
+Change-Id: I2b4fdcb8115bf038a28883fc8b2d098ce10dcc6b
+---
+ arch/riscv/configs/k1_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 672c5db37091..c90211e64dc7 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -1303,7 +1303,6 @@ CONFIG_DEBUG_WX=y
+ CONFIG_SCHED_STACK_END_CHECK=y
+ CONFIG_KFENCE=y
+ CONFIG_DETECT_HUNG_TASK=y
+-CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
+ CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+-- 
+2.47.0
+

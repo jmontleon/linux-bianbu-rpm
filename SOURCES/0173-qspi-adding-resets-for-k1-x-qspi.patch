@@ -1,0 +1,26 @@
+From 963383d5a9d5871b909d8ccb294b43bbcca5e71d Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 4 Dec 2023 11:50:03 +0800
+Subject: [PATCH 0173/1451] qspi: adding resets for k1-x qspi
+
+Change-Id: I3e7dce8bf9c299c1db6a69a25d62ff940eda9ec8
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9861e31746f0..671a0e868c09 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -981,6 +981,8 @@ qspi: spi@d420c000 {
+ 			clocks = <&ccu CLK_QSPI>,
+ 				<&ccu CLK_QSPI_BUS>;
+ 			clock-names = "qspi_clk", "qspi_bus_clk";
++			resets = <&reset RESET_QSPI>,
++				<&reset RESET_QSPI_BUS>;
+ 			reset-names = "qspi_reset", "qspi_bus_reset";
+ 			k1x,qspi-pmuap-reg = <0xd4282860>;
+ 			k1x,qspi-mpmu-acgr-reg = <0xd4051024>;
+-- 
+2.47.0
+

@@ -1,0 +1,138 @@
+From 870e8c0ab8cb6d4fcb7e6f269e7537d263575d84 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Mon, 8 Jan 2024 21:55:53 +0800
+Subject: [PATCH 0323/1451] display: Fix reset control deassert and assert
+
+Change-Id: I11c0e0a3436682de58430bdf5e06f5f36c70a2ed
+---
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c | 17 +++++++----------
+ drivers/gpu/drm/spacemit/spacemit_dpu.c   | 20 ++++++++++----------
+ 2 files changed, 17 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index 29adf0800eb1..0c18512eb703 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -220,34 +220,31 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ {
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 
++
++
+ 	clk_ctx->pxclk = of_clk_get_by_name(np, "pxclk");
+ 	if (IS_ERR(clk_ctx->pxclk)) {
+-		pr_err("%s, read pxclk failed from dts!\n", __func__);
+-		return PTR_ERR(clk_ctx->pxclk);
++		pr_info("%s, read pxclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->mclk = of_clk_get_by_name(np, "mclk");
+ 	if (IS_ERR(clk_ctx->mclk)) {
+-		pr_err("%s, read mclk failed from dts!\n", __func__);
+-		return PTR_ERR(clk_ctx->mclk);
++		pr_info("%s, read mclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->hclk = of_clk_get_by_name(np, "hclk");
+ 	if (IS_ERR(clk_ctx->hclk)) {
+-		pr_err("%s, read hclk failed from dts!\n", __func__);
+-		return PTR_ERR(clk_ctx->hclk);
++		pr_info("%s, read hclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->escclk = of_clk_get_by_name(np, "escclk");
+ 	if (IS_ERR(clk_ctx->escclk)) {
+-		pr_err("%s, read escclk failed from dts!\n", __func__);
+-		return PTR_ERR(clk_ctx->escclk);
++		pr_info("%s, read escclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->bitclk = of_clk_get_by_name(np, "bitclk");
+ 	if (IS_ERR(clk_ctx->bitclk)) {
+-		pr_err("%s, read bitclk failed from dts!\n", __func__);
+-		return PTR_ERR(clk_ctx->bitclk);
++		pr_info("%s, read bitclk failed from dts!\n", __func__);
+ 	}
+ 
+ 	clk_ctx->hmclk = of_clk_get_by_name(np, "hmclk");
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index d971d41a923c..cef69a81392f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -846,31 +846,31 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,
+ 
+ 	DRM_INFO("%s()\n", __func__);
+ 
+-	if (IS_ERR_OR_NULL(dpu->esc_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->esc_reset)) {
+ 		result = reset_control_assert(dpu->esc_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to assert esc_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->lcd_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->lcd_reset)) {
+ 		result = reset_control_assert(dpu->lcd_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to assert lcd_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->mclk_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->mclk_reset)) {
+ 		result = reset_control_assert(dpu->mclk_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to assert mclk_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->dsi_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->dsi_reset)) {
+ 		result = reset_control_assert(dpu->dsi_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to assert dsi_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->hdmi_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->hdmi_reset)) {
+ 		result = reset_control_assert(dpu->hdmi_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to assert hdmi_reset: %d\n", result);
+@@ -975,31 +975,31 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	if (spacemit_dpu_logo_booton)
+ 		pm_runtime_get_sync(&pdev->dev);
+ 
+-	if (IS_ERR_OR_NULL(dpu->dsi_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->dsi_reset)) {
+ 		result = reset_control_deassert(dpu->dsi_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert dsi_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->mclk_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->mclk_reset)) {
+ 		result = reset_control_deassert(dpu->mclk_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert mclk_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->lcd_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->lcd_reset)) {
+ 		result = reset_control_deassert(dpu->lcd_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert lcd_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->esc_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->esc_reset)) {
+ 		result = reset_control_deassert(dpu->esc_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert esc_reset: %d\n", result);
+ 		}
+ 	}
+-	if (IS_ERR_OR_NULL(dpu->hdmi_reset)) {
++	if (!IS_ERR_OR_NULL(dpu->hdmi_reset)) {
+ 		result = reset_control_deassert(dpu->hdmi_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert hdmi_reset: %d\n", result);
+-- 
+2.47.0
+

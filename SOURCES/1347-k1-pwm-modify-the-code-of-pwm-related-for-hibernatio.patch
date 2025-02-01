@@ -1,0 +1,30 @@
+From 8a160121c1e26b0939dead274b73d3ac296bf9b6 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 29 Nov 2024 20:22:31 +0800
+Subject: [PATCH 1347/1451] k1:pwm:modify the code of pwm related for
+ hibernation
+
+the initialization level of hibernation is late_initcall_sync, so
+we should need to increase the initialization level of pwm to prepare
+PWM resources in advance
+
+Change-Id: I03d4dab9c99b40cf4ce906304183669875228d89
+---
+ drivers/pwm/pwm-pxa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+index f7ad6524c030..6567be8fa88a 100644
+--- a/drivers/pwm/pwm-pxa.c
++++ b/drivers/pwm/pwm-pxa.c
+@@ -298,6 +298,6 @@ static int k1x_pwm_driver_init(void)
+ {
+ 	return platform_driver_register(&pwm_driver);
+ }
+-late_initcall_sync(k1x_pwm_driver_init);
++late_initcall(k1x_pwm_driver_init);
+ 
+ MODULE_LICENSE("GPL v2");
+-- 
+2.47.0
+

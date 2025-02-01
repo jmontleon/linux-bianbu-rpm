@@ -1,0 +1,28 @@
+From 9ec7ef9d7f473ae87e30666391f2508521475038 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Mon, 25 Dec 2023 21:18:41 +0800
+Subject: [PATCH 0243/1451] fix/gpu: move loading firmware later
+
+Move loading gpu firmware later when GLES app connected kmd driver.
+
+Change-Id: I06e7d8dbebe7c158fa0650c82bda35b30931cf5d
+---
+ drivers/gpu/drm/img-rogue/config_kernel.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
+index 04cce39aef3d..a35c16b120bb 100644
+--- a/drivers/gpu/drm/img-rogue/config_kernel.h
++++ b/drivers/gpu/drm/img-rogue/config_kernel.h
+@@ -160,7 +160,7 @@
+ #define SUPPORT_AGP
+ #define RGXFW_SAFETY_WATCHDOG_PERIOD_IN_US 2000000
+ #define PVR_ANNOTATION_MAX_LEN 63
+-#define PVRSRV_DEVICE_INIT_MODE PVRSRV_LINUX_DEV_INIT_ON_PROBE
++#define PVRSRV_DEVICE_INIT_MODE PVRSRV_LINUX_DEV_INIT_ON_CONNECT
+ #define SUPPORT_DI_BRG_IMPL
+ #define PVR_LINUX_PHYSMEM_MAX_POOL_PAGES 10240
+ #define PVR_LINUX_PHYSMEM_MAX_EXCESS_POOL_PAGES 20480
+-- 
+2.47.0
+

@@ -1,0 +1,36 @@
+From 0e3fb48d0fc7a2acd2ba41e97fbfb6e8e5d585e7 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 10 Nov 2023 09:49:11 +0800
+Subject: [PATCH 0146/1451] pm_domain: move the pm_domain driver to the directy
+ soc/spacemit/pm_domain
+
+Change-Id: Id062cc95354aff04ba803ae04b17b7d1710b0029
+---
+ drivers/soc/spacemit/Makefile                    | 2 +-
+ drivers/soc/spacemit/pm_domain/Makefile          | 1 +
+ drivers/soc/spacemit/{ => pm_domain}/pm_domain.c | 0
+ 3 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soc/spacemit/pm_domain/Makefile
+ rename drivers/soc/spacemit/{ => pm_domain}/pm_domain.c (100%)
+
+diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
+index 345cb29b07ed..f6fba0ac9094 100644
+--- a/drivers/soc/spacemit/Makefile
++++ b/drivers/soc/spacemit/Makefile
+@@ -1 +1 @@
+-obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain.o
++obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain/
+diff --git a/drivers/soc/spacemit/pm_domain/Makefile b/drivers/soc/spacemit/pm_domain/Makefile
+new file mode 100644
+index 000000000000..43497925c777
+--- /dev/null
++++ b/drivers/soc/spacemit/pm_domain/Makefile
+@@ -0,0 +1 @@
++obj-y += pm_domain.o
+diff --git a/drivers/soc/spacemit/pm_domain.c b/drivers/soc/spacemit/pm_domain/pm_domain.c
+similarity index 100%
+rename from drivers/soc/spacemit/pm_domain.c
+rename to drivers/soc/spacemit/pm_domain/pm_domain.c
+-- 
+2.47.0
+

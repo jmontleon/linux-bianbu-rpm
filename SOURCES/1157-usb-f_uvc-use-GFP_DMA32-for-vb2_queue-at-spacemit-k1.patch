@@ -1,0 +1,37 @@
+From 390725504c77f097225c8db9d5dab6f2ffb7431a Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 12 Sep 2024 21:07:59 +0800
+Subject: [PATCH 1157/1451] usb: f_uvc: use GFP_DMA32 for vb2_queue at spacemit
+ k1x platform
+
+Current videobuf2-dma-sg implementation will alloc sg_table that have
+single sg up to 3MB of length at some video format. And it calls
+dma_map_sgtable after allocation even though uvc_video will reorganize
+these scatterlists into smaller scatterlists of 49KB length at most and
+then do dma mapping when they are submitted to the usb controller. There
+is a waste of dma mapping of very big size, causing the potential
+swiotlb full issue.
+This will only fix v4l2 mmap usage.
+
+Change-Id: I02028982af567faa61bb57a4fa3b2800f48be26d
+---
+ drivers/usb/gadget/function/uvc_queue.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
+index 0aa3d7e1f3cc..963a5ab35290 100644
+--- a/drivers/usb/gadget/function/uvc_queue.c
++++ b/drivers/usb/gadget/function/uvc_queue.c
+@@ -153,6 +153,9 @@ int uvcg_queue_init(struct uvc_video_queue *queue, struct device *dev, enum v4l2
+ 	queue->queue.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY
+ 				     | V4L2_BUF_FLAG_TSTAMP_SRC_EOF;
+ 	queue->queue.dev = dev;
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++	queue->queue.gfp_flags |= GFP_DMA32;
++#endif
+ 
+ 	ret = vb2_queue_init(&queue->queue);
+ 	if (ret)
+-- 
+2.47.0
+

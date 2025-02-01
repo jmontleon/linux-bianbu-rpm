@@ -1,0 +1,129 @@
+From ec1c8b9d7cd1c593306c97aaf96092141f7ea516 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 25 May 2023 14:48:50 +0800
+Subject: [PATCH 0030/1451] usb: dwc3: modify reset control for usb31
+
+Change-Id: I89f2c8af045748c612a24ca11bb7d0bcf829663f
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi |  6 +-
+ drivers/usb/dwc3/dwc3-spacemit.c         | 72 +++++-------------------
+ 2 files changed, 17 insertions(+), 61 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 593820fb82c1..0a5a5743cab7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -298,10 +298,8 @@ usbdrd3: usb3@0 {
+ 			compatible = "spacemit,k1-pro-dwc3";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+-			resets = <&reset RESET_USB_GMAC_GSR>,
+-					 <&reset RESET_USB_GMAC2VBUS>,
+-					 <&reset RESET_USB31>;
+-			reset-names = "soft_rst", "bus_rst", "ctl_rst";
++			resets = <&reset RESET_USB31>;
++			reset-names = "ctl_rst";
+ 			ranges;
+ 			status = "disabled";
+ 
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 5fa11489d1b2..0ffec428e9a1 100755
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -27,6 +27,7 @@ struct dwc3_spacemit_driverdata {
+ 
+ struct dwc3_spacemit {
+ 	struct device		*dev;
++	struct reset_control	*resets;
+ 
+ 	const char		**clk_names;
+ 	struct clk		*clks[DWC3_SPACEMIT_MAX_CLOCKS];
+@@ -37,71 +38,28 @@ struct dwc3_spacemit {
+ static int dwc3_spacemit_init(struct dwc3_spacemit *data)
+ {
+ 	struct device *dev = data->dev;
+-	struct reset_control *softrst, *busrst, *ctlrst;
+ 	int	ret = 0;
+ 
+-	softrst = devm_reset_control_get_exclusive(dev, "soft_rst");//bit 0
+-	if (IS_ERR(softrst)) {
+-		ret = PTR_ERR(softrst);
+-		dev_err_probe(dev, ret,
+-				"failed to get soft reset signal\n");
+-		goto err;
++	data->resets = devm_reset_control_array_get_optional_exclusive(dev);
++	if (IS_ERR(data->resets)) {
++		ret = PTR_ERR(data->resets);
++		dev_err(dev, "failed to get resets, err=%d\n", ret);
++		return ret;
+ 	}
+ 
+-	busrst = devm_reset_control_get_exclusive(dev, "bus_rst");//bit 9
+-	if (IS_ERR(busrst)) {
+-		ret = PTR_ERR(busrst);
+-		dev_err_probe(dev, ret,
+-				"failed to get bus reset signal\n");
+-		goto err;
+-	}
+-
+-	ctlrst = devm_reset_control_get_exclusive(dev, "ctl_rst");//bit 3
+-	if (IS_ERR(ctlrst)) {
+-		ret = PTR_ERR(ctlrst);
+-		dev_err_probe(dev, ret,
+-				"failed to get ctrl reset signal\n");
+-		goto err;
+-	}
+-
+-	ret = reset_control_assert(ctlrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to assert ctrl reset\n");
+-		goto err;
+-	}
+-
+-	ret = reset_control_assert(busrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to assert bus reset\n");
+-		goto err;
+-	}
+-
+-	ret = reset_control_assert(softrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to assert soft reset\n");
+-		goto err;
+-	}
+-
+-	ret = reset_control_deassert(softrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to release soft reset\n");
+-		goto err;
+-	}
+-
+-	ret = reset_control_deassert(busrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to release bus reset\n");
+-		goto err;
++	ret = reset_control_assert(data->resets);
++	if (ret) {
++		dev_err(dev, "failed to assert resets, err=%d\n", ret);
++		return ret;
+ 	}
+ 
+-	ret = reset_control_deassert(ctlrst);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to release ctrl reset\n");
+-		goto err;
++	ret = reset_control_deassert(data->resets);
++	if (ret) {
++		dev_err(dev, "failed to deassert resets, err=%d\n", ret);
++		return ret;
+ 	}
+ 
+-err:
+-	return ret;
++	return 0;
+ }
+ 
+ static int dwc3_spacemit_probe(struct platform_device *pdev)
+-- 
+2.47.0
+

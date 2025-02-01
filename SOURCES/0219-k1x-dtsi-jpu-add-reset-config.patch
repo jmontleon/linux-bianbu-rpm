@@ -1,0 +1,39 @@
+From 07324e0a812e7fdb03acb6aa59544bf62f547258 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Thu, 21 Dec 2023 19:26:38 +0800
+Subject: [PATCH 0219/1451] k1x:dtsi:jpu: add reset config
+
+1.RESET_JPG
+2.RESET_LCD_MCLK
+3.RESET_ISP_CI
+
+Change-Id: I275edbf17aae719db459a6139b3bdd6a7ddf62bc
+Signed-off-by: fuqiang <qiang.fu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index bd79eb23e83f..9bd4057a7e61 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1659,10 +1659,13 @@ jpu@c02f8000 {
+ 				<&ccu CLK_DPU_MCLK>,
+ 				<&ccu CLK_ISP_BUS>;
+ 			clock-names ="cclk", "aclk", "iclk";
+-			resets = <&reset RESET_ISP>,
+-					<&reset RESET_ISP_AHB>;
+-			reset-names = "freset", "sreset";
+ 			power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++			resets = <&reset RESET_JPG>,
++				<&reset RESET_LCD_MCLK>,
++				<&reset RESET_ISP_CI>,
++				<&reset RESET_ISP>,
++				<&reset RESET_ISP_AHB>;
++			reset-names = "jpg_reset", "lcd_mclk_reset", "isp_ci_reset", "freset", "sreset";
+ 			jpu,cclk-max-frequency = /bits/ 64 <1000000000>;
+ 			jpu,cclk-min-frequency = <409000000>;
+ 			jpu,cclk-default-frequency = <614000000>;
+-- 
+2.47.0
+

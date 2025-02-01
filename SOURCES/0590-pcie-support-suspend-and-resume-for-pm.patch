@@ -1,0 +1,71 @@
+From 082b2e4a47356684f5b127b22dd1061f1afbd5e2 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 8 Apr 2024 10:33:49 +0800
+Subject: [PATCH 0590/1451] pcie: support suspend and resume for pm
+
+Change-Id: Ic170fd485be1f398a0ceb7c7e3365313d3487041
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  3 +++
+ drivers/pci/controller/dwc/pcie-k1x.c  | 11 +++--------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8bea41dd2f05..da8a570ff5a7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1861,6 +1861,7 @@ pcie0_rc: pcie@ca000000 {
+ 			clock-names = "pcie-clk";
+ 			resets = <&reset RESET_PCIE0>;
+ 			reset-names = "pcie-reset";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 
+ 			bus-range = <0x00 0xff>;
+ 			max-link-speed = <2>;
+@@ -1909,6 +1910,7 @@ pcie1_rc: pcie@ca400000 {
+ 			clock-names = "pcie-clk";
+ 			resets = <&reset RESET_PCIE1>;
+ 			reset-names = "pcie-reset";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 
+ 			bus-range = <0x00 0xff>;
+ 			max-link-speed = <2>;
+@@ -1957,6 +1959,7 @@ pcie2_rc: pcie@ca800000 {
+ 			clock-names = "pcie-clk";
+ 			resets = <&reset RESET_PCIE2>;
+ 			reset-names = "pcie-reset";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 
+ 			bus-range = <0x00 0xff>;
+ 			max-link-speed = <2>;
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index 0fdc1d3b9681..1f9a7d47827f 100755
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -1494,11 +1494,6 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
+ 		k1x->num_lanes = 1;
+ 	}
+ 
+-	/* parse clk source*/
+-	k1x->clk_pcie = devm_clk_get(dev, "pcie-clk");
+-	if (IS_ERR(k1x->clk_pcie))
+-		return PTR_ERR(k1x->clk_pcie);
+-
+ 	/* pcie0 and usb use combo phy and reset */
+ 	if (k1x->port_id == 0) {
+ 		k1x->reset = devm_reset_control_array_get_shared(dev);
+@@ -1514,9 +1509,9 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
+ 	k1x->pci = pci;
+ 	platform_set_drvdata(pdev, k1x);
+ 
+-	ret = clk_prepare_enable(k1x->clk_pcie);
+-	if(ret < 0)
+-		return ret;
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
++	pm_runtime_get_noresume(&pdev->dev);
+ 
+ 	reset_control_deassert(k1x->reset);
+ 
+-- 
+2.47.0
+

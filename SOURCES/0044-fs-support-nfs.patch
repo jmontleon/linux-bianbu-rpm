@@ -1,0 +1,39 @@
+From bcdccb20fbdff60efc8284f6dd615d6ac7d4d879 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Fri, 9 Jun 2023 14:20:46 +0800
+Subject: [PATCH 0044/1451] fs: support nfs
+
+Change-Id: Ief8d147592fd42f1ed5246a1501af06846761d01
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 15963d9f10bc..b7c139778519 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -41,7 +41,6 @@ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_ADVANCED_ROUTER=y
+ # CONFIG_IPV6 is not set
+-CONFIG_DNS_RESOLVER=y
+ CONFIG_NETLINK_DIAG=y
+ CONFIG_FAILOVER=y
+ # CONFIG_ETHTOOL_NETLINK is not set
+@@ -161,10 +160,11 @@ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_HUGETLBFS=y
+ # CONFIG_EFIVAR_FS is not set
+-# CONFIG_NETWORK_FILESYSTEMS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_SWAP=y
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ISO8859_1=y
+-CONFIG_KEYS=y
+ CONFIG_INIT_STACK_NONE=y
+ CONFIG_CRYPTO_AUTHENC=y
+ CONFIG_CRYPTO_RSA=y
+-- 
+2.47.0
+

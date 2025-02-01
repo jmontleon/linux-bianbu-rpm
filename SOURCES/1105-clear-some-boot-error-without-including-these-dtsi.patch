@@ -1,0 +1,34 @@
+From 8b7771212d6baf14e905b9e9da8e182bf7ce904a Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 22 Aug 2024 15:15:53 +0800
+Subject: [PATCH 1105/1451] clear some boot-error without including these dtsi
+
+Change-Id: Ie2b29557262613a857c36f7289c2bfb0a475a123
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 50fde34ba10b..7ec6e3c77110 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -4,13 +4,13 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
+-//#include "k1-x-efuse.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_jd9365dah3_mipi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+-//#include "k1-x_opp_table.dtsi"
+-//#include "k1-x_thermal_cooling.dtsi"
++#include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+-- 
+2.47.0
+

@@ -1,0 +1,28 @@
+From bde04948b5bbfaa551203a9341fea59f9072c025 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 12 Jan 2024 23:22:24 +0800
+Subject: [PATCH 0363/1451] enable audio driver for evb board
+
+Change-Id: I12a9bffd2209b2d5b2dbe3658a17a3478e9fb0f9
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 81dca3d6381f..f9134e24b74f 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -377,6 +377,10 @@ CONFIG_POWERVR_ROGUE=y
+ CONFIG_FB=y
+ CONFIG_BACKLIGHT_PWM=y
+ # CONFIG_VGA_CONSOLE is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
++CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+-- 
+2.47.0
+

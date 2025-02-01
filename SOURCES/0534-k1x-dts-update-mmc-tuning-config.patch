@@ -1,0 +1,178 @@
+From 796d26ab77a5fcd6faa56645cc96e331e570e1e4 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 25 Mar 2024 17:37:31 +0800
+Subject: [PATCH 0534/1451] k1x:dts: update mmc tuning config
+
+1. set default tx_delaycode for sdcard
+2. decrease sdio rx_tuning_limit, avoid get delaycode fail
+
+Change-Id: I95a3a25da1abb3aadc99766db6142eea0763dc33
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts  |  3 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts  |  3 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts   | 16 +++++-----------
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts |  3 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts |  3 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts |  3 ++-
+ 6 files changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 320aabae77e3..6d4b6fc693fa 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -602,7 +602,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -633,6 +633,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 4ae26e15d2bc..ff4ef03809a3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -576,7 +576,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -607,6 +607,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index acd4f6a32bdf..d187c3d71478 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -531,7 +531,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -542,16 +542,15 @@ &sdhci1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_mmc2>;
+ 	bus-width = <4>;
++	non-removable;
+ 	vqmmc-supply = <&ldo_7>;
+ 	no-mmc;
+ 	no-sd;
+-	//mmc-pwrseq = <&sdio_pwrseq>;
+ 	keep-power-in-suspend;
+ 	/* bcmdhd use private oob solution rather than dat1/standard wakeup */
+ 	/delete-property/ enable-sdio-wakeup;
+ 	spacemit,sdh-host-caps-disable = <(
+-			MMC_CAP_UHS_SDR104 |
+-			MMC_CAP_UHS_SDR50 |
++			MMC_CAP_UHS_DDR50 |
+ 			MMC_CAP_NEEDS_POLL
+ 			)>;
+ 	spacemit,sdh-quirks = <(
+@@ -560,17 +559,12 @@ SDHCI_QUIRK_BROKEN_TIMEOUT_VAL
+ 			)>;
+ 	spacemit,sdh-quirks2 = <(
+ 			SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+-			SDHCI_QUIRK2_BROKEN_PHY_MODULE |
+-			SDHCI_QUIRK2_DISABLE_PROBE_CDSCAN
++			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "disabled";
+-
+-	//brcmf: wifi@1 {
+-	//	compatible = "brcm,bcm4329-fmac";
+-	//	reg = <1>;
+-	//};
+ };
+ 
+ /* eMMC */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 7e208a7c08ed..4bd366571a43 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -515,7 +515,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -546,6 +546,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 8364c7e904a1..92c2d07c39df 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -428,7 +428,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -459,6 +459,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 9859cfbbfb2f..7ec431db70c4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -435,7 +435,7 @@ SDHCI_QUIRK2_SET_AIB_MMC
+ 	spacemit,apbc_assar_reg = <0xD4015054>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,tx_dline_reg = <0x0>;
+-	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,tx_delaycode = <0x7f>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+@@ -466,6 +466,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x01>;
++	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <204800000>;
+ 	status = "okay";
+ };
+-- 
+2.47.0
+

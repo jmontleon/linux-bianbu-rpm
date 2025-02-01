@@ -1,0 +1,26 @@
+From 2137dcb4471aa5f8b8b4bf84fc41ed175d71fe87 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 13 Jun 2023 14:54:49 +0800
+Subject: [PATCH 0046/1451] mmc: enable host version 4 mode
+
+Change-Id: If7f5816201856cfd11f880cca1a8e734da3b0a6b
+---
+ drivers/mmc/host/sdhci-of-spacemit.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
+index 765b4e729c46..ccb6dc59da71 100644
+--- a/drivers/mmc/host/sdhci-of-spacemit.c
++++ b/drivers/mmc/host/sdhci-of-spacemit.c
+@@ -292,6 +292,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
+ 		goto free_pltfm;
+ 	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+ 
++	sdhci_enable_v4_mode(host);
++
+ 	err = sdhci_setup_host(host);
+ 	if (err)
+ 		goto err_clk;
+-- 
+2.47.0
+

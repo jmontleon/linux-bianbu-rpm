@@ -1,0 +1,181 @@
+From 637a75f21955ee03b94ed39ac0d404ecf5abbb6a Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Wed, 21 Feb 2024 18:19:35 +0800
+Subject: [PATCH 0428/1451] display: Remove error logs
+
+Change-Id: I4fe993570c8e7efafd11722e88411b6512b13ae5
+---
+ drivers/gpu/drm/spacemit/spacemit_dpu.c       | 45 ++----------
+ .../gpu/drm/spacemit/spacemit_mipi_panel.c    | 69 +++++++++++--------
+ 2 files changed, 45 insertions(+), 69 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index 912d0840bf3d..7d4d489d66a0 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -982,39 +982,6 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	if (spacemit_dpu_logo_booton)
+ 		pm_runtime_get_sync(&pdev->dev);
+ 
+-	if (!IS_ERR_OR_NULL(dpu->esc_reset)) {
+-		result = reset_control_assert(dpu->esc_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to assert esc_reset: %d\n", result);
+-		}
+-	}
+-	if (!IS_ERR_OR_NULL(dpu->lcd_reset)) {
+-		result = reset_control_assert(dpu->lcd_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to assert lcd_reset: %d\n", result);
+-		}
+-	}
+-	if (!IS_ERR_OR_NULL(dpu->mclk_reset)) {
+-		result = reset_control_assert(dpu->mclk_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to assert mclk_reset: %d\n", result);
+-		}
+-	}
+-	if (!IS_ERR_OR_NULL(dpu->dsi_reset)) {
+-		result = reset_control_assert(dpu->dsi_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to assert dsi_reset: %d\n", result);
+-		}
+-	}
+-	if (!IS_ERR_OR_NULL(dpu->hdmi_reset)) {
+-		result = reset_control_assert(dpu->hdmi_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to assert hdmi_reset: %d\n", result);
+-		}
+-	}
+-
+-	msleep(1);
+-
+ 	if (!IS_ERR_OR_NULL(dpu->dsi_reset)) {
+ 		result = reset_control_deassert(dpu->dsi_reset);
+ 		if (result < 0) {
+@@ -1027,18 +994,18 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 			DRM_DEV_INFO(dev, "Failed to deassert mclk_reset: %d\n", result);
+ 		}
+ 	}
+-	if (!IS_ERR_OR_NULL(dpu->lcd_reset)) {
+-		result = reset_control_deassert(dpu->lcd_reset);
+-		if (result < 0) {
+-			DRM_DEV_INFO(dev, "Failed to deassert lcd_reset: %d\n", result);
+-		}
+-	}
+ 	if (!IS_ERR_OR_NULL(dpu->esc_reset)) {
+ 		result = reset_control_deassert(dpu->esc_reset);
+ 		if (result < 0) {
+ 			DRM_DEV_INFO(dev, "Failed to deassert esc_reset: %d\n", result);
+ 		}
+ 	}
++	if (!IS_ERR_OR_NULL(dpu->lcd_reset)) {
++		result = reset_control_deassert(dpu->lcd_reset);
++		if (result < 0) {
++			DRM_DEV_INFO(dev, "Failed to deassert lcd_reset: %d\n", result);
++		}
++	}
+ 	if (!IS_ERR_OR_NULL(dpu->hdmi_reset)) {
+ 		result = reset_control_deassert(dpu->hdmi_reset);
+ 		if (result < 0) {
+diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+index b98dc9e34565..0cabad35d25a 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
++++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+@@ -534,6 +534,8 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
+ 	int ret;
+ 	struct spacemit_panel *panel;
+ 	struct device *dev = &slave->dev;
++	int count;
++	const char *strings[3];
+ 	u32 tmp;
+ 
+ 	DRM_INFO("%s()\n", __func__);
+@@ -544,38 +546,47 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
+ 
+ 	if (!of_property_read_u32(dev->of_node, "id", &tmp))
+ 		panel->id = tmp;
+-
+-	panel->vdd_2v8 = devm_regulator_get(&slave->dev, "vdd_2v8");
+-	if (IS_ERR(panel->vdd_2v8)) {
+-		DRM_DEBUG("get lcd regulator vdd_2v8 failed\n");
++  
++	count = of_property_count_strings(dev->of_node, "vin-supply-names");
++	if (count <= 0 || count != 3) {
+ 		panel->vdd_2v8 = NULL;
+-	} else {
+-		regulator_set_voltage(panel->vdd_2v8, 2800000, 2800000);
+-		ret = regulator_enable(panel->vdd_2v8);
+-		if (ret)
+-			DRM_ERROR("enable lcd regulator vdd_2v8 failed\n");
+-	}
+-
+-	panel->vdd_1v8 = devm_regulator_get(&slave->dev, "vdd_1v8");
+-	if (IS_ERR(panel->vdd_1v8)) {
+-		DRM_DEBUG("get lcd regulator vdd_1v8 failed\n");
+ 		panel->vdd_1v8 = NULL;
+-	} else {
+-		regulator_set_voltage(panel->vdd_1v8, 1800000, 1800000);
+-		ret = regulator_enable(panel->vdd_1v8);
+-		if (ret)
+-			DRM_ERROR("enable lcd regulator vdd_1v8 failed\n");
+-	}
+-
+-	panel->vdd_1v2 = devm_regulator_get(&slave->dev, "vdd_1v2");
+-	if (IS_ERR(panel->vdd_1v2)) {
+-		DRM_DEBUG("get regulator vdd_1v2 failed\n");
+ 		panel->vdd_1v2 = NULL;
+ 	} else {
+-		regulator_set_voltage(panel->vdd_1v2, 1200000, 1200000);
+-		ret = regulator_enable(panel->vdd_1v2);
+-		if (ret)
+-			DRM_ERROR("enable lcd regulator vdd_1v2 failed\n");
++		of_property_read_string_array(dev->of_node, "vin-supply-names", strings, 3);
++
++		panel->vdd_2v8 = devm_regulator_get(&slave->dev, strings[0]);
++		if (IS_ERR_OR_NULL(panel->vdd_2v8)) {
++			DRM_DEBUG("get lcd regulator vdd_2v8 failed\n");
++			panel->vdd_2v8 = NULL;
++		} else {
++			regulator_set_voltage(panel->vdd_2v8, 2800000, 2800000);
++			ret = regulator_enable(panel->vdd_2v8);
++			if (ret)
++				DRM_ERROR("enable lcd regulator vdd_2v8 failed\n");
++		}
++
++		panel->vdd_1v8 = devm_regulator_get(&slave->dev, strings[1]);
++		if (IS_ERR_OR_NULL(panel->vdd_1v8)) {
++			DRM_DEBUG("get lcd regulator vdd_1v8 failed\n");
++			panel->vdd_1v8 = NULL;
++		} else {
++			regulator_set_voltage(panel->vdd_1v8, 1800000, 1800000);
++			ret = regulator_enable(panel->vdd_1v8);
++			if (ret)
++				DRM_ERROR("enable lcd regulator vdd_1v8 failed\n");
++		}
++
++		panel->vdd_1v2 = devm_regulator_get(&slave->dev, strings[2]);
++		if (IS_ERR_OR_NULL(panel->vdd_1v2)) {
++			DRM_DEBUG("get regulator vdd_1v2 failed\n");
++			panel->vdd_1v2 = NULL;
++		} else {
++			regulator_set_voltage(panel->vdd_1v2, 1200000, 1200000);
++			ret = regulator_enable(panel->vdd_1v2);
++			if (ret)
++				DRM_ERROR("enable lcd regulator vdd_1v2 failed\n");
++		}
+ 	}
+ 
+ 	ret = of_property_read_u32(dev->of_node, "gpios-reset", &panel->gpio_reset);
+@@ -618,8 +629,6 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
+ 	if (of_property_read_u32(dev->of_node, "delay-after-reset", &panel->delay_after_reset))
+ 		panel->delay_after_reset = LCD_DELAY_AFTER_RESET;
+ 
+-	pr_err("##### %d %d\n", panel->reset_toggle_cnt, panel->delay_after_reset);
+-
+ 	ret = spacemit_panel_parse_dt(slave->dev.of_node, panel);
+ 	if (ret) {
+ 		DRM_ERROR("parse panel info failed\n");
+-- 
+2.47.0
+

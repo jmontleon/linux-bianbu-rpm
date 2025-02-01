@@ -1,0 +1,81 @@
+From 3642c6269081e88f75c042a0523e4aab5a446494 Mon Sep 17 00:00:00 2001
+From: zengyu <yu.zeng@spacemit.com>
+Date: Tue, 3 Dec 2024 09:43:35 +0800
+Subject: [PATCH 1332/1451] Fix error handling in the EtherCAT driver
+
+Change-Id: I1bfb79cbed777ba103ecc01ef91432dcffd5af3b
+---
+ drivers/net/ethercat/device/ec_k1x_emac.c | 10 ++++++----
+ drivers/net/ethercat/master/module.c      | 18 ++++++++++++------
+ 2 files changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethercat/device/ec_k1x_emac.c b/drivers/net/ethercat/device/ec_k1x_emac.c
+index f0971297e5d3..a2d8ece640e3 100755
+--- a/drivers/net/ethercat/device/ec_k1x_emac.c
++++ b/drivers/net/ethercat/device/ec_k1x_emac.c
+@@ -1606,10 +1606,12 @@ static int emac_probe(struct platform_device *pdev)
+ 	SET_NETDEV_DEV(ndev, &pdev->dev);
+ 
+ 	priv->ecdev = ecdev_offer(priv->ndev, emac_ec_poll, THIS_MODULE);
+-	if(!priv->ecdev)
+-		dev_err(&pdev->dev, "Failed to offer EtherCAT device\n");
+-	else
+-		printk("success to offer EtherCAT device\n");
++	if(!priv->ecdev) {
++		dev_err(&pdev->dev, "failed to offer EtherCAT device\n");
++		goto err_mdio_deinit;
++	} else {
++		pr_info("success to offer EtherCAT device\n");
++	}
+ 
+ 	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 
+diff --git a/drivers/net/ethercat/master/module.c b/drivers/net/ethercat/master/module.c
+index 38bfc1f78ae6..beb54ac2be53 100644
+--- a/drivers/net/ethercat/master/module.c
++++ b/drivers/net/ethercat/master/module.c
+@@ -107,7 +107,7 @@ static int ec_parse_dt(struct platform_device *pdev)
+     struct device_node *eth_node;
+     const char *mode;
+     int master_index;
+-    int ret, i;
++    int ret, i, count;
+ 
+     if (!node) {
+         EC_ERR("No device tree node found\n");
+@@ -132,7 +132,13 @@ static int ec_parse_dt(struct platform_device *pdev)
+         return -EINVAL;
+     }
+ 
+-    for (i = 0; i < master_count; ++i) {
++    count = of_property_count_elems_of_size(node, "ec-devices", sizeof(phandle));
++    if (count < 0) {
++	    EC_ERR("Failed to get the number of EtherCAT devices\n");
++	    return -EINVAL;
++    }
++
++    for (i = 0; i < count; ++i) {
+         /* Parse the phandle for ec_devices[i] */
+         if (!(eth_node = of_parse_phandle(node, "ec-devices", i))) {
+             EC_ERR("Failed to parse ec_devices[%d]\n", i);
+@@ -169,13 +175,13 @@ static int ec_probe(struct platform_device *pdev)
+ {
+     int ret, i;
+ 
+-    EC_INFO(DRIVER_NAME ": Probing EtherCAT master driver\n");
+-
+     sema_init(&master_sem, 1);
+ 
+     ret = ec_parse_dt(pdev);
+-    if (ret)
+-        goto out_return;
++    if (ret) {
++	EC_ERR(DRIVER_NAME ": Failed to parse dts, error %d\n", ret);
++	master_count = 0;
++    }
+ 
+     if (master_count) {
+         if (alloc_chrdev_region(&device_number,
+-- 
+2.47.0
+

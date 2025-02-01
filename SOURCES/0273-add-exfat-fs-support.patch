@@ -1,0 +1,25 @@
+From 8f58423ed6c8f9f7054b530fde33bfc0173dba82 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Fri, 29 Dec 2023 19:58:19 +0800
+Subject: [PATCH 0273/1451] add exfat fs support
+
+Change-Id: If9d64382ed91e63f17479f23ea2791db1048982b
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 03c3fc5b06e9..e75f3a89930e 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -390,6 +390,7 @@ CONFIG_AUTOFS4_FS=y
+ CONFIG_FUSE_FS=y
+ CONFIG_OVERLAY_FS=y
+ CONFIG_VFAT_FS=y
++CONFIG_EXFAT_FS=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_HUGETLBFS=y
+-- 
+2.47.0
+

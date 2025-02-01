@@ -1,0 +1,230 @@
+From 3572150f030bc4950a6544be0347561c0ff98e2c Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Wed, 10 Jan 2024 14:03:56 +0800
+Subject: [PATCH 0338/1451] =?UTF-8?q?xor:=20optimizing=20XOR=20algorithm?=
+ =?UTF-8?q?=20with=20rvv=20=E5=BD=93=E5=89=8DMerge=E4=BA=86=EF=BC=9Ahttps:?=
+ =?UTF-8?q?//patchwork.kernel.org/project/linux-crypto/patch/2023091211572?=
+ =?UTF-8?q?8.172982-4-bjorn@kernel.org/?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+优化前内核打印
+[    1.567468] xor: measuring software checksum speed
+[    1.576934]    8regs           :  2163 MB/sec
+[    1.583060]    8regs_prefetch  :  2157 MB/sec
+[    1.587136]    32regs          :  3856 MB/sec
+[    1.591646]    32regs_prefetch :  3840 MB/sec
+[    1.593587] xor: using function: 32regs (3856 MB/sec)
+
+优化后内核打印
+[    1.567301] xor: measuring software checksum speed
+[    1.576768]    8regs           :  2163 MB/sec
+[    1.580853]    32regs          :  3847 MB/sec
+[    1.585082]    rvv             :  4283 MB/sec
+[    1.587281] xor: using function: rvv (4283 MB/sec)
+
+1. xor算法性能由3847->4283 MB/sec，据sifive报告，在spike平台能到7000MB/sec
+链接：https://lore.kernel.org/lkml/CAHCEeh+XDVEPjKhJ9OYv3xMGLRDnygA6CK_y8tDzr9RYFKC-Aw@mail.gmail.com/
+2. k1x实测raid5性能由78->95 MB/sec
+
+Change-Id: I48b7d18da1ca43d6221e331f8c999f0dab807c83
+---
+ arch/riscv/include/asm/xor.h | 83 ++++++++++++++++++++++++++++++++++++
+ arch/riscv/lib/Makefile      |  1 +
+ arch/riscv/lib/xor.S         | 81 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 165 insertions(+)
+ create mode 100644 arch/riscv/include/asm/xor.h
+ create mode 100644 arch/riscv/lib/xor.S
+
+diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
+new file mode 100644
+index 000000000000..6707d3822623
+--- /dev/null
++++ b/arch/riscv/include/asm/xor.h
+@@ -0,0 +1,83 @@
++
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2021 SiFive
++ */
++
++#include <linux/hardirq.h>
++#include <asm-generic/xor.h>
++#ifdef CONFIG_RISCV_ISA_V
++#include <asm/vector.h>
++#include <asm/switch_to.h>
++
++void xor_regs_2_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2);
++void xor_regs_3_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3);
++void xor_regs_4_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3,
++		 const unsigned long *__restrict p4);
++void xor_regs_5_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3,
++		 const unsigned long *__restrict p4,
++		 const unsigned long *__restrict p5);
++
++static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2)
++{
++	kernel_vector_begin();
++	xor_regs_2_(bytes, p1, p2);
++	kernel_vector_end();
++}
++
++static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3)
++{
++	kernel_vector_begin();
++	xor_regs_3_(bytes, p1, p2, p3);
++	kernel_vector_end();
++}
++
++static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3,
++			 const unsigned long *__restrict p4)
++{
++	kernel_vector_begin();
++	xor_regs_4_(bytes, p1, p2, p3, p4);
++	kernel_vector_end();
++}
++
++static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3,
++			 const unsigned long *__restrict p4,
++			 const unsigned long *__restrict p5)
++{
++	kernel_vector_begin();
++	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
++	kernel_vector_end();
++}
++
++static struct xor_block_template xor_block_rvv = {
++	.name = "rvv",
++	.do_2 = xor_vector_2,
++	.do_3 = xor_vector_3,
++	.do_4 = xor_vector_4,
++	.do_5 = xor_vector_5
++};
++
++#undef XOR_TRY_TEMPLATES
++#define XOR_TRY_TEMPLATES           \
++	do {        \
++		xor_speed(&xor_block_8regs);    \
++		xor_speed(&xor_block_32regs);    \
++		if (has_vector()) { \
++			xor_speed(&xor_block_rvv);\
++		} \
++	} while (0)
++#endif
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index 26cb2502ecf8..cbf393632ae5 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -9,5 +9,6 @@ lib-y			+= strncmp.o
+ lib-$(CONFIG_MMU)	+= uaccess.o
+ lib-$(CONFIG_64BIT)	+= tishift.o
+ lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
++lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+ 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+diff --git a/arch/riscv/lib/xor.S b/arch/riscv/lib/xor.S
+new file mode 100644
+index 000000000000..c351be913462
+--- /dev/null
++++ b/arch/riscv/lib/xor.S
+@@ -0,0 +1,81 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2021 SiFive
++ */
++#include <linux/linkage.h>
++#include <asm-generic/export.h>
++#include <asm/asm.h>
++
++ENTRY(xor_regs_2_)
++	vsetvli a3, a0, e8, m8, ta, ma
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a3
++	vxor.vv v16, v0, v8
++	add a2, a2, a3
++	vse8.v v16, (a1)
++	add a1, a1, a3
++	bnez a0, xor_regs_2_
++	ret
++END(xor_regs_2_)
++EXPORT_SYMBOL(xor_regs_2_)
++
++ENTRY(xor_regs_3_)
++	vsetvli a4, a0, e8, m8, ta, ma
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a4
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a4
++	vxor.vv v16, v0, v16
++	add a3, a3, a4
++	vse8.v v16, (a1)
++	add a1, a1, a4
++	bnez a0, xor_regs_3_
++	ret
++END(xor_regs_3_)
++EXPORT_SYMBOL(xor_regs_3_)
++
++ENTRY(xor_regs_4_)
++	vsetvli a5, a0, e8, m8, ta, ma
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a5
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a5
++	vxor.vv v0, v0, v16
++	vle8.v v24, (a4)
++	add a3, a3, a5
++	vxor.vv v16, v0, v24
++	add a4, a4, a5
++	vse8.v v16, (a1)
++	add a1, a1, a5
++	bnez a0, xor_regs_4_
++	ret
++END(xor_regs_4_)
++EXPORT_SYMBOL(xor_regs_4_)
++
++ENTRY(xor_regs_5_)
++	vsetvli a6, a0, e8, m8, ta, ma
++	vle8.v v0, (a1)
++	vle8.v v8, (a2)
++	sub a0, a0, a6
++	vxor.vv v0, v0, v8
++	vle8.v v16, (a3)
++	add a2, a2, a6
++	vxor.vv v0, v0, v16
++	vle8.v v24, (a4)
++	add a3, a3, a6
++	vxor.vv v0, v0, v24
++	vle8.v v8, (a5)
++	add a4, a4, a6
++	vxor.vv v16, v0, v8
++	add a5, a5, a6
++	vse8.v v16, (a1)
++	add a1, a1, a6
++	bnez a0, xor_regs_5_
++	ret
++END(xor_regs_5_)
++EXPORT_SYMBOL(xor_regs_5_)
+\ No newline at end of file
+-- 
+2.47.0
+

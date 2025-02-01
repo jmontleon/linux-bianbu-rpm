@@ -1,0 +1,253 @@
+From 1951c747425f19ee3a88fa01b53fcb5d37c98514 Mon Sep 17 00:00:00 2001
+From: Andy Chiu <andy.chiu@sifive.com>
+Date: Mon, 15 Jan 2024 05:59:24 +0000
+Subject: [PATCH 0957/1451] riscv: lib: vectorize copy_to_user/copy_from_user
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This patch utilizes Vector to perform copy_to_user/copy_from_user. If
+Vector is available and the size of copy is large enough for Vector to
+perform better than scalar, then direct the kernel to do Vector copies
+for userspace. Though the best programming practice for users is to
+reduce the copy, this provides a faster variant when copies are
+inevitable.
+
+The optimal size for using Vector, copy_to_user_thres, is only a
+heuristic for now. We can add DT parsing if people feel the need of
+customizing it.
+
+The exception fixup code of the __asm_vector_usercopy must fallback to
+the scalar one because accessing user pages might fault, and must be
+sleepable. Current kernel-mode Vector does not allow tasks to be
+preemptible, so we must disactivate Vector and perform a scalar fallback
+in such case.
+
+The original implementation of Vector operations comes from
+https://github.com/sifive/sifive-libc, which we agree to contribute to
+Linux kernel.
+
+Co-developed-by: Jerry Shih <jerry.shih@sifive.com>
+Change-Id: I8b15feb10e0d60f259f69c232fbcd72e25febab6
+Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
+Co-developed-by: Nick Knight <nick.knight@sifive.com>
+Signed-off-by: Nick Knight <nick.knight@sifive.com>
+Suggested-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20240115055929.4736-6-andy.chiu@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/Kconfig                      |  8 ++++
+ arch/riscv/include/asm/asm-prototypes.h |  4 ++
+ arch/riscv/lib/Makefile                 |  6 ++-
+ arch/riscv/lib/riscv_v_helpers.c        | 45 +++++++++++++++++++++
+ arch/riscv/lib/uaccess.S                | 10 +++++
+ arch/riscv/lib/uaccess_vector.S         | 53 +++++++++++++++++++++++++
+ 6 files changed, 125 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/lib/riscv_v_helpers.c
+ create mode 100644 arch/riscv/lib/uaccess_vector.S
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index a05b7f0f6a2a..abb339ccd899 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -543,6 +543,14 @@ config RISCV_ISA_V_DEFAULT_ENABLE
+ 
+ 	  If you don't know what to do here, say Y.
+ 
++config RISCV_ISA_V_UCOPY_THRESHOLD
++	int "Threshold size for vectorized user copies"
++	depends on RISCV_ISA_V
++	default 768
++	help
++	  Prefer using vectorized copy_to_user()/copy_from_user() when the
++	  workload size exceeds this value.
++
+ config TOOLCHAIN_HAS_ZBB
+ 	bool
+ 	default y
+diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+index 6db1a9bbff4c..be438932f321 100644
+--- a/arch/riscv/include/asm/asm-prototypes.h
++++ b/arch/riscv/include/asm/asm-prototypes.h
+@@ -11,6 +11,10 @@ long long __ashlti3(long long a, int b);
+ 
+ #ifdef CONFIG_RISCV_ISA_V
+ 
++#ifdef CONFIG_MMU
++asmlinkage int enter_vector_usercopy(void *dst, void *src, size_t n);
++#endif /* CONFIG_MMU  */
++
+ void xor_regs_2_(unsigned long bytes, unsigned long *__restrict p1,
+ 		 const unsigned long *__restrict p2);
+ void xor_regs_3_(unsigned long bytes, unsigned long *__restrict p1,
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index 338b7ec24d8c..a09aab75331f 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -6,10 +6,14 @@ lib-y			+= memmove.o
+ lib-y			+= strcmp.o
+ lib-y			+= strlen.o
+ lib-y			+= strncmp.o
+-lib-$(CONFIG_MMU)	+= uaccess.o
++ifeq ($(CONFIG_MMU), y)
++lib-y				+= uaccess.o
++lib-$(CONFIG_RISCV_ISA_V)	+= uaccess_vector.o
++endif
+ lib-$(CONFIG_64BIT)	+= tishift.o
+ lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
+ lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+ 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+ lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
++lib-$(CONFIG_RISCV_ISA_V)	+= riscv_v_helpers.o
+diff --git a/arch/riscv/lib/riscv_v_helpers.c b/arch/riscv/lib/riscv_v_helpers.c
+new file mode 100644
+index 000000000000..be38a93cedae
+--- /dev/null
++++ b/arch/riscv/lib/riscv_v_helpers.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 SiFive
++ * Author: Andy Chiu <andy.chiu@sifive.com>
++ */
++#include <linux/linkage.h>
++#include <asm/asm.h>
++
++#include <asm/vector.h>
++#include <asm/simd.h>
++
++#ifdef CONFIG_MMU
++#include <asm/asm-prototypes.h>
++#endif
++
++#ifdef CONFIG_MMU
++size_t riscv_v_usercopy_threshold = CONFIG_RISCV_ISA_V_UCOPY_THRESHOLD;
++int __asm_vector_usercopy(void *dst, void *src, size_t n);
++int fallback_scalar_usercopy(void *dst, void *src, size_t n);
++asmlinkage int enter_vector_usercopy(void *dst, void *src, size_t n)
++{
++	size_t remain, copied;
++
++	/* skip has_vector() check because it has been done by the asm  */
++	if (!may_use_simd())
++		goto fallback;
++
++	kernel_vector_begin();
++	remain = __asm_vector_usercopy(dst, src, n);
++	kernel_vector_end();
++
++	if (remain) {
++		copied = n - remain;
++		dst += copied;
++		src += copied;
++		n = remain;
++		goto fallback;
++	}
++
++	return remain;
++
++fallback:
++	return fallback_scalar_usercopy(dst, src, n);
++}
++#endif
+diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+index a9d356d6c03c..bc22c078aba8 100644
+--- a/arch/riscv/lib/uaccess.S
++++ b/arch/riscv/lib/uaccess.S
+@@ -3,6 +3,8 @@
+ #include <asm/asm.h>
+ #include <asm/asm-extable.h>
+ #include <asm/csr.h>
++#include <asm/hwcap.h>
++#include <asm/alternative-macros.h>
+ 
+ 	.macro fixup op reg addr lbl
+ 100:
+@@ -11,6 +13,13 @@
+ 	.endm
+ 
+ SYM_FUNC_START(__asm_copy_to_user)
++#ifdef CONFIG_RISCV_ISA_V
++	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_v, CONFIG_RISCV_ISA_V)
++	REG_L	t0, riscv_v_usercopy_threshold
++	bltu	a2, t0, fallback_scalar_usercopy
++	tail enter_vector_usercopy
++#endif
++SYM_FUNC_START(fallback_scalar_usercopy)
+ 
+ 	/* Enable access to user memory */
+ 	li t6, SR_SUM
+@@ -181,6 +190,7 @@ SYM_FUNC_START(__asm_copy_to_user)
+ 	sub a0, t5, a0
+ 	ret
+ SYM_FUNC_END(__asm_copy_to_user)
++SYM_FUNC_END(fallback_scalar_usercopy)
+ EXPORT_SYMBOL(__asm_copy_to_user)
+ SYM_FUNC_ALIAS(__asm_copy_from_user, __asm_copy_to_user)
+ EXPORT_SYMBOL(__asm_copy_from_user)
+diff --git a/arch/riscv/lib/uaccess_vector.S b/arch/riscv/lib/uaccess_vector.S
+new file mode 100644
+index 000000000000..51ab5588e9ff
+--- /dev/null
++++ b/arch/riscv/lib/uaccess_vector.S
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#include <linux/linkage.h>
++#include <asm-generic/export.h>
++#include <asm/asm.h>
++#include <asm/asm-extable.h>
++#include <asm/csr.h>
++
++#define pDst a0
++#define pSrc a1
++#define iNum a2
++
++#define iVL a3
++
++#define ELEM_LMUL_SETTING m8
++#define vData v0
++
++	.macro fixup op reg addr lbl
++100:
++	\op \reg, \addr
++	_asm_extable	100b, \lbl
++	.endm
++
++SYM_FUNC_START(__asm_vector_usercopy)
++	/* Enable access to user memory */
++	li	t6, SR_SUM
++	csrs	CSR_STATUS, t6
++
++loop:
++	vsetvli iVL, iNum, e8, ELEM_LMUL_SETTING, ta, ma
++	fixup vle8.v vData, (pSrc), 10f
++	sub iNum, iNum, iVL
++	add pSrc, pSrc, iVL
++	fixup vse8.v vData, (pDst), 11f
++	add pDst, pDst, iVL
++	bnez iNum, loop
++
++	/* Exception fixup for vector load is shared with normal exit */
++10:
++	/* Disable access to user memory */
++	csrc	CSR_STATUS, t6
++	mv	a0, iNum
++	ret
++
++	/* Exception fixup code for vector store. */
++11:
++	/* Undo the subtraction after vle8.v */
++	add	iNum, iNum, iVL
++	/* Make sure the scalar fallback skip already processed bytes */
++	csrr	t2, CSR_VSTART
++	sub	iNum, iNum, t2
++	j	10b
++SYM_FUNC_END(__asm_vector_usercopy)
+-- 
+2.47.0
+

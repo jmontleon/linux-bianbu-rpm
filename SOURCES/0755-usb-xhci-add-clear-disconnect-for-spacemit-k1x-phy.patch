@@ -1,0 +1,47 @@
+From b9c3c802e82202b0fccfb88d8d4baedb3ec1d099 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 22 May 2024 11:13:33 +0800
+Subject: [PATCH 0755/1451] usb: xhci: add clear disconnect for spacemit k1x
+ phy
+
+Commit e7c4bdd11bae clear disconnect bit by calling notify_connect
+of usb_hcd->usb_phy, after 606a91f2d19e, the usb_phy is no longer
+available. Fix it by calling an extern function from dwc3-spacemit.
+
+Fixes: 606a91f2d19e ("USB: xhci-plat: fix legacy PHY double init")
+Fixes: e7c4bdd11bae ("usb: xhci: fix spacemit k1x phy disconnect detect")
+
+Change-Id: I0b4a7447681691ec9faf7c1d05ac3bcc0a8e7fe7
+---
+ drivers/usb/host/xhci-hub.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+index 4fbbe32555a1..df40f48b63d0 100644
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -609,6 +609,10 @@ static void xhci_disable_port(struct xhci_hcd *xhci, struct xhci_port *port)
+ 		 hcd->self.busnum, port->hcd_portnum + 1, portsc);
+ }
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++extern void dwc3_spacemit_clear_disconnect(struct device *dev);
++#endif
++
+ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
+ 		u16 wIndex, __le32 __iomem *addr, u32 port_status)
+ {
+@@ -627,8 +631,8 @@ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
+ 	case USB_PORT_FEAT_C_CONNECTION:
+ 		status = PORT_CSC;
+ #if defined(CONFIG_SOC_SPACEMIT_K1X)
+-		usb_phy_notify_connect(xhci_to_hcd(xhci)->usb_phy,
+-			USB_SPEED_HIGH);
++		dwc3_spacemit_clear_disconnect(xhci_to_hcd(xhci)->
++			self.controller->parent->parent);
+ #endif
+ 		port_change_bit = "connect";
+ 		break;
+-- 
+2.47.0
+

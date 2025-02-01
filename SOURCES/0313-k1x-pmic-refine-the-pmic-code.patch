@@ -1,0 +1,110 @@
+From 69df022d47fdaeec4d706ccdd7c42ba950091b06 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 5 Jan 2024 11:04:06 +0800
+Subject: [PATCH 0313/1451] k1x:pmic: refine the pmic code
+
+1. support multiple pmics to start simultaneously
+2. fix some errors when config the pmic registers
+
+Change-Id: I03b56e80b4b4447967b63e48686ddbf70182018b
+---
+ drivers/pinctrl/spacemit-pmic-pinctrl.c |  2 +-
+ drivers/regulator/spacemit-regulator.c  |  8 ++++++++
+ include/linux/mfd/spacemit/pm853.h      |  3 ++-
+ include/linux/mfd/spacemit/spm8821.h    | 11 ++++++-----
+ 4 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+index 267acb9c731d..2246d18cd6d6 100644
+--- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
++++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+@@ -399,7 +399,7 @@ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id spacemit_pmic_pinctrl_of_match[] = {
+-	{ .compatible = "spacemit,pmic,spm8821-pinctrl" },
++	{ .compatible = "pmic,pinctrl,spm8821" },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, spacemit_pmic_pinctrl_of_match);
+diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
+index a6aa5973a9c2..78be25672386 100644
+--- a/drivers/regulator/spacemit-regulator.c
++++ b/drivers/regulator/spacemit-regulator.c
+@@ -17,6 +17,13 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+ 
++static const struct of_device_id spacemit_regulator_of_match[] = {
++	{ .compatible = "pmic,regulator,spm8821" , },
++	{ .compatible = "pmic,regulator,pm853" , },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, spacemit_regulator_of_match);
++
+ static const struct regulator_ops pmic_dcdc_ldo_ops = {
+ 	.list_voltage		= regulator_list_voltage_linear_range,
+ 	.map_voltage		= regulator_map_voltage_linear_range,
+@@ -87,6 +94,7 @@ static struct platform_driver spacemit_regulator_driver = {
+ 	.probe = spacemit_regulator_probe,
+ 	.driver = {
+ 		.name = "spacemit-regulator",
++		.of_match_table = spacemit_regulator_of_match,
+ 	},
+ };
+ 
+diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
+index c08585b530b1..43d4e7e01fc5 100644
+--- a/include/linux/mfd/spacemit/pm853.h
++++ b/include/linux/mfd/spacemit/pm853.h
+@@ -115,7 +115,8 @@ enum PM853_reg {
+ #define PM853_MFD_CELL	\
+ 	static const struct mfd_cell pm853[] = {				\
+ 		{								\
+-			.name = "spacemit-regulator",				\
++			.name = "spacemit-regulator@pm853",			\
++			.of_compatible = "pmic,regulator,pm853",		\
+ 		},								\
+ 	};
+ 
+diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
+index 47027e14314e..a58974911566 100644
+--- a/include/linux/mfd/spacemit/spm8821.h
++++ b/include/linux/mfd/spacemit/spm8821.h
+@@ -52,7 +52,7 @@ enum SPM8821_reg {
+ #define SPM8821_ALDO4_VOLT_REG		0x65
+ 
+ #define SPM8821_ALDO_EN_MASK		0x1
+-#define SPM8821_ALDO_VSEL_MASK		0x3f
++#define SPM8821_ALDO_VSEL_MASK		0x7f
+ 
+ #define SPM8821_DLDO1_CTRL_REG		0x67
+ #define SPM8821_DLDO2_CTRL_REG		0x6a
+@@ -71,7 +71,7 @@ enum SPM8821_reg {
+ #define SPM8821_DLDO7_VOLT_REG		0x7a
+ 
+ #define SPM8821_DLDO_EN_MASK		0x1
+-#define SPM8821_DLDO_VSEL_MASK		0x3f
++#define SPM8821_DLDO_VSEL_MASK		0x7f
+ 
+ #define SPM8821_SWITCH_CTRL_REG		0x59
+ #define SPM8821_SWTICH_EN_MASK		0x1
+@@ -88,11 +88,12 @@ enum SPM8821_reg {
+ #define SPM8821_MFD_CELL	\
+ 	static const struct mfd_cell spm8821[] = {				\
+ 		{								\
+-			.name = "spacemit-regulator",				\
++			.name = "spacemit-regulator@spm8821",			\
++			.of_compatible = "pmic,regulator,spm8821",		\
+ 		},								\
+ 		{ 								\
+-			.of_compatible = "spacemit,pmic,spm8821-pinctrl",	\
+-			.name = "spacemit-pmic-pinctrl",			\
++			.name = "spacemit-pinctrl@spm8821",			\
++			.of_compatible = "pmic,pinctrl,spm8821",		\
+ 		},								\
+ 	};
+ 
+-- 
+2.47.0
+

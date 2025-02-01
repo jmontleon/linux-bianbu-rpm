@@ -1,0 +1,53 @@
+From 5a57cc1a70b6608a0dd9bb37027242c844a4bc25 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 15 May 2023 15:55:04 +0800
+Subject: [PATCH 0020/1451] riscv: support svpbmt
+
+Change-Id: I762062fc136b011875114ab21e9e1d3ba5401cda
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 1546555f4490..332cfa7fa59a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -26,7 +26,7 @@ cpu_0: cpu@0 {
+ 			reg = <0>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -48,7 +48,7 @@ cpu_1: cpu@1 {
+ 			reg = <1>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -70,7 +70,7 @@ cpu_2: cpu@2 {
+ 			reg = <2>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -92,7 +92,7 @@ cpu_3: cpu@3 {
+ 			reg = <3>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+-- 
+2.47.0
+

@@ -1,0 +1,84 @@
+From a0aebe5436b3e4ca22438df011d45089d021ddfb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Mon, 11 Sep 2023 16:15:53 +0800
+Subject: [PATCH 0099/1451] support tcm for k1x
+
+Change-Id: Ib1a2c8a17b74cdc580b81015c8744fbd6b1d6c21
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 27 ++++++++++++++++++++++++++
+ drivers/misc/Kconfig                   |  8 ++++++++
+ drivers/misc/Makefile                  |  2 +-
+ 3 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index c1fe3a810e5f..a206e88671c8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -302,6 +302,33 @@ sdhci2: sdh@d4281000 {
+ 			clock-names = "sdh-io", "sdh-core";
+ 			status = "disabled";
+ 		};
++
++		tcm: tcm@0xd8000000 {
++			compatible = "spacemit,k1-pro-tcm";
++			reg = <0x0 0xd8000000 0x0 0x80000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0x0 0x0 0xbe000000 0x80000>;
++			no-memory-wc;
++
++			core0_tcm@0 {
++				reg = <0x00000 0x20000>;
++				pool;
++			};
++			core1_tcm@20000 {
++				reg = <0x20000 0x20000>;
++				pool;
++			};
++			core2_tcm@40000 {
++				reg = <0x40000 0x20000>;
++				pool;
++			};
++			core3_tcm@60000 {
++				reg = <0x60000 0x20000>;
++				pool;
++			};
++		};
++
+ 	};
+ 
+ 	pmu {
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index cadd4a820c03..cc2ef7ffe042 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -562,6 +562,14 @@ config TPS6594_PFSM
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called tps6594-pfsm.
+ 
++config SPACEMIT_TCM
++	bool "Generic tcm alloc management driver"
++	depends on SOC_SPACEMIT
++	default y
++	help
++	  This driver allows you to alloc tcm for userspace.
++
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 839ed8fe6206..123e4061ccc2 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -67,4 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
+ obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
+ obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
+ obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
+-obj-y				+= tcm.o
+\ No newline at end of file
++obj-$(CONFIG_SPACEMIT_TCM)	+= tcm.o
+\ No newline at end of file
+-- 
+2.47.0
+

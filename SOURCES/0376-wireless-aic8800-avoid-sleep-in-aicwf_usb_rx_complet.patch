@@ -1,0 +1,204 @@
+From fe19ce2d11b3240e4fa2c14a0e46939c8ba1ccd9 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 15 Jan 2024 17:54:49 +0800
+Subject: [PATCH 0376/1451] wireless: aic8800: avoid sleep in
+ aicwf_usb_rx_complete
+
+Call Trace:
+[<ffffffff80005e56>] dump_backtrace+0x1c/0x24
+[<ffffffff80abb426>] show_stack+0x2e/0x38
+[<ffffffff80acee96>] dump_stack_lvl+0x3c/0x54
+[<ffffffff80aceec2>] dump_stack+0x14/0x1c
+[<ffffffff80030728>] __might_resched+0x168/0x172
+[<ffffffff80030744>] __might_sleep+0x12/0x1a
+[<ffffffff80ad23aa>] down+0x20/0x50
+[<ffffffff02e41420>] aicwf_usb_rx_complete+0x166/0x232 [aic8800_fdrv]
+[<ffffffff807121ae>] __usb_hcd_giveback_urb+0x56/0x98
+[<ffffffff80712c76>] usb_giveback_urb_bh+0xd8/0x108
+[<ffffffff80013cfa>] tasklet_action_common.constprop.0+0x6e/0xa2
+[<ffffffff80013d64>] tasklet_action+0x36/0x40
+[<ffffffff80ad4da2>] __do_softirq+0x1ca/0x334
+[<ffffffff80013830>] __irq_exit_rcu+0xa8/0x10a
+[<ffffffff8001398a>] irq_exit+0xc/0x1c
+[<ffffffff80acefde>] generic_handle_arch_irq+0x40/0x4c
+[<ffffffff80003934>] ret_from_exception+0x0/0x16
+[<ffffffff80acf1d0>] ct_idle_enter+0xc/0x14
+
+Change-Id: Ifeb66e0c617f451708fd2d17c06ee2ce2435af37
+---
+ .../net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c    |  3 ++-
+ .../net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c |  2 +-
+ .../net/wireless/aic8800/aic8800_fdrv/rwnx_main.c    | 12 +++++++-----
+ .../net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c  |  4 ++--
+ .../net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c  |  4 ++--
+ .../net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c    |  1 +
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c  |  1 +
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c |  1 +
+ 8 files changed, 17 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c
+index f46eab824b4f..8985051bb155 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_usb.c
+@@ -372,7 +372,8 @@ static void aicwf_usb_rx_complete(struct urb *urb)
+ 				g_rwnx_plat->wait_disconnect_cb = true;
+ 				if(atomic_read(&aicwf_deinit_atomic) > 0){
+ 					atomic_set(&aicwf_deinit_atomic, 0);
+-					down(&aicwf_deinit_sem);
++					if (down_trylock(&aicwf_deinit_sem))
++						return;
+ 					AICWFDBG(LOGINFO, "%s need to wait for disconnect callback \r\n", __func__);
+ 				}else{
+ 					g_rwnx_plat->wait_disconnect_cb = false;
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+index 3e39c8af178a..dd538ac0b318 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+@@ -1750,7 +1750,7 @@ static ssize_t rwnx_dbgfs_rc_fixed_rate_idx_write(struct file *file,
+     /* Get the station index from MAC address */
+     sscanf(file->f_path.dentry->d_parent->d_iname, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+             &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
+-    if (mac == NULL)
++    if (*mac == 0)
+         return 0;
+     sta = rwnx_get_sta(priv, mac);
+     if (sta == NULL)
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+index 176b79c4e9d6..aea445b80ccc 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+@@ -2795,7 +2795,7 @@ static struct rwnx_vif *rwnx_interface_add(struct rwnx_hw *rwnx_hw,
+         vif->ap.generation = 0;
+         vif->ap.mesh_pm = NL80211_MESH_POWER_ACTIVE;
+         vif->ap.next_mesh_pm = NL80211_MESH_POWER_ACTIVE;
+-        // no break
++        fallthrough;
+     case NL80211_IFTYPE_AP:
+         INIT_LIST_HEAD(&vif->ap.sta_list);
+         memset(&vif->ap.bcn, 0, sizeof(vif->ap.bcn));
+@@ -2834,7 +2834,7 @@ static struct rwnx_vif *rwnx_interface_add(struct rwnx_hw *rwnx_hw,
+     }
+ 
+     if (type == NL80211_IFTYPE_AP_VLAN) {
+-        memcpy(ndev->dev_addr, params->macaddr, ETH_ALEN);
++        memcpy((char *)ndev->dev_addr, params->macaddr, ETH_ALEN);
+         memcpy(vif->wdev.address, params->macaddr, ETH_ALEN);
+     }
+     else {
+@@ -2843,10 +2843,10 @@ static struct rwnx_vif *rwnx_interface_add(struct rwnx_hw *rwnx_hw,
+         
+         memcpy(mac_addr, rwnx_hw->wiphy->perm_addr, ETH_ALEN);
+         mac_addr[5] ^= vif_idx;
+-        memcpy(ndev->dev_addr, mac_addr, ETH_ALEN);
++        memcpy((char *)ndev->dev_addr, mac_addr, ETH_ALEN);
+         memcpy(vif->wdev.address, ndev->dev_addr, ETH_ALEN);
+ #else
+-        memcpy(ndev->dev_addr, rwnx_hw->wiphy->perm_addr, ETH_ALEN);
++        memcpy((char *)ndev->dev_addr, rwnx_hw->wiphy->perm_addr, ETH_ALEN);
+         ndev->dev_addr[5] ^= vif_idx;
+         memcpy(vif->wdev.address, ndev->dev_addr, ETH_ALEN);
+ #endif
+@@ -3235,7 +3235,7 @@ static int rwnx_cfg80211_change_iface(struct wiphy *wiphy,
+         INIT_LIST_HEAD(&vif->ap.proxy_list);
+         vif->ap.create_path = false;
+         vif->ap.generation = 0;
+-        // no break
++        fallthrough;
+     case NL80211_IFTYPE_AP:
+     case NL80211_IFTYPE_P2P_GO:
+         INIT_LIST_HEAD(&vif->ap.sta_list);
+@@ -5202,6 +5202,7 @@ static int rwnx_cfg80211_mgmt_tx(struct wiphy *wiphy, struct wireless_dev *wdev,
+     switch (RWNX_VIF_TYPE(rwnx_vif)) {
+         case NL80211_IFTYPE_AP_VLAN:
+             rwnx_vif = rwnx_vif->ap_vlan.master;
++            fallthrough;
+         case NL80211_IFTYPE_AP:
+         case NL80211_IFTYPE_P2P_GO:
+         case NL80211_IFTYPE_MESH_POINT:
+@@ -5860,6 +5861,7 @@ static int rwnx_fill_station_info(struct rwnx_sta *sta, struct rwnx_vif *vif,
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+ 	case FORMATMOD_HE_MU:
+ 		sinfo->rxrate.he_ru_alloc = rx_vect1->he.ru_size;
++		fallthrough;
+ 	case FORMATMOD_HE_SU:
+ 	case FORMATMOD_HE_ER:
+ 		sinfo->rxrate.flags = RATE_INFO_FLAGS_HE_MCS;
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c
+index 5a86f62d0956..f0a6d453f3eb 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_rx.c
+@@ -1102,11 +1102,11 @@ static inline int rwnx_rx_sm_disconnect_ind(struct rwnx_hw *rwnx_hw,
+     rx_priv = rwnx_hw->usbdev->rx_priv;
+ #endif
+     if((rwnx_vif->wdev.iftype == NL80211_IFTYPE_STATION) || (rwnx_vif->wdev.iftype == NL80211_IFTYPE_P2P_CLIENT)) {
+-        macaddr = rwnx_vif->ndev->dev_addr;
++        macaddr = (u8 *)rwnx_vif->ndev->dev_addr;
+ 		AICWFDBG(LOGINFO, "deinit:macaddr:%x,%x,%x,%x,%x,%x\r\n", macaddr[0],macaddr[1],macaddr[2], \
+                                macaddr[3],macaddr[4],macaddr[5]);
+         list_for_each_entry_safe(reord_info, tmp, &rx_priv->stas_reord_list, list) {
+-            macaddr = rwnx_vif->ndev->dev_addr;
++            macaddr = (u8 *)rwnx_vif->ndev->dev_addr;
+ 			AICWFDBG(LOGINFO, "reord_mac:%x,%x,%x,%x,%x,%x\r\n", reord_info->mac_addr[0],reord_info->mac_addr[1],reord_info->mac_addr[2], \
+                                    reord_info->mac_addr[3],reord_info->mac_addr[4],reord_info->mac_addr[5]);
+             if (!memcmp(reord_info->mac_addr, macaddr, 6)) {
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c
+index 7d3625a5aa66..b1ec7249e656 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_msg_tx.c
+@@ -614,7 +614,7 @@ int rwnx_send_add_if(struct rwnx_hw *rwnx_hw, const unsigned char *mac,
+     //case NL80211_IFTYPE_P2P_DEVICE:
+     case NL80211_IFTYPE_P2P_CLIENT:
+         add_if_req_param->p2p = true;
+-        // no break
++        fallthrough;
+     #endif /* CONFIG_RWNX_FULLMAC */
+     case NL80211_IFTYPE_STATION:
+         add_if_req_param->type = MM_STA;
+@@ -627,7 +627,7 @@ int rwnx_send_add_if(struct rwnx_hw *rwnx_hw, const unsigned char *mac,
+     #ifdef CONFIG_RWNX_FULLMAC
+     case NL80211_IFTYPE_P2P_GO:
+         add_if_req_param->p2p = true;
+-        // no break
++        fallthrough;
+     #endif /* CONFIG_RWNX_FULLMAC */
+     case NL80211_IFTYPE_AP:
+         add_if_req_param->type = MM_AP;
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c
+index ce400ce89bde..9f25050bc432 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tdls.c
+@@ -263,6 +263,7 @@ static u8 rwnx_ac_from_wmm(int ac)
+ 	switch (ac) {
+ 	default:
+ 		WARN_ON_ONCE(1);
++		fallthrough;
+ 	case 0:
+ 		return AC_BE;
+ 	case 1:
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c
+index 172421ccc0f6..8ad8da22e3ee 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_tx.c
+@@ -321,6 +321,7 @@ u16 rwnx_select_txq(struct rwnx_vif *rwnx_vif, struct sk_buff *skb)
+         /* AP_VLAN interface is not used for a 4A STA,
+            fallback searching sta amongs all AP's clients */
+         rwnx_vif = rwnx_vif->ap_vlan.master;
++        fallthrough;
+     case NL80211_IFTYPE_AP:
+     case NL80211_IFTYPE_P2P_GO:
+     {
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c
+index 400cb1ad3e1e..5443567f2da8 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_txq.c
+@@ -637,6 +637,7 @@ void rwnx_txq_vif_for_each_sta(struct rwnx_hw *rwnx_hw, struct rwnx_vif *rwnx_vi
+     }
+     case NL80211_IFTYPE_AP_VLAN:
+         rwnx_vif = rwnx_vif->ap_vlan.master;
++        fallthrough;
+     case NL80211_IFTYPE_AP:
+     case NL80211_IFTYPE_MESH_POINT:
+     case NL80211_IFTYPE_P2P_GO:
+-- 
+2.47.0
+

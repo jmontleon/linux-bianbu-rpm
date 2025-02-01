@@ -1,0 +1,50 @@
+From c558c3185044bba70662676f24eddf341cb6717f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 12 Jan 2024 21:01:46 +0800
+Subject: [PATCH 0357/1451] sync deb2 board dts
+
+Change-Id: Ifbb10bd721847bc1ca986fcc254f3e16d4b22bc5
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 8bd180cb0143..6b8ca287cdff 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -139,11 +139,12 @@ rf_pwrseq: rf_pwrseq {
+ 		//vdd_voltage = <3300000>;
+ 		io-supply = <&ldo_7>;
+ 		io_voltage = <1800000>;
++		pwr-gpios  = <&gpio 67 0>;
+ 		status = "okay";
+ 
+ 		wlan_pwrseq: wlan_pwrseq {
+ 			compatible = "spacemit,wlan-pwrseq";
+-			regon-gpios     = <&gpio 67 0>;
++			regon-gpios     = <&gpio 116 0>;
+ 			hostwake-gpios  = <&gpio 66 0>;
+ 		};
+ 	};
+@@ -492,7 +493,8 @@ &range GPIO_91  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range DVL0     2 (MUX_MODE1 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_110 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_114 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+-		&range GPIO_115 2 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
++		&range GPIO_115 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
++		&range GPIO_116 1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_123 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_124 1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_125 3 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+@@ -682,7 +684,7 @@ mdio-bus {
+ 		rgmii1: phy@1 {
+ 			compatible = "ethernet-phy-id001c.c916";
+ 			device_type = "ethernet-phy";
+-			reg = <0x2>;
++			reg = <0x1>;
+ 			phy-mode = "rgmii";
+ 		};
+ 	};
+-- 
+2.47.0
+

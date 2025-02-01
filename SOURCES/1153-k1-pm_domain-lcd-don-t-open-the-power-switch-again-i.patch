@@ -1,0 +1,28 @@
+From a615a9985b004d40f5305b58dfc9eb8b6b5a8add Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 12 Sep 2024 19:03:49 +0800
+Subject: [PATCH 1153/1451] k1:pm_domain:lcd: don't open the power-switch again
+ if it has opened in uboot
+
+Change-Id: Iced956e183b3558a0f8296969cbb59a42e8e2be0
+---
+ drivers/soc/spacemit/pm_domain/k1x-pm_domain.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 49f4f6dd8345..3bb94f430bc6 100644
+--- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -262,6 +262,9 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ 
+ 	regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], APMU_POWER_STATUS_REG, &val);
+ 	if (val & (1 << spd->param.bit_pwr_stat)) {
++		if (spd->pm_index == K1X_PMU_LCD_PWR_DOMAIN)
++			return 0;
++
+ 		if (!spd->param.use_hw) {
+ 			/* this is the sw type */
+ 			regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], spd->param.reg_pwr_ctrl, &val);
+-- 
+2.47.0
+

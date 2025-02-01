@@ -1,0 +1,126 @@
+From 6d4dec7b4dd8fe11806e98048f3c09a625acca48 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Mon, 18 Dec 2023 14:47:02 +0800
+Subject: [PATCH 0190/1451] gmac: modify the config for k1x gmac controller
+
+1. change the no of irq for gmac1
+2. disable the pull for gmac pin
+3. adding realtek phys driver for evb
+
+Change-Id: Ia7dc0e0d7f3e53ae9db5a24f1a256218b433cace
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  2 +-
+ .../riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 64 +++++++++----------
+ arch/riscv/configs/k1-x_evb_defconfig         |  1 +
+ 3 files changed, 34 insertions(+), 33 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index cf1b9c160323..648b4a49db2b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1338,7 +1338,7 @@ eth1: ethernet@cac81000 {
+ 			clock-names = "emac-clk", "ptp-clk";
+ 			resets = <&reset RESET_EMAC1>;
+ 			reset-names = "emac-reset";
+-			interrupts = <131>;
++			interrupts = <133>;
+ 			interrupt-parent = <&intc>;
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index 86187b17a75e..ca161917a306 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -241,22 +241,22 @@ K1X_PADCONF(GPIO_90,    MUX_MODE5, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i
+ 
+     pinctrl_gmac0: gmac0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_00,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rxdv */
+-            K1X_PADCONF(GPIO_01,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rx_d0 */
+-            K1X_PADCONF(GPIO_02,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rx_d1 */
+-            K1X_PADCONF(GPIO_03,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rx_clk */
+-            K1X_PADCONF(GPIO_04,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rx_d2 */
+-            K1X_PADCONF(GPIO_05,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_rx_d3 */
+-            K1X_PADCONF(GPIO_06,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx_d0 */
+-            K1X_PADCONF(GPIO_07,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx_d1 */
+-            K1X_PADCONF(GPIO_08,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx */
+-            K1X_PADCONF(GPIO_09,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx_d2 */
+-            K1X_PADCONF(GPIO_10,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx_d3 */
+-            K1X_PADCONF(GPIO_11,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_tx_en */
+-            K1X_PADCONF(GPIO_12,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_mdc */
+-            K1X_PADCONF(GPIO_13,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_mdio */
+-            K1X_PADCONF(GPIO_14,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_int_n */
+-            K1X_PADCONF(GPIO_45,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac0_clk_ref */
++            K1X_PADCONF(GPIO_00,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rxdv */
++            K1X_PADCONF(GPIO_01,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d0 */
++            K1X_PADCONF(GPIO_02,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d1 */
++            K1X_PADCONF(GPIO_03,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_clk */
++            K1X_PADCONF(GPIO_04,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d2 */
++            K1X_PADCONF(GPIO_05,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rx_d3 */
++            K1X_PADCONF(GPIO_06,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d0 */
++            K1X_PADCONF(GPIO_07,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d1 */
++            K1X_PADCONF(GPIO_08,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx */
++            K1X_PADCONF(GPIO_09,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d2 */
++            K1X_PADCONF(GPIO_10,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_d3 */
++            K1X_PADCONF(GPIO_11,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_tx_en */
++            K1X_PADCONF(GPIO_12,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_mdc */
++            K1X_PADCONF(GPIO_13,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_mdio */
++            K1X_PADCONF(GPIO_14,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_int_n */
++            K1X_PADCONF(GPIO_45,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_clk_ref */
+         >;
+     };
+ 
+@@ -291,22 +291,22 @@ K1X_PADCONF(GPIO_28,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* s
+ 
+     pinctrl_gmac1: gmac1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_29,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rxdv */
+-            K1X_PADCONF(GPIO_30,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rx_d0 */
+-            K1X_PADCONF(GPIO_31,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rx_d1 */
+-            K1X_PADCONF(GPIO_32,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rx_clk */
+-            K1X_PADCONF(GPIO_33,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rx_d2 */
+-            K1X_PADCONF(GPIO_34,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_rx_d3 */
+-            K1X_PADCONF(GPIO_35,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_tx_d0 */
+-            K1X_PADCONF(GPIO_36,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_tx_d1 */
+-            K1X_PADCONF(GPIO_37,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_tx */
+-            K1X_PADCONF(GPIO_38,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* gmac1_tx_d2 */
+-            K1X_PADCONF(GPIO_39,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* gmac1_tx_d3 */
+-            K1X_PADCONF(GPIO_40,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* gmac1_tx_en */
+-            K1X_PADCONF(GPIO_41,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* gmac1_mdc */
+-            K1X_PADCONF(GPIO_42,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_mdio */
+-            K1X_PADCONF(GPIO_43,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_int_n */
+-            K1X_PADCONF(GPIO_46,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* gmac1_clk_ref */
++            K1X_PADCONF(GPIO_29,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rxdv */
++            K1X_PADCONF(GPIO_30,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d0 */
++            K1X_PADCONF(GPIO_31,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d1 */
++            K1X_PADCONF(GPIO_32,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_clk */
++            K1X_PADCONF(GPIO_33,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d2 */
++            K1X_PADCONF(GPIO_34,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_rx_d3 */
++            K1X_PADCONF(GPIO_35,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx_d0 */
++            K1X_PADCONF(GPIO_36,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx_d1 */
++            K1X_PADCONF(GPIO_37,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx */
++            K1X_PADCONF(GPIO_38,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx_d2 */
++            K1X_PADCONF(GPIO_39,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx_d3 */
++            K1X_PADCONF(GPIO_40,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_tx_en */
++            K1X_PADCONF(GPIO_41,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_mdc */
++            K1X_PADCONF(GPIO_42,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_mdio */
++            K1X_PADCONF(GPIO_43,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_int_n */
++            K1X_PADCONF(GPIO_46,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac1_clk_ref */
+         >;
+     };
+ 
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 21e0a78a93a8..85e7f112389e 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -120,6 +120,7 @@ CONFIG_K1X_EMAC=y
+ # CONFIG_NET_VENDOR_VIA is not set
+ # CONFIG_NET_VENDOR_WIZNET is not set
+ # CONFIG_NET_VENDOR_XILINX is not set
++CONFIG_REALTEK_PHY=y
+ CONFIG_CAN_FLEXCAN=y
+ # CONFIG_WLAN is not set
+ CONFIG_INPUT_EVDEV=y
+-- 
+2.47.0
+

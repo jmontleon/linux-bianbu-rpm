@@ -1,0 +1,29 @@
+From bec3fab9ed3c6c58ccc473d071dc11f23338128c Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Fri, 18 Oct 2024 19:18:20 +0800
+Subject: [PATCH 1188/1451] defconfig: add audio config
+
+Change-Id: I131f3a52c6f6d2db1f9136405132b49160e82cb1
+---
+ arch/riscv/configs/k1_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 0caa0b6a4dc6..96b901efef54 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -891,6 +891,11 @@ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ # CONFIG_SND_SOC_INTEL_SST_TOPLEVEL is not set
+ CONFIG_SND_SOC_SPACEMIT=y
++CONFIG_SPACEMIT_CARD=y
++CONFIG_SPACEMIT_PCM=y
++CONFIG_SPACEMIT_I2S=y
++CONFIG_SPACEMIT_HDMIAUDIO=y
++CONFIG_SPACEMIT_DUMMYCODEC=y
+ CONFIG_SND_SOC_ES7210=y
+ CONFIG_SND_SOC_ES8156=y
+ CONFIG_SND_SOC_ES8326=y
+-- 
+2.47.0
+

@@ -1,0 +1,90 @@
+From a0acdb06427722fa778a3294f3f61e4e3591c3fe Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 27 Jul 2023 11:43:56 +0800
+Subject: [PATCH 0074/1451] usb: dwc2: add params for k1-pro fpga
+
+Change-Id: Iedbfca6f694c798f1e35c345460ce41727cd32f0
+---
+ drivers/usb/dwc2/hcd.c      |  4 ++--
+ drivers/usb/dwc2/params.c   | 21 ++++++++++++++++++++-
+ drivers/usb/dwc2/platform.c |  2 +-
+ 3 files changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index c1de38de2806..a04a8ad27bad 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -5143,9 +5143,9 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
+ 
+ 	/* Set device flags indicating whether the HCD supports DMA */
+ 	if (hsotg->params.host_dma) {
+-		if (dma_set_mask(hsotg->dev, DMA_BIT_MASK(32)) < 0)
++		if (dma_set_mask(hsotg->dev, DMA_BIT_MASK(40)) < 0)
+ 			dev_warn(hsotg->dev, "can't set DMA mask\n");
+-		if (dma_set_coherent_mask(hsotg->dev, DMA_BIT_MASK(32)) < 0)
++		if (dma_set_coherent_mask(hsotg->dev, DMA_BIT_MASK(40)) < 0)
+ 			dev_warn(hsotg->dev, "can't set coherent DMA mask\n");
+ 	}
+ 
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 93f52e371cdd..4e8a8db5498c 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -266,6 +266,23 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
+ 	p->hird_threshold_en = false;
+ }
+ 
++static void dwc2_set_spacemit_params(struct dwc2_hsotg *hsotg)
++{
++	struct dwc2_core_params *p = &hsotg->params;
++
++	p->otg_caps.hnp_support = false;
++	p->otg_caps.srp_support = false;
++	p->speed = DWC2_SPEED_PARAM_HIGH;
++	p->host_rx_fifo_size = 280;
++	p->host_nperio_tx_fifo_size = 256;
++	p->host_perio_tx_fifo_size = 256;
++	p->phy_type = DWC2_PHY_TYPE_PARAM_ULPI;
++	//p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
++	//p->phy_utmi_width = 16;
++	p->ahbcfg = GAHBCFG_HBSTLEN_INCR8 <<
++		GAHBCFG_HBSTLEN_SHIFT;
++}
++
+ const struct of_device_id dwc2_of_match_table[] = {
+ 	{ .compatible = "brcm,bcm2835-usb", .data = dwc2_set_bcm_params },
+ 	{ .compatible = "hisilicon,hi6220-usb", .data = dwc2_set_his_params },
+@@ -305,6 +322,8 @@ const struct of_device_id dwc2_of_match_table[] = {
+ 	  .data = dwc2_set_stm32mp15_hsotg_params },
+ 	{ .compatible = "intel,socfpga-agilex-hsotg",
+ 	  .data = dwc2_set_socfpga_agilex_params },
++	{ .compatible = "spacemit,k1-pro-usb",
++	  .data = dwc2_set_spacemit_params },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, dwc2_of_match_table);
+@@ -613,7 +632,7 @@ static void dwc2_check_param_phy_type(struct dwc2_hsotg *hsotg)
+ 			valid = 1;
+ 		break;
+ 	case DWC2_PHY_TYPE_PARAM_ULPI:
+-		if ((hs_phy_type == GHWCFG2_HS_PHY_TYPE_UTMI) ||
++		if ((hs_phy_type == GHWCFG2_HS_PHY_TYPE_ULPI) ||
+ 		    (hs_phy_type == GHWCFG2_HS_PHY_TYPE_UTMI_ULPI))
+ 			valid = 1;
+ 		break;
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index c1b7209b9483..833b31d3c958 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -450,7 +450,7 @@ static int dwc2_driver_probe(struct platform_device *dev)
+ 	 */
+ 	if (!dev->dev.dma_mask)
+ 		dev->dev.dma_mask = &dev->dev.coherent_dma_mask;
+-	retval = dma_set_coherent_mask(&dev->dev, DMA_BIT_MASK(32));
++	retval = dma_set_coherent_mask(&dev->dev, DMA_BIT_MASK(40));
+ 	if (retval) {
+ 		dev_err(&dev->dev, "can't set coherent DMA mask: %d\n", retval);
+ 		return retval;
+-- 
+2.47.0
+

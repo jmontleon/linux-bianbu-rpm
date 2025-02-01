@@ -1,0 +1,104 @@
+From 64b9d40738188ab656de08fa3227d2955c03d5c5 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 13 Sep 2023 16:15:41 +0800
+Subject: [PATCH 0108/1451] usb: dwc3: support k1x platform
+
+Change-Id: I5f4b750ec21d3352c0202ea4425e088f0d0e9abc
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 19 +++++++++++++++++++
+ arch/riscv/configs/k1-x_fpga_defconfig | 13 +++++++++++++
+ drivers/usb/dwc3/dwc3-spacemit.c       | 17 ++++++++++++++---
+ 3 files changed, 46 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index d1f8c0c51947..f37b39a79165 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -298,6 +298,25 @@ udc: udc@c0900100 {
+ 			status = "disabled";
+ 		};
+ 
++		usbdrd3: usb3@0 {
++			compatible = "spacemit,k1-x-dwc3";
++			#address-cells = <2>;
++			#size-cells = <2>;
++			//resets = <&reset RESET_USB31>;
++			//reset-names = "ctl_rst";
++			interrupt-parent = <&intc>;
++			interrupts = <149>;
++			ranges;
++			status = "disabled";
++
++			dwc3@c0a00000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0xc0a00000 0x0 0x10000>;
++				interrupt-parent = <&intc>;
++				interrupts = <125>;
++			};
++		};
++
+ 		sdhci0: sdh@d4280000 {
+ 			compatible = "spacemit,k1-x-sdhci";
+ 			reg = <0x0 0xd4280000 0x0 0x200>;
+diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
+index 4706eecbc9b3..adc6a339cca3 100644
+--- a/arch/riscv/configs/k1-x_fpga_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_defconfig
+@@ -133,6 +133,19 @@ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_MFD_SYSCON=y
+ # CONFIG_VGA_CONSOLE is not set
+ # CONFIG_HID_GENERIC is not set
++CONFIG_USB=y
++CONFIG_USB_XHCI_HCD=y
++CONFIG_USB_STORAGE=y
++CONFIG_USB_DWC3=y
++# CONFIG_USB_DWC3_OMAP is not set
++# CONFIG_USB_DWC3_EXYNOS is not set
++# CONFIG_USB_DWC3_KEYSTONE is not set
++# CONFIG_USB_DWC3_MESON_G12A is not set
++# CONFIG_USB_DWC3_OF_SIMPLE is not set
++# CONFIG_USB_DWC3_ST is not set
++# CONFIG_USB_DWC3_QCOM is not set
++# CONFIG_USB_DWC3_IMX8MP is not set
++# CONFIG_USB_DWC3_AM62 is not set
+ CONFIG_K1XCI_USB2_PHY=y
+ CONFIG_USB_GADGET=y
+ CONFIG_USB_K1X_UDC=y
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 0ffec428e9a1..0f4ddbaef791 100755
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -149,7 +149,13 @@ static int dwc3_spacemit_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct dwc3_spacemit_driverdata spacemit_drvdata = {
++static const struct dwc3_spacemit_driverdata spacemit_k1pro_drvdata = {
++	.clk_names = { "usbdrd30" },
++	.num_clks = 0,
++	.suspend_clk_idx = -1,
++};
++
++static const struct dwc3_spacemit_driverdata spacemit_k1x_drvdata = {
+ 	.clk_names = { "usbdrd30" },
+ 	.num_clks = 0,
+ 	.suspend_clk_idx = -1,
+@@ -158,8 +164,13 @@ static const struct dwc3_spacemit_driverdata spacemit_drvdata = {
+ static const struct of_device_id spacemit_dwc3_match[] = {
+ 	{
+ 		.compatible = "spacemit,k1-pro-dwc3",
+-		.data = &spacemit_drvdata,
+-	}
++		.data = &spacemit_k1pro_drvdata,
++	},
++	{
++		.compatible = "spacemit,k1-x-dwc3",
++		.data = &spacemit_k1x_drvdata,
++	},
++	{ /* Sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, spacemit_dwc3_match);
+ 
+-- 
+2.47.0
+

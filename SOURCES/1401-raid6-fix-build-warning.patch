@@ -1,0 +1,29 @@
+From 4eb5056459b418daba3acae8d9b73cc15fd9b5b3 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 25 Dec 2024 14:59:21 +0800
+Subject: [PATCH 1401/1451] raid6: fix build warning
+
+1. WARNING: modpost: vmlinux: section mismatch in reference: raid6_select_algo_wrapper+0x8 (section: .text.unlikely) -> raid6_select_algo (section: .init.text)
+
+Change-Id: Iad0c0185970eecd0d57ef1eb3128e10bc266dace
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ lib/raid6/algos.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index 2c60e3e21754..a971774030f3 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -292,7 +292,7 @@ static void raid6_exit(void)
+ 	do { } while (0);
+ }
+ 
+-static void raid6_select_algo_wrapper(void *data, long long unsigned int arg)
++static void __init raid6_select_algo_wrapper(void *data, long long unsigned int arg)
+ {
+ 	raid6_select_algo();
+ }
+-- 
+2.47.0
+

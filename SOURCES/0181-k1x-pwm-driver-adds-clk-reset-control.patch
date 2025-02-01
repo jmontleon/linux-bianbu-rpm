@@ -1,0 +1,300 @@
+From 33c52a11c733637840e531cee3ece01d528c8a18 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Mon, 11 Dec 2023 15:35:15 +0800
+Subject: [PATCH 0181/1451] k1x:pwm driver adds clk&reset control
+
+Change-Id: I17085bc68bbd2542369b73ebc89a44efd7bfe0f9
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 189 ++++++++++++++++++++++---
+ drivers/pwm/pwm-pxa.c                  |  19 ++-
+ 2 files changed, 189 insertions(+), 19 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 6eaea6e6bfdb..1c130d3461d7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -404,13 +404,6 @@ pll_clk_i2c: clock-pll_clk_i2c {
+ 			clock-output-names = "pll_clk_i2c";
+ 		};
+ 
+-		pll_clk_pwm: clock-pll_clk_pwm {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <10000000>;
+-			clock-output-names = "pll_clk_pwm";
+-		};
+-
+ 		pll_clk_timer: clock-pll_clk_timer {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -919,36 +912,200 @@ pwm0: pwm@d401a000 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xd401a000 0x0 0x10>;
+ 			#pwm-cells = <1>;
+-			clocks = <&pll_clk_pwm>;
++			clocks = <&ccu CLK_PWM0>;
++			resets = <&reset RESET_PWM0>;
+ 			k1x,pwm-disable-fd;
+-			status = "ok";
++			status = "disabled";
+ 		};
+ 
+ 		pwm1: pwm@d401a400 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xd401a400 0x0 0x10>;
+ 			#pwm-cells = <1>;
+-			clocks = <&pll_clk_pwm>;
+-			//k1x,pwm-disable-fd;
+-			status = "ok";
++			clocks = <&ccu CLK_PWM1>;
++			resets = <&reset RESET_PWM1>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
+ 		};
+ 
+ 		pwm2: pwm@d401a800 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xd401a800 0x0 0x10>;
+ 			#pwm-cells = <1>;
+-			clocks = <&pll_clk_pwm>;
++			clocks = <&ccu CLK_PWM2>;
++			resets = <&reset RESET_PWM2>;
+ 			k1x,pwm-disable-fd;
+-			status = "ok";
++			status = "disabled";
+ 		};
+ 
+ 		pwm3: pwm@d401ac00 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xd401ac00 0x0 0x10>;
+ 			#pwm-cells = <1>;
+-			clocks = <&pll_clk_pwm>;
++			clocks = <&ccu CLK_PWM3>;
++			resets = <&reset RESET_PWM3>;
+ 			k1x,pwm-disable-fd;
+-			status = "ok";
++			status = "disabled";
++		};
++
++		pwm4: pwm@d401b000 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd401b000 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM4>;
++			resets = <&reset RESET_PWM4>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm5: pwm@d401b400 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd401b400 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM5>;
++			resets = <&reset RESET_PWM5>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm6: pwm@d401b800 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd401b800 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM6>;
++			resets = <&reset RESET_PWM6>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm7: pwm@d401bc00 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd401bc00 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM7>;
++			resets = <&reset RESET_PWM7>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm8: pwm@d4020000 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4020000 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM8>;
++			resets = <&reset RESET_PWM8>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm9: pwm@d4020400 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4020400 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM9>;
++			resets = <&reset RESET_PWM9>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm10: pwm@d4020800 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4020800 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM10>;
++			resets = <&reset RESET_PWM10>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm11: pwm@d4020c00 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4020c00 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM11>;
++			resets = <&reset RESET_PWM11>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm12: pwm@d4021000 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4021000 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM12>;
++			resets = <&reset RESET_PWM12>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm13: pwm@d4021400 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4021400 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM13>;
++			resets = <&reset RESET_PWM13>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm14: pwm@d4021800 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4021800 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM14>;
++			resets = <&reset RESET_PWM14>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm15: pwm@d4021c00 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4021c00 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM15>;
++			resets = <&reset RESET_PWM15>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm16: pwm@d4022000 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4022000 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM16>;
++			resets = <&reset RESET_PWM16>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm17: pwm@d4022400 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4022400 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM17>;
++			resets = <&reset RESET_PWM17>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm18: pwm@d4022800 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4022800 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM18>;
++			resets = <&reset RESET_PWM18>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
++		};
++
++		pwm19: pwm@d4022c00 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xd4022c00 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_PWM19>;
++			resets = <&reset RESET_PWM19>;
++			k1x,pwm-disable-fd;
++			status = "disabled";
+ 		};
+ 
+ 		timer0: timer@d4014000 {
+diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+index 3b3794148dff..72ec11024f4a 100644
+--- a/drivers/pwm/pwm-pxa.c
++++ b/drivers/pwm/pwm-pxa.c
+@@ -22,6 +22,7 @@
+ #include <linux/slab.h>
+ #include <linux/err.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
+ #include <linux/io.h>
+ #include <linux/pwm.h>
+ #include <linux/of_device.h>
+@@ -53,6 +54,7 @@ struct pxa_pwm_chip {
+ 	struct device	*dev;
+ 
+ 	struct clk	*clk;
++	struct reset_control	*reset;
+ 	void __iomem	*mmio_base;
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+ 	int dcr_fd; /* Controller PWM_DCR FD feature */
+@@ -216,6 +218,11 @@ static int pwm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(pc->clk))
+ 		return PTR_ERR(pc->clk);
+ 
++	pc->reset = devm_reset_control_get_optional(&pdev->dev, NULL);
++	if(IS_ERR(pc->reset))
++		return PTR_ERR(pc->reset);
++	reset_control_deassert(pc->reset);
++
+ 	pc->chip.dev = &pdev->dev;
+ 	pc->chip.ops = &pxa_pwm_ops;
+ 	pc->chip.npwm = (id->driver_data & HAS_SECONDARY_PWM) ? 2 : 1;
+@@ -226,16 +233,22 @@ static int pwm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pc->mmio_base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(pc->mmio_base))
+-		return PTR_ERR(pc->mmio_base);
++	if (IS_ERR(pc->mmio_base)) {
++		ret = PTR_ERR(pc->mmio_base);
++		goto err_rst;
++	}
+ 
+ 	ret = devm_pwmchip_add(&pdev->dev, &pc->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
+-		return ret;
++		goto err_rst;
+ 	}
+ 
+ 	return 0;
++
++err_rst:
++	reset_control_assert(pc->reset);
++	return ret;
+ }
+ 
+ static struct platform_driver pwm_driver = {
+-- 
+2.47.0
+

@@ -1,0 +1,70 @@
+From 8fa6170086efcc735147fc70ee971e462c5954ef Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Sat, 22 Jun 2024 13:45:46 +0800
+Subject: [PATCH 0808/1451] rtl8825bs: fix global-out-of-bounds in _rtw_memcpy
+
+err log:
+[   56.609302] BUG: KASAN: global-out-of-bounds in _rtw_memcpy+0x14/0x1c [8852bs]
+[   56.636106] Read of size 30 at addr ffffffff079cdee0 by task disp_eng_share_/495
+[   56.643596]
+[   56.645111] CPU: 2 PID: 495 Comm: disp_eng_share_ Not tainted 6.6.31 #12
+[   56.651892] Hardware name: spacemit k1-x deb1 board (DT)
+[   56.657272] Call Trace:
+[   56.659748] [<ffffffff8000c1fc>] dump_backtrace+0x1c/0x24
+[   56.665233] [<ffffffff833e9a52>] show_stack+0x2c/0x38
+[   56.670362] [<ffffffff83431404>] dump_stack_lvl+0x3c/0x54
+[   56.675833] [<ffffffff833f109e>] print_report+0x19e/0x4b4
+[   56.681297] [<ffffffff80574fac>] kasan_report+0xaa/0x136
+[   56.686686] [<ffffffff8057656e>] kasan_check_range+0xc4/0x14e
+[   56.692512] [<ffffffff80576fd4>] __asan_memcpy+0x24/0x64
+[   56.697901] [<ffffffff0654aede>] _rtw_memcpy+0x14/0x1c [8852bs]
+[   56.723359] [<ffffffff067ea648>] _enter_ps+0x50c/0x96e [8852bs]
+[   56.748864] [<ffffffff067ecd2e>] _ps_mdl_msg_hdlr+0xa58/0x3f90 [8852bs]
+[   56.775064] [<ffffffff067f74ca>] feed_mdl_msg+0xc4/0x49c [8852bs]
+[   56.800741] [<ffffffff067f7e6a>] msg_post_phase_hdl+0x240/0x388 [8852bs]
+[   56.827027] [<ffffffff067f8a3a>] msg_dispatch+0x586/0xb00 [8852bs]
+[   56.852785] [<ffffffff06801e34>] dispr_thread_loop_hdl+0x704/0x758 [8852bs]
+[   56.879344] [<ffffffff06801e98>] dispr_share_thread_loop_hdl+0x10/0x18 [8852bs]
+[   56.906254] [<ffffffff067f155c>] share_thread_hdl+0x19c/0x4e2 [8852bs]
+[   56.932344] [<ffffffff80093dcc>] kthread+0x284/0x35e
+[   56.937416] [<ffffffff8344dd4e>] ret_from_fork+0xe/0x1c
+[   56.942729]
+[   56.944252] The buggy address belongs to the variable:
+[   56.949441]  __func__.38+0xa0/0xffffffffff2651c0 [8852bs]
+[   56.974394]
+[   56.975911] Memory state around the buggy address:
+[   56.980767]  ffffffff079cdd80: f9 f9 f9 f9 00 00 01 f9 f9 f9 f9 f9 00 00 00 00
+[   56.988069]  ffffffff079cde00: 00 00 06 f9 f9 f9 f9 f9 00 00 05 f9 f9 f9 f9 f9
+[   56.995364] >ffffffff079cde80: 00 00 00 00 00 00 00 06 f9 f9 f9 f9 00 f9 f9 f9
+[   57.002669]                                                           ^
+[   57.009356]  ffffffff079cdf00: f9 f9 f9 f9 00 00 04 f9 f9 f9 f9 f9 00 03 f9 f9
+[   57.016649]  ffffffff079cdf80: f9 f9 f9 f9 00 06 f9 f9 f9 f9 f9 f9 00 06 f9 f9
+[   57.023946] ==================================================================
+[   57.031502] Disabling lock debugging due to kernel taint
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: If43625f9259352c8e6d43ced0a0bf3a60bd0313c
+---
+ drivers/net/wireless/realtek/rtl8852bs/phl/phl_cmd_ps.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_cmd_ps.c b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_cmd_ps.c
+index a832f26b1c06..17d6e403d71e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_cmd_ps.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_cmd_ps.c
+@@ -316,10 +316,10 @@ static void _set_ps_rson(struct cmd_ps *ps, u8 enter, char *rson)
+ {
+ 	if (enter) {
+ 		_os_mem_set(phl_to_drvpriv(ps->phl_info), ps->enter_rson, 0, MAX_CMD_PS_RSON_LENGTH);
+-		_os_mem_cpy(phl_to_drvpriv(ps->phl_info), ps->enter_rson, rson, MAX_CMD_PS_RSON_LENGTH);
++		_os_mem_cpy(phl_to_drvpriv(ps->phl_info), ps->enter_rson, rson, min(strlen(rson),MAX_CMD_PS_RSON_LENGTH));
+ 	} else {
+ 		_os_mem_set(phl_to_drvpriv(ps->phl_info), ps->leave_rson, 0, MAX_CMD_PS_RSON_LENGTH);
+-		_os_mem_cpy(phl_to_drvpriv(ps->phl_info), ps->leave_rson, rson, MAX_CMD_PS_RSON_LENGTH);
++		_os_mem_cpy(phl_to_drvpriv(ps->phl_info), ps->leave_rson, rson, min(strlen(rson),MAX_CMD_PS_RSON_LENGTH));
+ 	}
+ }
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,248 @@
+From 72a12af189e77af80240ced90171356ddb546bc5 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 11 Dec 2024 08:27:49 +0800
+Subject: [PATCH 1362/1451] k1:dts: update dts to support hibernation
+
+Change-Id: I0ba2333f2a490a45ebb9972ce90a45c5b54e8b03
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi                   | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts          | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts            | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts          | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts          | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts            | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts         | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts            | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts               | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts               | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts                | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts              | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts              | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts              | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts      | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts              | 2 +-
+ 17 files changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8cbe3d1fc5bb..58302902dcb7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -442,7 +442,7 @@ area_reserved@c0840000 {
+ 		};
+ 
+ 		/* rcpu's heap */
+-		rcpu_mem_1: mem@30000000 {
++		rcpu_mem_heap: rcpu_mem_heap@30000000 {
+ 			reg = <0x0 0x30000000 0x0 0x200000>;
+ 			no-map;
+ 		};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+index be690425cf88..a458281447e8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+@@ -843,7 +843,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index d6dcf25092d2..f07a6f879528 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -851,7 +851,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index df31e5eee160..5ca42f0d33ce 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -829,7 +829,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
+index a438ed1b2d21..98b16c9c70d8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
+@@ -902,7 +902,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 094fa3646abe..59ed76106733 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -745,6 +745,6 @@ flash@0 {
+ &rcpu {
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 89e1953dca82..497ac0cf0f89 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -1070,7 +1070,7 @@ &pwm_bl {
+ &rcpu {
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 890bf5b090ab..3b5c673ccaef 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -1260,7 +1260,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 9107d43c3091..e23f6ecfcd12 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -1065,7 +1065,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 30c03d0f803e..fd9cb68dd0b1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -1033,7 +1033,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 054ebac515c1..300d5a1e74fd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -983,7 +983,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 66f2a3417a32..c7f3c9b51421 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -872,7 +872,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 8e10e49f7a90..de8d3d9c63b1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -803,7 +803,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index e6e86950e8f8..9323b6ee0f90 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -833,7 +833,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index 03583737c66b..cc3c12e4e7de 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -1133,7 +1133,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+index 09a6f2699a41..5ad2101f2942 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+@@ -1055,7 +1055,7 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index bab9450aaeef..b7a8cc288240 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -630,6 +630,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
++	memory-region = <&rcpu_mem_0>, <&rcpu_mem_heap>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+-- 
+2.47.0
+

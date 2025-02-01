@@ -1,0 +1,691 @@
+From 87a05c5d274d4ade1d3df691141030c1d2380e96 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 28 Nov 2023 16:47:05 +0800
+Subject: [PATCH 0167/1451] pm_domain: improve the execution process of this
+ driver
+
+1. move the regulator_enable/disable to pm_power_on/off
+2. using atomic freq qos callbacks because of some corner cases
+   which will update the qos in atomic context
+3. add some options to increase the program flexibility
+4. rename the pm_domain.c to k1x-pm_domain.c
+
+Change-Id: Ia07c863a034f6974a9d2bcb7c4995303a6624d57
+---
+ drivers/soc/Makefile                          |   2 +-
+ drivers/soc/spacemit/pm_domain/Makefile       |   3 +-
+ drivers/soc/spacemit/pm_domain/atomic_qos.c   | 276 ++++++++++++++++++
+ drivers/soc/spacemit/pm_domain/atomic_qos.h   |  93 ++++++
+ .../{pm_domain.c => k1x-pm_domain.c}          | 145 +++++----
+ 5 files changed, 454 insertions(+), 65 deletions(-)
+ create mode 100644 drivers/soc/spacemit/pm_domain/atomic_qos.c
+ create mode 100644 drivers/soc/spacemit/pm_domain/atomic_qos.h
+ rename drivers/soc/spacemit/pm_domain/{pm_domain.c => k1x-pm_domain.c} (86%)
+
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+index dc9258c5a7fa..16055739b587 100644
+--- a/drivers/soc/Makefile
++++ b/drivers/soc/Makefile
+@@ -35,4 +35,4 @@ obj-y				+= ti/
+ obj-$(CONFIG_ARCH_U8500)	+= ux500/
+ obj-$(CONFIG_PLAT_VERSATILE)	+= versatile/
+ obj-y				+= xilinx/
+-obj-$(CONFIG_SOC_SPACEMIT_K1X)	+= spacemit/
++obj-$(CONFIG_SOC_SPACEMIT)	+= spacemit/
+diff --git a/drivers/soc/spacemit/pm_domain/Makefile b/drivers/soc/spacemit/pm_domain/Makefile
+index 43497925c777..5966a750f722 100644
+--- a/drivers/soc/spacemit/pm_domain/Makefile
++++ b/drivers/soc/spacemit/pm_domain/Makefile
+@@ -1 +1,2 @@
+-obj-y += pm_domain.o
++obj-$(CONFIG_SOC_SPACEMIT_K1X) += atomic_qos.o
++obj-$(CONFIG_SOC_SPACEMIT_K1X) += k1x-pm_domain.o
+diff --git a/drivers/soc/spacemit/pm_domain/atomic_qos.c b/drivers/soc/spacemit/pm_domain/atomic_qos.c
+new file mode 100644
+index 000000000000..68f987e10cdb
+--- /dev/null
++++ b/drivers/soc/spacemit/pm_domain/atomic_qos.c
+@@ -0,0 +1,276 @@
++#include <linux/plist.h>
++#include <linux/pm_qos.h>
++#include <linux/notifier.h>
++#include <linux/err.h>
++#include <linux/spinlock_types.h>
++#include "atomic_qos.h"
++
++/*
++ * locking rule: all changes to constraints or notifiers lists
++ * or pm_qos_object list and pm_qos_objects need to happen with pm_qos_lock
++ * held, taken with _irqsave.  One lock to rule them all
++ */
++static DEFINE_SPINLOCK(atomic_pm_qos_lock);
++
++/**
++ * atomic_freq_constraints_init - Initialize frequency QoS constraints.
++ * @qos: Frequency QoS constraints to initialize.
++ */
++void atomic_freq_constraints_init(struct atomic_freq_constraints *qos)
++{
++	struct atomic_pm_qos_constraints *c;
++
++	c = &qos->min_freq;
++	plist_head_init(&c->list);
++	c->target_value = FREQ_QOS_MIN_DEFAULT_VALUE;
++	c->default_value = FREQ_QOS_MIN_DEFAULT_VALUE;
++	c->no_constraint_value = FREQ_QOS_MIN_DEFAULT_VALUE;
++	c->type = PM_QOS_MAX;
++	c->notifiers = &qos->min_freq_notifiers;
++	ATOMIC_INIT_NOTIFIER_HEAD(c->notifiers);
++
++	c = &qos->max_freq;
++	plist_head_init(&c->list);
++	c->target_value = FREQ_QOS_MAX_DEFAULT_VALUE;
++	c->default_value = FREQ_QOS_MAX_DEFAULT_VALUE;
++	c->no_constraint_value = FREQ_QOS_MAX_DEFAULT_VALUE;
++	c->type = PM_QOS_MIN;
++	c->notifiers = &qos->max_freq_notifiers;
++	ATOMIC_INIT_NOTIFIER_HEAD(c->notifiers);
++}
++
++
++/**
++ * atomic_freq_qos_add_notifier - Add frequency QoS change notifier.
++ * @qos: List of requests to add the notifier to.
++ * @type: Request type.
++ * @notifier: Notifier block to add.
++ */
++int atomic_freq_qos_add_notifier(struct atomic_freq_constraints *qos,
++			  enum freq_qos_req_type type,
++			  struct notifier_block *notifier)
++{
++	int ret;
++
++	if (IS_ERR_OR_NULL(qos) || !notifier)
++		return -EINVAL;
++
++	switch (type) {
++	case FREQ_QOS_MIN:
++		ret = atomic_notifier_chain_register(qos->min_freq.notifiers, notifier);
++		break;
++	case FREQ_QOS_MAX:
++		ret = atomic_notifier_chain_register(qos->max_freq.notifiers, notifier);
++		break;
++	default:
++		WARN_ON(1);
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++/**
++ * atomic_freq_qos_remove_notifier - Remove frequency QoS change notifier.
++ * @qos: List of requests to remove the notifier from.
++ * @type: Request type.
++ * @notifier: Notifier block to remove.
++ */
++int atomic_freq_qos_remove_notifier(struct atomic_freq_constraints *qos,
++			     enum freq_qos_req_type type,
++			     struct notifier_block *notifier)
++{
++	int ret;
++
++	if (IS_ERR_OR_NULL(qos) || !notifier)
++		return -EINVAL;
++
++	switch (type) {
++	case FREQ_QOS_MIN:
++		ret = atomic_notifier_chain_unregister(qos->min_freq.notifiers, notifier);
++		break;
++	case FREQ_QOS_MAX:
++		ret = atomic_notifier_chain_unregister(qos->max_freq.notifiers, notifier);
++		break;
++	default:
++		WARN_ON(1);
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int pm_qos_get_value(struct atomic_pm_qos_constraints *c)
++{
++	if (plist_head_empty(&c->list))
++		return c->no_constraint_value;
++
++	switch (c->type) {
++	case PM_QOS_MIN:
++		return plist_first(&c->list)->prio;
++
++	case PM_QOS_MAX:
++		return plist_last(&c->list)->prio;
++
++	default:
++		WARN(1, "Unknown PM QoS type in %s\n", __func__);
++		return PM_QOS_DEFAULT_VALUE;
++	}
++}
++
++static void pm_qos_set_value(struct atomic_pm_qos_constraints *c, s32 value)
++{
++	WRITE_ONCE(c->target_value, value);
++}
++
++/**
++ * pm_qos_update_target - Update a list of PM QoS constraint requests.
++ * @c: List of PM QoS requests.
++ * @node: Target list entry.
++ * @action: Action to carry out (add, update or remove).
++ * @value: New request value for the target list entry.
++ *
++ * Update the given list of PM QoS constraint requests, @c, by carrying an
++ * @action involving the @node list entry and @value on it.
++ *
++ * The recognized values of @action are PM_QOS_ADD_REQ (store @value in @node
++ * and add it to the list), PM_QOS_UPDATE_REQ (remove @node from the list, store
++ * @value in it and add it to the list again), and PM_QOS_REMOVE_REQ (remove
++ * @node from the list, ignore @value).
++ *
++ * Return: 1 if the aggregate constraint value has changed, 0  otherwise.
++ */
++static int atomic_pm_qos_update_target(struct atomic_pm_qos_constraints *c, struct plist_node *node,
++			 enum pm_qos_req_action action, int value)
++{
++	int prev_value, curr_value, new_value;
++	unsigned long flags;
++
++	spin_lock_irqsave(&atomic_pm_qos_lock, flags);
++
++	prev_value = pm_qos_get_value(c);
++	if (value == PM_QOS_DEFAULT_VALUE)
++		new_value = c->default_value;
++	else
++		new_value = value;
++
++	switch (action) {
++	case PM_QOS_REMOVE_REQ:
++		plist_del(node, &c->list);
++		break;
++	case PM_QOS_UPDATE_REQ:
++		/*
++		 * To change the list, atomically remove, reinit with new value
++		 * and add, then see if the aggregate has changed.
++		 */
++		plist_del(node, &c->list);
++		fallthrough;
++	case PM_QOS_ADD_REQ:
++		plist_node_init(node, new_value);
++		plist_add(node, &c->list);
++		break;
++	default:
++		/* no action */
++		break;
++	}
++
++	curr_value = pm_qos_get_value(c);
++	pm_qos_set_value(c, curr_value);
++
++	spin_unlock_irqrestore(&atomic_pm_qos_lock, flags);
++
++	if (prev_value == curr_value)
++		return 0;
++
++	if (c->notifiers)
++		atomic_notifier_call_chain(c->notifiers, curr_value, NULL);
++
++	return 1;
++}
++
++/**
++ * atomic_freq_qos_apply - Add/modify/remove frequency QoS request.
++ * @req: Constraint request to apply.
++ * @action: Action to perform (add/update/remove).
++ * @value: Value to assign to the QoS request.
++ *
++ * This is only meant to be called from inside pm_qos, not drivers.
++ */
++static int atomic_freq_qos_apply(struct atomic_freq_qos_request *req,
++			  enum pm_qos_req_action action, s32 value)
++{
++	int ret;
++
++	switch(req->type) {
++	case FREQ_QOS_MIN:
++		ret = atomic_pm_qos_update_target(&req->qos->min_freq, &req->pnode,
++					   action, value);
++		break;
++	case FREQ_QOS_MAX:
++		ret = atomic_pm_qos_update_target(&req->qos->max_freq, &req->pnode,
++					   action, value);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++/**
++ * atomic_freq_qos_add_request - Insert new frequency QoS request into a given list.
++ * @qos: Constraints to update.
++ * @req: Preallocated request object.
++ * @type: Request type.
++ * @value: Request value.
++ *
++ * Insert a new entry into the @qos list of requests, recompute the effective
++ * QoS constraint value for that list and initialize the @req object.  The
++ * caller needs to save that object for later use in updates and removal.
++ *
++ * Return 1 if the effective constraint value has changed, 0 if the effective
++ * constraint value has not changed, or a negative error code on failures.
++ */
++int atomic_freq_qos_add_request(struct atomic_freq_constraints *qos,
++			 struct atomic_freq_qos_request *req,
++			 enum freq_qos_req_type type, s32 value)
++{
++	int ret;
++
++	if (IS_ERR_OR_NULL(qos) || !req || value < 0)
++		return -EINVAL;
++
++	req->qos = qos;
++	req->type = type;
++	ret = atomic_freq_qos_apply(req, PM_QOS_ADD_REQ, value);
++	if (ret < 0) {
++		req->qos = NULL;
++		req->type = 0;
++	}
++
++	return ret;
++}
++
++/**
++ * atomic_freq_qos_update_request - Modify existing frequency QoS request.
++ * @req: Request to modify.
++ * @new_value: New request value.
++ *
++ * Update an existing frequency QoS request along with the effective constraint
++ * value for the list of requests it belongs to.
++ *
++ * Return 1 if the effective constraint value has changed, 0 if the effective
++ * constraint value has not changed, or a negative error code on failures.
++ */
++int atomic_freq_qos_update_request(struct atomic_freq_qos_request *req, s32 new_value)
++{
++	if (!req || new_value < 0)
++		return -EINVAL;
++
++	if (req->pnode.prio == new_value)
++		return 0;
++
++	return atomic_freq_qos_apply(req, PM_QOS_UPDATE_REQ, new_value);
++}
+diff --git a/drivers/soc/spacemit/pm_domain/atomic_qos.h b/drivers/soc/spacemit/pm_domain/atomic_qos.h
+new file mode 100644
+index 000000000000..61d0837bffe3
+--- /dev/null
++++ b/drivers/soc/spacemit/pm_domain/atomic_qos.h
+@@ -0,0 +1,93 @@
++#ifndef __ATOMIC_QOS_H__
++#define __ATOMIC_QOS_H__
++
++#include <linux/plist.h>
++#include <linux/pm_qos.h>
++#include <linux/notifier.h>
++#include <linux/err.h>
++#include <linux/spinlock_types.h>
++
++/*
++ * Note: The lockless read path depends on the CPU accessing target_value
++ * or effective_flags atomically.  Atomic access is only guaranteed on all CPU
++ * types linux supports for 32 bit quantites
++ */
++struct atomic_pm_qos_constraints {
++	struct plist_head list;
++	s32 target_value;	/* Do not change to 64 bit */
++	s32 default_value;
++	s32 no_constraint_value;
++	enum pm_qos_type type;
++	struct atomic_notifier_head *notifiers;
++};
++
++struct atomic_freq_constraints {
++	struct atomic_pm_qos_constraints min_freq;
++	struct atomic_notifier_head min_freq_notifiers;
++	struct atomic_pm_qos_constraints max_freq;
++	struct atomic_notifier_head max_freq_notifiers;
++};
++
++struct atomic_freq_qos_request {
++	enum freq_qos_req_type type;
++	struct plist_node pnode;
++	struct atomic_freq_constraints *qos;
++};
++
++/**
++ * atomic_freq_constraints_init - Initialize frequency QoS constraints.
++ * @qos: Frequency QoS constraints to initialize.
++ */
++void atomic_freq_constraints_init(struct atomic_freq_constraints *qos);
++
++/**
++ * atomic_freq_qos_add_notifier - Add frequency QoS change notifier.
++ * @qos: List of requests to add the notifier to.
++ * @type: Request type.
++ * @notifier: Notifier block to add.
++ */
++int atomic_freq_qos_add_notifier(struct atomic_freq_constraints *qos,
++			  enum freq_qos_req_type type,
++			  struct notifier_block *notifier);
++
++/**
++ * atomic_freq_qos_remove_notifier - Remove frequency QoS change notifier.
++ * @qos: List of requests to remove the notifier from.
++ * @type: Request type.
++ * @notifier: Notifier block to remove.
++ */
++int atomic_freq_qos_remove_notifier(struct atomic_freq_constraints *qos,
++			     enum freq_qos_req_type type,
++			     struct notifier_block *notifier);
++/**
++ * atomic_freq_qos_add_request - Insert new frequency QoS request into a given list.
++ * @qos: Constraints to update.
++ * @req: Preallocated request object.
++ * @type: Request type.
++ * @value: Request value.
++ *
++ * Insert a new entry into the @qos list of requests, recompute the effective
++ * QoS constraint value for that list and initialize the @req object.  The
++ * caller needs to save that object for later use in updates and removal.
++ *
++ * Return 1 if the effective constraint value has changed, 0 if the effective
++ * constraint value has not changed, or a negative error code on failures.
++ */
++int atomic_freq_qos_add_request(struct atomic_freq_constraints *qos,
++			 struct atomic_freq_qos_request *req,
++			 enum freq_qos_req_type type, s32 value);
++/**
++ * atomic_freq_qos_update_request - Modify existing frequency QoS request.
++ * @req: Request to modify.
++ * @new_value: New request value.
++ *
++ * Update an existing frequency QoS request along with the effective constraint
++ * value for the list of requests it belongs to.
++ *
++ * Return 1 if the effective constraint value has changed, 0 if the effective
++ * constraint value has not changed, or a negative error code on failures.
++ */
++int atomic_freq_qos_update_request(struct atomic_freq_qos_request *req, s32 new_value);
++
++#endif
++
+diff --git a/drivers/soc/spacemit/pm_domain/pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+similarity index 86%
+rename from drivers/soc/spacemit/pm_domain/pm_domain.c
+rename to drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 4d2690553b9a..e05bf717afe7 100644
+--- a/drivers/soc/spacemit/pm_domain/pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -20,6 +20,7 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/spinlock_types.h>
+ #include <linux/regulator/consumer.h>
++#include "atomic_qos.h"
+ 
+ #define MAX_REGMAP		5
+ #define MAX_REGULATOR_PER_DOMAIN	5
+@@ -64,7 +65,7 @@ struct spacemit_pm_domain {
+ 	int pm_index;
+ 	struct device *gdev;
+ 	struct notifier_block notifier;
+-	struct freq_qos_request qos;
++	struct atomic_freq_qos_request qos;
+ 	struct spacemit_pm_domain_param param;
+ 	struct regulator *rgr[MAX_REGULATOR_PER_DOMAIN];
+ 	int rgr_count;
+@@ -82,6 +83,8 @@ static DEFINE_SPINLOCK(spacemit_apcr_qos_lock);
+ 
+ static struct spacemit_pmu *gpmu;
+ 
++static struct atomic_freq_constraints afreq_constraints;
++
+ static const struct of_device_id spacemit_regmap_dt_match[] = {
+ 	{ .compatible = "spacemit,spacemit-mpmu", },
+ 	{ .compatible = "spacemit,spacemit-apmu", },
+@@ -90,12 +93,22 @@ static const struct of_device_id spacemit_regmap_dt_match[] = {
+ static int spacemit_pd_power_off(struct generic_pm_domain *domain)
+ {
+ 	unsigned int val;
+-	int loop;
++	int loop, ret;
+ 
+ 	struct spacemit_pm_domain *spd = container_of(domain, struct spacemit_pm_domain, genpd);
+ 
+-	if (spd->param.reg_pwr_ctrl == 0)
++	if (spd->param.reg_pwr_ctrl == 0) {
++		/* close the power */
++		for (loop = 0; loop < spd->rgr_count; ++loop) {
++			ret = regulator_disable(spd->rgr[loop]);
++			if (ret < 0) {
++				pr_err("%s: regulator disable failed\n", __func__);
++				return ret;
++			}
++		}
++
+ 		return 0;
++	}
+ 
+ 	if (!spd->param.use_hw) {
+ 		/* this is the sw type */
+@@ -134,21 +147,40 @@ static int spacemit_pd_power_off(struct generic_pm_domain *domain)
+ 			usleep_range(4, 6);
+ 		}
+ 	}
++
+ 	if (loop < 0) {
+ 		pr_err("power-off domain: %d, error\n", spd->pm_index);
+ 		return -EBUSY;
+ 	}
+ 
++	/* close the power */
++	for (loop = 0; loop < spd->rgr_count; ++loop) {
++		ret = regulator_disable(spd->rgr[loop]);
++		if (ret < 0) {
++			pr_err("%s: regulator disable failed\n", __func__);
++			return ret;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ {
+-	int loop;
++	int loop, ret;
+ 	unsigned int val;
+ 
+ 	struct spacemit_pm_domain *spd = container_of(domain, struct spacemit_pm_domain, genpd);
+ 
++	/* enable the power */
++	for (loop = 0; loop < spd->rgr_count; ++loop) {
++		ret = regulator_enable(spd->rgr[loop]);
++		if (ret < 0) {
++			pr_err("%s: regulator disable failed\n", __func__);
++			return ret;
++		}
++	}
++
+ 	if (spd->param.reg_pwr_ctrl == 0)
+ 		return 0;
+ 
+@@ -212,57 +244,63 @@ static int spacemit_pd_attach_dev(struct generic_pm_domain *genpd, struct device
+ {
+ 	int err, i = 0, count;
+ 	struct clk *clk;
++	static int atomic_freq_constraints_init_flag;
+ 	const char *strings[MAX_REGULATOR_PER_DOMAIN];
+ 	struct spacemit_pm_domain *spd = container_of(genpd, struct spacemit_pm_domain, genpd);
+ 
+-	err = pm_clk_create(dev);
+-	if (err) {
+-		 dev_err(dev, "pm_clk_create failed %d\n", err);
+-		 return err;
+-	}
++	if (!of_property_read_bool(dev->of_node, "clk,pm-runtime,no-sleep")) {
++		err = pm_clk_create(dev);
++		if (err) {
++			 dev_err(dev, "pm_clk_create failed %d\n", err);
++			 return err;
++		}
+ 
+-	while ((clk = of_clk_get(dev->of_node, i++)) && !IS_ERR(clk)) {
+-		 err = pm_clk_add_clk(dev, clk);
+-		 if (err) {
+-		 	dev_err(dev, "pm_clk_add_clk failed %d\n", err);
+-			clk_put(clk);
+-			pm_clk_destroy(dev);
+-			return err;
+-		 }
++		while ((clk = of_clk_get(dev->of_node, i++)) && !IS_ERR(clk)) {
++			err = pm_clk_add_clk(dev, clk);
++			if (err) {
++				 dev_err(dev, "pm_clk_add_clk failed %d\n", err);
++				 clk_put(clk);
++				 pm_clk_destroy(dev);
++				 return err;
++			}
++		}
+ 	}
+ 
+ 	/* parse the regulator */
+-	count = of_property_count_strings(dev->of_node, "vin-supply-names");
+-	if (count < 0)
+-		pr_info("no vin-suppuly-names found\n");
+-	else {
+-		err = of_property_read_string_array(dev->of_node, "vin-supply-names",
+-			strings, count);
+-		if (err < 0) {
+-			pr_info("read string array vin-supplu-names error\n");
+-			return err;
+-		}
++	if (!of_property_read_bool(dev->of_node, "regulator,pm-runtime,no-sleep")) {
++		count = of_property_count_strings(dev->of_node, "vin-supply-names");
++		if (count < 0)
++			pr_info("no vin-suppuly-names found\n");
++		else {
++			err = of_property_read_string_array(dev->of_node, "vin-supply-names",
++				strings, count);
++			if (err < 0) {
++				pr_info("read string array vin-supplu-names error\n");
++				return err;
++			}
+ 
+-		for (i = 0; i < count; ++i) {
+-			spd->rgr[i] = devm_regulator_get(dev, strings[i]);
+-			if (IS_ERR(spd->rgr[i])) {
+-				pr_err("regulator supply %s, get failed\n", strings[i]);
+-				return PTR_ERR(spd->rgr[i]);
++			for (i = 0; i < count; ++i) {
++				spd->rgr[i] = devm_regulator_get(dev, strings[i]);
++				if (IS_ERR(spd->rgr[i])) {
++					pr_err("regulator supply %s, get failed\n", strings[i]);
++					return PTR_ERR(spd->rgr[i]);
++				}
+ 			}
+-		}
+ 
+-		spd->rgr_count = count;
++			spd->rgr_count = count;
++		}
+ 	}
+-
+ 	/* add one notifier is ok */
+-	if (!spd->gdev->power.qos) {
+-		err = dev_pm_qos_add_notifier(spd->gdev, &spd->notifier, DEV_PM_QOS_MAX_FREQUENCY);
++	if (!atomic_freq_constraints_init_flag) {
++		atomic_freq_constraints_init(&afreq_constraints);
++		err = atomic_freq_qos_add_notifier(&afreq_constraints, FREQ_QOS_MAX, &spd->notifier);
+ 		if (err)
+ 			return err;
++
++		atomic_freq_constraints_init_flag = 1;
+ 	}
+ 
+-	freq_qos_add_request(&spd->gdev->power.qos->freq, &spd->qos, FREQ_QOS_MAX,
+-			PM_QOS_BLOCK_DEFAULT_VALUE);
++	atomic_freq_qos_add_request(&afreq_constraints, &spd->qos, FREQ_QOS_MAX, PM_QOS_BLOCK_DEFAULT_VALUE);
+ 
+ 	return 0;
+ }
+@@ -272,9 +310,10 @@ static void spacemit_pd_detach_dev(struct generic_pm_domain *genpd, struct devic
+ 	int i = 0;
+ 	struct spacemit_pm_domain *spd = container_of(genpd, struct spacemit_pm_domain, genpd);
+ 
+-	pm_clk_destroy(dev);
++	if (!of_property_read_bool(dev->of_node, "clk,pm-runtime,no-sleep"))
++		pm_clk_destroy(dev);
+ 
+-	dev_pm_qos_remove_notifier(spd->gdev, &spd->notifier, DEV_PM_QOS_MAX_FREQUENCY);
++	atomic_freq_qos_remove_notifier(&afreq_constraints, FREQ_QOS_MAX, &spd->notifier);
+ 
+ 	/* */
+ 	for (i = 0; i < spd->rgr_count; ++i)
+@@ -339,50 +378,30 @@ static int spacemit_pm_notfier_call(struct notifier_block *nb, unsigned long act
+ 
+ static int spacemit_genpd_stop(struct device *dev)
+ {
+-	int i = 0, ret;
+ 	/* do the clk & pm_qos related things */
+ 	struct generic_pm_domain *pd = pd_to_genpd(dev->pm_domain);
+ 	struct spacemit_pm_domain *spd = container_of(pd, struct spacemit_pm_domain, genpd);
+ 
+ 	/* dealing with the pm_qos */
+-	freq_qos_update_request(&spd->qos, PM_QOS_BLOCK_DEFAULT_VALUE);
++	atomic_freq_qos_update_request(&spd->qos, PM_QOS_BLOCK_DEFAULT_VALUE);
+ 
+ 	/* disable the clk */
+ 	pm_clk_suspend(dev);
+ 
+-	/* close the power */
+-	for (i = 0; i < spd->rgr_count; ++i) {
+-		ret = regulator_disable(spd->rgr[i]);
+-		if (ret < 0) {
+-			pr_err("%s: regulator disable failed\n", __func__);
+-			return ret;
+-		}
+-	}
+-
+ 	return 0;
+ }
+ 
+ static int spacemit_genpd_start(struct device *dev)
+ {
+-	int i, ret;
+ 	/* do the clk & pm_qos related things */
+ 	struct generic_pm_domain *pd = pd_to_genpd(dev->pm_domain);
+ 	struct spacemit_pm_domain *spd = container_of(pd, struct spacemit_pm_domain, genpd);
+ 
+-	/* enable the power */
+-	for (i = 0; i < spd->rgr_count; ++i) {
+-		ret = regulator_enable(spd->rgr[i]);
+-		if (ret < 0) {
+-			pr_err("%s: regulator disable failed\n", __func__);
+-			return ret;
+-		}
+-	}
+-
+ 	/* enable the clk */
+ 	pm_clk_resume(dev);
+ 
+ 	/* dealing with the pm_qos */
+-	freq_qos_update_request(&spd->qos, spd->param.pm_qos);
++	atomic_freq_qos_update_request(&spd->qos, spd->param.pm_qos);
+ 	
+ 	return 0;
+ }
+-- 
+2.47.0
+

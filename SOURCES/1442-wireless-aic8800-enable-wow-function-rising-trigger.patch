@@ -1,0 +1,138 @@
+From f1ecf66a786327d4af5ac8937451d7d7bea2f347 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 13 Jan 2025 11:27:50 +0800
+Subject: [PATCH 1442/1451] wireless: aic8800: enable wow function, rising
+ trigger
+
+Change-Id: I6b6fa5c24acfedd17d9f684285183457fee2d458
+---
+ arch/riscv/configs/k1_defconfig               |  1 +
+ .../wireless/aic8800/aic8800_fdrv/Makefile    |  5 +-
+ .../aic8800/aic8800_fdrv/aicwf_sdio.c         | 59 ++++++++++++++++---
+ 3 files changed, 57 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index a92e4e1d9010..70a304d07674 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -671,6 +671,7 @@ CONFIG_RTL8852BS=m
+ # CONFIG_WLAN_VENDOR_ZYDAS is not set
+ # CONFIG_WLAN_VENDOR_QUANTENNA is not set
+ CONFIG_AIC_WLAN_SUPPORT=y
++CONFIG_AIC_IRQ_ACTIVE_RISING=y
+ CONFIG_AIC8800_WLAN_SUPPORT=m
+ CONFIG_INPUT_EVDEV=y
+ CONFIG_KEYBOARD_GPIO=y
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/Makefile b/drivers/net/wireless/aic8800/aic8800_fdrv/Makefile
+index 9b575e28d56a..e037ecb27d30 100755
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/Makefile
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/Makefile
+@@ -63,8 +63,11 @@ CONFIG_FILTER_TCP_ACK = y
+ # CONFIG_MCC = n for sta and p2p concurrent in same channel.
+ CONFIG_MCC = y
+ 
++#CONFIG FOR LOW POWER MODE
++CONFIG_AUTO_POWERSAVE = y
++
+ # Enable wifi-hal Latency Mode
+-CONFIG_AICWF_LATENCY_MODE = y
++CONFIG_AICWF_LATENCY_MODE = n
+ 
+ # Support of MU-MIMO transmission (need FW support)
+ ifeq ($(CONFIG_RWNX_BFMER), y)
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c
+index c70582e7ea00..e3c47d06eb4e 100644
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/aicwf_sdio.c
+@@ -429,21 +429,52 @@ static int aicwf_sdio_suspend(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	if (aicwf_wakeup_lock_status(sdiodev->rwnx_hw)) {
+-		sdio_dbg("%s ws active dont suspend\n", __func__);
+-		return -EBUSY;
+-	}
++#if (defined(CONFIG_AUTO_POWERSAVE) && defined(CONFIG_SDIO_PWRCTRL))
++        aicwf_sdio_pwr_stctl(sdiodev, SDIO_ACTIVE_ST);
++
++        if((aicwf_chipid == PRODUCT_ID_AIC8800D80) || (aicwf_chipid == PRODUCT_ID_AIC8800D80X2)) {
++            sdio_dbg("autops set\n");
++            ret = aicwf_sdio_writeb(sdiodev, sdiodev->sdio_reg.wakeup_reg, 0x8);
++            if(ret) {
++                sdio_err("sdio set autops fail\n");
++            }
++        }
++#endif
+ 
++    #if (!defined(CONFIG_AUTO_POWERSAVE))
+ 	while (sdiodev->state == SDIO_ACTIVE_ST) {
+ 		if (down_interruptible(&sdiodev->tx_priv->txctl_sema))
+ 			continue;
+-#if defined(CONFIG_SDIO_PWRCTRL)
++        #if defined(CONFIG_SDIO_PWRCTRL)
+ 		aicwf_sdio_pwr_stctl(sdiodev, SDIO_SLEEP_ST);
+-#endif
++        #endif
+ 		up(&sdiodev->tx_priv->txctl_sema);
+ 		break;
+ 	}
++    #else
++    #if defined(CONFIG_SDIO_PWRCTRL)
++    aicwf_sdio_pwr_stctl(sdiodev, SDIO_SLEEP_ST);
++    #endif
++    #endif
+ 	atomic_set(&sdiodev->is_bus_suspend, 1);
++
++#if defined(CONFIG_AUTO_POWERSAVE)
++    if(aicwf_wakeup_lock_status(sdiodev->rwnx_hw)) {
++        printk("%s ws active dont suspend", __func__);
++        aicwf_sdio_pwr_stctl(sdiodev, SDIO_ACTIVE_ST);
++
++        if((aicwf_chipid == PRODUCT_ID_AIC8800D80) || (aicwf_chipid == PRODUCT_ID_AIC8800D80X2)) {
++            sdio_dbg("autops clear\n");
++            ret = aicwf_sdio_writeb(sdiodev, sdiodev->sdio_reg.wakeup_reg, 0x8);
++            if(ret) {
++                sdio_err("sdio clear autops fail\n");
++            }
++        }
++
++        return -EBUSY;
++    }
++#endif
++
+ 	sdio_dbg("%s Exit\n", __func__);
+ 	return 0;
+ }
+@@ -453,14 +484,28 @@ static int aicwf_sdio_resume(struct device *dev)
+ 	struct aicwf_bus *bus_if = dev_get_drvdata(dev);
+ 	struct aic_sdio_dev *sdiodev = bus_if->bus_priv.sdio;
+ 	struct rwnx_vif *rwnx_vif, *tmp;
++#if defined(CONFIG_AUTO_POWERSAVE)
++	int ret;
++#endif
+ 
+ 	sdio_dbg("%s Enter\n", __func__);
+ 	list_for_each_entry_safe(rwnx_vif, tmp, &sdiodev->rwnx_hw->vifs, list) {
+ 		if (rwnx_vif->ndev)
+ 			netif_device_attach(rwnx_vif->ndev);
+ 	}
+-#if defined(CONFIG_SDIO_PWRCTRL)
++
++	#if defined(CONFIG_SDIO_PWRCTRL)
+ 	aicwf_sdio_pwr_stctl(sdiodev, SDIO_ACTIVE_ST);
++	#endif
++
++#if defined(CONFIG_AUTO_POWERSAVE) && defined(CONFIG_SDIO_PWRCTRL)
++    if(aicwf_chipid == PRODUCT_ID_AIC8800D80 || aicwf_chipid == PRODUCT_ID_AIC8800D80X2) {
++        sdio_dbg("autops clear\n");
++        ret = aicwf_sdio_writeb(sdiodev, sdiodev->sdio_reg.wakeup_reg, 0x8);
++        if(ret) {
++            sdio_err("sdio clear autops fail\n");
++        }
++    }
+ #endif
+ 	atomic_set(&sdiodev->is_bus_suspend, 0);
+ 	sdio_dbg("%s Exit\n", __func__);
+-- 
+2.47.0
+

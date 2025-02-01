@@ -1,0 +1,44 @@
+From da2da5a2c9f242fc233d38d79a248dce02fd76bb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 15 Dec 2023 23:16:00 +0800
+Subject: [PATCH 0183/1451] fix uart board configuration for asic
+
+Change-Id: Idfdde8b6afd94868a4d70abfd3aff276c8a1fe80
+---
+ drivers/tty/serial/pxa_k1x.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 44bd8aa1a353..70cff4a88748 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -1444,11 +1444,11 @@ serial_pxa_set_termios(struct uart_port *port, struct ktermios *termios,
+ 		up->mcr &= ~UART_MCR_AFE;
+ 	}
+ 
+-	#ifndef CONFIG_SOC_SPACEMIT_K1_FPGA
+-	if (uart_console(port)) {
+-		quot = 1;
+-	}
+-	#endif
++//	#ifndef CONFIG_SOC_SPACEMIT_K1_FPGA
++//	if (uart_console(port)) {
++//		quot = 1;
++//	}
++//	#endif
+ 
+ 	serial_out(up, UART_LCR, cval | UART_LCR_DLAB);	/* set DLAB */
+ 
+@@ -2113,7 +2113,9 @@ static int serial_pxa_probe(struct platform_device *dev)
+ 	int irq;
+ 	struct resource *dmares;
+ 	struct uart_pxa_dma *pxa_dma;
++#ifdef CONFIG_SOC_SPACEMIT_K1_FPGA
+ 	struct device_node *np = dev->dev.of_node;
++#endif
+ #ifdef CONFIG_PM
+ #if SUPPORT_POWER_QOS
+ 	struct freq_constraints *idle_qos;
+-- 
+2.47.0
+

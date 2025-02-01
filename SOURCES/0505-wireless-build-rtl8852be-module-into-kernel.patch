@@ -1,0 +1,64 @@
+From eab89c9e1c12a6ab5934bc8dec4cc70eb55dc3f2 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Sat, 16 Mar 2024 14:33:48 +0800
+Subject: [PATCH 0505/1451] wireless: build rtl8852be module into kernel
+
+Change-Id: I0c9d001a3e4ff6bc63a5d2c07fb8a72c6b455f11
+---
+ arch/riscv/configs/k1_defconfig       | 5 ++---
+ drivers/net/wireless/realtek/Makefile | 2 +-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 39b0d39f9dfc..170703493576 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -44,11 +44,9 @@ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1X=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=8
+-CONFIG_HOTPLUG_CPU=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_IMAGE_LOAD_OFFSET=0x1400000
+-CONFIG_PM=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_GOV_USERSPACE=y
+ # CONFIG_ARM_BRCMSTB_AVS_CPUFREQ is not set
+@@ -337,6 +335,7 @@ CONFIG_USB_NET_QMI_WWAN=m
+ # CONFIG_WLAN_VENDOR_PURELIFI is not set
+ # CONFIG_WLAN_VENDOR_RALINK is not set
+ CONFIG_RTL8852BS=m
++CONFIG_RTL8852BE=m
+ # CONFIG_WLAN_VENDOR_RSI is not set
+ # CONFIG_WLAN_VENDOR_SILABS is not set
+ # CONFIG_WLAN_VENDOR_ST is not set
+@@ -395,7 +394,6 @@ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_RADIO_ADAPTERS is not set
+ CONFIG_VIDEO_LINLON_K1X=y
+-CONFIG_SPACEMIT_V2D=y
+ CONFIG_SPACEMIT_K1X_CAMERA_V2=y
+ CONFIG_SPACEMIT_K1X_VI_V2=y
+ CONFIG_SPACEMIT_K1X_VI_IOMMU=y
+@@ -625,6 +623,7 @@ CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_SPACEMIT_REBOOT_CONTROL=y
+ CONFIG_SPACEMI_K1X_DMA_RANGE=y
+ CONFIG_CHIP_MEDIA_JPU=y
++CONFIG_SPACEMIT_V2D=y
+ CONFIG_SPACEMIT_RFKILL=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+diff --git a/drivers/net/wireless/realtek/Makefile b/drivers/net/wireless/realtek/Makefile
+index 8d39e42b533a..85a6c1616594 100644
+--- a/drivers/net/wireless/realtek/Makefile
++++ b/drivers/net/wireless/realtek/Makefile
+@@ -10,4 +10,4 @@ obj-$(CONFIG_RTL8XXXU)		+= rtl8xxxu/
+ obj-$(CONFIG_RTW88)		+= rtw88/
+ obj-$(CONFIG_RTW89)		+= rtw89/
+ obj-$(CONFIG_RTL8852BS)		+= rtl8852bs/
+-
++obj-$(CONFIG_RTL8852BE)         += rtl8852be/
+-- 
+2.47.0
+

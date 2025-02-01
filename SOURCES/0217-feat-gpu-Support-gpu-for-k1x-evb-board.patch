@@ -1,0 +1,118 @@
+From 0b68006b0b8e5591b287b4f92949c1cb9b6a3e9f Mon Sep 17 00:00:00 2001
+From: Dengbo <bo.deng@spacemit.com>
+Date: Tue, 19 Dec 2023 16:30:05 +0800
+Subject: [PATCH 0217/1451] feat/gpu: Support gpu for k1x evb board
+
+Need set imggpu status to okay later when pm_domain is okay.
+
+Change-Id: Ie368cc74ae369866f76c580cba7ae0acc00efc11
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi             | 1 +
+ drivers/gpu/drm/img-rogue/config_kernel.h          | 2 +-
+ drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c | 9 ++++++---
+ drivers/gpu/drm/img-rogue/spacemit/sysconfig.c     | 2 +-
+ drivers/gpu/drm/img-rogue/spacemit/sysconfig.h     | 2 +-
+ 5 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 4ce5f455faaa..bd79eb23e83f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1768,6 +1768,7 @@ imggpu: imggpu@cac00000 {
+ 			clocks = <&ccu CLK_GPU>;
+ 			clock-names = "gpu_clk";
+ 			resets = <&reset RESET_GPU>;
++			power-domains = <&power K1X_PMU_GPU_PWR_DOMAIN>;
+ 			status = "ok";
+ 		};
+ 	};
+diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
+index a35c16b120bb..04cce39aef3d 100644
+--- a/drivers/gpu/drm/img-rogue/config_kernel.h
++++ b/drivers/gpu/drm/img-rogue/config_kernel.h
+@@ -160,7 +160,7 @@
+ #define SUPPORT_AGP
+ #define RGXFW_SAFETY_WATCHDOG_PERIOD_IN_US 2000000
+ #define PVR_ANNOTATION_MAX_LEN 63
+-#define PVRSRV_DEVICE_INIT_MODE PVRSRV_LINUX_DEV_INIT_ON_CONNECT
++#define PVRSRV_DEVICE_INIT_MODE PVRSRV_LINUX_DEV_INIT_ON_PROBE
+ #define SUPPORT_DI_BRG_IMPL
+ #define PVR_LINUX_PHYSMEM_MAX_POOL_PAGES 10240
+ #define PVR_LINUX_PHYSMEM_MAX_EXCESS_POOL_PAGES 20480
+diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
+index 0bfaae616406..40fa7570076d 100644
+--- a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
++++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
+@@ -22,6 +22,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/pm_opp.h>
+ #include "rgxdevice.h"
++#include "sysconfig.h"
+ 
+ static struct st_context *g_platform = NULL;
+ 
+@@ -179,8 +180,8 @@ static void RgxEnableClock(struct st_context *platform)
+ 	}
+ 
+ 	if (!platform->gpu_active) {
++		//clk_prepare_enable(platform->gpu_clk);
+ 		reset_control_deassert(platform->gpu_reset);
+-		clk_prepare_enable(platform->gpu_clk);
+ 		platform->gpu_active = IMG_TRUE;
+ 		PVR_DPF((PVR_DBG_VERBOSE, "gpu clock on gpu_active:%d", platform->gpu_active));
+ 	} else {
+@@ -198,7 +199,7 @@ static void RgxDisableClock(struct st_context *platform)
+ 
+ 	if (platform->gpu_active) {
+ 		reset_control_assert(platform->gpu_reset);
+-		clk_disable_unprepare(platform->gpu_clk);
++		//clk_disable_unprepare(platform->gpu_clk);
+ 		platform->gpu_active = IMG_FALSE;
+ 		PVR_DPF((PVR_DBG_VERBOSE, "gpu clock off gpu_active:%d", platform->gpu_active));
+ 	} else {
+@@ -338,13 +339,15 @@ struct st_context *RgxStInit(PVRSRV_DEVICE_CONFIG* psDevConfig)
+ 		goto fail;
+ 	}
+ 
+-	clk_set_rate(platform->gpu_clk, 409600000);
++	clk_prepare_enable(platform->gpu_clk);
++	clk_set_rate(platform->gpu_clk, RGX_ST_CORE_CLOCK_SPEED);
+ 
+ 	if (psRGXData && psRGXData->psRGXTimingInfo)
+ 	{
+ 		psRGXData->psRGXTimingInfo->ui32CoreClockSpeed = clk_get_rate(platform->gpu_clk);
+ 	}
+ 
++
+ 	mutex_init(&platform->set_power_state);
+ 
+ 	return platform;
+diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
+index 7de71f718af3..50237a7e950a 100644
+--- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
++++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
+@@ -138,7 +138,7 @@ PVRSRV_ERROR SysDevInit(void *pvOSDevice, PVRSRV_DEVICE_CONFIG **ppsDevConfig)
+ 	 */
+ 	gsRGXTimingInfo.ui32CoreClockSpeed        = RGX_ST_CORE_CLOCK_SPEED;
+ 	gsRGXTimingInfo.bEnableActivePM           = IMG_FALSE;
+-	gsRGXTimingInfo.bEnableRDPowIsland        = IMG_FALSE;
++	gsRGXTimingInfo.bEnableRDPowIsland        = IMG_TRUE;
+ 	gsRGXTimingInfo.ui32ActivePMLatencyms     = SYS_RGX_ACTIVE_POWER_LATENCY_MS;
+ 
+ 	/*
+diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
+index 1bfe68c5da83..d34e2b49a703 100644
+--- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
++++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
+@@ -49,7 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+ #define SYS_RGX_ACTIVE_POWER_LATENCY_MS (100)
+ //for st soc
+-#define RGX_ST_CORE_CLOCK_SPEED (100*1000*1000)
++#define RGX_ST_CORE_CLOCK_SPEED (614*1000*1000)
+ #define ST_GPU_PBASE        0xcac00000
+ #define ST_GPU_SIZE         0x10000
+ #define ST_IRQ_GPU          59
+-- 
+2.47.0
+

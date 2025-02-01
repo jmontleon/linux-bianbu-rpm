@@ -1,0 +1,54 @@
+From 964fef8d3f397cc14fa3eccd9a8cad79a5bfa730 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 3 Jul 2023 14:45:16 +0800
+Subject: [PATCH 0063/1451] arm_scmi:regulator: enable an dummy regulator using
+ scmi_voltage protocol
+
+Change-Id: I22dbbbcefa7a10a18d8efd63ce7737875d76a6b6
+---
+ arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi | 15 +++++++++++++++
+ arch/riscv/configs/k1-pro_fpga_defconfig        |  2 ++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+index cb0da2c8e700..4156450781a4 100644
+--- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+@@ -40,6 +40,21 @@ scmi {
+ 			shmem = <&cpu_scp_lpri0 &cpu_scp_lpri0>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
++
++			scmi_vold: protocol@23 {
++				reg = <0x17>;
++				regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					regulator_devdummy: regulator@0 {
++						reg = <0x0>;
++						regulator-min-microvolt = <500000>;
++						regulator-max-microvolt = <800000>;
++					};
++				};
++
++			};
+ 		};
+ 	};
+ };
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 89177d8993e6..3d53b7453451 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -136,6 +136,8 @@ CONFIG_PINCTRL_K1PRO=y
+ CONFIG_GPIOLIB=y
+ CONFIG_GPIO_DWAPB=y
+ # CONFIG_HWMON is not set
++CONFIG_REGULATOR=y
++CONFIG_REGULATOR_ARM_SCMI=m
+ # CONFIG_MEDIA_CEC_SUPPORT is not set
+ CONFIG_MEDIA_SUPPORT=y
+ # CONFIG_MEDIA_CONTROLLER is not set
+-- 
+2.47.0
+

@@ -1,0 +1,1281 @@
+From 5afc101a04082345baee867ed4eb17ab0c72d4cc Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 3 Jan 2024 00:27:49 +0800
+Subject: [PATCH 0298/1451] add dts and config for deb2 board
+
+Change-Id: Ib9cd6ccf997b6e68ad091f05238bb649752c4947
+---
+ arch/riscv/boot/dts/spacemit/Makefile      |   2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts | 739 +++++++++++++++++++++
+ arch/riscv/configs/k1-x_deb2_defconfig     | 503 ++++++++++++++
+ 3 files changed, 1243 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+ create mode 100644 arch/riscv/configs/k1-x_deb2_defconfig
+
+diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
+index 08ced801d98c..e2fd6e0c9ea7 100644
+--- a/arch/riscv/boot/dts/spacemit/Makefile
++++ b/arch/riscv/boot/dts/spacemit/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1x4.dtb k1-pro_fpga_2x2.dtb k1-pro_qemu.dtb k1-pro_verify.dtb
+-dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb
++dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb k1-x_deb2.dtb
+ obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+new file mode 100644
+index 000000000000..18076efbb230
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -0,0 +1,739 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++/dts-v1/;
++
++#include "k1-x.dtsi"
++#include "k1-x_pinctrl.dtsi"
++#include "lcd/lcd_icnl9911c_mipi.dtsi"
++#include "k1-x-camera-sdk.dtsi"
++
++/ {
++	model = "spacemit k1-x deb2 board";
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <24000000>;
++
++		cpu_0: cpu@0 {
++			cpu-ai = "true";
++		};
++
++		cpu_1: cpu@1 {
++			cpu-ai = "true";
++		};
++
++		cpu_2: cpu@2 {
++			reg = <2>;
++			cpu-ai = "true";
++		};
++
++		cpu_3: cpu@3 {
++			reg = <3>;
++			cpu-ai = "true";
++		};
++
++		cpu-map {
++			cluster0 {
++				core0 {
++					cpu = <&cpu_0>;
++				};
++
++				core1 {
++					cpu = <&cpu_1>;
++				};
++
++				core2 {
++					cpu = <&cpu_2>;
++				};
++
++				core3 {
++					cpu = <&cpu_3>;
++				};
++			};
++
++			cluster1 {
++				core0 {
++					cpu = <&cpu_4>;
++				};
++
++				core1 {
++					cpu = <&cpu_5>;
++				};
++
++				core2 {
++					cpu = <&cpu_6>;
++				};
++
++				core3 {
++					cpu = <&cpu_7>;
++				};
++			};
++		};
++	};
++
++	pwm_bl {
++		compatible = "pwm-backlight";
++		pwms = <&pwm1 20156>;
++		brightness-levels = <
++			0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15
++			16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
++			32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47
++			48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63
++			64  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79
++			80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95
++			96  97  98  99  100 101 102 103 104 105 106 107 108 109 110 111
++			112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127
++			128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
++			144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159
++			160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175
++			176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
++			192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207
++			208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
++			224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239
++			240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255
++		>;
++		default-brightness-level = <100>;
++
++		status = "okay";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x00000000 0x0 0x80000000>;
++	};
++
++	memory@100000000 {
++		device_type = "memory";
++		reg = <0x1 0x00000000 0x0 0x80000000>;
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		linux,cma {
++			compatible = "shared-dma-pool";
++			/* alloc memory from 0x60000000~0x80000000 */
++			alloc-ranges = <0 0x60000000 0 0x20000000>;
++			/* size of cma buffer is 256MByte */
++			size = <0 0x10000000>;
++			/* start address is 1Mbyte aligned */
++			alignment = <0x0 0x100000>;
++			linux,cma-default;
++			/* besides hardware, dma for ex. buffer can be used by memory management */
++			reusable;
++		};
++
++		/* reserved 384K for dpu, including mmu table(256K) and cmdlist(128K) */
++		dpu_resv: dpu_reserved@27000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0x27000000 0x0 0x00060000>;
++			no-map;
++		};
++	};
++
++	chosen {
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8,initcall_debug=1 clk_ignore_unused rdinit=/init.tmp";
++		stdout-path = "serial0:115200n8";
++	};
++
++	dc_12v: dc-12v {
++		compatible = "regulator-fixed";
++		regulator-name = "dc_12v";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	vcc4v0_baseboard: vcc4v0-baseboard {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc4v0_baseboard";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <4000000>;
++		regulator-max-microvolt = <4000000>;
++		vin-supply = <&dc_12v>;
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		//pinctrl-names = "default";
++		//pinctrl-0 = <&wifi_reg_on>;
++		//reset-gpios = <&gpio 121 0>;
++	};
++};
++
++&pwm1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm1_2>;
++	status = "ok";
++};
++
++&dpu_online2 {
++	memory-region = <&dpu_resv>;
++	lcd_2v8-supply = <&ldo_13>;
++	lcd_1v8-supply = <&ldo_15>;
++	dsi_1v2-supply = <&ldo_17>;
++	vin-supply-names = "lcd_2v8", "lcd_1v8", "dsi_1v2";
++	status = "okay";
++};
++
++&dsi2 {
++	status = "okay";
++
++	panel2: panel2@0 {
++		status = "ok";
++		compatible = "spacemit,mipi-panel2";
++		reg = <0>;
++
++		gpios-te = <91>;
++		gpios-reset = <24>;
++		gpios-dc = <21 22>;
++		id = <2>;
++		force-attached = "lcd_icnl9911c_mipi";
++	};
++};
++
++&lcds {
++	status = "ok";
++};
++
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c0>;
++
++	status = "okay";
++};
++
++&i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1>;
++
++	status = "okay";
++};
++
++&i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2_0>;
++	status = "okay";
++
++	eeprom@50{
++		compatible = "atmel,24c02";
++		reg = <0x50>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		eeprom_1v8-supply = <&ldo_11>;
++		vin-supply-names = "eeprom_1v8";
++		power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
++		status = "okay";
++
++		mac_address0: mac_address0@0 {
++			reg = <0x0 6>;
++		};
++
++		mac_address1: mac_address1@6 {
++			reg = <0x6 6>;
++		};
++	};
++};
++
++&i2c6 {
++	status = "disabled";
++};
++
++&i2c8 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	pm853: pmic@30 {
++		compatible = "spacemit,pm853";
++		reg = <0x30>;
++
++		vcc_sys-supply = <&vcc4v0_baseboard>;
++		dcdc5-supply = <&dcdc_5>;
++		dcdc2-supply = <&dcdc_2>;
++
++		regulators {
++			/* buck */
++			dcdc_1: DCDC_REG1 {
++				regulator-name = "dcdc1";
++				regulator-min-microvolt = <480000>;
++				regulator-max-microvolt = <3160000>;
++				regulator-always-on;
++			};
++
++			dcdc_2: DCDC_REG2 {
++				regulator-name = "dcdc2";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3950000>;
++				regulator-always-on;
++			};
++
++			dcdc_3: DCDC_REG3 {
++				regulator-name = "dcdc3";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3950000>;
++			};
++
++			dcdc_4: DCDC_REG4 {
++				regulator-name = "dcdc4";
++				regulator-min-microvolt = <480000>;
++				regulator-max-microvolt = <3160000>;
++				regulator-always-on;
++			};
++
++			dcdc_5: DCDC_REG5 {
++				regulator-name = "dcdc5";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3950000>;
++				regulator-always-on;
++			};
++
++			/* ldo */
++			ldo_1: LDO_REG1 {
++				regulator-name = "ldo1";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_2: LDO_REG2 {
++				regulator-name = "ldo2";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			ldo_3: LDO_REG3 {
++				regulator-name = "ldo3";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_4: LDO_REG4 {
++				regulator-name = "ldo4";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_5: LDO_REG5 {
++				regulator-name = "ldo5";
++				regulator-min-microvolt = <1600000>;
++				regulator-max-microvolt = <1900000>;
++				regulator-always-on;
++			};
++
++			ldo_6: LDO_REG6 {
++				regulator-name = "ldo6";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_7: LDO_REG7 {
++				regulator-name = "ldo7";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1950000>;
++				regulator-always-on;
++			};
++
++			ldo_8: LDO_REG8 {
++				regulator-name = "ldo8";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_9: LDO_REG9 {
++				regulator-name = "ldo9";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			ldo_10: LDO_REG10 {
++				regulator-name = "ldo10";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_11: LDO_REG11 {
++				regulator-name = "ldo11";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1950000>;
++			};
++
++			ldo_12: LDO_REG12 {
++				regulator-name = "ldo12";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_13: LDO_REG13 {
++				regulator-name = "ldo13";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_14: LDO_REG14 {
++				regulator-name = "ldo14";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			ldo_15: LDO_REG15 {
++				regulator-name = "ldo15";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1950000>;
++			};
++
++			ldo_16: LDO_REG16 {
++				regulator-name = "ldo16";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			ldo_17: LDO_REG17 {
++				regulator-name = "ldo17";
++				regulator-min-microvolt = <100000>;
++				regulator-max-microvolt = <1350000>;
++			};
++
++			ldo_18: LDO_REG18 {
++				regulator-name = "ldo18";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1950000>;
++				regulator-always-on;
++			};
++
++			ldo_19: LDO_REG19 {
++				regulator-name = "ldo19";
++				regulator-min-microvolt = <100000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-always-on;
++			};
++
++			ldo_20: LDO_REG20 {
++				regulator-name = "ldo20";
++				regulator-min-microvolt = <100000>;
++				regulator-max-microvolt = <1350000>;
++			};
++
++			ldo_21: LDO_REG21 {
++				regulator-name = "ldo21";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1950000>;
++			};
++
++			ldo_22: LDO_REG22 {
++				regulator-name = "ldo22";
++				regulator-min-microvolt = <100000>;
++				regulator-max-microvolt = <1350000>;
++			};
++
++			sw_1: SWITCH_REG1 {
++				regulator-name = "switch1";
++			};
++		};
++	};
++};
++
++&pinctrl {
++	usbp1_vbus: usbp1_vbus {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_66, MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))  /* drive_vbus1_iso */
++		>;
++	};
++
++	gpio80_pmx_func0: gpio80_pmx_func0 {
++		pinctrl-single,pins = <
++			K1X_PADCONF(GPIO_80, MUX_MODE0, (EDGE_BOTH | PULL_UP | PAD_3V_DS4))  /* mmc cd */
++		>;
++	};
++
++	pinctrl_qspi: qspi_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(QSPI_DAT3, MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qspi_d3 */
++			K1X_PADCONF(QSPI_DAT2, MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qspi_d2 */
++			K1X_PADCONF(QSPI_DAT1, MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qspi_d1 */
++			K1X_PADCONF(QSPI_DAT0, MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qspi_d1 */
++			K1X_PADCONF(QSPI_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qspi_clk */
++			K1X_PADCONF(QSPI_CSI,  MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* qspi_csi */
++		>;
++	};
++};
++
++/* SD */
++&sdhci0 {
++	pinctrl-names = "default","fast";
++	pinctrl-0 = <&pinctrl_mmc1 &gpio80_pmx_func0>;
++	pinctrl-1 = <&pinctrl_mmc1_fast &gpio80_pmx_func0>;
++	bus-width = <4>;
++	cd-gpios = <&gpio 80 0>;
++	cd-inverted;
++	vmmc-supply = <&ldo_4>;
++	vqmmc-supply = <&ldo_9>;
++	no-mmc;
++	no-sdio;
++	spacemit,sdh-host-caps-disable = <(
++			MMC_CAP_UHS_SDR12 |
++			MMC_CAP_UHS_SDR25
++			)>;
++	spacemit,sdh-quirks = <(
++			SDHCI_QUIRK_BROKEN_CARD_DETECTION |
++			SDHCI_QUIRK_INVERTED_WRITE_PROTECT |
++			SDHCI_QUIRK_BROKEN_TIMEOUT_VAL
++			)>;
++	spacemit,sdh-quirks2 = <(
++			SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
++			SDHCI_QUIRK2_BROKEN_PHY_MODULE |
++			SDHCI_QUIRK2_SET_AIB_MMC
++			)>;
++	spacemit,aib_mmc1_io_reg = <0xD401E81C>;
++	spacemit,apbc_asfar_reg = <0xD4015050>;
++	spacemit,apbc_assar_reg = <0xD4015054>;
++	spacemit,rx_dline_reg = <0x0>;
++	spacemit,tx_dline_reg = <0x0>;
++	//spacemit,tx_delaycode = <0xA0>;
++	spacemit,rx_tuning_limit = <50>;
++	spacemit,sdh-freq = <204800000>;
++	status = "okay";
++};
++
++/* SDIO */
++&sdhci1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_mmc2>;
++	bus-width = <4>;
++	vqmmc-supply = <&ldo_7>;
++	no-mmc;
++	no-sd;
++	//mmc-pwrseq = <&sdio_pwrseq>;
++	keep-power-in-suspend;
++	/* bcmdhd use private oob solution rather than dat1/standard wakeup */
++	/delete-property/ enable-sdio-wakeup;
++	spacemit,sdh-host-caps-disable = <(
++			MMC_CAP_UHS_SDR104 |
++			MMC_CAP_UHS_SDR50 |
++			MMC_CAP_NEEDS_POLL
++			)>;
++	spacemit,sdh-quirks = <(
++			SDHCI_QUIRK_BROKEN_CARD_DETECTION |
++			SDHCI_QUIRK_BROKEN_TIMEOUT_VAL
++			)>;
++	spacemit,sdh-quirks2 = <(
++			SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
++			SDHCI_QUIRK2_BROKEN_PHY_MODULE |
++			SDHCI_QUIRK2_DISABLE_PROBE_CDSCAN
++			)>;
++	spacemit,rx_dline_reg = <0x01>;
++	spacemit,sdh-freq = <204800000>;
++	status = "disabled";
++
++	//brcmf: wifi@1 {
++	//	compatible = "brcm,bcm4329-fmac";
++	//	reg = <1>;
++	//};
++};
++
++/* eMMC */
++&sdhci2 {
++	bus-width = <8>;
++	non-removable;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
++	no-sd;
++	no-sdio;
++	spacemit,sdh-quirks = <(
++			SDHCI_QUIRK_BROKEN_CARD_DETECTION |
++			SDHCI_QUIRK_BROKEN_TIMEOUT_VAL
++			)>;
++	spacemit,sdh-quirks2 = <(
++			SDHCI_QUIRK2_PRESET_VALUE_BROKEN
++			)>;
++	spacemit,sdh-freq = <375000000>;
++	status = "okay";
++};
++
++&eth0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac0>;
++
++	emac,reset-gpio = <&gpio 44 0>;
++	emac,reset-active-low;
++	emac,reset-delays-us = <0 10000 100000>;
++
++	/* store forward mode */
++	tx-threshold = <1518>;
++	rx-threshold = <12>;
++	tx-ring-num = <128>;
++	rx-ring-num = <128>;
++	dma-burst-len = <5>;
++
++	ref-clock-from-phy;
++
++	clk-tuning-enable;
++	clk-tuning-by-delayline;
++	tx-phase = <90>;
++	rx-phase = <73>;
++
++	nvmem-cells = <&mac_address0>;
++	nvmem-cell-names = "mac-address";
++
++	phy-handle = <&rgmii0>;
++
++	status = "okay";
++
++	mdio-bus {
++		#address-cells = <0x1>;
++		#size-cells = <0x0>;
++		rgmii0: phy@0 {
++			compatible = "ethernet-phy-id001c.c916";
++			device_type = "ethernet-phy";
++			reg = <0x1>;
++			phy-mode = "rgmii";
++		};
++	};
++};
++
++&eth1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac1>;
++
++	emac,reset-gpio = <&gpio 117 0>;
++	emac,reset-active-low;
++	emac,reset-delays-us = <0 10000 100000>;
++
++        /* store forward mode */
++	tx-threshold = <1518>;
++	rx-threshold = <12>;
++	tx-ring-num = <128>;
++	rx-ring-num = <128>;
++	dma-burst-len = <5>;
++
++	ref-clock-from-phy;
++
++	clk-tuning-enable;
++	clk-tuning-by-delayline;
++	tx-phase = <90>;
++	rx-phase = <73>;
++	nvmem-cells = <&mac_address1>;
++	nvmem-cell-names = "mac-address";
++
++	phy-handle = <&rgmii1>;
++
++	status = "okay";
++
++	mdio-bus {
++		#address-cells = <0x1>;
++		#size-cells = <0x0>;
++		rgmii1: phy@1 {
++			compatible = "ethernet-phy-id001c.c916";
++			device_type = "ethernet-phy";
++			reg = <0x2>;
++			phy-mode = "rgmii";
++		};
++	};
++};
++
++&usbphy {
++	status = "okay";
++};
++
++&udc {
++	/*spacemit,udc-mode = <MV_USB_MODE_OTG>;
++	spacemit,extern-attr = <MV_USB_HAS_VBUS_IDPIN_DETECTION>;*/
++	spacemit,udc-mode = <MV_USB_MODE_UDC>;
++	status = "okay";
++};
++
++&usbphy1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&usbp1_vbus>;
++	status = "okay";
++};
++
++&ehci1 {
++	status = "okay";
++};
++
++&usbdrd3 {
++	status = "disabled";
++	dwc3@c0a00000 {
++		maximum-speed = "high-speed";
++		dr_mode = "peripheral";
++		phy_type = "utmi_wide";
++		snps,dis_enblslpm_quirk;
++	};
++};
++
++&pcie0_rc {
++	status = "disabled";
++};
++
++&imggpu {
++	status = "okay";
++};
++
++&qspi {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_qspi>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <26500000>;
++		m25p,fast-read;
++		broken-flash-reset;
++		status = "okay";
++	};
++};
++
++/* imx315 */
++&backsensor {
++	af_2v8-supply = <&ldo_12>;
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
++	dvdd_1v2-supply = <&ldo_20>;
++
++	status = "okay";
++};
++/* gc2375h */
++&backsensor_aux {
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
++
++	status = "okay";
++};
++/* S5K5E3 */
++&frontsensor {
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
++	dvdd_1v2-supply = <&ldo_20>;
++
++	status = "okay";
++};
++&ccic0 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++&ccic1 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++&ccic2 {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++&isp {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++
++&cpp {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
++
++&vi {
++	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
++};
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+new file mode 100644
+index 000000000000..a6a15ec391f8
+--- /dev/null
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -0,0 +1,503 @@
++CONFIG_COMPILE_TEST=y
++# CONFIG_WERROR is not set
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ_IDLE=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_PREEMPT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
++CONFIG_CHECKPOINT_RESTORE=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++# CONFIG_RD_ZSTD is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_EXPERT=y
++# CONFIG_BUG is not set
++CONFIG_KALLSYMS_ALL=y
++CONFIG_PERF_EVENTS=y
++CONFIG_SOC_SPACEMIT=y
++CONFIG_SOC_SPACEMIT_K1X=y
++CONFIG_SMP=y
++CONFIG_NR_CPUS=8
++CONFIG_HOTPLUG_CPU=y
++CONFIG_HZ_100=y
++CONFIG_RISCV_SBI_V01=y
++# CONFIG_RISCV_BOOT_SPINWAIT is not set
++CONFIG_PM=y
++CONFIG_CPU_FREQ=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
++CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
++# CONFIG_ARM_BRCMSTB_AVS_CPUFREQ is not set
++# CONFIG_ARM_MEDIATEK_CPUFREQ_HW is not set
++CONFIG_SPACEMIT_K1X_CPUFREQ=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_BLK_DEBUG_FS is not set
++CONFIG_CMA=y
++CONFIG_CMA_DEBUGFS=y
++CONFIG_CMA_SYSFS=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_IPV6_ROUTER_PREF=y
++CONFIG_IPV6_ROUTE_INFO=y
++CONFIG_IPV6_OPTIMISTIC_DAD=y
++# CONFIG_IPV6_SIT is not set
++CONFIG_IPV6_MULTIPLE_TABLES=y
++CONFIG_IPV6_SUBTREES=y
++CONFIG_NETWORK_PHY_TIMESTAMPING=y
++CONFIG_BRIDGE=y
++CONFIG_VLAN_8021Q=y
++CONFIG_VLAN_8021Q_GVRP=y
++CONFIG_VLAN_8021Q_MVRP=y
++CONFIG_NETLINK_DIAG=y
++CONFIG_CAN=y
++CONFIG_CFG80211=y
++CONFIG_FAILOVER=y
++# CONFIG_ETHTOOL_NETLINK is not set
++CONFIG_PCI=y
++CONFIG_PCIEPORTBUS=y
++CONFIG_PCIEAER=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_ARM_SCMI_PROTOCOL=y
++# CONFIG_ARM_SCMI_POWER_DOMAIN is not set
++# CONFIG_ARM_SCPI_POWER_DOMAIN is not set
++CONFIG_MTD=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_MTD_SPEAR_SMI is not set
++CONFIG_MTD_SPI_NAND=y
++CONFIG_MTD_SPI_NOR=y
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_BLK_DEV_NVME=y
++CONFIG_NVME_VERBOSE_ERRORS=y
++CONFIG_SRAM=y
++CONFIG_EEPROM_AT24=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_MD=y
++CONFIG_MD_LINEAR=y
++CONFIG_BCACHE=y
++CONFIG_BLK_DEV_DM=y
++CONFIG_DM_UNSTRIPED=y
++CONFIG_DM_CRYPT=y
++CONFIG_DM_SNAPSHOT=y
++CONFIG_DM_THIN_PROVISIONING=y
++CONFIG_DM_CACHE=y
++CONFIG_DM_WRITECACHE=y
++CONFIG_DM_MIRROR=y
++CONFIG_DM_RAID=y
++CONFIG_DM_ZERO=y
++CONFIG_DM_MULTIPATH=y
++CONFIG_DM_MULTIPATH_QL=y
++CONFIG_DM_MULTIPATH_ST=y
++CONFIG_DM_MULTIPATH_HST=y
++CONFIG_DM_MULTIPATH_IOA=y
++CONFIG_DM_DELAY=y
++CONFIG_DM_DUST=y
++CONFIG_DM_INIT=y
++CONFIG_DM_UEVENT=y
++CONFIG_DM_FLAKEY=y
++CONFIG_DM_VERITY=y
++CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG=y
++CONFIG_DM_VERITY_FEC=y
++CONFIG_DM_SWITCH=y
++CONFIG_DM_LOG_WRITES=y
++CONFIG_DM_INTEGRITY=y
++CONFIG_TARGET_CORE=y
++CONFIG_TCM_IBLOCK=y
++CONFIG_TCM_FILEIO=y
++CONFIG_NETDEVICES=y
++# CONFIG_NET_VENDOR_ALACRITECH is not set
++# CONFIG_NET_VENDOR_AMAZON is not set
++# CONFIG_NET_VENDOR_AQUANTIA is not set
++# CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_VENDOR_ASIX is not set
++# CONFIG_NET_VENDOR_BROADCOM is not set
++# CONFIG_NET_VENDOR_CADENCE is not set
++# CONFIG_NET_VENDOR_CAVIUM is not set
++# CONFIG_NET_VENDOR_CIRRUS is not set
++# CONFIG_NET_VENDOR_CORTINA is not set
++# CONFIG_NET_VENDOR_DAVICOM is not set
++# CONFIG_NET_VENDOR_ENGLEDER is not set
++# CONFIG_NET_VENDOR_EZCHIP is not set
++# CONFIG_NET_VENDOR_FARADAY is not set
++# CONFIG_NET_VENDOR_FREESCALE is not set
++# CONFIG_NET_VENDOR_FUNGIBLE is not set
++# CONFIG_NET_VENDOR_GOOGLE is not set
++# CONFIG_NET_VENDOR_HISILICON is not set
++# CONFIG_NET_VENDOR_HUAWEI is not set
++# CONFIG_NET_VENDOR_INTEL is not set
++# CONFIG_NET_VENDOR_WANGXUN is not set
++# CONFIG_NET_VENDOR_LITEX is not set
++# CONFIG_NET_VENDOR_MARVELL is not set
++# CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_MICROCHIP is not set
++# CONFIG_NET_VENDOR_MICROSEMI is not set
++# CONFIG_NET_VENDOR_MICROSOFT is not set
++# CONFIG_NET_VENDOR_NI is not set
++# CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
++# CONFIG_NET_VENDOR_PENSANDO is not set
++# CONFIG_NET_VENDOR_QUALCOMM is not set
++# CONFIG_NET_VENDOR_RENESAS is not set
++# CONFIG_NET_VENDOR_ROCKER is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
++# CONFIG_NET_VENDOR_SEEQ is not set
++# CONFIG_NET_VENDOR_SOLARFLARE is not set
++# CONFIG_NET_VENDOR_SMSC is not set
++# CONFIG_NET_VENDOR_SOCIONEXT is not set
++CONFIG_K1X_EMAC=y
++# CONFIG_NET_VENDOR_STMICRO is not set
++# CONFIG_NET_VENDOR_SUNPLUS is not set
++# CONFIG_NET_VENDOR_SYNOPSYS is not set
++# CONFIG_NET_VENDOR_VERTEXCOM is not set
++# CONFIG_NET_VENDOR_VIA is not set
++# CONFIG_NET_VENDOR_WIZNET is not set
++# CONFIG_NET_VENDOR_XILINX is not set
++CONFIG_REALTEK_PHY=y
++CONFIG_CAN_FLEXCAN=y
++CONFIG_USB_USBNET=y
++# CONFIG_USB_NET_AX8817X is not set
++# CONFIG_USB_NET_NET1080 is not set
++# CONFIG_WLAN is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_KEYBOARD is not set
++# CONFIG_INPUT_MOUSE is not set
++CONFIG_VT_HW_CONSOLE_BINDING=y
++CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
++CONFIG_SERIAL_PXA=y
++CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
++CONFIG_SERIAL_PXA_CONSOLE=y
++CONFIG_VIRTIO_CONSOLE=y
++# CONFIG_HW_RANDOM is not set
++CONFIG_I2C_CHARDEV=y
++CONFIG_I2C_SPACEMIT_K1X=y
++# CONFIG_I2C_BRCMSTB is not set
++CONFIG_I2C_SLAVE=y
++CONFIG_I2C_SLAVE_EEPROM=y
++CONFIG_SPI=y
++CONFIG_SPI_K1X=y
++CONFIG_SPI_K1X_QSPI=y
++CONFIG_PTP_1588_CLOCK_IDTCM=y
++CONFIG_PINCTRL=y
++CONFIG_PINCTRL_SINGLE=y
++CONFIG_GPIO_SYSFS=y
++CONFIG_GPIO_K1X=y
++# CONFIG_HWMON is not set
++CONFIG_THERMAL=y
++# CONFIG_HISI_THERMAL is not set
++# CONFIG_MTK_THERMAL is not set
++CONFIG_K1X_THERMAL=y
++CONFIG_WATCHDOG=y
++CONFIG_SPACEMIT_WATCHDOG=y
++CONFIG_MFD_SYSCON=y
++CONFIG_MFD_SPACEMIT_PMIC=y
++CONFIG_REGULATOR=y
++CONFIG_REGULATOR_SPACEMIT=y
++# CONFIG_MEDIA_CEC_SUPPORT is not set
++CONFIG_MEDIA_SUPPORT=y
++# CONFIG_DVB_NET is not set
++# CONFIG_DVB_DYNAMIC_MINORS is not set
++CONFIG_MEDIA_USB_SUPPORT=y
++CONFIG_USB_VIDEO_CLASS=y
++# CONFIG_RADIO_ADAPTERS is not set
++CONFIG_VIDEO_LINLON_K1X=y
++CONFIG_SPACEMIT_V2D=y
++CONFIG_SPACEMIT_K1X_CAMERA_V2=y
++CONFIG_SPACEMIT_K1X_VI_V2=y
++CONFIG_SPACEMIT_K1X_VI_IOMMU=y
++CONFIG_SPACEMIT_K1X_ISP_V2=y
++CONFIG_SPACEMIT_K1X_CPP_V2=y
++CONFIG_SPACEMIT_K1X_SENSOR_V2=y
++# CONFIG_CXD2880_SPI_DRV is not set
++# CONFIG_MEDIA_TUNER_E4000 is not set
++# CONFIG_MEDIA_TUNER_FC0011 is not set
++# CONFIG_MEDIA_TUNER_FC0012 is not set
++# CONFIG_MEDIA_TUNER_FC0013 is not set
++# CONFIG_MEDIA_TUNER_FC2580 is not set
++# CONFIG_MEDIA_TUNER_IT913X is not set
++# CONFIG_MEDIA_TUNER_M88RS6000T is not set
++# CONFIG_MEDIA_TUNER_MAX2165 is not set
++# CONFIG_MEDIA_TUNER_MC44S803 is not set
++# CONFIG_MEDIA_TUNER_MSI001 is not set
++# CONFIG_MEDIA_TUNER_MT2060 is not set
++# CONFIG_MEDIA_TUNER_MT2063 is not set
++# CONFIG_MEDIA_TUNER_MT20XX is not set
++# CONFIG_MEDIA_TUNER_MT2131 is not set
++# CONFIG_MEDIA_TUNER_MT2266 is not set
++# CONFIG_MEDIA_TUNER_MXL301RF is not set
++# CONFIG_MEDIA_TUNER_MXL5005S is not set
++# CONFIG_MEDIA_TUNER_MXL5007T is not set
++# CONFIG_MEDIA_TUNER_QM1D1B0004 is not set
++# CONFIG_MEDIA_TUNER_QM1D1C0042 is not set
++# CONFIG_MEDIA_TUNER_QT1010 is not set
++# CONFIG_MEDIA_TUNER_R820T is not set
++# CONFIG_MEDIA_TUNER_SI2157 is not set
++# CONFIG_MEDIA_TUNER_SIMPLE is not set
++# CONFIG_MEDIA_TUNER_TDA18212 is not set
++# CONFIG_MEDIA_TUNER_TDA18218 is not set
++# CONFIG_MEDIA_TUNER_TDA18250 is not set
++# CONFIG_MEDIA_TUNER_TDA18271 is not set
++# CONFIG_MEDIA_TUNER_TDA827X is not set
++# CONFIG_MEDIA_TUNER_TDA8290 is not set
++# CONFIG_MEDIA_TUNER_TDA9887 is not set
++# CONFIG_MEDIA_TUNER_TEA5761 is not set
++# CONFIG_MEDIA_TUNER_TEA5767 is not set
++# CONFIG_MEDIA_TUNER_TUA9001 is not set
++# CONFIG_MEDIA_TUNER_XC2028 is not set
++# CONFIG_MEDIA_TUNER_XC4000 is not set
++# CONFIG_MEDIA_TUNER_XC5000 is not set
++# CONFIG_DVB_MXL5XX is not set
++# CONFIG_DVB_STB0899 is not set
++# CONFIG_DVB_STB6100 is not set
++# CONFIG_DVB_STV090x is not set
++# CONFIG_DVB_STV0910 is not set
++# CONFIG_DVB_STV6110x is not set
++# CONFIG_DVB_STV6111 is not set
++# CONFIG_DVB_DRXK is not set
++# CONFIG_DVB_MN88472 is not set
++# CONFIG_DVB_MN88473 is not set
++# CONFIG_DVB_SI2165 is not set
++# CONFIG_DVB_TDA18271C2DD is not set
++# CONFIG_DVB_CX24110 is not set
++# CONFIG_DVB_CX24116 is not set
++# CONFIG_DVB_CX24117 is not set
++# CONFIG_DVB_CX24120 is not set
++# CONFIG_DVB_CX24123 is not set
++# CONFIG_DVB_DS3000 is not set
++# CONFIG_DVB_MB86A16 is not set
++# CONFIG_DVB_MT312 is not set
++# CONFIG_DVB_S5H1420 is not set
++# CONFIG_DVB_SI21XX is not set
++# CONFIG_DVB_STB6000 is not set
++# CONFIG_DVB_STV0288 is not set
++# CONFIG_DVB_STV0299 is not set
++# CONFIG_DVB_STV0900 is not set
++# CONFIG_DVB_STV6110 is not set
++# CONFIG_DVB_TDA10071 is not set
++# CONFIG_DVB_TDA10086 is not set
++# CONFIG_DVB_TDA8083 is not set
++# CONFIG_DVB_TDA8261 is not set
++# CONFIG_DVB_TDA826X is not set
++# CONFIG_DVB_TS2020 is not set
++# CONFIG_DVB_TUA6100 is not set
++# CONFIG_DVB_TUNER_CX24113 is not set
++# CONFIG_DVB_TUNER_ITD1000 is not set
++# CONFIG_DVB_VES1X93 is not set
++# CONFIG_DVB_ZL10036 is not set
++# CONFIG_DVB_ZL10039 is not set
++# CONFIG_DVB_CX22700 is not set
++# CONFIG_DVB_CX22702 is not set
++# CONFIG_DVB_CXD2820R is not set
++# CONFIG_DVB_CXD2841ER is not set
++# CONFIG_DVB_DIB3000MB is not set
++# CONFIG_DVB_DIB3000MC is not set
++# CONFIG_DVB_DIB7000M is not set
++# CONFIG_DVB_DIB7000P is not set
++# CONFIG_DVB_DIB9000 is not set
++# CONFIG_DVB_DRXD is not set
++# CONFIG_DVB_EC100 is not set
++# CONFIG_DVB_L64781 is not set
++# CONFIG_DVB_MT352 is not set
++# CONFIG_DVB_NXT6000 is not set
++# CONFIG_DVB_S5H1432 is not set
++# CONFIG_DVB_SP887X is not set
++# CONFIG_DVB_STV0367 is not set
++# CONFIG_DVB_TDA10048 is not set
++# CONFIG_DVB_TDA1004X is not set
++# CONFIG_DVB_ZD1301_DEMOD is not set
++# CONFIG_DVB_ZL10353 is not set
++# CONFIG_DVB_CXD2880 is not set
++# CONFIG_DVB_STV0297 is not set
++# CONFIG_DVB_TDA10021 is not set
++# CONFIG_DVB_TDA10023 is not set
++# CONFIG_DVB_VES1820 is not set
++# CONFIG_DVB_AU8522_DTV is not set
++# CONFIG_DVB_AU8522_V4L is not set
++# CONFIG_DVB_BCM3510 is not set
++# CONFIG_DVB_LG2160 is not set
++# CONFIG_DVB_LGDT3305 is not set
++# CONFIG_DVB_LGDT330X is not set
++# CONFIG_DVB_MXL692 is not set
++# CONFIG_DVB_NXT200X is not set
++# CONFIG_DVB_OR51132 is not set
++# CONFIG_DVB_OR51211 is not set
++# CONFIG_DVB_S5H1409 is not set
++# CONFIG_DVB_S5H1411 is not set
++# CONFIG_DVB_DIB8000 is not set
++# CONFIG_DVB_MB86A20S is not set
++# CONFIG_DVB_S921 is not set
++# CONFIG_DVB_MN88443X is not set
++# CONFIG_DVB_TC90522 is not set
++# CONFIG_DVB_PLL is not set
++# CONFIG_DVB_TUNER_DIB0070 is not set
++# CONFIG_DVB_TUNER_DIB0090 is not set
++# CONFIG_DVB_A8293 is not set
++# CONFIG_DVB_AF9033 is not set
++# CONFIG_DVB_ASCOT2E is not set
++# CONFIG_DVB_ATBM8830 is not set
++# CONFIG_DVB_HELENE is not set
++# CONFIG_DVB_HORUS3A is not set
++# CONFIG_DVB_ISL6405 is not set
++# CONFIG_DVB_ISL6421 is not set
++# CONFIG_DVB_ISL6423 is not set
++# CONFIG_DVB_IX2505V is not set
++# CONFIG_DVB_LGS8GL5 is not set
++# CONFIG_DVB_LGS8GXX is not set
++# CONFIG_DVB_LNBH25 is not set
++# CONFIG_DVB_LNBH29 is not set
++# CONFIG_DVB_LNBP21 is not set
++# CONFIG_DVB_LNBP22 is not set
++# CONFIG_DVB_M88RS2000 is not set
++# CONFIG_DVB_TDA665x is not set
++# CONFIG_DVB_DRX39XYJ is not set
++# CONFIG_DVB_CXD2099 is not set
++# CONFIG_DVB_SP2 is not set
++CONFIG_DRM_SPACEMIT=y
++CONFIG_SPACEMIT_MIPI_PANEL=y
++CONFIG_POWERVR_ROGUE=y
++CONFIG_FB=y
++CONFIG_BACKLIGHT_PWM=y
++# CONFIG_VGA_CONSOLE is not set
++CONFIG_USB_HIDDEV=y
++CONFIG_USB=y
++CONFIG_USB_XHCI_HCD=y
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_EHCI_K1X=y
++CONFIG_USB_STORAGE=y
++CONFIG_USB_UAS=y
++CONFIG_USB_DWC3=y
++# CONFIG_USB_DWC3_OMAP is not set
++# CONFIG_USB_DWC3_EXYNOS is not set
++# CONFIG_USB_DWC3_KEYSTONE is not set
++# CONFIG_USB_DWC3_MESON_G12A is not set
++# CONFIG_USB_DWC3_OF_SIMPLE is not set
++# CONFIG_USB_DWC3_ST is not set
++# CONFIG_USB_DWC3_QCOM is not set
++# CONFIG_USB_DWC3_IMX8MP is not set
++# CONFIG_USB_DWC3_AM62 is not set
++CONFIG_K1XCI_USB2_PHY=y
++CONFIG_USB_GADGET=y
++CONFIG_USB_K1X_UDC=y
++CONFIG_USB_CONFIGFS=y
++CONFIG_USB_CONFIGFS_RNDIS=y
++CONFIG_USB_CONFIGFS_MASS_STORAGE=y
++CONFIG_USB_CONFIGFS_F_FS=y
++CONFIG_USB_CONFIGFS_F_UVC=y
++CONFIG_USB_CONFIGFS_F_TCM=y
++CONFIG_MMC=y
++CONFIG_MMC_SDHCI=y
++CONFIG_MMC_SDHCI_PLTFM=y
++CONFIG_MMC_SDHCI_OF_K1X=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_DRV_SA1100=y
++CONFIG_DMADEVICES=y
++CONFIG_MMP_PDMA_DRIVER=y
++CONFIG_MMP_PDMA_SPACEMIT_K1X=y
++CONFIG_USERSPACE_DMA=y
++# CONFIG_SH_DMAE_BASE is not set
++# CONFIG_TI_EDMA is not set
++# CONFIG_DMA_OMAP is not set
++CONFIG_SW_SYNC=y
++CONFIG_UDMABUF=y
++CONFIG_DMABUF_HEAPS=y
++CONFIG_DMABUF_HEAPS_SYSTEM=y
++CONFIG_DMABUF_HEAPS_CMA=y
++# CONFIG_VIRTIO_MENU is not set
++# CONFIG_VHOST_MENU is not set
++# CONFIG_SURFACE_PLATFORMS is not set
++CONFIG_SPACEMIT_K1X_CCU=y
++# CONFIG_IOMMU_SUPPORT is not set
++# CONFIG_DPAA2_CONSOLE is not set
++CONFIG_SPACEMIT_PM_DOMAINS=y
++CONFIG_SPACEMIT_REBOOT_CONTROL=y
++CONFIG_SPACEMI_K1X_DMA_RANGE=y
++CONFIG_CHIP_MEDIA_JPU=y
++CONFIG_PWM=y
++CONFIG_PWM_PXA=y
++CONFIG_RESET_CONTROLLER=y
++CONFIG_RESET_K1X_SPACEMIT=y
++CONFIG_GENERIC_PHY=y
++# CONFIG_PHY_MVEBU_A3700_UTMI is not set
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_XFS_FS=y
++CONFIG_XFS_QUOTA=y
++CONFIG_XFS_POSIX_ACL=y
++CONFIG_BTRFS_FS=y
++CONFIG_BTRFS_FS_POSIX_ACL=y
++CONFIG_F2FS_FS=y
++CONFIG_QUOTA=y
++CONFIG_QUOTA_NETLINK_INTERFACE=y
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=y
++CONFIG_OVERLAY_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_EXFAT_FS=y
++CONFIG_NTFS3_FS=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_HUGETLBFS=y
++# CONFIG_EFIVAR_FS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_SWAP=y
++CONFIG_NFSD=y
++CONFIG_NFSD_V3_ACL=y
++CONFIG_NFSD_V4=y
++CONFIG_NFSD_BLOCKLAYOUT=y
++CONFIG_NFSD_SCSILAYOUT=y
++CONFIG_NFSD_FLEXFILELAYOUT=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_INIT_STACK_NONE=y
++CONFIG_CRYPTO_DH=y
++CONFIG_CRYPTO_ECDH=y
++CONFIG_CRYPTO_CURVE25519=y
++CONFIG_CRYPTO_AES=y
++CONFIG_CRYPTO_DES=y
++CONFIG_CRYPTO_ECB=y
++CONFIG_CRYPTO_OFB=y
++CONFIG_CRYPTO_CHACHA20POLY1305=y
++CONFIG_CRYPTO_CMAC=y
++CONFIG_CRYPTO_SHA1=y
++CONFIG_CRYPTO_SHA3=y
++CONFIG_CRYPTO_DEFLATE=y
++CONFIG_CRYPTO_LZO=y
++CONFIG_CRYPTO_ZSTD=y
++CONFIG_CRYPTO_USER_API_HASH=y
++CONFIG_CRYPTO_USER_API_SKCIPHER=y
++CONFIG_SPACEMIT_REE_ENGINE=y
++CONFIG_SPACEMIT_REE_AES=y
++CONFIG_SPACEMIT_CRYPTO_SELF_TEST=y
++CONFIG_XZ_DEC=y
++CONFIG_DMA_CMA=y
++CONFIG_PRINTK_TIME=y
++CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
++CONFIG_CONSOLE_LOGLEVEL_QUIET=8
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_KMEMLEAK=y
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++# CONFIG_RCU_TRACE is not set
++# CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.0
+

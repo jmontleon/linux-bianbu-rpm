@@ -1,0 +1,59 @@
+From 0c8a942ee50d1b3617a4d5f254882a5a36ed0a2f Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 30 Jul 2024 13:42:17 +0800
+Subject: [PATCH 1031/1451] pcie: fix the bug that Samsung nvme ssd link
+ established as 1 lane
+
+  Because the link is established in the uboot stage when pcie is enabled,
+  it is necessary to stop the link, disable phy and soft reset the controller,
+  and it can establish a correct link in the kernel.
+
+Change-Id: I15d0d9ea74ffb6b6fc7fbf4307c1d16252f800f0
+---
+ drivers/pci/controller/dwc/pcie-k1x.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index f958c6f3ca62..f5b519bf7f0e 100644
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -469,7 +469,7 @@ void rterm_force(struct k1x_pcie *k1x, u32 pcie_rcal)
+ 
+ static int init_phy(struct k1x_pcie *k1x)
+ {
+-	u32 rd_data, pcie_rcal;
++	u32 reg, rd_data, pcie_rcal;
+ 	u32 val = 0;
+ 	int count;
+ 
+@@ -504,6 +504,27 @@ static int init_phy(struct k1x_pcie *k1x)
+ 	}
+ 
+ 	k1x->pcie_rcal = pcie_rcal;
++
++	/* disable ltssm and phy */
++	reg = k1x_pcie_readl(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD);
++	reg &= ~(0x7f);
++	k1x_pcie_writel(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD, reg);
++
++	/* soft reset */
++	reg = k1x_pcie_readl(k1x, PCIE_CTRL_LOGIC);
++	reg |= (1 << 0);
++	k1x_pcie_writel(k1x, PCIE_CTRL_LOGIC, reg);
++
++	mdelay(2);
++	/* soft no reset */
++	reg = k1x_pcie_readl(k1x, PCIE_CTRL_LOGIC);
++	reg &= ~(1 << 0);
++	k1x_pcie_writel(k1x, PCIE_CTRL_LOGIC, reg);
++
++	reg = k1x_pcie_readl(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD);
++	reg |= 0x3f;
++	k1x_pcie_writel(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD, reg);
++
+ 	rterm_force(k1x, pcie_rcal);
+ 
+ 	pr_debug("Now int init_puphy...\n");
+-- 
+2.47.0
+

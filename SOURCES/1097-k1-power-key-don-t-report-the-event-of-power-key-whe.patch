@@ -1,0 +1,123 @@
+From 948993526051e92a1e74aa493f206cac6c48b10c Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 19 Aug 2024 21:32:58 +0800
+Subject: [PATCH 1097/1451] k1:power-key: don't report the event of power-key
+ when in the suspend-resume process
+
+Change-Id: Icd2c0c1a6e73ffa803ab693823549e6fdc49992e
+---
+ drivers/input/misc/spacemit-pwrkey.c | 64 ++++++++++++++++++++++++++--
+ 1 file changed, 60 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
+index d76b0a8e913b..3ee621a3e66c 100644
+--- a/drivers/input/misc/spacemit-pwrkey.c
++++ b/drivers/input/misc/spacemit-pwrkey.c
+@@ -9,24 +9,44 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_wakeirq.h>
++#include <linux/notifier.h>
++#include <linux/spinlock.h>
++#include <linux/suspend.h>
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+ 
++static int report_event, fall_triggered;
++static struct notifier_block   pm_notify;
++static spinlock_t pm_lock;
++
+ static irqreturn_t pwrkey_fall_irq(int irq, void *_pwr)
+ {
++	unsigned long flags;
+ 	struct input_dev *pwr = _pwr;
+ 
+-	input_report_key(pwr, KEY_POWER, 1);
+-	input_sync(pwr);
++	spin_lock_irqsave(&pm_lock, flags);
++	if (report_event) {
++		input_report_key(pwr, KEY_POWER, 1);
++		input_sync(pwr);
++		fall_triggered = 1;
++	}
++	spin_unlock_irqrestore(&pm_lock, flags);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+ static irqreturn_t pwrkey_rise_irq(int irq, void *_pwr)
+ {
++	unsigned long flags;
+ 	struct input_dev *pwr = _pwr;
+ 
+-	input_report_key(pwr, KEY_POWER, 0);
+-	input_sync(pwr);
++	spin_lock_irqsave(&pm_lock, flags);
++	/* report key up if key down has been reported */
++	if (fall_triggered) {
++		input_report_key(pwr, KEY_POWER, 0);
++		input_sync(pwr);
++		fall_triggered = 0;
++	}
++	spin_unlock_irqrestore(&pm_lock, flags);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -43,12 +63,39 @@ static irqreturn_t pwrkey_lkey_irq(int irq, void *_pwr)
+ 	return IRQ_HANDLED;
+ }
+ 
++static int pwrk_pm_notify(struct notifier_block *notify_block,
++			unsigned long mode, void *unused)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&pm_lock, flags);
++
++	switch (mode) {
++	case PM_SUSPEND_PREPARE:
++		/* don't report power-key when enter suspend */
++		report_event = 0;
++		break;
++
++	case PM_POST_SUSPEND:
++		/* restore report power-key */
++		report_event = 1;
++		break;
++	}
++
++	spin_unlock_irqrestore(&pm_lock, flags);
++
++	return 0;
++}
++
+ static int spacemit_pwrkey_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 	struct input_dev *pwr;
+ 	int rise_irq, fall_irq, s_key_irq, l_key_irq;
+ 
++	report_event = 1;
++	fall_triggered = 0;
++
+ 	pwr = devm_input_allocate_device(&pdev->dev);
+ 	if (!pwr) {
+ 		dev_err(&pdev->dev, "Can't allocate power button\n");
+@@ -122,6 +169,15 @@ static int spacemit_pwrkey_probe(struct platform_device *pdev)
+ 	dev_pm_set_wake_irq(&pdev->dev, fall_irq);
+ 	device_init_wakeup(&pdev->dev, true);
+ 
++	spin_lock_init(&pm_lock);
++
++	pm_notify.notifier_call = pwrk_pm_notify;
++	err = register_pm_notifier(&pm_notify);
++	if (err) {
++		dev_err(&pdev->dev, "Register pm notifier failed\n");
++		return err;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.47.0
+

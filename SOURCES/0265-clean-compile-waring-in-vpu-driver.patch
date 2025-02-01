@@ -1,0 +1,33 @@
+From 462747d05bb22ccfbb7db8dd4eaab97f24b396fb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Dec 2023 17:37:26 +0800
+Subject: [PATCH 0265/1451] clean compile waring in vpu driver
+
+Change-Id: I08c31f9de4ab553060fc1b2e0524c8b98a7e0bf4
+---
+ drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+index de777c89a250..f3561d57ae2e 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+@@ -33,7 +33,6 @@
+  * Includes
+  ****************************************************************************/
+ 
+-#include <asm-generic/memory_model.h>
+ #include <linux/bitmap.h>
+ #include <linux/debugfs.h>
+ #include <linux/dma-buf.h>
+@@ -41,6 +40,7 @@
+ #include <linux/gfp.h>
+ #include <linux/list.h>
+ #include <linux/sched.h>
++#include <asm-generic/memory_model.h>
+ #include "mvx_mmu.h"
+ #include "mvx_log_group.h"
+ 
+-- 
+2.47.0
+

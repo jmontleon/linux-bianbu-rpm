@@ -1,0 +1,43 @@
+From 9a59a4357f8a81a966e105e1f73adf4d3423f213 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Mon, 28 Aug 2023 14:18:28 +0800
+Subject: [PATCH 0087/1451] k1pro: add i2c configuration
+
+Change-Id: If4bed15e291db2f7e4e202a7cc552d61e7ea1741
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 2 +-
+ arch/riscv/configs/k1-pro_fpga_defconfig | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 5ef550877bdb..5b63847a9d06 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -582,7 +582,7 @@ i2c0: i2c@2cee0000 {
+ 			interrupts = <64>;
+ 			device_type = "i2c0";
+ 			reg = <0x0 0x2cee0000 0x0 0x4000>;
+-			clocks = <&ccu CLK_DUMMY>;
++			clocks = <&ccu CLK_I2C0>;
+ 			resets = <&reset RESET_I2C0>;
+ 			clock-frequency = <400000>;
+ 			status = "okay";
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 97900fd46445..3680827443aa 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -162,6 +162,11 @@ CONFIG_SERIAL_OF_PLATFORM=y
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_VIRTIO_CONSOLE=y
+ # CONFIG_HW_RANDOM is not set
++CONFIG_I2C=y
++CONFIG_I2C_CHARDEV=y
++CONFIG_I2C_DESIGNWARE_PLATFORM=y
++CONFIG_I2C_SLAVE=y
++CONFIG_I2C_SLAVE_EEPROM=y
+ CONFIG_SPI=y
+ CONFIG_SPI_DESIGNWARE_EXT=y
+ CONFIG_PINCTRL=y
+-- 
+2.47.0
+

@@ -1,0 +1,31 @@
+From 58f4ccae2a0da29cc43ca4d10b79408f7789045d Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 21 Aug 2024 19:48:06 +0800
+Subject: [PATCH 1106/1451] pcie: Add request operation before gpio operation
+
+Change-Id: I5271e9fcdc1c932f843918a84b107031fdb26f0e
+---
+ drivers/pci/controller/dwc/pcie-k1x.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index f5b519bf7f0e..61a3d9d5374c 100644
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -1624,7 +1624,12 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	k1x->pwr_on_gpio = of_get_named_gpio(np, "k1x,pwr_on", 0);
+-	if (k1x->pwr_on_gpio <= 0) {
++	if (k1x->pwr_on_gpio > 0) {
++		if (gpio_request(k1x->pwr_on_gpio, "pcie-pwron")) {
++			dev_warn(dev, "request power on gpio failed.\n");
++			k1x->pwr_on_gpio = -1;
++		}
++	} else {
+ 		dev_info(dev, "has no power on gpio.\n");
+ 	}
+ 
+-- 
+2.47.0
+

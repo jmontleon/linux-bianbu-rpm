@@ -1,0 +1,57 @@
+From b4a250d8901992499550f84311b57f0ab2c3647d Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Fri, 2 Feb 2024 14:13:03 +0800
+Subject: [PATCH 0417/1451] display: Update hdmi phy config
+
+Change-Id: I6e1d48e155a951ecd8afd74051f8c7b9a2d5f86e
+---
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index d6078b801ef8..2afc647f8834 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -158,7 +158,9 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 
+ 	// hdmi config
+ 	if (mode->hdisplay > 1024) {
+-		// 1920x1080
++	// 1920x1080
++	#if 0
++
+ 		writel(0x4d, hdmi_addr + 0x34);
+ 		writel(0x20200000, hdmi_addr + 0xe8);
+ 		writel(0x509D453E, hdmi_addr + 0xec);
+@@ -167,9 +169,27 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 
+ 		udelay(2);
+ 		value = readl_relaxed(hdmi_addr + 0xe4);
+-		DRM_DEBUG("%s() hdmi 0xe4 0x%x\n", __func__, value);
++		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
+ 
+ 		writel(0x30184000, hdmi_addr + 0x28);
++	#else
++
++		writel(0xEE40410F, hdmi_addr + 0xe0);
++		writel(0x0000005d, hdmi_addr + 0x34);
++		writel(0x2022C000, hdmi_addr + 0xe8);
++		writel(0x508D414D, hdmi_addr + 0xec);
++
++		writel(0x00000901, hdmi_addr + 0xf0);
++		writel(0x3, hdmi_addr + 0xe4);
++
++		udelay(2);
++		value = readl_relaxed(hdmi_addr + 0xe4);
++		DRM_INFO("%s() hdmi 0xe4 0x%x\n", __func__, value);
++
++		writel(0x3018C001, hdmi_addr + 0x28);
++
++	#endif
++
+ 	} else {
+ 		// 640x480
+ 		writel(0x40, hdmi_addr + 0x34);
+-- 
+2.47.0
+

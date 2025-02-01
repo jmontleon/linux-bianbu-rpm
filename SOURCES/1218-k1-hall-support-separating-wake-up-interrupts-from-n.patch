@@ -1,0 +1,300 @@
+From a18a0f0409ede51623d3a5d0871b754f8f85c480 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 25 Oct 2024 19:06:54 +0800
+Subject: [PATCH 1218/1451] k1:hall:support separating wake-up interrupts from
+ normal work interrupts for edge-detect wakeup function
+
+Change-Id: I17a867c0595fa07ad17ca7c396f2272ce8f61b10
+---
+ .../boot/dts/spacemit/k1-x_MUSE-Book.dts      |  6 +-
+ drivers/base/power/wakeirq.c                  | 60 +++++++++++++++++++
+ drivers/pinctrl/pinctrl-single.c              | 57 +++++++++++++++++-
+ drivers/soc/spacemit/spacemit_lid.c           | 26 +++++---
+ include/linux/pm_wakeirq.h                    | 10 ++++
+ 5 files changed, 148 insertions(+), 11 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index d6c702328628..85e70e676e9a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -140,11 +140,11 @@ vcc4v0_baseboard: vcc4v0-baseboard {
+ 
+ 	spacemit_lid:spacemit_lid {
+ 		compatible = "spacemit,k1x-lid";
+-		lid-gpios = <&gpio 74 0>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_hall_wakeup>;
+-		interrupt-parent = <&pinctrl>;
+-		interrupts = <300>;
++		lid-gpios = <&gpio 74 0>;
++		interrupts-extended = <&gpio 74 1
++				&pinctrl 300>;
+ 	};
+ 
+ 	rf_pwrseq: rf-pwrseq {
+diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
+index 5a5a9e978e85..7ece0f1137d5 100644
+--- a/drivers/base/power/wakeirq.c
++++ b/drivers/base/power/wakeirq.c
+@@ -212,6 +212,66 @@ int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_set_dedicated_wake_irq);
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++static int __dev_pm_set_dedicated_wake_irq_spacemit(struct device *dev, int irq, unsigned int flag, int trigger_type)
++{
++	struct wake_irq *wirq;
++	int err;
++
++	if (irq < 0)
++		return -EINVAL;
++
++	wirq = kzalloc(sizeof(*wirq), GFP_KERNEL);
++	if (!wirq)
++		return -ENOMEM;
++
++	wirq->name = kasprintf(GFP_KERNEL, "%s:wakeup", dev_name(dev));
++	if (!wirq->name) {
++		err = -ENOMEM;
++		goto err_free;
++	}
++
++	wirq->dev = dev;
++	wirq->irq = irq;
++
++	/* Prevent deferred spurious wakeirqs with disable_irq_nosync() */
++	irq_set_status_flags(irq, IRQ_DISABLE_UNLAZY);
++
++	/*
++	 * Consumer device may need to power up and restore state
++	 * so we use a threaded irq.
++	 */
++	err = request_threaded_irq(irq, NULL, handle_threaded_wake_irq,
++				   IRQF_ONESHOT | IRQF_NO_AUTOEN | trigger_type,
++				   wirq->name, wirq);
++	if (err)
++		goto err_free_name;
++
++	err = dev_pm_attach_wake_irq(dev, wirq);
++	if (err)
++		goto err_free_irq;
++
++	wirq->status = WAKE_IRQ_DEDICATED_ALLOCATED | flag;
++
++	return err;
++
++err_free_irq:
++	free_irq(irq, wirq);
++err_free_name:
++	kfree(wirq->name);
++err_free:
++	kfree(wirq);
++
++	return err;
++}
++
++int dev_pm_set_dedicated_wake_irq_spacemit(struct device *dev, int irq, int trigger_type)
++{
++	return __dev_pm_set_dedicated_wake_irq_spacemit(dev, irq, 0, trigger_type);
++}
++EXPORT_SYMBOL_GPL(dev_pm_set_dedicated_wake_irq_spacemit);
++#endif
++
+ /**
+  * dev_pm_set_dedicated_wake_irq_reverse - Request a dedicated wake-up interrupt
+  *                                         with reverse enable ordering
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index d8dd362434e4..6f0b8ba57e89 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1488,6 +1488,57 @@ static int pcs_irq_set_wake(struct irq_data *d, unsigned int state)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++static inline void _pcs_irq_set_type(struct pcs_soc_data *pcs_soc,
++			       int irq, int flow_type)
++{
++	struct pcs_device *pcs;
++	struct list_head *pos;
++	unsigned mask;
++
++	pcs = container_of(pcs_soc, struct pcs_device, socdata);
++	list_for_each(pos, &pcs->irqs) {
++		struct pcs_interrupt *pcswi;
++		unsigned soc_mask;
++
++		pcswi = list_entry(pos, struct pcs_interrupt, node);
++		if (irq != pcswi->irq)
++			continue;
++
++		soc_mask = pcs_soc->irq_enable_mask;
++		raw_spin_lock(&pcs->lock);
++		mask = pcs->read(pcswi->reg);
++
++		if (flow_type == IRQ_TYPE_EDGE_RISING) {
++			mask |= (1 << EDGE_RISE_EN);
++		} else {
++			mask &= ~(1 << EDGE_RISE_EN);
++		}
++
++		if (flow_type == IRQ_TYPE_EDGE_FALLING) {
++			mask |= (1 << EDGE_FALL_EN);
++		} else {
++			mask &= ~(1 << EDGE_FALL_EN);
++		}
++
++		pcs->write(mask, pcswi->reg);
++
++		/* flush posted write */
++		mask = pcs->read(pcswi->reg);
++		raw_spin_unlock(&pcs->lock);
++	}
++}
++
++static int pcs_irq_set_type(struct irq_data *d, unsigned int flow_type)
++{
++	struct pcs_soc_data *pcs_soc = irq_data_get_irq_chip_data(d);
++
++	_pcs_irq_set_type(pcs_soc, d->irq, flow_type);
++
++	return 0;
++}
++#endif
++
+ /**
+  * pcs_irq_handle() - common interrupt handler
+  * @pcs_soc: SoC specific settings
+@@ -1630,6 +1681,10 @@ static int pcs_irq_init_chained_handler(struct pcs_device *pcs,
+ 	pcs->chip.irq_mask = pcs_irq_mask;
+ 	pcs->chip.irq_unmask = pcs_irq_unmask;
+ 	pcs->chip.irq_set_wake = pcs_irq_set_wake;
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	pcs->chip.flags = IRQCHIP_SKIP_SET_WAKE;
++	pcs->chip.irq_set_type = pcs_irq_set_type;
++#endif
+ 
+ 	if (PCS_QUIRK_HAS_SHARED_IRQ) {
+ 		int res;
+@@ -2030,7 +2085,7 @@ static int pcs_probe(struct platform_device *pdev)
+ 	dev_info(pcs->dev, "%i pins, size %u\n", pcs->desc.npins, pcs->size);
+ 
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+-	dev_pm_set_wake_irq(&pdev->dev, pcs->socdata.irq );
++	dev_pm_set_wake_irq(&pdev->dev, pcs->socdata.irq);
+ 	device_init_wakeup(&pdev->dev, true);
+ #endif
+ 
+diff --git a/drivers/soc/spacemit/spacemit_lid.c b/drivers/soc/spacemit/spacemit_lid.c
+index 1046afe8af1f..1fdc9e672bc6 100644
+--- a/drivers/soc/spacemit/spacemit_lid.c
++++ b/drivers/soc/spacemit/spacemit_lid.c
+@@ -13,12 +13,14 @@
+ #include <linux/pm_wakeirq.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/property.h>
++#include <linux/pm_wakeirq.h>
+ #include <linux/of.h>
+ 
+ struct _hall {
+-	int irq;
++	struct device *dev;
+ 	struct input_dev *input;
+ 	struct gpio_desc *gpio;
++	int wakeup_irq, normal_irq;
+ };
+ 
+ static irqreturn_t hall_wakeup_detect(int irq, void *arg)
+@@ -27,6 +29,9 @@ static irqreturn_t hall_wakeup_detect(int irq, void *arg)
+ 	struct _hall *hall = (struct _hall *)arg;
+ 
+ 	state = gpiod_get_value(hall->gpio);
++
++	pm_wakeup_event(hall->dev, 0);
++
+ 	input_report_switch(hall->input, SW_LID, !state);
+  	input_sync(hall->input);
+ 
+@@ -45,24 +50,27 @@ static int spacemit_lid_probe(struct platform_device *pdev)
+ 
+ 	hall->gpio = devm_gpiod_get(&pdev->dev, "lid", GPIOD_IN);
+ 	if (IS_ERR_OR_NULL(hall->gpio)) {
+-		pr_err("get gpio error\n");
+ 		return PTR_ERR(hall->gpio);
+ 	}
+ 
+-	hall->irq = platform_get_irq(pdev, 0);
+-	if (hall->irq < 0)
++	hall->normal_irq = platform_get_irq(pdev, 0);
++	if (hall->normal_irq < 0)
++		return -EINVAL;
++
++	hall->wakeup_irq = platform_get_irq(pdev, 1);
++	if (hall->wakeup_irq < 0) {
+ 		return -EINVAL;
++	}
+ 
+-	error = devm_request_any_context_irq(&pdev->dev, hall->irq,
++	error = devm_request_irq(&pdev->dev, hall->normal_irq,
+ 			hall_wakeup_detect,
+-			IRQF_ONESHOT | IRQF_TRIGGER_NONE,
++			IRQF_NO_SUSPEND | IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+ 			"hall-detect", (void *)hall);
+ 	if (error) {
+ 		pr_err("request hall pinctrl dectect failed\n");
+ 		return -EINVAL;
+ 	}
+ 
+-
+ 	input = devm_input_allocate_device(&pdev->dev);
+ 	if (!input)
+ 		return -ENOMEM;
+@@ -73,6 +81,7 @@ static int spacemit_lid_probe(struct platform_device *pdev)
+ 
+ 	input_set_drvdata(input, hall);
+ 
++	hall->dev = &pdev->dev;
+ 	hall->input = input;
+ 
+ 	error = input_register_device(input);
+@@ -81,6 +90,9 @@ static int spacemit_lid_probe(struct platform_device *pdev)
+ 		return error;
+ 	}
+ 
++	dev_pm_set_dedicated_wake_irq_spacemit(&pdev->dev, hall->wakeup_irq, IRQ_TYPE_EDGE_RISING);
++ 	device_init_wakeup(&pdev->dev, true);
++
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/pm_wakeirq.h b/include/linux/pm_wakeirq.h
+index d9642c6cf852..b19e8f410b86 100644
+--- a/include/linux/pm_wakeirq.h
++++ b/include/linux/pm_wakeirq.h
+@@ -8,6 +8,9 @@
+ 
+ extern int dev_pm_set_wake_irq(struct device *dev, int irq);
+ extern int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq);
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++extern int dev_pm_set_dedicated_wake_irq_spacemit(struct device *dev, int irq, int trigger_tyep);
++#endif
+ extern int dev_pm_set_dedicated_wake_irq_reverse(struct device *dev, int irq);
+ extern void dev_pm_clear_wake_irq(struct device *dev);
+ 
+@@ -23,6 +26,13 @@ static inline int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++static inline int dev_pm_set_dedicated_wake_irq_spacemit(struct device *dev, int irq)
++{
++	return 0;
++}
++#endif
++
+ static inline int dev_pm_set_dedicated_wake_irq_reverse(struct device *dev, int irq)
+ {
+ 	return 0;
+-- 
+2.47.0
+

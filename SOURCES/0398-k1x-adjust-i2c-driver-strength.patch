@@ -1,0 +1,199 @@
+From 1ed63bd126ad44d6a85c47e3818b8a64bba45321 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Tue, 23 Jan 2024 16:47:01 +0800
+Subject: [PATCH 0398/1451] k1x: adjust i2c driver strength
+
+Change-Id: I0260182ab4025313b89f4e2cc4ff9831a3d0d389
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  4 +-
+ .../riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 72 +++++++++----------
+ 2 files changed, 38 insertions(+), 38 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8803494557f1..641ef5a8e83d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1059,10 +1059,10 @@ i2c1: i2c@d4011000 {
+                         status = "disabled";
+                 };
+ 
+-                i2c2: i2c@d4011200 {
++                i2c2: i2c@d4012000 {
+                         compatible = "spacemit,k1x-i2c";
+                         spacemit,adapter-id = <2>;
+-                        reg = <0x0 0xd4011200 0x0 0x38>;
++                        reg = <0x0 0xd4012000 0x0 0x38>;
+                         /* usually i2c client has only 1 reg field */
+                         #address-cells = <1>;
+                         #size-cells = <0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index 43a18611c37d..996be6298ff3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -228,127 +228,127 @@ K1X_PADCONF(PRI_TDO,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* ua
+ 
+     pinctrl_i2c0: i2c0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_54,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c0_scl */
+-            K1X_PADCONF(GPIO_55,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c0_sda */
++            K1X_PADCONF(GPIO_54,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c0_scl */
++            K1X_PADCONF(GPIO_55,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c0_sda */
+         >;
+     };
+ 
+     pinctrl_i2c1: i2c1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_56,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_scl */
+-            K1X_PADCONF(GPIO_57,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c1_sda */
++            K1X_PADCONF(GPIO_56,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c1_scl */
++            K1X_PADCONF(GPIO_57,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c1_sda */
+         >;
+     };
+ 
+     pinctrl_i2c2_0: i2c2_0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_84,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* i2c2_scl */
+-            K1X_PADCONF(GPIO_85,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* i2c2_sda */
++            K1X_PADCONF(GPIO_84,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))   /* i2c2_scl */
++            K1X_PADCONF(GPIO_85,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))   /* i2c2_sda */
+         >;
+     };
+ 
+     pinctrl_i2c2_1: i2c2_1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(PRI_TDI,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c2_scl */
+-            K1X_PADCONF(PRI_TMS,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c2_sda */
++            K1X_PADCONF(PRI_TDI,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c2_scl */
++            K1X_PADCONF(PRI_TMS,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c2_sda */
+         >;
+     };
+ 
+     pinctrl_i2c2_2: i2c2_2_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_68,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c2_scl */
+-            K1X_PADCONF(GPIO_69,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c2_sda */
++            K1X_PADCONF(GPIO_68,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c2_scl */
++            K1X_PADCONF(GPIO_69,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c2_sda */
+         >;
+     };
+ 
+     pinctrl_i2c3_0: i2c3_0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_38,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_scl */
+-            K1X_PADCONF(GPIO_39,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_sda */
++            K1X_PADCONF(GPIO_38,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_scl */
++            K1X_PADCONF(GPIO_39,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_sda */
+         >;
+     };
+ 
+     pinctrl_i2c3_1: i2c3_1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_47,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_scl */
+-            K1X_PADCONF(GPIO_48,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_sda */
++            K1X_PADCONF(GPIO_47,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_scl */
++            K1X_PADCONF(GPIO_48,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_sda */
+         >;
+     };
+ 
+     pinctrl_i2c3_2: i2c3_2_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_77,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_scl */
+-            K1X_PADCONF(GPIO_78,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c3_sda */
++            K1X_PADCONF(GPIO_77,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_scl */
++            K1X_PADCONF(GPIO_78,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c3_sda */
+         >;
+     };
+ 
+     pinctrl_i2c4_0: i2c4_0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_40,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* i2c4_scl */
+-            K1X_PADCONF(GPIO_41,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))   /* i2c4_sda */
++            K1X_PADCONF(GPIO_40,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))   /* i2c4_scl */
++            K1X_PADCONF(GPIO_41,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))   /* i2c4_sda */
+         >;
+     };
+ 
+     pinctrl_i2c4_1: i2c4_1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_75,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_3V_DS4))   /* i2c4_scl */
+-            K1X_PADCONF(GPIO_76,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_3V_DS4))   /* i2c4_sda */
++            K1X_PADCONF(GPIO_75,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_3V_DS0))   /* i2c4_scl */
++            K1X_PADCONF(GPIO_76,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_3V_DS0))   /* i2c4_sda */
+         >;
+     };
+ 
+     pinctrl_i2c4_2: i2c4_2_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_51,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_3V_DS4))   /* i2c4_scl */
+-            K1X_PADCONF(GPIO_52,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_3V_DS4))   /* i2c4_sda */
++            K1X_PADCONF(GPIO_51,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_3V_DS0))   /* i2c4_scl */
++            K1X_PADCONF(GPIO_52,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_3V_DS0))   /* i2c4_sda */
+         >;
+     };
+ 
+     pinctrl_i2c5_0: i2c5_0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_81,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c5_scl */
+-            K1X_PADCONF(GPIO_82,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c5_sda */
++            K1X_PADCONF(GPIO_81,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c5_scl */
++            K1X_PADCONF(GPIO_82,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c5_sda */
+         >;
+     };
+ 
+     pinctrl_i2c5_1: i2c5_1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_54,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c5_scl */
+-            K1X_PADCONF(GPIO_55,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c5_sda */
++            K1X_PADCONF(GPIO_54,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c5_scl */
++            K1X_PADCONF(GPIO_55,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c5_sda */
+         >;
+     };
+ 
+     pinctrl_i2c6_0: i2c6_0_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_83,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c6_scl */
+-            K1X_PADCONF(GPIO_90,    MUX_MODE5, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i2c6_sda */
++            K1X_PADCONF(GPIO_83,    MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c6_scl */
++            K1X_PADCONF(GPIO_90,    MUX_MODE5, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* i2c6_sda */
+         >;
+     };
+ 
+     pinctrl_i2c6_1: i2c6_1_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_118,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c6_scl */
+-            K1X_PADCONF(GPIO_119,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c6_sda */
++            K1X_PADCONF(GPIO_118,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c6_scl */
++            K1X_PADCONF(GPIO_119,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c6_sda */
+         >;
+     };
+ 
+     pinctrl_i2c6_2: i2c6_2_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_56,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c6_scl */
+-            K1X_PADCONF(GPIO_57,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* i2c6_sda */
++            K1X_PADCONF(GPIO_56,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c6_scl */
++            K1X_PADCONF(GPIO_57,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i2c6_sda */
+         >;
+     };
+ 
+     pinctrl_i2c7: i2c7_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_118,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c6_scl */
+-            K1X_PADCONF(GPIO_119,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i2c6_sda */
++            K1X_PADCONF(GPIO_118,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* i2c6_scl */
++            K1X_PADCONF(GPIO_119,   MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* i2c6_sda */
+         >;
+     };
+ 
+     pinctrl_i2c8: i2c8_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(PWR_SCL,    MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* pwr_scl */
+-            K1X_PADCONF(PWR_SDA,    MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* pwr_sda */
++            K1X_PADCONF(PWR_SCL,    MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* pwr_scl */
++            K1X_PADCONF(PWR_SDA,    MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))     /* pwr_sda */
+         >;
+     };
+ 
+-- 
+2.47.0
+

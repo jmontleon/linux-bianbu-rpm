@@ -1,0 +1,67 @@
+From d0cb5b2ef195ad8e95fcf5a87493ee9ab85a7eb8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 10 Jan 2024 20:21:13 +0800
+Subject: [PATCH 0341/1451] dtsi: k1-x add usb3.0 support
+
+Change-Id: I4efc11bb70e0aaa594a2d75df063f111ee054b5e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 29 ++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 16fbcec77d6f..ee7aeceedb08 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -11,6 +11,7 @@
+ #include <dt-bindings/pmu/k1x_pmu.h>
+ #include <dt-bindings/dma/k1x-dmac.h>
+ #include <dt-bindings/thermal/thermal.h>
++#include <dt-bindings/phy/phy.h>
+ 
+ / {
+ 	compatible = "spacemit,k1-x";
+@@ -1601,6 +1602,31 @@ ehci1: ehci1@c0980100 {
+ 			status = "disabled";
+ 		};
+ 
++		combphy: phy@c0b10000{
++			compatible = "spacemit,k1x-combphy";
++			reg = <0x0 0xc0b10000 0x0 0x800>,
++				  <0x0 0xd4282910 0x0 0x400>;
++			reg-names = "puphy", "phy_sel";
++			resets = <&reset RESET_PCIE0>;
++			reset-names = "phy_rst";
++			#phy-cells = <1>;
++			status = "disabled";
++		};
++
++		usb2phy: usb2phy@0xc0a30000 {
++			compatible = "spacemit,usb2-phy";
++			reg = <0x0 0xc0a30000  0x0 0x200>;
++			spacemit,phy-name = "mv-usb-phy";
++			spacemit,pll-lock-bypass;
++			clocks = <&ccu CLK_USB30>;
++			status = "disabled";
++		};
++
++		usb3hub: usb3hub@0 {
++			compatible = "spacemit,usb3-hub";
++			status = "disabled";
++		};
++
+ 		usbdrd3: usb3@0 {
+ 			compatible = "spacemit,k1-x-dwc3";
+ 			#address-cells = <2>;
+@@ -1621,6 +1647,9 @@ dwc3@c0a00000 {
+ 				reg = <0x0 0xc0a00000 0x0 0x10000>;
+ 				interrupt-parent = <&intc>;
+ 				interrupts = <125>;
++				phys = <&combphy PHY_TYPE_USB3>;
++				phy-names = "usb3-phy";
++				usb-phy = <&usb2phy>;
+ 			};
+ 		};
+ 
+-- 
+2.47.0
+

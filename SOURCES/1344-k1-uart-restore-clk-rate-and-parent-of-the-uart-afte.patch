@@ -1,0 +1,58 @@
+From e384e95f2845d61d1f1b5163c77563e61314f88c Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 5 Nov 2024 08:56:03 +0800
+Subject: [PATCH 1344/1451] k1:uart: restore clk rate and parent of the uart
+ after resumed from hibernation
+
+Change-Id: Ie75151346948ac01bc73d2107c9bb6d46ee1e503
+---
+ drivers/tty/serial/pxa_k1x.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index af1d2d0cad70..6db39ca8a77b 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -1897,6 +1897,12 @@ static int serial_pxa_is_open(struct uart_pxa_port *up)
+ }
+ 
+ #ifdef CONFIG_PM
++
++#ifdef CONFIG_HIBERNATION
++unsigned long pxa_clk_freq;
++struct clk *pxa_clk_parent;
++#endif
++
+ static int serial_pxa_suspend(struct device *dev)
+ {
+ 	struct uart_pxa_port *sport = dev_get_drvdata(dev);
+@@ -1964,7 +1970,14 @@ static int serial_pxa_suspend(struct device *dev)
+ 	}
+ 
+ 	if (sport) {
++#ifdef CONFIG_HIBERNATION
++		pxa_clk_freq = clk_get_rate(sport->fclk);
++		pxa_clk_parent = clk_get_parent(sport->fclk);
++#endif
+ 		uart_suspend_port(&serial_pxa_reg, &sport->port);
++#ifdef CONFIG_HIBERNATION
++		clk_set_parent(sport->fclk, NULL);
++#endif
+ 	}
+ 
+ #ifdef CONFIG_PM
+@@ -1987,6 +2000,11 @@ static int serial_pxa_resume(struct device *dev)
+ 	}
+ 
+ 	sport->in_resume = true;
++
++#ifdef CONFIG_HIBERNATION
++	clk_set_parent(sport->fclk, pxa_clk_parent);
++	clk_set_rate(sport->fclk, pxa_clk_freq);
++#endif
+ 	uart_resume_port(&serial_pxa_reg, &sport->port);
+ 
+ 	if (serial_pxa_is_open(sport) && sport->dma_enable) {
+-- 
+2.47.0
+

@@ -1,0 +1,53 @@
+From c90fa7ebf113f46c5314a4ee23d74e4377eb48c3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:51 -0500
+Subject: [PATCH 0824/1451] riscv: add ISA extension parsing for Zvfh[min]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add parsing for Zvfh[min] ISA extension[1] which were ratified in
+june 2023 around commit e2ccd0548d6c ("Remove draft warnings from
+Zvfh[min]") in riscv-v-spec[2].
+
+Link: https://drive.google.com/file/d/1_Yt60HGAf1r1hx7JnsIptw0sqkBd9BQ8/view [1]
+Link: https://github.com/riscv/riscv-v-spec/commits/e2ccd0548d6c [2]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-16-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I7ec1013b919f9c16e7082254adc955d860acb319
+---
+ arch/riscv/include/asm/hwcap.h | 2 ++
+ arch/riscv/kernel/cpufeature.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 97d106fa0f54..103d4f0aaf15 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -81,6 +81,8 @@
+ #define RISCV_ISA_EXT_ZFH		66
+ #define RISCV_ISA_EXT_ZFHMIN		67
+ #define RISCV_ISA_EXT_ZIHINTNTL		68
++#define RISCV_ISA_EXT_ZVFH		69
++#define RISCV_ISA_EXT_ZVFHMIN		70
+ 
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index cec962f97d67..5be7a60ca815 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -306,6 +306,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
+ 	__RISCV_ISA_EXT_SUPERSET(zvbb, RISCV_ISA_EXT_ZVBB, riscv_zvbb_exts),
+ 	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
++	__RISCV_ISA_EXT_DATA(zvfh, RISCV_ISA_EXT_ZVFH),
++	__RISCV_ISA_EXT_DATA(zvfhmin, RISCV_ISA_EXT_ZVFHMIN),
+ 	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
+ 	__RISCV_ISA_EXT_DATA(zvkg, RISCV_ISA_EXT_ZVKG),
+ 	__RISCV_ISA_EXT_BUNDLE(zvkn, riscv_zvkn_bundled_exts),
+-- 
+2.47.0
+

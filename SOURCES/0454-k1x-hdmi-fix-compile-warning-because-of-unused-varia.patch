@@ -1,0 +1,26 @@
+From 1d974ef7c81db9652fa05f86b6f34335b4f2147b Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 20:29:12 +0800
+Subject: [PATCH 0454/1451] k1x/hdmi: fix compile warning because of unused
+ variable
+
+Change-Id: If184159dfef602c4b45069990521044bfd7e9f11
+---
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index eeddc52fc9f7..455e07fa5ac0 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -476,7 +476,6 @@ void hdmi_init (struct spacemit_hdmi *hdmi, int pixek_clock){
+ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 			   struct drm_display_mode *mode)
+ {
+-	u32 value;
+ 	DRM_DEBUG("%s() \n", __func__);
+ 
+ 	// hdmi config
+-- 
+2.47.0
+

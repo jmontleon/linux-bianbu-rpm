@@ -1,0 +1,97 @@
+From 72489cf8f1eb62de4889fcf5322b785d72737c5f Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 13 Jun 2024 16:39:54 +0800
+Subject: [PATCH 0749/1451] k1:pm: set the sleep voltage of DCDC1 to 650mv
+
+Change-Id: I59dc9b5014126079e3cfc3122e53c98ad3d37411
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts | 5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   | 5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   | 5 +++++
+ 5 files changed, 25 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 72648a682006..674eff5f4489 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -370,6 +370,11 @@ dcdc_1: DCDC_REG1 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3450000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <650000>;
++				};
+ 			};
+ 
+ 			dcdc_2: DCDC_REG2 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 1c5d3d03406c..89e5edd463a0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -236,6 +236,11 @@ dcdc_1: DCDC_REG1 {
+ 				regulator-max-microvolt = <3450000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <650000>;
++				};
+ 			};
+ 
+ 			dcdc_2: DCDC_REG2 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index cc3bf3d3bbfa..e9801434f6d4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -352,6 +352,11 @@ dcdc_1: DCDC_REG1 {
+ 				regulator-max-microvolt = <3450000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <650000>;
++				};
+ 			};
+ 
+ 			dcdc_2: DCDC_REG2 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 7a6f1d702ad2..ba8d38e852d1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -329,6 +329,11 @@ dcdc_1: DCDC_REG1 {
+ 				regulator-max-microvolt = <3450000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <650000>;
++				};
+ 			};
+ 
+ 			dcdc_2: DCDC_REG2 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 99c8900e6f69..9b9e14acad3e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -214,6 +214,11 @@ dcdc_1: DCDC_REG1 {
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3450000>;
+ 				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <650000>;
++				};
+ 			};
+ 
+ 			dcdc_2: DCDC_REG2 {
+-- 
+2.47.0
+

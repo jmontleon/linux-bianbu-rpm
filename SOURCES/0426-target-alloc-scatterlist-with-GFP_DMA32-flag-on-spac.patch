@@ -1,0 +1,28 @@
+From 16a7804ec81eb841e308cdd57c7a625801614cd8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 22 Feb 2024 11:59:21 +0800
+Subject: [PATCH 0426/1451] target: alloc scatterlist with GFP_DMA32 flag on
+ spacemit k1x platform
+
+Change-Id: Ie5d9270a36044ef2064dc2bb880d6a992286ae36
+---
+ drivers/target/target_core_transport.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 0af1f17bd6ed..f963868b03e1 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -2764,6 +2764,9 @@ target_alloc_sgl(struct scatterlist **sgl, unsigned int *nents, u32 length,
+ {
+ 	gfp_t gfp = GFP_KERNEL | (zero_page ? __GFP_ZERO : 0);
+ 
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++	gfp |= GFP_DMA32;
++#endif
+ 	*sgl = sgl_alloc_order(length, 0, chainable, gfp, nents);
+ 	return *sgl ? 0 : -ENOMEM;
+ }
+-- 
+2.47.0
+

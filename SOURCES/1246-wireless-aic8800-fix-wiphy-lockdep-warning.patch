@@ -1,0 +1,31 @@
+From 6643dc46b0c8e1500a59fdc6cb9882d2f90131f4 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 5 Nov 2024 16:33:59 +0800
+Subject: [PATCH 1246/1451] wireless: aic8800: fix wiphy lockdep warning
+
+Change-Id: I709e6bed0e83612ef4b15ac012bf2d9ee007dd4f
+---
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+index 8ea066c36974..06f863fd3fa9 100644
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_main.c
+@@ -6432,11 +6432,11 @@ int rwnx_cfg80211_init(struct rwnx_plat *rwnx_plat, void **platform_data)
+ 	}
+ #endif
+ 	rtnl_lock();
+-
++	wiphy_lock(wiphy);
+ 	/* Add an initial station interface */
+ 	vif = rwnx_interface_add(rwnx_hw, "wlan%d", NET_NAME_UNKNOWN,
+ 								NL80211_IFTYPE_STATION, NULL);
+-
++	wiphy_unlock(wiphy);
+ 	rtnl_unlock();
+ 
+ 	if (!vif) {
+-- 
+2.47.0
+

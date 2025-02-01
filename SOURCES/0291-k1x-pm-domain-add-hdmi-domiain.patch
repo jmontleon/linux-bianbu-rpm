@@ -1,0 +1,65 @@
+From 846fdc8a71cd7119503d97bcd856b06cc50b4866 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 2 Jan 2024 09:53:18 +0800
+Subject: [PATCH 0291/1451] k1x:pm-domain:add hdmi domiain
+
+Change-Id: I22a600357644a4c4fb1861722bf8f2cacb8b364e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 19 +++++++++++++++++--
+ include/dt-bindings/pmu/k1x_pmu.h      |  3 ++-
+ 2 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 1c3b5881486b..f26b3b10db7a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -568,7 +568,7 @@ power: power-controller {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				domains = <0x8>;
++				domains = <0x9>;
+ 
+ 				power-domain@SPT_PD_BUS {
+ 					reg = <0x0>;
+@@ -657,8 +657,23 @@ power-domain@SPT_PD_GNSS {
+ 					#power-domain-cells = <0>;
+ 				};
+ 
+-				power-domain@SPT_PD_DUMMY {
++				power-domain@SPT_PD_HDMI {
+ 					reg = <0x7>;
++					pm_qos = <12>;
++					reg_pwr_ctrl = <0x3f4>;
++					bit_hw_mode = <4>;
++					bit_sleep2 = <3>;
++					bit_sleep1 = <2>;
++					bit_isolation = <1>;
++					bit_auto_pwr_on = <0>;
++					bit_pwr_stat = <7>;
++					bit_hw_pwr_stat = <15>;
++					use_hw = <1>;
++					#power-domain-cells = <0>;
++				};
++
++				power-domain@SPT_PD_DUMMY {
++					reg = <0x8>;
+ 					pm_qos = <15>;
+ 					#power-domain-cells = <0>;
+ 				};
+diff --git a/include/dt-bindings/pmu/k1x_pmu.h b/include/dt-bindings/pmu/k1x_pmu.h
+index dac61d1662be..b424ca96c572 100644
+--- a/include/dt-bindings/pmu/k1x_pmu.h
++++ b/include/dt-bindings/pmu/k1x_pmu.h
+@@ -10,6 +10,7 @@
+ #define K1X_PMU_ISP_PWR_DOMAIN	4
+ #define K1X_PMU_AUD_PWR_DOMAIN	5
+ #define K1X_PMU_GNSS_PWR_DOMAIN	6
+-#define K1X_PMU_DUMMY_PWR_DOMAIN	7
++#define K1X_PMU_HDMI_PWR_DOMAIN	7
++#define K1X_PMU_DUMMY_PWR_DOMAIN	8
+ 
+ #endif
+-- 
+2.47.0
+

@@ -1,0 +1,61 @@
+From 71d6230819f607de6a56d54992c57e94a7c92844 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@space-t.cn>
+Date: Tue, 13 Jun 2023 16:01:10 +0800
+Subject: [PATCH 0048/1451] add script for extract & generate rootfs.cpio.gz
+
+Change-Id: Ic33a2d54e584f66be29c62abc5715d4c545be129
+---
+ scripts/build_rootfs.sh | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100755 scripts/build_rootfs.sh
+
+diff --git a/scripts/build_rootfs.sh b/scripts/build_rootfs.sh
+new file mode 100755
+index 000000000000..72c0106a66d4
+--- /dev/null
++++ b/scripts/build_rootfs.sh
+@@ -0,0 +1,41 @@
++#!/bin/bash
++
++set -e
++
++function generate_rootfs()
++{
++    if [ -d rootfs ] ; then
++    	(cd rootfs; find . | fakeroot cpio -o -Hnewc | gzip > ../"$1")
++    else
++    	echo "rootfs not exist"
++    	exit 1
++    fi
++}
++
++function extract_rootfs()
++{
++    if [ -f "$1" ] ; then
++    	rm -rf rootfs && mkdir rootfs
++    	gzip -dc $1 | (cd rootfs; fakeroot cpio -i)
++    else
++    	echo "$1 not exist"
++    	exit 1
++    fi
++}
++
++if [ $# -ne 2 ]; then
++	echo -e "please input correct parameters"
++	echo -e "\t[build.sh -e rootf.cpio.gz] Extract the rootfs template to rootfs folder"
++	echo -e "\tthen make some changes in the rootfs folder"
++	echo -e "\t[build.sh -c rootf.cpio.gz] Generate the rootfs from the rootfs folder"
++	exit 1
++fi
++
++if [ "$1" = "-e" ] ; then
++	extract_rootfs $2
++elif [ "$1" = "-c" ] ; then
++	generate_rootfs $2
++else
++	echo "Argument is invalid!!!"
++	exit 1
++fi
+-- 
+2.47.0
+

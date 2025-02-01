@@ -1,0 +1,59 @@
+From c7e9df7e676e94996421bc82f70785b6839594ff Mon Sep 17 00:00:00 2001
+From: goumin <min.gou@spacemit.com>
+Date: Wed, 8 May 2024 19:12:23 +0800
+Subject: [PATCH 0661/1451] Linux:Integrate Battery Driver
+
+Change-Id: Idd3dd1c9ee71ce744a7ea8d6c6a07a13cd4e89f4
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi      | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts | 7 +++++++
+ arch/riscv/configs/k1_defconfig             | 2 ++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 5669ffca0466..be1033dc696e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1228,7 +1228,7 @@ i2c4: i2c@d4012800 {
+ 			dma-names = "rx", "tx";
+ 			*/
+ 			spacemit,dma-disable;
+-			spacemit,i2c-fast-mode;
++			/* spacemit,i2c-fast-mode; */
+ 			/* spacemit,i2c-high-mode; */
+ 			spacemit,i2c-master-code = /bits/ 8 <0x0e>;
+ 			spacemit,i2c-clk-rate = <32000000>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 50302711bfcd..545873231e05 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -263,6 +263,13 @@ touchpad: hid@2d {
+ 		interrupts = <50 2>;
+ 		status = "okay";
+ 	};
++
++	battery: battery@b {
++		compatible = "sbs,sbs-battery";
++		reg = <0x0b>;
++		sbs,i2c-retry-count = <2>;
++		sbs,poll-retry-count = <1>;
++	};
+ };
+ 
+ &i2c6 {
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 6f6642620c2c..937ae86ed972 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -380,6 +380,8 @@ CONFIG_PINCTRL_SPACEMIT_PMIC=y
+ CONFIG_PINCTRL_SINGLE=y
+ CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_K1X=y
++CONFIG_POWER_SUPPLY=y
++CONFIG_BATTERY_SBS=y
+ # CONFIG_HWMON is not set
+ CONFIG_THERMAL=y
+ CONFIG_CPU_THERMAL=y
+-- 
+2.47.0
+

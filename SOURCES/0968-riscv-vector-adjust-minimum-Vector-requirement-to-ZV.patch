@@ -1,0 +1,162 @@
+From 53342655a33ab859ce854fbb6fb2fa6b66f9192a Mon Sep 17 00:00:00 2001
+From: Andy Chiu <andy.chiu@sifive.com>
+Date: Fri, 10 May 2024 00:26:57 +0800
+Subject: [PATCH 0968/1451] riscv: vector: adjust minimum Vector requirement to
+ ZVE32X
+
+Make has_vector() to check for ZVE32X. Every in-kernel usage of V that
+requires a more complicate version of V must then call out explicitly.
+
+Also, change riscv_v_first_use_handler(), and boot code that calls
+riscv_v_setup_vsize() to accept ZVE32X.
+
+Most kernel/user interfaces requires minimum of ZVE32X. Thus, programs
+compiled and run with ZVE32X should be supported by the kernel on most
+aspects. This includes context-switch, signal, ptrace, prctl, and
+hwprobe.
+
+One exception is that ELF_HWCAP returns 'V' only if full V is supported
+on the platform. This means that the system without a full V must not
+rely on ELF_HWCAP to tell whether it is allowable to execute Vector
+without first invoking a prctl() check.
+
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Acked-by: Joel Granados <j.granados@samsung.com>
+Link: https://lore.kernel.org/r/20240510-zve-detection-v5-7-0711bdd26c12@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I4c5942fb426d5e05d4ecd9f03a006639886defb1
+---
+ arch/riscv/include/asm/vector.h | 11 +++++------
+ arch/riscv/kernel/cpufeature.c  |  8 +++++++-
+ arch/riscv/kernel/sys_hwprobe.c |  6 +++++-
+ arch/riscv/kernel/vector.c      |  5 ++++-
+ arch/riscv/lib/uaccess.S        |  2 +-
+ 5 files changed, 22 insertions(+), 10 deletions(-)
+
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index e72a0915272c..c741e7b29603 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -37,8 +37,7 @@ static inline u32 riscv_v_flags(void)
+ 
+ static __always_inline bool has_vector(void)
+ {
+-	//return riscv_has_extension_likely(RISCV_ISA_EXT_v);
+-	return true;
++	return riscv_has_extension_unlikely(RISCV_ISA_EXT_ZVE32X);
+ }
+ 
+ static inline void __riscv_v_vstate_clean(struct pt_regs *regs)
+@@ -92,7 +91,7 @@ static __always_inline void __vstate_csr_restore(struct __riscv_v_ext_state *src
+ {
+ 	asm volatile (
+ 		".option push\n\t"
+-		".option arch, +v\n\t"
++		".option arch, +zve32x\n\t"
+ 		"vsetvl	 x0, %2, %1\n\t"
+ 		".option pop\n\t"
+ 		"csrw	" __stringify(CSR_VSTART) ", %0\n\t"
+@@ -110,7 +109,7 @@ static inline void __riscv_v_vstate_save(struct __riscv_v_ext_state *save_to,
+ 	__vstate_csr_save(save_to);
+ 	asm volatile (
+ 		".option push\n\t"
+-		".option arch, +v\n\t"
++		".option arch, +zve32x\n\t"
+ 		"vsetvli	%0, x0, e8, m8, ta, ma\n\t"
+ 		"vse8.v		v0, (%1)\n\t"
+ 		"add		%1, %1, %0\n\t"
+@@ -132,7 +131,7 @@ static inline void __riscv_v_vstate_restore(struct __riscv_v_ext_state *restore_
+ 	riscv_v_enable();
+ 	asm volatile (
+ 		".option push\n\t"
+-		".option arch, +v\n\t"
++		".option arch, +zve32x\n\t"
+ 		"vsetvli	%0, x0, e8, m8, ta, ma\n\t"
+ 		"vle8.v		v0, (%1)\n\t"
+ 		"add		%1, %1, %0\n\t"
+@@ -154,7 +153,7 @@ static inline void __riscv_v_vstate_discard(void)
+ 	riscv_v_enable();
+ 	asm volatile (
+ 		".option push\n\t"
+-		".option arch, +v\n\t"
++		".option arch, +zve32x\n\t"
+ 		"vsetvli	%0, x0, e8, m8, ta, ma\n\t"
+ 		"vmv.v.i	v0, -1\n\t"
+ 		"vmv.v.i	v8, -1\n\t"
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 2da68bd8c04b..f630a3ceda10 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -751,8 +751,14 @@ void __init riscv_fill_hwcap(void)
+ 		elf_hwcap &= ~COMPAT_HWCAP_ISA_F;
+ 	}
+ 
+-	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
++	if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_ZVE32X)) {
++		/*
++		 * This cannot fail when called on the boot hart
++		 */
+ 		riscv_v_setup_vsize();
++	}
++
++	if (elf_hwcap & COMPAT_HWCAP_ISA_V) {
+ 		/*
+ 		 * ISA string in device tree might have 'v' flag, but
+ 		 * CONFIG_RISCV_ISA_V is disabled in kernel.
+diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+index 969ef3d59dbe..b3c9a4e171c0 100644
+--- a/arch/riscv/kernel/sys_hwprobe.c
++++ b/arch/riscv/kernel/sys_hwprobe.c
+@@ -69,7 +69,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+ 	if (riscv_isa_extension_available(NULL, c))
+ 		pair->value |= RISCV_HWPROBE_IMA_C;
+ 
+-	if (has_vector())
++	if (has_vector() && riscv_isa_extension_available(NULL, v))
+ 		pair->value |= RISCV_HWPROBE_IMA_V;
+ 
+ 	/*
+@@ -113,6 +113,10 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+ 		EXT_KEY(ZICOND);
+ 		EXT_KEY(ZIHINTPAUSE);
+ 
++		/*
++		 * All the following extensions must depend on the kernel
++		 * support of V.
++		 */
+ 		if (has_vector()) {
+ 			EXT_KEY(ZVBB);
+ 			EXT_KEY(ZVBC);
+diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+index 6727d1d3b8f2..682b3feee451 100644
+--- a/arch/riscv/kernel/vector.c
++++ b/arch/riscv/kernel/vector.c
+@@ -173,8 +173,11 @@ bool riscv_v_first_use_handler(struct pt_regs *regs)
+ 	u32 __user *epc = (u32 __user *)regs->epc;
+ 	u32 insn = (u32)regs->badaddr;
+ 
++	if (!has_vector())
++		return false;
++
+ 	/* Do not handle if V is not supported, or disabled */
+-	if (!(ELF_HWCAP & COMPAT_HWCAP_ISA_V))
++	if (!riscv_v_vstate_ctrl_user_allowed())
+ 		return false;
+ 
+ 	/* If V has been enabled then it is not the first-use trap */
+diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+index bc22c078aba8..bbe143bb32a0 100644
+--- a/arch/riscv/lib/uaccess.S
++++ b/arch/riscv/lib/uaccess.S
+@@ -14,7 +14,7 @@
+ 
+ SYM_FUNC_START(__asm_copy_to_user)
+ #ifdef CONFIG_RISCV_ISA_V
+-	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_v, CONFIG_RISCV_ISA_V)
++	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_ZVE32X, CONFIG_RISCV_ISA_V)
+ 	REG_L	t0, riscv_v_usercopy_threshold
+ 	bltu	a2, t0, fallback_scalar_usercopy
+ 	tail enter_vector_usercopy
+-- 
+2.47.0
+

@@ -1,0 +1,202 @@
+From 83e83fc112b94a6659bf952c2b170076e92ba695 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 20 Jun 2024 18:39:14 +0800
+Subject: [PATCH 0832/1451] cpufeature: delete check_unaligned_access from
+ cpufeature.c
+
+Change-Id: Ief0a6b0b4a687151578598e82117a8e20ccc5e5d
+---
+ arch/riscv/include/asm/cpufeature.h |   7 +-
+ arch/riscv/kernel/cpufeature.c      | 113 +---------------------------
+ 2 files changed, 4 insertions(+), 116 deletions(-)
+
+diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+index a443dc1667c0..bd8dd2dcbd11 100644
+--- a/arch/riscv/include/asm/cpufeature.h
++++ b/arch/riscv/include/asm/cpufeature.h
+@@ -28,12 +28,9 @@ struct riscv_isainfo {
+ 
+ DECLARE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
+ 
+-DECLARE_PER_CPU(long, misaligned_access_speed);
+-
+ /* Per-cpu ISA extensions. */
+ extern struct riscv_isainfo hart_isa[NR_CPUS];
+ 
+-void check_unaligned_access(int cpu);
+ void riscv_user_isa_enable(void);
+ 
+ unsigned long riscv_get_elf_hwcap(void);
+@@ -63,7 +60,7 @@ riscv_has_extension_likely(const unsigned long ext)
+ 			   "ext must be < RISCV_ISA_EXT_MAX");
+ 
+ 	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+-		asm_volatile_goto(
++		asm goto(
+ 		ALTERNATIVE("j	%l[l_no]", "nop", 0, %[ext], 1)
+ 		:
+ 		: [ext] "i" (ext)
+@@ -86,7 +83,7 @@ riscv_has_extension_unlikely(const unsigned long ext)
+ 			   "ext must be < RISCV_ISA_EXT_MAX");
+ 
+ 	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+-		asm_volatile_goto(
++		asm goto(
+ 		ALTERNATIVE("nop", "j	%l[l_yes]", 0, %[ext], 1)
+ 		:
+ 		: [ext] "i" (ext)
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 2eee7f9fbebb..0d30002144d0 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -8,6 +8,8 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/bitmap.h>
++#include <linux/cpu.h>
++#include <linux/cpuhotplug.h>
+ #include <linux/ctype.h>
+ #include <linux/log2.h>
+ #include <linux/memory.h>
+@@ -18,20 +20,13 @@
+ #include <asm/cacheflush.h>
+ #include <asm/cpufeature.h>
+ #include <asm/hwcap.h>
+-#include <asm/hwprobe.h>
+ #include <asm/patch.h>
+ #include <asm/processor.h>
+ #include <asm/sbi.h>
+ #include <asm/vector.h>
+ 
+-#include "copy-unaligned.h"
+-
+ #define NUM_ALPHA_EXTS ('z' - 'a' + 1)
+ 
+-#define MISALIGNED_ACCESS_JIFFIES_LG2 1
+-#define MISALIGNED_BUFFER_SIZE 0x4000
+-#define MISALIGNED_COPY_SIZE ((MISALIGNED_BUFFER_SIZE / 2) - 0x80)
+-
+ unsigned long elf_hwcap __read_mostly;
+ 
+ /* Host ISA bitmap */
+@@ -40,9 +35,6 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
+ /* Per-cpu ISA extensions. */
+ struct riscv_isainfo hart_isa[NR_CPUS];
+ 
+-/* Performance information */
+-DEFINE_PER_CPU(long, misaligned_access_speed);
+-
+ /**
+  * riscv_isa_extension_base() - Get base extension word
+  *
+@@ -756,107 +748,6 @@ unsigned long riscv_get_elf_hwcap(void)
+ 	return hwcap;
+ }
+ 
+-void check_unaligned_access(int cpu)
+-{
+-	u64 start_cycles, end_cycles;
+-	u64 word_cycles;
+-	u64 byte_cycles;
+-	int ratio;
+-	unsigned long start_jiffies, now;
+-	struct page *page;
+-	void *dst;
+-	void *src;
+-	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
+-
+-	/* We are already set since the last check */
+-	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
+-		return;
+-
+-	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
+-	if (!page) {
+-		pr_warn("Can't alloc pages to measure memcpy performance");
+-		return;
+-	}
+-
+-	/* Make an unaligned destination buffer. */
+-	dst = (void *)((unsigned long)page_address(page) | 0x1);
+-	/* Unalign src as well, but differently (off by 1 + 2 = 3). */
+-	src = dst + (MISALIGNED_BUFFER_SIZE / 2);
+-	src += 2;
+-	word_cycles = -1ULL;
+-	/* Do a warmup. */
+-	__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
+-	preempt_disable();
+-	start_jiffies = jiffies;
+-	while ((now = jiffies) == start_jiffies)
+-		cpu_relax();
+-
+-	/*
+-	 * For a fixed amount of time, repeatedly try the function, and take
+-	 * the best time in cycles as the measurement.
+-	 */
+-	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
+-		start_cycles = get_cycles64();
+-		/* Ensure the CSR read can't reorder WRT to the copy. */
+-		mb();
+-		__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
+-		/* Ensure the copy ends before the end time is snapped. */
+-		mb();
+-		end_cycles = get_cycles64();
+-		if ((end_cycles - start_cycles) < word_cycles)
+-			word_cycles = end_cycles - start_cycles;
+-	}
+-
+-	byte_cycles = -1ULL;
+-	__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
+-	start_jiffies = jiffies;
+-	while ((now = jiffies) == start_jiffies)
+-		cpu_relax();
+-
+-	while (time_before(jiffies, now + (1 << MISALIGNED_ACCESS_JIFFIES_LG2))) {
+-		start_cycles = get_cycles64();
+-		mb();
+-		__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
+-		mb();
+-		end_cycles = get_cycles64();
+-		if ((end_cycles - start_cycles) < byte_cycles)
+-			byte_cycles = end_cycles - start_cycles;
+-	}
+-
+-	preempt_enable();
+-
+-	/* Don't divide by zero. */
+-	if (!word_cycles || !byte_cycles) {
+-		pr_warn("cpu%d: rdtime lacks granularity needed to measure unaligned access speed\n",
+-			cpu);
+-
+-		goto out;
+-	}
+-
+-	if (word_cycles < byte_cycles)
+-		speed = RISCV_HWPROBE_MISALIGNED_FAST;
+-
+-	ratio = div_u64((byte_cycles * 100), word_cycles);
+-	pr_info("cpu%d: Ratio of byte access time to unaligned word access is %d.%02d, unaligned accesses are %s\n",
+-		cpu,
+-		ratio / 100,
+-		ratio % 100,
+-		(speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
+-
+-	per_cpu(misaligned_access_speed, cpu) = speed;
+-
+-out:
+-	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
+-}
+-
+-static int __init check_unaligned_access_boot_cpu(void)
+-{
+-	check_unaligned_access(0);
+-	return 0;
+-}
+-
+-arch_initcall(check_unaligned_access_boot_cpu);
+-
+ void riscv_user_isa_enable(void)
+ {
+ 	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_ZICBOZ))
+-- 
+2.47.0
+

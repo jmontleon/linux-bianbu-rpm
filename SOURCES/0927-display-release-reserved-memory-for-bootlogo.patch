@@ -1,0 +1,198 @@
+From c86a5933ef87949c0c934128e58b4a67e1fbfc50 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
+Date: Tue, 16 Jul 2024 17:02:45 +0800
+Subject: [PATCH 0927/1451] display: release reserved memory for bootlogo
+
+Change-Id: I2646d02de743cd11eea6b8bc26af90a9512ef026
+---
+ drivers/gpu/drm/spacemit/Makefile             |  1 +
+ .../gpu/drm/spacemit/spacemit_bootloader.c    | 60 ++++---------------
+ .../gpu/drm/spacemit/spacemit_bootloader.h    |  6 +-
+ drivers/gpu/drm/spacemit/spacemit_dpu.c       | 37 +++++++-----
+ 4 files changed, 36 insertions(+), 68 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
+index a350a62a3fb2..00582f9e6385 100644
+--- a/drivers/gpu/drm/spacemit/Makefile
++++ b/drivers/gpu/drm/spacemit/Makefile
+@@ -10,6 +10,7 @@ spacemit-drm-y := 	spacemit_drm.o \
+ 				spacemit_lib.o \
+ 				spacemit_gem.o \
+ 				spacemit_dmmu.o \
++				spacemit_bootloader.o \
+ 				sysfs/sysfs_class.o \
+ 				sysfs/sysfs_dpu.o \
+ 				sysfs/sysfs_dsi.o \
+diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.c b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
+index c143cc76f2d7..1bd746026330 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_bootloader.c
++++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
+@@ -6,64 +6,30 @@
+ 
+ #include <linux/of.h>
+ #include <linux/of_fdt.h>
++#include <linux/of_address.h>
+ #include <linux/of_reserved_mem.h>
+ #include <linux/mm.h>
+ #include <linux/memblock.h>
+ 
+-bool spacemit_dpu_logo_booton = false;
+-EXPORT_SYMBOL_GPL(spacemit_dpu_logo_booton);
+-struct reserved_mem *bootloader_mem = NULL;
+-struct work_struct work_free_bootloader_mem;
++static bool spacemit_dpu_free_logo = false;
+ 
+-static void __free_bootloader_mem(struct work_struct *work) {
+-	struct page *page;
+-	phys_addr_t size;
+-
+-	/* Give back logo reserved memory to buddy system */
+-	memblock_free((void *)bootloader_mem->base, bootloader_mem->size);
+-	for (size = 0; size < bootloader_mem->size; size += PAGE_SIZE) {
+-		page = phys_to_page(bootloader_mem->base + size);
+-		free_reserved_page(page);
+-	}
+-
+-	pr_debug("released bootloader logo memory!\n");
+-}
+-
+-void spacemit_dpu_free_bootloader_mem(void)
++int spacemit_dpu_free_bootloader_mem(struct reserved_mem *rmem)
+ {
+-	/*
+-	 * Freeing pages to buddy system may take several milliseconds.
+-	 * Use workqueue here for drm performance consideration.
+-	 */
+-	queue_work(system_wq, &work_free_bootloader_mem);
+-}
++	void __iomem *rmem_vaddr_start;
++	void __iomem *rmem_vaddr_end;
+ 
+-#ifndef MODULE
+-static int __init spacemit_dpu_bootloader_mem_setup(struct reserved_mem *rmem)
+-{
+-	pr_info("Reserved memory: detected reboot memory at %pa, size %ld MB\n",
+-		&rmem->base, (unsigned long)rmem->size / SZ_1M);
++	if (spacemit_dpu_free_logo)
++		return 0;
+ 
+-	spacemit_dpu_logo_booton = true;
+-	bootloader_mem = rmem;
+-	INIT_WORK(&work_free_bootloader_mem, __free_bootloader_mem);
++	pr_info("Reserved memory: detected bootloader logo memory at %pa, size %ld MB\n",
++		&rmem->base, (unsigned long)rmem->size / SZ_1M);
+ 
+-	return 0;
+-}
++	rmem_vaddr_start = phys_to_virt(rmem->base);
++	rmem_vaddr_end = phys_to_virt(rmem->base + rmem->size - 1);
+ 
+-RESERVEDMEM_OF_DECLARE(bootloader_logo, "bootloader_logo", spacemit_dpu_bootloader_mem_setup);
+-#else
+-struct reserved_mem r_mem;
+-int spacemit_dpu_bootloader_mem_setup(struct reserved_mem *rmem)
+-{
+-	pr_info("Reserved memory: detected bootloader_logo memory at %pa, size %ld MB\n",
+-		&rmem->base, (unsigned long)rmem->size / SZ_1M);
++	free_reserved_area(rmem_vaddr_start, rmem_vaddr_end, -1, "framebuffer");
+ 
+-	spacemit_dpu_logo_booton = true;
+-	r_mem = *rmem;
+-	bootloader_mem = &r_mem;
+-	INIT_WORK(&work_free_bootloader_mem, __free_bootloader_mem);
++	spacemit_dpu_free_logo = true;
+ 
+ 	return 0;
+ }
+-#endif
+diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.h b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
+index 30e33b3aab3e..0a0a74fd021b 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_bootloader.h
++++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
+@@ -9,10 +9,6 @@
+ 
+ #include <linux/of_reserved_mem.h>
+ 
+-void spacemit_dpu_free_bootloader_mem(void);
+-#ifdef MODULE
+-int spacemit_dpu_bootloader_mem_setup(struct reserved_mem *rmem);
+-#endif
+-extern bool spacemit_dpu_logo_booton;
++int spacemit_dpu_free_bootloader_mem(struct reserved_mem *rmem);
+ 
+ #endif
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index 5c05cc688ef0..2db7d090c9b9 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -26,6 +26,7 @@
+ #include "spacemit_dpu.h"
+ #include "spacemit_gem.h"
+ #include "spacemit_lib.h"
++#include "spacemit_bootloader.h"
+ #include "dpu/dpu_saturn.h"
+ #include "dpu/dpu_debug.h"
+ #include "sysfs/sysfs_display.h"
+@@ -862,11 +863,12 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct spacemit_dpu *dpu;
+ 	struct device_node *np = dev->of_node;
+-#ifdef MODULE
++	struct device_node *rmem_np;
++	struct device_node *fb_np;
+ 	struct reserved_mem rmem;
+ 	struct resource rsrv_mem;
+ 	int ret;
+-#endif
++
+ 	const char *str;
+ 	u32 dpu_id;
+ 	u32 dpu_type;
+@@ -902,20 +904,6 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	if (dpu->core && dpu->core->parse_dt)
+ 		dpu->core->parse_dt(dpu, np);
+ 
+-#ifdef MODULE
+-	np = of_find_compatible_node(NULL, NULL, "bootloader_logo");
+-	if (np) {
+-		ret = of_address_to_resource(np, 0, &rsrv_mem);
+-		if (ret < 0) {
+-			DRM_DEV_ERROR(dev, "no reserved memory resource find in bootloader_logo node\n");
+-		} else {
+-			rmem.base = rsrv_mem.start;
+-			rmem.size = resource_size(&rsrv_mem);
+-			spacemit_dpu_bootloader_mem_setup(&rmem);
+-		}
+-	}
+-#endif
+-
+ 	DRM_DEBUG("%s() type %d\n", __func__, dpu->type);
+ 
+ 	if (dpu->type == DSI) {
+@@ -960,6 +948,23 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 		msleep(10);
+ 	}
+ 
++	rmem_np = of_find_node_by_name(NULL, "reserved-memory");
++	if (rmem_np) {
++		fb_np = of_find_node_by_name(rmem_np, "framebuffer");
++
++		if (fb_np) {
++			ret = of_address_to_resource(fb_np, 0, &rsrv_mem);
++			if (ret < 0) {
++				DRM_DEV_ERROR(dev, "no reserved memory resource find in reserved framebuffer node\n");
++			} else {
++				rmem.base = rsrv_mem.start;
++				rmem.size = resource_size(&rsrv_mem);
++
++				spacemit_dpu_free_bootloader_mem(&rmem);
++			}
++		}
++	}
++
+ 	return component_add(dev, &dpu_component_ops);
+ }
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,48 @@
+From 35dfbe6320473fdfb3632d7e93df4918dcb4581c Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 10 Jan 2024 20:19:04 +0800
+Subject: [PATCH 0342/1451] usb: add spacemit k1x dma mask setting
+
+Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
+---
+ drivers/usb/dwc3/core.c | 6 ++++++
+ drivers/usb/host/xhci.c | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index ac6795b87cf5..16e59ed37ef2 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1979,6 +1979,12 @@ static int dwc3_probe(struct platform_device *pdev)
+ 			goto disable_clks;
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_SOC_SPACEMIT_K1X)) {
++		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
++		if (ret)
++			goto disable_clks;
++	}
++
+ 	spin_lock_init(&dwc->lock);
+ 	mutex_init(&dwc->mutex);
+ 
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 0ffe58e1ada2..59d9c8ecf0af 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -5287,6 +5287,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+ 		dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_SOC_SPACEMIT_K1X) &&
++			!dma_set_mask(dev, DMA_BIT_MASK(32))) {
++		dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
++		xhci_dbg(xhci, "Force Enabling 32-bit DMA addresses.\n");
++	}
++
+ 	xhci_dbg(xhci, "Calling HCD init\n");
+ 	/* Initialize HCD and host controller data structures. */
+ 	retval = xhci_init(hcd);
+-- 
+2.47.0
+

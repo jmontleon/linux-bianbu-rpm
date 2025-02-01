@@ -1,0 +1,177 @@
+From f1cad2ac2e81ee66854c9d2aaec1b7b88f1f19a2 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 31 Oct 2023 15:54:06 +0800
+Subject: [PATCH 0138/1451] k1x: support cpufreq driver
+
+disable the configuration by default
+
+Change-Id: I5212d3ca017879c9fe9a58d34fa365ea786d74bf
+Signed-off-by: Nell <xianbin.zhu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 92 ++++++++++++++++++++++++++
+ drivers/cpufreq/cpufreq-dt-platdev.c   |  4 ++
+ 2 files changed, 96 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 774b8f9b3753..9f88046c5981 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -38,6 +38,8 @@ cpu_0: cpu@0 {
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			clocks = <&pll_clk_cluster0>;
++			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu0_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -62,6 +64,8 @@ cpu_1: cpu@1 {
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			clocks = <&pll_clk_cluster0>;
++			operating-points-v2 = <&clst0_core_opp_table>;
+ 
+ 			cpu1_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -86,6 +90,8 @@ cpu_2: cpu@2 {
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			clocks = <&pll_clk_cluster1>;
++			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu2_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -110,6 +116,8 @@ cpu_3: cpu@3 {
+ 			cpu-cacheline = "64Bytes";
+ 			cpu-vector = "0.7.1";
+ 			cpu-idle-states = <&CPU_NONRET>, <&CLUSTER_NONRET>, <&TOP_NONRET>;
++			clocks = <&pll_clk_cluster1>;
++			operating-points-v2 = <&clst1_core_opp_table>;
+ 
+ 			cpu3_intc: interrupt-controller {
+ 				#interrupt-cells = <1>;
+@@ -151,6 +159,76 @@ TOP_NONRET: top-nonret {
+ 				wakeup-latency-us = <1600>;
+ 			};
+ 		};
++
++		clst0_core_opp_table: opp_table0 {
++			compatible = "operating-points-v2";
++			opp-shared;
++
++			opp819000000 {
++				opp-hz = /bits/ 64 <819000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1000000000 {
++				opp-hz = /bits/ 64 <1000000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1066000000 {
++				opp-hz = /bits/ 64 <1066000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1228000000 {
++				opp-hz = /bits/ 64 <1228000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1600000000 {
++				opp-hz = /bits/ 64 <1600000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++		};
++
++		clst1_core_opp_table: opp_table1 {
++			compatible = "operating-points-v2";
++			opp-shared;
++
++			opp819000000 {
++				opp-hz = /bits/ 64 <819000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1000000000 {
++				opp-hz = /bits/ 64 <1000000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1066000000 {
++				opp-hz = /bits/ 64 <1066000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1228000000 {
++				opp-hz = /bits/ 64 <1228000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++
++			opp1600000000 {
++				opp-hz = /bits/ 64 <1600000000>;
++				opp-microvolt = <900000>;
++				clock-latency-ns = <200000>;
++			};
++		};
+ 	};
+ 
+ 	clocks {
+@@ -234,6 +312,20 @@ pll_clk_timer: clock-pll_clk_timer {
+ 			clock-frequency = <52000000>;
+ 			clock-output-names = "pll_clk_timer";
+ 		};
++
++		pll_clk_cluster0: clock-pll_clk_cluster0 {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <10000000>;
++			clock-output-names = "pll_clk_cluster0";
++		};
++
++		pll_clk_cluster1: clock-pll_clk_cluster1 {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <10000000>;
++			clock-output-names = "pll_clk_cluster1";
++		};		
+ 	};
+ 
+ 	reserved-memory {
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index fb2875ce1fdd..41fcd9c94ebc 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -95,6 +95,8 @@ static const struct of_device_id allowlist[] __initconst = {
+ 	{ .compatible = "xlnx,zynq-7000", },
+ 	{ .compatible = "xlnx,zynqmp", },
+ 
++	{ .compatible = "spacemit,k1-x", },
++
+ 	{ }
+ };
+ 
+@@ -182,6 +184,8 @@ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "qcom,msm8974", },
+ 	{ .compatible = "qcom,msm8960", },
+ 
++	{ .compatible = "spacemit,k1-x", },
++
+ 	{ }
+ };
+ 
+-- 
+2.47.0
+

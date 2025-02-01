@@ -1,0 +1,50 @@
+From 2490b2047bf2a52ea8d06e418bf37b1eda9ea0b2 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 14:38:39 +0800
+Subject: [PATCH 0449/1451] rtl8852bs: fix compile warning
+
+Change-Id: Idcec9681ddb6e58979256e66e43c959eebbc8954
+---
+ .../realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_physts.h        | 4 ++--
+ .../net/wireless/realtek/rtl8852bs/phl/phl_chan_info_def.h    | 2 +-
+ drivers/net/wireless/realtek/rtl8852bs/phl/phl_def.h          | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_physts.h b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_physts.h
+index c86ffee6fbe5..7806988a06f9 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_physts.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_physts.h
+@@ -766,8 +766,8 @@ void halbb_physts_rpt_gen(struct bb_info *bb, u32 physts_bitmap,
+ 			  struct physts_result *rpt,
+ 			  bool physts_rpt_valid, struct physts_rxd *desc,
+ 			  bool is_cck_rate, bool is_ie8_valid);
+-void halbb_physts_ie_bitmap_set(struct bb_info *bb, u32 ie_page, u32 bitmap);
+-u32 halbb_physts_ie_bitmap_get(struct bb_info *bb, u32 ie_page);
++void halbb_physts_ie_bitmap_set(struct bb_info *bb, enum bb_physts_bitmap_t ie_page, u32 bitmap);
++u32 halbb_physts_ie_bitmap_get(struct bb_info *bb, enum bb_physts_bitmap_t ie_page);
+ void halbb_physts_ie_bitmap_en(struct bb_info *bb, enum bb_physts_bitmap_t type,
+ 			       enum bb_physts_ie_t ie, bool en);
+ void halbb_phy_sts_manual_trig(struct bb_info *bb, enum bb_mode_type mode, u8 ss);
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_chan_info_def.h b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_chan_info_def.h
+index bffa02f1a094..d9b074110184 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_chan_info_def.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_chan_info_def.h
+@@ -1,4 +1,4 @@
+-﻿/******************************************************************************
++/******************************************************************************
+  *
+  * Copyright(c) 2019 - 2021 Realtek Corporation.
+  *
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_def.h b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_def.h
+index d5719ebdf5ad..6a1ddc338572 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_def.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_def.h
+@@ -1,4 +1,4 @@
+-﻿/******************************************************************************
++/******************************************************************************
+  *
+  * Copyright(c) 2019 - 2021 Realtek Corporation.
+  *
+-- 
+2.47.0
+

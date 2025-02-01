@@ -1,0 +1,27 @@
+From 7bc43b0bd7ebf4461343f1bf54caef7d50acec19 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 9 Jan 2025 14:15:39 +0800
+Subject: [PATCH 1435/1451] codecs: es7210 should depend on i2c
+
+Change-Id: I6a20b684f8f68bf57389acd859cf3177658424a9
+---
+ sound/soc/codecs/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 274e53c98102..b331d5331674 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1051,7 +1051,8 @@ config SND_SOC_ES7134
+ 	tristate "Everest Semi ES7134 CODEC"
+ 
+ config SND_SOC_ES7210
+-       tristate "Everest Semi ES7210 CODEC"
++	tristate "Everest Semi ES7210 CODEC"
++	depends on I2C
+ 
+ config SND_SOC_ES7241
+ 	tristate "Everest Semi ES7241 CODEC"
+-- 
+2.47.0
+

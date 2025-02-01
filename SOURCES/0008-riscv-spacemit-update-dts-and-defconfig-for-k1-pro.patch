@@ -1,0 +1,67 @@
+From 2fac12a9fcb0fa32f559bbc10e37439e5595558e Mon Sep 17 00:00:00 2001
+From: zhouxl <zhouxl@spacemit.com>
+Date: Thu, 16 Mar 2023 13:33:02 +0800
+Subject: [PATCH 0008/1451] riscv: spacemit: update dts and defconfig for
+ k1-pro
+
+1. change k1-pro fpga dts: timer frequency to 25MHz, sram address to 0x40000000, size to 1GB
+2. add rootfs file name for k1-pro fpga config
+
+Change-Id: I86e16245de41624cc858d50f07079e240d40a300
+---
+ arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts | 10 +++++++++-
+ arch/riscv/configs/k1-pro_fpga_defconfig     |  2 ++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
+index 11b46bdd63ce..44c90e6021aa 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
+@@ -7,9 +7,16 @@
+ / {
+ 	model = "spacemit k1-pro fpga board";
+ 
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <25000000>;
++
++    };
++
+ 	memory@0 {
+ 		device_type = "memory";
+-		reg = <0x0 0x20000000 0x0 0x10000000>;
++		reg = <0x0 0x40000000 0x0 0x40000000>;
+ 	};
+ 
+ 	chosen {
+@@ -19,5 +26,6 @@ chosen {
+ };
+ 
+ &uart0 {
++    clock-frequency = <50000000>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 28a3a5608f50..6e15b5c42d21 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -11,6 +11,7 @@ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_CHECKPOINT_RESTORE=y
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+ # CONFIG_RD_XZ is not set
+@@ -97,6 +98,7 @@ CONFIG_CRYPTO_AES=y
+ CONFIG_CRYPTO_DES=y
+ CONFIG_CRYPTO_ECB=y
+ CONFIG_CRYPTO_OFB=y
++CONFIG_CRYPTO_CHACHA20POLY1305=y
+ CONFIG_CRYPTO_CMAC=y
+ CONFIG_CRYPTO_MD5=y
+ CONFIG_CRYPTO_SHA1=y
+-- 
+2.47.0
+

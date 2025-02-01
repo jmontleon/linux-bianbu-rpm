@@ -1,0 +1,151 @@
+From ec48168ef0a15034edc51a1dc08a927753179f92 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 16 Aug 2023 09:33:21 +0800
+Subject: [PATCH 0081/1451] cpu: support cpu hotplug
+
+1. modify the start address of the share memory of mailbox because the
+    brom will use the first 8K space of rcpuSram by now
+2. add cpu topology description in dts
+3. if we use-like arm's psci protocol, we need to align the implementation
+    of ARM when the CPU is powered down
+
+Change-Id: Ie0707e434ee5806db7fbbe1ca47175b31b61ef24
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi      | 18 +++++++++++
+ .../boot/dts/spacemit/spacemit-scmi.dtsi      |  4 +--
+ arch/riscv/configs/k1-pro_fpga_defconfig      |  5 +--
+ arch/riscv/kernel/cpu_ops_sbi.c               | 31 ++++++++++++++++++-
+ 4 files changed, 51 insertions(+), 7 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 553967ddd92d..4bb0b3559421 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -110,6 +110,24 @@ cpu3_intc: interrupt-controller {
+ 				interrupt-controller;
+ 			};
+ 		};
++                cpu-map {
++                        cluster0 {
++                                core0 {
++                                        cpu = <&cpu_0>;
++                                };
++
++                                core1 {
++                                        cpu = <&cpu_1>;
++                                };
++                                core2 {
++                                        cpu = <&cpu_2>;
++                                };
++
++                                core3 {
++                                        cpu = <&cpu_3>;
++                                };
++                        };
++                };
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+index efb6ced14777..5f33e7f6a0f6 100644
+--- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+@@ -2,10 +2,10 @@ / {
+ 	sram {
+ 		compatible = "mmio-sram";
+ 		/* 256k */
+-		reg = <0x0 0x2f900000 0x0 0x40000>;
++		reg = <0x0 0x2f902000 0x0 0x3e000>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		ranges = <0x0 0x0 0x2f900000 0x40000>;
++		ranges = <0x0 0x0 0x2f902000 0x3e000>;
+ 
+ 		/* channel 0*/
+ 		cpu_scp_lpri0: scp-sram@2f900000 {
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 2f1aad3a5dab..49eb461244ec 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -27,6 +27,7 @@ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1_FPGA=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+@@ -178,7 +179,6 @@ CONFIG_VIDEO_ADV_DEBUG=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_MEDIA_PLATFORM_DRIVERS is not set
+-CONFIG_VIDEO_LINLON_FTRACE=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_USB_ULPI_BUS=y
+ CONFIG_USB=y
+@@ -250,9 +250,6 @@ CONFIG_CRYPTO_CMAC=y
+ CONFIG_CRYPTO_MD5=y
+ CONFIG_CRYPTO_SHA1=y
+ CONFIG_CRYPTO_SHA3=y
+-CONFIG_CRYPTO_DEFLATE=y
+-CONFIG_CRYPTO_LZO=y
+-CONFIG_CRYPTO_ZSTD=y
+ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_XZ_DEC=y
+ CONFIG_DMA_CMA=y
+diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
+index 93cbc38d1805..55d3eaa6aedd 100644
+--- a/arch/riscv/kernel/cpu_ops_sbi.c
++++ b/arch/riscv/kernel/cpu_ops_sbi.c
+@@ -12,6 +12,8 @@
+ #include <asm/cpu_ops_sbi.h>
+ #include <asm/sbi.h>
+ #include <asm/smp.h>
++#include <linux/delay.h>
++#include <linux/jiffies.h>
+ 
+ extern char secondary_start_sbi[];
+ const struct cpu_operations cpu_ops_sbi;
+@@ -108,11 +110,38 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)
+ {
+ 	int rc;
+ 	unsigned long hartid = cpuid_to_hartid_map(cpuid);
+-
++#ifndef CONFIG_ARM_SCMI_PROTOCOL
+ 	rc = sbi_hsm_hart_get_status(hartid);
+ 
+ 	if (rc == SBI_HSM_STATE_STOPPED)
+ 		return 0;
++#else
++        int err;
++        unsigned long start, end;
++
++        /*
++         * cpu_kill could race with cpu_die and we can
++         * potentially end up declaring this cpu undead
++         * while it is dying. So, try again a few times.
++         */
++        start = jiffies;
++        end = start + msecs_to_jiffies(100);
++        do {
++                rc = sbi_hsm_hart_get_status(hartid);
++                if (err == SBI_HSM_STATE_STOPPED) {
++                        pr_info("CPU%d killed (polled %d ms)\n", cpu,
++                                jiffies_to_msecs(jiffies - start));
++                        return 0;
++                }
++
++                usleep_range(100, 1000);
++        } while (time_before(jiffies, end));
++
++        pr_warn("CPU%d may not have shut down cleanly (AFFINITY_INFO reports %d)\n",
++                        cpu, err);
++        rc = -ETIMEDOUT;
++
++#endif
+ 	return rc;
+ }
+ #endif
+-- 
+2.47.0
+

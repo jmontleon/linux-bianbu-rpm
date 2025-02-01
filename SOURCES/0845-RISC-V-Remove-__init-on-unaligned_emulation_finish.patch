@@ -1,0 +1,38 @@
+From 594e666009ff729b6f911efb2c78745f713d7217 Mon Sep 17 00:00:00 2001
+From: Evan Green <evan@rivosinc.com>
+Date: Mon, 6 Nov 2023 15:11:05 -0800
+Subject: [PATCH 0845/1451] RISC-V: Remove __init on
+ unaligned_emulation_finish()
+
+This function shouldn't be __init, since it's called during hotplug. The
+warning says it well enough:
+
+WARNING: modpost: vmlinux: section mismatch in reference:
+check_unaligned_access_all_cpus+0x13a (section: .text) ->
+unaligned_emulation_finish (section: .init.text)
+
+Signed-off-by: Evan Green <evan@rivosinc.com>
+Fixes: 71c54b3d169d ("riscv: report misaligned accesses emulation to hwprobe")
+Link: https://lore.kernel.org/r/20231106231105.3141413-1-evan@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I12870e63153bf6097e4a37aec19698fa095d8b34
+---
+ arch/riscv/kernel/traps_misaligned.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index bba301b5194d..5eba37147caa 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -625,7 +625,7 @@ bool check_unaligned_access_emulated(int cpu)
+ 	return misaligned_emu_detected;
+ }
+ 
+-void __init unaligned_emulation_finish(void)
++void unaligned_emulation_finish(void)
+ {
+ 	int cpu;
+ 
+-- 
+2.47.0
+

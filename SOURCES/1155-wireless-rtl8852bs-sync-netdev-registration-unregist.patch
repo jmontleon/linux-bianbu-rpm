@@ -1,0 +1,82 @@
+From a69a9481824618eaadf9bf11aa139ace505e87de Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 18 Sep 2024 17:31:03 +0800
+Subject: [PATCH 1155/1451] wireless: rtl8852bs: sync netdev
+ registration/unregistration semantics
+
+Change-Id: I3e97d53952e989041293346d61af3a5452ca0376
+---
+ .../wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c  | 4 ++--
+ .../net/wireless/realtek/rtl8852bs/os_dep/linux/os_intfs.c    | 4 ++--
+ .../net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
+index 73ff464f20c9..707cd12a97f0 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
+@@ -5115,7 +5115,7 @@ static int rtw_cfg80211_add_monitor_if(_adapter *padapter, char *name, struct ne
+ 	mon_wdev->iftype = NL80211_IFTYPE_MONITOR;
+ 	mon_ndev->ieee80211_ptr = mon_wdev;
+ 
+-	ret = register_netdevice(mon_ndev);
++	ret = cfg80211_register_netdevice(mon_ndev);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -5269,7 +5269,7 @@ static int cfg80211_rtw_del_virtual_intf(struct wiphy *wiphy,
+ 		pwdev_priv = adapter_wdev_data(adapter);
+ 
+ 		if (ndev == pwdev_priv->pmon_ndev) {
+-			unregister_netdevice(ndev);
++			cfg80211_unregister_netdevice(ndev);
+ 			pwdev_priv->pmon_ndev = NULL;
+ 			pwdev_priv->ifname_mon[0] = '\0';
+ 			RTW_INFO(FUNC_NDEV_FMT" remove monitor ndev\n", FUNC_NDEV_ARG(ndev));
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/os_intfs.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/os_intfs.c
+index 7a12c9420c9e..90ef4ad8e1e5 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/os_intfs.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/os_intfs.c
+@@ -647,7 +647,7 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
+ 	if (rtnl_lock_needed)
+ 		ret = (register_netdev(ndev) == 0) ? _SUCCESS : _FAIL;
+ 	else
+-		ret = (register_netdevice(ndev) == 0) ? _SUCCESS : _FAIL;
++		ret = (cfg80211_register_netdevice(ndev) == 0) ? _SUCCESS : _FAIL;
+ 
+ 	if (ret == _SUCCESS)
+ 		adapter->registered = 1;
+@@ -689,7 +689,7 @@ void rtw_os_ndev_unregister(_adapter *adapter)
+ 		if (rtnl_lock_needed)
+ 			unregister_netdev(netdev);
+ 		else
+-			unregister_netdevice(netdev);
++			cfg80211_unregister_netdevice(netdev);
+ 	}
+ 
+ 	adapter->registered = 0;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
+index c39421a0abb8..95eeca0f1cf8 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
+@@ -98,7 +98,7 @@ static struct wireless_dev *rtw_regd_alloc_du_wdev(struct wiphy *wiphy)
+ 	wdev->iftype = NL80211_IFTYPE_AP;
+ 	ndev->ieee80211_ptr = wdev;
+ 
+-	ret = register_netdevice(ndev);
++	ret = cfg80211_register_netdevice(ndev);
+ 
+ out:
+ 	if (ret && wdev) {
+@@ -125,7 +125,7 @@ void rtw_regd_free_du_wdev(struct wiphy *wiphy)
+ 	if (rtnl_lock_needed)
+ 		rtnl_lock();
+ 
+-	unregister_netdevice(wiphy_data->du_wdev->netdev);
++	cfg80211_unregister_netdevice(wiphy_data->du_wdev->netdev);
+ 
+ 	if (rtnl_lock_needed)
+ 		rtnl_unlock();
+-- 
+2.47.0
+

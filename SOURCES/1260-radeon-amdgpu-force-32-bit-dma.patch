@@ -1,0 +1,26 @@
+From b293cf25eb17dc1b556ca4ea0034831f71310bae Mon Sep 17 00:00:00 2001
+From: Icenowy Zheng <uwu@icenowy.me>
+Date: Fri, 21 Jun 2024 15:10:31 +0800
+Subject: [PATCH 1260/1451] radeon/amdgpu: force 32-bit dma
+
+Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+---
+ drivers/gpu/drm/radeon/radeon_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
+index 32851632643d..5b21bfd93ea2 100644
+--- a/drivers/gpu/drm/radeon/radeon_device.c
++++ b/drivers/gpu/drm/radeon/radeon_device.c
+@@ -1361,7 +1361,7 @@ int radeon_device_init(struct radeon_device *rdev,
+ 	 * AGP - generally dma32 is safest
+ 	 * PCI - dma32 for legacy pci gart, 40 bits on newer asics
+ 	 */
+-	dma_bits = 40;
++	dma_bits = 32;
+ 	if (rdev->flags & RADEON_IS_AGP)
+ 		dma_bits = 32;
+ 	if ((rdev->flags & RADEON_IS_PCI) &&
+-- 
+2.47.0
+

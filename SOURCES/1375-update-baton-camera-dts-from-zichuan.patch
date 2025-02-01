@@ -1,0 +1,100 @@
+From 458fea98cca1e3e8739ffd4cda28ab4586ea151f Mon Sep 17 00:00:00 2001
+From: huanghaiqiang <chris.huang@spacemit.com>
+Date: Thu, 19 Dec 2024 19:45:17 +0800
+Subject: [PATCH 1375/1451] update baton-camera dts from zichuan
+
+Change-Id: I11c398d2291a108798ada746fb688de29006f0b4
+---
+ .../boot/dts/spacemit/k1-x_baton-camera.dts   | 44 ++++++++-----------
+ 1 file changed, 18 insertions(+), 26 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
+index d58d5478b250..8db7f401835f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
+@@ -543,7 +543,7 @@ &range GPIO_91  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range DVL0     1 (MUX_MODE1 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range DVL1     1 (MUX_MODE1 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS0)
+ 		&range GPIO_110 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+-		&range GPIO_111 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
++		&range GPIO_111 1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_113 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_114 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_115 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+@@ -815,15 +815,14 @@ &pwm_bl {
+ 
+ /* MIPI CSI1, clk lane1 */
+ &backsensor {
+-	af_2v8-supply = <&ldo_3>;
++	//af_2v8-supply = <&ldo_3>;
+ 	avdd_2v8-supply = <&ldo_2>;
+ 	dovdd_1v8-supply = <&ldo_7>;
+ 	dvdd_1v2-supply = <&ldo_6>;
+-
+ 	pwdn-gpios = <&gpio 113 0>;
+-	//reset-gpios = <&gpio 111 0>;
+-
+-	twsi-index = <0>;
++	reset-gpios = <&gpio 63 0>;
++	clocks = <&ccu CLK_CAMM0>;
++	clock-names = "cam_mclk0";
+ 
+ 	status = "okay";
+ };
+@@ -834,13 +833,11 @@ &backsensor_aux {
+ 	avdd_2v8-supply = <&ldo_2>;
+ 	dovdd_1v8-supply = <&ldo_7>;
+ 	//dvdd_1v2-supply = <&ldo_6>;
+-
+-	pwdn-gpios = <&gpio 114 0>;
+-	reset-gpios = <&gpio 112 0>;
+-
+-	twsi-index = <1>;
+-
+-	status = "okay";
++	//pwdn-gpios = <&gpio 114 0>;
++	//reset-gpios = <&gpio 112 0>;
++	clocks = <&ccu CLK_CAMM1>;
++	clock-names = "cam_mclk1";
++	status = "disabled";
+ };
+ 
+ /* MIPI CSI3 data line0,1 clk lane3 */
+@@ -849,12 +846,14 @@ &frontsensor {
+ 	avdd_2v8-supply = <&ldo_2>;
+ 	dovdd_1v8-supply = <&ldo_7>;
+ 	dvdd_1v2-supply = <&ldo_6>;
+-
+-	pwdn-gpios = <&gpio 122 0>;
+-	reset-gpios = <&gpio 121 0>;
+-
+-	twsi-index = <7>;
+-
++	//pwdn-gpios = <&gpio 122 0>;
++	//reset-gpios = <&gpio 121 0>;
++	clocks = <&ccu CLK_CAMM1>;
++	clock-names = "cam_mclk1";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_camera1>;
++	pwdn-gpios = <&gpio 114 0>;
++	reset-gpios = <&gpio 112 0>;
+ 	status = "okay";
+ };
+ &csiphy0 {
+@@ -906,13 +905,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&hdmiaudio {
+-        status = "disabled";
+-};
+-
+ &sound_hdmi {
+ 	status = "disabled";
+-	simple-audio-card,cpu {
+-		sound-dai = <&hdmiaudio>;
+-	};
+ };
+-- 
+2.47.0
+

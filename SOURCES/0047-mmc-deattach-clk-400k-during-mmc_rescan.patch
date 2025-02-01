@@ -1,0 +1,66 @@
+From e8eba4514c7e514950342a890665db283bc274ef Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 13 Jun 2023 15:10:18 +0800
+Subject: [PATCH 0047/1451] mmc: deattach clk 400k during mmc_rescan()
+
+use 10bit divided clock mode instead of switch clock source,
+so can deattach 400k clksource from sdhci controller
+
+Change-Id: I039df8e60e71179b5388a6c9be31c7dfe29050b7
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 10 ++++------
+ drivers/mmc/host/sdhci-of-spacemit.c     |  3 +--
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 53953e69b7c7..7b8f1b6497b9 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -342,9 +342,8 @@ emmc: mmc@2ca00000 {
+ 			reset-names = "emmc_rst";
+ 			clocks = <&ccu PLL_CLK_400M_2MEM>,
+ 					 <&ccu CLK_EMMC_HCLK>,
+-					 <&ccu CLK_MEM_SYS>,
+-					 <&ccu OSC_CLK_400K>;
+-			clock-names = "core", "bus", "axi", "400k";
++					 <&ccu CLK_MEM_SYS>;
++			clock-names = "core", "bus", "axi";
+ 			max-frequency = <400000000>;
+ 			bus-width = <8>;
+ 			cap-mmc-highspeed;
+@@ -368,9 +367,8 @@ sdhci: sd@2ca40000 {
+ 			reset-names = "sdio_rst";
+ 			clocks = <&ccu PLL_CLK_400M_2MEM>,
+ 					 <&ccu CLK_SDIO_HCLK>,
+-					 <&ccu CLK_MEM_SYS>,
+-					 <&ccu OSC_CLK_400K>;
+-			clock-names = "core", "bus", "axi", "400k";
++					 <&ccu CLK_MEM_SYS>;
++			clock-names = "core", "bus", "axi";
+ 			max-frequency = <400000000>;
+ 			bus-width = <4>;
+ 			cap-mmc-highspeed;
+diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
+index ccb6dc59da71..5de04240403f 100644
+--- a/drivers/mmc/host/sdhci-of-spacemit.c
++++ b/drivers/mmc/host/sdhci-of-spacemit.c
+@@ -35,7 +35,7 @@
+ #define DWCMSHC_ENHANCED_STROBE		BIT(8)
+ #define DWCMSHC_EMMC_ATCTRL		0x40
+ 
+-#define MAX_CLKS 2
++#define MAX_CLKS 1
+ 
+ #define BOUNDARY_OK(addr, len) \
+ 	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+@@ -193,7 +193,6 @@ static int dwcmshc_spacemit_init(struct sdhci_host *host, struct dwcmshc_priv *d
+ 	reset_control_deassert(priv->reset);
+ 
+ 	priv->clks[0].id = "axi";
+-	priv->clks[1].id = "400k";
+ 	err = devm_clk_bulk_get_optional(mmc_dev(host->mmc), MAX_CLKS,
+ 					 priv->clks);
+ 	if (err) {
+-- 
+2.47.0
+

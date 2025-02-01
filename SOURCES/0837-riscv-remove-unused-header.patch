@@ -1,0 +1,35 @@
+From 1549c87f546889d071873d00727ad1c8805b8515 Mon Sep 17 00:00:00 2001
+From: "tanzirh@google.com" <tanzirh@google.com>
+Date: Tue, 12 Dec 2023 00:20:14 +0000
+Subject: [PATCH 0837/1451] riscv: remove unused header
+
+arch/riscv/kernel/sys_riscv.c builds without using anything
+from asm-generic/mman-common.h. There seems to be no reason
+to include this file.
+
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+Fixes: 9e2e6042a7ec ("riscv: Allow PROT_WRITE-only mmap()")
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20231212-removeasmgeneric-v2-1-a0e6d7df34a7@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I8250b9868c08a2707e748fb985533d8cf70f67a2
+---
+ arch/riscv/kernel/sys_riscv.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
+index f1c1416a9f1e..64155323cc92 100644
+--- a/arch/riscv/kernel/sys_riscv.c
++++ b/arch/riscv/kernel/sys_riscv.c
+@@ -7,7 +7,6 @@
+ 
+ #include <linux/syscalls.h>
+ #include <asm/cacheflush.h>
+-#include <asm-generic/mman-common.h>
+ 
+ static long riscv_sys_mmap(unsigned long addr, unsigned long len,
+ 			   unsigned long prot, unsigned long flags,
+-- 
+2.47.0
+

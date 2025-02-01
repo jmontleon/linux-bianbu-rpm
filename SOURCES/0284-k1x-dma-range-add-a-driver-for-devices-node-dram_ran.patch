@@ -1,0 +1,150 @@
+From 10adb94f8de719eb21a4bd52222b4d2c971709e6 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Sat, 30 Dec 2023 18:16:37 +0800
+Subject: [PATCH 0284/1451] k1x:dma-range: add a driver for devices-node
+ 'dram_range0 & dram_range1'
+
+this driver is just a empty shell for making the dma-ranges mechanism effecive
+in kernel booting process
+if we don't add this driver, all the drivers that rely on this function will be
+probing deferred
+
+Change-Id: I801ae3dbdbf5697119e320557b777c79aee3b7a8
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  6 +++--
+ arch/riscv/configs/k1-x_evb_defconfig  |  3 +--
+ drivers/soc/spacemit/Kconfig           |  7 ++++++
+ drivers/soc/spacemit/Makefile          |  1 +
+ drivers/soc/spacemit/k1x-dma-range.c   | 32 ++++++++++++++++++++++++++
+ 5 files changed, 45 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/soc/spacemit/k1x-dma-range.c
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 0715d146aa47..85eaeff8d500 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -446,6 +446,7 @@ dram_range0: dram_range@0 {
+ 			#size-cells = <2>;
+ 			dma-ranges = <0x0 0x00000000 0x0 0x00000000 0x0 0x80000000>;
+ 			#interconnect-cells = <0>;
++			status = "okay";
+ 		};
+ 
+ 		/* dram mapping for vpu/gpu/v2d/jpu for ex. */
+@@ -456,6 +457,7 @@ dram_range1: dram_range@1 {
+ 			dma-ranges = <0x0 0x00000000 0x0 0x00000000 0x0 0x80000000>,
+ 				     <0x0 0x80000000 0x1 0x00000000 0x3 0x80000000>;
+ 			#interconnect-cells = <0>;
++			status = "okay";
+ 		};
+ 
+ 		clint0: clint@e4000000 {
+@@ -550,12 +552,12 @@ pmu: power-management@0 {
+ 			ranges;
+ 
+ 			mpmu: mpmu@1 {
+-				compatible = "spacemit,spacemit-mpmu", "syscon", "simple-mfd";
++				compatible = "simple-mfd", "spacemit,spacemit-mpmu", "syscon";
+ 				reg = <0x0 0xd4050000 0x0 0x3004>;
+ 			};
+ 
+ 			apmu: apmu@2 {
+-				compatible = "spacemit,spacemit-apmu", "syscon", "simple-mfd";
++				compatible = "simple-mfd", "spacemit,spacemit-apmu", "syscon";
+ 				reg = <0x0 0xd4282800 0x0 0x3f4>;
+ 			};
+ 
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 2a17572d8cae..3ebf54036f06 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -422,6 +422,7 @@ CONFIG_SPACEMIT_K1X_CCU=y
+ # CONFIG_DPAA2_CONSOLE is not set
+ CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_SPACEMIT_REBOOT_CONTROL=y
++CONFIG_SPACEMI_K1X_DMA_RANGE=y
+ CONFIG_CHIP_MEDIA_JPU=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+@@ -461,7 +462,6 @@ CONFIG_NFSD_FLEXFILELAYOUT=y
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ISO8859_1=y
+ CONFIG_INIT_STACK_NONE=y
+-CONFIG_CRYPTO_AUTHENC=y
+ CONFIG_CRYPTO_DH=y
+ CONFIG_CRYPTO_ECDH=y
+ CONFIG_CRYPTO_CURVE25519=y
+@@ -471,7 +471,6 @@ CONFIG_CRYPTO_ECB=y
+ CONFIG_CRYPTO_OFB=y
+ CONFIG_CRYPTO_CHACHA20POLY1305=y
+ CONFIG_CRYPTO_CMAC=y
+-CONFIG_CRYPTO_MD5=y
+ CONFIG_CRYPTO_SHA1=y
+ CONFIG_CRYPTO_SHA3=y
+ CONFIG_CRYPTO_DEFLATE=y
+diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
+index 97dc2852aaa9..b193f5905c28 100644
+--- a/drivers/soc/spacemit/Kconfig
++++ b/drivers/soc/spacemit/Kconfig
+@@ -21,4 +21,11 @@ config SPACEMIT_REBOOT_CONTROL
+ 	help
+ 	  Spacemit reboot into fastboot mode
+ 
++config SPACEMI_K1X_DMA_RANGE
++	tristate "Spacemit dram range driver for k1x"
++	depends on SOC_SPACEMIT_K1X
++	help
++	  This driver is an empty shell, in order to make the dma-ranges function
++          effective
++
+ source "drivers/soc/spacemit/jpu/Kconfig"
+diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
+index dac69bdd6523..217b9a1f199a 100644
+--- a/drivers/soc/spacemit/Makefile
++++ b/drivers/soc/spacemit/Makefile
+@@ -1,3 +1,4 @@
+ obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain/
+ obj-$(CONFIG_CHIP_MEDIA_JPU)    += jpu/
+ obj-$(CONFIG_SPACEMIT_REBOOT_CONTROL)	+= spacemit_reboot.o
++obj-$(CONFIG_SPACEMI_K1X_DMA_RANGE) += k1x-dma-range.o
+diff --git a/drivers/soc/spacemit/k1x-dma-range.c b/drivers/soc/spacemit/k1x-dma-range.c
+new file mode 100644
+index 000000000000..78960746a359
+--- /dev/null
++++ b/drivers/soc/spacemit/k1x-dma-range.c
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/init.h>
++#include <linux/of_address.h>
++#include <linux/of_clk.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/mod_devicetable.h>
++
++static const struct of_device_id spacemit_dma_range_dt_match[] = {
++	{ .compatible = "spacemit-dram-bus", },
++	{ },
++};
++
++static int spacemit_dma_range_probe(struct platform_device *pdev)
++{
++	return 0;
++}
++
++static struct platform_driver spacemit_dma_range_driver = {
++	.probe = spacemit_dma_range_probe,
++	.driver = {
++		.name   = "spacemit-dma-range",
++		.of_match_table = spacemit_dma_range_dt_match,
++	},
++};
++
++static int __init spacemit_dma_range_drv_register(void)
++{
++	return platform_driver_register(&spacemit_dma_range_driver);
++}
++
++core_initcall(spacemit_dma_range_drv_register);
+-- 
+2.47.0
+

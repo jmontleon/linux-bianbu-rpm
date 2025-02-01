@@ -1,0 +1,40 @@
+From dac0115848739667a7d6b270349da0fdda7becb5 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 3 Jun 2024 10:26:51 +0800
+Subject: [PATCH 0705/1451] k1: gt9xx: delete i2c_device_id args
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I892d578ff50101b4f83d35c4efda1d8bd472a2fd
+---
+ drivers/input/touchscreen/gt9xx.c | 2 +-
+ drivers/input/touchscreen/gt9xx.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/input/touchscreen/gt9xx.c b/drivers/input/touchscreen/gt9xx.c
+index 7a018dae50fc..53d19d1c7b14 100755
+--- a/drivers/input/touchscreen/gt9xx.c
++++ b/drivers/input/touchscreen/gt9xx.c
+@@ -1896,7 +1896,7 @@ static void gtp_shutdown(struct i2c_client *client)
+ 	return;
+ }
+ 
+-static int gtp_probe(struct i2c_client *client, const struct i2c_device_id *id)
++static int gtp_probe(struct i2c_client *client)
+ {
+ 	int ret = -1;
+ 	struct goodix_ts_data *ts;
+diff --git a/drivers/input/touchscreen/gt9xx.h b/drivers/input/touchscreen/gt9xx.h
+index fd6d13c8d3d2..d4af535c3ea6 100755
+--- a/drivers/input/touchscreen/gt9xx.h
++++ b/drivers/input/touchscreen/gt9xx.h
+@@ -36,6 +36,7 @@
+ #include <linux/io.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/major.h>
+ #include <linux/kdev_t.h>
+ #ifdef CONFIG_OF
+-- 
+2.47.0
+

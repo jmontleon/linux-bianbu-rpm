@@ -1,0 +1,29 @@
+From f271a9351d1b849578d0204d04932f72df4e6816 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Tue, 2 Jul 2024 17:42:19 +0800
+Subject: [PATCH 0903/1451] es8326: fix hp detect abnormal issue
+
+Change-Id: I191d4de420db4a51f6a1a7d28ac5709f5fce2560
+---
+ sound/soc/codecs/es8326.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 41e1e2bcd554..bcf555f41f24 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -882,7 +882,11 @@ static void es8326_jack_detect_handler(struct work_struct *work)
+ 			#endif
+ 			goto exit;
+ 		}
++		#ifdef SPACEMIT_CONFIG_CODEC_ES8326
++		if ((es8326->jack->status & SND_JACK_HEADSET) == SND_JACK_HEADSET) {
++		#else
+ 		if (es8326->jack->status & SND_JACK_HEADSET) {
++		#endif
+ 			/* detect button */
+ 			dev_dbg(comp->dev, "button pressed\n");
+ 			queue_delayed_work(system_wq, &es8326->button_press_work, 10);
+-- 
+2.47.0
+

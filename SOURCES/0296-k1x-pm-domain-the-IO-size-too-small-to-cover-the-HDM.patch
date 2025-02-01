@@ -1,0 +1,27 @@
+From 6ed5a0d370cc90ddadd736fd2fbe1b8c312c9ccd Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 3 Jan 2024 12:33:57 +0800
+Subject: [PATCH 0296/1451] k1x:pm-domain: the IO size too small to cover the
+ HDMI operation space
+
+Change-Id: I940665ec20a6e95f2a06ea65302d38309d97406a
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 795be68830d4..4c1d27853aad 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -559,7 +559,7 @@ mpmu: mpmu@1 {
+ 
+ 			apmu: apmu@2 {
+ 				compatible = "simple-mfd", "spacemit,spacemit-apmu", "syscon";
+-				reg = <0x0 0xd4282800 0x0 0x3f4>;
++				reg = <0x0 0xd4282800 0x0 0x400>;
+ 			};
+ 
+ 			power: power-controller {
+-- 
+2.47.0
+

@@ -1,0 +1,25 @@
+From 063cda140c52753fee9b602f5941189aafb77f06 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 29 Mar 2024 20:49:01 +0800
+Subject: [PATCH 0555/1451] kx312: modify pcie1 to 1 lane
+
+Change-Id: Ic608ea63c41a007417c6db719d72c9c1669719d4
+---
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 3927a4b5a4a6..de06991d2c6f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -643,6 +643,7 @@ dwc3@c0a00000 {
+ &pcie1_rc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pcie1_3>;
++	num-lanes = <1>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

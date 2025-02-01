@@ -1,0 +1,26 @@
+From b8f904cd6fb8939982d43720ebf5cc9de5778085 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 31 Jul 2024 10:23:48 +0800
+Subject: [PATCH 0980/1451] k1: MUSE-Pi: update sdio tx delaycode to 0x30
+
+Change-Id: I92dec834bce0062b436d8affeeb6271a1e19e3e7
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 6b52e4598101..9cdc511f8124 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -678,7 +678,7 @@ SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+ 			SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+-	spacemit,tx_delaycode = <0x0>;
++	spacemit,tx_delaycode = <0x30>;
+ 	spacemit,rx_tuning_limit = <50>;
+ 	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+-- 
+2.47.0
+

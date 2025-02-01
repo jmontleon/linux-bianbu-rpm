@@ -1,0 +1,530 @@
+From df6aff0480885d529511b2b15296023b26af05cf Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 29 Aug 2023 17:43:33 +0800
+Subject: [PATCH 0090/1451] riscv: spacemit: add k1-x_fpga 1x4 & 2x2 board dts
+ support
+
+we add isa 'sstc' and disable CONFIG_CLINT_TIMER configuration
+to reduce the number of times that traps into opensbi
+
+synced with change-id: I485d3efaad7ddbf2601aa8a5bd2bb8eec70c2f9b (opensbi)
+
+Change-Id: I457de37335f0bb58f4f7d3ac6b17b17017b2274d
+---
+ arch/riscv/boot/dts/spacemit/Makefile         |   2 +-
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  27 +---
+ .../riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts |  55 +++++++
+ .../riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts |  57 +++++++
+ arch/riscv/configs/k1-x_fpga_1x4_defconfig    | 145 ++++++++++++++++++
+ arch/riscv/configs/k1-x_fpga_2x2_defconfig    | 145 ++++++++++++++++++
+ 6 files changed, 407 insertions(+), 24 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
+ create mode 100644 arch/riscv/configs/k1-x_fpga_1x4_defconfig
+ create mode 100644 arch/riscv/configs/k1-x_fpga_2x2_defconfig
+
+diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
+index e29d14a8652a..13b6633a3dc8 100644
+--- a/arch/riscv/boot/dts/spacemit/Makefile
++++ b/arch/riscv/boot/dts/spacemit/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb k1-pro_verify.dtb
+-dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb
++dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb
+ obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index b4911d288cda..ec6b01cf2433 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -25,7 +25,7 @@ cpu_0: cpu@0 {
+ 			reg = <0>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -47,7 +47,7 @@ cpu_1: cpu@1 {
+ 			reg = <1>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -69,7 +69,7 @@ cpu_2: cpu@2 {
+ 			reg = <2>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -91,7 +91,7 @@ cpu_3: cpu@3 {
+ 			reg = <3>;
+ 			status = "okay";
+ 			compatible = "riscv";
+-			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt";
++			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc";
+ 			riscv,cbom-block-size = <64>;
+ 			mmu-type = "riscv,sv39";
+ 			cpu-freq = "1.848Ghz";
+@@ -108,25 +108,6 @@ cpu3_intc: interrupt-controller {
+ 				interrupt-controller;
+ 			};
+ 		};
+-
+-		cpu-map {
+-			cluster0 {
+-				core0 {
+-					cpu = <&cpu_0>;
+-				};
+-
+-				core1 {
+-					cpu = <&cpu_1>;
+-				};
+-				core2 {
+-					cpu = <&cpu_2>;
+-				};
+-
+-				core3 {
+-					cpu = <&cpu_3>;
+-				};
+-			};
+-		};
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
+new file mode 100644
+index 000000000000..3ef9f42c6551
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++/dts-v1/;
++
++#include "k1-x.dtsi"
++/ {
++	model = "spacemit k1-x fpga board";
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <50000000>;
++
++		cpu_2: cpu@2 {
++			reg = <2>;	
++		};
++
++		cpu_3: cpu@3 {
++			reg = <3>;	
++		};
++
++                cpu-map {
++                        cluster0 {
++                                core0 {
++                                        cpu = <&cpu_0>;
++                                };
++
++                                core1 {
++                                        cpu = <&cpu_1>;
++                                };
++
++                                core2 {
++                                        cpu = <&cpu_2>;
++                                };
++
++                                core3 {
++                                        cpu = <&cpu_3>;
++                                };
++                        };
++                };
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x00000000 0x0 0x7fffffff>;
++	};
++
++	chosen {
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8,initcall_debug=1 rdinit=/init.tmp";
++		stdout-path = "serial0:115200n8";
++	};
++
++};
++
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
+new file mode 100644
+index 000000000000..67232c75cf09
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++/dts-v1/;
++
++#include "k1-x.dtsi"
++/ {
++	model = "spacemit k1-x fpga board";
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		timebase-frequency = <50000000>;
++
++		cpu_2: cpu@2 {
++			reg = <4>;	
++		};
++
++		cpu_3: cpu@3 {
++			reg = <5>;	
++		};
++
++                cpu-map {
++                        cluster0 {
++                                core0 {
++                                        cpu = <&cpu_0>;
++                                };
++
++                                core1 {
++                                        cpu = <&cpu_1>;
++                                };
++                        };
++
++			cluster1 {
++                                core0 {
++                                        cpu = <&cpu_2>;
++                                };
++
++                                core1 {
++                                        cpu = <&cpu_3>;
++                                };
++			};
++                };
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x00000000 0x0 0x7fffffff>;
++	};
++
++	chosen {
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8,initcall_debug=1 rdinit=/init.tmp";
++		stdout-path = "serial0:115200n8";
++	};
++
++};
++
+diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+new file mode 100644
+index 000000000000..f9cb64c8971e
+--- /dev/null
++++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
+@@ -0,0 +1,145 @@
++CONFIG_COMPILE_TEST=y
++# CONFIG_WERROR is not set
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ_IDLE=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_PREEMPT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
++CONFIG_CHECKPOINT_RESTORE=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++# CONFIG_RD_ZSTD is not set
++CONFIG_EXPERT=y
++# CONFIG_BUG is not set
++CONFIG_PERF_EVENTS=y
++CONFIG_SOC_SPACEMIT=y
++CONFIG_SOC_SPACEMIT_K1X=y
++CONFIG_SOC_SPACEMIT_K1_FPGA=y
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
++CONFIG_HZ_100=y
++CONFIG_RISCV_SBI_V01=y
++# CONFIG_RISCV_BOOT_SPINWAIT is not set
++CONFIG_PM=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_BLK_DEBUG_FS is not set
++CONFIG_CMA=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++# CONFIG_IPV6 is not set
++CONFIG_NETWORK_PHY_TIMESTAMPING=y
++CONFIG_NETLINK_DIAG=y
++CONFIG_CFG80211=y
++CONFIG_FAILOVER=y
++# CONFIG_ETHTOOL_NETLINK is not set
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_ARM_SCMI_PROTOCOL=y
++# CONFIG_ARM_SCMI_POWER_DOMAIN is not set
++# CONFIG_ARM_SCPI_POWER_DOMAIN is not set
++CONFIG_MTD=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_MTD_SPEAR_SMI is not set
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_SRAM=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_NETDEVICES=y
++# CONFIG_ETHERNET is not set
++CONFIG_PHYLIB=y
++# CONFIG_WLAN is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_KEYBOARD is not set
++# CONFIG_INPUT_MOUSE is not set
++CONFIG_VT_HW_CONSOLE_BINDING=y
++CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
++CONFIG_SERIAL_PXA=y
++CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
++CONFIG_SERIAL_PXA_CONSOLE=y
++CONFIG_VIRTIO_CONSOLE=y
++# CONFIG_HW_RANDOM is not set
++# CONFIG_HWMON is not set
++CONFIG_MFD_SYSCON=y
++# CONFIG_VGA_CONSOLE is not set
++# CONFIG_HID_GENERIC is not set
++# CONFIG_USB_SUPPORT is not set
++CONFIG_SYNC_FILE=y
++CONFIG_SW_SYNC=y
++CONFIG_UDMABUF=y
++# CONFIG_VIRTIO_MENU is not set
++# CONFIG_VHOST_MENU is not set
++# CONFIG_SURFACE_PLATFORMS is not set
++# CONFIG_CLINT_TIMER is not set
++# CONFIG_IOMMU_SUPPORT is not set
++# CONFIG_DPAA2_CONSOLE is not set
++CONFIG_GENERIC_PHY=y
++# CONFIG_PHY_MVEBU_A3700_UTMI is not set
++# CONFIG_NVMEM is not set
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=y
++CONFIG_OVERLAY_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_HUGETLBFS=y
++CONFIG_CONFIGFS_FS=y
++# CONFIG_EFIVAR_FS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_SWAP=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_INIT_STACK_NONE=y
++CONFIG_CRYPTO_AUTHENC=y
++CONFIG_CRYPTO_DH=y
++CONFIG_CRYPTO_ECDH=y
++CONFIG_CRYPTO_CURVE25519=y
++CONFIG_CRYPTO_AES=y
++CONFIG_CRYPTO_DES=y
++CONFIG_CRYPTO_ECB=y
++CONFIG_CRYPTO_OFB=y
++CONFIG_CRYPTO_CHACHA20POLY1305=y
++CONFIG_CRYPTO_CMAC=y
++CONFIG_CRYPTO_MD5=y
++CONFIG_CRYPTO_SHA1=y
++CONFIG_CRYPTO_SHA3=y
++CONFIG_CRYPTO_DEFLATE=y
++CONFIG_CRYPTO_LZO=y
++CONFIG_CRYPTO_ZSTD=y
++CONFIG_CRYPTO_USER_API_HASH=y
++CONFIG_XZ_DEC=y
++CONFIG_DMA_CMA=y
++CONFIG_PRINTK_TIME=y
++CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
++CONFIG_CONSOLE_LOGLEVEL_QUIET=8
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_FS=y
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++# CONFIG_RCU_TRACE is not set
++# CONFIG_RUNTIME_TESTING_MENU is not set
+diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+new file mode 100644
+index 000000000000..f9cb64c8971e
+--- /dev/null
++++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
+@@ -0,0 +1,145 @@
++CONFIG_COMPILE_TEST=y
++# CONFIG_WERROR is not set
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ_IDLE=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_PREEMPT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
++CONFIG_CHECKPOINT_RESTORE=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++# CONFIG_RD_ZSTD is not set
++CONFIG_EXPERT=y
++# CONFIG_BUG is not set
++CONFIG_PERF_EVENTS=y
++CONFIG_SOC_SPACEMIT=y
++CONFIG_SOC_SPACEMIT_K1X=y
++CONFIG_SOC_SPACEMIT_K1_FPGA=y
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
++CONFIG_HZ_100=y
++CONFIG_RISCV_SBI_V01=y
++# CONFIG_RISCV_BOOT_SPINWAIT is not set
++CONFIG_PM=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_BLK_DEBUG_FS is not set
++CONFIG_CMA=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++# CONFIG_IPV6 is not set
++CONFIG_NETWORK_PHY_TIMESTAMPING=y
++CONFIG_NETLINK_DIAG=y
++CONFIG_CFG80211=y
++CONFIG_FAILOVER=y
++# CONFIG_ETHTOOL_NETLINK is not set
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_ARM_SCMI_PROTOCOL=y
++# CONFIG_ARM_SCMI_POWER_DOMAIN is not set
++# CONFIG_ARM_SCPI_POWER_DOMAIN is not set
++CONFIG_MTD=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_MTD_SPEAR_SMI is not set
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_SRAM=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_NETDEVICES=y
++# CONFIG_ETHERNET is not set
++CONFIG_PHYLIB=y
++# CONFIG_WLAN is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_KEYBOARD is not set
++# CONFIG_INPUT_MOUSE is not set
++CONFIG_VT_HW_CONSOLE_BINDING=y
++CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
++CONFIG_SERIAL_PXA=y
++CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
++CONFIG_SERIAL_PXA_CONSOLE=y
++CONFIG_VIRTIO_CONSOLE=y
++# CONFIG_HW_RANDOM is not set
++# CONFIG_HWMON is not set
++CONFIG_MFD_SYSCON=y
++# CONFIG_VGA_CONSOLE is not set
++# CONFIG_HID_GENERIC is not set
++# CONFIG_USB_SUPPORT is not set
++CONFIG_SYNC_FILE=y
++CONFIG_SW_SYNC=y
++CONFIG_UDMABUF=y
++# CONFIG_VIRTIO_MENU is not set
++# CONFIG_VHOST_MENU is not set
++# CONFIG_SURFACE_PLATFORMS is not set
++# CONFIG_CLINT_TIMER is not set
++# CONFIG_IOMMU_SUPPORT is not set
++# CONFIG_DPAA2_CONSOLE is not set
++CONFIG_GENERIC_PHY=y
++# CONFIG_PHY_MVEBU_A3700_UTMI is not set
++# CONFIG_NVMEM is not set
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=y
++CONFIG_OVERLAY_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_HUGETLBFS=y
++CONFIG_CONFIGFS_FS=y
++# CONFIG_EFIVAR_FS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_SWAP=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_INIT_STACK_NONE=y
++CONFIG_CRYPTO_AUTHENC=y
++CONFIG_CRYPTO_DH=y
++CONFIG_CRYPTO_ECDH=y
++CONFIG_CRYPTO_CURVE25519=y
++CONFIG_CRYPTO_AES=y
++CONFIG_CRYPTO_DES=y
++CONFIG_CRYPTO_ECB=y
++CONFIG_CRYPTO_OFB=y
++CONFIG_CRYPTO_CHACHA20POLY1305=y
++CONFIG_CRYPTO_CMAC=y
++CONFIG_CRYPTO_MD5=y
++CONFIG_CRYPTO_SHA1=y
++CONFIG_CRYPTO_SHA3=y
++CONFIG_CRYPTO_DEFLATE=y
++CONFIG_CRYPTO_LZO=y
++CONFIG_CRYPTO_ZSTD=y
++CONFIG_CRYPTO_USER_API_HASH=y
++CONFIG_XZ_DEC=y
++CONFIG_DMA_CMA=y
++CONFIG_PRINTK_TIME=y
++CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
++CONFIG_CONSOLE_LOGLEVEL_QUIET=8
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_DEBUG_FS=y
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++# CONFIG_RCU_TRACE is not set
++# CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.0
+

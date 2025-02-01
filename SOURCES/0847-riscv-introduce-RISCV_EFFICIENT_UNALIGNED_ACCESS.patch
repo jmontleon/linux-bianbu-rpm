@@ -1,0 +1,76 @@
+From 4b94e20529f483feb7186fc8631ac2eee15c9560 Mon Sep 17 00:00:00 2001
+From: Jisheng Zhang <jszhang@kernel.org>
+Date: Mon, 25 Dec 2023 12:42:06 +0800
+Subject: [PATCH 0847/1451] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+
+Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
+support efficient unaligned access, for performance reason we want
+to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
+avoid performance regressions on other non efficient unaligned access
+platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globally selected.
+
+To solve this problem, runtime code patching based on the detected
+speed is a good solution. But that's not easy, it involves lots of
+work to modify vairous subsystems such as net, mm, lib and so on.
+This can be done step by step.
+
+So let's take an easier solution: add support to efficient unaligned
+access and hide the support under NONPORTABLE.
+
+Now let's introduce RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
+NONPORTABLE, if users know during config time that the kernel will be
+only run on those efficient unaligned access hw platforms, they can
+enable it. Obviously, generic unified kernel Image shouldn't enable it.
+
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20231225044207.3821-2-jszhang@kernel.org
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I10e480dc4c1333cdbdb04d6e22c66a46433db186
+---
+ arch/riscv/Kconfig  | 13 +++++++++++++
+ arch/riscv/Makefile |  2 ++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 47814f5db0d7..2650c00d39c1 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -662,6 +662,19 @@ config RISCV_MISALIGNED
+ 	  load/store for both kernel and userspace. When disable, misaligned
+ 	  accesses will generate SIGBUS in userspace and panic in kernel.
+ 
++config RISCV_EFFICIENT_UNALIGNED_ACCESS
++	bool "Assume the CPU supports fast unaligned memory accesses"
++	depends on NONPORTABLE
++	select HAVE_EFFICIENT_UNALIGNED_ACCESS
++	help
++	  Say Y here if you want the kernel to assume that the CPU supports
++	  efficient unaligned memory accesses.  When enabled, this option
++	  improves the performance of the kernel on such CPUs.  However, the
++	  kernel will run much more slowly, or will not be able to run at all,
++	  on CPUs that do not support efficient unaligned memory accesses.
++
++	  If unsure what to do here, say N.
++
+ endmenu # "Platform type"
+ 
+ menu "Kernel features"
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 418bf0a6e93c..78abf61b7f28 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -104,7 +104,9 @@ KBUILD_AFLAGS_MODULE += $(call as-option,-Wa$(comma)-mno-relax)
+ # unaligned accesses.  While unaligned accesses are explicitly allowed in the
+ # RISC-V ISA, they're emulated by machine mode traps on all extant
+ # architectures.  It's faster to have GCC emit only aligned accesses.
++ifneq ($(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS),y)
+ KBUILD_CFLAGS += $(call cc-option,-mstrict-align)
++endif
+ 
+ ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
+ prepare: stack_protector_prepare
+-- 
+2.47.0
+

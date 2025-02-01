@@ -1,0 +1,54 @@
+From c162178af21089dbdf1a1e55d208eedcfb565bba Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 9 Oct 2023 09:36:46 +0800
+Subject: [PATCH 0125/1451] k1pro: disable cpuidle function by default now
+
+Change-Id: I7a3b49a5c48cfbbec8c6bdfe8e150e5dfcdde098
+---
+ arch/riscv/configs/k1-pro_fpga_1x4_defconfig | 2 --
+ arch/riscv/configs/k1-pro_fpga_2x2_defconfig | 2 --
+ arch/riscv/configs/k1-pro_fpga_defconfig     | 2 --
+ 3 files changed, 6 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_1x4_defconfig b/arch/riscv/configs/k1-pro_fpga_1x4_defconfig
+index acc987b7ade4..8d16b6cd90e1 100644
+--- a/arch/riscv/configs/k1-pro_fpga_1x4_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_1x4_defconfig
+@@ -35,8 +35,6 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
+-CONFIG_CPU_IDLE=y
+-CONFIG_RISCV_SBI_CPUIDLE=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+diff --git a/arch/riscv/configs/k1-pro_fpga_2x2_defconfig b/arch/riscv/configs/k1-pro_fpga_2x2_defconfig
+index acc987b7ade4..8d16b6cd90e1 100644
+--- a/arch/riscv/configs/k1-pro_fpga_2x2_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_2x2_defconfig
+@@ -35,8 +35,6 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
+-CONFIG_CPU_IDLE=y
+-CONFIG_RISCV_SBI_CPUIDLE=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 48ff71c71a14..34f25105bfac 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -32,8 +32,6 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
+-CONFIG_CPU_IDLE=y
+-CONFIG_RISCV_SBI_CPUIDLE=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+-- 
+2.47.0
+

@@ -1,0 +1,35 @@
+From 1e869361b48aba5eeaf2a0e97dbb5f34ec667915 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 5 Jul 2024 17:46:43 +0800
+Subject: [PATCH 1024/1451] =?UTF-8?q?k1x:i2c1&i2c6=20apply=20for=20the=20s?=
+ =?UTF-8?q?ame=20pin=EF=BC=8Cdelete=20i2c1?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Change-Id: Id940f8ad175889175725c31a395d2f2245349a08
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index c654bf5a5eda..721d351bcee7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -249,13 +249,6 @@ &i2c0 {
+ 	status = "okay";
+ };
+ 
+-&i2c1 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_i2c1>;
+-	spacemit,i2c-fast-mode;
+-	status = "okay";
+-};
+-
+ &i2c2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c2_0>;
+-- 
+2.47.0
+

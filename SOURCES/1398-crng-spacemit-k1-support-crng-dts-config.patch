@@ -1,0 +1,32 @@
+From 42bd0a3158a66f31c0ad0409467ba5d0871b6449 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 24 Dec 2024 11:18:26 +0800
+Subject: [PATCH 1398/1451] crng: spacemit/k1: support crng dts config
+
+Change-Id: I73314eee2bc50a1e1c6912306a14ea4644e50bf9
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index eafb8fa14211..3176d1136ff3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2527,6 +2527,14 @@ spacemit_crypto_engine@d8600000 {
+ 			status = "okay";
+ 		};
+ 
++		crng: crng@f0703800 {
++			compatible = "spacemit,hw_crng";
++			reg = <0x0 0xf0703800 0x0 0x100>;
++			clocks = <&ccu CLK_AES>;
++			resets = <&reset RESET_AES>;
++			status = "okay";
++		};
++
+ 		efuse: fuse@f0702800 {
+ 			compatible = "simple-mfd";
+ 			#address-cells = <1>;
+-- 
+2.47.0
+

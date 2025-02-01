@@ -1,0 +1,250 @@
+From 8e676010acb8ab5dcf9f7c0ae90366f93e931655 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 6 Dec 2023 10:49:10 +0800
+Subject: [PATCH 0177/1451] uart: spacemit/k1x: add clock&reset in uart driver
+
+Change-Id: I67f2f59ba678072295b57e23f5eed90e613c9b77
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 108 +++++++++++++++++++------
+ drivers/tty/serial/pxa_k1x.c           |  24 ++++--
+ 2 files changed, 102 insertions(+), 30 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 78c9c9f575d9..092f3c3a4b42 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -16,9 +16,14 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &uart0;
+-		serial1 = &uart1;
+-		serial2 = &uart2;
+-		serial3 = &uart3;
++		serial1 = &uart2;
++		serial2 = &uart3;
++		serial3 = &uart4;
++		serial4 = &uart5;
++		serial5 = &uart6;
++		serial6 = &uart7;
++		serial7 = &uart8;
++		serial8 = &uart9;
+ 	};
+ 
+ 	cpus: cpus {
+@@ -392,13 +397,6 @@ clk_32k: clock-clk32k {
+ 			clock-output-names = "clk_32k";
+ 		};
+ 
+-		pll_clk_uart: clock-pll_clk_uart {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <14000000>;
+-			clock-output-names = "pll_clk_uart";
+-		};
+-
+ 		pll_clk_i2c: clock-pll_clk_i2c {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -635,35 +633,97 @@ uart0: serial@d4017000 {
+ 			reg = <0x0 0xd4017000 0x0 0x100>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <42>;
+-			clocks = <&pll_clk_uart>;
+-			clk-fpga = <14000000>;
++			clocks = <&ccu CLK_UART1>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART1>;
+ 			status = "ok";
+ 		};
+ 
+-		uart1: uart@d4018000 {
+-			compatible = "mrvl,pxa-uart";
+-			reg = <0x0 0xd4018000 0x0 0x1000>;
++		uart2: uart@d4017100 {
++			compatible = "spacemit,pxa-uart";
++			reg = <0x0 0xd4017100 0x0 0x100>;
+ 			interrupt-parent = <&intc>;
+-			interrupts = <43>;
++			interrupts = <44>;
++			clocks = <&ccu CLK_UART2>;
+ 			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART2>;
+ 			status = "disabled";
+ 		};
+ 
+-		uart2: uart@d4017800 {
+-			compatible = "mrvl,pxa-uart";
+-			reg = <0x0 0xd4017800 0x0 0x1000>;
++		uart3: uart@d4017200 {
++			compatible = "spcaemit,pxa-uart";
++			reg = <0x0 0xd4017200 0x0 0x100>;
+ 			interrupt-parent = <&intc>;
+-			interrupts = <44>;
++			interrupts = <45>;
++			clocks = <&ccu CLK_UART3>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART3>;
++			status = "disabled";
++		};
++
++		uart4: uart@d4017300 {
++			compatible = "spacemit,pxa-uart";
++			interrupt-parent = <&intc>;
++			reg = <0x0 0xd4017300 0x0 0x100>;
++			interrupts = <46>;
++			clocks = <&ccu CLK_UART4>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART4>;
++			status = "disabled";
++		};
++
++		uart5: uart@d4017400 {
++			compatible = "spacemit,pxa-uart";
++			interrupt-parent = <&intc>;
++			reg = <0x0 0xd4017400 0x0 0x100>;
++			interrupts = <47>;
++			clocks = <&ccu CLK_UART5>;
+ 			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART5>;
+ 			status = "disabled";
+ 		};
+ 
+-		uart3: uart@d4024000 {
+-			compatible = "mrvl,pxa-uart";
++		uart6: uart@d4017500 {
++			compatible = "spacemit,pxa-uart";
++			interrupt-parent = <&intc>;
++			reg = <0x0 0xd4017500 0x0 0x100>;
++			interrupts = <48>;
++			clocks = <&ccu CLK_UART6>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART6>;
++			status = "disabled";
++		};
++
++		uart7: uart@d4017600 {
++			compatible = "spacemit,pxa-uart";
++			interrupt-parent = <&intc>;
++			reg = <0x0 0xd4017600 0x0 0x100>;
++			interrupts = <49>;
++			clocks = <&ccu CLK_UART7>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART7>;
++			status = "disabled";
++		};
++
++		uart8: uart@d4017700 {
++			compatible = "spacemit,pxa-uart";
++			interrupt-parent = <&intc>;
++			reg = <0x0 0xd4017700 0x0 0x100>;
++			interrupts = <50>;
++			clocks = <&ccu CLK_UART8>;
++			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART8>;
++			status = "disabled";
++		};
++
++		uart9: uart@d4017800 {
++			compatible = "spacemit,pxa-uart";
+ 			interrupt-parent = <&intc>;
+-			reg = <0x0 0xd4024000 0x0 0x1000>;
+-			interrupts = <61>;
++			reg = <0x0 0xd4017800 0x0 0x100>;
++			interrupts = <51>;
++			clocks = <&ccu CLK_UART9>;
+ 			clk-fpga = <14750000>;
++			resets = <&reset RESET_UART9>;
+ 			status = "disabled";
+ 		};
+ 
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 4bf9343be8ee..44bd8aa1a353 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -34,6 +34,7 @@
+ #include <linux/tty_flip.h>
+ #include <linux/serial_core.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -118,6 +119,7 @@ struct uart_pxa_port {
+ 	unsigned char		mcr;
+ 	unsigned int		lsr_break_flag;
+ 	struct clk		*clk;
++	struct reset_control    *resets;
+ 	char			name[PXA_NAME_LEN];
+ 
+ 	struct timer_list	pxa_timer;
+@@ -2170,6 +2172,13 @@ static int serial_pxa_probe(struct platform_device *dev)
+ #else
+ 	sport->port.uartclk = clk_get_rate(sport->clk);
+ #endif
++	sport->resets = devm_reset_control_get_optional(&dev->dev, NULL);
++	if(IS_ERR(sport->resets)) {
++		ret = PTR_ERR(sport->resets);
++		goto err_clk;
++	}
++	reset_control_deassert(sport->resets);
++
+ 	sport->port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_PXA_CONSOLE);
+ 
+ 	sport->edge_wakeup_gpio = -1;
+@@ -2188,12 +2197,12 @@ static int serial_pxa_probe(struct platform_device *dev)
+ 	if (ret > 0) {
+ 		sport->port.line = dev->id;
+ 	} else if (ret < 0) {
+-		goto err_clk;
++		goto err_rst;
+ 	}
+ 	if (sport->port.line >= ARRAY_SIZE(serial_pxa_ports)) {
+ 		dev_err(&dev->dev, "serial%d out of range\n", sport->port.line);
+ 		ret = -EINVAL;
+-		goto err_clk;
++		goto err_rst;
+ 	}
+ 	snprintf(sport->name, PXA_NAME_LEN - 1, "UART%d", sport->port.line + 1);
+ 
+@@ -2217,7 +2226,7 @@ static int serial_pxa_probe(struct platform_device *dev)
+ 	 */
+ 	ret = request_irq(sport->port.irq, serial_pxa_irq, 0, sport->name, sport);
+ 	if (ret) {
+-		goto err_clk;
++		goto err_rst;
+ 	}
+ 	disable_irq(sport->port.irq);
+ 
+@@ -2269,16 +2278,18 @@ static int serial_pxa_probe(struct platform_device *dev)
+ 	uart_remove_one_port(&serial_pxa_reg, &sport->port);
+ 	iounmap(sport->port.membase);
+ #endif
+- err_qos:
++err_qos:
+ #ifdef CONFIG_PM
+ 	freq_qos_remove_request(&sport->qos_idle[PXA_UART_RX]);
+ 	freq_qos_remove_request(&sport->qos_idle[PXA_UART_TX]);
+ #endif
+ 	free_irq(sport->port.irq, sport);
+- err_clk:
++err_rst:
++	reset_control_assert(sport->resets);
++err_clk:
+ 	clk_unprepare(sport->clk);
+ 	clk_put(sport->clk);
+- err_free:
++err_free:
+ 	kfree(sport);
+ 	return ret;
+ }
+@@ -2294,6 +2305,7 @@ static int serial_pxa_remove(struct platform_device *dev)
+ 
+ 	uart_remove_one_port(&serial_pxa_reg, &sport->port);
+ 
++	reset_control_assert(sport->resets);
+ 	free_irq(sport->port.irq, sport);
+ 	clk_unprepare(sport->clk);
+ 	clk_put(sport->clk);
+-- 
+2.47.0
+

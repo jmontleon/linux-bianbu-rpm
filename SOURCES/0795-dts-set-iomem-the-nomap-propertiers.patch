@@ -1,0 +1,52 @@
+From cd9d8dfc18943b1164bc0ec618ffa12aaad1da3f Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Thu, 20 Jun 2024 13:52:34 +0800
+Subject: [PATCH 0795/1451] dts: set iomem the nomap propertiers
+
+1. avoid drivers ioremap failed, eg: pcie
+
+err log:
+[    2.485467] k1x-dwc-pcie ca400000.pcie: host bridge /soc/pcie@ca400000 ranges:
+[    2.491024] k1x-dwc-pcie ca400000.pcie:       IO 0x0090002000..0x0090101fff -> 0x0090002000
+[    2.499454] k1x-dwc-pcie ca400000.pcie:      MEM 0x0090102000..0x009f101fff -> 0x0090102000
+[    2.507917] k1x-dwc-pcie ca400000.pcie: resource collision: [mem 0x90102000-0x9f101fff] conflicts with Reserved [mem 0x80000000-0xc07fffff]
+[    2.520352] k1x-dwc-pcie ca400000.pcie: failed to initialize host
+[    2.526663] k1x-dwc-pcie: probe of ca400000.pcie failed with error -12
+[    2.537314] Now init Rterm...
+[    2.537510] pcie prot id = 2, porta_init_done = 0
+[    2.542321] Now waiting portA resister tuning done...
+[    2.547422] pcie_rcal = 0x00005d47
+[    2.550884] pcie port id = 2, lane num = 2
+[    2.555049] Now int init_puphy...
+[    2.558430] waiting pll lock...
+[    2.561617] Now finish init_puphy....
+[    2.567226] k1x-dwc-pcie ca800000.pcie: host bridge /soc/pcie@ca800000 ranges:
+[    2.573041] k1x-dwc-pcie ca800000.pcie:       IO 0x00a0002000..0x00a0101fff -> 0x00a0002000
+[    2.581289] k1x-dwc-pcie ca800000.pcie:      MEM 0x00a0102000..0x00b0101fff -> 0x00a0102000
+[    2.589728] k1x-dwc-pcie ca800000.pcie: resource collision: [mem 0xa0102000-0xb0101fff] conflicts with Reserved [mem 0x80000000-0xc07fffff]
+[    2.602180] k1x-dwc-pcie ca800000.pcie: failed to initialize host
+[    2.608528] k1x-dwc-pcie: probe of ca800000.pcie failed with error -12
+
+Change-Id: Ia7d5fa9554e028ed1da1748075826072c5db4491
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 106303d911c8..19ce21ad6f65 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -466,8 +466,9 @@ reserved-memory {
+ 		ranges;
+ 
+ 		area_reserved@80000000 {
+-			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */
++			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */			
+ 			reg = <0x0 0x80000000 0x0 0x40800000>;
++			no-map;
+ 		};
+ 
+ 		/* sram area, used for rcpu code & data & heap space */
+-- 
+2.47.0
+

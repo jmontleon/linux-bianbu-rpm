@@ -1,0 +1,67 @@
+From f36891147de033ef35c7ba7c91c42b12cc860832 Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Wed, 23 Oct 2024 16:10:39 +0800
+Subject: [PATCH 1198/1451] camera:Fix dma_buf warning with enabled lockdep
+
+Change-Id: Ide1bdb51044fe26654f0cbe08ca6e966d59247e6
+---
+ drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c  | 6 +++---
+ .../media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c    | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+index da8df1577feb..73566e36d2ec 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+@@ -266,7 +266,7 @@ cpp_iommu_map_buffer_and_add_to_list(struct cpp_iommu_device *mmu_dev, int fd,
+ 	//      dba->dma_map_attrs |= DMA_ATTR_SKIP_CPU_SYNC;
+ 
+ 	/* get the associated scatterlist for this buffer */
+-	sgt = dma_buf_map_attachment(dba, dma_dir);
++	sgt = dma_buf_map_attachment_unlocked(dba, dma_dir);
+ 	if (IS_ERR(sgt)) {
+ 		pr_err("Error getting dmabuf scatterlist, %ld\n", PTR_ERR(sgt));
+ 		dma_buf_detach(dbuf, dba);
+@@ -309,7 +309,7 @@ cpp_iommu_map_buffer_and_add_to_list(struct cpp_iommu_device *mmu_dev, int fd,
+ 	return 0;
+ 
+ err_alloc:
+-	dma_buf_unmap_attachment(dba, sgt, dma_dir);
++	dma_buf_unmap_attachment_unlocked(dba, sgt, dma_dir);
+ 	dma_buf_detach(dbuf, dba);
+ 	dma_buf_put(dbuf);
+ 
+@@ -390,7 +390,7 @@ static int cpp_iommu_unmap_buffer_and_remove_from_list(struct cam_dmabuf_info
+ 		return -EINVAL;
+ 	}
+ 
+-	dma_buf_unmap_attachment(mapping_info->attach, mapping_info->table,
++	dma_buf_unmap_attachment_unlocked(mapping_info->attach, mapping_info->table,
+ 				 mapping_info->dir);
+ 	dma_buf_detach(mapping_info->buf, mapping_info->attach);
+ 	dma_buf_put(mapping_info->buf);
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+index 4a360d72a3c1..a4b199b42942 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+@@ -244,7 +244,7 @@ int _isp_dev_put_phyaddr_to_dma_buf(struct dma_buf *dma_buffer,
+ 				    struct dma_buf_attachment *attach,
+ 				    struct sg_table *sgt)
+ {
+-	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
++	dma_buf_unmap_attachment_unlocked(attach, sgt, DMA_BIDIRECTIONAL);
+ 	dma_buf_detach(dma_buffer, attach);
+ 	dma_buf_put(dma_buffer);
+ 
+@@ -274,7 +274,7 @@ int k1xisp_dev_get_phyaddr_from_dma_buf(int fd, __u64 *phy_addr)
+ 
+ 	get_dma_buf(dma_buffer);
+ 
+-	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
++	sgt = dma_buf_map_attachment_unlocked(attach, DMA_BIDIRECTIONAL);
+ 	if (IS_ERR(sgt)) {
+ 		ret = -EPERM;
+ 		goto fail_detach;
+-- 
+2.47.0
+

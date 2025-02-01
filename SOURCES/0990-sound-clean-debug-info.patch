@@ -1,0 +1,105 @@
+From 55bd0577b4c4aff8f78d30f51ccbbf2e83df21b6 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 7 Jun 2024 17:17:38 +0800
+Subject: [PATCH 0990/1451] sound: clean debug info
+
+Change-Id: I9a072536c07b16f937c3c61a605235163c575555
+---
+ sound/soc/spacemit/spacemit-snd-i2s.c     |  4 ++--
+ sound/soc/spacemit/spacemit-snd-pcm-dma.c | 12 ++++++------
+ sound/soc/spacemit/spacemit-snd-sspa.c    |  2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
+index c1ba61c1dbef..631d579867b8 100644
+--- a/sound/soc/spacemit/spacemit-snd-i2s.c
++++ b/sound/soc/spacemit/spacemit-snd-i2s.c
+@@ -400,7 +400,7 @@ static int asoc_i2s_sspa_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	u8 dai_id = 0;
+ 
+-	printk("enter %s\n", __FUNCTION__);
++	pr_debug("enter %s\n", __FUNCTION__);
+ 	priv = devm_kzalloc(&pdev->dev,
+ 				sizeof(struct sspa_priv), GFP_KERNEL);
+ 	if (!priv) {
+@@ -484,7 +484,7 @@ static struct platform_driver asoc_i2s_sspa_driver = {
+ #if IS_MODULE(CONFIG_SND_SOC_SPACEMIT)
+ int spacemit_snd_register_i2s_pdrv(void)
+ {
+-	printk("%s\n", __FUNCTION__);
++	pr_debug("%s\n", __FUNCTION__);
+ 	return platform_driver_register(&asoc_i2s_sspa_driver);
+ }
+ 
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+index b6bc02edcb85..c860dcf003c4 100644
+--- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
++++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+@@ -707,7 +707,7 @@ static int spacemit_snd_pcm_new(struct snd_soc_component *component, struct snd_
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 
+-	printk("%s enter, dev=%s\n", __FUNCTION__, dev_name(rtd->dev));
++	pr_debug("%s enter, dev=%s\n", __FUNCTION__, dev_name(rtd->dev));
+ 
+ 	if (!component) {
+ 		pr_err("%s: coundn't find component %s\n", __FUNCTION__, DRV_NAME);
+@@ -721,7 +721,7 @@ static int spacemit_snd_pcm_new(struct snd_soc_component *component, struct snd_
+ 	}
+ 	if (dev->dmadata->dma_id == DMA_HDMI) {
+ 		chan_num = 1;
+-		printk("%s playback_only, dev=%s\n", __FUNCTION__, dev_name(rtd->dev));
++		pr_debug("%s playback_only, dev=%s\n", __FUNCTION__, dev_name(rtd->dev));
+ 	}else{
+ 		chan_num = 2;
+ 	}
+@@ -786,7 +786,7 @@ static void spacemit_snd_pcm_remove(struct snd_soc_component *component)
+ 	int chan_num;
+ 	struct spacemit_snd_soc_device *dev = snd_soc_component_get_drvdata(component);
+ 
+-	pr_info("%s enter\n", __FUNCTION__);
++	pr_debug("%s enter\n", __FUNCTION__);
+ 
+ 	if (dev->dmadata->dma_id == DMA_HDMI) {
+ 		chan_num = 1;
+@@ -943,12 +943,12 @@ static int spacemit_snd_dma_pdev_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
+-	printk("%s enter: dev name %s\n", __func__, dev_name(&pdev->dev));
++	pr_debug("%s enter: dev name %s\n", __func__, dev_name(&pdev->dev));
+ 
+ 	if (of_device_is_compatible(np, "spacemit,spacemit-snd-dma-hdmi")){
+ 		device->dmadata->dma_id = DMA_HDMI;
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-		printk("%s, start=0x%lx, end=0x%lx\n", __FUNCTION__, (unsigned long)res->start, (unsigned long)res->end);
++		pr_debug("%s, start=0x%lx, end=0x%lx\n", __FUNCTION__, (unsigned long)res->start, (unsigned long)res->end);
+ 		priv.phy_addr = res->start;
+ 		priv.buf_base = devm_ioremap_resource(&pdev->dev, res);
+ 		if (IS_ERR(priv.buf_base)) {
+@@ -1000,7 +1000,7 @@ static struct platform_driver spacemit_snd_dma_pdrv = {
+ #if IS_MODULE(CONFIG_SND_SOC_SPACEMIT)
+ int spacemit_snd_register_dmaclient_pdrv(void)
+ {
+-	printk("%s enter\n", __FUNCTION__);
++	pr_debug("%s enter\n", __FUNCTION__);
+ 	return platform_driver_register(&spacemit_snd_dma_pdrv);
+ }
+ EXPORT_SYMBOL(spacemit_snd_register_dmaclient_pdrv);
+diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
+index e022e080334f..971457c638c9 100644
+--- a/sound/soc/spacemit/spacemit-snd-sspa.c
++++ b/sound/soc/spacemit/spacemit-snd-sspa.c
+@@ -100,7 +100,7 @@ static int mmp_sspa_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_dmaengine_dai_dma_data *dma_params;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		printk("%s, format=0x%x\n", __FUNCTION__, params_format(params));
++		pr_debug("%s, format=0x%x\n", __FUNCTION__, params_format(params));
+ 		dma_params = sspa_priv->dma_params;
+ 		dma_params->maxburst = 32;
+ 		dma_params->addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-- 
+2.47.0
+

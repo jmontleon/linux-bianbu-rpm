@@ -1,0 +1,44 @@
+From 5816d627ad353b7e5bf10cb6bb9b1e1451d405d1 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Sat, 22 Jun 2024 15:40:09 +0800
+Subject: [PATCH 0810/1451] wireless: aic8800: fix compile warning
+
+Change-Id: I18c57988f502576165320a6154bf5426be178d97
+---
+ drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+index dd538ac0b318..af3cc4ef0314 100644
+--- a/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
++++ b/drivers/net/wireless/aic8800/aic8800_fdrv/rwnx_debugfs.c
+@@ -481,7 +481,7 @@ static ssize_t rwnx_dbgfs_acsinfo_read(struct file *file,
+     #ifdef CONFIG_RWNX_FULLMAC
+     struct wiphy *wiphy = priv->wiphy;
+     #endif //CONFIG_RWNX_FULLMAC
+-    char buf[(SCAN_CHANNEL_MAX + 1) * 43];
++    char buf[(SCAN_CHANNEL_MAX + 1) * 40];
+     int survey_cnt = 0;
+     int len = 0;
+     int band, chan_cnt;
+@@ -494,7 +494,7 @@ static ssize_t rwnx_dbgfs_acsinfo_read(struct file *file,
+     mutex_lock(&priv->dbgdump_elem.mutex);
+ 
+     len += scnprintf(buf, min_t(size_t, sizeof(buf) - 1, count),
+-                     "FREQ    TIME(ms)    BUSY(ms)    NOISE(dBm)\n");
++                     "FREQ   TIME(ms)   BUSY(ms)   NOISE(dBm)\n");
+ 
+ 
+ 	//#ifdef USE_5G
+@@ -509,7 +509,7 @@ static ssize_t rwnx_dbgfs_acsinfo_read(struct file *file,
+ 
+             if (p_survey_info->filled) {
+                 len += scnprintf(&buf[len], min_t(size_t, sizeof(buf) - len - 1, count),
+-                                 "%d    %03d         %03d         %d\n",
++                                 "%d   %03d        %03d        %d\n",
+                                  p_chan->center_freq,
+                                  p_survey_info->chan_time_ms,
+                                  p_survey_info->chan_time_busy_ms,
+-- 
+2.47.0
+

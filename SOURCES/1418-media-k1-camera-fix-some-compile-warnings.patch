@@ -1,0 +1,635 @@
+From dd1a05d2a04291fcb068188da5e49034c3fb725a Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 26 Dec 2024 20:56:54 +0800
+Subject: [PATCH 1418/1451] media: k1/camera: fix some compile warnings
+
+Change-Id: I9d9dc1612a00b8be764fdcf133100a33e91e9fb3
+---
+ .../spacemit/camera/cam_ccic/ccic_drv.c       | 22 ++----
+ .../spacemit/camera/cam_ccic/ccic_hwreg.c     |  2 +-
+ .../spacemit/camera/cam_cpp/cpp_iommu.c       |  2 +-
+ .../spacemit/camera/cam_isp/k1x_isp_pipe.c    | 77 ++++++++++---------
+ .../camera/cam_isp/k1x_isp_statistic.c        | 33 ++++----
+ 5 files changed, 65 insertions(+), 71 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+index 2bcaa1a9f834..23196686257a 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+@@ -562,7 +562,7 @@ static int ccic_clk_set_rate(struct ccic_ctrl *ctrl_dev, int mode)
+ 	return 0;
+ }
+ 
+-int ccic_clk_enable(struct ccic_ctrl *ctrl, int en)
++static int ccic_clk_enable(struct ccic_ctrl *ctrl, int en)
+ {
+ 	int ret = 0;
+ 	struct ccic_dev *ccic_dev = ctrl->ccic_dev;
+@@ -612,7 +612,7 @@ int ccic_clk_enable(struct ccic_ctrl *ctrl, int en)
+ 	return ret;
+ }
+ 
+-int ccic_config_csi2_mbus(struct ccic_ctrl *ctrl, int md, u8 vc0, u8 vc1, u8 dt0, u8 dt1,
++static int ccic_config_csi2_mbus(struct ccic_ctrl *ctrl, int md, u8 vc0, u8 vc1, u8 dt0, u8 dt1,
+ 			  int lanes)
+ {
+ 	int ret;
+@@ -639,7 +639,7 @@ int ccic_config_csi2_mbus(struct ccic_ctrl *ctrl, int md, u8 vc0, u8 vc1, u8 dt0
+ 	return ret;
+ }
+ 
+-int ccic_config_csi2idi_mux(struct ccic_ctrl *ctrl, int chnl, int idi, int en)
++static int ccic_config_csi2idi_mux(struct ccic_ctrl *ctrl, int chnl, int idi, int en)
+ {
+ 	struct ccic_dev *csi2idi = NULL;
+ 	struct ccic_dev *tmp;
+@@ -687,7 +687,7 @@ int ccic_config_csi2idi_mux(struct ccic_ctrl *ctrl, int chnl, int idi, int en)
+ 	return 0;
+ }
+ 
+-int ccic_reset_csi2idi(struct ccic_ctrl *ctrl, int idi, int rst)
++static int ccic_reset_csi2idi(struct ccic_ctrl *ctrl, int idi, int rst)
+ {
+ 	struct ccic_dev *csi2idi = NULL;
+ 	struct ccic_dev *tmp;
+@@ -858,14 +858,6 @@ int ccic_ctrl_get(struct ccic_ctrl **ctrl_host, int id,
+ 
+ EXPORT_SYMBOL(ccic_ctrl_get);
+ 
+-void ccic_ctrl_put(struct ccic_ctrl *ctrl)
+-{
+-	// TODO
+-}
+-
+-EXPORT_SYMBOL(ccic_ctrl_put);
+-
+-
+ int ccic_dma_get(struct ccic_dma **ccic_dma, int id)
+ {
+ 	struct ccic_dev *ccic_dev = NULL;
+@@ -1260,7 +1252,7 @@ static const struct of_device_id k1x_ccic_dt_match[] = {
+ 
+ MODULE_DEVICE_TABLE(of, k1x_ccic_dt_match);
+ 
+-struct platform_driver k1x_ccic_driver = {
++static struct platform_driver k1x_ccic_driver = {
+ 	.driver = {
+ 		.name = K1X_CCIC_DRV_NAME,
+ 		.of_match_table = of_match_ptr(k1x_ccic_dt_match),
+@@ -1269,7 +1261,7 @@ struct platform_driver k1x_ccic_driver = {
+ 	.remove = k1x_ccic_remove,
+ };
+ 
+-int __init k1x_ccic_driver_init(void)
++static int __init k1x_ccic_driver_init(void)
+ {
+ 	int ret;
+ 
+@@ -1284,7 +1276,7 @@ int __init k1x_ccic_driver_init(void)
+ 	return ret;
+ }
+ 
+-void __exit k1x_ccic_driver_exit(void)
++static void __exit k1x_ccic_driver_exit(void)
+ {
+ 	platform_driver_unregister(&k1x_ccic_driver);
+ 	ccic_csiphy_unregister();
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
+index 65bca4112aef..3c69b9f1433e 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
+@@ -227,7 +227,7 @@ int ccic_dma_set_burst(struct ccic_dev *ccic_dev)
+ 	return 0;
+ }
+ 
+-void ccic_dma_enable(struct ccic_dev *ccic_dev, int en)
++__maybe_unused static void ccic_dma_enable(struct ccic_dev *ccic_dev, int en)
+ {
+ 	if (en) {
+ 		ccic_reg_set_bit(ccic_dev, REG_IRQMASK, FRAMEIRQS);
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+index 66e3cb64f64a..e4d013006cbf 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+@@ -574,7 +574,7 @@ static int cpp_iommu_config_channel(struct cpp_iommu_device *mmu_dev,
+ 	return 0;
+ }
+ 
+-const static uint64_t IOMMU_VADDR_BASE = 0x80000000;
++static const uint64_t IOMMU_VADDR_BASE = 0x80000000;
+ static uint64_t cpp_iommu_get_iova(struct cpp_iommu_device *mmu_dev,
+ 				   uint32_t tid, uint32_t offset)
+ {
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+index 606f8977f55a..9fa8746625d2 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+@@ -7,6 +7,7 @@
+ 
+ #include "k1x_isp_drv.h"
+ #include "k1x_isp_statistic.h"
++#include "k1x_isp_pipe.h"
+ #include <cam_plat.h>
+ 
+ #include <linux/fs.h>
+@@ -66,7 +67,7 @@ static struct isp_task_stat_map_info g_task_stat_map_infos[ISP_PIPE_TASK_TYPE_MA
+ 	{ 1, { ISP_STAT_ID_AF, -1, -1} },	// af
+ };
+ 
+-int isp_pipe_get_task_type_by_stat_id(u32 stat_id)
++__maybe_unused static int isp_pipe_get_task_type_by_stat_id(u32 stat_id)
+ {
+ 	int task_type = -1;
+ 
+@@ -84,7 +85,7 @@ int isp_pipe_get_task_type_by_stat_id(u32 stat_id)
+  * the functions prefixed with k1xisp are all exposured to external.
+  */
+ 
+-int isp_pipe_config_irqmask(struct k1xisp_pipe_dev *pipe_dev)
++static int isp_pipe_config_irqmask(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	int ret = 0;
+ 	u32 reg_addr = 0, reg_value = 0, reg_mask = 0;
+@@ -125,7 +126,7 @@ int isp_pipe_config_irqmask(struct k1xisp_pipe_dev *pipe_dev)
+ 	return ret;
+ }
+ 
+-int isp_pipe_clear_irqmask(struct k1xisp_pipe_dev *pipe_dev)
++static int isp_pipe_clear_irqmask(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	u32 reg_addr = 0, reg_value = 0, reg_mask = 0;
+ 	u32 hw_pipe_id;
+@@ -145,7 +146,7 @@ int isp_pipe_clear_irqmask(struct k1xisp_pipe_dev *pipe_dev)
+ 	return 0;
+ }
+ 
+-int _isp_pipe_prepare_capture_memory(struct k1xisp_pipe_dev *pipe_dev)
++static int _isp_pipe_prepare_capture_memory(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	pipe_dev->slice_reg_mem =
+ 	    kzalloc(K1XISP_SLICE_REG_MAX_NUM * sizeof(struct isp_reg_unit), GFP_KERNEL);
+@@ -157,7 +158,7 @@ int _isp_pipe_prepare_capture_memory(struct k1xisp_pipe_dev *pipe_dev)
+ 	return 0;
+ }
+ 
+-int _isp_pipe_free_capture_memory(struct k1xisp_pipe_dev *pipe_dev)
++static int _isp_pipe_free_capture_memory(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	if (pipe_dev->slice_reg_mem) {
+ 		kfree(pipe_dev->slice_reg_mem);
+@@ -202,7 +203,7 @@ static int k1xisp_pipe_open(struct inode *inode, struct file *filp)
+ 	return ret;
+ }
+ 
+-int _isp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev)
++static int _isp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	int mem_index = 0;
+ 
+@@ -226,7 +227,7 @@ int _isp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev)
+ 	return 0;
+ }
+ 
+-int _isp_pipe_close_with_exception(struct k1xisp_pipe_dev *pipe_dev)
++static int _isp_pipe_close_with_exception(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	int i, cur_work_type = 0;
+ 
+@@ -273,7 +274,7 @@ static int k1xisp_pipe_release(struct inode *inode, struct file *filp)
+ 	return ret;
+ }
+ 
+-void isp_pipe_fill_user_task_stat_result(struct isp_ubuf_uint *ubuf_uint,
++static void isp_pipe_fill_user_task_stat_result(struct isp_ubuf_uint *ubuf_uint,
+ 					 struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int plane_size = 0;
+@@ -290,7 +291,7 @@ void isp_pipe_fill_user_task_stat_result(struct isp_ubuf_uint *ubuf_uint,
+ 	}
+ }
+ 
+-void isp_pipe_fill_user_task_data(struct isp_user_task_info *user_task, struct isp_kbuffer_info *kbuf_info, u32 stat_id)
++static void isp_pipe_fill_user_task_data(struct isp_user_task_info *user_task, struct isp_kbuffer_info *kbuf_info, u32 stat_id)
+ {
+ 	if (ISP_PIPE_TASK_TYPE_AF == user_task->task_type) {
+ 		if (ISP_STAT_ID_AF == stat_id)
+@@ -311,7 +312,7 @@ void isp_pipe_fill_user_task_data(struct isp_user_task_info *user_task, struct i
+ 	}
+ }
+ 
+-void isp_pipe_task_get_stats_result(struct k1xisp_pipe_dev *pipe_dev,
++static void isp_pipe_task_get_stats_result(struct k1xisp_pipe_dev *pipe_dev,
+ 				    struct isp_pipe_task *pipe_task,
+ 				    struct isp_user_task_info *user_task, u32 frame_num,
+ 				    u32 discard)
+@@ -370,7 +371,7 @@ int isp_pipe_task_job_init(struct isp_pipe_task *pipe_task)
+ 	return 0;
+ }
+ 
+-int k1xisp_pipe_wait_interrupts(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_wait_interrupts(struct k1xisp_pipe_dev *pipe_dev,
+ 				struct isp_user_task_info *user_task)
+ {
+ 	int ret = 0, hw_pipe_id = 0, task_type = -1, work_cnt = 0;
+@@ -433,7 +434,7 @@ int k1xisp_pipe_wait_interrupts(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-int isp_pipe_start_task_vote(struct k1xisp_pipe_dev *pipe_dev, unsigned int enable)
++static int isp_pipe_start_task_vote(struct k1xisp_pipe_dev *pipe_dev, unsigned int enable)
+ {
+ 	int ret = 0;
+ 	struct isp_pipe_task *af_task = NULL;
+@@ -456,7 +457,7 @@ int isp_pipe_start_task_vote(struct k1xisp_pipe_dev *pipe_dev, unsigned int enab
+ }
+ 
+ //tasklet context
+-int k1xisp_pipe_notify_event(void *pdev, u32 event, void *payload, u32 load_len)
++static int k1xisp_pipe_notify_event(void *pdev, u32 event, void *payload, u32 load_len)
+ {
+ 	int ret = 0;
+ 	struct k1xisp_pipe_dev *pipe_dev = (struct k1xisp_pipe_dev *)pdev;
+@@ -488,7 +489,7 @@ int k1xisp_pipe_notify_event(void *pdev, u32 event, void *payload, u32 load_len)
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_enable_pdc_af(struct k1xisp_pipe_dev *pipe_dev, u32 *enable)
++static int k1xisp_pipe_enable_pdc_af(struct k1xisp_pipe_dev *pipe_dev, u32 *enable)
+ {
+ 	int ret = 0, i;
+ 	u32 pdc_enable = *enable;
+@@ -501,7 +502,7 @@ int k1xisp_pipe_enable_pdc_af(struct k1xisp_pipe_dev *pipe_dev, u32 *enable)
+ 	return ret;
+ }
+ 
+-int __isp_pipe_start_preview_job(struct k1xisp_pipe_dev *pipe_dev, u32 switch_stream)
++static int __isp_pipe_start_preview_job(struct k1xisp_pipe_dev *pipe_dev, u32 switch_stream)
+ {
+ 	int i, ret = 0;
+ 
+@@ -521,7 +522,7 @@ int __isp_pipe_start_preview_job(struct k1xisp_pipe_dev *pipe_dev, u32 switch_st
+ 	return 0;
+ }
+ 
+-int isp_pipe_start_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
++static int isp_pipe_start_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ {
+ 	int ret = 0;
+ 
+@@ -548,7 +549,7 @@ int isp_pipe_start_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ 	return ret;
+ }
+ 
+-int __isp_pipe_clear_preview_job(struct k1xisp_pipe_dev *pipe_dev, u32 switch_stream)
++static int __isp_pipe_clear_preview_job(struct k1xisp_pipe_dev *pipe_dev, u32 switch_stream)
+ {
+ 	int i = 0;
+ 
+@@ -586,7 +587,7 @@ int _isp_pipe_job_clear(struct k1xisp_pipe_dev *pipe_dev)
+ 	return 0;
+ }
+ 
+-int isp_pipe_switch_stream_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
++static int isp_pipe_switch_stream_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ {
+ 	int ret = 0;
+ 
+@@ -619,7 +620,7 @@ int isp_pipe_switch_stream_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ 	return ret;
+ }
+ 
+-int isp_pipe_stop_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
++static int isp_pipe_stop_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ {
+ 	int ret = 0, i;
+ 	struct isp_pipe_task *pipe_task = NULL;
+@@ -656,7 +657,7 @@ int isp_pipe_stop_job(struct k1xisp_pipe_dev *pipe_dev, u32 work_type)
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_notify_jobs(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_notify_jobs(struct k1xisp_pipe_dev *pipe_dev,
+ 			    struct isp_job_describer *job_action)
+ {
+ 	int ret = 0;
+@@ -678,7 +679,7 @@ int k1xisp_pipe_notify_jobs(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_deploy_driver(struct k1xisp_pipe_dev *pipe_dev, struct isp_drv_deployment *drv_deploy)
++static int k1xisp_pipe_deploy_driver(struct k1xisp_pipe_dev *pipe_dev, struct isp_drv_deployment *drv_deploy)
+ {
+ 	int ret = 0, mem_index = 0;
+ 	struct dma_buf *dma_buffer = NULL;
+@@ -736,7 +737,7 @@ int k1xisp_pipe_deploy_driver(struct k1xisp_pipe_dev *pipe_dev, struct isp_drv_d
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev, u32 mem_index)
++static int k1xisp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev, u32 mem_index)
+ {
+ 	ISP_DRV_CHECK_MAX_PARAMETERS(mem_index, ISP_PIPE_WORK_TYPE_CAPTURE, "pipe mem index");
+ 	if (pipe_dev->isp_reg_mem[mem_index].config) {
+@@ -757,7 +758,7 @@ int k1xisp_pipe_undeploy_driver(struct k1xisp_pipe_dev *pipe_dev, u32 mem_index)
+ 	return 0;
+ }
+ 
+-int k1xisp_pipe_request_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_request_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
+ 				     struct isp_buffer_request_info *request_info)
+ {
+ 	int ret = 0, i;
+@@ -768,7 +769,7 @@ int k1xisp_pipe_request_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_enqueue_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_enqueue_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
+ 				     struct isp_buffer_enqueue_info *enqueue_info)
+ {
+ 	int ret = 0, i;
+@@ -779,7 +780,7 @@ int k1xisp_pipe_enqueue_stats_buffer(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_flush_stats_buffer(struct k1xisp_pipe_dev *pipe_dev)
++static int k1xisp_pipe_flush_stats_buffer(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	int ret = 0, i;
+ 
+@@ -789,7 +790,7 @@ int k1xisp_pipe_flush_stats_buffer(struct k1xisp_pipe_dev *pipe_dev)
+ 	return ret;
+ }
+ 
+-int _isp_pipe_set_slice_regs(void *kreg_mem, struct isp_slice_regs *slice_reg,
++static int _isp_pipe_set_slice_regs(void *kreg_mem, struct isp_slice_regs *slice_reg,
+ 			     int slice_index)
+ {
+ 	int ret = 0, reg_count;
+@@ -813,7 +814,7 @@ int _isp_pipe_set_slice_regs(void *kreg_mem, struct isp_slice_regs *slice_reg,
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_trigger_capture(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_trigger_capture(struct k1xisp_pipe_dev *pipe_dev,
+ 				struct isp_capture_package *capture_package)
+ {
+ 	int ret = 0, slice_count, i, stop_job = 0, switch_job = 0;
+@@ -915,7 +916,7 @@ int k1xisp_pipe_trigger_capture(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-int k1xisp_pipe_set_endframe_work(struct k1xisp_pipe_dev *pipe_dev,
++static int k1xisp_pipe_set_endframe_work(struct k1xisp_pipe_dev *pipe_dev,
+ 				  struct isp_endframe_work_info *end_info)
+ {
+ 	int ret = 0;
+@@ -925,7 +926,7 @@ int k1xisp_pipe_set_endframe_work(struct k1xisp_pipe_dev *pipe_dev,
+ 	return ret;
+ }
+ 
+-long k1xisp_pipe_ioctl_core(struct file *file, unsigned int cmd, unsigned long arg)
++static long k1xisp_pipe_ioctl_core(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	int ret = 0;
+ 	struct k1xisp_pipe_dev *pipe_dev = file->private_data;
+@@ -1225,7 +1226,7 @@ struct file_operations *k1xisp_pipe_get_fops(void)
+ 	return &g_isp_pipe_fops;
+ }
+ 
+-int isp_pipe_task_wakeup_user(struct k1xisp_pipe_dev *pipe_dev,
++static int isp_pipe_task_wakeup_user(struct k1xisp_pipe_dev *pipe_dev,
+ 			      struct isp_pipe_task *pipe_task, u32 frame_num)
+ {
+ 	static DEFINE_RATELIMIT_STATE(rs, 5 * HZ, 6);
+@@ -1254,7 +1255,7 @@ int isp_pipe_task_wakeup_user(struct k1xisp_pipe_dev *pipe_dev,
+ 	return 0;
+ }
+ 
+-void isp_pipe_task_ignore_a_vote(struct k1xisp_stats_node *stats_node, u32 voter_type,
++static void isp_pipe_task_ignore_a_vote(struct k1xisp_stats_node *stats_node, u32 voter_type,
+ 				 u32 frame_num)
+ {
+ 	u32 stat_id = 0;
+@@ -1366,7 +1367,7 @@ int isp_pipe_task_vote_handler(struct k1xisp_pipe_dev *pipe_dev,
+ }
+ 
+ //tasklet context
+-int isp_pipe_task_mem_stat_handler(struct k1xisp_pipe_dev *pipe_dev, u32 task_type, u32 frame_num)
++static int isp_pipe_task_mem_stat_handler(struct k1xisp_pipe_dev *pipe_dev, u32 task_type, u32 frame_num)
+ {
+ 	int i = 0, ret = 0;
+ 
+@@ -1441,7 +1442,7 @@ static void isp_pipe_tasklet_handler(unsigned long data)
+ }
+ 
+ //the upper half irq context
+-void isp_pipe_dev_call_each_irqbit_handler(u32 irq_status, u32 hw_pipe_id, u32 frame_id)
++static void isp_pipe_dev_call_each_irqbit_handler(u32 irq_status, u32 hw_pipe_id, u32 frame_id)
+ {
+ 	struct k1xisp_pipe_dev *pipe_dev = NULL;
+ 	struct k1xisp_irq_context *isp_irq_ctx = NULL;
+@@ -1668,7 +1669,7 @@ int isp_pipe_afc_eof_irq_handler(struct isp_irq_func_params *param)
+ 	return schedule_lower_irq;
+ }
+ 
+-int isp_pipe_irq_ctx_constructed(struct k1xisp_pipe_dev *pipe_dev, u32 pipedev_id)
++static int isp_pipe_irq_ctx_constructed(struct k1xisp_pipe_dev *pipe_dev, u32 pipedev_id)
+ {
+ 	int ret = 0, i = 0, irq_bit = 0;
+ 	u32 hw_pipe_id = 0;
+@@ -1700,7 +1701,7 @@ int isp_pipe_irq_ctx_constructed(struct k1xisp_pipe_dev *pipe_dev, u32 pipedev_i
+ 	return ret;
+ }
+ 
+-int isp_pipe_dev_stats_node_create(struct k1xisp_pipe_dev *pipe_dev)
++static int isp_pipe_dev_stats_node_create(struct k1xisp_pipe_dev *pipe_dev)
+ {
+ 	int ret = -1, count = 1;
+ 
+@@ -1725,7 +1726,7 @@ int isp_pipe_dev_stats_node_create(struct k1xisp_pipe_dev *pipe_dev)
+ 	return ret;
+ }
+ 
+-int isp_pipe_task_constructed(struct isp_pipe_task *pipe_tasks)
++static int isp_pipe_task_constructed(struct isp_pipe_task *pipe_tasks)
+ {
+ 	int ret = 0, task_type, i = 0;
+ 
+@@ -1760,7 +1761,7 @@ int isp_pipe_task_constructed(struct isp_pipe_task *pipe_tasks)
+ 	return ret;
+ }
+ 
+-void isp_pipe_task_exit(struct isp_pipe_task *pipe_tasks)
++static void isp_pipe_task_exit(struct isp_pipe_task *pipe_tasks)
+ {
+ 	if (pipe_tasks)
+ 		memset(pipe_tasks, 0, sizeof(struct isp_pipe_task) * ISP_PIPE_TASK_TYPE_MAX);
+@@ -1810,7 +1811,7 @@ int k1xisp_pipe_dev_init(struct platform_device *pdev,
+ 	return ret;
+ }
+ 
+-int isp_pipe_irq_ctx_exit(struct k1xisp_irq_context *isp_irq_ctx)
++static int isp_pipe_irq_ctx_exit(struct k1xisp_irq_context *isp_irq_ctx)
+ {
+ 	int ret = 0;
+ 
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
+index 36a1ebecabc9..666f44c7d4f7 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
+@@ -6,6 +6,7 @@
+  */
+ #include "k1x_isp_drv.h"
+ #include "k1x_isp_reg.h"
++#include "k1x_isp_statistic.h"
+ #include <cam_plat.h>
+ 
+ #include <linux/dma-buf.h>
+@@ -36,7 +37,7 @@ static int g_mem_stat_ids[ISP_STAT_THROUGH_MEM_COUNT] = {
+ int isp_stat_dma_sof_handler(struct k1xisp_stats_node *stats_node, u32 stat_id,
+ 			     u32 dma_ch_id, u32 frame_id);
+ 
+-void k1xisp_stat_bufqueue_init(struct k1xisp_stats_node *isp_stats_node)
++static void k1xisp_stat_bufqueue_init(struct k1xisp_stats_node *isp_stats_node)
+ {
+ 	int i = 0;
+ 	struct isp_stat_buffer_queue *stat_bufqueue = NULL;
+@@ -167,7 +168,7 @@ int k1xisp_stat_node_streamon_dma_port(struct k1xisp_stats_node *stats_node)
+ 	return ret;
+ }
+ 
+-int isp_stat_node_clear_dma_ready(u32 dma_ch_id)
++static int isp_stat_node_clear_dma_ready(u32 dma_ch_id)
+ {
+ 	int ret = 0, i, array_index = 0;
+ 	u32 reg_base_addr = 0, plane_count = 0;
+@@ -352,7 +353,7 @@ int k1xisp_stat_dma_dynamic_enable(struct k1xisp_stats_node *stats_node, u32 sta
+ 	return ret;
+ }
+ 
+-int k1xisp_stat_put_idlebuffer(struct isp_stat_buffer_queue *stat_bufqueue,
++static int k1xisp_stat_put_idlebuffer(struct isp_stat_buffer_queue *stat_bufqueue,
+ 			       struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0;
+@@ -401,7 +402,7 @@ int k1xisp_stat_reqbuffer(struct k1xisp_stats_node *stats_node,
+ 	return 0;
+ }
+ 
+-int isp_stat_buffer_verfied(struct isp_kbuffer_info *kbuf_info, struct isp_ubuf_uint *ubuf_uint, u8 fd_memory)
++static int isp_stat_buffer_verfied(struct isp_kbuffer_info *kbuf_info, struct isp_ubuf_uint *ubuf_uint, u8 fd_memory)
+ {
+ 	int verified = 1, i = 0;
+ 
+@@ -429,7 +430,7 @@ int isp_stat_buffer_verfied(struct isp_kbuffer_info *kbuf_info, struct isp_ubuf_
+ 	return verified;
+ }
+ 
+-void _isp_stat_put_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
++static void _isp_stat_put_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
+ {
+ 	if (kbuf_info->kvir_addr) {
+ 		if (fd_memory) {
+@@ -442,7 +443,7 @@ void _isp_stat_put_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
+ 	}
+ }
+ 
+-int _isp_stat_get_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
++static int _isp_stat_get_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0;
+ 	void *vir_addr = NULL;
+@@ -472,7 +473,7 @@ int _isp_stat_get_kvir_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
+ 	return ret;
+ }
+ 
+-int _isp_stat_get_phy_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
++static int _isp_stat_get_phy_addr(u8 fd_memory, struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0;
+ 	u64 phy_addr = 0;
+@@ -638,7 +639,7 @@ int k1xisp_stat_try_flush_buffer(struct k1xisp_stats_node *stats_node)
+ }
+ 
+ /*get idle buffer and put into busy queue.*/
+-struct isp_kbuffer_info *k1xisp_stat_get_idlebuffer(struct isp_stat_buffer_queue
++static struct isp_kbuffer_info *k1xisp_stat_get_idlebuffer(struct isp_stat_buffer_queue
+ 						    *buffer_queue, u32 hw_pipe_id)
+ {
+ 	struct isp_kbuffer_info *kbuf_info = NULL;
+@@ -670,7 +671,7 @@ struct isp_kbuffer_info *k1xisp_stat_get_idlebuffer(struct isp_stat_buffer_queue
+ 	return kbuf_info;
+ }
+ 
+-int k1xisp_stat_put_busybuffer(struct isp_stat_buffer_queue *stat_bufqueue,
++static int k1xisp_stat_put_busybuffer(struct isp_stat_buffer_queue *stat_bufqueue,
+ 			       struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0;
+@@ -688,7 +689,7 @@ int k1xisp_stat_put_busybuffer(struct isp_stat_buffer_queue *stat_bufqueue,
+ 	return ret;
+ }
+ 
+-struct isp_kbuffer_info* k1xisp_stat_get_busybuffer(struct isp_stat_buffer_queue *stat_bufqueue, u32 wr_err, u32 hw_pipe_id)
++static struct isp_kbuffer_info* k1xisp_stat_get_busybuffer(struct isp_stat_buffer_queue *stat_bufqueue, u32 wr_err, u32 hw_pipe_id)
+ {
+ 	struct isp_kbuffer_info *kbuf_info = NULL;
+ 
+@@ -724,7 +725,7 @@ struct isp_kbuffer_info* k1xisp_stat_get_busybuffer(struct isp_stat_buffer_queue
+ 	return kbuf_info;
+ }
+ 
+-int k1xisp_stat_put_donebuffer(u32 stat_id, struct isp_stat_done_info *stat_done_info,
++static int k1xisp_stat_put_donebuffer(u32 stat_id, struct isp_stat_done_info *stat_done_info,
+ 			       struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0;
+@@ -865,7 +866,7 @@ int k1xisp_stat_dma_irq_handler(struct k1xisp_stats_node *stats_node, void *irq_
+ }
+ 
+ //tasklet context
+-int isp_stat_dma_err_handler(struct k1xisp_stats_node *stats_node, u32 stat_id)
++static int isp_stat_dma_err_handler(struct k1xisp_stats_node *stats_node, u32 stat_id)
+ {
+ 	int ret = 0;
+ 	struct isp_stat_buffer_queue *buffer_queue = NULL;
+@@ -877,7 +878,7 @@ int isp_stat_dma_err_handler(struct k1xisp_stats_node *stats_node, u32 stat_id)
+ }
+ 
+ /*the actiual dma write size of pdc is changing by hardware*/
+-int isp_stat_get_pdc_real_ch_size(u32 hw_pipe_id, struct isp_kbuffer_info *kbuf_info)
++static int isp_stat_get_pdc_real_ch_size(u32 hw_pipe_id, struct isp_kbuffer_info *kbuf_info)
+ {
+ 	int ret = 0, i;
+ 	ulong reg_addr = 0;
+@@ -902,7 +903,7 @@ int isp_stat_get_pdc_real_ch_size(u32 hw_pipe_id, struct isp_kbuffer_info *kbuf_
+ }
+ 
+ //tasklet context:dma eof.
+-int isp_stat_dma_eof_handler(struct k1xisp_stats_node *stats_node, u32 stat_id)
++static int isp_stat_dma_eof_handler(struct k1xisp_stats_node *stats_node, u32 stat_id)
+ {
+ 	int ret = 0, return_idle = 0;
+ 	struct isp_kbuffer_info *kbuf_info = NULL;
+@@ -1026,7 +1027,7 @@ int isp_stat_dma_sof_handler(struct k1xisp_stats_node *stats_node, u32 stat_id,
+ 	return ret;
+ }
+ 
+-int isp_stat_get_dma_ch_id(struct k1xisp_stats_node *stats_node, u32 stat_id)
++static int isp_stat_get_dma_ch_id(struct k1xisp_stats_node *stats_node, u32 stat_id)
+ {
+ 	int ch_id = -1, i = 0;
+ 	struct stat_dma_irq_bits *dma_irq_bitmap = NULL;
+@@ -1042,7 +1043,7 @@ int isp_stat_get_dma_ch_id(struct k1xisp_stats_node *stats_node, u32 stat_id)
+ 	return ch_id;
+ }
+ 
+-int isp_stat_dma_trigger_dynamic_condition(struct k1xisp_stats_node *stats_node,
++static int isp_stat_dma_trigger_dynamic_condition(struct k1xisp_stats_node *stats_node,
+ 					   u32 irq_info_index)
+ {
+ 	int ret = 0;
+-- 
+2.47.0
+

@@ -1,0 +1,89 @@
+From 0f7210a2f59a164516f7e87bc24f1f117975c1ad Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 8 Nov 2024 18:27:39 +0800
+Subject: [PATCH 1270/1451] cpuinfo: add uarch information
+
+Change-Id: I87d65b1dd18c0e47f417b3bce0a177960cd57445
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8c73c774837b..b37042f4b7cd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -41,7 +41,7 @@ cpus: cpus {
+ 		#size-cells = <0>;
+ 		timebase-frequency = <10000000>;
+ 		cpu_0: cpu@0 {
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			device_type = "cpu";
+ 			model = "Spacemit(R) X60";
+ 			reg = <0>;
+@@ -78,7 +78,7 @@ cpu_1: cpu@1 {
+ 			device_type = "cpu";
+ 			reg = <1>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -112,7 +112,7 @@ cpu_2: cpu@2 {
+ 			device_type = "cpu";
+ 			reg = <2>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -146,7 +146,7 @@ cpu_3: cpu@3 {
+ 			device_type = "cpu";
+ 			reg = <3>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -180,7 +180,7 @@ cpu_4: cpu@4 {
+ 			device_type = "cpu";
+ 			reg = <4>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -214,7 +214,7 @@ cpu_5: cpu@5 {
+ 			device_type = "cpu";
+ 			reg = <5>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -248,7 +248,7 @@ cpu_6: cpu@6 {
+ 			device_type = "cpu";
+ 			reg = <6>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+@@ -282,7 +282,7 @@ cpu_7: cpu@7 {
+ 			device_type = "cpu";
+ 			reg = <7>;
+ 			status = "okay";
+-			compatible = "riscv";
++			compatible = "spacemit,x60", "riscv";
+ 			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcv";
+ 			riscv,isa-base = "rv64i";
+-- 
+2.47.0
+

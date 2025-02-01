@@ -1,0 +1,28 @@
+From ba558e464bece18f41d050d9a12aaad584ad2ef2 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 18 Dec 2023 16:15:39 +0800
+Subject: [PATCH 0191/1451] usb: udc: k1x_udc: fix udc disconnect
+
+	driver->driver.bus is used in udc/core.c when disconnect.
+	There is no reason to set it NULL here.
+
+Change-Id: Ie9cf3517d3d961b78a4added9c00c0a35b769fb3
+---
+ drivers/usb/gadget/udc/k1x_udc_core.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index 9dcd8b769e9c..e7904bbe8d40 100755
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -1482,7 +1482,6 @@ static int mv_udc_start(struct usb_gadget *gadget,
+ 	spin_lock_irqsave(&udc->lock, flags);
+ 
+ 	/* hook up the driver ... */
+-	driver->driver.bus = NULL;
+ 	udc->driver = driver;
+ 
+ 	udc->usb_state = USB_STATE_ATTACHED;
+-- 
+2.47.0
+

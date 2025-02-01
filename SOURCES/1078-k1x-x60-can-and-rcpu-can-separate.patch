@@ -1,0 +1,156 @@
+From 097c3788401c4eeef3a2d24905d08eea933316c2 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 16 Aug 2024 11:49:15 +0800
+Subject: [PATCH 1078/1451] k1x:x60-can and rcpu can separate
+
+Change-Id: Ic425e342cdc383d36ae21bb8ee2059fe86322a20
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  5 +--
+ .../riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 14 +++++++
+ drivers/net/can/flexcan/flexcan-core.c        | 38 +++++++++++++++----
+ 3 files changed, 46 insertions(+), 11 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 851e128b1898..7e9777d60aec 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1656,11 +1656,10 @@ flexcan0: fdcan@d4028000 {
+ 			status = "disabled";
+ 		};
+ 
+-		flexcan1: fdcan@c0870000 {
+-			compatible = "spacemit,k1x-flexcan";
++		r_flexcan: fdcan@c0870000 {
++			compatible = "spacemit,k1x-r-flexcan";
+ 			reg = <0x0 0xc0870000 0x0 0x4000>;
+ 			interrupt-parent = <&intc>;
+-			clock-frequency = <20000000>;
+ 			fsl,clk-source = <0>;
+ 			clocks = <&ccu CLK_RCPU_CAN>,<&ccu CLK_RCPU_CAN_BUS>;
+ 			clock-names = "per","ipg";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index c1a007b281ae..33c2a75e00a8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -978,6 +978,20 @@ K1X_PADCONF(GPIO_55, MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* can_rx0
+ 		>;
+ 	};
+ 
++	pinctrl_r_can_0: r_can_0_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(GPIO_47,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2)) /* r_can_tx */
++			K1X_PADCONF(GPIO_48,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2)) /* r_can_rx */
++		>;
++	};
++
++	pinctrl_r_can_1: r_can_1_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(GPIO_110,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2)) /* r_can_tx */
++			K1X_PADCONF(GPIO_115,    MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS2)) /* r_can_rx */
++		>;
++	};
++
+ 	pinctrl_hdmi_0: hdmi_0_grp {
+ 		pinctrl-single,pins = <
+ 			K1X_PADCONF(GPIO_86, MUX_MODE1, (EDGE_NONE | PULL_UP   | PAD_1V8_DS2))	/* hdmi_tx_hscl */
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index a5d2149b14d1..45c237cef842 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -37,13 +37,12 @@
+ #include <linux/rpmsg.h>
+ #define STARTUP_MSG			"startup"
+ #define IRQUP_MSG			"irqon"
++static unsigned long long private_data[1];
++#define R_DRV_NAME			"r_flexcan"
+ #endif
+ 
+ #define DRV_NAME			"flexcan"
+ 
+-#ifdef CONFIG_SOC_SPACEMIT_K1X
+-static unsigned long long private_data[1];
+-#endif
+ /* 8 for RX fifo and 2 error handling */
+ #define FLEXCAN_NAPI_WEIGHT		(8 + 2)
+ 
+@@ -2139,6 +2138,14 @@ static const struct of_device_id flexcan_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, flexcan_of_match);
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++static const struct of_device_id r_flexcan_of_match[] = {
++	{ .compatible = "spacemit,k1x-r-flexcan", .data = &spacemit_k1x_devtype_data, },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, r_flexcan_of_match);
++#endif
++
+ static const struct platform_device_id flexcan_id_table[] = {
+ 	{
+ 		.name = "flexcan-mcf5441x",
+@@ -2211,8 +2218,14 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		irq = platform_get_irq(pdev, 0);
+ 		if (irq <= 0)
+ 			return -ENODEV;
+-	} else
++	} else {
+ 		irq = -1;
++		of_id = of_match_device(r_flexcan_of_match, &pdev->dev);
++		if (of_id)
++			devtype_data = of_id->data;
++		else
++			return -ENODEV;
++	}
+ #else
+  	irq = platform_get_irq(pdev, 0);
+  	if (irq <= 0)
+@@ -2494,8 +2507,20 @@ static struct platform_driver flexcan_driver = {
+ 	.remove_new = flexcan_remove,
+ 	.id_table = flexcan_id_table,
+ };
++module_platform_driver(flexcan_driver);
+ 
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
++static struct platform_driver r_flexcan_driver = {
++	.driver = {
++		.name = R_DRV_NAME,
++		.pm = &flexcan_pm_ops,
++		.of_match_table = r_flexcan_of_match,
++	},
++	.probe = flexcan_probe,
++	.remove_new = flexcan_remove,
++	.id_table = flexcan_id_table,
++};
++
+ static struct rpmsg_device_id rpmsg_driver_rcan_id_table[] = {
+ 	{ .name	= "can-service", .driver_data = 0 },
+ 	{ },
+@@ -2519,7 +2544,6 @@ static int rpmsg_rcan_client_cb(struct rpmsg_device *rpdev, void *data,
+ 	return 0;
+ }
+ 
+-
+ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
+ {
+ 	struct instance_data *idata;
+@@ -2536,7 +2560,7 @@ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
+ 
+ 	private_data[0] = (unsigned long long)idata;
+ 
+-	platform_driver_register(&flexcan_driver);
++	platform_driver_register(&r_flexcan_driver);
+ 
+ 	return 0;
+ }
+@@ -2555,8 +2579,6 @@ static struct rpmsg_driver rpmsg_rcan_client = {
+ 	.remove		= rpmsg_rcan_client_remove,
+ };
+ module_rpmsg_driver(rpmsg_rcan_client);
+-#else
+-module_platform_driver(flexcan_driver);
+ #endif
+ 
+ MODULE_AUTHOR("Sascha Hauer <kernel@pengutronix.de>, "
+-- 
+2.47.0
+

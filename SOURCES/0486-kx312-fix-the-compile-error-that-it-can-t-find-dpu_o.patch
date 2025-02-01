@@ -1,0 +1,29 @@
+From 86dbac070e088b980d372b9358b0d66520188efb Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 13 Mar 2024 16:37:53 +0800
+Subject: [PATCH 0486/1451] kx312: fix the compile error that it can't find
+ dpu_online2_hdmi and hdmi
+
+	The label of dpu_online2_hdmi and hdmi are defined
+	in the k1-x-hdmi.dtsi now.
+
+Change-Id: I5eb2bdafab3d50d623d1131edac648d4d7733c80
+---
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 8a2c0c6dfcff..f5dd2dd78490 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -5,6 +5,7 @@
+ 
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
++#include "k1-x-hdmi.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x kx312 board";
+-- 
+2.47.0
+

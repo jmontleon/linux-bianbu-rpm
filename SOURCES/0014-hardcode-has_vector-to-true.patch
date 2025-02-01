@@ -1,0 +1,33 @@
+From 3eee52959e42a51097665c5cac258d2505eadecc Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 27 Mar 2023 21:37:17 +0800
+Subject: [PATCH 0014/1451] hardcode has_vector to true
+
+The previous RVV support patch was ported from
+https://github.com/sifive/riscv-linux/commits/riscv/for-next/vector-v16
+and bring in some compile error, now hardcode to fix compile error.
+
+Please revert me after support riscv_has_extension_likely.
+
+Change-Id: I489a5ca59f26cb77b875370ee82c883af63e7700
+---
+ arch/riscv/include/asm/vector.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index c5ee07b3df07..9665f61bec47 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -25,7 +25,8 @@ bool riscv_v_first_use_handler(struct pt_regs *regs);
+ 
+ static __always_inline bool has_vector(void)
+ {
+-	return riscv_has_extension_unlikely(RISCV_ISA_EXT_v);
++	//return riscv_has_extension_likely(RISCV_ISA_EXT_v);
++	return true;
+ }
+ 
+ static inline void __riscv_v_vstate_clean(struct pt_regs *regs)
+-- 
+2.47.0
+

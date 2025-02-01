@@ -1,0 +1,40 @@
+From 171a76d75d4f9b6e18f9b9d5817ee386d927ab7f Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Fri, 15 Mar 2024 20:59:20 +0800
+Subject: [PATCH 0500/1451] k1/dts: disable mipi dsi for deb1
+
+Change-Id: Ifdb6d67b0927727a1e93b8ee97a970e471f72526
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 141738a99f09..c83eea3b43d2 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -180,11 +180,11 @@ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &dsi2 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	panel2: panel2@0 {
+ 		status = "ok";
+@@ -200,7 +200,7 @@ panel2: panel2@0 {
+ };
+ 
+ &lcds {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &dpu_online2_hdmi {
+-- 
+2.47.0
+

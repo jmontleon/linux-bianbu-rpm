@@ -1,0 +1,27 @@
+From b8fcb378df1bd830a47b5eb257cc2d9f56d87283 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 9 Jan 2025 14:17:08 +0800
+Subject: [PATCH 1437/1451] ocp2138: should depned on i2c module
+
+Change-Id: Ie33978be7bbe1f0f075d0cae18fa1f5df9456207
+---
+ drivers/misc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 97028ce88daf..969b41a1e1af 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -571,8 +571,8 @@ config SPACEMIT_TCM
+ 
+ config OCP2138
+ 	tristate "Driver for ocp2138"
++	depends on I2C
+ 	default y
+-
+ 	help
+ 	  Support for ocp2138.
+ 
+-- 
+2.47.0
+

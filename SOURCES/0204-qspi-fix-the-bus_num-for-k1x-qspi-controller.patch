@@ -1,0 +1,30 @@
+From 418458f006382ab70e00d3c6060237deda47e3e8 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 20 Dec 2023 20:35:43 +0800
+Subject: [PATCH 0204/1451] qspi: fix the bus_num for k1x qspi controller
+
+  When the bus_num of qspi is the same as the bus_num of spi0,
+  If the spi0 driver has been registered,
+  the registration of the qspi driver will fail.
+
+Change-Id: Ib755dadd4ec45b8a6a23c7347d4107576cfcf4d8
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9e0b5bad4381..edf4021b2d79 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1575,7 +1575,7 @@ qspi: spi@d420c000 {
+ 			k1x,qspi-pmuap-reg = <0xd4282860>;
+ 			k1x,qspi-mpmu-acgr-reg = <0xd4051024>;
+ 			k1x,qspi-freq = <26500000>;
+-			k1x,qspi-id = <0>;
++			k1x,qspi-id = <4>;
+ 			//k1x,qspi-lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>;
+ 			interrupts = <117>;
+ 			interrupt-parent = <&intc>;
+-- 
+2.47.0
+

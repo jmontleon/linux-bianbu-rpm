@@ -1,0 +1,55 @@
+From 163d65939e19de72f4df2636080f4074a5331475 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:46 -0500
+Subject: [PATCH 0852/1451] riscv: hwprobe: export Zfh[min] ISA extensions
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export Zfh[min] ISA extensions[1] through hwprobe only if FPU support
+is available.
+
+Link: https://drive.google.com/file/d/1z3tQQLm5ALsAD77PM0l0CHnapxWCeVzP/view [1]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-11-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I467785a1f946a039548208318683d71acf99611f
+---
+ Documentation/arch/riscv/hwprobe.rst  | 6 ++++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index 2a47d2e82ca0..5c8896a706df 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -151,6 +151,12 @@ The following keys are defined:
+   * :c:macro:`RISCV_HWPROBE_EXT_ZVKT`: The Zvkt extension is supported as
+        defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZFH`: The Zfh extension version 1.0 is supported
++       as defined in the RISC-V ISA manual.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZFHMIN`: The Zfhmin extension version 1.0 is
++       supported as defined in the RISC-V ISA manual.
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 95ae7e7a6414..784f940b77ea 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -50,6 +50,8 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZVKSED	(1 << 24)
+ #define		RISCV_HWPROBE_EXT_ZVKSH		(1 << 25)
+ #define		RISCV_HWPROBE_EXT_ZVKT		(1 << 26)
++#define		RISCV_HWPROBE_EXT_ZFH		(1 << 27)
++#define		RISCV_HWPROBE_EXT_ZFHMIN	(1 << 28)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

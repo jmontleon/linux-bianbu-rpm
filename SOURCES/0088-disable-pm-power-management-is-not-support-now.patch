@@ -1,0 +1,35 @@
+From 5422d1550f008242256f98132b150fba633692d0 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 29 Aug 2023 20:01:02 +0800
+Subject: [PATCH 0088/1451] disable pm, power management is not support now
+
+Change-Id: Ifb7b74b44a8262c152b41fe612d31cfeb593ea77
+---
+ arch/riscv/configs/k1-x_fpga_defconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
+index a93c66aa8f70..6fbf072654d3 100644
+--- a/arch/riscv/configs/k1-x_fpga_defconfig
++++ b/arch/riscv/configs/k1-x_fpga_defconfig
+@@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y
+ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+-CONFIG_PM=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+@@ -92,8 +91,8 @@ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
+-CONFIG_CLINT_TIMER=y
+ # CONFIG_SURFACE_PLATFORMS is not set
++CONFIG_CLINT_TIMER=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ # CONFIG_DPAA2_CONSOLE is not set
+ CONFIG_GENERIC_PHY=y
+-- 
+2.47.0
+

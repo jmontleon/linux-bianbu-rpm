@@ -1,0 +1,113 @@
+From 98609d56a47ccf16e058f35b99dd8cc76ca2de4e Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 5 Sep 2023 15:21:21 +0800
+Subject: [PATCH 0096/1451] mmc: update dts, remove axi node
+
+Change-Id: I7e8bb61d549a3204086f46d4a7a12fe5fd36190e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 73 +++++++++++---------------
+ 1 file changed, 32 insertions(+), 41 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index c4c78ea693b7..c1fe3a810e5f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -178,7 +178,7 @@ soc {
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		clint0: clint@14000000 {
++		clint0: clint@e4000000 {
+ 			compatible = "riscv,clint0";
+ 			interrupts-extended = <
+ 				&cpu0_intc  3 &cpu0_intc  7
+@@ -190,7 +190,7 @@ &cpu3_intc  3 &cpu3_intc  7
+ 			clint,has-no-64bit-mmio;
+ 		};
+ 
+-		intc: interrupt-controller@10000000 {
++		intc: interrupt-controller@e0000000 {
+ 			#interrupt-cells = <1>;
+ 			compatible = "riscv,plic0";
+ 			interrupt-controller;
+@@ -270,47 +270,38 @@ eth0: ethernet@cac80000 {
+ 			status = "disabled";
+ 		};
+ 
+-		/* AXI */
+-		axi@d4200000 {
+-			compatible = "spacemit,axi-bus", "simple-bus";
+-			reg = <0 0xd4200000 0 0x00200000>;
+-			#address-cells = <2>;
+-			#size-cells = <2>;
+-			ranges;
+-
+-			sdhci2: sdh@d4281000 {
+-				compatible = "spacemit,k1-x-sdhci";
+-				reg = <0x0 0xd4281000 0x0 0x200>;
+-				interrupts = <101>;
+-				interrupt-parent = <&intc>;
+-				clocks = <&pll_clk_sdh2
+-					  &pll_clk_axi>;
+-				clock-names = "sdh-io", "sdh-core";
+-				status = "disabled";
+-			};
++		sdhci0: sdh@d4280000 {
++			compatible = "spacemit,k1-x-sdhci";
++			reg = <0x0 0xd4280000 0x0 0x200>;
++			interrupts = <99>;
++			interrupt-parent = <&intc>;
++			clocks = <&pll_clk_sdh0
++				  &pll_clk_axi>;
++			clock-names = "sdh-io", "sdh-core";
++			status = "disabled";
++		};
+ 
+-			sdhci0: sdh@d4280000 {
+-				compatible = "spacemit,k1-x-sdhci";
+-				reg = <0x0 0xd4280000 0x0 0x200>;
+-				interrupts = <99>;
+-				interrupt-parent = <&intc>;
+-				clocks = <&pll_clk_sdh0
+-					  &pll_clk_axi>;
+-				clock-names = "sdh-io", "sdh-core";
+-				status = "disabled";
+-			};
++		sdhci1: sdh@d4280800 {
++			compatible = "spacemit,k1-x-sdhci";
++			reg = <0x0 0xd4280800 0x0 0x200>;
++			interrupts = <100>;
++			interrupt-parent = <&intc>;
++			clocks = <&pll_clk_sdh1
++				  &pll_clk_axi>;
++			clock-names = "sdh-io", "sdh-core";
++			status = "disabled";
++		};
+ 
+-			sdhci1: sdh@d4280800 {
+-				compatible = "spacemit,k1-x-sdhci";
+-				reg = <0x0 0xd4280800 0x0 0x200>;
+-				interrupts = <100>;
+-				interrupt-parent = <&intc>;
+-				clocks = <&pll_clk_sdh1
+-					  &pll_clk_axi>;
+-				clock-names = "sdh-io", "sdh-core";
+-				status = "disabled";
+-			};
+-		}; /* AXI */
++		sdhci2: sdh@d4281000 {
++			compatible = "spacemit,k1-x-sdhci";
++			reg = <0x0 0xd4281000 0x0 0x200>;
++			interrupts = <101>;
++			interrupt-parent = <&intc>;
++			clocks = <&pll_clk_sdh2
++				  &pll_clk_axi>;
++			clock-names = "sdh-io", "sdh-core";
++			status = "disabled";
++		};
+ 	};
+ 
+ 	pmu {
+-- 
+2.47.0
+

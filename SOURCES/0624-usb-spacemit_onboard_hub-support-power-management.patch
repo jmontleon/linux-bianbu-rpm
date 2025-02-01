@@ -1,0 +1,185 @@
+From ae39e859aafb640fe8e4dbabaebfa359a2aec2ba Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 18 Apr 2024 12:04:50 +0800
+Subject: [PATCH 0624/1451] usb: spacemit_onboard_hub: support power management
+
+Change-Id: Iee2e62c35b8502391e74d8fbec8f2b1f667aafe9
+---
+ drivers/usb/misc/spacemit_onboard_hub.c | 44 ++++++++++++++++++++--
+ drivers/usb/misc/spacemit_onboard_hub.h | 50 +++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
+index e63fcd90840f..522c7e75aa14 100644
+--- a/drivers/usb/misc/spacemit_onboard_hub.c
++++ b/drivers/usb/misc/spacemit_onboard_hub.c
+@@ -19,7 +19,7 @@
+ 
+ #include "spacemit_onboard_hub.h"
+ 
+-#define DRIVER_VERSION "v1.0.1"
++#define DRIVER_VERSION "v1.0.2"
+ 
+ static void spacemit_hub_enable(struct spacemit_hub_priv *spacemit, bool on)
+ {
+@@ -84,7 +84,6 @@ static void spacemit_hub_vbus_enable(struct spacemit_hub_priv *spacemit,
+ static void spacemit_hub_configure(struct spacemit_hub_priv *spacemit, bool on)
+ {
+ 	dev_dbg(spacemit->dev, "do hub configure %s\n", on ? "on" : "off");
+-	mutex_lock(&spacemit->hub_mutex);
+ 	if (on) {
+ 		spacemit_hub_enable(spacemit, true);
+ 		if (spacemit->vbus_delay_ms && spacemit->vbus_gpios) {
+@@ -98,7 +97,6 @@ static void spacemit_hub_configure(struct spacemit_hub_priv *spacemit, bool on)
+ 		}
+ 		spacemit_hub_enable(spacemit, false);
+ 	}
+-	mutex_unlock(&spacemit->hub_mutex);
+ }
+ 
+ static void spacemit_read_u32_prop(struct device *dev, const char *name,
+@@ -131,6 +129,8 @@ static int spacemit_hub_probe(struct platform_device *pdev)
+ 		device_property_read_bool(dev, "hub_gpio_active_low");
+ 	spacemit->vbus_gpio_active_low =
+ 		device_property_read_bool(dev, "vbus_gpio_active_low");
++	spacemit->suspend_power_on =
++		device_property_read_bool(dev, "suspend_power_on");
+ 
+ 	spacemit->hub_gpios = devm_gpiod_get_array_optional(
+ 		&pdev->dev, "hub",
+@@ -165,8 +165,8 @@ static int spacemit_hub_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_hub_priv *spacemit = platform_get_drvdata(pdev);
+ 
+-	spacemit_hub_configure(spacemit, false);
+ 	debugfs_remove(debugfs_lookup(dev_name(&pdev->dev), usb_debug_root));
++	spacemit_hub_configure(spacemit, false);
+ 	mutex_destroy(&spacemit->hub_mutex);
+ 	dev_info(&pdev->dev, "onboard usb hub driver exit, disable hub\n");
+ 	return 0;
+@@ -178,6 +178,41 @@ static const struct of_device_id spacemit_hub_dt_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, spacemit_hub_dt_match);
+ 
++#ifdef CONFIG_PM_SLEEP
++static int spacemit_hub_suspend(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct spacemit_hub_priv *spacemit = platform_get_drvdata(pdev);
++	mutex_lock(&spacemit->hub_mutex);
++	if (!spacemit->suspend_power_on) {
++		spacemit_hub_configure(spacemit, false);
++		dev_info(dev, "turn off hub power supply\n");
++	}
++	mutex_unlock(&spacemit->hub_mutex);
++	return 0;
++}
++
++static int spacemit_hub_resume(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct spacemit_hub_priv *spacemit = platform_get_drvdata(pdev);
++	mutex_lock(&spacemit->hub_mutex);
++	if (!spacemit->suspend_power_on) {
++		spacemit_hub_configure(spacemit, true);
++		dev_info(dev, "resume hub power supply\n");
++	}
++	mutex_unlock(&spacemit->hub_mutex);
++	return 0;
++}
++
++static const struct dev_pm_ops spacemit_onboard_hub_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(spacemit_hub_suspend, spacemit_hub_resume)
++};
++#define DEV_PM_OPS	(&spacemit_onboard_hub_pm_ops)
++#else
++#define DEV_PM_OPS	NULL
++#endif /* CONFIG_PM_SLEEP */
++
+ static struct platform_driver spacemit_hub_driver = {
+ 	.probe	= spacemit_hub_probe,
+ 	.remove = spacemit_hub_remove,
+@@ -185,6 +220,7 @@ static struct platform_driver spacemit_hub_driver = {
+ 		.name   = "spacemit-usb3-hub",
+ 		.owner  = THIS_MODULE,
+ 		.of_match_table = of_match_ptr(spacemit_hub_dt_match),
++		.pm = DEV_PM_OPS,
+ 	},
+ };
+ 
+diff --git a/drivers/usb/misc/spacemit_onboard_hub.h b/drivers/usb/misc/spacemit_onboard_hub.h
+index a59c80059dd4..dec341e17e1a 100644
+--- a/drivers/usb/misc/spacemit_onboard_hub.h
++++ b/drivers/usb/misc/spacemit_onboard_hub.h
+@@ -20,6 +20,8 @@ struct spacemit_hub_priv {
+ 	u32 vbus_delay_ms;
+ 	u32 vbus_inter_delay_ms;
+ 
++	bool suspend_power_on;
++
+ 	struct mutex hub_mutex;
+ };
+ 
+@@ -124,6 +126,52 @@ struct file_operations spacemit_hub_vbus_fops = {
+ 	.release = single_release,
+ };
+ 
++static int spacemit_hub_suspend_show(struct seq_file *s, void *unused)
++{
++	struct spacemit_hub_priv *spacemit = s->private;
++	mutex_lock(&spacemit->hub_mutex);
++	seq_puts(s, spacemit->suspend_power_on ? "true\n" : "false\n");
++	mutex_unlock(&spacemit->hub_mutex);
++	return 0;
++}
++
++static ssize_t spacemit_hub_suspend_write(struct file *file,
++					   const char __user *ubuf, size_t count,
++					   loff_t *ppos)
++{
++	struct seq_file *s = file->private_data;
++	struct spacemit_hub_priv *spacemit = s->private;
++	bool on = false;
++	char buf[32];
++
++	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
++		return -EFAULT;
++
++	if ((!strncmp(buf, "true", 4)) || (!strncmp(buf, "1", 1)))
++		on = true;
++	if ((!strncmp(buf, "false", 5)) || !strncmp(buf, "0", 1))
++		on = false;
++
++	mutex_lock(&spacemit->hub_mutex);
++	spacemit->suspend_power_on = on;
++	mutex_unlock(&spacemit->hub_mutex);
++
++	return count;
++}
++
++static int spacemit_hub_suspend_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, spacemit_hub_suspend_show, inode->i_private);
++}
++
++struct file_operations spacemit_hub_suspend_fops = {
++	.open = spacemit_hub_suspend_open,
++	.write = spacemit_hub_suspend_write,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = single_release,
++};
++
+ static void spacemit_hub_debugfs_init(struct spacemit_hub_priv *spacemit)
+ {
+ 	struct dentry *root;
+@@ -133,4 +181,6 @@ static void spacemit_hub_debugfs_init(struct spacemit_hub_priv *spacemit)
+ 				&spacemit_hub_vbus_fops);
+ 	debugfs_create_file("hub_on", 0644, root, spacemit,
+ 				&spacemit_hub_enable_fops);
++	debugfs_create_file("suspend_power_on", 0644, root, spacemit,
++				&spacemit_hub_suspend_fops);
+ }
+-- 
+2.47.0
+

@@ -1,0 +1,64 @@
+From 79aa213bcfbcd27fd08fba2f5726960b8cc8c674 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 25 Jul 2023 17:11:46 +0800
+Subject: [PATCH 0068/1451] cpufreq: support scmi cpufreq driver spacemit
+ platform
+
+Change-Id: I5dc8e6dc0589ede8d72c9148b46b075914217937
+---
+ arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi | 7 ++++++-
+ arch/riscv/configs/k1-pro_fpga_defconfig        | 6 ++++++
+ drivers/cpufreq/Kconfig                         | 2 +-
+ 3 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+index 7bf002daab8f..efb6ced14777 100644
+--- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
+@@ -64,7 +64,12 @@ regulator_devgpu: regulator@1 {
+ 			scmi_devpd: protocol@11 {
+ 				reg = <0x11>;
+ 				#power-domain-cells = <1>;
+-                        };
++			};
++
++			scmi_dvfs: protocol@13 {
++				reg = <0x13>;
++				#clock-cells = <1>;
++			};
+ 		};
+ 	};
+ };
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index de2f94de7e26..300b79897cbc 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -31,6 +31,12 @@ CONFIG_HZ_100=y
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_PM=y
++CONFIG_CPU_FREQ=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
++CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
++# CONFIG_ARM_BRCMSTB_AVS_CPUFREQ is not set
++# CONFIG_ARM_MEDIATEK_CPUFREQ_HW is not set
++CONFIG_ARM_SCMI_CPUFREQ=m
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEBUG_FS is not set
+diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+index f429b9b37b76..9b793c137faa 100644
+--- a/drivers/cpufreq/Kconfig
++++ b/drivers/cpufreq/Kconfig
+@@ -231,7 +231,7 @@ if X86
+ source "drivers/cpufreq/Kconfig.x86"
+ endif
+ 
+-if ARM || ARM64
++if ARM || ARM64 || RISCV
+ source "drivers/cpufreq/Kconfig.arm"
+ endif
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,27 @@
+From 25f9af1acaa9c62905183f25fb90ed5a35acfbca Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 21 Dec 2023 19:31:20 +0800
+Subject: [PATCH 0221/1451] k1x:dma: add reference to pm-domain
+
+Change-Id: Ic9991ff869eac088f167f815ca2f869899a95922
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index af11e2fd37d4..85ae26c7b10e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -770,6 +770,9 @@ pdma0: pdma@d4000000 {
+ 			#dma-channels = <16>;
+ 			max-burst-size = <64>;
+ 			reserved-channels = <15 45>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "ok";
+ 		};
+ 
+-- 
+2.47.0
+

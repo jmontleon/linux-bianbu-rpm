@@ -1,0 +1,38 @@
+From 230bb0befb24426ffd3458184f572e30dddf6b1b Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@space-t.cn>
+Date: Tue, 14 Mar 2023 13:46:53 +0800
+Subject: [PATCH 0050/1451] disable HAVE_ARCH_KASAN HAVE_ARCH_KASAN_VMALLOC and
+ HAVE_GCC_PLUGINS
+
+Change-Id: I9c15651074c70847c32e18c92709a5d9102894f6
+---
+ arch/riscv/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index ecb2d44c8896..c9b4d97c67d2 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -94,8 +94,8 @@ config RISCV
+ 	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT && !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+-	select HAVE_ARCH_KASAN if MMU && 64BIT
+-	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
++	# select HAVE_ARCH_KASAN if MMU && 64BIT
++	# select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+ 	select HAVE_ARCH_KFENCE if MMU && 64BIT
+ 	select HAVE_ARCH_KGDB if !XIP_KERNEL
+ 	select HAVE_ARCH_KGDB_QXFER_PKT
+@@ -120,7 +120,7 @@ config RISCV
+ 	select HAVE_EBPF_JIT if MMU
+ 	select HAVE_FUNCTION_ARG_ACCESS_API
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+-	select HAVE_GCC_PLUGINS
++	# select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO if MMU && 64BIT
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KPROBES if !XIP_KERNEL
+-- 
+2.47.0
+

@@ -1,0 +1,30 @@
+From c2d7aadb0bac37dea2d95b7b290e4ba725345028 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 14 May 2024 13:49:27 +0800
+Subject: [PATCH 0674/1451] k1x_MUSE-Pi:add spi3 pinctrl config
+
+Change-Id: Id6b9891c70fb45a32e6faf0af84d86d64f7129ff
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 9c9fb2ff6b63..d3e08c16f6b6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -839,6 +839,12 @@ flash@0 {
+ 	};
+ };
+ 
++&spi3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ssp3_0>;
++	status = "disabled";
++};
++
+ &pwm_bl {
+ 	pwms = <&pwm14 2000>;
+ 	brightness-levels = <
+-- 
+2.47.0
+

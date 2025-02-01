@@ -1,0 +1,71 @@
+From 85e1abb758165430e12fd01b54f5e7312af8462f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 23 Dec 2023 17:42:43 +0800
+Subject: [PATCH 0235/1451] sync dts with device/board.dts
+
+Change-Id: Idf9ea26e764bb4779b06dd60a769e69ec612ec67
+---
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts         | 15 ++++++++++-----
+ .../boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi |  2 +-
+ 2 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index f8c0f0460333..baed67ba0147 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -71,15 +71,16 @@ core3 {
+ 		};
+ 	};
+ 
+-	lcds: lcds {
+-		status = "ok";
+-	};
+-
+ 	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x00000000 0x0 0x80000000>;
+ 	};
+ 
++	memory@100000000 {
++		device_type = "memory";
++		reg = <0x1 0x00000000 0x0 0x80000000>;
++	};
++
+ 	reserved-memory {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+@@ -157,6 +158,10 @@ panel2: panel2@0 {
+ 	};
+ };
+ 
++&lcds {
++	status = "ok";
++};
++
+ &i2c8 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+@@ -544,7 +549,7 @@ &pcie0_rc {
+ };
+ 
+ &imggpu {
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &qspi {
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+index 78207f36e6eb..e459306f6f6e 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+-/ { lcds {
++/ { lcds: lcds {
+ 	lcd_icnl9911c_mipi: lcd_icnl9911c_mipi {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+-- 
+2.47.0
+

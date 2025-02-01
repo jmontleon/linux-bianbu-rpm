@@ -1,0 +1,25 @@
+From 2b2dd4003a0f7c55a530c29a7a8f041f51ed7b3b Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 7 Mar 2024 14:30:34 +0800
+Subject: [PATCH 0470/1451] k1_defconfig: enable USB_NET_QMI_WWAN
+
+Change-Id: I24c725a76fa1c3c16685d49b881537668df4672b
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 34d6aa542928..c8845bd42a91 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -321,6 +321,7 @@ CONFIG_USB_RTL8152=m
+ CONFIG_USB_USBNET=y
+ # CONFIG_USB_NET_AX8817X is not set
+ # CONFIG_USB_NET_NET1080 is not set
++CONFIG_USB_NET_QMI_WWAN=m
+ # CONFIG_WLAN_VENDOR_ADMTEK is not set
+ # CONFIG_WLAN_VENDOR_ATH is not set
+ # CONFIG_WLAN_VENDOR_ATMEL is not set
+-- 
+2.47.0
+

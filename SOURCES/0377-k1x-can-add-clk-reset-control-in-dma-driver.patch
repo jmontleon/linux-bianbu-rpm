@@ -1,0 +1,88 @@
+From 3952f94da9ad4626ee74fbd2b34587b8a7011247 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Mon, 15 Jan 2024 19:59:17 +0800
+Subject: [PATCH 0377/1451] k1x-can:add clk&reset control in dma driver
+
+Change-Id: Id971bbff39cda9a56a1a248ef6d228ba1d8cdb58
+---
+ drivers/net/can/flexcan/flexcan-core.c | 18 ++++++++++++++++++
+ drivers/net/can/flexcan/flexcan.h      |  1 +
+ 2 files changed, 19 insertions(+)
+
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index d15f85a40c1e..a1c549bd420e 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -19,6 +19,7 @@
+ #include <linux/firmware/imx/sci.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/reset.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+@@ -604,11 +605,20 @@ static int flexcan_clks_enable(const struct flexcan_priv *priv)
+ 			clk_disable_unprepare(priv->clk_ipg);
+ 	}
+ 
++	if (priv->reset) {
++		err = reset_control_deassert(priv->reset);
++		if(err) {
++			clk_disable_unprepare(priv->clk_per);
++			clk_disable_unprepare(priv->clk_ipg);
++		}
++	}
++
+ 	return err;
+ }
+ 
+ static void flexcan_clks_disable(const struct flexcan_priv *priv)
+ {
++	reset_control_assert(priv->reset);
+ 	clk_disable_unprepare(priv->clk_per);
+ 	clk_disable_unprepare(priv->clk_ipg);
+ }
+@@ -2040,6 +2050,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	struct flexcan_priv *priv;
+ 	struct regulator *reg_xceiver;
+ 	struct clk *clk_ipg = NULL, *clk_per = NULL;
++	struct reset_control *reset;
+ 	struct flexcan_regs __iomem *regs;
+ 	struct flexcan_platform_data *pdata;
+ 	int err, irq;
+@@ -2082,6 +2093,12 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		clock_freq = clk_get_rate(clk_per);
+ 	}
+ 
++	reset = devm_reset_control_get_optional(&pdev->dev,NULL);
++	if(IS_ERR(reset)) {
++		dev_err(&pdev->dev, "flexcan get reset failed\n");
++		return PTR_ERR(reset);
++	}
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+ 		return irq;
+@@ -2157,6 +2174,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->clk_ipg = clk_ipg;
+ 	priv->clk_per = clk_per;
+ 	priv->clk_src = clk_src;
++	priv->reset = reset;
+ 	priv->reg_xceiver = reg_xceiver;
+ 
+ 	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
+diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
+index 025c3417031f..e0e8ba087d78 100644
+--- a/drivers/net/can/flexcan/flexcan.h
++++ b/drivers/net/can/flexcan/flexcan.h
+@@ -99,6 +99,7 @@ struct flexcan_priv {
+ 
+ 	struct clk *clk_ipg;
+ 	struct clk *clk_per;
++	struct reset_control *reset;
+ 	struct flexcan_devtype_data devtype_data;
+ 	struct regulator *reg_xceiver;
+ 	struct flexcan_stop_mode stm;
+-- 
+2.47.0
+

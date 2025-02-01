@@ -1,0 +1,42 @@
+From 0d9fa92a0483a69b406fc33991dee89745230164 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Thu, 28 Dec 2023 15:31:40 +0800
+Subject: [PATCH 0260/1451] k1x: update DTS automatically based on env
+
+Change-Id: I51fef807a6e252f91d32fa8c37060c3e9ebcdc9c
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 2f0bb93e0c41..7b857cb7d9cd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -25,6 +25,8 @@ aliases {
+ 		serial6 = &uart7;
+ 		serial7 = &uart8;
+ 		serial8 = &uart9;
++		ethernet0 = &eth0;
++		ethernet1 = &eth1;
+ 	};
+ 
+ 	cpus: cpus {
+@@ -1366,6 +1368,7 @@ eth0: ethernet@cac80000 {
+ 			reset-names = "emac-reset";
+ 			interrupts = <131>;
+ 			interrupt-parent = <&intc>;
++			mac-address = [ 00 00 00 00 00 00 ];
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+@@ -1385,6 +1388,7 @@ eth1: ethernet@cac81000 {
+ 			reset-names = "emac-reset";
+ 			interrupts = <133>;
+ 			interrupt-parent = <&intc>;
++			mac-address = [ 00 00 00 00 00 00 ];
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+-- 
+2.47.0
+

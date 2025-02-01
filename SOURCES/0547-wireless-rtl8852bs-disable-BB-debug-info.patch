@@ -1,0 +1,25 @@
+From 64285cbacabdc1e16861a9751470348c61a87311 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 27 Mar 2024 19:24:25 +0800
+Subject: [PATCH 0547/1451] wireless: rtl8852bs: disable BB debug info
+
+Change-Id: I9969e8dd641de69005be2ae5da49df166c9a9f85
+---
+ drivers/net/wireless/realtek/rtl8852bs/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/Makefile b/drivers/net/wireless/realtek/rtl8852bs/Makefile
+index 4ce8872d0f4b..8794b98d980c 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/Makefile
++++ b/drivers/net/wireless/realtek/rtl8852bs/Makefile
+@@ -613,6 +613,7 @@ ifeq ($(CONFIG_RTW_DEBUG), y)
+ EXTRA_CFLAGS += -DCONFIG_RTW_DEBUG
+ EXTRA_CFLAGS += -DRTW_LOG_LEVEL=$(CONFIG_RTW_LOG_LEVEL)
+ EXTRA_CFLAGS += -DRTW_PHL_LOG_LEVEL=$(CONFIG_RTW_PHL_LOG_LEVEL)
++EXTRA_CFLAGS += -DDRV_BB_DBG_TRACE_DISABLE
+ endif
+ 
+ ifeq ($(CONFIG_PROC_DEBUG), y)
+-- 
+2.47.0
+

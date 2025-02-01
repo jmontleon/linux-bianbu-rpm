@@ -1,0 +1,280 @@
+From 2d8e8c8812bec9e4aa5402deb3d8f88b143e8bb6 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 3 Jan 2024 12:49:22 +0800
+Subject: [PATCH 0304/1451] sync evb/deb2 board dts from devices
+
+Change-Id: Iba4c31a358480cba4bc539959d3f8256bff5be6e
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts |  29 +++++-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts  | 101 +++++++++++++++------
+ 2 files changed, 96 insertions(+), 34 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 18076efbb230..210aa0a96b56 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -96,7 +96,7 @@ pwm_bl {
+ 		>;
+ 		default-brightness-level = <100>;
+ 
+-		status = "okay";
++		status = "disabled";
+ 	};
+ 
+ 	memory@0 {
+@@ -170,7 +170,7 @@ sdio_pwrseq: sdio-pwrseq {
+ &pwm1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm1_2>;
+-	status = "ok";
++	status = "disabled";
+ };
+ 
+ &dpu_online2 {
+@@ -183,7 +183,7 @@ &dpu_online2 {
+ };
+ 
+ &dsi2 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	panel2: panel2@0 {
+ 		status = "ok";
+@@ -199,7 +199,13 @@ panel2: panel2@0 {
+ };
+ 
+ &lcds {
+-	status = "ok";
++	status = "disabled";
++};
++
++&hdmi{
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hdmi_0>;
+ };
+ 
+ &i2c0 {
+@@ -464,6 +470,14 @@ K1X_PADCONF(QSPI_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qsp
+ 			K1X_PADCONF(QSPI_CSI,  MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* qspi_csi */
+ 		>;
+ 	};
++
++	pinctrl_pcie1_0: pcie1_0_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_15,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_perstn */
++			K1X_PADCONF(GPIO_16,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_waken */
++			K1X_PADCONF(GPIO_17,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_clkreqn */
++		>;
++	};
+ };
+ 
+ /* SD */
+@@ -674,6 +688,13 @@ &pcie0_rc {
+ 	status = "disabled";
+ };
+ 
++&pcie1_rc {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pcie1_0>;
++};
++
+ &imggpu {
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index f83f98063bfb..551826d62d5d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -96,7 +96,7 @@ pwm_bl {
+ 		>;
+ 		default-brightness-level = <100>;
+ 
+-		status = "okay";
++		status = "disabled";
+ 	};
+ 
+ 	memory@0 {
+@@ -170,7 +170,7 @@ sdio_pwrseq: sdio-pwrseq {
+ &pwm1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pwm1_2>;
+-	status = "ok";
++	status = "disabled";
+ };
+ 
+ &dpu_online2 {
+@@ -183,7 +183,7 @@ &dpu_online2 {
+ };
+ 
+ &dsi2 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	panel2: panel2@0 {
+ 		status = "ok";
+@@ -199,7 +199,13 @@ panel2: panel2@0 {
+ };
+ 
+ &lcds {
+-	status = "ok";
++	status = "disabled";
++};
++
++&hdmi{
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hdmi_0>;
+ };
+ 
+ &i2c0 {
+@@ -216,6 +222,32 @@ &i2c1 {
+ 	status = "okay";
+ };
+ 
++&i2c6 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c6_1>;
++	status = "okay";
++
++	eeprom@50{
++		compatible = "atmel,24c02";
++		reg = <0x50>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		eeprom_1v8-supply = <&ldo_11>;
++		vin-supply-names = "eeprom_1v8";
++		power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
++		status = "okay";
++
++		mac_address0: mac_address0@0 {
++			reg = <0x0 6>;
++		};
++
++		mac_address1: mac_address1@6 {
++			reg = <0x6 6>;
++		};
++	};
++};
++
+ &i2c8 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+@@ -327,21 +359,18 @@ ldo_10: LDO_REG10 {
+ 				regulator-name = "ldo10";
+ 				regulator-min-microvolt = <1200000>;
+ 				regulator-max-microvolt = <3300000>;
+-				regulator-always-on;
+ 			};
+ 
+ 			ldo_11: LDO_REG11 {
+ 				regulator-name = "ldo11";
+ 				regulator-min-microvolt = <1200000>;
+ 				regulator-max-microvolt = <1950000>;
+-				regulator-always-on;
+ 			};
+ 
+ 			ldo_12: LDO_REG12 {
+ 				regulator-name = "ldo12";
+ 				regulator-min-microvolt = <1200000>;
+ 				regulator-max-microvolt = <3300000>;
+-				regulator-always-on;
+ 			};
+ 
+ 			ldo_13: LDO_REG13 {
+@@ -393,7 +422,6 @@ ldo_20: LDO_REG20 {
+ 				regulator-name = "ldo20";
+ 				regulator-min-microvolt = <100000>;
+ 				regulator-max-microvolt = <1350000>;
+-				regulator-always-on;
+ 			};
+ 
+ 			ldo_21: LDO_REG21 {
+@@ -438,6 +466,14 @@ K1X_PADCONF(QSPI_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))  /* qsp
+ 			K1X_PADCONF(QSPI_CSI,  MUX_MODE0, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* qspi_csi */
+ 		>;
+ 	};
++
++	pinctrl_pcie1_0: pcie1_0_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_15,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_perstn */
++			K1X_PADCONF(GPIO_16,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_waken */
++			K1X_PADCONF(GPIO_17,    MUX_MODE4, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))  /* PCIe1_clkreqn */
++		>;
++	};
+ };
+ 
+ /* SD */
+@@ -648,6 +684,13 @@ &pcie0_rc {
+ 	status = "disabled";
+ };
+ 
++&pcie1_rc {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pcie1_0>;
++};
++
+ &imggpu {
+ 	status = "okay";
+ };
+@@ -667,32 +710,30 @@ flash@0 {
+ 	};
+ };
+ 
+-&i2c6 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_i2c6_1>;
+-	status = "okay";
++/* imx315 */
++&backsensor {
++	af_2v8-supply = <&ldo_12>;
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
++	dvdd_1v2-supply = <&ldo_20>;
+ 
+-	eeprom@50{
+-		compatible = "atmel,24c02";
+-		reg = <0x50>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-
+-		eeprom_1v8-supply = <&ldo_11>;
+-		vin-supply-names = "eeprom_1v8";
+-		power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
+-		status = "okay";
+-
+-		mac_address0: mac_address0@0 {
+-			reg = <0x0 6>;
+-		};
++	status = "okay";
++};
++/* gc2375h */
++&backsensor_aux {
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
+ 
+-		mac_address1: mac_address1@6 {
+-			reg = <0x6 6>;
+-		};
+-	};
++	status = "okay";
+ };
++/* S5K5E3 */
++&frontsensor {
++	avdd_2v8-supply = <&ldo_10>;
++	dovdd_1v8-supply = <&ldo_11>;
++	dvdd_1v2-supply = <&ldo_20>;
+ 
++	status = "okay";
++};
+ &ccic0 {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+-- 
+2.47.0
+

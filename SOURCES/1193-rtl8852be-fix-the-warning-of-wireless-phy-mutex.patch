@@ -1,0 +1,58 @@
+From 65b69decf4b76a6797a2dd4fc314339dc3eafaf5 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 23 Oct 2024 10:26:47 +0800
+Subject: [PATCH 1193/1451] rtl8852be: fix the warning of wireless phy mutex
+
+[ 8109.348479] ------------[ cut here ]------------
+[ 8109.348487] WARNING: CPU: 7 PID: 19323 at net/wireless/reg.c:3144 reg_process_self_managed_hint+0x154/0x1aa
+[ 8109.348512] Modules linked in: btusb btintel btbcm binfmt_misc 8852be ip_tables autofs4
+[ 8109.348534] CPU: 7 PID: 19323 Comm: kworker/7:0 Tainted: G        W          6.6.36 #2.0~rc7.2+20241019010736
+[ 8109.348542] Hardware name: M1-MUSE-BOOK (DT)
+[ 8109.348546] Workqueue: events async_regd_change_work_hdl [8852be]
+[ 8109.352569] epc : reg_process_self_managed_hint+0x154/0x1aa
+[ 8109.352589]  ra : reg_process_self_managed_hint+0x150/0x1aa
+[ 8109.352595] epc : ffffffff80ef6c04 ra : ffffffff80ef6c00 sp : ffffffc8087c3b60
+[ 8109.352600]  gp : ffffffff82341fe0 tp : ffffffd913e30000 t0 : ffffffd908783800
+[ 8109.352604]  t1 : 0000000000000001 t2 : 000000000000000e s0 : ffffffc8087c3bf0
+[ 8109.352607]  s1 : 0000000000000000 a0 : 0000000000000000 a1 : ffffffd915290810
+[ 8109.352611]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : ffffffda75b9a908
+[ 8109.352614]  a5 : ffffffff8122d908 a6 : 0000001a9dd0be69 a7 : 00000000000003c3
+[ 8109.352617]  s2 : ffffffd9152907a0 s3 : ffffffd9152907a0 s4 : ffffffd908787c00
+[ 8109.352620]  s5 : 0000000000000001 s6 : 00000000000016fd s7 : ffffffd908787d80
+[ 8109.352623]  s8 : 0000000000000001 s9 : 0000000000000006 s10: 0000000000000003
+[ 8109.352626]  s11: 0000000000000002 t3 : 0000000000000001 t4 : ffffffff827bb0d0
+[ 8109.352628]  t5 : 0000000000000001 t6 : ffffffd90878365c
+[ 8109.352631] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[ 8109.352635] [<ffffffff80ef6c04>] reg_process_self_managed_hint+0x154/0x1aa
+[ 8109.352643] [<ffffffff80ef6d3a>] regulatory_set_wiphy_regd_sync+0x2c/0x8e
+[ 8109.352653] [<ffffffff028f4c7a>] rtw_update_wiphy_regd+0x2da/0x576 [8852be]
+[ 8109.356631] [<ffffffff028f4f6a>] rtw_regd_change_complete_sync+0x54/0x12e [8852be]
+[ 8109.360610] [<ffffffff028f508e>] async_regd_change_work_hdl+0x4a/0x9c [8852be]
+[ 8109.364587] [<ffffffff80039856>] process_one_work+0x1a8/0x456
+[ 8109.364600] [<ffffffff80039ca2>] worker_thread+0x19e/0x350
+[ 8109.364606] [<ffffffff80041260>] kthread+0xda/0xf6
+[ 8109.364613] [<ffffffff80fc0bce>] ret_from_fork+0xe/0x1c
+[ 8109.364623] ---[ end trace 0000000000000000 ]---
+
+Change-Id: I78dd1a5bbc7018a4241ed4ee201e240f4a45efd4
+---
+ drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
+index 861be1f45895..295689e78602 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
+@@ -397,7 +397,9 @@ void rtw_update_wiphy_regd(struct wiphy *wiphy, struct get_chplan_resp *chplan,
+ 		rtnl_lock();
+ 
+ 	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0))
++	wiphy_lock(wiphy);
+ 	ret = regulatory_set_wiphy_regd_sync(wiphy, regd);
++	wiphy_unlock(wiphy);
+ 	#else
+ 	ret = regulatory_set_wiphy_regd_sync_rtnl(wiphy, regd);
+ 	#endif
+-- 
+2.47.0
+

@@ -1,0 +1,36 @@
+From 19759fb29597415609d8c5e517203e3ee39ca5f9 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 13 Jan 2024 03:38:53 +0800
+Subject: [PATCH 0374/1451] disable audio and adsp driver
+
+Change-Id: If9ea423f1a87ea3aab72b1a050f113f3f5d4ada1
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 5e60b1ebc207..09a21577a932 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -378,10 +378,6 @@ CONFIG_BACKLIGHT_PWM=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_LOGO=y
+-CONFIG_SOUND=y
+-CONFIG_SND=y
+-CONFIG_SND_SOC=y
+-CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+@@ -436,7 +432,6 @@ CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_SPACEMIT_REBOOT_CONTROL=y
+ CONFIG_SPACEMI_K1X_DMA_RANGE=y
+ CONFIG_CHIP_MEDIA_JPU=y
+-CONFIG_SPACEMIT_ADSP=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+ CONFIG_RESET_CONTROLLER=y
+-- 
+2.47.0
+

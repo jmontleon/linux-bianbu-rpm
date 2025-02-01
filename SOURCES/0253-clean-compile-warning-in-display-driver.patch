@@ -1,0 +1,65 @@
+From 1559eff0959abea7e03dc3fe7386275e9291c9bf Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Dec 2023 17:36:28 +0800
+Subject: [PATCH 0253/1451] clean compile warning in display driver
+
+Change-Id: I2fb05b060da534fc905b34691763f4396ce2e505
+---
+ drivers/gpu/drm/spacemit/spacemit_drm.c | 14 +++++++-------
+ drivers/gpu/drm/spacemit/spacemit_lib.c |  1 +
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index 3a9089f83a65..c7974fc1fdd7 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -140,18 +140,18 @@ static int spacemit_drm_dump_show(struct seq_file *s, void *data)
+ 	struct drm_info_node *node = s->private;
+ 	struct drm_minor *minor = node->minor;
+ 	struct drm_device *drm_dev = minor->dev;
+-	struct drm_printer p = drm_seq_file_printer(s);
+-	struct spacemit_drm_private *priv = drm_dev->dev_private;
++	__maybe_unused struct drm_printer p = drm_seq_file_printer(s);
++	__maybe_unused struct spacemit_drm_private *priv = drm_dev->dev_private;
+ 	struct drm_plane *plane;
+ 	struct drm_framebuffer *fb;
+-	char file_name[128];
+-	int i;
++	__maybe_unused char file_name[128];
++	__maybe_unused int i;
+ 
+ 	DRM_INFO("%s()\n", __func__);
+ 
+ 	mutex_lock(&drm_dev->mode_config.fb_lock);
+ 	drm_for_each_fb(fb, drm_dev) {
+-		DRM_INFO("%s() framebuffer[%u] \n", fb->base.id);
++		DRM_INFO("%s() framebuffer[%u] \n", __func__, fb->base.id);
+ 		drm_for_each_plane(plane, drm_dev) {
+ 			if (plane->state->fb != fb)
+ 				continue;
+@@ -171,8 +171,8 @@ static const struct drm_info_list spacemit_debugfs_files[] = {
+ static void spacemit_drm_debugfs_init(struct drm_minor *minor)
+ {
+ 	struct drm_device *dev = minor->dev;
+-	struct spacemit_drm_private *priv = dev->dev_private;
+-	struct drm_crtc *crtc;
++	__maybe_unused struct spacemit_drm_private *priv = dev->dev_private;
++	__maybe_unused struct drm_crtc *crtc;
+ 
+ 	DRM_INFO("%s()\n", __func__);
+ 	drm_debugfs_create_files(spacemit_debugfs_files,
+diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.c b/drivers/gpu/drm/spacemit/spacemit_lib.c
+index 235e46b2c53c..43e08d9baab0 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_lib.c
++++ b/drivers/gpu/drm/spacemit/spacemit_lib.c
+@@ -13,6 +13,7 @@
+ #include <linux/fs.h>
+ #include "spacemit_lib.h"
+ 
++#undef pr_fmt
+ #define pr_fmt(__fmt) "[drm][%20s] "__fmt, __func__
+ 
+ struct bmp_header {
+-- 
+2.47.0
+

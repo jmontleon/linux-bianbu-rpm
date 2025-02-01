@@ -1,0 +1,41 @@
+From ce58aeb3786669bd11b6b8f6a9631fff85beb167 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 18 Jun 2024 17:28:20 +0800
+Subject: [PATCH 0762/1451] spacemit-rf: add missing includes
+
+Change-Id: Icdc1ae951fb3928cc7cab5978f299c387ff868f9
+---
+ drivers/soc/spacemit/spacemit-rf/spacemit-bt.c   | 2 ++
+ drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c | 3 +++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+index 34e89a7f7ace..4cd27bbcbfe4 100755
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+@@ -19,6 +19,8 @@
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ #include <linux/rfkill.h>
++#include <linux/property.h>
++#include <linux/of_device.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+ #include "spacemit-pwrseq.h"
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+index 2c6a5fa4d3e6..46247d982d97 100755
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+@@ -17,6 +17,9 @@
+ #include <linux/err.h>
+ #include <linux/device.h>
+ #include <linux/delay.h>
++#include <linux/property.h>
++#include <linux/of_device.h>
++#include <linux/interrupt.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+ #include "spacemit-pwrseq.h"
+-- 
+2.47.0
+

@@ -1,0 +1,26 @@
+From 1047c9dcdfdd3502cdac8812d9f334113ad51d53 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sun, 31 Dec 2023 12:16:11 +0800
+Subject: [PATCH 0289/1451] clear compile warning
+
+Change-Id: Iabb98c4774ae65959ee827ef9a1bf47f4e4afbcf
+---
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 6269bb58f508..23fce0365a95 100755
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -857,7 +857,7 @@ int spacemit_aes_cbc_decrypt(int index, const unsigned char *ct,unsigned char *p
+ }
+ EXPORT_SYMBOL(spacemit_aes_cbc_decrypt);
+ 
+-static void engine_reg_dump(int index)
++__maybe_unused static void engine_reg_dump(int index)
+ {
+         uint32_t val;
+         printk("======> engine[%d] reg dump start! <======\n", index);
+-- 
+2.47.0
+

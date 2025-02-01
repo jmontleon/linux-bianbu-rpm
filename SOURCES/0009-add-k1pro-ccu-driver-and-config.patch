@@ -1,0 +1,721 @@
+From e30758eb39e03e6b0a70e6db35cbba8a55298d0a Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Thu, 30 Mar 2023 16:44:46 +0800
+Subject: [PATCH 0009/1451] add k1pro ccu driver and config
+
+Change-Id: I605d165b5af7ddd4dede2ad4d7eb5f82b626f5aa
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi     |  66 +++++
+ drivers/clk/Kconfig                          |   2 +-
+ drivers/clk/Makefile                         |   1 +
+ drivers/clk/spacemit/Kconfig                 |  17 ++
+ drivers/clk/spacemit/Makefile                |   6 +
+ drivers/clk/spacemit/k1-pro-ccu.c            | 268 +++++++++++++++++++
+ drivers/clk/spacemit/k1-pro-ccu.h            | 119 ++++++++
+ include/dt-bindings/clock/k1-pro-ccu-clock.h | 145 ++++++++++
+ 8 files changed, 623 insertions(+), 1 deletion(-)
+ create mode 100755 drivers/clk/spacemit/Kconfig
+ create mode 100755 drivers/clk/spacemit/Makefile
+ create mode 100755 drivers/clk/spacemit/k1-pro-ccu.c
+ create mode 100755 drivers/clk/spacemit/k1-pro-ccu.h
+ create mode 100755 include/dt-bindings/clock/k1-pro-ccu-clock.h
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 8e42efb752a9..e0d63ef9c7f7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -4,6 +4,8 @@
+ /dts-v1/;
+ 
+ /dts-v1/;
++
++//#include <dt-bindings/clock/k1-pro-ccu-clock.h>
+ / {
+ 	compatible = "spacemit,k1-pro", "riscv";
+ 	#address-cells = <2>;
+@@ -103,11 +105,75 @@ cpu3_intc: interrupt-controller {
+ 		};
+ 	};
+ 
++clocks {
++		#address-cells = <0x2>;
++		#size-cells = <0x2>;
++		ranges;
++
++		osc_clk_24m: clock-osc_clk_24m {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
++			clock-output-names = "osc_clk_24m";
++		};
++
++		pll_clk_sys: clock-pll_clk_sys {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <2400000000>;
++			clock-output-names = "pll_clk_sys";
++			};
++
++		pll_clk_gmac: clock-pll_clk_gmac {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <2000000000>;
++			clock-output-names = "pll_clk_gmac";
++		};
++		pll_clk_i2s: clock-pll_clk_i2s {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <98304000>;
++			clock-output-names = "pll_clk_i2s";
++		};
++
++		pll_ddr: clock-pll_ddr {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <300000000>;
++			clock-output-names = "pll_ddr";
++		};
++
++		in_clk_32k: clock-in_clk_32k {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <32000>;
++			clock-output-names = "in_clk_32k";
++		};
++
++		pll_clk_400m: clock-pll_clk_400m {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <400000000>;
++			clock-output-names = "pll_clk_400m";
++		};
++
++	};
+ 	soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		ranges;
++		ccu:clock-controller@2f020000 {
++		    #address-cells = <0x1>;
++		    #size-cells = <0x1>;
++			compatible = "spacemit,k1pro-ccu";
++			reg = <0x0 0x2f020000 0x0 0x4000 0x0 0x2f024000 0x0 0x4000>;
++			clocks = <&osc_clk_24m>, <&pll_clk_sys>, <&pll_clk_gmac>, <&pll_clk_i2s>, <&pll_ddr>, <&in_clk_32k>, <&pll_clk_400m>;
++			clock-names = "osc_clk_24m", "pll_clk_sys", "pll_clk_gmac", "pll_clk_i2s", "pll_ddr", "in_clk_32k", "pll_clk_400m";
++			#clock-cells = <1>;
++			status = "okay";
++		};
+ 
+ 		clint0: clint@b4000000 {
+ 			compatible = "riscv,clint0";
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index c30099866174..b77ffd46a219 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -501,7 +501,7 @@ source "drivers/clk/visconti/Kconfig"
+ source "drivers/clk/x86/Kconfig"
+ source "drivers/clk/xilinx/Kconfig"
+ source "drivers/clk/zynqmp/Kconfig"
+-
++source "drivers/clk/spacemit/Kconfig"
+ # Kunit test cases
+ config CLK_KUNIT_TEST
+ 	tristate "Basic Clock Framework Kunit Tests" if !KUNIT_ALL_TESTS
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 18969cbd4bb1..583d5fc93c14 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -136,3 +136,4 @@ endif
+ obj-y					+= xilinx/
+ obj-$(CONFIG_ARCH_ZYNQ)			+= zynq/
+ obj-$(CONFIG_COMMON_CLK_ZYNQMP)         += zynqmp/
++obj-y					+= spacemit/
+diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
+new file mode 100755
+index 000000000000..58cf14d4996a
+--- /dev/null
++++ b/drivers/clk/spacemit/Kconfig
+@@ -0,0 +1,17 @@
++# SPDX-License-Identifier: GPL-2.0
++# common clock support for SPACEMIT SoC family.
++
++config COMMON_CLK_SPACEMIT
++	bool "Spacemit clock controller common support"
++	default y
++	help
++	  Say y here to enable common clock controller for Spacemit platforms.
++
++if COMMON_CLK_SPACEMIT
++config CLK_K1_CCU
++	tristate "Spacemit K1 clock controller support"
++	default y
++	help
++	  Build the driver for K1 Clock Driver.
++
++endif
+diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
+new file mode 100755
+index 000000000000..140a86466d3b
+--- /dev/null
++++ b/drivers/clk/spacemit/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Spacemit Clock specific Makefile
++#
++#SoC support
++obj-$(CONFIG_CLK_K1_CCU)	+= k1-pro-ccu.o
+diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
+new file mode 100755
+index 000000000000..28048a9eca60
+--- /dev/null
++++ b/drivers/clk/spacemit/k1-pro-ccu.c
+@@ -0,0 +1,268 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Device Tree support for Spacemit SoCs
++ *
++ * Copyright (c) 2023 Spacemit Inc.
++ */
++#include <dt-bindings/clock/k1-pro-ccu-clock.h>
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
++#include <linux/err.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/types.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include "k1-pro-ccu.h"
++
++#define LOG_INFO(fmt, arg...)    pr_info("[K1-CCU][%s][%d]:" fmt "\n", __func__, __LINE__, ##arg)
++
++static struct clk_hw **hws;
++static struct clk_hw_onecell_data *clk_hw_data;
++
++//parents for mux
++static const char *clk_mem_sd_src[] = { "osc_clk_400k", "clk_sdio_div", };
++static const char *clk_mem_emmc_src[] = { "osc_clk_400k", "clk_emmc_div", };
++static const char *clk_mcu_src[] = { "osc_clk_24m", "pll_clk_400m", "in_clk_32k", };
++
++//clocks, gate/divider/mux/fixed-factor
++static struct ccu_clk_data ccu_clocks[] =  {
++    {OSC_CLK_24M_DIV60, CLK_TYPE_FIXED_FACTOR, "osc_clk_24m_div60", "osc_clk_24m", NULL, 0, 0, 0, 0, 0, 1, 60},
++    {OSC_CLK_400K, CLK_TYPE_GATE, "osc_clk_400k", "osc_clk_24m_div60", NULL, 1, MEM_SUB_EN_REG304, 2, 0, 0, 0, 0},
++    {OSC_CLK_200K, CLK_TYPE_FIXED_FACTOR, "osc_clk_200k", "osc_clk_24m", NULL, 0, 0, 0, 0, 0, 1, 120},
++    {PLL_CLK_400M_2MEM, CLK_TYPE_GATE, "pll_clk_400m_2mem", "pll_clk_400m", NULL, 1, MEM_SUB_EN_REG304, 1, 0, 0, 0, 0},
++    {PLL_CLK_DDR, CLK_TYPE_GATE, "pll_clk_ddr", "pll_ddr", NULL, 1, MBUS_DDR_SUB_EN_REG804, 0, 0, 0, 0, 0},
++    {PLL_CLK_50M, CLK_TYPE_FIXED_FACTOR, "pll_clk_50m", "pll_clk_400m", NULL, 0, 0, 0, 0, 0, 1, 8},
++    {PLL_CLK_10M, CLK_TYPE_FIXED_FACTOR, "pll_clk_10m", "pll_clk_400m", NULL, 0, 0, 0, 0, 0, 1, 40},
++    {CLK_MEM_SYS_DIV, CLK_TYPE_DIVIDER, "clk_mem_sys_div", "pll_clk_sys", NULL, 1, MEM_SUB_CTRL_REG300, 8, 4, 0, 0, 0},
++    {CLK_MEM_SYS, CLK_TYPE_GATE, "clk_mem_sys", "clk_mem_sys_div", NULL, 1, MEM_SUB_EN_REG304, 0, 0, 0, 0, 0},
++    {CLK_VPU_SYS_DIV, CLK_TYPE_DIVIDER, "clk_vpu_sys_div", "pll_clk_sys", NULL, 1, VPU_SUB_CTRL_REG500, 8, 4, 0, 0, 0},
++    {CLK_VPU_SYS, CLK_TYPE_GATE, "clk_vpu_sys", "clk_vpu_sys_div", NULL, 1, VPU_SUB_EN_REG504, 0, 0, 0, 0, 0},
++    {CLK_SEC_SYS_DIV, CLK_TYPE_DIVIDER, "clk_sec_sys_div", "pll_clk_sys", NULL, 1, SEC_SUB_CTRL_REG600, 8, 4, 0, 0, 0},
++    {CLK_SEC_SYS, CLK_TYPE_GATE, "clk_sec_sys", "clk_sec_sys_div", NULL, 1, SEC_SUB_EN_REG604, 0, 0, 0, 0, 0},
++    {CLK_SERDES_SYS_DIV, CLK_TYPE_DIVIDER, "clk_serdes_sys_div", "pll_clk_sys", NULL, 1, SERDES_SUB_CTRL_REG400, 8, 4, 0, 0, 0},
++    {CLK_SERDES_SYS, CLK_TYPE_GATE, "clk_serdes_sys", "clk_serdes_sys_div", NULL, 1, SERDES_SUB_EN_REG404, 0, 0, 0, 0, 0},
++    {CLK_USB_SYS_DIV, CLK_TYPE_DIVIDER, "clk_usb_sys_div", "pll_clk_sys", NULL, 1, USB_GMAC_SUB_CTRL_REG700, 8, 4, 0, 0, 0},
++    {CLK_USB_SYS, CLK_TYPE_GATE, "clk_usb_sys", "clk_usb_sys_div", NULL, 1, USB_GMAC_SUB_EN_REG704, 0, 0, 0, 0, 0},
++    {CLK_MBUS_SYS_DIV, CLK_TYPE_DIVIDER, "clk_mbus_sys_div", "pll_clk_sys", NULL, 1, MBUS_DDR_SUB_CTRL_REG800, 8, 4, 0, 0, 0},
++    {CLK_MBUS_SYS, CLK_TYPE_GATE, "clk_mbus_sys", "clk_mbus_sys_div", NULL, 1, MBUS_DDR_SUB_EN_REG804, 0, 0, 0, 0, 0},
++    {PLL_CLK_250_50M_DIV, CLK_TYPE_DIVIDER, "pll_clk_250_50m_div", "pll_clk_gmac", NULL, 1, USB_GMAC_SUB_CTRL_REG700, 12, 6, 0, 0, 0},
++    {PLL_CLK_250_50M, CLK_TYPE_GATE, "pll_clk_250_50m", "pll_clk_250_50m_div", NULL, 1, USB_GMAC_SUB_EN_REG704, 6, 0, 0, 0, 0},
++    //sys
++    {CLK_SYS_AHB, CLK_TYPE_DIVIDER, "clk_sys_ahb", "pll_clk_400m", NULL, 1, SYS_SUB_CTRL_REG200, 12, 2, 0, 0, 0},
++    {CLK_SYS_APB, CLK_TYPE_DIVIDER, "clk_sys_apb", "pll_clk_400m", NULL, 1, SYS_SUB_CTRL_REG200, 14, 2, 0, 0, 0},
++    {CLK_MBOX, CLK_TYPE_GATE, "clk_mbox", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 0, 0, 0, 0, 0},
++    {CLK_SPINLOCK, CLK_TYPE_GATE, "clk_spinlock", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 1, 0, 0, 0, 0},
++    {CLK_DMAC, CLK_TYPE_GATE, "clk_dmac", "clk_sys_ahb", NULL, 1, SYS_SUB_EN_REG204, 2, 0, 0, 0, 0},
++    {CLK_GPIO, CLK_TYPE_GATE, "clk_gpio", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 3, 0, 0, 0, 0},
++    {CLK_WDT, CLK_TYPE_GATE, "clk_wdt", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 4, 0, 0, 0, 0},
++    {CLK_PWM, CLK_TYPE_GATE, "clk_pwm", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 5, 0, 0, 0, 0},
++    {CLK_BMU, CLK_TYPE_GATE, "clk_bmu", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 6, 0, 0, 0, 0},
++    {CLK_SYSREG, CLK_TYPE_GATE, "clk_sysreg", "clk_sys_apb", NULL, 1, SYS_SUB_EN_REG204, 7, 0, 0, 0, 0},
++    {CLK_UART0, CLK_TYPE_GATE, "clk_uart0", "clk_sys_apb", NULL, 1, SYS_SUB_UART_EN_REG214, 0, 0, 0, 0, 0},
++    {CLK_UART1, CLK_TYPE_GATE, "clk_uart1", "clk_sys_apb", NULL, 1, SYS_SUB_UART_EN_REG214, 1, 0, 0, 0, 0},
++    {CLK_UART2, CLK_TYPE_GATE, "clk_uart2", "clk_sys_apb", NULL, 1, SYS_SUB_UART_EN_REG214, 2, 0, 0, 0, 0},
++    {CLK_UART3, CLK_TYPE_GATE, "clk_uart3", "clk_sys_apb", NULL, 1, SYS_SUB_UART_EN_REG214, 3, 0, 0, 0, 0},
++    {CLK_UART4, CLK_TYPE_GATE, "clk_uart4", "clk_sys_apb", NULL, 1, SYS_SUB_UART_EN_REG214, 4, 0, 0, 0, 0},
++    {CLK_I2C0, CLK_TYPE_GATE, "clk_i2c0", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 0, 0, 0, 0, 0},
++    {CLK_I2C1, CLK_TYPE_GATE, "clk_i2c1", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 1, 0, 0, 0, 0},
++    {CLK_I2C2, CLK_TYPE_GATE, "clk_i2c2", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 2, 0, 0, 0, 0},
++    {CLK_I2C3, CLK_TYPE_GATE, "clk_i2c3", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 3, 0, 0, 0, 0},
++    {CLK_I2C4, CLK_TYPE_GATE, "clk_i2c4", "clk_sys_apb", NULL, 1, SYS_SUB_I2C_EN_REG21C, 4, 0, 0, 0, 0},
++    {CLK_TIMER0, CLK_TYPE_GATE, "clk_timer0", "clk_sys_apb", NULL, 1, SYS_SUB_TIMER_EN_REG224, 0, 0, 0, 0, 0},
++    {CLK_TIMER1, CLK_TYPE_GATE, "clk_timer1", "clk_sys_apb", NULL, 1, SYS_SUB_TIMER_EN_REG224, 1, 0, 0, 0, 0},
++    {CLK_QSPI0, CLK_TYPE_DIVIDER, "clk_qspi0", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 8, 2, 0, 0, 0},
++    {CLK_QSPI1, CLK_TYPE_DIVIDER, "clk_qspi1", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 10, 2, 0, 0, 0},
++    {CLK_QSPI2, CLK_TYPE_DIVIDER, "clk_qspi2", "pll_clk_400m", NULL, 1, SYS_SUB_QSPI_CTRL_REG208, 12, 2, 0, 0, 0},
++    {CLK_QSPI0_EN, CLK_TYPE_GATE, "clk_qspi0_en", "clk_qspi0", NULL, 1, SYS_SUB_QSPI_EN_REG20C, 0, 0, 0, 0, 0},
++    {CLK_QSPI1_EN, CLK_TYPE_GATE, "clk_qspi1_en", "clk_qspi1", NULL, 1, SYS_SUB_QSPI_EN_REG20C, 1, 0, 0, 0, 0},
++    {CLK_QSPI2_EN, CLK_TYPE_GATE, "clk_qspi2_en", "clk_qspi2", NULL, 1, SYS_SUB_QSPI_EN_REG20C, 2, 0, 0, 0, 0},
++    {CLK_CAN, CLK_TYPE_DIVIDER, "clk_can", "pll_clk_400m", NULL, 1, SYS_SUB_CAN_CTRL_REG228, 8, 4, 0, 0, 0},
++    {CLK_CAN_EN, CLK_TYPE_GATE, "clk_can_en", "clk_can", NULL, 1, SYS_SUB_CAN_EN_REG22C, 0, 0, 0, 0, 0},
++    {CLK_I2S0_EN, CLK_TYPE_GATE, "clk_i2s0_en", "pll_clk_i2s", NULL, 1, SYS_SUB_I2S_EN_REG234, 0, 0, 0, 0, 0},
++    {CLK_I2S1_EN, CLK_TYPE_GATE, "clk_i2s1_en", "pll_clk_i2s", NULL, 1, SYS_SUB_I2S_EN_REG234, 1, 0, 0, 0, 0},
++    {CLK_I2S0_MCLK, CLK_TYPE_DIVIDER, "clk_i2s0_mclk", "clk_i2s0_en", NULL, 1, SYS_SUB_I2S_CTRL_REG230, 8, 5, 0, 0, 0},
++    {CLK_I2S1_MCLK, CLK_TYPE_DIVIDER, "clk_i2s1_mclk", "clk_i2s1_en", NULL, 1, SYS_SUB_I2S_CTRL_REG230, 16, 5, 0, 0, 0},
++    {CLK_I2S0_BCLK, CLK_TYPE_DIVIDER, "clk_i2s0_bclk", "clk_i2s0_mclk", NULL, 1, SYS_SUB_I2S_CTRL_REG230, 13, 3, 0, 0, 0},
++    {CLK_I2S1_BCLK, CLK_TYPE_DIVIDER, "clk_i2s1_bclk", "clk_i2s1_mclk", NULL, 1, SYS_SUB_I2S_CTRL_REG230, 21, 3, 0, 0, 0},
++    {CLK_I2S0_MCLK_OUT, CLK_TYPE_GATE, "clk_i2s0_mclk_out", "clk_i2s0_mclk", NULL, 1, SYS_SUB_I2S_EN_REG234, 16, 0, 0, 0, 0},
++    {CLK_I2S1_MCLK_OUT, CLK_TYPE_GATE, "clk_i2s1_mclk_out", "clk_i2s1_mclk", NULL, 1, SYS_SUB_I2S_EN_REG234, 17, 0, 0, 0, 0},
++    //mem
++    {CLK_SDIO_DIV, CLK_TYPE_DIVIDER, "clk_sdio_div", "pll_clk_400m_2mem", NULL, 1, MEM_SUB_CTRL_REG300, 12, 4, 0, 0, 0},
++    {CLK_EMMC_DIV, CLK_TYPE_DIVIDER, "clk_emmc_div", "pll_clk_400m_2mem", NULL, 1, MEM_SUB_CTRL_REG300, 16, 4, 0, 0, 0},
++    {CLK_TMCLK_10M, CLK_TYPE_FIXED_FACTOR, "clk_tmclk_10m", "pll_clk_400m_2mem", NULL, 0, 0, 0, 0, 0, 1, 40},
++    {CLK_SDIO_SEL, CLK_TYPE_MUX, "clk_sdio_sel", NULL, clk_mem_sd_src, 2, MEM_SUB_CTRL_REG300, 2, 1, 0, 0, 0},
++    {CLK_EMMC_SEL, CLK_TYPE_MUX, "clk_emmc_sel", NULL, clk_mem_emmc_src, 2, MEM_SUB_CTRL_REG300, 3, 1, 0, 0, 0},
++    {CLK_MEM_HCLK, CLK_TYPE_FIXED_FACTOR, "clk_mem_hclk", "clk_sys_ahb", NULL, 0, 0, 0, 0, 0, 1, 2},
++    {CLK_SDIO_HCLK, CLK_TYPE_GATE, "clk_sdio_hclk", "clk_mem_hclk", NULL, 1, MEM_SUB_EN_REG304, 3, 0, 0, 0, 0},
++    {CLK_SDIO_ACLK, CLK_TYPE_GATE, "clk_sdio_aclk", "clk_mem_sys", NULL, 1, MEM_SUB_EN_REG304, 4, 0, 0, 0, 0},
++    {CLK_SDIO_TMCLK, CLK_TYPE_GATE, "clk_sdio_tmclk", "clk_tmclk_10m", NULL, 1, MEM_SUB_EN_REG304, 4, 0, 0, 0, 0},
++    {CLK_SDIO_CCLK, CLK_TYPE_GATE, "clk_sdio_cclk", "clk_sdio_sel", NULL, 1, MEM_SUB_EN_REG304, 5, 0, 0, 0, 0},
++    {CLK_EMMC_HCLK, CLK_TYPE_GATE, "clk_emmc_hclk", "clk_mem_hclk", NULL, 1, MEM_SUB_EN_REG304, 6, 0, 0, 0, 0},
++    {CLK_EMMC_ACLK, CLK_TYPE_GATE, "clk_emmc_aclk", "clk_mem_sys", NULL, 1, MEM_SUB_EN_REG304, 7, 0, 0, 0, 0},
++    {CLK_EMMC_TMCLK, CLK_TYPE_GATE, "clk_emmc_tmclk", "clk_tmclk_10m", NULL, 1, MEM_SUB_EN_REG304, 7, 0, 0, 0, 0},
++    {CLK_EMMC_CCLK, CLK_TYPE_GATE, "clk_emmc_cclk", "clk_emmc_sel", NULL, 1, MEM_SUB_EN_REG304, 8, 0, 0, 0, 0},
++    {CLK_MEM_AHB, CLK_TYPE_GATE, "clk_mem_ahb", "clk_sys_ahb", NULL, 1, MEM_SUB_EN_REG304, 9, 0, 0, 0, 0},
++    //serdes
++    {CLK_SERDES_AXI, CLK_TYPE_FIXED_FACTOR, "clk_serdes_axi", "clk_serdes_sys", NULL, 0, 0, 0, 0, 0, 1, 2},
++    {CLK_SERDES_APB, CLK_TYPE_FIXED_FACTOR, "clk_serdes_apb", "clk_serdes_sys", NULL, 0, 0, 0, 0, 0, 1, 4},
++    {CLK_SERDES2MBUS, CLK_TYPE_GATE, "clk_serdes2mbus", "clk_serdes_axi", NULL, 1, SERDES_SUB_EN_REG404, 1, 0, 0, 0, 0},
++    {CLK_PCIE0_EN, CLK_TYPE_GATE, "clk_pcie0_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 0, 0, 0, 0, 0},
++    {CLK_PCIE1_EN, CLK_TYPE_GATE, "clk_pcie1_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 1, 0, 0, 0, 0},
++    {CLK_PCIE2_EN, CLK_TYPE_GATE, "clk_pcie2_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 2, 0, 0, 0, 0},
++    {CLK_PCIE3_EN, CLK_TYPE_GATE, "clk_pcie3_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 3, 0, 0, 0, 0},
++    {CLK_PCIE4_EN, CLK_TYPE_GATE, "clk_pcie4_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 4, 0, 0, 0, 0},
++    {CLK_PCIE5_EN, CLK_TYPE_GATE, "clk_pcie5_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_PCIE_EN_REG40C, 5, 0, 0, 0, 0},
++    {CLK_SATA_EN, CLK_TYPE_GATE, "clk_sata_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_SATA_EN_REG414, 0, 0, 0, 0, 0},
++    {CLK_SATA0_EN, CLK_TYPE_GATE, "clk_sata0_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_SATA_EN_REG414, 1, 0, 0, 0, 0},
++    {CLK_SATA1_EN, CLK_TYPE_GATE, "clk_sata1_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_SATA_EN_REG414, 2, 0, 0, 0, 0},
++    {CLK_SATA2_EN, CLK_TYPE_GATE, "clk_sata2_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_SATA_EN_REG414, 3, 0, 0, 0, 0},
++    {CLK_SATA3_EN, CLK_TYPE_GATE, "clk_sata3_en", "clk_serdes_sys", NULL, 1, SERDES_SUB_SATA_EN_REG414, 4, 0, 0, 0, 0},
++    {CLK_USB31_BUS_CLK_EARLY0, CLK_TYPE_GATE, "clk_usb31_bus_clk_early0", "clk_serdes_axi", NULL, 1, SERDES_SUB_USB_EN_REG41C, 0, 0, 0, 0, 0},
++    {CLK_USB31_BUS_CLK_EARLY1, CLK_TYPE_GATE, "clk_usb31_bus_clk_early1", "clk_serdes_axi", NULL, 1, SERDES_SUB_USB_EN_REG41C, 1, 0, 0, 0, 0},
++    {CLK_XGMII_PCLK0, CLK_TYPE_GATE, "clk_xgmii_pclk0", "clk_serdes_apb", NULL, 1, SERDES_SUB_XGMII_EN_REG424, 0, 0, 0, 0, 0},
++    {CLK_XGMII_PCLK1, CLK_TYPE_GATE, "clk_xgmii_pclk1", "clk_serdes_apb", NULL, 1, SERDES_SUB_XGMII_EN_REG424, 1, 0, 0, 0, 0},
++    {CLK_COMBO_PHY_PCLK0, CLK_TYPE_GATE, "clk_combo_phy_pclk0", "clk_serdes_apb", NULL, 1, SERDES_SUB_PHY_EN_REG42C, 0, 0, 0, 0, 0},
++    {CLK_COMBO_PHY_PCLK1, CLK_TYPE_GATE, "clk_combo_phy_pclk1", "clk_serdes_apb", NULL, 1, SERDES_SUB_PHY_EN_REG42C, 1, 0, 0, 0, 0},
++    //vpu
++    {CLK_VPU, CLK_TYPE_GATE, "clk_vpu", "clk_vpu_sys", NULL, 1, VPU_SUB_EN_REG504, 1, 0, 0, 0, 0},
++    {CLK_VPU2VBUS, CLK_TYPE_GATE, "clk_vpu2vbus", "clk_vpu_sys", NULL, 1, VPU_SUB_EN_REG504, 2, 0, 0, 0, 0},
++    //sec
++    {CLK_SEC_AHB, CLK_TYPE_GATE, "clk_sec_ahb", "clk_sys_ahb", NULL, 1, SEC_SUB_EN_REG604, 6, 0, 0, 0, 0},
++    {CLK_SEC_SYS_DIV2, CLK_TYPE_FIXED_FACTOR, "clk_sec_sys_div2", "clk_sec_sys", NULL, 0, 0, 0, 0, 0, 1, 2},
++    {CLK_SEC_APB, CLK_TYPE_FIXED_FACTOR, "clk_sec_apb", "clk_sec_ahb", NULL, 0, 0, 0, 0, 0, 1, 4},
++    {CLK_SEC_TRNG, CLK_TYPE_GATE, "clk_sec_trng", "clk_sec_sys_div2", NULL, 1, SEC_SUB_EN_REG604, 1, 0, 0, 0, 0},
++    {CLK_SEC_PKE, CLK_TYPE_GATE, "clk_sec_pke", "clk_sec_sys_div2", NULL, 1, SEC_SUB_EN_REG604, 2, 0, 0, 0, 0},
++    {CLK_SEC_HASH, CLK_TYPE_GATE, "clk_sec_hash", "clk_sec_sys_div2", NULL, 1, SEC_SUB_EN_REG604, 3, 0, 0, 0, 0},
++    {CLK_SEC_SKE, CLK_TYPE_GATE, "clk_sec_ske", "clk_sec_sys_div2", NULL, 1, SEC_SUB_EN_REG604, 4, 0, 0, 0, 0},
++    {CLK_SEC_EFUSE, CLK_TYPE_GATE, "clk_sec_efuse", "clk_sec_apb", NULL, 1, SEC_SUB_EN_REG604, 5, 0, 0, 0, 0},
++    //gmac
++    {CLK_USB_AHB, CLK_TYPE_GATE, "clk_usb_ahb", "clk_sys_ahb", NULL, 1, USB_GMAC_SUB_EN_REG704, 7, 0, 0, 0, 0},
++    {CLK_USB_AHB_DIV2, CLK_TYPE_FIXED_FACTOR, "clk_usb_ahb_div2", "clk_usb_ahb", NULL, 0, 0, 0, 0, 0, 1, 2},
++    {CLK_USB_SYS_DIV2, CLK_TYPE_FIXED_FACTOR, "clk_usb_sys_div2", "clk_usb_sys", NULL, 0, 0, 0, 0, 0, 1, 2},
++    {CLK_USB2_CTRL, CLK_TYPE_GATE, "clk_usb2_ctrl", "clk_usb_sys_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 1, 0, 0, 0, 0},
++    {CLK_USB3_BUS_CLK_EARLY, CLK_TYPE_GATE, "clk_sub3_bus_clk_early", "clk_usb_sys", NULL, 1, USB_GMAC_SUB_EN_REG704, 2, 0, 0, 0, 0},
++    {CLK_USB2_PHY0_REFCLK, CLK_TYPE_GATE, "clk_usb2_phy0_refclk", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 3, 0, 0, 0, 0},
++    {CLK_USB2_PHY1_REFCLK, CLK_TYPE_GATE, "clk_usb2_phy1_refclk", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 4, 0, 0, 0, 0},
++    {CLK_USB3_PHY_REFCLK0, CLK_TYPE_GATE, "clk_usb3_phy_refclk0", "osc_clk_24m", NULL, 1, USB_GMAC_SUB_EN_REG704, 5, 0, 0, 0, 0},
++    {CLK_GMAC_CSR, CLK_TYPE_GATE, "clk_gmac_csr", "clk_usb_ahb_div2", NULL, 1, USB_GMAC_SUB_EN_REG704, 6, 0, 0, 0, 0},
++    {CLK_USB2VBUS, CLK_TYPE_GATE, "clk_usb2vbus", "clk_usb_sys", NULL, 1, USB_GMAC_SUB_EN_REG704, 16, 0, 0, 0, 0},
++    {CLK_GMAC_PHYCLK_OUT, CLK_TYPE_GATE, "clk_gmac_phyclk_out", NULL, NULL, 0, USB_GMAC_SUB_EN_REG704, 17, 0, 0, 0, 0},
++    //ddr_mbus
++    {CLK_DDRC_APB, CLK_TYPE_GATE, "clk_ddrc_apb", "clk_sys_apb", NULL, 1, MBUS_DDR_SUB_EN_REG804, 2, 0, 0, 0, 0},
++    //mcu
++    {CLK_MCU_SRC, CLK_TYPE_MUX, "clk_mcu_src", NULL, clk_mcu_src, 3, MCU_SUB_CTRL_REG000, 0, 2, 0, 0, 0},
++    {CLK_MCU_SYS, CLK_TYPE_GATE, "clk_mcu_sys", "clk_mcu_src", NULL, 1, MCU_SUB_EN_REG004, 0, 0, 0, 0, 0},
++    {CLK_MCU2MBUS, CLK_TYPE_GATE, "clk_mcu2mbus", NULL, NULL, 0, MCU_SUB_EN_REG004, 16, 0, 0, 0, 0},
++};
++
++static int ccu_clocks_init(struct platform_device *pdev)
++{
++    struct device_node *np = pdev->dev.of_node;
++    struct clk_hw *hw;
++    void __iomem *reg_base;
++    void __iomem *mcu_reg_base;
++    int i;
++
++    LOG_INFO("start init");
++
++    clk_hw_data = kzalloc(struct_size(clk_hw_data, hws, CLK_MAX_NO), GFP_KERNEL);
++    if (WARN_ON(!clk_hw_data)) {
++        return 0;
++    }
++
++    clk_hw_data->num = CLK_MAX_NO;
++    hws = clk_hw_data->hws;
++
++    reg_base = of_iomap(np, 0);
++    mcu_reg_base = of_iomap(np, 1);
++
++    if (!reg_base) {
++        pr_err("%s: could not map ccu region\n", __func__);
++        return 0;
++    }
++    LOG_INFO("init clock-tree");
++
++    hws[CLK_DUMMY] = clk_hw_register_fixed_rate(NULL, "dummy", NULL, 0, 0);
++    //register fixed clocks
++    hws[OSC_CLK_24M] = __clk_get_hw(of_clk_get_by_name(np, "osc_clk_24m"));
++    hws[PLL_CLK_SYS] = __clk_get_hw(of_clk_get_by_name(np, "pll_clk_sys"));
++    hws[PLL_CLK_GMAC] = __clk_get_hw(of_clk_get_by_name(np, "pll_clk_gmac"));
++    hws[PLL_CLK_I2S] = __clk_get_hw(of_clk_get_by_name(np, "pll_clk_i2s"));
++    hws[PLL_DDR] = __clk_get_hw(of_clk_get_by_name(np, "pll_ddr"));
++    hws[IN_CLK_32K] = __clk_get_hw(of_clk_get_by_name(np, "in_clk_32k"));
++    hws[PLL_CLK_400M] = __clk_get_hw(of_clk_get_by_name(np, "pll_clk_400m"));
++
++    //register clocks
++    for (i = 0; i < ARRAY_SIZE(ccu_clocks); i++) {
++        const struct ccu_clk_data *ccd = &ccu_clocks[i];
++        void __iomem *reg = reg_base;
++        if (ccd->clk_index >= CLK_MCU_SRC){
++            reg = mcu_reg_base;
++        };
++        switch(ccd->clk_type){
++            case CLK_TYPE_GATE:
++                hw = clk_hw_register_gate(NULL, ccd->name, ccd->parent_name, 0,
++                    reg + ccd->reg, ccd->shift, 0, NULL);
++                break;
++            case CLK_TYPE_DIVIDER:
++                hw = clk_hw_register_divider(NULL, ccd->name, ccd->parent_name, 0,
++                    reg + ccd->reg, ccd->shift, ccd->width, 0, NULL);
++                break;
++            case CLK_TYPE_MUX:
++                hw = clk_hw_register_mux(NULL, ccd->name, ccd->parent_names, ccd->num_parents, 0,
++                    reg + ccd->reg, ccd->shift, ccd->width, 0, NULL);
++                break;
++            case CLK_TYPE_FIXED_FACTOR:
++                hw = clk_hw_register_fixed_factor(NULL, ccd->name, ccd->parent_name, 0,
++                    ccd->factor_mult, ccd->factor_div);
++                break;
++            default:
++                break;
++        }
++        if (IS_ERR(hw))
++            return PTR_ERR(hw);
++        hws[ccd->clk_index] = hw;
++    }
++    LOG_INFO("finish clock-tree");
++
++    //add clock provider
++    of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_hw_data);
++    return 0;
++}
++
++static const struct of_device_id k1_ccu_ids[] = {
++    { .compatible = "spacemit,k1pro-ccu" },
++    { }
++};
++
++static struct platform_driver k1_ccu_driver = {
++    .probe      = ccu_clocks_init,
++    .driver     = {
++        .name   = "k1-ccu",
++        .of_match_table	= k1_ccu_ids,
++    },
++};
++
++static int __init k1_ccu_init(void)
++{
++    int ret;
++
++    ret = platform_driver_register(&k1_ccu_driver);
++    if (ret)
++        pr_err("register ccu k1 failed\n");
++
++    return ret;
++}
++core_initcall(k1_ccu_init);
++
++static void __exit k1_ccu_exit(void)
++{
++    return platform_driver_unregister(&k1_ccu_driver);
++}
++module_exit(k1_ccu_exit);
++
++
+diff --git a/drivers/clk/spacemit/k1-pro-ccu.h b/drivers/clk/spacemit/k1-pro-ccu.h
+new file mode 100755
+index 000000000000..15b5cbd2c07a
+--- /dev/null
++++ b/drivers/clk/spacemit/k1-pro-ccu.h
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Device Tree support for Spacemit SoCs
++ *
++ * Copyright (c) 2023 Spacemit Inc.
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/kernel.h>
++#include <linux/reset-controller.h>
++#include <linux/spinlock.h>
++
++#define CLK_TYPE_GATE           (0)
++#define CLK_TYPE_DIVIDER        (1)
++#define CLK_TYPE_MUX            (2)
++#define CLK_TYPE_FIXED_FACTOR   (3)
++
++/**
++ * struct ccu_clk_data - clk structure
++ * @clk_index:  clock index
++ * @clk_type:  0-gate, 1-divider, 2-mux, 3-fixed_factor
++ * @name: the clock name
++ * @parent_name: the name of the parent clock
++ * @parent_names: the mult-parents clock name list
++ * @num_parents: the number of mult-parents clock
++ * @reg:  register address
++ * @shift:  shift
++ * @width:  width
++ * @flags:  hardware-specific flags
++ * @factor_mult:  fixed mult of fixed-factor clock
++ * @factor_div:  fixed div of fixed-factor clock
++ *
++ */
++struct ccu_clk_data{
++    u32 clk_index;
++    u8 clk_type;
++    const char *name;
++    const char *parent_name;
++    const char * const *parent_names;
++    u8 num_parents;
++    u32 reg;
++    u8 shift;
++    u8 width;
++    unsigned long flags;
++    u8 factor_mult;
++    u8 factor_div;
++};
++struct ccu_init_data{
++    u32 reg;
++    u32 value;
++};
++
++//registers address
++//PLLs
++#define CPU0_PLL_CTRL_REG000          (0x0000)
++#define CPU0_PLL_CONFIG_REG004        (0x0004)
++#define CPU1_PLL_CTRL_REG008          (0x0008)
++#define CPU1_PLL_CONFIG_REG00C        (0x000C)
++#define DFS_PLL_CTRL_REG010           (0x0010)
++#define DFS_PLL_CONFIG_REG014         (0x0014)
++#define DDR_PLL_CTRL_REG010           (0x0018)
++#define DDR_PLL_CONFIG_REG01C         (0x001C)
++#define DDR_PLL_CONFIG_FRAC_REG020    (0x0020)
++#define SYS_PLL_CTRL_REG024           (0x0024)
++#define SYS_PLL_CONFIG_REG028         (0x0028)
++#define GMAC_PLL_CTRL_REG02C          (0x002C)
++#define GMAC_PLL_CONFIG_REG030        (0x0030)
++#define AUDIO_PLL_CTRL_REG034         (0x0034)
++#define AUDIO_PLL_CONFIG_REG038       (0x0038)
++#define AUDIO_PLL_CONFIG_FRAC_REG03C  (0x003C)
++
++//SUB system
++#define CPU_SUB_CPU0_CTRL_REG100      (0x0100)
++#define CPU_SUB_CPU0_EN_REG104        (0x0104)
++#define CPU_SUB_CPU1_CTRL_REG108      (0x0108)
++#define CPU_SUB_CPU1_EN_REG10C        (0x010C)
++#define CPU_SUB_CTRL_REG110           (0x0110)
++#define CPU_SUB_EN_REG114             (0x0114)
++
++#define SYS_SUB_CTRL_REG200       (0x0200)
++#define SYS_SUB_EN_REG204         (0x0204)
++#define SYS_SUB_QSPI_CTRL_REG208  (0x0208)
++#define SYS_SUB_QSPI_EN_REG20C    (0x020c)
++#define SYS_SUB_UART_EN_REG214    (0x0214)
++#define SYS_SUB_I2C_EN_REG21C     (0x021c)
++#define SYS_SUB_TIMER_EN_REG224   (0x0224)
++#define SYS_SUB_CAN_CTRL_REG228   (0x0228)
++#define SYS_SUB_CAN_EN_REG22C     (0x022c)
++#define SYS_SUB_I2S_CTRL_REG230   (0x0230)
++#define SYS_SUB_I2S_EN_REG234     (0x0234)
++
++#define MEM_SUB_CTRL_REG300       (0x0300)
++#define MEM_SUB_EN_REG304         (0x0304)
++
++#define SERDES_SUB_CTRL_REG400        (0x0400)
++#define SERDES_SUB_EN_REG404          (0x0404)
++#define SERDES_SUB_PCIE_EN_REG40C     (0x040C)
++#define SERDES_SUB_SATA_EN_REG414     (0x0414)
++#define SERDES_SUB_USB_EN_REG41C      (0x041C)
++#define SERDES_SUB_XGMII_EN_REG424    (0x0424)
++#define SERDES_SUB_PHY_EN_REG42C      (0x042C)
++
++#define VPU_SUB_CTRL_REG500           (0x0500)
++#define VPU_SUB_EN_REG504             (0x0504)
++
++#define SEC_SUB_CTRL_REG600           (0x0600)
++#define SEC_SUB_EN_REG604             (0x0604)
++
++#define USB_GMAC_SUB_CTRL_REG700  (0x0700)
++#define USB_GMAC_SUB_EN_REG704    (0x0704)
++
++#define MBUS_DDR_SUB_CTRL_REG800  (0x0800)
++#define MBUS_DDR_SUB_EN_REG804    (0x0804)
++
++//MCU
++#define MCU_SUB_CTRL_REG000    (0x0000)
++#define MCU_SUB_EN_REG004      (0x0004)
++
++
+diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
+new file mode 100755
+index 000000000000..a8d4bc68c825
+--- /dev/null
++++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++
++#ifndef _DT_BINDINGS_CLK_SPACEMIT_K1PRO_H_
++#define _DT_BINDINGS_CLK_SPACEMIT_K1PRO_H_
++
++#define CLK_DUMMY       0
++
++#define OSC_CLK_24M     1
++#define PLL_CLK_SYS     2
++#define PLL_CLK_GMAC    3
++#define PLL_CLK_I2S     4
++#define PLL_DDR         5
++#define IN_CLK_32K      6
++#define PLL_CLK_400M    7
++
++#define OSC_CLK_24M_DIV60  8
++#define OSC_CLK_400K       9
++#define OSC_CLK_200K       10
++#define PLL_CLK_400M_2MEM  11
++#define PLL_CLK_DDR        12
++#define PLL_CLK_50M        13
++#define PLL_CLK_10M        14
++#define CLK_MEM_SYS_DIV    15
++#define CLK_MEM_SYS        16
++#define CLK_VPU_SYS_DIV    17
++#define CLK_VPU_SYS        18
++#define CLK_SEC_SYS_DIV    19
++#define CLK_SEC_SYS        20
++#define CLK_SERDES_SYS_DIV 21
++#define CLK_SERDES_SYS     22
++#define CLK_USB_SYS_DIV    23
++#define CLK_USB_SYS        24
++#define CLK_MBUS_SYS_DIV   25
++#define CLK_MBUS_SYS       26
++#define PLL_CLK_250_50M_DIV 27
++#define PLL_CLK_250_50M     28
++//sys
++#define CLK_SYS_AHB   29
++#define CLK_SYS_APB   30
++#define CLK_MBOX      31
++#define CLK_SPINLOCK  32
++#define CLK_DMAC      33
++#define CLK_GPIO      34
++#define CLK_WDT       35
++#define CLK_PWM       36
++#define CLK_BMU       37
++#define CLK_SYSREG    38
++#define CLK_UART0     39
++#define CLK_UART1     40
++#define CLK_UART2     41
++#define CLK_UART3     42
++#define CLK_UART4     43
++#define CLK_I2C0      44
++#define CLK_I2C1      45
++#define CLK_I2C2      46
++#define CLK_I2C3      47
++#define CLK_I2C4      48
++#define CLK_TIMER0    49
++#define CLK_TIMER1    50
++#define CLK_QSPI0     51
++#define CLK_QSPI1     52
++#define CLK_QSPI2     53
++#define CLK_QSPI0_EN  54
++#define CLK_QSPI1_EN  55
++#define CLK_QSPI2_EN  56
++#define CLK_CAN       57
++#define CLK_CAN_EN    58
++#define CLK_I2S0_EN   59
++#define CLK_I2S1_EN   60
++#define CLK_I2S0_MCLK 61
++#define CLK_I2S1_MCLK 62
++#define CLK_I2S0_BCLK 63
++#define CLK_I2S1_BCLK 64
++#define CLK_I2S0_MCLK_OUT 65
++#define CLK_I2S1_MCLK_OUT 66
++//mem
++#define CLK_SDIO_DIV  67
++#define CLK_EMMC_DIV  68
++#define CLK_TMCLK_10M 69
++#define CLK_SDIO_SEL  70
++#define CLK_EMMC_SEL  71
++#define CLK_MEM_HCLK  72
++#define CLK_SDIO_HCLK 73
++#define CLK_SDIO_ACLK 74
++#define CLK_SDIO_TMCLK  75
++#define CLK_SDIO_CCLK   76
++#define CLK_EMMC_HCLK   77
++#define CLK_EMMC_ACLK   78
++#define CLK_EMMC_TMCLK  79
++#define CLK_EMMC_CCLK   80
++#define CLK_MEM_AHB     81
++//serdes
++#define CLK_SERDES_AXI  82
++#define CLK_SERDES_APB  83
++#define CLK_SERDES2MBUS 84
++#define CLK_PCIE0_EN    85
++#define CLK_PCIE1_EN    86
++#define CLK_PCIE2_EN    87
++#define CLK_PCIE3_EN    88
++#define CLK_PCIE4_EN    89
++#define CLK_PCIE5_EN    90
++#define CLK_SATA_EN     91
++#define CLK_SATA0_EN    92
++#define CLK_SATA1_EN    93
++#define CLK_SATA2_EN    94
++#define CLK_SATA3_EN    95
++#define CLK_USB31_BUS_CLK_EARLY0  96
++#define CLK_USB31_BUS_CLK_EARLY1  97
++#define CLK_XGMII_PCLK0      98
++#define CLK_XGMII_PCLK1      99
++#define CLK_COMBO_PHY_PCLK0  100
++#define CLK_COMBO_PHY_PCLK1  101
++//vpu
++#define CLK_VPU       102
++#define CLK_VPU2VBUS  103
++//sec
++#define CLK_SEC_AHB   104
++#define CLK_SEC_SYS_DIV2  105
++#define CLK_SEC_APB   106
++#define CLK_SEC_TRNG  107
++#define CLK_SEC_PKE   108
++#define CLK_SEC_HASH  109
++#define CLK_SEC_SKE   110
++#define CLK_SEC_EFUSE 111
++//gmac
++#define CLK_USB_AHB       112
++#define CLK_USB_AHB_DIV2  113
++#define CLK_USB_SYS_DIV2  114
++#define CLK_USB2_CTRL     115
++#define CLK_USB3_BUS_CLK_EARLY  116
++#define CLK_USB2_PHY0_REFCLK    117
++#define CLK_USB2_PHY1_REFCLK    118
++#define CLK_USB3_PHY_REFCLK0    119
++#define CLK_GMAC_CSR            120
++#define CLK_USB2VBUS            121
++#define CLK_GMAC_PHYCLK_OUT     122
++//mbus
++#define CLK_DDRC_APB   123
++//mcu
++#define CLK_MCU_SRC    124
++#define CLK_MCU_SYS    125
++#define CLK_MCU2MBUS   126
++
++#define CLK_MAX_NO     127
++#endif /* _DT_BINDINGS_CLK_SPACEMIT_K1PRO_H_ */
+-- 
+2.47.0
+

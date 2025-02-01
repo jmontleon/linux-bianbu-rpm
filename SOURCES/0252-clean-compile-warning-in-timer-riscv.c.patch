@@ -1,0 +1,30 @@
+From 223e0512345396d36628a21ab3e5304d4319cd8f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Dec 2023 17:35:40 +0800
+Subject: [PATCH 0252/1451] clean compile warning in timer-riscv.c
+
+Change-Id: I01634b6cfb18358d1df05212d09b4fbd9465354a
+---
+ drivers/clocksource/timer-riscv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+index 29628bf7fe49..5ab129fb4779 100644
+--- a/drivers/clocksource/timer-riscv.c
++++ b/drivers/clocksource/timer-riscv.c
+@@ -52,10 +52,10 @@ static int riscv_clock_next_event(unsigned long delta,
+ 
+ static int riscv_set_state_shutdown(struct clock_event_device *ce)
+ {
+-        csr_clear(CSR_IE, IE_TIE);
+-
+ 	u64 next_tval = 0xffffffffffffffff;
+ 
++        csr_clear(CSR_IE, IE_TIE);
++
+ 	if (static_branch_likely(&riscv_sstc_available)) {
+ #if defined(CONFIG_32BIT)
+ 		csr_write(CSR_STIMECMP, next_tval & 0xFFFFFFFF);
+-- 
+2.47.0
+

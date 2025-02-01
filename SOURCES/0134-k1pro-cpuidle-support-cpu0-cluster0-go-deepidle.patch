@@ -1,0 +1,101 @@
+From d5d63364c5b5891365d4e54cb26eebc0e27b4ffa Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 16 Oct 2023 16:27:35 +0800
+Subject: [PATCH 0134/1451] k1pro:cpuidle: support cpu0 & cluster0 go deepidle
+
+Change-Id: Iaa86a280c87e25d33650c661cdd5ff3724d01f96
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi | 31 ++++++++++++------------
+ drivers/clocksource/dw_apb_timer.c       |  1 -
+ 2 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index d440efaa5a43..30538df03356 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -120,15 +120,16 @@ cpu3_intc: interrupt-controller {
+ 		};
+ 
+ 		idle-states {
+-			CPU_RET: cpu-ret {
+-				compatible = "riscv,idle-state", "domain-idle-state";
+-				idle-state-name = "riscv,cpu-ret";
+-				riscv,sbi-suspend-param = <0x10000000>;
+-				entry-latency-us = <100>;
+-				exit-latency-us = <120>;
+-				min-residency-us = <160>;
+-			};
+-
++/**
++ *			CPU_RET: cpu-ret {
++ *				compatible = "riscv,idle-state", "domain-idle-state";
++ *				idle-state-name = "riscv,cpu-ret";
++ *				riscv,sbi-suspend-param = <0x10000000>;
++ *				entry-latency-us = <100>;
++ *				exit-latency-us = <120>;
++ *				min-residency-us = <160>;
++ *			};
++ */
+ 			CPU_NONRET: cpu-nonret {
+ 				compatible = "riscv,idle-state", "domain-idle-state";
+ 				idle-state-name = "riscv,cpu-nonret";
+@@ -149,7 +150,7 @@ CPU_NONRET: cpu-nonret {
+  *				exit-latency-us = <100>;
+  *				min-residency-us = <250>;
+  *				wakeup-latency-us = <130>;
+- *			};
++ * 			};
+  */
+ 			CLUSTER_NONRET: cluster-nonret {
+ 				compatible = "domain-idle-state";
+@@ -168,30 +169,30 @@ power-domains {
+ 			CPU_PD0: cpu0 {
+ 				#power-domain-cells = <0>;
+ 				power-domains = <&CLUSTER_PD0>;
+-				domain-idle-states = <&CPU_RET>,  <&CPU_NONRET>;
++				domain-idle-states = /* <&CPU_RET> ,*/  <&CPU_NONRET>;
+ 			};
+ 
+ 			CPU_PD1: cpu1 {
+ 				#power-domain-cells = <0>;
+ 				power-domains = <&CLUSTER_PD0>;
+-				domain-idle-states = <&CPU_RET>, <&CPU_NONRET>;
++				domain-idle-states = /* <&CPU_RET> ,*/ <&CPU_NONRET>;
+ 			};
+ 
+ 			CPU_PD2: cpu2 {
+ 				#power-domain-cells = <0>;
+ 				power-domains = <&CLUSTER_PD1>;
+-				domain-idle-states = <&CPU_RET>, <&CPU_NONRET>;
++				domain-idle-states = /* <&CPU_RET>,*/ <&CPU_NONRET>;
+ 			};
+ 
+ 			CPU_PD3: cpu3 {
+ 				#power-domain-cells = <0>;
+ 				power-domains = <&CLUSTER_PD1>;
+-				domain-idle-states = <&CPU_RET>, <&CPU_NONRET>;
++				domain-idle-states = /* <&CPU_RET>, */ <&CPU_NONRET>;
+ 			};
+ 
+ 			CLUSTER_PD0: cpu-cluster0 {
+ 				#power-domain-cells = <0>;
+-				domain-idle-states = /* <&CLUSTER_RET>, */  <&CLUSTER_NONRET>;
++				domain-idle-states = /* <&CLUSTER_RET>  ,*/  <&CLUSTER_NONRET>;
+ 			};
+ 
+ 			CLUSTER_PD1: cpu-cluster1 {
+diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
+index b10d2e05708a..ee0db972e448 100644
+--- a/drivers/clocksource/dw_apb_timer.c
++++ b/drivers/clocksource/dw_apb_timer.c
+@@ -94,7 +94,6 @@ static void apbt_eoi(struct dw_apb_timer *timer)
+ 
+ static irqreturn_t dw_apb_clockevent_irq(int irq, void *data)
+ {
+-	u32 ctrl;
+ 	struct clock_event_device *evt = data;
+ 	struct dw_apb_clock_event_device *dw_ced = ced_to_dw_apb_ced(evt);
+ 
+-- 
+2.47.0
+

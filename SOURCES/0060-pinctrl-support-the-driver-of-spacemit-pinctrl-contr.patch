@@ -1,0 +1,1090 @@
+From 4857ef50597eb36d9a748d480c545f2883dd2ab2 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 28 Jun 2023 19:17:22 +0800
+Subject: [PATCH 0060/1451] pinctrl: support the driver of spacemit pinctrl
+ controller
+
+Change-Id: I224d54ce41e204286fd191ef9ac1c5233074fe67
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi     |  29 +
+ arch/riscv/configs/k1-pro_fpga_defconfig     |   5 +
+ drivers/pinctrl/Kconfig                      |   1 +
+ drivers/pinctrl/Makefile                     |   1 +
+ drivers/pinctrl/spacemit/Kconfig             |  15 +
+ drivers/pinctrl/spacemit/Makefile            |   2 +
+ drivers/pinctrl/spacemit/pinctrl-k1pro.c     | 142 +++++
+ drivers/pinctrl/spacemit/pinctrl-spacemit.c  | 580 +++++++++++++++++++
+ drivers/pinctrl/spacemit/pinctrl-spacemit.h  |  95 +++
+ include/dt-bindings/pinctrl/k1-pro-pinctrl.h | 102 ++++
+ 10 files changed, 972 insertions(+)
+ create mode 100755 drivers/pinctrl/spacemit/Kconfig
+ create mode 100755 drivers/pinctrl/spacemit/Makefile
+ create mode 100755 drivers/pinctrl/spacemit/pinctrl-k1pro.c
+ create mode 100755 drivers/pinctrl/spacemit/pinctrl-spacemit.c
+ create mode 100755 drivers/pinctrl/spacemit/pinctrl-spacemit.h
+ create mode 100755 include/dt-bindings/pinctrl/k1-pro-pinctrl.h
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index f92963cbbaf8..8165ebc8127a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -7,6 +7,7 @@
+ 
+ #include <dt-bindings/clock/k1-pro-ccu-clock.h>
+ #include <dt-bindings/reset/k1-pro-reset.h>
++#include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
+ 
+ / {
+ 	compatible = "spacemit,k1-pro", "riscv";
+@@ -316,6 +317,34 @@ core3_tcm@60000 {
+ 			};
+ 		};
+ 
++		gpio0: gpio@2ce80000 {
++			compatible = "snps,dw-apb-gpio";
++			reg = <0x0 0x2ce80000 0x0 0x4000>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			resets = <&reset RESET_GPIO>;
++
++			porta: gpio-port@0 {
++				compatible = "snps,dw-apb-gpio-port";
++				gpio-controller;
++				#gpio-cells = <2>;
++				ngpios = <30>;
++				reg = <0>;
++
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				interrupt-parent = <&intc>;
++				interrupts = <72>;
++			};
++		};
++
++		pinctrl: pinctrl@2f02c000 {
++			compatible = "spacemit,k1pro-pinctrl";
++			reg = <0x0 0x2f02c000 0x0 0x4000>;
++			resets = <&reset RESET_SYSREG>;
++			status = "okay";
++		};
++
+ 		can0: can@2cfd0000 {
+ 			compatible = "ipms,can";
+ 			reg = <0x0 0x2cfd0000 0x0 0x1000>;
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 8499e7b9fa23..946db5917ef6 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -130,6 +130,11 @@ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_SPI=y
+ CONFIG_SPI_DESIGNWARE_EXT=y
+ # CONFIG_PTP_1588_CLOCK is not set
++CONFIG_PINCTRL=y
++# CONFIG_PINCTRL_MESON is not set
++CONFIG_PINCTRL_K1PRO=y
++CONFIG_GPIOLIB=y
++CONFIG_GPIO_DWAPB=y
+ # CONFIG_HWMON is not set
+ # CONFIG_MEDIA_CEC_SUPPORT is not set
+ CONFIG_MEDIA_SUPPORT=y
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index 7dfb7190580e..1b300f3cbd7c 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -533,5 +533,6 @@ source "drivers/pinctrl/ti/Kconfig"
+ source "drivers/pinctrl/uniphier/Kconfig"
+ source "drivers/pinctrl/visconti/Kconfig"
+ source "drivers/pinctrl/vt8500/Kconfig"
++source "drivers/pinctrl/spacemit/Kconfig"
+ 
+ endif
+diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
+index dd6cda270294..bd32398e5cf6 100644
+--- a/drivers/pinctrl/Makefile
++++ b/drivers/pinctrl/Makefile
+@@ -70,6 +70,7 @@ obj-$(CONFIG_PINCTRL_RENESAS)	+= renesas/
+ obj-$(CONFIG_PINCTRL_SAMSUNG)	+= samsung/
+ obj-$(CONFIG_PINCTRL_SPEAR)	+= spear/
+ obj-y				+= sprd/
++obj-$(CONFIG_SOC_SPACEMIT)      += spacemit/
+ obj-$(CONFIG_SOC_STARFIVE)	+= starfive/
+ obj-$(CONFIG_PINCTRL_STM32)	+= stm32/
+ obj-y				+= sunplus/
+diff --git a/drivers/pinctrl/spacemit/Kconfig b/drivers/pinctrl/spacemit/Kconfig
+new file mode 100755
+index 000000000000..21ac69600e1e
+--- /dev/null
++++ b/drivers/pinctrl/spacemit/Kconfig
+@@ -0,0 +1,15 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config PINCTRL_SPACEMIT
++	tristate
++	depends on OF
++	select GENERIC_PINCTRL_GROUPS
++	select GENERIC_PINMUX_FUNCTIONS
++	select GENERIC_PINCONF
++
++config PINCTRL_K1PRO
++	bool "Spacemit K1PRO pinctrl driver"
++	depends on OF
++	depends on SOC_SPACEMIT_K1_FPGA
++	select PINCTRL_SPACEMIT
++	help
++	  Say Y here to enable the k1-pro pinctrl driver
+diff --git a/drivers/pinctrl/spacemit/Makefile b/drivers/pinctrl/spacemit/Makefile
+new file mode 100755
+index 000000000000..0395ca400289
+--- /dev/null
++++ b/drivers/pinctrl/spacemit/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_PINCTRL_SPACEMIT)	+= pinctrl-spacemit.o
++obj-$(CONFIG_PINCTRL_K1PRO)	+= pinctrl-k1pro.o
+\ No newline at end of file
+diff --git a/drivers/pinctrl/spacemit/pinctrl-k1pro.c b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
+new file mode 100755
+index 000000000000..52eeeb46f834
+--- /dev/null
++++ b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Spacemit k1-pro pinctrl driver
++//
++// Copyright (c) 2023, spacemit Corporation.
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include "pinctrl-spacemit.h"
++#include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
++
++static const struct pinctrl_pin_desc k1pro_pins[] = {
++	SPACEMIT_PINCTRL_PIN(GPIOA0),
++	SPACEMIT_PINCTRL_PIN(GPIOA1),
++	SPACEMIT_PINCTRL_PIN(GPIOA2),
++	SPACEMIT_PINCTRL_PIN(GPIOA3),
++	SPACEMIT_PINCTRL_PIN(GPIOA4),
++	SPACEMIT_PINCTRL_PIN(GPIOA5),
++	SPACEMIT_PINCTRL_PIN(GPIOA6),
++	SPACEMIT_PINCTRL_PIN(GPIOA7),
++	SPACEMIT_PINCTRL_PIN(GPIOA8),
++	SPACEMIT_PINCTRL_PIN(GPIOA9),
++	SPACEMIT_PINCTRL_PIN(GPIOA10),
++	SPACEMIT_PINCTRL_PIN(GPIOA11),
++	SPACEMIT_PINCTRL_PIN(GPIOA12),
++	SPACEMIT_PINCTRL_PIN(GPIOA13),
++	SPACEMIT_PINCTRL_PIN(GPIOA14),
++	SPACEMIT_PINCTRL_PIN(GPIOA15),
++	SPACEMIT_PINCTRL_PIN(GPIOA16),
++	SPACEMIT_PINCTRL_PIN(GPIOA17),
++	SPACEMIT_PINCTRL_PIN(GPIOA18),
++	SPACEMIT_PINCTRL_PIN(GPIOA19),
++	SPACEMIT_PINCTRL_PIN(GPIOA20),
++	SPACEMIT_PINCTRL_PIN(GPIOA21),
++	SPACEMIT_PINCTRL_PIN(GPIOA22),
++	SPACEMIT_PINCTRL_PIN(GPIOA23),
++	SPACEMIT_PINCTRL_PIN(GPIOA24),
++	SPACEMIT_PINCTRL_PIN(GPIOA25),
++	SPACEMIT_PINCTRL_PIN(GPIOA26),
++	SPACEMIT_PINCTRL_PIN(GPIOA27),
++	SPACEMIT_PINCTRL_PIN(GPIOA28),
++	SPACEMIT_PINCTRL_PIN(GPIOA29),
++
++	SPACEMIT_PINCTRL_PIN(GPIOB0),
++	SPACEMIT_PINCTRL_PIN(GPIOB1),
++	SPACEMIT_PINCTRL_PIN(GPIOB2),
++	SPACEMIT_PINCTRL_PIN(GPIOB3),
++	SPACEMIT_PINCTRL_PIN(GPIOB4),
++	SPACEMIT_PINCTRL_PIN(GPIOB5),
++	SPACEMIT_PINCTRL_PIN(GPIOB6),
++	SPACEMIT_PINCTRL_PIN(GPIOB7),
++	SPACEMIT_PINCTRL_PIN(GPIOB8),
++	SPACEMIT_PINCTRL_PIN(GPIOB9),
++	SPACEMIT_PINCTRL_PIN(GPIOB10),
++	SPACEMIT_PINCTRL_PIN(GPIOB11),
++	SPACEMIT_PINCTRL_PIN(GPIOB12),
++	SPACEMIT_PINCTRL_PIN(GPIOB13),
++	SPACEMIT_PINCTRL_PIN(GPIOB14),
++	SPACEMIT_PINCTRL_PIN(GPIOB15),
++	SPACEMIT_PINCTRL_PIN(GPIOB16),
++	SPACEMIT_PINCTRL_PIN(GPIOB17),
++	SPACEMIT_PINCTRL_PIN(GPIOB18),
++	SPACEMIT_PINCTRL_PIN(GPIOB19),
++	SPACEMIT_PINCTRL_PIN(GPIOB20),
++	SPACEMIT_PINCTRL_PIN(GPIOB21),
++	SPACEMIT_PINCTRL_PIN(GPIOB22),
++	SPACEMIT_PINCTRL_PIN(GPIOB23),
++	SPACEMIT_PINCTRL_PIN(GPIOB24),
++
++	SPACEMIT_PINCTRL_PIN(GPIOC0),
++	SPACEMIT_PINCTRL_PIN(GPIOC1),
++	SPACEMIT_PINCTRL_PIN(GPIOC2),
++	SPACEMIT_PINCTRL_PIN(GPIOC3),
++	SPACEMIT_PINCTRL_PIN(GPIOC4),
++	SPACEMIT_PINCTRL_PIN(GPIOC5),
++	SPACEMIT_PINCTRL_PIN(GPIOC6),
++	SPACEMIT_PINCTRL_PIN(GPIOC7),
++	SPACEMIT_PINCTRL_PIN(GPIOC8),
++	SPACEMIT_PINCTRL_PIN(GPIOC9),
++	SPACEMIT_PINCTRL_PIN(GPIOC10),
++	SPACEMIT_PINCTRL_PIN(GPIOC11),
++	SPACEMIT_PINCTRL_PIN(GPIOC12),
++	SPACEMIT_PINCTRL_PIN(GPIOC13),
++	SPACEMIT_PINCTRL_PIN(GPIOC14),
++	SPACEMIT_PINCTRL_PIN(GPIOC15),
++	SPACEMIT_PINCTRL_PIN(GPIOC16),
++	SPACEMIT_PINCTRL_PIN(GPIOC17),
++	SPACEMIT_PINCTRL_PIN(GPIOC18),
++	SPACEMIT_PINCTRL_PIN(GPIOC19),
++	SPACEMIT_PINCTRL_PIN(GPIOC20),
++	SPACEMIT_PINCTRL_PIN(GPIOC21),
++	SPACEMIT_PINCTRL_PIN(GPIOC22),
++	SPACEMIT_PINCTRL_PIN(GPIOC23),
++	SPACEMIT_PINCTRL_PIN(GPIOC24),
++};
++
++static const struct spacemit_regs k1pro_regs = {
++	.cfg = 0x000,
++	.reg_len = 0x80,
++};
++
++static const struct spacemit_pin_conf k1pro_pin_conf = {
++	.od_shift = 4,
++	.pe_shift = 8,
++	.pull_shift = 9,
++	.ds_shift = 12,
++	.st_shift = 16,
++	.rte_shift = 20,
++};
++
++static struct spacemit_pinctrl_soc_data k1pro_pinctrl_data = {
++	.regs = &k1pro_regs,
++	.pinconf = &k1pro_pin_conf,
++	.pins = k1pro_pins,
++	.npins = ARRAY_SIZE(k1pro_pins),
++};
++
++static int k1pro_pinctrl_probe(struct platform_device *pdev)
++{
++	return spacemit_pinctrl_probe(pdev, &k1pro_pinctrl_data);
++}
++
++static const struct of_device_id k1pro_pinctrl_of_match[] = {
++	{ .compatible = "spacemit,k1pro-pinctrl", },
++	{ /* sentinel */ }
++};
++
++static struct platform_driver k1pro_pinctrl_driver = {
++	.driver = {
++		.name = "k1pro-pinctrl",
++		.suppress_bind_attrs = true,
++		.of_match_table = k1pro_pinctrl_of_match,
++	},
++	.probe = k1pro_pinctrl_probe,
++};
++
++static int __init k1pro_pinctrl_init(void)
++{
++	return platform_driver_register(&k1pro_pinctrl_driver);
++}
++postcore_initcall(k1pro_pinctrl_init);
+\ No newline at end of file
+diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.c b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
+new file mode 100755
+index 000000000000..2042a486710e
+--- /dev/null
++++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
+@@ -0,0 +1,580 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright (c) 2023, spacemit Corporation.
++#include <linux/err.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/pinctrl/machine.h>
++#include <linux/pinctrl/pinconf.h>
++#include <linux/pinctrl/pinctrl.h>
++#include <linux/pinctrl/pinmux.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/reset.h>
++#include "../core.h"
++#include "pinctrl-spacemit.h"
++
++struct spacemit_pinctrl_data {
++	struct device *dev;
++	struct pinctrl_dev *pctl;
++	void __iomem *base;
++	struct reset_control *rstc;
++	struct spacemit_pinctrl_soc_data *soc;
++};
++
++static int spacemit_get_groups_count(struct pinctrl_dev *pctldev)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	return d->soc->ngroups;
++}
++
++static const char *spacemit_get_group_name(struct pinctrl_dev *pctldev,
++					unsigned group)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	if (group >= d->soc->ngroups)
++		return -EINVAL;
++
++	return d->soc->groups[group].name;
++}
++
++static int spacemit_get_group_pins(struct pinctrl_dev *pctldev, unsigned group,
++				const unsigned **pins, unsigned *num_pins)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	if (group >= d->soc->ngroups)
++		return -EINVAL;
++
++	*pins = d->soc->groups[group].pin_ids;
++	*num_pins = d->soc->groups[group].npins;
++
++	return 0;
++}
++
++static void spacemit_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
++				unsigned offset)
++{
++	seq_printf(s, " %s", dev_name(pctldev->dev));
++}
++
++static int spacemit_dt_node_to_map(struct pinctrl_dev *pctldev,
++				struct device_node *np,
++				struct pinctrl_map **map, unsigned *num_maps)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	const struct spacemit_group *grp;
++	struct pinctrl_map *new_map;
++	struct device_node *parent;
++	int map_num = 1;
++	int i, j;
++
++	/*
++	 * first find the group of this node and check if we need create
++	 * config maps for pins
++	 */
++	grp = NULL;
++	for (i = 0; i < d->soc->ngroups; i++) {
++		if (!strcmp(d->soc->groups[i].name, np->name)) {
++			grp = &d->soc->groups[i];
++			break;
++		}
++	}
++	if (!grp) {
++		dev_err(d->dev, "unable to find group for node %s\n",
++			np->name);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < grp->npins; i++)
++		map_num++;
++
++	new_map = kmalloc_array(map_num, sizeof(struct pinctrl_map),
++				GFP_KERNEL);
++	if (!new_map)
++		return -ENOMEM;
++
++	*map = new_map;
++	*num_maps = map_num;
++
++	/* create mux map */
++	parent = of_get_parent(np);
++	if (!parent) {
++		kfree(new_map);
++		return -EINVAL;
++	}
++	new_map[0].type = PIN_MAP_TYPE_MUX_GROUP;
++	new_map[0].data.mux.function = np->name;
++	new_map[0].data.mux.group = np->name;
++	of_node_put(parent);
++
++	/* create config map */
++	new_map++;
++	for (i = j = 0; i < grp->npins; i++) {
++		new_map[j].type = PIN_MAP_TYPE_CONFIGS_PIN;
++		new_map[j].data.configs.group_or_pin =
++			pin_get_name(pctldev, grp->pins[i].pin_id);
++		new_map[j].data.configs.configs = &grp->pins[i].config;
++		new_map[j].data.configs.num_configs = 1;
++		j++;
++	}
++
++	dev_dbg(pctldev->dev, "maps: function %s group %s num %d\n",
++		(*map)->data.mux.function, (*map)->data.mux.group, map_num);
++
++	return 0;
++}
++
++static void spacemit_dt_free_map(struct pinctrl_dev *pctldev,
++				struct pinctrl_map *map, unsigned num_maps)
++{
++	u32 i;
++
++	for (i = 0; i < num_maps; i++) {
++		if (map[i].type == PIN_MAP_TYPE_MUX_GROUP)
++			kfree(map[i].data.mux.group);
++		if (map[i].type == PIN_MAP_TYPE_CONFIGS_PIN)
++			kfree(map[i].data.configs.configs);
++	}
++
++	kfree(map);
++}
++
++static const struct pinctrl_ops spacemit_pinctrl_ops = {
++	.get_groups_count = spacemit_get_groups_count,
++	.get_group_name = spacemit_get_group_name,
++	.get_group_pins = spacemit_get_group_pins,
++	.pin_dbg_show = spacemit_pin_dbg_show,
++	.dt_node_to_map = spacemit_dt_node_to_map,
++	.dt_free_map = spacemit_dt_free_map,
++};
++
++static int spacemit_pinctrl_get_funcs_count(struct pinctrl_dev *pctldev)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	return d->soc->nfunctions;
++}
++
++static const char *spacemit_pinctrl_get_func_name(struct pinctrl_dev *pctldev,
++						unsigned function)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	return d->soc->functions[function].name;
++}
++
++static int spacemit_pinctrl_get_func_groups(struct pinctrl_dev *pctldev,
++					unsigned group,
++					const char * const **groups,
++					unsigned * const num_groups)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++
++	*groups = d->soc->functions[group].groups;
++	*num_groups = d->soc->functions[group].ngroups;
++
++	return 0;
++}
++
++static void spacemit_pinctrl_rmwl(u32 value, u32 mask, u8 shift, void __iomem *reg)
++{
++	u32 tmp;
++
++	tmp = readl(reg);
++	tmp &= ~(mask << shift);
++	tmp |= value << shift;
++	writel(tmp, reg);
++}
++
++static int spacemit_pinctrl_set_mux(struct pinctrl_dev *pctldev, unsigned selector,
++				unsigned group)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	struct spacemit_group *g = &d->soc->groups[group];
++	void __iomem *reg;
++	u8 bank, shift;
++	u16 offset;
++	u32 i;
++
++	for (i = 0; i < g->npins; i++) {
++		bank = PINID_TO_BANK(g->pin_ids[i]);
++		offset = PINID_TO_PIN(g->pin_ids[i]);
++		reg = d->base + d->soc->regs->cfg;
++		reg += bank * d->soc->regs->reg_len + offset * 4;
++		shift = 0;
++
++		dev_dbg(d->dev, "set mux: bank %d 0ffset %d val 0x%lx\n",
++			bank, offset, g->pins[i].muxsel);
++
++		spacemit_pinctrl_rmwl(g->pins[i].muxsel, 0x3, shift, reg);
++	}
++
++	return 0;
++}
++
++static const struct pinmux_ops spacemit_pinmux_ops = {
++	.get_functions_count = spacemit_pinctrl_get_funcs_count,
++	.get_function_name = spacemit_pinctrl_get_func_name,
++	.get_function_groups = spacemit_pinctrl_get_func_groups,
++	.set_mux = spacemit_pinctrl_set_mux,
++};
++
++static int spacemit_pinconf_get(struct pinctrl_dev *pctldev,
++			unsigned pin, unsigned long *config)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	u8 bank;
++	u16 offset = 0;
++	u64 reg = 0;
++
++	bank = PINID_TO_BANK(pin);
++	offset = PINID_TO_PIN(pin);
++	reg = d->base + d->soc->regs->cfg;
++	reg += bank * d->soc->regs->reg_len + offset * 4;
++
++	*config = readl(reg);
++	return 0;
++}
++
++static int spacemit_pinconf_set(struct pinctrl_dev *pctldev,
++			unsigned pin, unsigned long *configs,
++			unsigned num_configs)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	struct spacemit_pinctrl_soc_data *soc = d->soc;
++	struct spacemit_regs *regs = soc->regs;
++	struct spacemit_pin_conf *pin_conf = soc->pinconf;
++	int i;
++	u8 bank;
++	u32 od, pull_en, pull, ds, st, rte;
++	u16 offset = 0;
++	u64 reg = 0;
++
++	dev_dbg(d->dev, "pinconf set pin %s\n",
++		pin_get_name(pctldev, pin));
++
++	bank = PINID_TO_BANK(pin);
++	offset = PINID_TO_PIN(pin);
++	reg = d->base + regs->cfg;
++	reg += bank * regs->reg_len + offset * 4;
++
++	for (i = 0; i < num_configs; i++) {
++		volatile long config;
++
++		config = readl(reg);
++
++		od = (CONFIG_TO_OD(configs[i]) << pin_conf->od_shift);
++		pull_en = (CONFIG_TO_PULL_EN(configs[i]) << pin_conf->pe_shift);
++		pull = (CONFIG_TO_PULL(configs[i]) << pin_conf->pull_shift);
++		ds = (CONFIG_TO_DS(configs[i]) << pin_conf->ds_shift);
++		st = (CONFIG_TO_ST(configs[i]) << pin_conf->st_shift);
++		rte = (CONFIG_TO_RTE(configs[i]) << pin_conf->rte_shift);
++
++		config |= (od | pull_en | pull | ds | st | rte);
++		writel(config, reg);
++		dev_dbg(d->dev, "write: bank %d 0ffset %d val 0x%lx\n",
++			bank, offset, config);
++	} /* for each config */
++
++	return 0;
++}
++
++static void spacemit_pinconf_dbg_show(struct pinctrl_dev *pctldev,
++				struct seq_file *s, unsigned pin)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	u8 bank;
++	u16 offset = 0;
++	u64 reg = 0;
++
++	bank = PINID_TO_BANK(pin);
++	offset = PINID_TO_PIN(pin);
++	reg = d->base + d->soc->regs->cfg;
++	reg += bank * d->soc->regs->reg_len + offset * 4;
++
++	seq_printf(s, "0x%lx", readl(reg));
++}
++
++static void spacemit_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
++					struct seq_file *s, unsigned group)
++{
++	struct spacemit_pinctrl_data *d = pinctrl_dev_get_drvdata(pctldev);
++	struct spacemit_group *grp;
++	unsigned long config;
++	const char *name;
++	int i, ret;
++
++	if (group > d->soc->ngroups)
++		return;
++
++	seq_puts(s, "\n");
++	grp = &d->soc->groups[group];
++	for (i = 0; i < grp->npins; i++) {
++		struct spacemit_pin *pin = &grp->pins[i];
++
++		name = pin_get_name(pctldev, pin->pin_id);
++		ret = spacemit_pinconf_get(pctldev, pin->pin_id, &config);
++		if (ret)
++			return;
++		seq_printf(s, "%s: 0x%lx", name, config);
++	}
++}
++
++static const struct pinconf_ops spacemit_pinconf_ops = {
++	.pin_config_get = spacemit_pinconf_get,
++	.pin_config_set = spacemit_pinconf_set,
++	.pin_config_dbg_show = spacemit_pinconf_dbg_show,
++	.pin_config_group_dbg_show = spacemit_pinconf_group_dbg_show,
++};
++
++static struct pinctrl_desc spacemit_pinctrl_desc = {
++	.pctlops = &spacemit_pinctrl_ops,
++	.pmxops = &spacemit_pinmux_ops,
++	.confops = &spacemit_pinconf_ops,
++	.owner = THIS_MODULE,
++};
++
++static const char *get_pin_name_from_soc(struct spacemit_pinctrl_soc_data *soc,
++					const unsigned int pin_id)
++{
++	int i;
++
++	for (i = 0; i < soc->npins; i++) {
++		if (soc->pins[i].number == pin_id)
++			return soc->pins[i].name;
++	}
++
++	return NULL;
++}
++
++static int spacemit_pinctrl_parse_groups(struct device_node *np,
++					struct spacemit_group *grp,
++					struct spacemit_pinctrl_data *d,
++					u32 index)
++{
++	int size, i;
++	const __be32 *list;
++
++	dev_dbg(d->dev, "group(%d): %s\n", index, np->name);
++
++	/* Initialise group */
++	grp->name = np->name;
++
++	/*
++	 * the binding format is spacemit,pins = <PIN MUX CONFIG>,
++	 * do sanity check and calculate pins number
++	 */
++	list = of_get_property(np, "spacemit,pins", &size);
++	if (!list) {
++		dev_err(d->dev, "no spacemit,pins property in node %s\n",
++			np->full_name);
++		return -EINVAL;
++	}
++
++	if (!size || size % SPACEMIT_PIN_SIZE) {
++		dev_err(d->dev, "Invalid spacemit,pins property in node %s\n",
++			np->full_name);
++		return -EINVAL;
++	}
++
++	grp->npins = size / SPACEMIT_PIN_SIZE;
++	grp->pins = devm_kcalloc(d->dev, grp->npins,
++				sizeof(struct spacemit_pin), GFP_KERNEL);
++	grp->pin_ids = devm_kcalloc(d->dev, grp->npins,
++					sizeof(unsigned int), GFP_KERNEL);
++	if (!grp->pins || !grp->pin_ids)
++		return -ENOMEM;
++
++	for (i = 0; i < grp->npins; i++) {
++		struct spacemit_pin *pin = &grp->pins[i];
++
++		pin->pin_id = be32_to_cpu(*list++);
++		pin->muxsel = be32_to_cpu(*list++) & 0xF;
++		pin->config = be32_to_cpu(*list++) & 0xFFF;
++		grp->pin_ids[i] = grp->pins[i].pin_id;
++
++		dev_dbg(d->dev, "%s: 0x%04x 0x%04lx",
++			get_pin_name_from_soc(d->soc, pin->pin_id), pin->muxsel, pin->config);
++	}
++
++	return 0;
++}
++
++static int spacemit_pinctrl_parse_functions(struct device_node *np,
++					struct spacemit_pinctrl_data *d)
++{
++	struct spacemit_pinctrl_soc_data *soc = d->soc;
++	struct device_node *child;
++	struct spacemit_function *f;
++	struct spacemit_group *grp;
++	u32 i = 0, idxf = 0, idxg = 0;
++	const char *fn, *fnull = "";
++	int ret;
++
++	/* Count groups for each function */
++	fn = fnull;
++	f = &soc->functions[idxf];
++	for_each_child_of_node(np, child) {
++		if (strcmp(fn, child->name)) {
++			struct device_node *child2;
++
++			/*
++			 * This reference is dropped by
++			 * of_get_next_child(np, * child)
++			 */
++			of_node_get(child);
++
++			/*
++			 * The logic parsing the functions from dt currently
++			 * doesn't handle if functions with the same name are
++			 * not grouped together. Only the first contiguous
++			 * cluster is usable for each function name. This is a
++			 * bug that is not trivial to fix, but at least warn
++			 * about it.
++			 */
++			for (child2 = of_get_next_child(np, child);
++				child2 != NULL;
++				child2 = of_get_next_child(np, child2)) {
++				if (!strcmp(child2->name, fn))
++					dev_warn(d->dev,
++						"function nodes must be grouped by name (failed for: %s)",
++						fn);
++			}
++
++			f = &soc->functions[idxf++];
++			f->name = fn = child->name;
++		}
++		f->ngroups++;
++		dev_dbg(d->dev, "function(%d): %s\n", idxf-1, f->name);
++	}
++
++	/* Get groups for each function */
++	idxf = 0;
++	fn = fnull;
++	for_each_child_of_node(np, child) {
++		if (strcmp(fn, child->name)) {
++			f = &soc->functions[idxf++];
++			f->groups = devm_kcalloc(d->dev,
++						f->ngroups,
++						sizeof(*f->groups),
++						GFP_KERNEL);
++			if (!f->groups) {
++				of_node_put(child);
++				return -ENOMEM;
++			}
++			fn = child->name;
++			i = 0;
++		}
++
++		f->groups[i] = child->name;
++		ret = spacemit_pinctrl_parse_groups(child, &soc->groups[idxg++], d, i++);
++		if (ret) {
++			of_node_put(child);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int spacemit_pinctrl_probe_dt(struct platform_device *pdev,
++				struct spacemit_pinctrl_data *d)
++{
++	struct spacemit_pinctrl_soc_data *soc = d->soc;
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *child;
++	const char *fn, *fnull = "";
++
++	if (!np)
++		return -ENODEV;
++
++	/* Count total functions and groups */
++	fn = fnull;
++	for_each_child_of_node(np, child) {
++		soc->ngroups++;
++		if (strcmp(fn, child->name)) {
++			fn = child->name;
++			soc->nfunctions++;
++		}
++	}
++
++	if (soc->nfunctions <= 0) {
++		dev_err(&pdev->dev, "It has no functions\n");
++		return -EINVAL;
++	}
++
++	soc->functions = devm_kcalloc(&pdev->dev, soc->nfunctions,
++					sizeof(struct spacemit_function),
++					GFP_KERNEL);
++	if (!soc->functions)
++		return -ENOMEM;
++
++	soc->groups = devm_kcalloc(&pdev->dev, soc->ngroups,
++					sizeof(struct spacemit_group),
++					GFP_KERNEL);
++	if (!soc->groups)
++		return -ENOMEM;
++
++	spacemit_pinctrl_parse_functions(np, d);
++
++	return 0;
++}
++
++int spacemit_pinctrl_probe(struct platform_device *pdev,
++			struct spacemit_pinctrl_soc_data *soc)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct spacemit_pinctrl_data *d;
++	struct resource *res;
++	int ret;
++
++	d = devm_kzalloc(&pdev->dev, sizeof(*d), GFP_KERNEL);
++	if (!d)
++		return -ENOMEM;
++
++	d->dev = &pdev->dev;
++	d->soc = soc;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	d->base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
++	if (!d->base)
++		return -EADDRNOTAVAIL;
++
++	spacemit_pinctrl_desc.pins = d->soc->pins;
++	spacemit_pinctrl_desc.npins = d->soc->npins;
++	spacemit_pinctrl_desc.name = dev_name(&pdev->dev);
++
++	platform_set_drvdata(pdev, d);
++
++	d->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(d->rstc)) {
++		ret = PTR_ERR(d->rstc);
++		dev_err(&pdev->dev, "failed to get reset.\n");
++		goto err;
++	}
++	reset_control_deassert(d->rstc);
++
++	ret = spacemit_pinctrl_probe_dt(pdev, d);
++	if (ret) {
++		dev_err(&pdev->dev, "dt probe failed: %d\n", ret);
++		goto err;
++	}
++
++	d->pctl = pinctrl_register(&spacemit_pinctrl_desc, &pdev->dev, d);
++	if (IS_ERR(d->pctl)) {
++		dev_err(&pdev->dev, "Couldn't register spacemit pinctrl driver\n");
++		ret = PTR_ERR(d->pctl);
++		goto err;
++	}
++
++	return 0;
++
++err:
++	iounmap(d->base);
++	return ret;
++}
+\ No newline at end of file
+diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.h b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
+new file mode 100755
+index 000000000000..7df1df7bcdbe
+--- /dev/null
++++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
+@@ -0,0 +1,95 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright (c) 2023, spacemit Corporation.
++ */
++
++#ifndef __PINCTRL_SPACEMIT_H
++#define __PINCTRL_SPACEMIT_H
++
++#include <linux/platform_device.h>
++#include <linux/pinctrl/pinctrl.h>
++
++#define SPACEMIT_PINCTRL_PIN(pin)	PINCTRL_PIN(pin, #pin)
++
++#define PINID_TO_BANK(p)	((p) >> 5)
++#define PINID_TO_PIN(p)		((p) % 32)
++
++/*
++ * pin config bit field definitions
++ *
++ * od:			0	(1)
++ * pe:			1	(1)
++ * pull:		2	(1)
++ * driving-seletor:	7..4	(4)
++ *
++ * MSB of each field is presence bit for the config.
++ */
++#define OD_SHIFT		0
++#define PULL_EN_SHIFT		1
++#define PULL_SHIFT		2
++#define DS_SHIFT		4
++#define ST_SHIFT		8
++#define RTE_SHIFT		9
++#define CONFIG_TO_OD(c)		((c) >> OD_SHIFT & 0x1)
++#define CONFIG_TO_PULL_EN(c)	((c) >> PULL_EN_SHIFT & 0x1)
++#define CONFIG_TO_PULL(c)	((c) >> PULL_SHIFT & 0x1)
++#define CONFIG_TO_DS(c)		((c) >> DS_SHIFT & 0xf)
++#define CONFIG_TO_ST(c)		((c) >> ST_SHIFT & 0x1)
++#define CONFIG_TO_RTE(c)	((c) >> RTE_SHIFT & 0x1)
++
++struct spacemit_function {
++	const char *name;
++	const char **groups;
++	unsigned ngroups;
++};
++
++/*
++ * Each pin represented in spacemit,pins consists:
++ * - u32 PIN_FUNC_ID
++ * - u32 pin muxsel
++ * - u32 pin config
++ */
++#define SPACEMIT_PIN_SIZE 12
++
++struct spacemit_pin {
++	unsigned int pin_id;
++	u8 muxsel;
++	unsigned long config;
++};
++
++struct spacemit_group {
++	const char *name;
++	unsigned npins;
++	unsigned *pin_ids;
++	struct spacemit_pin *pins;
++};
++
++struct spacemit_regs {
++	u16 cfg;
++	u16 reg_len;
++};
++
++struct spacemit_pin_conf {
++	u8  od_shift;
++	u8  pe_shift;
++	u8  pull_shift;
++	u8  ds_shift;
++	u8  st_shift;
++	u8  rte_shift;
++};
++
++struct spacemit_pinctrl_soc_data {
++	const struct spacemit_regs *regs;
++	const struct spacemit_pin_conf *pinconf;
++	const struct pinctrl_pin_desc *pins;
++	unsigned npins;
++	struct spacemit_function *functions;
++	unsigned nfunctions;
++	struct spacemit_group *groups;
++	unsigned ngroups;
++};
++
++int spacemit_pinctrl_probe(struct platform_device *pdev,
++				struct spacemit_pinctrl_soc_data *soc);
++
++#endif /* __PINCTRL_SPACEMIT_H */
+diff --git a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
+new file mode 100755
+index 000000000000..07cda5ef9a1e
+--- /dev/null
++++ b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
+@@ -0,0 +1,102 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++#ifndef __DT_BINDINGS_K1PRO_PINCTRL_H
++#define __DT_BINDINGS_K1PRO_PINCTRL_H
++
++#define PINID(bank, pin)	((bank) * 32 + (pin))
++
++#define GPIOA0  PINID(0, 0)
++#define GPIOA1  PINID(0, 1)
++#define GPIOA2  PINID(0, 2)
++#define GPIOA3  PINID(0, 3)
++#define GPIOA4  PINID(0, 4)
++#define GPIOA5  PINID(0, 5)
++#define GPIOA6  PINID(0, 6)
++#define GPIOA7  PINID(0, 7)
++#define GPIOA8  PINID(0, 8)
++#define GPIOA9  PINID(0, 9)
++#define GPIOA10  PINID(0, 10)
++#define GPIOA11  PINID(0, 11)
++#define GPIOA12  PINID(0, 12)
++#define GPIOA13  PINID(0, 13)
++#define GPIOA14  PINID(0, 14)
++#define GPIOA15  PINID(0, 15)
++#define GPIOA16  PINID(0, 16)
++#define GPIOA17  PINID(0, 17)
++#define GPIOA18  PINID(0, 18)
++#define GPIOA19  PINID(0, 19)
++#define GPIOA20  PINID(0, 20)
++#define GPIOA21  PINID(0, 21)
++#define GPIOA22  PINID(0, 22)
++#define GPIOA23  PINID(0, 23)
++#define GPIOA24  PINID(0, 24)
++#define GPIOA25  PINID(0, 25)
++#define GPIOA26  PINID(0, 26)
++#define GPIOA27  PINID(0, 27)
++#define GPIOA28  PINID(0, 28)
++#define GPIOA29  PINID(0, 29)
++
++#define GPIOB0  PINID(1, 0)
++#define GPIOB1  PINID(1, 1)
++#define GPIOB2  PINID(1, 2)
++#define GPIOB3  PINID(1, 3)
++#define GPIOB4  PINID(1, 4)
++#define GPIOB5  PINID(1, 5)
++#define GPIOB6  PINID(1, 6)
++#define GPIOB7  PINID(1, 7)
++#define GPIOB8  PINID(1, 8)
++#define GPIOB9  PINID(1, 9)
++#define GPIOB10  PINID(1, 10)
++#define GPIOB11  PINID(1, 11)
++#define GPIOB12  PINID(1, 12)
++#define GPIOB13  PINID(1, 13)
++#define GPIOB14  PINID(1, 14)
++#define GPIOB15  PINID(1, 15)
++#define GPIOB16  PINID(1, 16)
++#define GPIOB17  PINID(1, 17)
++#define GPIOB18  PINID(1, 18)
++#define GPIOB19  PINID(1, 19)
++#define GPIOB20  PINID(1, 20)
++#define GPIOB21  PINID(1, 21)
++#define GPIOB22  PINID(1, 22)
++#define GPIOB23  PINID(1, 23)
++#define GPIOB24  PINID(1, 24)
++
++#define GPIOC0  PINID(2, 0)
++#define GPIOC1  PINID(2, 1)
++#define GPIOC2  PINID(2, 2)
++#define GPIOC3  PINID(2, 3)
++#define GPIOC4  PINID(2, 4)
++#define GPIOC5  PINID(2, 5)
++#define GPIOC6  PINID(2, 6)
++#define GPIOC7  PINID(2, 7)
++#define GPIOC8  PINID(2, 8)
++#define GPIOC9  PINID(2, 9)
++#define GPIOC10  PINID(2, 10)
++#define GPIOC11  PINID(2, 11)
++#define GPIOC12  PINID(2, 12)
++#define GPIOC13  PINID(2, 13)
++#define GPIOC14  PINID(2, 14)
++#define GPIOC15  PINID(2, 15)
++#define GPIOC16  PINID(2, 16)
++#define GPIOC17  PINID(2, 17)
++#define GPIOC18  PINID(2, 18)
++#define GPIOC19  PINID(2, 19)
++#define GPIOC20  PINID(2, 20)
++#define GPIOC21  PINID(2, 21)
++#define GPIOC22  PINID(2, 22)
++#define GPIOC23  PINID(2, 23)
++#define GPIOC24  PINID(2, 24)
++
++#define OD_EN		1
++#define OD_DIS		0
++#define PULL_EN		2
++#define PULL_DIS	0
++#define PULL_UP		4
++#define PULL_DOWN	0
++#define DS_SHIFT	4
++#define ST_EN		(1<<8)
++#define ST_DIS		0
++#define RTE		(1<<9)
++
++#endif /* __DT_BINDINGS_K1PRO_PINCTRL_H */
+-- 
+2.47.0
+

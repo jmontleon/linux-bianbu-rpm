@@ -1,0 +1,27 @@
+From 3150aa5cd4ba9d18d04faecc268cf6ce54af4ffe Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 21 Mar 2024 16:42:25 +0800
+Subject: [PATCH 0521/1451] wireless: rtl8852bs: enable cpu balance for tx
+ thread
+
+Change-Id: I4e56ece91f4db8c92e6153b541d64e986506dece
+---
+ drivers/net/wireless/realtek/rtl8852bs/include/autoconf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/include/autoconf.h b/drivers/net/wireless/realtek/rtl8852bs/include/autoconf.h
+index 41d0a8090ec7..227a88971171 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/include/autoconf.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/include/autoconf.h
+@@ -321,7 +321,7 @@
+ 	#define RTW_MAX_MGMT_TX_MS_GAS 2000
+ #endif /* CONFIG_XMIT_ACK */
+ 
+-/*#define CONFIG_PHL_CPU_BALANCE_THREAD*/
++#define CONFIG_PHL_CPU_BALANCE_THREAD
+ #ifdef CONFIG_PHL_CPU_BALANCE_THREAD
+ #define CPU_ID_TX 2
+ #define CPU_ID_TX_CB 3
+-- 
+2.47.0
+

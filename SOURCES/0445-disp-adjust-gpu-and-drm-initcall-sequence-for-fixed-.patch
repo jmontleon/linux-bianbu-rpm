@@ -1,0 +1,39 @@
+From dd781046f05175fc7b436d29b489888389ac10ca Mon Sep 17 00:00:00 2001
+From: maguoqun <guoqun.ma@spacemit.com>
+Date: Tue, 27 Feb 2024 17:16:02 +0800
+Subject: [PATCH 0445/1451] disp: adjust gpu and drm initcall sequence for
+ fixed cardX
+
+Change-Id: I10ca493a9d68cb12fa4c0687a8c4c107f338bb97
+---
+ drivers/gpu/drm/img-rogue/pvr_platform_drv.c | 2 +-
+ drivers/gpu/drm/spacemit/spacemit_drm.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+index 16b4084b0ed6..051d5301728f 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
++++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+@@ -333,5 +333,5 @@ static void __exit pvr_exit(void)
+ 	DRM_DEBUG_DRIVER("done\n");
+ }
+ 
+-late_initcall(pvr_init);
++device_initcall(pvr_init);
+ module_exit(pvr_exit);
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index a1bdab63e7b7..ec4848996ba5 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -518,7 +518,7 @@ static void __exit spacemit_drm_drivers_exit(void)
+ 				    ARRAY_SIZE(spacemit_drm_drivers));
+ }
+ 
+-module_init(spacemit_drm_drivers_init);
++late_initcall(spacemit_drm_drivers_init);
+ module_exit(spacemit_drm_drivers_exit);
+ 
+ MODULE_DESCRIPTION("Spacemit DRM KMS Master Driver");
+-- 
+2.47.0
+

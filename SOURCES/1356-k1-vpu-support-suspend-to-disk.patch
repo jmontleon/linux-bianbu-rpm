@@ -1,0 +1,27 @@
+From 93bed538e3401df9b7fe5c522604643331b7a701 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 29 Oct 2024 15:23:02 +0800
+Subject: [PATCH 1356/1451] k1:vpu: support suspend to disk
+
+Change-Id: Iaa2386a2b5b1a35dde3f108f5ae526b3484bffbd
+---
+ drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+index 689607f97c51..5276b7c289bd 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+@@ -648,8 +648,7 @@ static int mvx_pm_runtime_idle(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops mvx_dev_pm_ops = {
+-	.suspend         = mvx_pm_suspend,
+-	.resume          = mvx_pm_resume,
++	SET_SYSTEM_SLEEP_PM_OPS(mvx_pm_suspend, mvx_pm_resume)
+ 	.runtime_suspend = mvx_pm_runtime_suspend,
+ 	.runtime_resume  = mvx_pm_runtime_resume,
+ 	.runtime_idle    = mvx_pm_runtime_idle,
+-- 
+2.47.0
+

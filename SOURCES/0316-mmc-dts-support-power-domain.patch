@@ -1,0 +1,50 @@
+From 4cc539f0e3084c666b1d2afb1e78723ecf09d3f9 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 5 Jan 2024 15:22:10 +0800
+Subject: [PATCH 0316/1451] mmc: dts: support power domain
+
+Change-Id: I0f454ac7d3e278f2bbf15e6e61ddd06ebf53be37
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index cadfa4fdbfbc..b17f976766de 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1638,6 +1638,10 @@ sdhci0: sdh@d4280000 {
+ 			clock-names = "sdh-io", "sdh-core";
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			regulator,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1654,6 +1658,10 @@ sdhci1: sdh@d4280800 {
+ 			clock-names = "sdh-io", "sdh-core";
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			regulator,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1670,6 +1678,10 @@ sdhci2: sdh@d4281000 {
+ 			clock-names = "sdh-io", "sdh-core";
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			regulator,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.47.0
+

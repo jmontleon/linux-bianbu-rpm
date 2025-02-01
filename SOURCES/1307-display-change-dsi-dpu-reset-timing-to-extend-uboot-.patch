@@ -1,0 +1,54 @@
+From 71e80a6689150f8c9ee95c4b1999806e03275797 Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Mon, 25 Nov 2024 15:50:14 +0800
+Subject: [PATCH 1307/1451] display:change dsi dpu reset timing to extend uboot
+ logo display time
+
+Change-Id: I042c17d92fb633ab48604c141f18a49b71bd30e4
+---
+ drivers/gpu/drm/spacemit/spacemit_dpu.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index 752e26eab725..1bb85aefa055 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -299,6 +299,17 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
+ 	DRM_INFO("%s(power on)\n", __func__);
+ 	trace_spacemit_crtc_atomic_enable(dpu->dev_id);
+ 
++	if (dpu->logo_booton && dpu->type == DSI) {
++		pm_runtime_enable(dpu->dev);
++
++		pm_runtime_get_sync(dpu->dev);
++		dpu_pm_resume(dpu->dev);
++		dpu_pm_suspend(dpu->dev);
++		pm_runtime_put_sync(dpu->dev);
++		dpu->logo_booton = false;
++		msleep(10);
++	}
++
+ 	pm_runtime_get_sync(dpu->dev);
+ 	dpu_pm_resume(dpu->dev);
+ 
+@@ -952,13 +963,15 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dpu_num++;
+-	pm_runtime_enable(&pdev->dev);
++
+ 	/*
+ 	 * To keep bootloader logo on, below operations must be
+ 	 * done in probe func as power domain framework will turn
+ 	 * on/off lcd power domain before/after probe func.
+ 	 */
+-	if (dpu->logo_booton) {
++	if (dpu->logo_booton && dpu->type == HDMI) {
++		pm_runtime_enable(&pdev->dev);
++
+ 		pm_runtime_get_sync(&pdev->dev);
+ 		dpu_pm_resume(&pdev->dev);
+ 		dpu_pm_suspend(&pdev->dev);
+-- 
+2.47.0
+

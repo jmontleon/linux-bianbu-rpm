@@ -1,0 +1,30 @@
+From b0daea9eaf17aaf481f10ad56828c7d27d1c24fc Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Tue, 9 Apr 2024 08:44:56 +0800
+Subject: [PATCH 0586/1451] vpu: remove some unuseful log
+
+Change-Id: Ie45cfabc3556caf033321952fb4d9350b582868c
+---
+ drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+index 1031f50197a8..0d76ddfef427 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
+@@ -454,9 +454,9 @@ static void update_sessions(void)
+ 
+         if (restrict_buffer_count < 0)
+         {
+-            MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
+-                    "DVFS failed to retrieve status for the session. Session was removed? session=%p, restrict_buffer_count=%d",
+-                    session->session_id, restrict_buffer_count);
++            //MVX_LOG_PRINT(&mvx_log_dev, MVX_LOG_WARNING,
++            //        "DVFS failed to retrieve status for the session. Session was removed? session=%p, restrict_buffer_count=%d",
++            //        session->session_id, restrict_buffer_count);
+             continue;
+         }
+ 
+-- 
+2.47.0
+

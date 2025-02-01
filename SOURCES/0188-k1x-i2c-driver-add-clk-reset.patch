@@ -1,0 +1,78 @@
+From 5e47b4f15e00a0368e1ce2a2feb09b2bb5444699 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Mon, 18 Dec 2023 09:22:56 +0800
+Subject: [PATCH 0188/1451] k1x: i2c driver add clk&reset
+
+Change-Id: Ib878ef283ed8876c1be3df8a8f083872c8bd6d8d
+---
+ drivers/i2c/busses/i2c-k1x.c | 12 ++++++++++--
+ drivers/i2c/busses/i2c-k1x.h |  2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index 4bc3599b8928..d4ca4dc94dfc 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -7,6 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+@@ -1869,6 +1870,13 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, spacemit_i2c);
+ 	mutex_init(&spacemit_i2c->mtx);
+ 
++	spacemit_i2c->resets = devm_reset_control_get_optional(&pdev->dev, NULL);
++        if(IS_ERR(spacemit_i2c->resets)) {
++                dev_err(&pdev->dev, "failed to get resets\n");
++                goto err_out;
++        }
++        reset_control_deassert(spacemit_i2c->resets);
++
+ 	ret = spacemit_i2c_parse_dt(pdev, spacemit_i2c);
+ 	if (ret)
+ 		goto err_out;
+@@ -1915,8 +1923,6 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(spacemit_i2c->clk);
+ 		goto err_dma;
+ 	}
+-	if (spacemit_i2c->high_mode && spacemit_i2c->clk_rate)
+-		clk_set_rate(spacemit_i2c->clk, spacemit_i2c->clk_rate);
+ 	clk_prepare_enable(spacemit_i2c->clk);
+ 
+ 	i2c_set_adapdata(&spacemit_i2c->adapt, spacemit_i2c);
+@@ -2004,6 +2010,8 @@ static int spacemit_i2c_remove(struct platform_device *pdev)
+ 
+ 	mutex_destroy(&spacemit_i2c->mtx);
+ 
++	reset_control_assert(spacemit_i2c->resets);
++
+ 	spacemit_i2c_release_dma(spacemit_i2c);
+ 
+ 	clk_disable_unprepare(spacemit_i2c->clk);
+diff --git a/drivers/i2c/busses/i2c-k1x.h b/drivers/i2c/busses/i2c-k1x.h
+index 8854e352886c..c426c6f3d39f 100644
+--- a/drivers/i2c/busses/i2c-k1x.h
++++ b/drivers/i2c/busses/i2c-k1x.h
+@@ -7,6 +7,7 @@
+ #define _I2C_SPACEMIT_K1X_H
+ #include <linux/bitops.h>
+ #include <linux/i2c.h>
++#include <linux/reset.h>
+ #include <linux/i2c-dev.h>
+ #include <linux/pm_qos.h>
+ 
+@@ -198,6 +199,7 @@ struct spacemit_i2c_dev {
+ 	/* virtual base address mapped for register */
+ 	void __iomem		*mapbase;
+ 
++	struct reset_control    *resets;
+ 	struct clk		*clk;
+ 	int			irq;
+ 	int			clk_freq_in;
+-- 
+2.47.0
+

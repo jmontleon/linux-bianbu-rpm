@@ -1,0 +1,53 @@
+From 14a147ef7ec04fed3fc24267c19c0f978588d8d0 Mon Sep 17 00:00:00 2001
+From: huanghaiqiang <chris.huang@spacemit.com>
+Date: Sat, 9 Nov 2024 16:12:29 +0800
+Subject: [PATCH 1269/1451] 1.add clk/reset to i2c3;2.enable rpwm9
+
+Change-Id: I10f4b025435547c6a45d9b0d999632cd1f83c7bd
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi             | 2 ++
+ arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts | 8 +++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 7d6c83a344d1..8c73c774837b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1207,6 +1207,8 @@ i2c3: i2c@f0614000 {
+                         #size-cells = <0>;
+                         interrupt-parent = <&intc>;
+                         interrupts = <39>;
++			clocks = <&ccu CLK_SEC_TWSI3>;
++			resets = <&reset RESET_SEC_TWSI3>;
+                         spacemit,dma-disable;
+ 			/* spacemit,i2c-fast-mode; */
+                         /* spacemit,i2c-high-mode; */
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+index ba7901464c35..004fb8e8f07a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+@@ -194,6 +194,12 @@ &pwm14 {
+ 	status = "okay";
+ };
+ 
++&rpwm9 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rpwm9_0>;
++	status = "okay";
++};
++
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	spacemit-dpu-bitclk = <424000000>;
+@@ -284,7 +290,7 @@ es8323: es8323@11 {
+ &i2c3 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c3_2>;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &i2c4 {
+-- 
+2.47.0
+

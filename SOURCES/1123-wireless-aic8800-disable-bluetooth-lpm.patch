@@ -1,0 +1,26 @@
+From 7f2c682cd12e8cbbd6dac287166d96a921b61b65 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 28 Aug 2024 17:17:35 +0800
+Subject: [PATCH 1123/1451] wireless: aic8800: disable bluetooth lpm
+
+Change-Id: I1f003310e8c2d6983d9aa98fe85d04b7cd19fdfc
+---
+ drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h
+index d03dea1dfe17..81e6aea6c3cc 100755
+--- a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h
++++ b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_driver.h
+@@ -402,7 +402,7 @@ enum aicdev_hw_feature {
+ #endif
+ #define AICBT_UART_BAUD_DEFAULT     AICBT_UART_BAUD_1_5M
+ #define AICBT_UART_FC_DEFAULT       AICBT_UART_FLOWCTRL_ENABLE
+-#define AICBT_LPM_ENABLE_DEFAULT    1
++#define AICBT_LPM_ENABLE_DEFAULT    0
+ #define AICBT_TXPWR_LVL_DEFAULT     AICBT_TXPWR_LVL
+ 
+ #define AIC_SDIO_V2_CLOCK           70000000U  // 0: default, other: target clock rate
+-- 
+2.47.0
+

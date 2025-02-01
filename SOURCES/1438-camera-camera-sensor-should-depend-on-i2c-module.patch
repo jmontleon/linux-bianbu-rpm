@@ -1,0 +1,25 @@
+From 42c75ef511908e0498a6c3ef666bb4db3317c58f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 9 Jan 2025 14:17:38 +0800
+Subject: [PATCH 1438/1451] camera: camera sensor should depend on i2c module
+
+Change-Id: I0e2f276b01ba1f184a7f81a0eb37ca1d48c2ee38
+---
+ drivers/media/platform/spacemit/camera/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/Kconfig b/drivers/media/platform/spacemit/camera/Kconfig
+index a7d90b3603c2..5b590130ae8c 100644
+--- a/drivers/media/platform/spacemit/camera/Kconfig
++++ b/drivers/media/platform/spacemit/camera/Kconfig
+@@ -51,6 +51,6 @@ config SPACEMIT_K1X_CPP_V2
+ 
+ config SPACEMIT_K1X_SENSOR_V2
+     tristate "SPACEMIT K1X SENSOR V2 support"
+-    depends on SPACEMIT_K1X_CAMERA_V2
++    depends on SPACEMIT_K1X_CAMERA_V2 && I2C
+     help
+       Enable support for sensor v2
+-- 
+2.47.0
+

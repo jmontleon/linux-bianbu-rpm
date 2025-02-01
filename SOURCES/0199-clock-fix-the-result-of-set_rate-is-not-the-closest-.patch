@@ -1,0 +1,56 @@
+From 93a2111f25b7dd75d4a4b00c85759ed83834d437 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Dec 2023 14:21:02 +0800
+Subject: [PATCH 0199/1451] clock: fix the result of set_rate is not the
+ closest rate
+
+Change-Id: I011cf75dbdb6c93d905ed5a4ffb710fb0621ae60
+---
+ drivers/clk/spacemit/ccu_mix.c | 7 ++++---
+ drivers/clk/spacemit/ccu_mix.h | 4 ++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
+index cbab9946c994..4cedf35a29ae 100755
+--- a/drivers/clk/spacemit/ccu_mix.c
++++ b/drivers/clk/spacemit/ccu_mix.c
+@@ -192,10 +192,11 @@ static long ccu_mix_round_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	struct ccu_mix *mix = hw_to_ccu_mix(hw);
+ 	struct ccu_div_config *div = mix->div;
+-    if (!div)
+-		return 0;
++
++	if (!div)
++		return *prate;
+ 	return divider_round_rate(hw, rate, prate, div->table,
+-				  div->width, 0);
++				  div->width, CLK_DIVIDER_ROUND_CLOSEST);
+ }
+ 
+ static int ccu_mix_set_rate(struct clk_hw *hw, unsigned long rate,
+diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
+index 65b72eb46f8a..920f3509d8a2 100755
+--- a/drivers/clk/spacemit/ccu_mix.h
++++ b/drivers/clk/spacemit/ccu_mix.h
+@@ -271,7 +271,7 @@ struct ccu_mix {
+ 		},							\
+ 	}
+ 
+-#define SPACEMIT_CCU_DIV_FC_MUX(_struct, _name, _parent3, _base_type, _reg_ctrl,		\
++#define SPACEMIT_CCU_DIV_FC_MUX(_struct, _name, _parents, _base_type, _reg_ctrl,		\
+ 					  _mshift, _mwidth, _fc, _muxshift, _muxwidth, _flags)					\
+ 	struct ccu_mix _struct = {					\
+ 		.div	= CCU_DIV_INIT(_mshift, _mwidth, NULL, 0),		\
+@@ -281,7 +281,7 @@ struct ccu_mix {
+ 			.fc 			= _fc,         \
+ 			.base_type		= _base_type,		\
+ 			.hw.init	= CLK_HW_INIT_PARENTS(_name,		\
+-							  _parent3,		\
++							  _parents,		\
+ 							  &ccu_mix_ops, \
+ 							  _flags),		\
+ 		},							\
+-- 
+2.47.0
+

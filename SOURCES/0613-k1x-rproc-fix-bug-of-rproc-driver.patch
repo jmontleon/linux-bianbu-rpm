@@ -1,0 +1,65 @@
+From cf78cfff31ef46181ac7bc3e4e97be719b854d7a Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 17 Apr 2024 20:55:15 +0800
+Subject: [PATCH 0613/1451] k1x:rproc: fix bug of rproc driver
+
+1. we should initialize the semaphoref first to prevent the thread from starting prematureing
+2. we'd better stop the thread when system shutdown or reboot
+
+Change-Id: I8bc1c352866518f0c9446d051ffe71725f73e96f
+---
+ drivers/remoteproc/k1x-rproc.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index 23b2d8d07bf7..6f8bbe1849ef 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -476,6 +476,8 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
+ 
+ 		cl = &priv->mb[i].client;
+ 		cl->dev = dev;
++		init_completion(&priv->mb[i].mb_comp);
++
+ 		priv->mb[i].chan = mbox_request_channel_byname(cl, name);
+ 		if (IS_ERR(priv->mb[i].chan)) {
+ 			dev_err(dev, "failed to request mbox channel\n");
+@@ -486,8 +488,6 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
+ 			priv->mb[i].mb_thread = kthread_run(__process_theread, (void *)cl, name);
+ 			if (IS_ERR(priv->mb[i].mb_thread))
+ 				return PTR_ERR(priv->mb[i].mb_thread);
+-
+-			init_completion(&priv->mb[i].mb_comp);
+ 		}
+ 	}
+ 
+@@ -641,9 +641,26 @@ static const struct dev_pm_ops spacemit_rproc_pm_ops = {
+ };
+ #endif
+ 
++static void spacemit_rproc_shutdown(struct platform_device *pdev)
++{
++	int i;
++	struct rproc *rproc;
++	struct spacemit_rproc *priv;
++
++	rproc = dev_get_drvdata(&pdev->dev);
++	priv = rproc->priv;
++
++	for (i = 0; i < MAX_MBOX; ++i) {
++		/* release the resource of rt thread */
++		kthread_stop(priv->mb[i].mb_thread);
++		mbox_free_channel(priv->mb[i].chan);
++	}
++}
++
+ static struct platform_driver spacemit_rproc_driver = {
+ 	.probe = spacemit_rproc_probe,
+ 	.remove = spacemit_rproc_remove,
++	.shutdown = spacemit_rproc_shutdown,
+ 	.driver = {
+ 		.name = "spacemit-rproc",
+ #ifdef CONFIG_PM_SLEEP
+-- 
+2.47.0
+

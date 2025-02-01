@@ -1,0 +1,674 @@
+From e58981a19e7a7e3708f664e8b4976d7a032603a3 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 19 Jul 2024 14:19:25 +0800
+Subject: [PATCH 0930/1451] k1:thermal:separate the thermal configuration and
+ re-set the thermal of m1
+
+Change-Id: I66dbccfc8346db1ffeee29ecd820f5f9bbb5bb68
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  86 --------------
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts |   9 +-
+ .../boot/dts/spacemit/k1-x_MUSE-Book.dts      |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts   |   9 +-
+ .../boot/dts/spacemit/k1-x_milkv-jupiter.dts  |   9 +-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   |   9 +-
+ .../dts/spacemit/k1-x_thermal_cooling.dtsi    |  82 ++++++++++++++
+ .../boot/dts/spacemit/m1-x_milkv-jupiter.dts  |   9 +-
+ .../dts/spacemit/m1-x_thermal_cooling.dtsi    | 106 ++++++++++++++++++
+ 16 files changed, 201 insertions(+), 190 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
+ create mode 100644 arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 831745190dec..77d5c9df8467 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2151,93 +2151,7 @@ thermal: thermal@d4018000 {
+ 		};
+ 
+ 		thermal_zones: thermal-zones {
+-			cluster0_thermal {
+-				polling-delay = <0>;
+-				polling-delay-passive = <0>;
+-				thermal-sensors = <&thermal 3>;
+-
+-				trips {
+-					cls0_trip0: cls0-trip-point0 {
+-						temperature = <95000>;
+-						hysteresis = <5000>;
+-						type = "passive";
+-					};
+-
+-					cls0_trip1: cls0-trip-point1 {
+-						temperature = <105000>;
+-						hysteresis = <5000>;
+-						type = "passive";
+-					};
+-
+-					cls0_trip2: cls0-trip-point2 {
+-						temperature = <115000>;
+-						hysteresis = <5000>;
+-						type = "critical";
+-					};
+-				};
+-
+-				cooling-maps {
+-					map0 {
+-						trip = <&cls0_trip0>;
+-						cooling-device = <&cpu_0 1 2>,
+-								 <&cpu_1 1 2>,
+-								 <&cpu_2 1 2>,
+-								 <&cpu_3 1 2>;
+-					};
+-
+-					map1 {
+-						trip = <&cls0_trip1>;
+-						cooling-device = <&cpu_0 3 3>,
+-								 <&cpu_1 3 3>,
+-								 <&cpu_2 3 3>,
+-								 <&cpu_3 3 3>;
+-					};
+-				};
+-			};
+ 
+-			cluster1_thermal {
+-				polling-delay = <0>;
+-				polling-delay-passive = <0>;
+-				thermal-sensors = <&thermal 4>;
+-
+-				trips {
+-					cls1_trip0: cls1-trip-point0 {
+-						temperature = <95000>;
+-						hysteresis = <5000>;
+-						type = "passive";
+-					};
+-
+-					cls1_trip1: cls1-trip-point1 {
+-						temperature = <105000>;
+-						hysteresis = <5000>;
+-						type = "passive";
+-					};
+-
+-					cls1_trip2: cls1-trip-point2 {
+-						temperature = <115000>;
+-						hysteresis = <5000>;
+-						type = "critical";
+-					};
+-				};
+-
+-				cooling-maps {
+-					map0 {
+-						trip = <&cls1_trip0>;
+-						cooling-device = <&cpu_4 1 2>,
+-								 <&cpu_5 1 2>,
+-								 <&cpu_6 1 2>,
+-								 <&cpu_7 1 2>;
+-					};
+-
+-					map1 {
+-						trip = <&cls1_trip1>;
+-						cooling-device = <&cpu_4 3 3>,
+-								 <&cpu_5 3 3>,
+-								 <&cpu_6 3 3>,
+-								 <&cpu_7 3 3>;
+-					};
+-				};
+-			};
+ 		};
+ 
+ 		tcm: tcm@0xd8000000 {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index f58b394bf690..5e72498fb1ba 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MINI-PC board";
+@@ -778,14 +779,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index 4c7708759f0d..c73c45ba4be8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "M1-MUSE-BOOK";
+@@ -775,14 +776,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 3b509c276ff7..0742e998c946 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -7,6 +7,7 @@
+ #include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MUSE-N1 board";
+@@ -714,11 +715,3 @@ &rcpu {
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+-
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 46c38e50382b..1570112d4dcd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MUSE-Pi board";
+@@ -973,14 +974,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 69538b312feb..fdf9a3a52440 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x deb1 board";
+@@ -1041,14 +1042,6 @@ gpu_trip0: gpu-trip0 {
+ 	};
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 1f75f3ccec21..3b237d7e2f8c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x deb2 board";
+@@ -955,14 +956,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &sound_hdmi {
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index b3674883c453..b2c43f1c2f73 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x evb board";
+@@ -847,14 +848,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &cpu_0 {
+ 	clst-supply = <&edcdc_1>;
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 036a64893f8b..0e103a247aba 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x hs450 board";
+@@ -777,14 +778,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index fed656ef6537..86513dc17ac1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x kx312 board";
+@@ -728,14 +729,6 @@ &rcpu {
+ 	status = "okay";
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index ed63ee3f9945..4fe692870900 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "SiPEED LPi3A Board";
+@@ -1182,14 +1183,6 @@ gpu_trip0: gpu-trip0 {
+ 	};
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+index f4a63ba9583b..a8ec87256b77 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "Milk-V Jupiter";
+@@ -1098,14 +1099,6 @@ gpu_trip0: gpu-trip0 {
+ 	};
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 944bab40e5e7..595fe788a064 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -7,6 +7,7 @@
+ #include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "k1-x_opp_table.dtsi"
++#include "k1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x mingo board";
+@@ -599,11 +600,3 @@ &rcpu {
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+-
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
+new file mode 100644
+index 000000000000..9304607a03ea
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++&thermal_zones {
++	cluster0_thermal {
++		polling-delay = <0>;
++		polling-delay-passive = <0>;
++		thermal-sensors = <&thermal 3>;
++
++		thermal0_trips: trips {
++			cls0_trip0: cls0-trip-point0 {
++				temperature = <95000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls0_trip1: cls0-trip-point1 {
++				temperature = <105000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls0_trip2: cls0-trip-point2 {
++				temperature = <115000>;
++				hysteresis = <5000>;
++				type = "critical";
++			};
++		};
++
++		cooling-maps {
++			map0 {
++				trip = <&cls0_trip0>;
++				cooling-device = <&cpu_0 1 2>,
++						 <&cpu_1 1 2>,
++						 <&cpu_2 1 2>,
++						 <&cpu_3 1 2>,
++						 <&cpu_4 1 2>,
++						 <&cpu_5 1 2>,
++						 <&cpu_6 1 2>,
++						 <&cpu_7 1 2>;
++			};
++
++			map1 {
++				trip = <&cls0_trip1>;
++				cooling-device = <&cpu_0 3 3>,
++						 <&cpu_1 3 3>,
++						 <&cpu_2 3 3>,
++						 <&cpu_3 3 3>,
++						 <&cpu_4 3 3>,
++						 <&cpu_5 3 3>,
++						 <&cpu_6 3 3>,
++						 <&cpu_7 3 3>;
++			};
++		};
++	};
++
++	cluster1_thermal {
++		polling-delay = <0>;
++		polling-delay-passive = <0>;
++		thermal-sensors = <&thermal 4>;
++
++		thermal1_trips: trips {
++			cls1_trip0: cls1-trip-point0 {
++				temperature = <95000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls1_trip1: cls1-trip-point1 {
++				temperature = <105000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls1_trip2: cls1-trip-point2 {
++				temperature = <115000>;
++				hysteresis = <5000>;
++				type = "critical";
++			};
++		};
++	};
++};
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+index 2567721f330e..72dd1a73262a 100644
+--- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+@@ -11,6 +11,7 @@
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ #include "m1-x_opp_table.dtsi"
++#include "m1-x_thermal_cooling.dtsi"
+ 
+ / {
+ 	model = "Milk-V(M1) Jupiter";
+@@ -1098,14 +1099,6 @@ gpu_trip0: gpu-trip0 {
+ 	};
+ };
+ 
+-&cls0_trip2 {
+-	temperature = <115000>;
+-};
+-
+-&cls1_trip2 {
+-	temperature = <115000>;
+-};
+-
+ &i2s0 {
+         pinctrl-names = "default";
+         pinctrl-0 = <&pinctrl_sspa0_0>;
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
+new file mode 100644
+index 000000000000..3a0252791dcb
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++&thermal_zones {
++	cluster0_thermal {
++		polling-delay = <0>;
++		polling-delay-passive = <0>;
++		thermal-sensors = <&thermal 3>;
++
++		thermal0_trips: trips {
++			cls0_trip0: cls0-trip-point0 {
++				temperature = <90000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls0_trip1: cls0-trip-point1 {
++				temperature = <95000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls0_trip2: cls0-trip-point2 {
++				temperature = <105000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls0_trip3: cls0-trip-point3 {
++				temperature = <115000>;
++				hysteresis = <5000>;
++				type = "critical";
++			};
++		};
++
++		cooling-maps {
++			map0 {
++				trip = <&cls0_trip0>;
++				cooling-device = <&cpu_0 1 1>,
++						 <&cpu_1 1 1>,
++						 <&cpu_2 1 1>,
++						 <&cpu_3 1 1>,
++						 <&cpu_4 1 1>,
++						 <&cpu_5 1 1>,
++						 <&cpu_6 1 1>,
++						 <&cpu_7 1 1>;
++			};
++
++			map1 {
++				trip = <&cls0_trip1>;
++				cooling-device = <&cpu_0 2 3>,
++						 <&cpu_1 2 3>,
++						 <&cpu_2 2 3>,
++						 <&cpu_3 2 3>,
++						 <&cpu_4 2 3>,
++						 <&cpu_5 2 3>,
++						 <&cpu_6 2 3>,
++						 <&cpu_7 2 3>;
++			};
++
++			map2 {
++				trip = <&cls0_trip2>;
++				cooling-device = <&cpu_0 4 5>,
++						 <&cpu_1 4 5>,
++						 <&cpu_2 4 5>,
++						 <&cpu_3 4 5>,
++						 <&cpu_4 4 5>,
++						 <&cpu_5 4 5>,
++						 <&cpu_6 4 5>,
++						 <&cpu_7 4 5>;
++			};
++		};
++	};
++
++	cluster1_thermal {
++		polling-delay = <0>;
++		polling-delay-passive = <0>;
++		thermal-sensors = <&thermal 4>;
++
++		thermal1_trips: trips {
++			cls1_trip0: cls1-trip-point0 {
++				temperature = <90000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls1_trip1: cls1-trip-point1 {
++				temperature = <95000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls1_trip2: cls1-trip-point2 {
++				temperature = <105000>;
++				hysteresis = <5000>;
++				type = "passive";
++			};
++
++			cls1_trip3: cls1-trip-point3 {
++				temperature = <115000>;
++				hysteresis = <5000>;
++				type = "critical";
++			};
++		};
++	};
++};
+-- 
+2.47.0
+

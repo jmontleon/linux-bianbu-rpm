@@ -1,0 +1,117 @@
+From 2068e89c572af05a3b4f68c7495f2044ced31ed5 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 19 Jun 2024 17:25:10 +0800
+Subject: [PATCH 0775/1451] aic8800: change file mode from 0755 to 0644
+
+Change-Id: I03baeddba992d459c52937059deb9859738e2064
+---
+ drivers/net/wireless/aic8800/Kconfig                          | 0
+ drivers/net/wireless/aic8800/Makefile                         | 0
+ drivers/net/wireless/aic8800/aic_load_fw/Kconfig              | 0
+ drivers/net/wireless/aic8800/aic_load_fw/Makefile             | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aic_bluetooth_main.c | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.c         | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.h         | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.c       | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.h       | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.c  | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.h  | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_debug.h        | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.c  | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.h  | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.c | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.h | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.c          | 0
+ drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.h          | 0
+ drivers/net/wireless/aic8800/aic_load_fw/md5.c                | 0
+ drivers/net/wireless/aic8800/aic_load_fw/md5.h                | 0
+ drivers/net/wireless/aic8800/aic_load_fw/rwnx_version_gen.h   | 0
+ 21 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/Kconfig
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/Makefile
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/Kconfig
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/Makefile
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aic_bluetooth_main.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_debug.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/md5.c
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/md5.h
+ mode change 100755 => 100644 drivers/net/wireless/aic8800/aic_load_fw/rwnx_version_gen.h
+
+diff --git a/drivers/net/wireless/aic8800/Kconfig b/drivers/net/wireless/aic8800/Kconfig
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/Makefile b/drivers/net/wireless/aic8800/Makefile
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/Kconfig b/drivers/net/wireless/aic8800/aic_load_fw/Kconfig
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/Makefile b/drivers/net/wireless/aic8800/aic_load_fw/Makefile
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aic_bluetooth_main.c b/drivers/net/wireless/aic8800/aic_load_fw/aic_bluetooth_main.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.c b/drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.h b/drivers/net/wireless/aic8800/aic_load_fw/aic_txrxif.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.c b/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.h b/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.c b/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.h b/drivers/net/wireless/aic8800/aic_load_fw/aicbluetooth_cmds.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_debug.h b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_debug.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.c b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.h b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_rx_prealloc.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.c b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.h b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_txq_prealloc.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.c b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.h b/drivers/net/wireless/aic8800/aic_load_fw/aicwf_usb.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/md5.c b/drivers/net/wireless/aic8800/aic_load_fw/md5.c
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/md5.h b/drivers/net/wireless/aic8800/aic_load_fw/md5.h
+old mode 100755
+new mode 100644
+diff --git a/drivers/net/wireless/aic8800/aic_load_fw/rwnx_version_gen.h b/drivers/net/wireless/aic8800/aic_load_fw/rwnx_version_gen.h
+old mode 100755
+new mode 100644
+-- 
+2.47.0
+

@@ -1,0 +1,25 @@
+From 67a62e395cc3f2626a42e634509580edaa135081 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 31 Oct 2024 16:28:22 +0800
+Subject: [PATCH 1235/1451] usb: typec: husb239: enable Try.SNK mechanism
+
+Change-Id: I5acc51a57739cbac47716f25ff834feb8a6f9b8b
+---
+ drivers/usb/typec/husb239.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
+index 8badc635b179..340f50855b2c 100644
+--- a/drivers/usb/typec/husb239.c
++++ b/drivers/usb/typec/husb239.c
+@@ -671,6 +671,7 @@ static int husb239_chip_init(struct husb239 *husb239)
+ 	/* PORTROLE init */
+ 	ret = regmap_write(husb239->regmap, HUSB239_REG_PORTROLE,
+ 				HUSB239_REG_PORTROLE_ORIENTDEB |
++				HUSB239_REG_PORTROLE_DRP_TRY_SNK |
+ 				HUSB239_REG_PORTROLE_AUDIOACC |
+ 				HUSB239_REG_PORTROLE_DRP);
+ 	if (ret)
+-- 
+2.47.0
+

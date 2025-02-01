@@ -1,0 +1,26 @@
+From 53925f87b82dd10380346a5687c955384656d949 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 12 Aug 2024 10:39:27 +0800
+Subject: [PATCH 1071/1451] gmac: fix compiler warning
+
+Change-Id: Id1bf5886524ff5cc3a69c9962bc3ad64abd46c65
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index dea7e3b776e2..8932171243b4 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2562,7 +2562,7 @@ static int emac_config_dt(struct platform_device *pdev, struct emac_priv *priv)
+ 		dev_dbg(&pdev->dev, "%s dma_burst_len using default value:%d \n",
+ 			__func__, priv->dma_burst_len);
+ 	} else {
+-		if (priv->dma_burst_len <= 0 && priv->dma_burst_len > 7) {
++		if (priv->dma_burst_len <= 0 || priv->dma_burst_len > 7) {
+ 			dev_err(&pdev->dev, "%s burst len illegal, use default vallue:%d\n",
+ 				__func__, DEFAULT_DMA_BURST_LEN);
+ 			priv->dma_burst_len = DEFAULT_DMA_BURST_LEN;
+-- 
+2.47.0
+

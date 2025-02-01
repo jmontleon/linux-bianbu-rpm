@@ -1,0 +1,165 @@
+From 9c4f95e60b8f1786c0ee76a64b3943693e49f54d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Sep 2023 19:48:33 +0800
+Subject: [PATCH 0117/1451] reset: update reset controller driver
+
+Change-Id: If64fe8afe18ef41ac4e196be0fd6e505709768cf
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi |  6 +-
+ drivers/reset/k1-pro-reset.c             | 22 +++++---
+ include/dt-bindings/reset/k1-pro-reset.h | 70 ++++++++++--------------
+ 3 files changed, 46 insertions(+), 52 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 5b63847a9d06..847168456ed3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -473,8 +473,8 @@ usbotg: usb2@2cb40000 {
+ 			reg = <0x0 0x2cb40000 0x0 0x40000>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <91>;
+-			resets = <&reset RESET_USB2_AHB>,
+-					 <&reset RESET_USB2_PHY>;
++			resets = <&reset RESET_USB20_HOST_HRESETN>,
++					 <&reset RESET_USB20_HOST_PRSTN>;
+ 			reset-names = "dwc2", "dwc2-ecc";
+ 			dr_mode = "otg";
+ 			g-np-tx-fifo-size = <256>;
+@@ -487,7 +487,7 @@ usbdrd3: usb3@0 {
+ 			compatible = "spacemit,k1-pro-dwc3";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+-			resets = <&reset RESET_USB31>;
++			resets = <&reset RESET_USB31CTL_RSTN>;
+ 			reset-names = "ctl_rst";
+ 			ranges;
+ 			status = "disabled";
+diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
+index 4c418c70165e..026717812959 100755
+--- a/drivers/reset/k1-pro-reset.c
++++ b/drivers/reset/k1-pro-reset.c
+@@ -94,7 +94,7 @@ static struct k1pro_reset_gsr_signal
+     [RESET_SERDES_SUB_GSR]   = { SERDES_SW_RESET300, BIT(0) },
+     [RESET_VPU_SUB_GSR]      = { VPU_SW_RESET400, BIT(0), BIT(2) },
+     [RESET_SEC_SUB_GSR]      = { SEC_SW_RESET500, BIT(0) },
+-    [RESET_USB_GMAC_SUB_GSR] = { USB_GMAC_SW_RESET600, BIT(0), BIT(9) },
++    [RESET_USB_GMAC_SUB_GSR] = { USB_GMAC_SW_RESET600, BIT(0), BIT(13) },
+     [RESET_DDR_SUB_GSR]      = { DDR_MBUS_SW_RESET700, BIT(0) },
+     [RESET_MCU_SUB_GSR]      = { MCU_SW_RESET008, BIT(0), BIT(12) },
+ };
+@@ -172,14 +172,18 @@ static const struct k1pro_reset_signal
+     [RESET_SKE_DMA]     = { SEC_SW_RESET500, BIT(5), RESET_SEC_SUB_GSR },
+     [RESET_SKE_CORE]    = { SEC_SW_RESET500, BIT(6), RESET_SEC_SUB_GSR },
+     [RESET_EFUSE]       = { SEC_SW_RESET500, BIT(7), RESET_SEC_SUB_GSR },
+-    [RESET_USB2_AHB]      = { USB_GMAC_SW_RESET600, BIT(1), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_USB2_PHY]      = { USB_GMAC_SW_RESET600, BIT(2), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_USB31]         = { USB_GMAC_SW_RESET600, BIT(3), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_USB2_PHY_POR]  = { USB_GMAC_SW_RESET600, BIT(4), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_USB2_PHY_PORT] = { USB_GMAC_SW_RESET600, BIT(5), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_USB3_PHY_PORT] = { USB_GMAC_SW_RESET600, BIT(6), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_GMAC_CSR]      = { USB_GMAC_SW_RESET600, BIT(7), RESET_USB_GMAC_SUB_GSR },
+-    [RESET_GMAC_DMA]      = { USB_GMAC_SW_RESET600, BIT(8), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_OTG_HRESETN]     = { USB_GMAC_SW_RESET600, BIT(1), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_OTG_PRSTN]       = { USB_GMAC_SW_RESET600, BIT(2), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_OTG_POR]         = { USB_GMAC_SW_RESET600, BIT(3), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_OTG_PORTRST]     = { USB_GMAC_SW_RESET600, BIT(4), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_HOST_HRESETN]    = { USB_GMAC_SW_RESET600, BIT(5), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_HOST_PRSTN]      = { USB_GMAC_SW_RESET600, BIT(6), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_HOST_POR]        = { USB_GMAC_SW_RESET600, BIT(7), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB20_HOST_PORTRST]    = { USB_GMAC_SW_RESET600, BIT(8), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB31CTL_RSTN]         = { USB_GMAC_SW_RESET600, BIT(9), RESET_USB_GMAC_SUB_GSR },
++    [RESET_USB31_PORTRST]         = { USB_GMAC_SW_RESET600, BIT(10), RESET_USB_GMAC_SUB_GSR },
++    [RESET_GMAC_CSR]              = { USB_GMAC_SW_RESET600, BIT(11), RESET_USB_GMAC_SUB_GSR },
++    [RESET_GMAC_DMA]              = { USB_GMAC_SW_RESET600, BIT(12), RESET_USB_GMAC_SUB_GSR },
+     [RESET_DDR0]          = { DDR_MBUS_SW_RESET700, BIT(1), RESET_DDR_SUB_GSR },
+     [RESET_DDR1]          = { DDR_MBUS_SW_RESET700, BIT(2), RESET_DDR_SUB_GSR },
+     [RESET_DDR_PHY0]      = { DDR_MBUS_SW_RESET700, BIT(3), RESET_DDR_SUB_GSR },
+diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
+index 74e938ec6041..78b6ff2cf297 100755
+--- a/include/dt-bindings/reset/k1-pro-reset.h
++++ b/include/dt-bindings/reset/k1-pro-reset.h
+@@ -94,51 +94,41 @@
+ #define RESET_EFUSE       69
+ 
+ //600
+-#define RESET_USB2_AHB       70
+-#define RESET_USB2_PHY       71
+-#define RESET_USB31          72
+-#define RESET_USB2_PHY_POR   73
+-#define RESET_USB2_PHY_PORT  74
+-#define RESET_USB3_PHY_PORT  75
+-#define RESET_GMAC_CSR       76
+-#define RESET_GMAC_DMA       77
+-//700
+-#define RESET_DDR0      78
+-#define RESET_DDR1      79
+-#define RESET_DDR_PHY0  80
+-#define RESET_DDR_PHY1  81
++#define RESET_USB20_OTG_HRESETN  70
++#define RESET_USB20_OTG_PRSTN    71
++#define RESET_USB20_OTG_POR      72
++#define RESET_USB20_OTG_PORTRST  73
++#define RESET_USB20_HOST_HRESETN 74
++#define RESET_USB20_HOST_PRSTN   75
++#define RESET_USB20_HOST_POR     76
++#define RESET_USB20_HOST_PORTRST 77
++#define RESET_USB31CTL_RSTN      78
++#define RESET_USB31_PORTRST      79
+ 
+-#define RESET_DDR_PORT0 82
+-#define RESET_DDR_PORT1 83
+-#define RESET_DDR_PORT2 84
+-#define RESET_DDR_PORT3 85
+-#define RESET_DDR_PORT4 86
+-#define RESET_DDR_PORT5 87
++#define RESET_GMAC_CSR       80
++#define RESET_GMAC_DMA       81
+ 
+-//mcu
+-#define RESET_MCU_CORE  88
+-#define RESET_MCU_BUS   89
+-#define RESET_MCU_MAILBOX   90
+-#define RESET_MCU_SPINLOCK  91
++//700
++#define RESET_DDR0      82
++#define RESET_DDR1      83
++#define RESET_DDR_PHY0  84
++#define RESET_DDR_PHY1  85
+ 
+-#define RESET_DUMMY     92
++#define RESET_DDR_PORT0 86
++#define RESET_DDR_PORT1 87
++#define RESET_DDR_PORT2 88
++#define RESET_DDR_PORT3 89
++#define RESET_DDR_PORT4 90
++#define RESET_DDR_PORT5 91
+ 
+-#define RESET_NUMBER    93
++//mcu
++#define RESET_MCU_CORE  92
++#define RESET_MCU_BUS   93
++#define RESET_MCU_MAILBOX   94
++#define RESET_MCU_SPINLOCK  95
+ 
++#define RESET_DUMMY    96
+ 
+-#define RESET_CPU_GSR        RESET_DUMMY
+-#define RESET_SERDES2CPU     RESET_DUMMY
+-#define RESET_SYS_GSR        RESET_DUMMY
+-#define RESET_MEM_GSR        RESET_DUMMY
+-#define RESET_MEM2MBUS       RESET_DUMMY
+-#define RESET_SERDES_GSR     RESET_DUMMY
+-#define RESET_VPU_GSR        RESET_DUMMY
+-#define RESET_VBUS2MBUS      RESET_DUMMY
+-#define RESET_SEC_GSR        RESET_DUMMY
+-#define RESET_USB_GMAC_GSR   RESET_DUMMY
+-#define RESET_USB_GMAC2VBUS  RESET_DUMMY
+-#define RESET_DDR_GSR        RESET_DUMMY
+-#define RESET_MCU_GSR        RESET_DUMMY
+-#define RESET_MCU2MBUS       RESET_DUMMY
++#define RESET_NUMBER    97
+ 
+ #endif /* __DT_BINDINGS_K1_PRO_RST_H__ */
+-- 
+2.47.0
+

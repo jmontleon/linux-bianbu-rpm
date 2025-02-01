@@ -1,0 +1,41 @@
+From a3f772b5334293e8cd314125bd775531e6e65627 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Thu, 28 Dec 2023 17:43:17 +0800
+Subject: [PATCH 0266/1451] dts: add apbc2 reg base for clock and reset
+
+Change-Id: I6294ccc33e76e337621dab1fe47fc99da5e1172e
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 7b857cb7d9cd..7ff3342f6693 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -462,8 +462,9 @@ ccu: clock-controller@d4050000 {
+ 				<0x0 0xd4090000 0x0 0x1000>,
+ 				<0x0 0xd4282c00 0x0 0x400>,
+ 				<0x0 0xd8440000 0x0 0x98>,
+-				<0x0 0xc0000000 0x0 0x4280>;
+-			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc";
++				<0x0 0xc0000000 0x0 0x4280>,
++				<0x0 0xf0610000 0x0 0x20>;
++			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2";
+ 			clocks = <&vctcxo_24>, <&vctcxo_3>, <&vctcxo_1>, <&pll1_2457p6_vco>,
+ 				<&clk_32k>;
+ 			clock-names = "vctcxo_24", "vctcxo_3", "vctcxo_1", "pll1_2457p6_vco",
+@@ -480,8 +481,9 @@ reset: reset-controller@d4050000 {
+ 				<0x0 0xd4090000 0x0 0x1000>,
+ 				<0x0 0xd4282c00 0x0 0x400>,
+ 				<0x0 0xd8440000 0x0 0x98>,
+-				<0x0 0xc0000000 0x0 0x4280>;
+-			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc";
++				<0x0 0xc0000000 0x0 0x4280>,
++				<0x0 0xf0610000 0x0 0x20>;
++			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2";
+ 			#reset-cells = <1>;
+ 			status = "okay";
+ 		};
+-- 
+2.47.0
+

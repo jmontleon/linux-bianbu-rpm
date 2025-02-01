@@ -1,0 +1,34 @@
+From e89f5670757b973af7e765b9e84debe0548821a0 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 12 Aug 2024 14:16:48 +0800
+Subject: [PATCH 1063/1451] camera: fix compile warning
+
+Change-Id: I173e1bfc3ecf27ca069ca4ba1734c69f582fbbd5
+---
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+index affac933649a..606f8977f55a 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
+@@ -929,6 +929,7 @@ long k1xisp_pipe_ioctl_core(struct file *file, unsigned int cmd, unsigned long a
+ {
+ 	int ret = 0;
+ 	struct k1xisp_pipe_dev *pipe_dev = file->private_data;
++	struct isp_regs_info *user_regs;
+ 
+ 	ISP_DRV_CHECK_POINTER(pipe_dev);
+ 	switch (cmd) {
+@@ -939,7 +940,7 @@ long k1xisp_pipe_ioctl_core(struct file *file, unsigned int cmd, unsigned long a
+ 		ret = k1xisp_pipe_undeploy_driver(pipe_dev, *((u32*)arg));
+ 		break;
+ 	case ISP_IOC_SET_REG:
+-		struct isp_regs_info *user_regs = (struct isp_regs_info*)arg;
++		user_regs = (struct isp_regs_info*)arg;
+ 
+ 		if (pipe_dev->isp_reg_mem[user_regs->mem_index].config) {
+ 			if (pipe_dev->isp_reg_mem[user_regs->mem_index].mem.fd != user_regs->mem.fd) {
+-- 
+2.47.0
+

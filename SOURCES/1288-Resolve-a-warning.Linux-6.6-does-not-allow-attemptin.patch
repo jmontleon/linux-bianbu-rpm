@@ -1,0 +1,28 @@
+From abbe154f6b9a86d5c041dd06efbcc1a29193236e Mon Sep 17 00:00:00 2001
+From: goumin <min.gou@spacemit.com>
+Date: Tue, 19 Nov 2024 09:27:10 +0800
+Subject: [PATCH 1288/1451] Resolve a warning.Linux 6.6 does not allow
+ attempting to synchronously load a module within an asynchronous context.
+
+Change-Id: Ic61695f46f2daf77a4ccffdf9071e055c911b172
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 935b7267a0a5..8932171243b4 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2875,9 +2875,6 @@ static struct platform_driver emac_driver = {
+ 		.name = DRIVER_NAME,
+ 		.of_match_table = of_match_ptr(emac_of_match),
+ 		.pm     = &k1x_emac_pm_qos,
+-#ifdef CONFIG_SPACEMIT_PARALLEL_BOOTING
+-		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+-#endif
+ 	},
+ };
+ 
+-- 
+2.47.0
+

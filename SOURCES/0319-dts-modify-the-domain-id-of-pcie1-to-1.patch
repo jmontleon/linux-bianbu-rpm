@@ -1,0 +1,29 @@
+From 65c2e70fbf310f9faf91fd1d7361637fb02e2f71 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Sat, 6 Jan 2024 11:09:18 +0800
+Subject: [PATCH 0319/1451] dts: modify the domain id of pcie1 to 1
+
+Solve the problem of pcie1 scan failure
+when pcie0 and pcie1 are enabled at the same time
+
+Change-Id: I235595edf1176521e69b1c81d990f12ac3f4099a
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index b17f976766de..a0f5cd86ada6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1771,7 +1771,7 @@ pcie1_rc: pcie@ca400000 {
+ 					<0000 0 0 2 &pcie1_intc 2>, /* int_b */
+ 					<0000 0 0 3 &pcie1_intc 3>, /* int_c */
+ 					<0000 0 0 4 &pcie1_intc 4>; /* int_d */
+-			linux,pci-domain = <0>;
++			linux,pci-domain = <1>;
+ 			status = "disabled";
+ 			pcie1_intc: interrupt-controller@0 {
+ 				interrupt-controller;
+-- 
+2.47.0
+

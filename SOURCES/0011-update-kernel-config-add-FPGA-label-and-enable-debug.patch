@@ -1,0 +1,34 @@
+From 83a4dec1ce94ce31ea49b1b8e60350674da2f919 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@space-t.cn>
+Date: Tue, 18 Apr 2023 19:03:03 +0800
+Subject: [PATCH 0011/1451] update kernel config, add FPGA label and enable
+ debug info
+
+Change-Id: Idb88b259d938f08ee0f4595d5350f9a1804b31ea
+---
+ arch/riscv/configs/k1-pro_fpga_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 6e15b5c42d21..20d840eae608 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -22,6 +22,7 @@ CONFIG_EXPERT=y
+ # CONFIG_BUG is not set
+ CONFIG_PERF_EVENTS=y
+ CONFIG_SOC_SPACEMIT=y
++CONFIG_SOC_SPACEMIT_K1_FPGA=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=4
+ CONFIG_HZ_100=y
+@@ -117,6 +118,7 @@ CONFIG_PRINTK_TIME=y
+ CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
+ CONFIG_CONSOLE_LOGLEVEL_QUIET=8
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_FS=y
+ CONFIG_DETECT_HUNG_TASK=y
+-- 
+2.47.0
+

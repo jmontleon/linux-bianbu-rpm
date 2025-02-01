@@ -1,0 +1,129 @@
+From 499105a5d1f78122dbd8f18445649a5413f82360 Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Fri, 30 Aug 2024 23:23:11 +0800
+Subject: [PATCH 1130/1451] driver: aic8800: change firmware path of the
+ aic8800d
+
+Change-Id: I80e2d9c3a54e614f29f3d2b96b0f5734f417d19a
+Signed-off-by: xudong <dong.xu@spacemit.com>
+---
+ .../aic8800/aic8800_bsp/aic_bsp_8800d.c       | 68 +++++++++----------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c
+index 5b4ca93325e4..ff099f1c5a49 100644
+--- a/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c
++++ b/drivers/net/wireless/aic8800/aic8800_bsp/aic_bsp_8800d.c
+@@ -178,38 +178,38 @@ static u32 sys_reboot_tbl[][2] = {
+ static const struct aicbsp_firmware fw_u02[] = {
+ 	[AICBSP_CPMODE_WORK] = {
+ 		.desc          = "normal work mode(sdio u02)",
+-		.bt_adid       = "fw_adid.bin",
+-		.bt_patch      = "fw_patch.bin",
+-		.bt_table      = "fw_patch_table.bin",
+-		.wl_fw         = "fmacfw.bin",
+-		.wl_table      = "fmacfw_patch.bin"
++		.bt_adid       = "aic/fw_adid.bin",
++		.bt_patch      = "aic/fw_patch.bin",
++		.bt_table      = "aic/fw_patch_table.bin",
++		.wl_fw         = "aic/fmacfw.bin",
++		.wl_table      = "aic/fmacfw_patch.bin"
+ 	},
+ 
+ 	[AICBSP_CPMODE_TEST] = {
+ 		.desc          = "rf test mode(sdio u02)",
+-		.bt_adid       = "fw_adid.bin",
+-		.bt_patch      = "fw_patch.bin",
+-		.bt_table      = "fw_patch_table.bin",
+-		.wl_fw         = "fmacfw_rf.bin"
++		.bt_adid       = "aic/fw_adid.bin",
++		.bt_patch      = "aic/fw_patch.bin",
++		.bt_table      = "aic/fw_patch_table.bin",
++		.wl_fw         = "aic/fmacfw_rf.bin"
+ 	},
+ };
+ 
+ static const struct aicbsp_firmware fw_u03[] = {
+ 	[AICBSP_CPMODE_WORK] = {
+ 		.desc          = "normal work mode(sdio u03/u04)",
+-		.bt_adid       = "fw_adid_u03.bin",
+-		.bt_patch      = "fw_patch_u03.bin",
+-		.bt_table      = "fw_patch_table_u03.bin",
+-		.wl_fw         = "fmacfw.bin",
+-		.wl_table      = "fmacfw_patch.bin"
++		.bt_adid       = "aic/fw_adid_u03.bin",
++		.bt_patch      = "aic/fw_patch_u03.bin",
++		.bt_table      = "aic/fw_patch_table_u03.bin",
++		.wl_fw         = "aic/fmacfw.bin",
++		.wl_table      = "aic/fmacfw_patch.bin"
+ 	},
+ 
+ 	[AICBSP_CPMODE_TEST] = {
+ 		.desc          = "rf test mode(sdio u03/u04)",
+-		.bt_adid       = "fw_adid_u03.bin",
+-		.bt_patch      = "fw_patch_u03.bin",
+-		.bt_table      = "fw_patch_table_u03.bin",
+-		.wl_fw         = "fmacfw_rf.bin"
++		.bt_adid       = "aic/fw_adid_u03.bin",
++		.bt_patch      = "aic/fw_patch_u03.bin",
++		.bt_table      = "aic/fw_patch_table_u03.bin",
++		.wl_fw         = "aic/fmacfw_rf.bin"
+ 	},
+ };
+ 
+@@ -218,36 +218,36 @@ static const struct aicbsp_firmware fw_u03[] = {
+ static const struct aicbsp_firmware fw_u02[] = {
+ 	[AICBSP_CPMODE_WORK] = {
+ 		.desc          = "normal work mode(usb u02)",
+-		.bt_adid       = "fw_adid.bin",
+-		.bt_patch      = "fw_patch.bin",
+-		.bt_table      = "fw_patch_table.bin",
+-		.wl_fw         = "fmacfw_usb.bin"
++		.bt_adid       = "aic/fw_adid.bin",
++		.bt_patch      = "aic/fw_patch.bin",
++		.bt_table      = "aic/fw_patch_table.bin",
++		.wl_fw         = "aic/fmacfw_usb.bin"
+ 	},
+ 
+ 	[AICBSP_CPMODE_TEST] = {
+ 		.desc          = "rf test mode(usb u02)",
+-		.bt_adid       = "fw_adid.bin",
+-		.bt_patch      = "fw_patch.bin",
+-		.bt_table      = "fw_patch_table.bin",
+-		.wl_fw         = "fmacfw_rf_usb.bin"
++		.bt_adid       = "aic/fw_adid.bin",
++		.bt_patch      = "aic/fw_patch.bin",
++		.bt_table      = "aic/fw_patch_table.bin",
++		.wl_fw         = "aic/fmacfw_rf_usb.bin"
+ 	},
+ };
+ 
+ static const struct aicbsp_firmware fw_u03[] = {
+ 	[AICBSP_CPMODE_WORK] = {
+ 		.desc          = "normal work mode(usb u03/u04)",
+-		.bt_adid       = "fw_adid_u03.bin",
+-		.bt_patch      = "fw_patch_u03.bin",
+-		.bt_table      = "fw_patch_table_u03.bin",
+-		.wl_fw         = "fmacfw_usb.bin"
++		.bt_adid       = "aic/fw_adid_u03.bin",
++		.bt_patch      = "aic/fw_patch_u03.bin",
++		.bt_table      = "aic/fw_patch_table_u03.bin",
++		.wl_fw         = "aic/fmacfw_usb.bin"
+ 	},
+ 
+ 	[AICBSP_CPMODE_TEST] = {
+ 		.desc          = "rf test mode(usb u03/u04)",
+-		.bt_adid       = "fw_adid_u03.bin",
+-		.bt_patch      = "fw_patch_u03.bin",
+-		.bt_table      = "fw_patch_table_u03.bin",
+-		.wl_fw         = "fmacfw_rf_usb.bin"
++		.bt_adid       = "aic/fw_adid_u03.bin",
++		.bt_patch      = "aic/fw_patch_u03.bin",
++		.bt_table      = "aic/fw_patch_table_u03.bin",
++		.wl_fw         = "aic/fmacfw_rf_usb.bin"
+ 	},
+ };
+ #endif
+-- 
+2.47.0
+

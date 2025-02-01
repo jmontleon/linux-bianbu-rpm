@@ -1,0 +1,119 @@
+From e500f6f0df9563ff34a860121a407e404f8387bd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 7 Nov 2023 17:33:33 +0800
+Subject: [PATCH 0145/1451] clock: modify clock driver file name of k1pro
+
+Change-Id: I27367399d723f0101a89774db32136bd438ce0fa
+---
+ arch/riscv/boot/dts/spacemit/k1-pro.dtsi        |  2 +-
+ arch/riscv/configs/k1-pro_fpga_defconfig        |  1 +
+ drivers/clk/spacemit/Kconfig                    | 17 ++++-------------
+ drivers/clk/spacemit/Makefile                   |  2 +-
+ .../{k1-pro-ccu.c => ccu-spacemit-k1pro.c}      |  4 ++--
+ .../{k1-pro-ccu.h => ccu-spacemit-k1pro.h}      |  0
+ ...1-pro-ccu-clock.h => spacemit-k1pro-clock.h} |  0
+ 7 files changed, 9 insertions(+), 17 deletions(-)
+ rename drivers/clk/spacemit/{k1-pro-ccu.c => ccu-spacemit-k1pro.c} (99%)
+ rename drivers/clk/spacemit/{k1-pro-ccu.h => ccu-spacemit-k1pro.h} (100%)
+ rename include/dt-bindings/clock/{k1-pro-ccu-clock.h => spacemit-k1pro-clock.h} (100%)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+index 4c9e7fbcc690..58ea33fdd940 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
+@@ -5,7 +5,7 @@
+ 
+ /dts-v1/;
+ 
+-#include <dt-bindings/clock/k1-pro-ccu-clock.h>
++#include <dt-bindings/clock/spacemit-k1pro-clock.h>
+ #include <dt-bindings/reset/spacemit-k1pro-reset.h>
+ #include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
+ 
+diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
+index 4f9691cd94fe..f34d8d9abdab 100644
+--- a/arch/riscv/configs/k1-pro_fpga_defconfig
++++ b/arch/riscv/configs/k1-pro_fpga_defconfig
+@@ -226,6 +226,7 @@ CONFIG_SW_SYNC=y
+ CONFIG_UDMABUF=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_VHOST_MENU is not set
++CONFIG_SPACEMIT_K1PRO_CCU=y
+ CONFIG_MAILBOX=y
+ CONFIG_SPACEMIT_MAILBOX=y
+ # CONFIG_IOMMU_SUPPORT is not set
+diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
+index 8229879bc21f..d6e632d96dcb 100755
+--- a/drivers/clk/spacemit/Kconfig
++++ b/drivers/clk/spacemit/Kconfig
+@@ -1,20 +1,11 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # common clock support for SPACEMIT SoC family.
+ 
+-config COMMON_CLK_SPACEMIT
+-	bool "Spacemit clock controller common support"
+-	default y
++config SPACEMIT_K1PRO_CCU
++	tristate "Clock support for Spacemit k1pro SoCs"
++	depends on SOC_SPACEMIT_K1PRO
+ 	help
+-	  Say y here to enable common clock controller for Spacemit platforms.
+-
+-if COMMON_CLK_SPACEMIT
+-config CLK_K1_CCU
+-	tristate "Spacemit K1 clock controller support"
+-	default y
+-	help
+-	  Build the driver for K1 Clock Driver.
+-
+-endif
++	  Build the driver for K1pro Clock Driver.
+ 
+ config SPACEMIT_K1X_CCU
+         tristate "Clock support for Spacemit k1x SoCs"
+diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
+index f1fad0d5a71c..02efb5f39a26 100755
+--- a/drivers/clk/spacemit/Makefile
++++ b/drivers/clk/spacemit/Makefile
+@@ -5,4 +5,4 @@
+ 
+ #SoC support
+ obj-$(CONFIG_SPACEMIT_K1X_CCU)     += ccu-spacemit-k1x.o ccu_mix.o ccu_pll.o ccu_ddn.o
+-obj-$(CONFIG_CLK_K1_CCU)           += k1-pro-ccu.o
++obj-$(CONFIG_SPACEMIT_K1PRO_CCU)   += ccu-spacemit-k1pro.o
+diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/ccu-spacemit-k1pro.c
+similarity index 99%
+rename from drivers/clk/spacemit/k1-pro-ccu.c
+rename to drivers/clk/spacemit/ccu-spacemit-k1pro.c
+index cc0b8d7c24cf..542554b8468a 100755
+--- a/drivers/clk/spacemit/k1-pro-ccu.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1pro.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (c) 2023 Spacemit Inc.
+  */
+-#include <dt-bindings/clock/k1-pro-ccu-clock.h>
++#include <dt-bindings/clock/spacemit-k1pro-clock.h>
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
+@@ -16,7 +16,7 @@
+ #include <linux/types.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include "k1-pro-ccu.h"
++#include "ccu-spacemit-k1pro.h"
+ 
+ #define LOG_INFO(fmt, arg...)    pr_info("[K1-CCU][%s][%d]:" fmt "\n", __func__, __LINE__, ##arg)
+ 
+diff --git a/drivers/clk/spacemit/k1-pro-ccu.h b/drivers/clk/spacemit/ccu-spacemit-k1pro.h
+similarity index 100%
+rename from drivers/clk/spacemit/k1-pro-ccu.h
+rename to drivers/clk/spacemit/ccu-spacemit-k1pro.h
+diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/spacemit-k1pro-clock.h
+similarity index 100%
+rename from include/dt-bindings/clock/k1-pro-ccu-clock.h
+rename to include/dt-bindings/clock/spacemit-k1pro-clock.h
+-- 
+2.47.0
+

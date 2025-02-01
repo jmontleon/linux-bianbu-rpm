@@ -1,0 +1,139 @@
+From d385b8bc330b61d7c0010ee0e8e70eb1b777da0b Mon Sep 17 00:00:00 2001
+From: Eric Chan <ericchancf@google.com>
+Date: Sat, 17 Feb 2024 13:13:02 +0000
+Subject: [PATCH 0964/1451] riscv/barrier: Define RISCV_FULL_BARRIER
+
+Introduce RISCV_FULL_BARRIER and use in arch_atomic* function.
+like RISCV_ACQUIRE_BARRIER and RISCV_RELEASE_BARRIER, the fence
+instruction can be eliminated When SMP is not enabled.
+
+Change-Id: I17aa5fef66dad1db68844fd6b937b63e45859df5
+Signed-off-by: Eric Chan <ericchancf@google.com>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+Link: https://lore.kernel.org/r/20240217131302.3668481-1-ericchancf@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/include/asm/atomic.h  | 16 ++++++++--------
+ arch/riscv/include/asm/cmpxchg.h |  4 ++--
+ arch/riscv/include/asm/fence.h   |  2 ++
+ 3 files changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+index f5dfef6c2153..31e6e2e7cc18 100644
+--- a/arch/riscv/include/asm/atomic.h
++++ b/arch/riscv/include/asm/atomic.h
+@@ -207,7 +207,7 @@ static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int
+ 		"	add      %[rc], %[p], %[a]\n"
+ 		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+ 		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		: [a]"r" (a), [u]"r" (u)
+@@ -228,7 +228,7 @@ static __always_inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a,
+ 		"	add      %[rc], %[p], %[a]\n"
+ 		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+ 		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		: [a]"r" (a), [u]"r" (u)
+@@ -248,7 +248,7 @@ static __always_inline bool arch_atomic_inc_unless_negative(atomic_t *v)
+ 		"	addi      %[rc], %[p], 1\n"
+ 		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+ 		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+@@ -268,7 +268,7 @@ static __always_inline bool arch_atomic_dec_unless_positive(atomic_t *v)
+ 		"	addi      %[rc], %[p], -1\n"
+ 		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+ 		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+@@ -288,7 +288,7 @@ static __always_inline int arch_atomic_dec_if_positive(atomic_t *v)
+ 		"	bltz     %[rc], 1f\n"
+ 		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+ 		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+@@ -310,7 +310,7 @@ static __always_inline bool arch_atomic64_inc_unless_negative(atomic64_t *v)
+ 		"	addi      %[rc], %[p], 1\n"
+ 		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+ 		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+@@ -331,7 +331,7 @@ static __always_inline bool arch_atomic64_dec_unless_positive(atomic64_t *v)
+ 		"	addi      %[rc], %[p], -1\n"
+ 		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+ 		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+@@ -352,7 +352,7 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
+ 		"	bltz     %[rc], 1f\n"
+ 		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+ 		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
++		RISCV_FULL_BARRIER
+ 		"1:\n"
+ 		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+ 		:
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index 2f4726d3cfcc..a608e4d1a0a4 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -313,7 +313,7 @@
+ 			"	bne  %0, %z3, 1f\n"			\
+ 			"	sc.w.rl %1, %z4, %2\n"			\
+ 			"	bnez %1, 0b\n"				\
+-			"	fence rw, rw\n"				\
++			RISCV_FULL_BARRIER				\
+ 			"1:\n"						\
+ 			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
+ 			: "rJ" ((long)__old), "rJ" (__new)		\
+@@ -325,7 +325,7 @@
+ 			"	bne %0, %z3, 1f\n"			\
+ 			"	sc.d.rl %1, %z4, %2\n"			\
+ 			"	bnez %1, 0b\n"				\
+-			"	fence rw, rw\n"				\
++			RISCV_FULL_BARRIER				\
+ 			"1:\n"						\
+ 			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
+ 			: "rJ" (__old), "rJ" (__new)			\
+diff --git a/arch/riscv/include/asm/fence.h b/arch/riscv/include/asm/fence.h
+index 2b443a3a487f..6c26c44dfcd6 100644
+--- a/arch/riscv/include/asm/fence.h
++++ b/arch/riscv/include/asm/fence.h
+@@ -4,9 +4,11 @@
+ #ifdef CONFIG_SMP
+ #define RISCV_ACQUIRE_BARRIER		"\tfence r , rw\n"
+ #define RISCV_RELEASE_BARRIER		"\tfence rw,  w\n"
++#define RISCV_FULL_BARRIER		"\tfence rw, rw\n"
+ #else
+ #define RISCV_ACQUIRE_BARRIER
+ #define RISCV_RELEASE_BARRIER
++#define RISCV_FULL_BARRIER
+ #endif
+ 
+ #endif	/* _ASM_RISCV_FENCE_H */
+-- 
+2.47.0
+

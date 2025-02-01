@@ -1,0 +1,39 @@
+From 9386b6cf47a5b6980ecf2ac700ddbd2956702bff Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 7 Nov 2023 09:32:39 +0800
+Subject: [PATCH 0141/1451] dts: fix worng and warning for k1x clk/reset
+
+Change-Id: I8c2f7d512a510c0cc67f15c3afe41ed4f231f87d
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 93a6964fb5b2..b7fec6263f3a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -385,7 +385,6 @@ &cpu3_intc  3 &cpu3_intc  7
+ 		};
+ 
+ 		ccu: clock-controller@d4050000 {
+-			ranges;
+ 			compatible = "spacemit,k1x-clock";
+ 			reg = <0x0 0xd4050000 0x0 0x209c>,
+ 				<0x0 0xd4282800 0x0 0x400>,
+@@ -399,12 +398,11 @@ ccu: clock-controller@d4050000 {
+ 				<&clk_32k>;
+ 			clock-names = "vctcxo_24", "vctcxo_3", "vctcxo_1", "pll1_2457p6_vco",
+ 				"clk_32k";
+-			#reset-cells = <1>;
++			#clock-cells = <1>;
+ 			status = "okay";
+ 		};
+ 
+ 		reset: reset-controller@d4050000 {
+-			ranges;
+ 			compatible = "spacemit,k1x-reset";
+ 			reg = <0x0 0xd4050000 0x0 0x209c>,
+ 				<0x0 0xd4282800 0x0 0x400>,
+-- 
+2.47.0
+

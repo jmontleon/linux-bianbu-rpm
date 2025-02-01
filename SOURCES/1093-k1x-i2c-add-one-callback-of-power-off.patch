@@ -1,0 +1,143 @@
+From 4330dfd4fc8f9e637c1404abaa06ebaffae4ec80 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 21 Aug 2024 16:59:23 +0800
+Subject: [PATCH 1093/1451] k1x:i2c: add one callback of power-off
+
+fix the warning that excute poweroff command in userspace, the log
+like blow:
+
+[   17.576305] Voluntary context switch within RCU read-side critical section!
+[   17.576319] WARNING: CPU: 0 PID: 158 at kernel/rcu/tree_plugin.h:320 rcu_note_context_switch+0x414/0x446
+[   17.576342] Modules linked in:
+[   17.576349] CPU: 0 PID: 158 Comm: poweroff Not tainted 6.6.36+ #21
+[   17.576356] Hardware name: spacemit k1-x deb1 board (DT)
+[   17.576360] epc : rcu_note_context_switch+0x414/0x446
+[   17.576367]  ra : rcu_note_context_switch+0x414/0x446
+[   17.576372] epc : ffffffff8008e7ee ra : ffffffff8008e7ee sp : ffffffc801cb3680
+[   17.576378]  gp : ffffffff852f68e0 tp : ffffffd90d400000 t0 : ffffffff8503da78
+[   17.576382]  t1 : 000000000000002d t2 : 2d2d2d2d2d2d2d2d s0 : ffffffc801cb36c0
+[   17.576386]  s1 : ffffffd979eb6980 a0 : 000000000000003f a1 : ffffffff8508bcb8
+[   17.576390]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : 0000000000000000
+[   17.576394]  a5 : 0000000000000000 a6 : ffffffff8501bc60 a7 : 0000000000000038
+[   17.576397]  s2 : ffffffd90d400000 s3 : 0000000000000000 s4 : 0000000000000001
+[   17.576401]  s5 : ffffffff852d5de0 s6 : ffffffff85336bc8 s7 : ffffffff810c72de
+[   17.576405]  s8 : ffffffff85336bc8 s9 : 0000000000000000 s10: 0000000000000000
+[   17.576409]  s11: ffffffc801cb3808 t3 : ffffffff8530fcdf t4 : ffffffff8530fcdf
+[   17.576412]  t5 : ffffffff8530fce0 t6 : ffffffc801cb3478
+[   17.576415] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+[   17.576420] [<ffffffff8008e7ee>] rcu_note_context_switch+0x414/0x446
+[   17.576430] [<ffffffff810c62c8>] __schedule+0x7e/0x848
+[   17.576442] [<ffffffff810c6ada>] schedule+0x48/0xd2
+[   17.576449] [<ffffffff810cbc10>] schedule_timeout+0x72/0x16c
+[   17.576458] [<ffffffff810c72f4>] __wait_for_common+0xd4/0x1c4
+[   17.576465] [<ffffffff810c741e>] wait_for_completion_timeout+0x18/0x20
+[   17.576472] [<ffffffff80b5932e>] spacemit_i2c_xfer+0x1c8/0x14cc
+[   17.576484] [<ffffffff80b5251c>] __i2c_transfer+0x19a/0x652
+[   17.576493] [<ffffffff80b52a2e>] i2c_transfer+0x5a/0x98
+[   17.576500] [<ffffffff809ab710>] regmap_i2c_read+0x4e/0x7e
+[   17.576509] [<ffffffff809a68fa>] _regmap_raw_read+0xc2/0x240
+[   17.576519] [<ffffffff809a6aa6>] _regmap_bus_read+0x2e/0x64
+[   17.576526] [<ffffffff809a577a>] _regmap_read+0x40/0x122
+[   17.576533] [<ffffffff809a5d76>] _regmap_update_bits+0x98/0xd6
+[   17.576540] [<ffffffff809a70a0>] regmap_update_bits_base+0x40/0x66
+[   17.576547] [<ffffffff809b930c>] spacemit_pm_power_off+0x28/0x4a
+[   17.576555] [<ffffffff8003a882>] legacy_pm_power_off+0x14/0x22
+[   17.576566] [<ffffffff8003a83a>] sys_off_notify+0x2c/0x4a
+[   17.576573] [<ffffffff80039460>] notifier_call_chain+0x3c/0x100
+[   17.576579] [<ffffffff8003960a>] atomic_notifier_call_chain+0x28/0x3e
+[   17.576586] [<ffffffff8003b63a>] do_kernel_power_off+0x3a/0x4a
+[   17.576594] [<ffffffff80004a58>] machine_halt+0xc/0x16
+[   17.576602] [<ffffffff80004a6e>] save_return_addr+0x0/0x20
+[   17.576608] [<ffffffff8003b3be>] kernel_power_off+0x66/0x6e
+[   17.576615] [<ffffffff8003b54a>] __do_sys_reboot+0x184/0x1b8
+[   17.576622] [<ffffffff8003b660>] __riscv_sys_reboot+0x16/0x1e
+[   17.576629] [<ffffffff810c3fc0>] do_trap_ecall_u+0xba/0x12e
+[   17.576638] [<ffffffff810cd4be>] ret_from_exception+0x0/0x6e
+[   17.576646] ---[ end trace 0000000000000000 ]---
+
+Change-Id: Ie1b089f32a0e34b328fd7a835151e77b14333b51
+---
+ drivers/i2c/busses/i2c-k1x.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index 53a8019ff3ef..f1761704f182 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1228,16 +1228,25 @@ static int spacemit_i2c_pio_xfer(struct spacemit_i2c_dev *spacemit_i2c)
+ }
+ 
+ static bool spacemit_i2c_restart_notify = false;
++static bool spacemit_i2c_poweroff_notify = false;
++struct sys_off_handler *i2c_poweroff_handler;
+ 
+ static int
+-spacemit_i2c_notifier_call(struct notifier_block *nb, unsigned long action, void *data)
++spacemit_i2c_notifier_reboot_call(struct notifier_block *nb, unsigned long action, void *data)
+ {
+ 	spacemit_i2c_restart_notify = true;
+ 	return 0;
+ }
+ 
++static int spacemit_i2c_notifier_poweroff_call(struct sys_off_data *data)
++{
++	spacemit_i2c_poweroff_notify = true;
++
++	return NOTIFY_DONE;
++}
++
+ static struct notifier_block spacemit_i2c_sys_nb = {
+-	.notifier_call  = spacemit_i2c_notifier_call,
++	.notifier_call  = spacemit_i2c_notifier_reboot_call,
+ 	.priority   = 0,
+ };
+ 
+@@ -1261,7 +1270,8 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)
+ 	 * software power down command to pmic via i2c interface
+ 	 * with local irq disabled, so just enter PIO mode at once
+ 	*/
+-	if (unlikely(spacemit_i2c_restart_notify == true
++	if (unlikely(spacemit_i2c_restart_notify == true ||
++			spacemit_i2c_poweroff_notify == true
+ #ifdef CONFIG_DEBUG_FS
+ 		|| spacemit_i2c->dbgfs_mode == SPACEMIT_I2C_MODE_PIO
+ #endif
+@@ -2074,6 +2084,11 @@ static struct platform_driver spacemit_i2c_driver = {
+ static int __init spacemit_i2c_init(void)
+ {
+ 	register_restart_handler(&spacemit_i2c_sys_nb);
++	i2c_poweroff_handler = register_sys_off_handler(SYS_OFF_MODE_POWER_OFF,
++			SYS_OFF_PRIO_HIGH,
++			spacemit_i2c_notifier_poweroff_call,
++			NULL);
++
+ 	return platform_driver_register(&spacemit_i2c_driver);
+ }
+ 
+@@ -2081,6 +2096,7 @@ static void __exit spacemit_i2c_exit(void)
+ {
+ 	platform_driver_unregister(&spacemit_i2c_driver);
+ 	unregister_restart_handler(&spacemit_i2c_sys_nb);
++	unregister_sys_off_handler(i2c_poweroff_handler);
+ }
+ 
+ subsys_initcall(spacemit_i2c_init);
+@@ -2127,7 +2143,6 @@ static int rpmsg_i2c_client_probe(struct rpmsg_device *rpdev)
+ 
+ 	((unsigned long long *)(r_spacemit_i2c_dt_match[0].data))[0] = (unsigned long long)idata;
+ 
+-	register_restart_handler(&spacemit_i2c_sys_nb);
+ 	return platform_driver_register(&r_spacemit_i2c_driver);
+ }
+ 
+@@ -2154,7 +2169,6 @@ static void rpmsg_i2c_client_remove(struct rpmsg_device *rpdev)
+ 	dev_info(&rpdev->dev, "rpmsg i2c client driver is removed\n");
+ 
+ 	platform_driver_unregister(&r_spacemit_i2c_driver);
+-	unregister_restart_handler(&spacemit_i2c_sys_nb);
+ }
+ 
+ static struct rpmsg_driver rpmsg_i2c_client = {
+-- 
+2.47.0
+

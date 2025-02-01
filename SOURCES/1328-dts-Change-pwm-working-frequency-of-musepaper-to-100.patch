@@ -1,0 +1,41 @@
+From 6708bf556755b144410f63e93b3e497c42ad0bb9 Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Fri, 29 Nov 2024 14:50:48 +0800
+Subject: [PATCH 1328/1451] dts: Change pwm working frequency of musepaper to
+ 100kHz
+
+Change-Id: I2bba4b2677ab8fc964e85aaf3047f52636bfa28a
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts  | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 31b01e0fceba..890bf5b090ab 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -1143,7 +1143,7 @@ QCOM: None, and disable it */
+ };
+ 
+ &pwm_bl {
+-	pwms = <&pwm14 2000>;
++	pwms = <&pwm14 10000>;
+ 	brightness-levels = <
+ 		0   20  20  20  21  21  21  22  22  22  23  23  23  24  24  24
+ 		25  25  25  26  26  26  27  27  27  28  28  29  29  30  30  31
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
+index 7d2775aefa29..33faf9144c1c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
+@@ -1153,7 +1153,7 @@ QCOM: None, and disable it */
+ };
+ 
+ &pwm_bl {
+-	pwms = <&pwm14 2000>;
++	pwms = <&pwm14 10000>;
+ 	brightness-levels = <
+ 		0   20  20  20  21  21  21  22  22  22  23  23  23  24  24  24
+ 		25  25  25  26  26  26  27  27  27  28  28  29  29  30  30  31
+-- 
+2.47.0
+

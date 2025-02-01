@@ -1,0 +1,28 @@
+From af3557b1e21ec28ca98ec7e4dc5c69849f62960c Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Wed, 8 Jan 2025 10:43:08 +0800
+Subject: [PATCH 1428/1451] nulldisp: set default surface size to 1280x720
+
+Change-Id: Ia0f5187c6ae2bc9667132b27f738145c8ae87939
+---
+ drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
+index 00b78d5fb625..612f7d475f6c 100644
+--- a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
++++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
+@@ -134,8 +134,8 @@ MODULE_IMPORT_NS(DMA_BUF);
+ #define NULLDISP_FB_HEIGHT_MIN 0
+ #define NULLDISP_FB_HEIGHT_MAX 8192
+ 
+-#define NULLDISP_DEFAULT_WIDTH 640
+-#define NULLDISP_DEFAULT_HEIGHT 480
++#define NULLDISP_DEFAULT_WIDTH 1280
++#define NULLDISP_DEFAULT_HEIGHT 720
+ #define NULLDISP_DEFAULT_REFRESH_RATE 60
+ 
+ #define NULLDISP_MAX_PLANES 3
+-- 
+2.47.0
+

@@ -1,0 +1,28 @@
+From e39f27c166caa9f747ec3252283cf2362082ece0 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Fri, 29 Dec 2023 20:29:23 +0800
+Subject: [PATCH 0279/1451] add bridge and vlan support used by docker,vm
+
+Change-Id: I49c7deb29d4d445f3b19df37d437c26aa770e9da
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index d9d7571be914..671108009e8e 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -54,6 +54,10 @@ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_ADVANCED_ROUTER=y
+ # CONFIG_IPV6 is not set
+ CONFIG_NETWORK_PHY_TIMESTAMPING=y
++CONFIG_BRIDGE=y
++CONFIG_VLAN_8021Q=y
++CONFIG_VLAN_8021Q_GVRP=y
++CONFIG_VLAN_8021Q_MVRP=y
+ CONFIG_NETLINK_DIAG=y
+ CONFIG_CAN=y
+ CONFIG_CFG80211=y
+-- 
+2.47.0
+

@@ -1,0 +1,26 @@
+From ff26d376db6174a00e805f4c8f808f702646e6f0 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 12 Jan 2024 21:00:03 +0800
+Subject: [PATCH 0356/1451] update deb2 kernel config
+
+Change-Id: I10852feac86838f6689be245c15329364f9a7065
+---
+ arch/riscv/configs/k1-x_deb2_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index d57efa2028a1..c1a55c2d3ad3 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -396,6 +396,8 @@ CONFIG_BACKLIGHT_PWM=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_EHCI_K1X=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_UAS=y
+ CONFIG_USB_DWC3=y
+-- 
+2.47.0
+

@@ -1,0 +1,25 @@
+From 34959c48dfcb4863fe2811a43f7fcfd72cac4073 Mon Sep 17 00:00:00 2001
+From: chris <chris.huang@spacemit.com>
+Date: Fri, 17 May 2024 17:32:43 +0800
+Subject: [PATCH 0689/1451] 1.change kernel entry addr to 0x20_0000.
+
+Change-Id: I8738a1873feca0d9db747acf622d64911d97fdda
+---
+ arch/riscv/configs/k1_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 28b58931887f..c7fc6b3b89e2 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -46,7 +46,6 @@ CONFIG_SMP=y
+ CONFIG_NR_CPUS=8
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+-CONFIG_IMAGE_LOAD_OFFSET=0x1400000
+ CONFIG_CPU_IDLE=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_GOV_USERSPACE=y
+-- 
+2.47.0
+

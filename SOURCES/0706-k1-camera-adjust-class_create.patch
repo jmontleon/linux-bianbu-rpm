@@ -1,0 +1,41 @@
+From ee05e4628d153fdb9788c5f30ce536fdde724f13 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 3 Jun 2024 10:29:51 +0800
+Subject: [PATCH 0706/1451] k1: camera: adjust class_create()
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I400d964c45c6c0a9286e31f9e9110154327d7faf
+---
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c   | 2 +-
+ drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+index 14e2d0e385ee..4a360d72a3c1 100755
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+@@ -565,7 +565,7 @@ int k1xisp_cdevs_create(void)
+ 	g_isp_cdevice.cdev_num = devNum;
+ 	g_isp_cdevice.cdev_major = MAJOR(devNum);
+ 
+-	g_isp_cdevice.isp_class = class_create(THIS_MODULE, K1X_ISP_DEV_NAME);
++	g_isp_cdevice.isp_class = class_create(K1X_ISP_DEV_NAME);
+ 	if (IS_ERR(g_isp_cdevice.isp_class)) {
+ 		ret = PTR_ERR(g_isp_cdevice.isp_class);
+ 		goto ERR_STEP1;
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+index 8635db4d48e8..50f9f4e05f1e 100755
+--- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
++++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+@@ -1148,7 +1148,7 @@ static int cam_snr_drv_init(void)
+ 
+ 	camsnr_major = MAJOR(dev_id);
+ 
+-	camsnr_class = class_create(THIS_MODULE, DRIVER_NAME);
++	camsnr_class = class_create(DRIVER_NAME);
+ 	if (IS_ERR(camsnr_class)) {
+ 		cam_err("%s: camsnr_class is error", __func__);
+ 		ret = PTR_ERR(camsnr_class);
+-- 
+2.47.0
+

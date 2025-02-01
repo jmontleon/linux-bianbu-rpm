@@ -1,0 +1,28 @@
+From c349700acfe59e3b69d3195af7ab2be8c84c235c Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 12 Jan 2024 21:46:11 +0800
+Subject: [PATCH 0360/1451] wifi: k1x-evb: enable aic8800dc wifi defconfig
+
+Change-Id: Ie294d7b8171cd20339ff603d8e2698776a3ca20b
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 6948b816f8d4..81dca3d6381f 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -175,7 +175,9 @@ CONFIG_CAN_FLEXCAN=y
+ CONFIG_USB_USBNET=y
+ # CONFIG_USB_NET_AX8817X is not set
+ # CONFIG_USB_NET_NET1080 is not set
+-# CONFIG_WLAN is not set
++CONFIG_AIC_WLAN_SUPPORT=y
++CONFIG_AIC8800_WLAN_SUPPORT=m
++CONFIG_AIC_LOADFW_SUPPORT=m
+ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_KEYBOARD is not set
+ # CONFIG_INPUT_MOUSE is not set
+-- 
+2.47.0
+

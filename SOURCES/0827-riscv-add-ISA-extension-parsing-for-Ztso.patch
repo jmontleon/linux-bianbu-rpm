@@ -1,0 +1,47 @@
+From d0eb4ff15dad31698dad7e669f66691950771c7d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Wed, 20 Dec 2023 16:57:17 +0100
+Subject: [PATCH 0827/1451] riscv: add ISA extension parsing for Ztso
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add support to parse the Ztso string in the riscv,isa string. The
+bindings already supports it but not the ISA parsing code.
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Link: https://lore.kernel.org/r/20231220155723.684081-2-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: Iaec082dace891d9522f403a0ff923bb2a937c0c7
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index e1a0bd4f394a..6fb5c2c00d74 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -78,6 +78,7 @@
+ #define RISCV_ISA_EXT_ZVFH		69
+ #define RISCV_ISA_EXT_ZVFHMIN		70
+ #define RISCV_ISA_EXT_ZFA		71
++#define RISCV_ISA_EXT_ZTSO		72
+ 
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 918812d1f798..ecaff9fb3a72 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -301,6 +301,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
+ 	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
+ 	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
++	__RISCV_ISA_EXT_DATA(ztso, RISCV_ISA_EXT_ZTSO),
+ 	__RISCV_ISA_EXT_SUPERSET(zvbb, RISCV_ISA_EXT_ZVBB, riscv_zvbb_exts),
+ 	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
+ 	__RISCV_ISA_EXT_DATA(zvfh, RISCV_ISA_EXT_ZVFH),
+-- 
+2.47.0
+

@@ -1,0 +1,32 @@
+From 055c411f02b91d2f04e9ea4dd4388d4635e9088a Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 11 Apr 2024 20:54:12 +0800
+Subject: [PATCH 0601/1451] k1x: pinctrl: adjust uart2 driver strength
+
+Change-Id: I849cfe26aadbe1d7ae662529ca69b9cf4f9a865e
+---
+ arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index b4d551ee80ae..f736975f963a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -28,10 +28,10 @@ K1X_PADCONF(GPIO_69,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))       /*
+ 
+     pinctrl_uart2: uart2_grp {
+         pinctrl-single,pins =<
+-            K1X_PADCONF(GPIO_21,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* uart2_txd */
+-            K1X_PADCONF(GPIO_22,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* uart2_rxd */
+-            K1X_PADCONF(GPIO_23,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* uart2_cts_n */
+-            K1X_PADCONF(GPIO_24,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* uart2_rts_n */
++            K1X_PADCONF(GPIO_21,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* uart2_txd */
++            K1X_PADCONF(GPIO_22,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* uart2_rxd */
++            K1X_PADCONF(GPIO_23,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* uart2_cts_n */
++            K1X_PADCONF(GPIO_24,    MUX_MODE1, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS0))   /* uart2_rts_n */
+         >;
+     };
+ 
+-- 
+2.47.0
+

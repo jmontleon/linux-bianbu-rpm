@@ -1,0 +1,69 @@
+From 0dcd68b1825ca358fba4ef141184d71e456a10cd Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Thu, 6 Jun 2024 16:29:37 +0800
+Subject: [PATCH 0721/1451] k1: udma: add pte_unmap() to avoid sleeping
+ function called from invalid context
+
+err log:
+[  263.034200] BUG: sleeping function called from invalid context at kernel/sched/completion.c:111
+[  263.043011] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 206, name: tflite_classifi
+[  263.051607] preempt_count: 0, expected: 0
+[  263.055639] RCU nest depth: 54504, expected: 0
+[  263.060132] CPU: 1 PID: 206 Comm: tflite_classifi Tainted: G        W          6.6.31+ #4
+[  263.068373] Hardware name: spacemit k1-x deb1 board (DT)
+[  263.073719] Call Trace:
+[  263.076160] [<ffffffff800060b4>] dump_backtrace+0x1c/0x24
+[  263.081602] [<ffffffff80fad31c>] show_stack+0x2c/0x38
+[  263.086688] [<ffffffff80fc5008>] dump_stack_lvl+0x3c/0x54
+[  263.092118] [<ffffffff80fc5034>] dump_stack+0x14/0x1c
+[  263.097199] [<ffffffff8003d656>] __might_resched+0x122/0x12c
+[  263.102887] [<ffffffff8003d672>] __might_sleep+0x12/0x1a
+[  263.108233] [<ffffffff80fc8b6a>] __wait_for_common+0x3c/0x1ae
+[  263.114022] [<ffffffff80fc8cf6>] wait_for_completion+0x1a/0x22
+[  263.119921] [<ffffffff80835644>] dma_ioctl+0x16e/0x21a
+[  263.125108] [<ffffffff801fc808>] __riscv_sys_ioctl+0x8e/0xa0
+[  263.130805] [<ffffffff80fc5a64>] do_trap_ecall_u+0xba/0x12e
+[  263.136418] [<ffffffff80fcee0c>] ret_from_exception+0x0/0x64
+
+pte_offset_map() func add rcu_read_lock() for linux-6.6,so add
+pte_unmap() to rcu_read_unnlock()
+patch: a349d72fd9efc87c8fd1d16d3164752d84a7275b
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I785fcc077046a099a0dd8ecc9e65e399f6269cda
+---
+ drivers/dma/udma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
+index 53845e66ae02..bfa55be74d93 100644
+--- a/drivers/dma/udma.c
++++ b/drivers/dma/udma.c
+@@ -267,7 +267,7 @@ static int va2pa(void *va, size_t size, va2pa_t **va2pa)
+ 		pg_offset = offset_in_page(vaddr);
+ 		pg_address = pte_pfn(__pte(pte_val(*pte))) << PAGE_SHIFT;
+ 		paddr = pg_address | pg_offset;
+-
++		pte_unmap(pte);
+ 		if ((old_pfn + PAGE_SIZE) == pg_address) {
+ 			p[j].size += (PAGE_SIZE - (vaddr - (vaddr & PAGE_MASK)));
+ 			total += (PAGE_SIZE - (vaddr - (vaddr & PAGE_MASK)));
+@@ -310,6 +310,7 @@ static int dma_memcpy(dma_addr_t dst, dma_addr_t src, size_t size)
+ 						size,
+ 						DMA_CTRL_ACK | DMA_PREP_INTERRUPT);
+ 	if (!dma_tx){
++		mutex_unlock(&dma_mutex);
+ 		dev_err(dma_dev->dev, "Failed to prepare DMA memcpy");
+ 		return -1;
+ 	}
+@@ -317,6 +318,7 @@ static int dma_memcpy(dma_addr_t dst, dma_addr_t src, size_t size)
+ 	dma_tx->callback		= dma_callback_func;//set call back function
+ 	dma_tx->callback_param		= NULL;
+ 	if (dma_submit_error(dma_tx->tx_submit(dma_tx))){
++		mutex_unlock(&dma_mutex);
+ 		dev_err(dma_dev->dev, "Failed to do DMA tx_submit");
+ 		return -1;
+ 	}
+-- 
+2.47.0
+

@@ -1,0 +1,25 @@
+From e4b9682d6885ba832e344f61d5be6112d9778ce3 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Mon, 25 Mar 2024 18:56:31 +0800
+Subject: [PATCH 0533/1451] MINIPC:fix pcie2 lane-config
+
+Change-Id: I9a7d2e6cf3213c3330858d8065893cc53ef34a8e
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index dfcd5a9567c6..bb9681a33164 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -629,6 +629,7 @@ &pcie1_rc {
+ &pcie2_rc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pcie2_4>;
++	num-lanes = <1>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

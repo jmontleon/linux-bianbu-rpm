@@ -1,0 +1,100 @@
+From 11dfa33d70f438c23d2c3d0864833f3956c2e80e Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 18 Dec 2023 11:27:08 +0800
+Subject: [PATCH 0189/1451] k1x:pm-domain: add gnss domain
+
+Change-Id: I53aea139233bc99745168280c6663a4b5e2b0b8b
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        | 20 ++++++++++++++++---
+ .../soc/spacemit/pm_domain/k1x-pm_domain.c    |  6 +++---
+ include/dt-bindings/pmu/k1x_pmu.h             |  3 ++-
+ 3 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 5a74d348daa6..cf1b9c160323 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -529,7 +529,7 @@ mpmu: mpmu@1 {
+ 
+ 			apmu: apmu@2 {
+ 				compatible = "spacemit,spacemit-apmu", "syscon", "simple-mfd";
+-				reg = <0x0 0xd4282800 0x0 0x374>;
++				reg = <0x0 0xd4282800 0x0 0x3f4>;
+ 			};
+ 
+ 			power: power-controller {
+@@ -538,7 +538,7 @@ power: power-controller {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				domains = <0x7>;
++				domains = <0x8>;
+ 
+ 				power-domain@SPT_PD_BUS {
+ 					reg = <0x0>;
+@@ -612,9 +612,23 @@ power-domain@SPT_PD_AUDIO {
+ 					#power-domain-cells = <0>;
+ 				};
+ 
+-				power-domain@SPT_PD_DUMMY {
++				power-domain@SPT_PD_GNSS {
+ 					reg = <0x6>;
+ 					pm_qos = <15>;
++					reg_pwr_ctrl = <0x13c>;
++					bit_hw_mode = <4>;
++					bit_sleep2 = <3>;
++					bit_sleep1 = <2>;
++					bit_isolation = <1>;
++					bit_auto_pwr_on = <0>;
++					bit_pwr_stat = <6>;
++					bit_hw_pwr_stat = <14>;
++					#power-domain-cells = <0>;
++				};
++
++				power-domain@SPT_PD_DUMMY {
++					reg = <0x7>;
++					pm_qos = <15>;
+ 					#power-domain-cells = <0>;
+ 				};
+ 			};
+diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 95fcf6488549..568a7093be77 100644
+--- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -279,9 +279,9 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ 		val |= (1 << spd->param.bit_auto_pwr_on);
+ 		val |= (1 << spd->param.bit_hw_mode);
+ 		regmap_write(gpmu->regmap[APMU_REGMAP_INDEX], spd->param.reg_pwr_ctrl, val);
+-	
++
+ 		usleep_range(290, 310);
+-		
++
+ 		for (loop = 10000; loop >= 0; --loop) {
+ 			regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], APMU_POWER_STATUS_REG, &val);
+ 			if (val & (1 << spd->param.bit_hw_pwr_stat))
+@@ -291,7 +291,7 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ 	}
+ 
+ 	if (loop < 0) {
+-		pr_err("power-off domain: %d, error\n", spd->pm_index);
++		pr_err("power-on domain: %d, error\n", spd->pm_index);
+ 		return -EBUSY;
+ 	}
+ 
+diff --git a/include/dt-bindings/pmu/k1x_pmu.h b/include/dt-bindings/pmu/k1x_pmu.h
+index e31cdfd06454..dac61d1662be 100644
+--- a/include/dt-bindings/pmu/k1x_pmu.h
++++ b/include/dt-bindings/pmu/k1x_pmu.h
+@@ -9,6 +9,7 @@
+ #define K1X_PMU_LCD_PWR_DOMAIN	3
+ #define K1X_PMU_ISP_PWR_DOMAIN	4
+ #define K1X_PMU_AUD_PWR_DOMAIN	5
+-#define K1X_PMU_DUMMY_PWR_DOMAIN	6
++#define K1X_PMU_GNSS_PWR_DOMAIN	6
++#define K1X_PMU_DUMMY_PWR_DOMAIN	7
+ 
+ #endif
+-- 
+2.47.0
+

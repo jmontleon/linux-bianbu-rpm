@@ -1,0 +1,25 @@
+From 8d2d318266657761966cf0abf349970e25fbf5b7 Mon Sep 17 00:00:00 2001
+From: zhouxl <zhouxl@spacemit.com>
+Date: Tue, 20 Feb 2024 14:25:36 +0800
+Subject: [PATCH 0422/1451] add ramdisk for develop branch
+
+Change-Id: I115b76f0b000872e04d137b68b8ed14ae3348274
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index c151a7587b41..afd0f6e8973f 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -29,6 +29,7 @@ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_CHECKPOINT_RESTORE=y
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+ # CONFIG_RD_XZ is not set
+-- 
+2.47.0
+
