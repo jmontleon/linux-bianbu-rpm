@@ -1,0 +1,48 @@
+From cea0bd7980b9ff580d2bb1c5f4715113c16c16cc Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 13 Jun 2024 21:31:46 +0800
+Subject: [PATCH 0938/1202] dwc3-spacemit: add pm domain support
+
+Change-Id: I2a076c07ddba75cc50292447ca420a979b1f6969
+---
+ drivers/usb/dwc3/dwc3-spacemit.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index b0fa0eb98009..6dc59930683d 100644
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -264,6 +264,10 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, spacemit);
+ 
++	pm_runtime_enable(dev);
++	pm_runtime_get_noresume(dev);
++	pm_runtime_get_sync(dev);
++
+ 	spacemit->irq = platform_get_irq(pdev, 0);
+ 	if (spacemit->irq < 0) {
+ 		dev_err(dev, "missing IRQ resource\n");
+@@ -339,6 +343,9 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 	of_platform_depopulate(&pdev->dev);
+ populate_err:
+ 	dwc3_spacemit_exit(spacemit);
++	pm_runtime_disable(dev);
++	pm_runtime_put_sync(dev);
++	pm_runtime_put_noidle(dev);
+ 	return ret;
+ }
+ 
+@@ -354,6 +361,9 @@ static int dwc3_spacemit_remove(struct platform_device *pdev)
+ 	}
+ 	of_platform_depopulate(&pdev->dev);
+ 	dwc3_spacemit_exit(spacemit);
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

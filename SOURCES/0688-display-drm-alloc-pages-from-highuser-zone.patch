@@ -1,0 +1,93 @@
+From c58bf0fea6859d1d3363eb56fa034dd27b210146 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Tue, 21 May 2024 20:41:21 +0800
+Subject: [PATCH 0688/1202] display: drm alloc pages from highuser zone
+
+Change-Id: I815a4d2e036d0d92810d4e849bc722ae50e10256
+---
+ arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi | 4 ++++
+ arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi  | 2 ++
+ drivers/gpu/drm/spacemit/dpu/dpu_debug.c    | 3 +++
+ drivers/gpu/drm/spacemit/spacemit_drm.c     | 3 +++
+ drivers/gpu/drm/spacemit/spacemit_gem.c     | 2 +-
+ 5 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+index e7ca43a1db36..53bdcef5b4a8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+@@ -6,6 +6,8 @@ display-subsystem-hdmi {
+ 		compatible = "spacemit,saturn-hdmi";
+ 		reg = <0 0xc0440000 0 0x2A000>;
+ 		ports = <&dpu_online2_hdmi>;
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
+ 	};
+ 
+ 	dpu_online2_hdmi: port@c0440000 {
+@@ -13,6 +15,8 @@ dpu_online2_hdmi: port@c0440000 {
+ 		interrupt-parent = <&intc>;
+ 		interrupts = <139>, <138>;
+ 		interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
+ 		clocks = <&ccu CLK_HDMI>;
+ 		clock-names = "hmclk";
+ 		resets = <&reset RESET_HDMI>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+index be11e4bbec49..bd9f76c841a3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+@@ -6,6 +6,8 @@ display-subsystem-dsi {
+ 		compatible = "spacemit,saturn-le";
+ 		reg = <0 0xC0340000 0 0x2A000>;
+ 		ports = <&dpu_online2_dsi>;
++		interconnects = <&dram_range1>;
++		interconnect-names = "dma-mem";
+ 	};
+ 
+ 	dpu_online2_dsi: port@c0340000 {
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+index 1133b60a1cab..d3e262cc85b6 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+@@ -265,6 +265,9 @@ int dpu_buffer_dump(struct drm_plane *plane) {
+ 	for (i = 0; i < buffer_size; i++) {
+ 		dpu_buffer_paddr = *(volatile u32 __force *)mmu_tbl_vaddr;
+ 		dpu_buffer_paddr = dpu_buffer_paddr << PAGE_SHIFT;
++		if (dpu_buffer_paddr >= 0x80000000UL) {
++			dpu_buffer_paddr += 0x80000000UL;
++		}
+ 		dpu_buffer_vaddr = phys_to_virt((unsigned long)dpu_buffer_paddr);
+ 		mmu_tbl_vaddr += 4;
+ #if IS_ENABLED(CONFIG_GKI_FIX_WORKAROUND)
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index fe26dc568efe..41712dc25306 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -123,6 +123,9 @@ static int spacemit_framebuffer_dump(struct drm_plane *plane) {
+ 			for (j = 0; j < buffer_size; j++) {
+ 				dpu_buffer_paddr = *(volatile u32 __force *)mmu_tbl_vaddr;
+ 				dpu_buffer_paddr = dpu_buffer_paddr << PAGE_SHIFT;
++				if (dpu_buffer_paddr >= 0x80000000UL) {
++					dpu_buffer_paddr += 0x80000000UL;
++				}
+ 				dpu_buffer_vaddr = phys_to_virt((unsigned long)dpu_buffer_paddr);
+ 				mmu_tbl_vaddr += 4;
+ 				kernel_write(filep, (void *)dpu_buffer_vaddr, PAGE_SIZE, &pos);
+diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
+index eb48f233ec07..9c5733d051e6 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_gem.c
++++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
+@@ -33,7 +33,7 @@ static struct page *__alloc_largest_available(size_t size,
+ 		if (max_order < order)
+ 			continue;
+ 
+-		gfp_flags = (/*GFP_HIGHUSER*/__GFP_DMA32 | __GFP_ZERO |
++		gfp_flags = (GFP_HIGHUSER | __GFP_ZERO |
+ 				__GFP_COMP | __GFP_RECLAIM);
+ 
+ 		page = alloc_pages(gfp_flags, order);
+-- 
+2.47.0
+

@@ -1,0 +1,26 @@
+From d5677f36f39e874538efb2d0d6c768d8c9aa70a7 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 6 Dec 2024 13:41:06 +0800
+Subject: [PATCH 1177/1202] mmc: k1: fix error of driver.remove
+
+Change-Id: I2b7eb68e779b4db9da6328940ae455bd67267c0c
+---
+ drivers/mmc/host/sdhci-of-k1x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index 84f45308568a..856cf2357a3f 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -1871,7 +1871,7 @@ static struct platform_driver spacemit_sdhci_driver = {
+ 		.pm	= SDHCI_SPACEMIT_PMOPS,
+ 	},
+ 	.probe		= spacemit_sdhci_probe,
+-	.remove_new	= spacemit_sdhci_remove,
++	.remove		= spacemit_sdhci_remove,
+ };
+ 
+ module_platform_driver(spacemit_sdhci_driver);
+-- 
+2.47.0
+

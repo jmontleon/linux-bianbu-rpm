@@ -1,0 +1,182 @@
+From dc6b874a5d8a0676e6d81c346901e054e59fc7a5 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 29 Apr 2024 09:51:16 +0800
+Subject: [PATCH 0632/1202] dtb: k1-x: update quirks for usbdrd3
+
+Change-Id: I8fa1c75a35e5abc6ae786b462d466b1d8d2a1ae9
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     | 10 +++++++---
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   |  7 ++-----
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   |  7 ++-----
+ 8 files changed, 21 insertions(+), 38 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 538a3c418e93..f4050f22a405 100755
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -659,13 +659,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 		usb-role-switch;
+ 		role-switch-default-mode = "peripheral";
+ 	};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index e04c7760245c..9c9fb2ff6b63 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -801,13 +801,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index cc5ed2f173ef..647e95679998 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -795,13 +795,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index c94f6ee3666f..4d60f115109a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -756,13 +756,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index b46670aea96b..9bb480dee340 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -710,10 +710,14 @@ &ehci1 {
+ &usbdrd3 {
+ 	status = "disabled";
+ 	dwc3@c0a00000 {
+-		maximum-speed = "high-speed";
+-		dr_mode = "peripheral";
+-		phy_type = "utmi_wide";
++		dr_mode = "host";
++		phy_type = "utmi";
++		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
++		snps,dis_u2_susphy_quirk;
++		snps,dis_u3_susphy_quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 71a6428078fb..340285d3d64a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -672,13 +672,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index ec6bdc098e5d..50302711bfcd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -632,13 +632,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 	};
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index b2e5fc221f3d..3881291f7809 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -531,13 +531,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 		usb-role-switch;
+ 		role-switch-default-mode = "peripheral";
+ 	};
+-- 
+2.47.0
+

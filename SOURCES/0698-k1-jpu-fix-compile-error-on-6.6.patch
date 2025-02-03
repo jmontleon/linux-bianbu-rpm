@@ -1,0 +1,53 @@
+From 85ff187e8e4c92c6c1c3511910f6ba2a4d09a26c Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Tue, 11 Jun 2024 17:37:55 +0800
+Subject: [PATCH 0698/1202] k1:jpu: fix compile error on 6.6
+
+Change-Id: I15837459f054b4a5f316ebc22c725959b35d8e18
+---
+ drivers/soc/spacemit/jpu/jpu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
+index 93dc44d82449..8594854857ff 100644
+--- a/drivers/soc/spacemit/jpu/jpu.c
++++ b/drivers/soc/spacemit/jpu/jpu.c
+@@ -1279,7 +1279,7 @@ static int jpu_map_to_register(struct file *fp, struct vm_area_struct *vm)
+ 	struct jpu_device *jdev = fp->private_data;
+ 	unsigned long pfn;
+ 
+-	vm->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
++	vm_flags_set(vm, VM_IO | VM_DONTEXPAND | VM_DONTDUMP);
+ 	vm->vm_page_prot = pgprot_noncached(vm->vm_page_prot);
+ 	pfn = jdev->s_jpu_register.phys_addr >> PAGE_SHIFT;
+ 
+@@ -1289,7 +1289,7 @@ static int jpu_map_to_register(struct file *fp, struct vm_area_struct *vm)
+ 
+ static int jpu_map_to_physical_memory(struct file *fp, struct vm_area_struct *vm)
+ {
+-	vm->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
++	vm_flags_set(vm, VM_IO | VM_DONTEXPAND | VM_DONTDUMP);
+ 	vm->vm_page_prot = pgprot_noncached(vm->vm_page_prot);
+ 
+ 	return remap_pfn_range(vm, vm->vm_start, vm->vm_pgoff,
+@@ -1305,7 +1305,7 @@ static int jpu_map_to_instance_pool_memory(struct file *fp, struct vm_area_struc
+ 	char *vmalloc_area_ptr = (char *)jdev->s_instance_pool.base;
+ 	unsigned long pfn;
+ 
+-	vm->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
++	vm_flags_set(vm, VM_DONTEXPAND | VM_DONTDUMP);
+ 
+ 	/* loop over all pages, map it page individually */
+ 	while (length > 0) {
+@@ -1670,7 +1670,7 @@ static int jpu_probe(struct platform_device *pdev)
+ 	     MINOR(jdev->s_jpu_major));
+ 
+ 	/* Create class for device driver. */
+-	jdev->jpu_class = class_create(THIS_MODULE, cdev_name);
++	jdev->jpu_class = class_create(cdev_name);
+ 
+ 	/* Create a device node. */
+ 	jdev->jpu_device = device_create(jdev->jpu_class, NULL, jdev->s_jpu_major, NULL, cdev_name);
+-- 
+2.47.0
+

@@ -1,52 +1,29 @@
-From 89ff2c0586ff2c66c97ed7985791eb279726b5e0 Mon Sep 17 00:00:00 2001
+From 1b6439bc4ce2d69910a61beb403401ef548a4d9d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
-Date: Tue, 16 Apr 2024 16:40:25 +0800
-Subject: [PATCH 0596/1206] clean compile warning:
+Date: Tue, 16 Apr 2024 16:41:03 +0800
+Subject: [PATCH 0596/1202] clean compile warning:
 
-drivers/mailbox/spacemit/k1x-mailbox.c: In function 'k1x_mailbox_suspend_noirq':
-drivers/mailbox/spacemit/k1x-mailbox.c:230:34: warning: unused variable 'mbox' [-Wunused-variable]
-  230 |         struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
-      |                                  ^~~~
-drivers/mailbox/spacemit/k1x-mailbox.c:229:13: warning: unused variable 'ret' [-Wunused-variable]
-  229 |         int ret;
+drivers/remoteproc/k1x-rproc.c:585:13: warning: unused variable 'ret' [-Wunused-variable]
+  585 |         int ret;
       |             ^~~
 
-Change-Id: Iebd6746118d5670754ea80c39136b4dfc8a139c4
+Change-Id: I0f6a030c4a06287cddbeabf956406c4ed02d6e50
 ---
- drivers/mailbox/spacemit/k1x-mailbox.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/remoteproc/k1x-rproc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
-index 220f15d4b1a5..4a7d53e367b1 100644
---- a/drivers/mailbox/spacemit/k1x-mailbox.c
-+++ b/drivers/mailbox/spacemit/k1x-mailbox.c
-@@ -226,20 +226,24 @@ MODULE_DEVICE_TABLE(of, spacemit_mailbox_of_match);
- #ifdef CONFIG_PM_SLEEP
- static int k1x_mailbox_suspend_noirq(struct device *dev)
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index 6f8bbe1849ef..bc49fcc5ca5f 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -582,7 +582,6 @@ static int spacemit_rproc_suspend(struct device *dev)
+ 
+ static int spacemit_rproc_resume(struct device *dev)
  {
-+#if 0
- 	int ret;
- 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
- 
--//	ret = reset_control_assert(mbox->reset);
-+	ret = reset_control_assert(mbox->reset);
-+#endif
- 
- 	return 0;
- }
- 
- static int k1x_mailbox_resume_noirq(struct device *dev)
- {
-+#if 0
- 	int ret;
- 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
- 
--//	ret = reset_control_deassert(mbox->reset);
-+	ret = reset_control_deassert(mbox->reset);
-+#endif
- 
- 	return 0;
- }
+-	int ret;
+ 	unsigned int val;
+ 	struct rproc *rproc;
+ 	struct spacemit_rproc *srproc;
 -- 
 2.47.0
 

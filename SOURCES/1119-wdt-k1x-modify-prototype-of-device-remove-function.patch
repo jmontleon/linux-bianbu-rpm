@@ -1,0 +1,36 @@
+From 878e3e9a3232bf3a7e13479ffd16e02cf7df4611 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:29:26 +0800
+Subject: [PATCH 1119/1202] wdt: k1x: modify prototype of device remove
+ function
+
+Change-Id: I430a1a4e408fe86afe243f53e1eed4c150d6fe7d
+---
+ drivers/watchdog/k1x_wdt.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index 1a09822c8ac4..3e4955061605 100644
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -730,7 +730,7 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spa_wdt_remove(struct platform_device *pdev)
++static void spa_wdt_remove(struct platform_device *pdev)
+ {
+ 	struct spa_wdt_info *info = platform_get_drvdata(pdev);
+ 
+@@ -743,8 +743,6 @@ static int spa_wdt_remove(struct platform_device *pdev)
+ 
+ 	spa_disable_wdt_clk(info);
+ 	clk_put(info->clk);
+-
+-	return 0;
+ }
+ 
+ static void spa_wdt_shutdown(struct platform_device *pdev)
+-- 
+2.47.0
+

@@ -1,0 +1,331 @@
+From 63df1f90624a3999f2cd6df24494ab2708f2f0a8 Mon Sep 17 00:00:00 2001
+From: lizhirong <zhirong.li@spacemit.com>
+Date: Thu, 12 Dec 2024 10:31:25 +0800
+Subject: [PATCH 1186/1202] camera: fix compilation problems and run imx415 in
+ deb1 successfully
+
+Change-Id: Ieafa11605f7e24cde22d014dc01cfb1aa7f10c51
+---
+ arch/riscv/configs/k1_defconfig               |  6 ++++++
+ .../spacemit/camera/cam_ccic/ccic_vdev.c      |  2 +-
+ .../spacemit/camera/cam_ccic/csiphy.c         |  4 ++--
+ .../spacemit/camera/cam_cpp/cpp_iommu.c       |  2 +-
+ .../spacemit/camera/cam_cpp/k1x_cpp.c         |  5 +++--
+ .../spacemit/camera/cam_isp/k1x_isp_drv.c     | 16 +++++++--------
+ .../spacemit/camera/cam_plat/cam_plat.c       |  1 +
+ .../spacemit/camera/cam_sensor/cam_sensor.c   |  4 ++--
+ .../spacemit/camera/vi/k1xvi/fe_isp.c         | 20 +++++++++----------
+ .../camera/vi/k1xvi/hw-seq/hw_iommu.c         |  6 +++---
+ .../platform/spacemit/camera/vi/subdev.c      |  2 +-
+ .../media/platform/spacemit/camera/vi/vdev.c  |  2 +-
+ 12 files changed, 39 insertions(+), 31 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 4864dbcbf181..549a2e03bae7 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -709,6 +709,12 @@ CONFIG_MEDIA_SUPPORT=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=y
+ # CONFIG_RADIO_ADAPTERS is not set
++CONFIG_SPACEMIT_K1X_CAMERA_V2=y
++CONFIG_SPACEMIT_K1X_VI_V2=y
++CONFIG_SPACEMIT_K1X_VI_IOMMU=y
++CONFIG_SPACEMIT_K1X_ISP_V2=y
++CONFIG_SPACEMIT_K1X_CPP_V2=y
++CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ CONFIG_VIDEO_LINLON_K1X=y
+ CONFIG_DRM=y
+ CONFIG_DRM_RADEON=m
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
+index 40ae02ae184f..75c56ec35d4d 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
+@@ -1209,7 +1209,7 @@ struct spm_ccic_vnode* spm_cvdev_create_vnode(const char *name,
+ 	ac_vnode->buf_queue.io_modes = VB2_DMABUF;
+ 	ac_vnode->buf_queue.ops = &spm_ccic_vb2_ops;
+ 	ac_vnode->buf_queue.mem_ops = &vb2_dma_contig_memops;
+-	ac_vnode->buf_queue.min_buffers_needed = min_buffers_needed;
++	ac_vnode->buf_queue.min_queued_buffers = min_buffers_needed;	//for linux-mainline
+ 	ac_vnode->buf_queue.dev = alloc_dev;
+ 	ret = vb2_queue_init(&ac_vnode->buf_queue);
+ 	if (ret) {
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+index 7a9ad7dad050..29ee5882cd3d 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+@@ -101,7 +101,7 @@ static int csiphy_set_power(struct csiphy_device *csiphy_dev, int on)
+  *
+  * Return: 0 on success, error code otherwise.
+  */
+-int csiphy_set_2to2dphy(struct csiphy_device *csiphy_dev, int enable)
++static int csiphy_set_2to2dphy(struct csiphy_device *csiphy_dev, int enable)
+ {
+ 	if (enable) {
+ 		/* REG_CSI2_DPHY1[1]: analog bif mode on */
+@@ -323,7 +323,7 @@ static void k1x_csiphy_remove(struct platform_device *pdev)
+ 	csiphy_dev = platform_get_drvdata(pdev);
+ 	if (!csiphy_dev) {
+ 		dev_err(&pdev->dev, "csiphy device is NULL");
+-		return 0;
++		return;
+ 	}
+ 
+ 	devm_kfree(&pdev->dev, csiphy_dev);
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+index 66e3cb64f64a..da9ba51b4372 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
+@@ -830,5 +830,5 @@ void cpp_iommu_unregister(struct cpp_device *cpp_dev)
+ 	pr_debug("%s X\n", __func__);
+ }
+ 
+-MODULE_IMPORT_NS(DMA_BUF);
++MODULE_IMPORT_NS("DMA_BUF");
+ EXPORT_SYMBOL(cpp_iommu_unregister);
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index baceb07e0b6d..993e29ce12ab 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -26,6 +26,7 @@
+ #include <media/v4l2-event.h>
+ #include <media/k1x/k1x_plat_cam.h>
+ #include <media/k1x/k1x_cpp_uapi.h>
++#include <linux/vmalloc.h>
+ #include "cam_dbg.h"
+ //#include "cpp_compat_ioctl32.h"
+ #include "cpp_dmabuf.h"
+@@ -563,7 +564,7 @@ static int k1x_cpp_process_frame(struct cpp_ctx *ctx, struct cpp_frame_info *inf
+ 	return ret;
+ }
+ 
+-int k1x_cpp_send_event(struct cpp_device *cpp_dev, u32 event_type,
++static int k1x_cpp_send_event(struct cpp_device *cpp_dev, u32 event_type,
+ 		       struct k1x_cpp_event_data *event_data)
+ {
+ 	struct v4l2_event cpp_event;
+@@ -1388,7 +1389,7 @@ static void cpp_remove(struct platform_device *pdev)
+ 	cpp_dev = platform_get_drvdata(pdev);
+ 	if (!cpp_dev) {
+ 		dev_err(&pdev->dev, "cpp device is NULL");
+-		return 0;
++		return;
+ 	}
+ 	device_init_wakeup(&pdev->dev, false);
+ 	pm_runtime_disable(&pdev->dev);
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+index 8faa5bb954bb..11af150dfb55 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+@@ -240,7 +240,7 @@ int k1xisp_dev_put_viraddr_to_dma_buf(struct dma_buf *dma_buffer, void *vir_addr
+ 	return 0;
+ }
+ 
+-int _isp_dev_put_phyaddr_to_dma_buf(struct dma_buf *dma_buffer,
++static int _isp_dev_put_phyaddr_to_dma_buf(struct dma_buf *dma_buffer,
+ 				    struct dma_buf_attachment *attach,
+ 				    struct sg_table *sgt)
+ {
+@@ -334,7 +334,7 @@ static int dev_clkoffdet_notifier_handler(struct notifier_block *nb,
+ }
+ #endif
+ 
+-int k1xisp_dev_context_create(struct platform_device *pdev)
++static int k1xisp_dev_context_create(struct platform_device *pdev)
+ {
+ 	int ret = 0;
+ 	struct k1xisp_dev *isp_dev = NULL;
+@@ -507,7 +507,7 @@ int k1xisp_vi_send_cmd(unsigned int cmd, void *cmd_payload, unsigned int payload
+ 	return ret;
+ }
+ 
+-int k1xisp_dma_irq_handler(void *irq_data)
++static int k1xisp_dma_irq_handler(void *irq_data)
+ {
+ 	struct k1xisp_dev *isp_dev = NULL;
+ 	struct k1xisp_pipe_dev *pipe_dev = NULL;
+@@ -539,7 +539,7 @@ int k1xisp_irq_callback(int irq_num, void *irq_data, unsigned int data_len)
+ 	return ret;
+ }
+ 
+-int k1xisp_cdevs_create(void)
++static int k1xisp_cdevs_create(void)
+ {
+ 	int ret = 0, cdev_count = 0, minor = ISP_PIPE_DEV_ID_0;
+ 	dev_t devNum;
+@@ -629,7 +629,7 @@ int k1xisp_cdevs_create(void)
+ 	return ret;
+ }
+ 
+-void k1xisp_cdevs_destroy(void)
++static void k1xisp_cdevs_destroy(void)
+ {
+ 	int i = 0;
+ 
+@@ -645,7 +645,7 @@ void k1xisp_cdevs_destroy(void)
+ 	g_isp_cdevice.cdev_info = NULL;
+ }
+ 
+-void k1xisp_cdev_link_devices(void)
++static void k1xisp_cdev_link_devices(void)
+ {
+ 	int i = 0;
+ 	struct k1xisp_dev *isp_dev = NULL;
+@@ -696,7 +696,7 @@ static int k1xisp_dev_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-int k1xisp_dev_context_destroy(struct platform_device *pdev)
++static int k1xisp_dev_context_destroy(struct platform_device *pdev)
+ {
+ 	int ret = 0;
+ 	struct k1xisp_dev *isp_dev = NULL;
+@@ -788,7 +788,7 @@ struct platform_driver k1xisp_dev_driver = {
+ 
+ module_platform_driver(k1xisp_dev_driver);
+ 
+-MODULE_IMPORT_NS(DMA_BUF);
++MODULE_IMPORT_NS("DMA_BUF");
+ MODULE_AUTHOR("SPACEMIT Inc.");
+ MODULE_DESCRIPTION("SPACEMIT K1X ISP device driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+index eb43f9d44443..45eefd6ebbb7 100644
+--- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
++++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+@@ -13,6 +13,7 @@
+ #include <media/v4l2-event.h>
+ #include <media/v4l2-ioctl.h>
+ #include <media/k1x/k1x_plat_cam.h>
++#include <linux/string.h>
+ #include "cam_dbg.h"
+ #include "cam_plat.h"
+ 
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+index bbe56134d529..5312f17970e4 100644
+--- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
++++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+@@ -1451,7 +1451,7 @@ static void cam_sensor_remove(struct platform_device *pdev)
+ 	msnr_dev = platform_get_drvdata(pdev);
+ 	if (!msnr_dev) {
+ 		dev_err(&pdev->dev, "camera sensor device is NULL");
+-		return 0;
++		return;
+ 	}
+ 	mutex_destroy(&msnr_dev->lock);
+ 	cam_snr_dev_destroy(&msnr_dev->cdev, msnr_dev->id);
+@@ -1464,7 +1464,7 @@ static int cam_sensor_probe(struct platform_device *pdev)
+ 	struct cam_sensor_device *msnr_dev;
+ 	int ret;
+ 
+-	cam_dbg("camera sensor begin to probed");
++	cam_info("camera sensor begin to probed");
+ 
+ 	msnr_dev = devm_kzalloc(&pdev->dev, sizeof(struct cam_sensor_device),
+ 				GFP_KERNEL);
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+index b4ad8e0e1046..261f06401428 100644
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
+@@ -2828,8 +2828,8 @@ static long fe_isp_global_reset(struct isp_context *isp_ctx)
+ 	hw_isp_top_global_reset(SC_BLOCK(isp_ctx->pipes[0]));
+ 	return wait_for_completion_interruptible_timeout(&isp_ctx->global_reset_done, msecs_to_jiffies(500));
+ }
+-extern void dpu_mclk_exclusive_put(void);
+-extern bool dpu_mclk_exclusive_get(void);
++// extern void dpu_mclk_exclusive_put(void);
++// extern bool dpu_mclk_exclusive_get(void);
+ 
+ static int __fe_isp_s_power(struct v4l2_subdev *sd, int on)
+ {
+@@ -2885,19 +2885,19 @@ static int __fe_isp_s_power(struct v4l2_subdev *sd, int on)
+ 			hw_isp_top_set_idi_linebuf(SC_BLOCK(isp_ctx->pipes[1]), idi1_fifo_depth, 0, 0);
+ 			hw_dma_reset(isp_ctx->dma_block);
+ #if IS_ENABLED(CONFIG_DRM_SPACEMIT)
+-			while (1) {
+-				if (dpu_mclk_exclusive_get()) {
++			// while (1) {
++			// 	if (dpu_mclk_exclusive_get()){
+ 					clk_set_rate(isp_ctx->dpu_clk, 409600000);
+ 					if (ret < 0 && ret != -EBUSY) {
+ 						cam_err("%s lock dpu clk failed ret=%d", __func__, ret);
+ 						return ret;
+ 					} else if (ret == 0) {
+-						break;
++						// break;
+ 					}
+-				} else {
+-					continue;
+-				}
+-			}
++			// 	} else {
++			// 		continue;
++			// 	}
++			// }
+ #endif
+ #ifdef CONFIG_SPACEMIT_K1X_VI_IOMMU
+ 			isp_ctx->mmu_dev->ops->set_timeout_default_addr(isp_ctx->mmu_dev, (uint64_t)isp_ctx->rsvd_phy_addr);
+@@ -2907,7 +2907,7 @@ static int __fe_isp_s_power(struct v4l2_subdev *sd, int on)
+ 		v = atomic_dec_return(&isp_ctx->pwr_cnt);
+ 		if (v == 0) {
+ #if IS_ENABLED(CONFIG_DRM_SPACEMIT)
+-			dpu_mclk_exclusive_put();
++			// dpu_mclk_exclusive_put();
+ #endif
+ 			l_ret = fe_isp_global_reset(isp_ctx);
+ 			if (l_ret == 0)
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
+index c3a69151c42d..7a43be56bd86 100644
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
+@@ -84,18 +84,18 @@ static void __maybe_unused iommu_set_tbu_qos(struct isp_iommu_device *mmu_dev, i
+ {
+ 	iommu_reg_write_mask(mmu_dev, REG_IOMMU_TCR0(tbu), (qos & 0xf) << 4, 0xf << 4);
+ }
+-
++#if 0
+ /**
+  * iommu_update_trans_table - TBU translation table update
+  *
+  *   this bit will be cleared to 0 after TLB preload.
+  *   only work for full frame tbu.
+  */
+-void iommu_update_trans_table(struct isp_iommu_device *mmu_dev, int tbu)
++static void iommu_update_trans_table(struct isp_iommu_device *mmu_dev, int tbu)
+ {
+ 	iommu_reg_set_bit(mmu_dev, REG_IOMMU_TCR0(tbu), 0x1 << 2);
+ }
+-
++#endif
+ static void iommu_enable_irqs(struct isp_iommu_device *mmu_dev)
+ {
+ 	iommu_reg_write_mask(mmu_dev, REG_IOMMU_GIRQ_ENA, 0xffffffff, 0xffffffff);
+diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.c b/drivers/media/platform/spacemit/camera/vi/subdev.c
+index 2be31223da8c..36bb2064599d 100644
+--- a/drivers/media/platform/spacemit/camera/vi/subdev.c
++++ b/drivers/media/platform/spacemit/camera/vi/subdev.c
+@@ -111,7 +111,7 @@ int spm_subdev_init(unsigned int grp_id,
+ 		cam_err("%s register plat cam(%s) failed ret=%d ", __func__, name, ret);
+ 		return ret;
+ 	}
+-	strscpy(sc_subdev->name, name, V4L2_SUBDEV_NAME_SIZE);
++	strscpy(sc_subdev->name, name, 52);	//for linux-mainline, delete V4L2_SUBDEV_NAME_SIZE
+ 	sc_subdev->pcsd.sd.grp_id = grp_id;
+ 	return 0;
+ }
+diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.c b/drivers/media/platform/spacemit/camera/vi/vdev.c
+index 3581155f94dd..dab2e1405bb9 100644
+--- a/drivers/media/platform/spacemit/camera/vi/vdev.c
++++ b/drivers/media/platform/spacemit/camera/vi/vdev.c
+@@ -2057,7 +2057,7 @@ struct spm_camera_vnode *spm_vdev_create_vnode(const char *name,
+ 	sc_vnode->buf_queue.io_modes = SPACEMIT_VB2_IO_MODE;
+ 	sc_vnode->buf_queue.ops = &spm_camera_vb2_ops;
+ 	sc_vnode->buf_queue.mem_ops = spm_vb2_mem_ops;
+-	sc_vnode->buf_queue.min_buffers_needed = min_buffers_needed;
++	sc_vnode->buf_queue.min_queued_buffers = min_buffers_needed;	//for linux-mainline
+ 	sc_vnode->buf_queue.dev = alloc_dev;
+ 	ret = vb2_queue_init(&sc_vnode->buf_queue);
+ 	if (ret) {
+-- 
+2.47.0
+

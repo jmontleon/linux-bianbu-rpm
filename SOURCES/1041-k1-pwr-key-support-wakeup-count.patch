@@ -1,0 +1,37 @@
+From 22d860f1845263db111bc685a8bd2ecff86198ad Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 30 Oct 2024 19:56:16 +0800
+Subject: [PATCH 1041/1202] k1:pwr-key: support wakeup count
+
+Change-Id: I24f4d00547ac34bed07abbaf50d19a157dbe84a1
+---
+ drivers/input/misc/spacemit-pwrkey.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
+index 3ee621a3e66c..ab8616dc2c56 100644
+--- a/drivers/input/misc/spacemit-pwrkey.c
++++ b/drivers/input/misc/spacemit-pwrkey.c
+@@ -29,6 +29,9 @@ static irqreturn_t pwrkey_fall_irq(int irq, void *_pwr)
+ 		input_sync(pwr);
+ 		fall_triggered = 1;
+ 	}
++
++	pm_stay_awake(pwr->dev.parent);
++
+ 	spin_unlock_irqrestore(&pm_lock, flags);
+ 
+ 	return IRQ_HANDLED;
+@@ -46,6 +49,9 @@ static irqreturn_t pwrkey_rise_irq(int irq, void *_pwr)
+ 		input_sync(pwr);
+ 		fall_triggered = 0;
+ 	}
++
++	pm_relax(pwr->dev.parent);
++
+ 	spin_unlock_irqrestore(&pm_lock, flags);
+ 
+ 	return IRQ_HANDLED;
+-- 
+2.47.0
+

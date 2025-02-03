@@ -1,7 +1,7 @@
-From 3ed960a0d3013b3cf94b43f3c29ba9e750b445fc Mon Sep 17 00:00:00 2001
+From 7fc19818e92d8bd20760aaea639746b9ef16b1bf Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 26 Dec 2023 11:01:22 +0800
-Subject: [PATCH 0249/1206] k1x:add k1x-soc rtc driver and clk&reset interface
+Subject: [PATCH 0249/1202] k1x:add k1x-soc rtc driver and clk&reset interface
 
 Change-Id: I751ec10994c8c671fcd27594be70bb1f2d5a99dc
 ---
@@ -25,7 +25,7 @@ index 772b6af95d4d..5a3c0747d9ac 100644
  CONFIG_MMP_PDMA_DRIVER=y
  CONFIG_MMP_PDMA_SPACEMIT_K1X=y
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index a60bcc791a48..f32fba669c07 100644
+index 0bbbf778ecfa..a00be2b7104c 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
 @@ -1488,7 +1488,7 @@ config RTC_DRV_EP93XX
@@ -38,7 +38,7 @@ index a60bcc791a48..f32fba669c07 100644
  	  If you say Y here you will get access to the real time clock
  	  built into your SA11x0 or PXA2xx CPU.
 diff --git a/drivers/rtc/rtc-sa1100.c b/drivers/rtc/rtc-sa1100.c
-index 13799b1abca1..65a38e5541c4 100644
+index 1ad93648d69c..84e9f6825019 100644
 --- a/drivers/rtc/rtc-sa1100.c
 +++ b/drivers/rtc/rtc-sa1100.c
 @@ -20,6 +20,7 @@

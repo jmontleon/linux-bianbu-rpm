@@ -1,0 +1,73 @@
+From 1dfa1c8e5360a9b68911cdcd439ae98474091b80 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 18 Jun 2024 15:24:14 +0800
+Subject: [PATCH 0939/1202] dtsi: k1: update usb power domain settings
+
+Change-Id: Idf98553b714d017f05e8229d3e3feb73c9be8a85
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index ea332129d37b..2dd278b9716e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1823,6 +1823,9 @@ otg: otg@c0900100 {
+ 			spacemit,otg-force-a-bus-req;
+ 			clocks = <&ccu CLK_USB_AXI>;
+ 			resets = <&reset RESET_USB_AXI>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			usb-phy = <&usbphy>;
+ 			status = "disabled";
+ 		};
+@@ -1855,7 +1858,6 @@ ehci: ehci@c0900100 {
+ 			clocks = <&ccu CLK_USB_AXI>;
+ 			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 			clk,pm-runtime,no-sleep;
+-			regulator,pm-runtime,no-sleep;
+ 			cpuidle,pm-runtime,sleep;
+ 			usb-phy = <&usbphy>;
+ 			usb-otg = <&otg>;
+@@ -1881,6 +1883,9 @@ otg1: otg1@c0980100 {
+ 			spacemit,otg-force-a-bus-req;
+ 			clocks = <&ccu CLK_USB_P1>;
+ 			resets = <&reset RESET_USBP1_AXI>;
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			usb-phy = <&usbphy1>;
+ 			status = "disabled";
+ 		};
+@@ -1913,7 +1918,6 @@ ehci1: ehci1@c0980100 {
+ 			clocks = <&ccu CLK_USB_P1>;
+ 			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 			clk,pm-runtime,no-sleep;
+-			regulator,pm-runtime,no-sleep;
+ 			cpuidle,pm-runtime,sleep;
+ 			usb-phy = <&usbphy1>;
+ 			usb-otg = <&otg1>;
+@@ -1943,6 +1947,9 @@ usb2phy: usb2phy@0xc0a30000 {
+ 
+ 		usb3hub: usb3hub@0 {
+ 			compatible = "spacemit,usb3-hub";
++			power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1955,6 +1962,9 @@ usbdrd3: usb3@0 {
+ 			reset-names = "ctl_rst";
+ 			clocks = <&ccu CLK_USB30>;
+ 			clock-names = "usbdrd30";
++			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
++			clk,pm-runtime,no-sleep;
++			cpuidle,pm-runtime,sleep;
+ 			phys = <&combphy PHY_TYPE_USB3>;
+ 			phy-names = "usb3-phy";
+ 			usb-phy = <&usb2phy>;
+-- 
+2.47.0
+

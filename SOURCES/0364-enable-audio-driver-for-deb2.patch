@@ -1,0 +1,28 @@
+From 529c58f8fcc14319cf1dff377b4cae7852d04d17 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 12 Jan 2024 23:25:41 +0800
+Subject: [PATCH 0364/1202] enable audio driver for deb2
+
+Change-Id: Ia592632b7b9089b5562aef8f26e58feac8283f5c
+---
+ arch/riscv/configs/k1-x_deb2_defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index ddb95f0f178d..594cdb354045 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -396,6 +396,10 @@ CONFIG_POWERVR_ROGUE=y
+ CONFIG_FB=y
+ CONFIG_BACKLIGHT_PWM=y
+ # CONFIG_VGA_CONSOLE is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
++CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+-- 
+2.47.0
+

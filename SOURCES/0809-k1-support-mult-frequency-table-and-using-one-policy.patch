@@ -1,0 +1,1819 @@
+From f88fcfd714388c1c6a23c597be334d96d0b50398 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 8 Jul 2024 13:53:08 +0800
+Subject: [PATCH 0809/1202] k1: support mult frequency table and using one
+ policy for all cpus
+
+Change-Id: I84f68f445afe6e72b30f0dd4b2d744d64efa1f7d
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        | 109 -----
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts |  18 +-
+ .../boot/dts/spacemit/k1-x_MUSE-Book.dts      |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    |  36 +-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     |  50 ++-
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   |  36 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts   |  18 +-
+ .../boot/dts/spacemit/k1-x_milkv-jupiter.dts  |  18 +-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   |  18 +-
+ .../boot/dts/spacemit/k1-x_opp_table.dtsi     | 110 +++++
+ .../boot/dts/spacemit/m1-x_milkv-jupiter.dts  |  18 +-
+ .../boot/dts/spacemit/m1-x_opp_table.dtsi     | 234 ++++++++++
+ drivers/cpufreq/cpufreq-dt.c                  |  19 +
+ drivers/cpufreq/spacemit-cpufreq.c            | 402 +++++++++++++++---
+ drivers/opp/core.c                            | 113 +++++
+ include/linux/pm_opp.h                        |   3 +
+ 20 files changed, 911 insertions(+), 381 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
+ create mode 100644 arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 7e9cee563659..c35df005d36f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -63,9 +63,7 @@ cpu_0: cpu@0 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C0_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu0_intc: interrupt-controller {
+@@ -99,9 +97,7 @@ cpu_1: cpu@1 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C0_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu1_intc: interrupt-controller {
+@@ -135,9 +131,7 @@ cpu_2: cpu@2 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C0_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu2_intc: interrupt-controller {
+@@ -171,9 +165,7 @@ cpu_3: cpu@3 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst0_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C0_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst0_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu3_intc: interrupt-controller {
+@@ -207,9 +199,7 @@ cpu_4: cpu@4 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C1_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu4_intc: interrupt-controller {
+@@ -243,9 +233,7 @@ cpu_5: cpu@5 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C1_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu5_intc: interrupt-controller {
+@@ -279,9 +267,7 @@ cpu_6: cpu@6 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C1_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu6_intc: interrupt-controller {
+@@ -315,9 +301,7 @@ cpu_7: cpu@7 {
+ 			d-cache-sets = <128>;
+ 			next-level-cache = <&clst1_l2_cache>;
+ 			mmu-type = "riscv,sv39";
+-			clocks = <&ccu CLK_CPU_C1_CORE>;
+ 			cpu-idle-states = <&CPU_NONRET> /*, <&CLUSTER_NONRET>, <&TOP_NONRET> */;
+-			operating-points-v2 = <&clst1_core_opp_table>;
+ 			#cooling-cells = <2>;
+ 
+ 			cpu7_intc: interrupt-controller {
+@@ -378,99 +362,6 @@ TOP_NONRET: top-nonret {
+ 				wakeup-latency-us = <1600>;
+ 			};
+ 		};
+-
+-		clst0_core_opp_table: opp_table0 {
+-			compatible = "operating-points-v2";
+-			opp-shared;
+-
+-			clocks = <&ccu CLK_CPU_C0_ACE>, <&ccu CLK_CPU_C0_TCM>, <&ccu CLK_CCI550>;
+-			clock-names = "ace","tcm", "cci";
+-			cci-hz = /bits/ 64 <614000000>;
+-
+-			opp1600000000 {
+-				opp-hz = /bits/ 64 <1600000000>;
+-				tcm-hz = /bits/ 64 <800000000>;
+-				ace-hz = /bits/ 64 <800000000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp1228800000 {
+-				opp-hz = /bits/ 64 <1228800000>;
+-				tcm-hz = /bits/ 64 <614400000>;
+-				ace-hz = /bits/ 64 <614400000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp1000000000 {
+-				opp-hz = /bits/ 64 <1000000000>;
+-				tcm-hz = /bits/ 64 <500000000>;
+-				ace-hz = /bits/ 64 <500000000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp819000000 {
+-				opp-hz = /bits/ 64 <819000000>;
+-				opp-microvolt = <950000>;
+-				tcm-hz = /bits/ 64 <409500000>;
+-				ace-hz = /bits/ 64 <409500000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp614400000 {
+-				opp-hz = /bits/ 64 <614400000>;
+-				tcm-hz = /bits/ 64 <307200000>;
+-				ace-hz = /bits/ 64 <307200000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-		};
+-
+-		clst1_core_opp_table: opp_table1 {
+-			compatible = "operating-points-v2";
+-			opp-shared;
+-
+-			clocks = <&ccu CLK_CPU_C1_ACE>, <&ccu CLK_CCI550>;
+-			clock-names = "ace", "cci";
+-			cci-hz = /bits/ 64 <614000000>;
+-
+-			opp1600000000 {
+-				opp-hz = /bits/ 64 <1600000000>;
+-				ace-hz = /bits/ 64 <800000000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp1228800000 {
+-				opp-hz = /bits/ 64 <1228800000>;
+-				ace-hz = /bits/ 64 <614400000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp1000000000 {
+-				opp-hz = /bits/ 64 <1000000000>;
+-				ace-hz = /bits/ 64 <500000000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp819000000 {
+-				opp-hz = /bits/ 64 <819000000>;
+-				ace-hz = /bits/ 64 <409500000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-
+-			opp614400000 {
+-				opp-hz = /bits/ 64 <614400000>;
+-				ace-hz = /bits/ 64 <307200000>;
+-				opp-microvolt = <950000>;
+-				clock-latency-ns = <200000>;
+-			};
+-		};
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 1c17bd735d23..f58b394bf690 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -9,6 +9,7 @@
+ #include "lcd/lcd_lt9711_dp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MINI-PC board";
+@@ -768,23 +769,6 @@ flash@0 {
+ 	};
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index 966efcf683fc..4c7708759f0d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -9,6 +9,7 @@
+ #include "lcd/lcd_lt8911_edp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "M1-MUSE-BOOK";
+@@ -765,23 +766,6 @@ &pwm_bl {
+ 	status = "okay";
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index a27954e45b85..3b509c276ff7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -6,6 +6,7 @@
+ #include "k1-x.dtsi"
+ #include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MUSE-N1 board";
+@@ -707,23 +708,6 @@ flash@0 {
+ 	};
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 68e9dd4e6831..46c38e50382b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MUSE-Pi board";
+@@ -963,23 +964,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index a3099f73e310..69538b312feb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x deb1 board";
+@@ -956,23 +957,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 66420dc53399..1f75f3ccec21 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x deb2 board";
+@@ -914,20 +915,35 @@ &vi {
+ };
+ 
+ &cpu_0 {
+-	clst0-supply = <&edcdc_1>;
+-	vin-supply-names = "clst0";
++	clst-supply = <&edcdc_1>;
+ };
+ 
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
++&cpu_1 {
++	clst-supply = <&edcdc_1>;
+ };
+ 
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
++&cpu_2 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_3 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_4 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_5 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_6 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_7 {
++	clst-supply = <&edcdc_1>;
+ };
+ 
+ &rcpu {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 0ed80cd17ae2..b3674883c453 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x evb board";
+@@ -837,23 +838,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&edcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+@@ -871,6 +855,38 @@ &cls1_trip2 {
+ 	temperature = <115000>;
+ };
+ 
++&cpu_0 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_1 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_2 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_3 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_4 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_5 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_6 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_7 {
++	clst-supply = <&edcdc_1>;
++};
++
+ &watchdog {
+ 	spa,wdt-enable-restart-handler;
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 82c30191fcf8..036a64893f8b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -9,6 +9,7 @@
+ #include "lcd/lcd_lt8911_edp_1920x1200.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x hs450 board";
+@@ -736,20 +737,35 @@ &pwm_bl {
+ };
+ 
+ &cpu_0 {
+-	clst0-supply = <&edcdc_1>;
+-	vin-supply-names = "clst0";
++	clst-supply = <&edcdc_1>;
+ };
+ 
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
++&cpu_1 {
++	clst-supply = <&edcdc_1>;
+ };
+ 
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
++&cpu_2 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_3 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_4 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_5 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_6 {
++	clst-supply = <&edcdc_1>;
++};
++
++&cpu_7 {
++	clst-supply = <&edcdc_1>;
+ };
+ 
+ &rcpu {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 8dd137733b1f..fed656ef6537 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -9,6 +9,7 @@
+ #include "lcd/lcd_lt8911_edp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x kx312 board";
+@@ -718,23 +719,6 @@ &pwm_bl {
+ 	status = "okay";
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index 274431024206..ed63ee3f9945 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "SiPEED LPi3A Board";
+@@ -1097,23 +1098,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+index 728a630aa8e1..f4a63ba9583b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "Milk-V Jupiter";
+@@ -1013,23 +1014,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index edf90c4b66f5..944bab40e5e7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -6,6 +6,7 @@
+ #include "k1-x.dtsi"
+ #include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
++#include "k1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x mingo board";
+@@ -590,23 +591,6 @@ flash@0 {
+ 	};
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
+new file mode 100644
+index 000000000000..6672b481625b
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2024 Spacemit, Inc */
++
++&cpus {
++	clst_core_opp_table0: opp_table0 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		clocks = <&ccu CLK_CPU_C0_ACE>, <&ccu CLK_CPU_C1_ACE>, <&ccu CLK_CPU_C0_TCM>,
++			<&ccu CLK_CCI550>, <&ccu CLK_PLL3>;
++		clock-names = "ace0","ace1","tcm","cci","pll3";
++		cci-hz = /bits/ 64 <614000000>;
++
++		opp1600000000 {
++			opp-hz = /bits/ 64 <1600000000>, /bits/ 64 <1600000000>;
++			tcm-hz = /bits/ 64 <800000000>;
++			ace-hz = /bits/ 64 <800000000>;
++			opp-microvolt = <1050000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1228800000 {
++			opp-hz = /bits/ 64 <1228800000>, /bits/ 64 <1228800000>;
++			tcm-hz = /bits/ 64 <614400000>;
++			ace-hz = /bits/ 64 <614400000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1000000000 {
++			opp-hz = /bits/ 64 <1000000000>, /bits/ 64 <1000000000>;
++			tcm-hz = /bits/ 64 <500000000>;
++			ace-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp819000000 {
++			opp-hz = /bits/ 64 <819000000>, /bits/ 64 <819000000>;
++			opp-microvolt = <950000>;
++			tcm-hz = /bits/ 64 <409500000>;
++			ace-hz = /bits/ 64 <409500000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp614400000 {
++			opp-hz = /bits/ 64 <614400000>, /bits/ 64 <614400000>;
++			tcm-hz = /bits/ 64 <307200000>;
++			ace-hz = /bits/ 64 <307200000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++	};
++};
++
++&cpu_0 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_1 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_2 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_3 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_4 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_5 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_6 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
++
++&cpu_7 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>;
++};
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+index 3a5c15291046..2567721f330e 100644
+--- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+@@ -10,6 +10,7 @@
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
++#include "m1-x_opp_table.dtsi"
+ 
+ / {
+ 	model = "Milk-V(M1) Jupiter";
+@@ -1013,23 +1014,6 @@ &vi {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+ 
+-&cpu_0 {
+-	clst0-supply = <&dcdc_1>;
+-	vin-supply-names = "clst0";
+-};
+-
+-&clst0_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+-&clst1_core_opp_table {
+-	opp1600000000 {
+-		opp-microvolt = <1050000>;
+-	};
+-};
+-
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
+new file mode 100644
+index 000000000000..af2458381b89
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
+@@ -0,0 +1,234 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++&cpus {
++	clst_core_opp_table0: opp_table0 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		clocks = <&ccu CLK_CPU_C0_ACE>, <&ccu CLK_CPU_C1_ACE>, <&ccu CLK_CPU_C0_TCM>,
++			<&ccu CLK_CCI550>, <&ccu CLK_PLL3>;
++		clock-names = "ace0","ace1","tcm","cci","pll3";
++		cci-hz = /bits/ 64 <614000000>;
++
++		opp1800000000 {
++			opp-hz = /bits/ 64 <1800000000>, /bits/ 64 <1800000000>;
++			tcm-hz = /bits/ 64 <900000000>;
++			ace-hz = /bits/ 64 <900000000>;
++			opp-microvolt = <1160000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1600000000 {
++			opp-hz = /bits/ 64 <1600000000>, /bits/ 64 <1600000000>;
++			tcm-hz = /bits/ 64 <800000000>;
++			ace-hz = /bits/ 64 <800000000>;
++			opp-microvolt = <1050000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1228800000 {
++			opp-hz = /bits/ 64 <1228800000>, /bits/ 64 <1228800000>;
++			tcm-hz = /bits/ 64 <614400000>;
++			ace-hz = /bits/ 64 <614400000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1000000000 {
++			opp-hz = /bits/ 64 <1000000000>, /bits/ 64 <1000000000>;
++			tcm-hz = /bits/ 64 <500000000>;
++			ace-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp819000000 {
++			opp-hz = /bits/ 64 <819000000>, /bits/ 64 <819000000>;
++			opp-microvolt = <950000>;
++			tcm-hz = /bits/ 64 <409500000>;
++			ace-hz = /bits/ 64 <409500000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp614400000 {
++			opp-hz = /bits/ 64 <614400000>, /bits/ 64 <614400000>;
++			tcm-hz = /bits/ 64 <307200000>;
++			ace-hz = /bits/ 64 <307200000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++	};
++
++	clst_core_opp_table1: opp_table1 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		clocks = <&ccu CLK_CPU_C0_ACE>, <&ccu CLK_CPU_C1_ACE>, <&ccu CLK_CPU_C0_TCM>,
++			<&ccu CLK_CCI550>, <&ccu CLK_PLL3>;
++		clock-names = "ace0","ace1","tcm","cci","pll3";
++		cci-hz = /bits/ 64 <614000000>;
++
++		opp1800000000 {
++			opp-hz = /bits/ 64 <1800000000>, /bits/ 64 <1800000000>;
++			tcm-hz = /bits/ 64 <900000000>;
++			ace-hz = /bits/ 64 <900000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1600000000 {
++			opp-hz = /bits/ 64 <1600000000>, /bits/ 64 <1600000000>;
++			tcm-hz = /bits/ 64 <800000000>;
++			ace-hz = /bits/ 64 <800000000>;
++			opp-microvolt = <1050000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1228800000 {
++			opp-hz = /bits/ 64 <1228800000>, /bits/ 64 <1228800000>;
++			tcm-hz = /bits/ 64 <614400000>;
++			ace-hz = /bits/ 64 <614400000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1000000000 {
++			opp-hz = /bits/ 64 <1000000000>, /bits/ 64 <1000000000>;
++			tcm-hz = /bits/ 64 <500000000>;
++			ace-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp819000000 {
++			opp-hz = /bits/ 64 <819000000>, /bits/ 64 <819000000>;
++			opp-microvolt = <950000>;
++			tcm-hz = /bits/ 64 <409500000>;
++			ace-hz = /bits/ 64 <409500000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp614400000 {
++			opp-hz = /bits/ 64 <614400000>, /bits/ 64 <614400000>;
++			tcm-hz = /bits/ 64 <307200000>;
++			ace-hz = /bits/ 64 <307200000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++	};
++
++	clst_core_opp_table2: opp_table2 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		clocks = <&ccu CLK_CPU_C0_ACE>, <&ccu CLK_CPU_C1_ACE>, <&ccu CLK_CPU_C0_TCM>,
++			<&ccu CLK_CCI550>, <&ccu CLK_PLL3>;
++		clock-names = "ace0","ace1","tcm","cci","pll3";
++		cci-hz = /bits/ 64 <614000000>;
++
++		opp1800000000 {
++			opp-hz = /bits/ 64 <1800000000>, /bits/ 64 <1800000000>;
++			tcm-hz = /bits/ 64 <900000000>;
++			ace-hz = /bits/ 64 <900000000>;
++			opp-microvolt = <1050000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1600000000 {
++			opp-hz = /bits/ 64 <1600000000>, /bits/ 64 <1600000000>;
++			tcm-hz = /bits/ 64 <800000000>;
++			ace-hz = /bits/ 64 <800000000>;
++			opp-microvolt = <1050000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1228800000 {
++			opp-hz = /bits/ 64 <1228800000>, /bits/ 64 <1228800000>;
++			tcm-hz = /bits/ 64 <614400000>;
++			ace-hz = /bits/ 64 <614400000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp1000000000 {
++			opp-hz = /bits/ 64 <1000000000>, /bits/ 64 <1000000000>;
++			tcm-hz = /bits/ 64 <500000000>;
++			ace-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp819000000 {
++			opp-hz = /bits/ 64 <819000000>, /bits/ 64 <819000000>;
++			opp-microvolt = <950000>;
++			tcm-hz = /bits/ 64 <409500000>;
++			ace-hz = /bits/ 64 <409500000>;
++			clock-latency-ns = <200000>;
++		};
++
++		opp614400000 {
++			opp-hz = /bits/ 64 <614400000>, /bits/ 64 <614400000>;
++			tcm-hz = /bits/ 64 <307200000>;
++			ace-hz = /bits/ 64 <307200000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <200000>;
++		};
++	};
++};
++
++&cpu_0 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_1 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_2 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_3 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_4 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_5 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_6 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
++
++&cpu_7 {
++	clst-supply = <&dcdc_1>;
++	clocks = <&ccu CLK_CPU_C0_CORE>, <&ccu CLK_CPU_C1_CORE>;
++	clock-names = "cls0", "cls1";
++	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
++};
+diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+index 3a7c3372bda7..19c4e7702584 100644
+--- a/drivers/cpufreq/cpufreq-dt.c
++++ b/drivers/cpufreq/cpufreq-dt.c
+@@ -42,6 +42,7 @@ static struct freq_attr *cpufreq_dt_attr[] = {
+ 	NULL,
+ };
+ 
++#ifndef CONFIG_SOC_SPACEMIT
+ static struct private_data *cpufreq_dt_find_data(int cpu)
+ {
+ 	struct private_data *priv;
+@@ -53,6 +54,24 @@ static struct private_data *cpufreq_dt_find_data(int cpu)
+ 
+ 	return NULL;
+ }
++#else
++struct private_data *cpufreq_dt_find_data(int cpu)
++{
++	struct private_data *priv;
++
++	list_for_each_entry(priv, &priv_list, node) {
++		if (cpumask_test_cpu(cpu, priv->cpus))
++			return priv;
++	}
++
++	return NULL;
++}
++
++void cpufreq_dt_add_data(struct private_data *priv)
++{
++	list_add(&priv->node, &priv_list);
++}
++#endif
+ 
+ static int set_target(struct cpufreq_policy *policy, unsigned int index)
+ {
+diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
+index 5fd734cffa0a..ce81b344a1c6 100644
+--- a/drivers/cpufreq/spacemit-cpufreq.c
++++ b/drivers/cpufreq/spacemit-cpufreq.c
+@@ -8,19 +8,25 @@
+ #include <linux/clk/clk-conf.h>
+ #include <linux/pm_qos.h>
+ #include <linux/notifier.h>
++#include <linux/platform_device.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/mutex.h>
++#include <linux/pm_opp.h>
++#include <linux/device.h>
++#include <linux/of.h>
++#include <linux/slab.h>
+ #include "../opp/opp.h"
++#include "cpufreq-dt.h"
+ 
+-struct per_device_qos {
+-	struct regulator *regulator;
+-	struct freq_qos_request qos;
+-};
++struct private_data {
++	struct list_head node;
+ 
+-static DEFINE_MUTEX(regulator_mutex);
+-static struct notifier_block vol_constraints_notifier;
+-static struct freq_constraints vol_constraints;
+-static struct per_device_qos *vol_qos[CONFIG_NR_CPUS];
++	cpumask_var_t cpus;
++	struct device *cpu_dev;
++	struct cpufreq_frequency_table *freq_table;
++	bool have_static_opps;
++	int opp_token;
++};
+ 
+ #ifdef CONFIG_CPU_HOTPLUG_THERMAL
+ struct thermal_cooling_device **ghotplug_cooling;
+@@ -28,24 +34,28 @@ extern struct thermal_cooling_device **
+ of_hotplug_cooling_register(struct cpufreq_policy *policy);
+ #endif
+ 
+-static int spacemit_vol_qos_notifier_call(struct notifier_block *nb, unsigned long action, void *data)
+-{
+-	regulator_set_voltage(vol_qos[0]->regulator, action * 1000, action * 1000);
++#define TURBO_FREQUENCY		(1600000000)
++#define STABLE_FREQUENCY	(1200000000)
+ 
+-	return 0;
+-}
++#define FILTER_POINTS_0		(135)
++#define FILTER_POINTS_1		(142)
++
++#define FREQ_TABLE_0		(0)
++#define FREQ_TABLE_1		(1)
++#define FREQ_TABLE_2		(2)
++
++#define PRODUCT_ID_M1		(0x36070000)
+ 
+ static int spacemit_policy_notifier(struct notifier_block *nb,
+                                   unsigned long event, void *data)
+ {
+-	int cpu, err;
++	int cpu;
+ 	u64 rates;
+ 	static int cci_init;
+ 	struct clk *cci_clk;
+ 	struct device *cpu_dev;
+ 	struct cpufreq_policy *policy = data;
+ 	struct opp_table *opp_table;
+-	const char *strings;
+ 
+ 	cpu = cpumask_first(policy->related_cpus);
+ 	cpu_dev = get_cpu_device(cpu);
+@@ -57,32 +67,17 @@ static int spacemit_policy_notifier(struct notifier_block *nb,
+ 		clk_set_rate(cci_clk, rates);
+ 		clk_put(cci_clk);
+ 		cci_init = 1;
+-	}
+-
+-	vol_qos[cpu] = devm_kzalloc(cpu_dev, sizeof(struct per_device_qos), GFP_KERNEL);
+-	if (!vol_qos[cpu])
+-		return -ENOMEM;
+-
+-	err = of_property_read_string_array(cpu_dev->of_node, "vin-supply-names",
+-			&strings, 1);
+-	if (err >= 0) {
+-		vol_qos[cpu]->regulator = devm_regulator_get(cpu_dev, strings);
+-		if (IS_ERR(vol_qos[cpu]->regulator)) {
+-			pr_err("regulator supply %s, get failed\n", strings);
+-			return PTR_ERR(vol_qos[cpu]->regulator);
+-		}
+ 
+-		err = regulator_enable(vol_qos[cpu]->regulator);
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++		if (policy->clk)
++			clk_put(policy->clk);
+ 
+-	} else {
+-		/* using the same regulator */
+-		vol_qos[cpu]->regulator = vol_qos[0]->regulator;
++		/* cover the policy->clk & opp_table->clk which has been set before */
++		policy->clk = opp_table->clks[0];
++		opp_table->clk = opp_table->clks[0];
++#endif
+ 	}
+ 
+-	if (vol_qos[cpu]->regulator)
+-		freq_qos_add_request(&vol_constraints, &vol_qos[cpu]->qos, FREQ_QOS_MIN,
+-				regulator_get_voltage(vol_qos[cpu]->regulator) / 1000);
+-
+ #ifdef CONFIG_CPU_HOTPLUG_THERMAL
+        ghotplug_cooling = of_hotplug_cooling_register(policy);
+        if (!ghotplug_cooling) {
+@@ -102,9 +97,10 @@ static int spacemit_processor_notifier(struct notifier_block *nb,
+ 	struct cpufreq_policy *policy = ( struct cpufreq_policy *)freqs->policy;
+ 	struct opp_table *opp_table;
+ 	struct device_node *np;
+-	struct clk *tcm_clk, *ace_clk;
++	struct clk *tcm_clk, *ace0_clk, *ace1_clk, *pll_clk;
+ 	u64 rates;
+ 	u32 microvol;
++	int i;
+ 
+ 	cpu = cpumask_first(policy->related_cpus);
+ 	cpu_dev = get_cpu_device(cpu);
+@@ -120,31 +116,42 @@ static int spacemit_processor_notifier(struct notifier_block *nb,
+ 
+ 	/* get the tcm/ace clk handler */
+ 	tcm_clk = of_clk_get_by_name(opp_table->np, "tcm");
+-	ace_clk = of_clk_get_by_name(opp_table->np, "ace");
++	ace0_clk = of_clk_get_by_name(opp_table->np, "ace0");
++	ace1_clk = of_clk_get_by_name(opp_table->np, "ace1");
++	pll_clk = of_clk_get_by_name(opp_table->np, "pll3");
+ 
+ 	if (event == CPUFREQ_PRECHANGE) {
+-
+-		mutex_lock(&regulator_mutex);
+-
+-		if (freqs->new > freqs->old) {
+-			/* increase voltage first */
+-			if (vol_qos[cpu]->regulator)
+-				freq_qos_update_request(&vol_qos[cpu]->qos, microvol / 1000);
+-		}
+-
+ 		/**
+ 		 * change the tcm/ace's frequency first.
+ 		 * binary division is safe
+ 		 */
+-		if (!IS_ERR(ace_clk)) {
+-			clk_set_rate(ace_clk, clk_get_rate(clk_get_parent(ace_clk)) / 2);
+-			clk_put(ace_clk);
++		if (!IS_ERR(ace0_clk)) {
++			clk_set_rate(ace0_clk, clk_get_rate(clk_get_parent(ace0_clk)) / 2);
++			clk_put(ace0_clk);
++		}
++
++		if (!IS_ERR(ace1_clk)) {
++			clk_set_rate(ace1_clk, clk_get_rate(clk_get_parent(ace1_clk)) / 2);
++			clk_put(ace1_clk);
+ 		}
+ 
+ 		if (!IS_ERR(tcm_clk)) {
+ 			clk_set_rate(tcm_clk, clk_get_rate(clk_get_parent(tcm_clk)) / 2);
+ 			clk_put(tcm_clk);
+ 		}
++
++		if (freqs->new * 1000 >= TURBO_FREQUENCY) {
++			if (freqs->old * 1000 >= TURBO_FREQUENCY) {
++				for (i = 0; i < opp_table->clk_count; ++i) {
++					clk_set_rate(opp_table->clks[i], STABLE_FREQUENCY);
++				}
++			}
++
++			/* change the frequency of pll3 first */
++			clk_set_rate(pll_clk, freqs->new * 1000);
++			clk_put(pll_clk);
++		}
++
+ 	}
+ 
+ 	if (event == CPUFREQ_POSTCHANGE) {
+@@ -158,22 +165,23 @@ static int spacemit_processor_notifier(struct notifier_block *nb,
+ 			clk_put(tcm_clk);
+ 		}
+ 
+-		if (!IS_ERR(ace_clk)) {
+-			clk_get_rate(clk_get_parent(ace_clk));
++		if (!IS_ERR(ace0_clk)) {
++			clk_get_rate(clk_get_parent(ace0_clk));
+ 			/* get the ace-hz */
+-			of_property_read_u64_array(np, "ace-hz", &rates, 1);
++			of_property_read_u64_array(np, "ace0-hz", &rates, 1);
+ 			/* then set rate */
+-			clk_set_rate(ace_clk, rates);
+-			clk_put(ace_clk);
++			clk_set_rate(ace0_clk, rates);
++			clk_put(ace0_clk);
+ 		}
+ 
+-		if (freqs->new < freqs->old) {
+-			/* decrease the voltage last */
+-			if (vol_qos[cpu]->regulator)
+-				freq_qos_update_request(&vol_qos[cpu]->qos, microvol / 1000);
++		if (!IS_ERR(ace1_clk)) {
++			clk_get_rate(clk_get_parent(ace1_clk));
++			/* get the ace-hz */
++			of_property_read_u64_array(np, "ace1-hz", &rates, 1);
++			/* then set rate */
++			clk_set_rate(ace1_clk, rates);
++			clk_put(ace1_clk);
+ 		}
+-
+-		mutex_unlock(&regulator_mutex);
+ 	}
+ 
+ 	dev_pm_opp_put_opp_table(opp_table);
+@@ -189,6 +197,272 @@ static struct notifier_block spacemit_policy_notifier_block = {
+        .notifier_call = spacemit_policy_notifier,
+ };
+ 
++static int _dev_pm_opp_of_get_sharing_cpus(struct device *cpu_dev,
++				   struct cpumask *cpumask, int indexs)
++{
++	struct device_node *np, *tmp_np, *cpu_np;
++	int cpu, ret = 0;
++
++	/* Get OPP descriptor node */
++	np = of_parse_phandle(cpu_dev->of_node, "operating-points-v2", indexs);
++	if (!np) {
++		dev_dbg(cpu_dev, "%s: Couldn't find opp node.\n", __func__);
++		return -ENOENT;
++	}
++
++	cpumask_set_cpu(cpu_dev->id, cpumask);
++
++	/* OPPs are shared ? */
++	if (!of_property_read_bool(np, "opp-shared"))
++		goto put_cpu_node;
++
++	for_each_possible_cpu(cpu) {
++		if (cpu == cpu_dev->id)
++			continue;
++
++		cpu_np = of_cpu_device_node_get(cpu);
++		if (!cpu_np) {
++			dev_err(cpu_dev, "%s: failed to get cpu%d node\n",
++				__func__, cpu);
++			ret = -ENOENT;
++			goto put_cpu_node;
++		}
++
++		/* Get OPP descriptor node */
++		tmp_np = of_parse_phandle(cpu_np, "operating-points-v2", indexs);
++		of_node_put(cpu_np);
++		if (!tmp_np) {
++			pr_err("%pOF: Couldn't find opp node\n", cpu_np);
++			ret = -ENOENT;
++			goto put_cpu_node;
++		}
++
++		/* CPUs are sharing opp node */
++		if (np == tmp_np)
++			cpumask_set_cpu(cpu, cpumask);
++
++		of_node_put(tmp_np);
++	}
++
++put_cpu_node:
++	of_node_put(np);
++	return ret;
++}
++
++/**
++ * dev_pm_opp_of_cpumask_add_table() - Adds OPP table for @cpumask
++ * @cpumask:	cpumask for which OPP table needs to be added.
++ *
++ * This adds the OPP tables for CPUs present in the @cpumask.
++ */
++static int _dev_pm_opp_of_cpumask_add_table(const struct cpumask *cpumask, int indexs)
++{
++	struct device *cpu_dev;
++	int cpu, ret;
++
++	if (WARN_ON(cpumask_empty(cpumask)))
++		return -ENODEV;
++
++	for_each_cpu(cpu, cpumask) {
++		cpu_dev = get_cpu_device(cpu);
++		if (!cpu_dev) {
++			pr_err("%s: failed to get cpu%d device\n", __func__,
++			       cpu);
++			ret = -ENODEV;
++			goto remove_table;
++		}
++
++		ret = dev_pm_opp_of_add_table_indexed(cpu_dev, indexs);
++		if (ret) {
++			/*
++			 * OPP may get registered dynamically, don't print error
++			 * message here.
++			 */
++			pr_debug("%s: couldn't find opp table for cpu:%d, %d\n",
++				 __func__, cpu, ret);
++
++			goto remove_table;
++		}
++	}
++
++	return 0;
++
++remove_table:
++	/* Free all other OPPs */
++	_dev_pm_opp_cpumask_remove_table(cpumask, cpu);
++
++	return ret;
++}
++
++extern struct private_data *cpufreq_dt_find_data(int cpu);
++extern void cpufreq_dt_add_data(struct private_data *priv);
++
++static int spacemit_dt_cpufreq_pre_early_init(struct device *dev, int cpu, int indexs)
++{
++	struct private_data *priv;
++	struct device *cpu_dev;
++	const char *reg_name[] = { "clst", NULL };
++	const char *clk_name[] = { "cls0", "cls1", NULL };
++	struct dev_pm_opp_config config = {
++		.regulator_names = reg_name,
++		.clk_names = clk_name,
++		.config_clks = dev_pm_opp_config_clks_simple,
++	};
++	int ret;
++
++	/* Check if this CPU is already covered by some other policy */
++	if (cpufreq_dt_find_data(cpu))
++		return 0;
++
++	cpu_dev = get_cpu_device(cpu);
++	if (!cpu_dev)
++		return -EPROBE_DEFER;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	if (!alloc_cpumask_var(&priv->cpus, GFP_KERNEL))
++		return -ENOMEM;
++
++	cpumask_set_cpu(cpu, priv->cpus);
++	priv->cpu_dev = cpu_dev;
++
++	/*
++	 * OPP layer will be taking care of regulators now, but it needs to know
++	 * the name of the regulator first.
++	 */
++	priv->opp_token = dev_pm_opp_set_config_indexed(cpu_dev, &config, indexs);
++	if (priv->opp_token < 0) {
++		ret = dev_err_probe(cpu_dev, priv->opp_token,
++				    "failed to set regulators\n");
++		goto free_cpumask;
++	}
++
++	/* Get OPP-sharing information from "operating-points-v2" bindings */
++	ret = _dev_pm_opp_of_get_sharing_cpus(cpu_dev, priv->cpus, indexs);
++	if (ret)
++		goto out;
++
++	/*
++	 * Initialize OPP tables for all priv->cpus. They will be shared by
++	 * all CPUs which have marked their CPUs shared with OPP bindings.
++	 *
++	 * For platforms not using operating-points-v2 bindings, we do this
++	 * before updating priv->cpus. Otherwise, we will end up creating
++	 * duplicate OPPs for the CPUs.
++	 *
++	 * OPPs might be populated at runtime, don't fail for error here unless
++	 * it is -EPROBE_DEFER.
++	 */
++	ret = _dev_pm_opp_of_cpumask_add_table(priv->cpus, indexs);
++	if (!ret) {
++		priv->have_static_opps = true;
++	} else if (ret == -EPROBE_DEFER) {
++		goto out;
++	}
++
++	/*
++	 * The OPP table must be initialized, statically or dynamically, by this
++	 * point.
++	 */
++	ret = dev_pm_opp_get_opp_count(cpu_dev);
++	if (ret <= 0) {
++		dev_err(cpu_dev, "OPP table can't be empty\n");
++		ret = -ENODEV;
++		goto out;
++	}
++
++	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &priv->freq_table);
++	if (ret) {
++		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
++		goto out;
++	}
++
++	cpufreq_dt_add_data(priv);
++
++	return 0;
++
++out:
++	if (priv->have_static_opps)
++		dev_pm_opp_of_cpumask_remove_table(priv->cpus);
++	dev_pm_opp_put_regulators(priv->opp_token);
++free_cpumask:
++	free_cpumask_var(priv->cpus);
++	return ret;
++}
++
++static int spacemit_dt_cpufreq_pre_probe(struct platform_device *pdev)
++{
++	int cpu;
++	struct device_node *cpus;
++	struct device_node *product_id, *wafer_id;
++	u32 prop = 0;
++	u32 product_prop, wafer_prop;
++
++	if (strncmp(pdev->name, "cpufreq-dt", 10) != 0)
++		return 0;
++
++	cpus = of_find_node_by_path("/cpus");
++	if (!cpus || of_property_read_u32(cpus, "svt-dro", &prop)) {
++		pr_info("Spacemit Platform with no 'svt-dro' in DTS, using defualt frequency Table0\n");
++	}
++
++	product_id = of_find_node_by_path("/");
++	if (!product_id || of_property_read_u32(product_id, "product-id", &product_prop)) {
++		pr_info("Spacemit Platform with no 'product-id' in DTS\n");
++	}
++
++	wafer_id = of_find_node_by_path("/");
++	if (!wafer_id || of_property_read_u32(product_id, "wafer-id", &wafer_prop)) {
++		pr_info("Spacemit Platform with no 'product-id' in DTS\n");
++	}
++
++	if ((wafer_prop << 16 | product_prop) == PRODUCT_ID_M1) {
++		for_each_possible_cpu(cpu) {
++			if (prop <= FILTER_POINTS_0)
++				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_0);
++			else if (prop <= FILTER_POINTS_1)
++				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_1);
++			else
++				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_2);
++		}
++	} else {
++		for_each_possible_cpu(cpu) {
++			spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_0);
++		}
++	}
++
++	return 0;
++}
++
++static int __device_notifier_call(struct notifier_block *nb,
++				      unsigned long event, void *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++
++	switch (event) {
++	case BUS_NOTIFY_REMOVED_DEVICE:
++		break;
++	case BUS_NOTIFY_UNBOUND_DRIVER:
++		break;
++	case BUS_NOTIFY_BIND_DRIVER:
++		/* here */
++		spacemit_dt_cpufreq_pre_probe(pdev);
++		break;
++	case BUS_NOTIFY_ADD_DEVICE:
++		break;
++	default:
++		break;
++	}
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block spacemit_platform_nb = {
++	.notifier_call = __device_notifier_call,
++};
++
+ static int __init spacemit_processor_driver_init(void)
+ {
+        int ret;
+@@ -205,9 +479,7 @@ static int __init spacemit_processor_driver_init(void)
+                return -EINVAL;
+        }
+ 
+-       vol_constraints_notifier.notifier_call = spacemit_vol_qos_notifier_call;
+-       freq_constraints_init(&vol_constraints);
+-       freq_qos_add_notifier(&vol_constraints, FREQ_QOS_MIN, &vol_constraints_notifier);
++	bus_register_notifier(&platform_bus_type, &spacemit_platform_nb);
+ 
+        return 0;
+ }
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 73e9a3b2f29b..2339a4cebf8f 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -699,8 +699,13 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_exact_indexed);
+ static noinline struct dev_pm_opp *_find_freq_ceil(struct opp_table *opp_table,
+ 						   unsigned long *freq)
+ {
++#ifndef CONFIG_SOC_SPACEMIT
+ 	return _opp_table_find_key_ceil(opp_table, freq, 0, true, _read_freq,
+ 					assert_single_clk);
++#else
++	return _opp_table_find_key_ceil(opp_table, freq, 0, true, _read_freq,
++					NULL);
++#endif
+ }
+ 
+ /**
+@@ -724,7 +729,11 @@ static noinline struct dev_pm_opp *_find_freq_ceil(struct opp_table *opp_table,
+ struct dev_pm_opp *dev_pm_opp_find_freq_ceil(struct device *dev,
+ 					     unsigned long *freq)
+ {
++#ifndef CONFIG_SOC_SPACEMIT
+ 	return _find_key_ceil(dev, freq, 0, true, _read_freq, assert_single_clk);
++#else
++	return _find_key_ceil(dev, freq, 0, true, _read_freq, NULL);
++#endif
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_ceil);
+ 
+@@ -2617,6 +2626,110 @@ int dev_pm_opp_set_config(struct device *dev, struct dev_pm_opp_config *config)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_set_config);
+ 
++#ifdef CONFIG_SOC_SPACEMIT
++int dev_pm_opp_set_config_indexed(struct device *dev, struct dev_pm_opp_config *config, int index)
++{
++	struct opp_table *opp_table;
++	struct opp_config_data *data;
++	unsigned int id;
++	int ret;
++
++	data = kmalloc(sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	opp_table = _add_opp_table_indexed(dev, index, false);
++	if (IS_ERR(opp_table)) {
++		kfree(data);
++		return PTR_ERR(opp_table);
++	}
++
++	data->opp_table = opp_table;
++	data->flags = 0;
++
++	/* This should be called before OPPs are initialized */
++	if (WARN_ON(!list_empty(&opp_table->opp_list))) {
++		ret = -EBUSY;
++		goto err;
++	}
++
++	/* Configure clocks */
++	if (config->clk_names) {
++		ret = _opp_set_clknames(opp_table, dev, config->clk_names,
++					config->config_clks);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_CLK;
++	} else if (config->config_clks) {
++		/* Don't allow config callback without clocks */
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/* Configure property names */
++	if (config->prop_name) {
++		ret = _opp_set_prop_name(opp_table, config->prop_name);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_PROP_NAME;
++	}
++
++	/* Configure config_regulators helper */
++	if (config->config_regulators) {
++		ret = _opp_set_config_regulators_helper(opp_table, dev,
++						config->config_regulators);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_REGULATOR_HELPER;
++	}
++
++	/* Configure supported hardware */
++	if (config->supported_hw) {
++		ret = _opp_set_supported_hw(opp_table, config->supported_hw,
++					    config->supported_hw_count);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_SUPPORTED_HW;
++	}
++
++	/* Configure supplies */
++	if (config->regulator_names) {
++		ret = _opp_set_regulators(opp_table, dev,
++					  config->regulator_names);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_REGULATOR;
++	}
++
++	/* Attach genpds */
++	if (config->genpd_names) {
++		ret = _opp_attach_genpd(opp_table, dev, config->genpd_names,
++					config->virt_devs);
++		if (ret)
++			goto err;
++
++		data->flags |= OPP_CONFIG_GENPD;
++	}
++
++	ret = xa_alloc(&opp_configs, &id, data, XA_LIMIT(1, INT_MAX),
++		       GFP_KERNEL);
++	if (ret)
++		goto err;
++
++	return id;
++
++err:
++	_opp_clear_config(data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(dev_pm_opp_set_config_indexed);
++#endif
++
+ /**
+  * dev_pm_opp_clear_config() - Releases resources blocked for OPP configuration.
+  * @token: The token returned by dev_pm_opp_set_config() previously.
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index c247317aae38..5d5cc4756487 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -181,6 +181,9 @@ int dev_pm_opp_register_notifier(struct device *dev, struct notifier_block *nb);
+ int dev_pm_opp_unregister_notifier(struct device *dev, struct notifier_block *nb);
+ 
+ int dev_pm_opp_set_config(struct device *dev, struct dev_pm_opp_config *config);
++#ifdef CONFIG_SOC_SPACEMIT
++int dev_pm_opp_set_config_indexed(struct device *dev, struct dev_pm_opp_config *config, int index);
++#endif
+ int devm_pm_opp_set_config(struct device *dev, struct dev_pm_opp_config *config);
+ void dev_pm_opp_clear_config(int token);
+ int dev_pm_opp_config_clks_simple(struct device *dev,
+-- 
+2.47.0
+

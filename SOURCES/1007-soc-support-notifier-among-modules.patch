@@ -1,0 +1,34 @@
+From 5734e1f6f931cd59ca849e0c6b5aafd3a847d25a Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 20 Nov 2024 14:24:35 +0800
+Subject: [PATCH 1007/1202] soc: support notifier among modules
+
+---
+ include/soc/spacemit/spacemit_panel.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/include/soc/spacemit/spacemit_panel.h b/include/soc/spacemit/spacemit_panel.h
+index cd1d7b1fa634..08a82895673b 100644
+--- a/include/soc/spacemit/spacemit_panel.h
++++ b/include/soc/spacemit/spacemit_panel.h
+@@ -30,4 +30,17 @@ enum{
+ extern int spacemit_hdmi_register_client(struct notifier_block *nb);
+ extern int spacemit_hdmi_unregister_client(struct notifier_block *nb);
+ 
++typedef enum{
++	HEADSET_EVENT_CONNECTED = 0,
++	HEADSET_EVENT_DISCONNECTED,
++	HEADPHONE_EVENT_CONNECTED,
++	HEADPHONE_EVENT_DISCONNECTED,
++	HPMIC_EVENT_CONNECTED,
++	HPMIC_EVENT_DISCONNECTED,
++} __alsa_codec_event_e;
++
++extern int spacemit_headphone_register_client(struct notifier_block *nb);
++extern int spacemit_headphone_unregister_client(struct notifier_block *nb);
++extern int spacemit_headphone_notifier_call_chain(__alsa_codec_event_e val, char *v);
++
+ #endif
+-- 
+2.47.0
+

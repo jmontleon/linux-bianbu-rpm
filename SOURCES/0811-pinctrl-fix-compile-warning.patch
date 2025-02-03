@@ -1,0 +1,28 @@
+From 7ecaadada5b567dddea128dc8f582e23ba923ed1 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 11 Jul 2024 19:16:03 +0800
+Subject: [PATCH 0811/1202] pinctrl: fix compile warning
+
+Change-Id: Ia3a807bafd526423bcea47d72edf1929f8c05a72
+---
+ drivers/pinctrl/pinctrl-single.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index bdbcd3975379..553b2d627b00 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1822,10 +1822,6 @@ static int pcs_probe(struct platform_device *pdev)
+ 	struct pcs_device *pcs;
+ 	const struct pcs_soc_data *soc;
+ 	int ret;
+-#ifdef CONFIG_SOC_SPACEMIT_K1X
+-	unsigned val;
+-	void __iomem *mem_base;
+-#endif
+ 
+ 	soc = of_device_get_match_data(&pdev->dev);
+ 	if (WARN_ON(!soc))
+-- 
+2.47.0
+

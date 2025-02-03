@@ -1,0 +1,84 @@
+From 3db27d198a8c084f059af7062148cf31da43eecf Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 14 Nov 2024 18:40:14 +0800
+Subject: [PATCH 1093/1202] riscv:rwonce: add __READ_ONCE implementation for
+ risc-v
+
+Change-Id: I6a0c54e2c5d425f53a57218f4dc59c25357c2877
+---
+ arch/riscv/Kconfig.socs         |  7 ++++++
+ arch/riscv/include/asm/rwonce.h | 44 +++++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+)
+ create mode 100644 arch/riscv/include/asm/rwonce.h
+
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 3a8bddeb0d99..e929e301a3f2 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -143,6 +143,13 @@ config BIND_THREAD_TO_AICORES
+ 	help
+ 	  This enable bind ai cores when use AI instruction.
+ 
++config SPACEMIT_ERRATA_LOAD_ATOMIC
++	bool "enable issue fix which caused by readforward and writeback"
++	depends on SOC_SPACEMIT_K1X
++	default y
++	help
++	  This enable fix errata caused by readforward and writeback.
++
+ endif
+ 
+ endmenu # "SoC selection"
+diff --git a/arch/riscv/include/asm/rwonce.h b/arch/riscv/include/asm/rwonce.h
+new file mode 100644
+index 000000000000..349b8792aedb
+--- /dev/null
++++ b/arch/riscv/include/asm/rwonce.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2024 Spaciemit Ltd.
++ */
++#ifndef __ASM_RWONCE_H
++#define __ASM_RWONCE_H
++
++#if defined(CONFIG_SPACEMIT_ERRATA_LOAD_ATOMIC) && !defined(__ASSEMBLY__)
++
++
++#define __READ_ONCE(x)							\
++({									\
++	typeof(&(x)) __x = &(x);					\
++	int atomic = 1;							\
++	union { __unqual_scalar_typeof(*__x) __val; char __c[1]; } __u;	\
++	switch (sizeof(x)) {						\
++	case 4:								\
++		asm volatile (						\
++			"lr.w %0, 0(%1)"				\
++			: "=r" (*(__u32 *)__u.__c)			\
++			: "r" (__x)					\
++			: "memory"					\
++		);							\
++		break;							\
++	case 8:								\
++		asm volatile (						\
++			"lr.d %0, 0(%1)"				\
++			: "=r" (*(__u64 *)__u.__c)			\
++			: "r" (__x)					\
++			: "memory"					\
++		);							\
++		break;							\
++	default:							\
++		asm volatile ("fence	rw, rw" ::: "memory");		\
++		atomic = 0;						\
++	}								\
++	atomic ? (typeof(*__x))__u.__val : (*(volatile typeof(__x))__x);\
++})
++
++#endif	/* CONFIG_SPACEMIT_ERRATA_LOAD_ATOMIC && !__ASSEMBLY__ */
++
++#include <asm-generic/rwonce.h>
++
++#endif	/* __ASM_RWONCE_H */
+-- 
+2.47.0
+

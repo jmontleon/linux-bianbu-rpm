@@ -1,0 +1,63 @@
+From 89b198f9695cd2dcc9887ce1c4868cd51473a22e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Fri, 2 Feb 2024 11:11:20 +0800
+Subject: [PATCH 0408/1202] clock: uart source 48M and 14.7M have same gate
+ bit, it should be a common gate
+
+Change-Id: Ie3877e31684c97c68bfdeb39ae98e600822cac11
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c        | 14 ++++++++++----
+ include/dt-bindings/clock/spacemit-k1x-clock.h |  4 +++-
+ 2 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 553dac7784dd..e70933692406 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -428,13 +428,18 @@ static struct ccu_ddn_tbl slow_uart1_tbl[] = {
+ static struct ccu_ddn_tbl slow_uart2_tbl[] = {
+ 	{.num = 6144, .den = 960},/*rate = parent_rate*960/6144/2) */
+ };
+-static SPACEMIT_CCU_DDN_GATE(slow_uart1_14p74, "slow_uart1_14p74", "pll1_d16_153p6",
++
++static SPACEMIT_CCU_GATE_NO_PARENT(slow_uart, "slow_uart", NULL,
++	BASE_TYPE_MPMU, MPMU_ACGR,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DDN(slow_uart1_14p74, "slow_uart1_14p74", "pll1_d16_153p6",
+ 	&uart_ddn_mask_info, &slow_uart1_tbl, ARRAY_SIZE(slow_uart1_tbl),
+-	BASE_TYPE_MPMU, MPMU_SUCCR, MPMU_ACGR, BIT(1),
++	BASE_TYPE_MPMU, MPMU_SUCCR,
+ 	CLK_IGNORE_UNUSED);
+-static SPACEMIT_CCU_DDN_GATE(slow_uart2_48, "slow_uart2_48", "pll1_d4_614p4",
++static SPACEMIT_CCU_DDN(slow_uart2_48, "slow_uart2_48", "pll1_d4_614p4",
+ 	&uart_ddn_mask_info, &slow_uart2_tbl, ARRAY_SIZE(slow_uart2_tbl),
+-	BASE_TYPE_MPMU, MPMU_SUCCR_1, MPMU_ACGR, BIT(1),
++	BASE_TYPE_MPMU, MPMU_SUCCR_1,
+ 	CLK_IGNORE_UNUSED);
+ 
+ //apbc
+@@ -1260,6 +1265,7 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
+ 		[CLK_SEC_KPC]		= &kpc_sec_clk.common.hw,
+ 		[CLK_SEC_GPIO]		= &gpio_sec_clk.common.hw,
+ 		[CLK_APB]		= &apb_clk.common.hw,
++		[CLK_SLOW_UART]		= &slow_uart.common.hw,
+ 	},
+ 	.num = CLK_MAX_NO,
+ };
+diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
+index 8be995999fcf..4abf7b20ec64 100755
+--- a/include/dt-bindings/clock/spacemit-k1x-clock.h
++++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
+@@ -187,5 +187,7 @@
+ #define CLK_PLL3_40     178
+ #define CLK_PLL3_20     179
+ 
+-#define CLK_MAX_NO      180
++#define CLK_SLOW_UART   180
++
++#define CLK_MAX_NO      181
+ #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
+-- 
+2.47.0
+

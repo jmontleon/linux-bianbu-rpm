@@ -1,0 +1,41 @@
+From 8c3f5c47c6ac471787c77fd03d432e70996d1966 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 16 Apr 2024 16:29:57 +0800
+Subject: [PATCH 0594/1202] clean compile warning:
+
+drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c:560:13: warning: 'mvx_pm_enable_clk' defined but not used [-Wunused-function]
+  560 | static void mvx_pm_enable_clk(struct device *dev)
+      |             ^~~~~~~~~~~~~~~~~
+drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c:546:13: warning: 'mvx_pm_disable_clk' defined but not used [-Wunused-function]
+  546 | static void mvx_pm_disable_clk(struct device *dev)
+      |             ^~~~~~~~~~~~~~~~~~
+
+Change-Id: I014ba1ce1aa1e03e11898c2e2af6409bc0d9452c
+---
+ drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+index 49a0f6c09a8e..ec949dfd3803 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+@@ -543,6 +543,8 @@ static void reset_hw(struct device *dev)
+ }
+ 
+ static int b_backto_active;
++
++#if 0
+ static void mvx_pm_disable_clk(struct device *dev)
+ {
+     struct clk* clock;
+@@ -570,6 +572,7 @@ static void mvx_pm_enable_clk(struct device *dev)
+         clk_prepare_enable(clock);
+     }
+ }
++#endif
+ 
+ static int mvx_pm_poweron(struct device *dev)
+ {
+-- 
+2.47.0
+

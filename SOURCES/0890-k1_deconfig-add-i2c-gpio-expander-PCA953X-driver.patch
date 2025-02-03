@@ -1,0 +1,27 @@
+From 979807bddb71e6fe9e5aa2d2a27005ac7c19c820 Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Mon, 24 Jun 2024 22:57:52 +0800
+Subject: [PATCH 0890/1202] k1_deconfig: add i2c gpio expander PCA953X driver
+
+Signed-off-by: xudong <dong.xu@spacemit.com>
+Change-Id: I46903e0634ab2d1a89b4ccff6a0602f32e225f8c
+---
+ arch/riscv/configs/k1_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 455c4b260578..ee698943e166 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -387,6 +387,8 @@ CONFIG_PINCTRL_SPACEMIT_PMIC=y
+ CONFIG_PINCTRL_SINGLE=y
+ CONFIG_GPIO_SYSFS=y
+ CONFIG_GPIO_K1X=y
++CONFIG_GPIO_PCA953X=y
++CONFIG_GPIO_PCA953X_IRQ=y
+ CONFIG_POWER_SUPPLY=y
+ CONFIG_BATTERY_SBS=y
+ CONFIG_SENSORS_PWM_FAN=y
+-- 
+2.47.0
+

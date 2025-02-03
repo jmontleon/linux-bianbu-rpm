@@ -1,0 +1,38 @@
+From 06b3967f0db87d488ccad88fd9cbb2d0dd03f2b3 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 21 Nov 2024 20:15:13 +0800
+Subject: [PATCH 1135/1202] build: disable character output display during the
+ kernel compilation
+
+the output is as follows printing by openssl:
+  CERT    certs/x509_certificate_list
+  GENKEY  certs/signing_key.pem
+.....+................+...+.....+++++++++++++++++++++++++++++++++
+..+....+.....+......+....+..+....+....................+............
+  CC      arch/riscv/kernel/probes/decode-insn.o
+...+..........+..........................+.......+...............
+..++++  CC      fs/notify/inotify/inotify_fsnotify.o
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.....+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Change-Id: Ia9ffa6b451f0e1612b50872a0fc1010fdc5eff6c
+---
+ certs/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/certs/Makefile b/certs/Makefile
+index f6fa4d8d75e0..6d70e323eb8c 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -47,7 +47,7 @@ keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ECDSA) := -newkey ec -pkeyopt ec_paramgen_c
+ quiet_cmd_gen_key = GENKEY  $@
+       cmd_gen_key = openssl req -new -nodes -utf8 -$(CONFIG_MODULE_SIG_HASH) -days 36500 \
+ 		-batch -x509 -config $< \
+-		-outform PEM -out $@ -keyout $@ $(keytype-y) 2>&1
++		-outform PEM -out $@ -keyout $@ $(keytype-y) 2> /dev/null
+ 
+ $(obj)/signing_key.pem: $(obj)/x509.genkey FORCE
+ 	$(call if_changed,gen_key)
+-- 
+2.47.0
+

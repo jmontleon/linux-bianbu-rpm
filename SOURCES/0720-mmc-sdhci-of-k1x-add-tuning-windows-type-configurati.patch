@@ -1,0 +1,67 @@
+From 14c0b778a89672b7443bb07fb71b1d73beadc6c5 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 29 May 2024 15:39:45 +0800
+Subject: [PATCH 0720/1202] mmc: sdhci-of-k1x: add tuning windows type
+ configuration
+
+Change-Id: I90b0c65ccd4459e266572f4b12042bda32a3c144
+---
+ drivers/mmc/host/sdhci-of-k1x.c         | 12 +++++++++---
+ include/linux/platform_data/k1x_sdhci.h |  1 +
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index e113c881d475..6fc6555b4c75 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -1100,7 +1100,7 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)
+ 		if ((max - min) >= rxtuning->window_limit) {
+ 			tmp.max_delay = max;
+ 			tmp.min_delay = min;
+-			tmp.type = MIDDLE_WINDOW;
++			tmp.type = pdata->rxtuning.window_type;
+ 			for (i = 0; i < CANDIDATE_WIN_NUM; i++) {
+ 				len = rxtuning->windows[i].max_delay - rxtuning->windows[i].min_delay;
+ 				if ((tmp.max_delay - tmp.min_delay) > len) {
+@@ -1140,11 +1140,11 @@ static int spacemit_sw_rx_select_delay(struct sdhci_host *host)
+ 			continue;
+ 
+ 		if (window->type == LEFT_WINDOW) {
++			tuning->select_delay[tuning->select_delay_num++] = min + win_len / 4;
+ 			tuning->select_delay[tuning->select_delay_num++] = min + win_len / 3;
+-			tuning->select_delay[tuning->select_delay_num++] = min + win_len / 2;
+ 		} else if (window->type == RIGHT_WINDOW) {
+ 			tuning->select_delay[tuning->select_delay_num++] = max - win_len / 4;
+-			tuning->select_delay[tuning->select_delay_num++] = min - win_len / 3;
++			tuning->select_delay[tuning->select_delay_num++] = max - win_len / 3;
+ 		} else {
+ 			tuning->select_delay[tuning->select_delay_num++] = mid;
+ 			tuning->select_delay[tuning->select_delay_num++] = mid + win_len / 4;
+@@ -1455,6 +1455,12 @@ static void spacemit_get_of_property(struct sdhci_host *host,
+ 	else
+ 		pdata->rxtuning.window_limit = RX_TUNING_WINDOW_THRESHOLD;
+ 
++	/* read rx tuning window type */
++	if (!of_property_read_u32(np, "spacemit,rx_tuning_type", &property))
++		pdata->rxtuning.window_type = (u8)property;
++	else
++		pdata->rxtuning.window_type = MIDDLE_WINDOW;
++
+ 	/* tx tuning dline_reg */
+ 	if (!of_property_read_u32(np, "spacemit,tx_dline_reg", &property))
+ 		pdata->tx_dline_reg = (u8)property;
+diff --git a/include/linux/platform_data/k1x_sdhci.h b/include/linux/platform_data/k1x_sdhci.h
+index f6de96801279..96ba444ada34 100644
+--- a/include/linux/platform_data/k1x_sdhci.h
++++ b/include/linux/platform_data/k1x_sdhci.h
+@@ -52,6 +52,7 @@ struct rx_tuning {
+ 	u32 card_cid[4];
+ 	u8 window_limit;
+ 	u8 tuning_fail;
++	u8 window_type;
+ };
+ 
+ /*
+-- 
+2.47.0
+

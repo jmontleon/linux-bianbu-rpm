@@ -1,7 +1,7 @@
-From f6396bc2581adaaad0abf7fd74fa3dc8a023dede Mon Sep 17 00:00:00 2001
+From 570c989099c3909b5e76532f4e53b277422a09ea Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 11:01:54 +0800
-Subject: [PATCH 0247/1206] reserved 2GB~4GB area from memory space, it should
+Subject: [PATCH 0247/1202] reserved 2GB~4GB area from memory space, it should
  be io registers area
 
 Change-Id: Ifbb89436208a2508690e7c16ec630ca0acf488c9
@@ -27,10 +27,10 @@ index 8b1dcf6e6a4a..5532c0a65e3e 100644
  
  	soc {
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 088f9779ec3d..62bf141adbcf 100644
+index d8c5016905af..3df7eb7e1e04 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -315,7 +315,12 @@ static void __init setup_bootmem(void)
+@@ -319,7 +319,12 @@ static void __init setup_bootmem(void)
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  
  #ifdef CONFIG_ZONE_DMA32

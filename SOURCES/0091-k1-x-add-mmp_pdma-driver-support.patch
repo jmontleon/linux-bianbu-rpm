@@ -1,7 +1,7 @@
-From 144a37bc862818cadceea20efc083be442a060f6 Mon Sep 17 00:00:00 2001
+From 4d945b0b5c08064de4b4a93b8b519d1c638ef473 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 29 Aug 2023 10:51:49 +0800
-Subject: [PATCH 0091/1206] k1-x add mmp_pdma driver support
+Subject: [PATCH 0091/1202] k1-x add mmp_pdma driver support
 
 Change-Id: I10a015121ee8e394700fc0de75660887834d23fa
 ---
@@ -51,7 +51,7 @@ index 6fbf072654d3..61fd48715a14 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index e994d6e0779e..2159a3e9bcb8 100644
+index 8afea2e23360..b1003517d2bd 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -441,6 +441,11 @@ config MILBEAUT_XDMAC
@@ -97,10 +97,10 @@ index e994d6e0779e..2159a3e9bcb8 100644
  
  config MPC512X_DMA
 diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 5b2a52f4f2ee..edf3a930b3b0 100644
+index 19ba465011a6..15d0e632ef9d 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
-@@ -56,6 +56,7 @@ obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
+@@ -55,6 +55,7 @@ obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
  obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
  obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
  obj-$(CONFIG_MMP_PDMA) += mmp_pdma.o

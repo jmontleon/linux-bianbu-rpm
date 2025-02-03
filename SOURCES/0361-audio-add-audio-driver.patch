@@ -1,0 +1,2822 @@
+From 74b5572f7224e265b395c3757ca5f47e8831db72 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Fri, 12 Jan 2024 23:08:47 +0800
+Subject: [PATCH 0361/1202] audio: add audio driver
+
+Change-Id: I3b1c964f78480197e50f7a91f92fb8552ba23bff
+---
+ sound/soc/Kconfig                        |   1 +
+ sound/soc/Makefile                       |   1 +
+ sound/soc/spacemit/Kconfig               |   7 +
+ sound/soc/spacemit/Makefile              |   4 +
+ sound/soc/spacemit/spacemit-snd-adsp.c   | 516 ++++++++++++++++++
+ sound/soc/spacemit/spacemit-snd-adsp.h   |  65 +++
+ sound/soc/spacemit/spacemit-snd-card.c   | 219 ++++++++
+ sound/soc/spacemit/spacemit-snd-ipc.c    | 310 +++++++++++
+ sound/soc/spacemit/spacemit-snd-ipc.h    |  65 +++
+ sound/soc/spacemit/spacemit-snd-memory.c | 223 ++++++++
+ sound/soc/spacemit/spacemit-snd-memory.h |  38 ++
+ sound/soc/spacemit/spacemit-snd-msgs.h   | 244 +++++++++
+ sound/soc/spacemit/spacemit-snd-pcm.c    | 662 +++++++++++++++++++++++
+ sound/soc/spacemit/spacemit-snd-soc.c    |  46 ++
+ sound/soc/spacemit/spacemit-snd-soc.h    |  12 +
+ sound/soc/spacemit/spacemit-snd-sspa.c   | 153 ++++++
+ sound/soc/spacemit/spacemit-snd-sspa.h   |  79 +++
+ sound/soc/spacemit/spacemit-snd.h        |  16 +
+ 18 files changed, 2661 insertions(+)
+ create mode 100644 sound/soc/spacemit/Kconfig
+ create mode 100644 sound/soc/spacemit/Makefile
+ create mode 100644 sound/soc/spacemit/spacemit-snd-adsp.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-adsp.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd-card.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-ipc.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-ipc.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd-memory.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-memory.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd-msgs.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd-pcm.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-soc.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-soc.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd-sspa.c
+ create mode 100644 sound/soc/spacemit/spacemit-snd-sspa.h
+ create mode 100644 sound/soc/spacemit/spacemit-snd.h
+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 5efba76abb31..25c5a3179be5 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -123,6 +123,7 @@ source "sound/soc/uniphier/Kconfig"
+ source "sound/soc/ux500/Kconfig"
+ source "sound/soc/xilinx/Kconfig"
+ source "sound/soc/xtensa/Kconfig"
++source "sound/soc/spacemit/Kconfig"
+ 
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 08baaa11d813..764a7b71e603 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -77,3 +77,4 @@ obj-$(CONFIG_SND_SOC)	+= ux500/
+ obj-$(CONFIG_SND_SOC)	+= xilinx/
+ obj-$(CONFIG_SND_SOC)	+= xtensa/
+ obj-$(CONFIG_SND_SOC)	+= sdw_utils/
++obj-$(CONFIG_SND_SOC)	+= spacemit/
+diff --git a/sound/soc/spacemit/Kconfig b/sound/soc/spacemit/Kconfig
+new file mode 100644
+index 000000000000..8c1b74cb3dfb
+--- /dev/null
++++ b/sound/soc/spacemit/Kconfig
+@@ -0,0 +1,7 @@
++config SND_SOC_SPACEMIT
++	tristate "SoC Audio for SPACEMIT System-on-Chip"
++	select SND_SOC_COMPRESS
++	select SND_SOC_GENERIC_DMAENGINE_PCM if (SND_SOC && SND)
++	help
++	  Say Y or M here if you want support for audio on SPACEMIT SoC.
++
+diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
+new file mode 100644
+index 000000000000..8b06a074bb5d
+--- /dev/null
++++ b/sound/soc/spacemit/Makefile
+@@ -0,0 +1,4 @@
++snd-soc-spacemit-objs := spacemit-snd-pcm.o  spacemit-snd-sspa.o \
++			spacemit-snd-adsp.o spacemit-snd-ipc.o spacemit-snd-memory.o \
++			spacemit-snd-soc.o spacemit-snd-card.o
++obj-$(CONFIG_SND_SOC_SPACEMIT) += snd-soc-spacemit.o
+diff --git a/sound/soc/spacemit/spacemit-snd-adsp.c b/sound/soc/spacemit/spacemit-snd-adsp.c
+new file mode 100644
+index 000000000000..56a8371a7cca
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-adsp.c
+@@ -0,0 +1,516 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include <linux/freezer.h>
++#include <linux/delay.h>
++
++#include "spacemit-snd-adsp.h"
++#include "spacemit-snd-ipc.h"
++#include "spacemit-snd-msgs.h"
++
++#define SPACEMIT_SND_IPC_TIMEOUT_MSECS 600
++
++struct spacemit_snd_adsp_event_handler_ {
++	struct spacemit_snd_adsp_event_handler *ev_handler;
++	struct list_head node;
++};
++
++struct spacemit_snd_adsp_client {
++	const char *name;
++	atomic_t seq_no;
++	struct spacemit_snd_ipc ipc;
++	struct task_struct *rx_thread;
++	spinlock_t spinlock;
++	void *data_mem;
++	adsp_channel_t *ch;
++};
++
++static inline uint32_t CMD2HEADER(struct spacemit_snd_adsp_client *adsp_client, uint32_t cmd)
++{
++	return cmd | IPC_MSG_SEQ_NO(atomic_inc_return(&adsp_client->seq_no));
++}
++
++int spacemit_snd_adsp_stream_alloc(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s)
++{
++	int ret;
++
++	struct spacemit_snd_ipc_stream_alloc stream_alloc;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_alloc.stream_type = s->type;
++
++	stream_alloc.bits = s->bits;
++	stream_alloc.channels = s->channels;
++	stream_alloc.sample_rate = s->sample_rate;
++	stream_alloc.format = s->format;
++	stream_alloc.bit_rate = s->bit_rate;
++	stream_alloc.hw_dev = s->hw_dev;
++	stream_alloc.dma_enhancement = s->dma_enhancement;
++	ret = spacemit_snd_ipc_send_msg_wait(ipc, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_ALLOC),
++		&stream_alloc, sizeof(stream_alloc), NULL, 0, SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++	if (ret)
++		return ret;
++	pr_debug("adsp stream id: 0x%x\n", s->type);
++
++	return 0;
++}
++
++int spacemit_snd_adsp_stream_free(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s)
++{
++	int ret = 0;
++
++	struct spacemit_snd_ipc_stream_free stream_free;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_free.stream_type = s->type;
++	ret = spacemit_snd_ipc_send_msg_wait(ipc, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_FREE),
++		&stream_free, sizeof(stream_free), NULL, 0, SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++
++	spin_lock(&adsp_client->spinlock);
++	spacemit_snd_ipc_drop_msgs(&adsp_client->ipc, s);
++	spin_unlock(&adsp_client->spinlock);
++
++	return ret;
++}
++
++int spacemit_snd_adsp_stream_resume(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s)
++{
++	struct spacemit_snd_ipc_stream_resume stream_resume;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_resume.stream_type = s->type;
++	return spacemit_snd_ipc_send_msg(ipc, s, NULL, NULL, CMD2HEADER(adsp_client, IPC_STREAM_MSG_RESUME),
++		&stream_resume, sizeof(struct spacemit_snd_ipc_stream_resume), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_RESUME));
++}
++
++int spacemit_snd_adsp_stream_pause(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s)
++{
++	struct spacemit_snd_ipc_stream_pause stream_pause;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_pause.stream_type = s->type;
++	return spacemit_snd_ipc_send_msg(ipc, s, NULL, NULL, CMD2HEADER(adsp_client, IPC_STREAM_MSG_PAUSE),
++		&stream_pause, sizeof(struct spacemit_snd_ipc_stream_pause), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_PAUSE));
++
++}
++
++int spacemit_snd_adsp_stream_eos(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, struct spacemit_snd_adsp_stream *s)
++{
++	struct spacemit_snd_ipc_stream_eos stream_eos;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_eos.stream_type = s->type;
++	return spacemit_snd_ipc_send_msg(ipc, s, callback, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_EOS),
++		&stream_eos, sizeof(struct spacemit_snd_ipc_stream_eos), !!(callback != NULL));
++}
++
++int spacemit_snd_adsp_stream_flush(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s)
++{
++	int ret;
++
++	struct spacemit_snd_ipc_stream_flush stream_flush;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_flush.stream_type = s->type;
++
++	ret = spacemit_snd_ipc_send_msg_wait(ipc, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_FLUSH),
++		&stream_flush, sizeof(stream_flush), NULL, 0, SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++
++	spacemit_snd_ipc_drop_msgs(ipc, s);
++
++	return ret;
++}
++
++int spacemit_snd_adsp_stream_write_data(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, \
++	struct spacemit_snd_adsp_stream *s, struct audio_buffer *abuf)
++{
++	struct spacemit_snd_ipc_stream_write_data stream_write_data;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_write_data.paddr = abuf->paddr;
++	stream_write_data.filled = abuf->filled;
++	stream_write_data.stream_type = s->type;
++
++	return spacemit_snd_ipc_send_msg(ipc, s, callback, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_WRITE_DATA),
++		&stream_write_data, sizeof(stream_write_data), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_WRITE_DATA));
++}
++
++
++int spacemit_snd_adsp_stream_read_data(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, \
++	struct spacemit_snd_adsp_stream *s, struct audio_buffer *abuf)
++{
++	struct spacemit_snd_ipc_stream_read_data stream_read_data;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s\n", __func__);
++	stream_read_data.paddr = abuf->paddr;
++	stream_read_data.required = abuf->size;
++	stream_read_data.stream_type = s->type;
++
++	return spacemit_snd_ipc_send_msg(ipc, s, callback, s, CMD2HEADER(adsp_client, IPC_STREAM_MSG_READ_DATA),
++		&stream_read_data, sizeof(stream_read_data), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_READ_DATA));
++}
++
++int spacemit_snd_adsp_stream_set_volume(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s, uint32_t lvol, uint32_t rvol, uint32_t curve_duration)
++{
++	struct spacemit_snd_ipc_stream_set_volume stream_set_volume;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, (L:%d, R:%d)\n", __func__, lvol, rvol);
++	stream_set_volume.stream_type = s->type;
++	stream_set_volume.left_volume = lvol;
++	stream_set_volume.right_volume = rvol;
++	stream_set_volume.curve_duration = curve_duration;
++	return spacemit_snd_ipc_send_msg(ipc, s, NULL, NULL, CMD2HEADER(adsp_client, IPC_STREAM_MSG_SET_VOLUME),
++		&stream_set_volume, sizeof(stream_set_volume), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_SET_VOLUME));
++
++}
++
++int spacemit_snd_adsp_stream_set_mic_mute(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t mute, uint32_t curve_duration)
++{
++	struct spacemit_snd_ipc_stream_set_mic_mute stream_set_mute;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, %d\n", __func__, mute);
++	stream_set_mute.stream_type = s->type;
++	stream_set_mute.mute = mute;
++	stream_set_mute.curve_duration = curve_duration;
++
++	return spacemit_snd_ipc_send_msg(ipc, s, NULL, NULL,
++		CMD2HEADER(adsp_client, IPC_STREAM_MSG_SET_MIC_MUTE),
++		&stream_set_mute, sizeof(stream_set_mute),
++		IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_SET_MIC_MUTE));
++}
++
++int spacemit_snd_adsp_stream_set_hw_dev(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t device)
++{
++	struct spacemit_snd_ipc_stream_set_hw_dev stream_set_dev;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, %d\n", __func__, device);
++	stream_set_dev.stream_type = s->type;
++	stream_set_dev.device = device;
++	return spacemit_snd_ipc_send_msg(ipc, s, NULL, NULL,
++		CMD2HEADER(adsp_client, IPC_STREAM_MSG_SET_HW_DEV),
++		&stream_set_dev, sizeof(stream_set_dev),
++		IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_SET_HW_DEV));
++
++}
++
++int spacemit_snd_adsp_stream_set_route(struct spacemit_snd_adsp_client *adsp_client,
++	uint32_t id, uint32_t dir, uint32_t backend_id)
++{
++	struct spacemit_snd_ipc_stream_set_route stream_set_route;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, id=%d, dir =%d. back:%d\n", __func__, id, dir, backend_id);
++	stream_set_route.stream_type =  STREAM_TYPE(dir, id);/*dir playback capture*/
++	stream_set_route.backend_id = backend_id;
++	return spacemit_snd_ipc_send_msg(ipc, NULL, NULL, NULL, CMD2HEADER(adsp_client, IPC_STREAM_MSG_SET_ROUTE),
++		&stream_set_route, sizeof(stream_set_route), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_SET_ROUTE));
++
++}
++
++int spacemit_snd_adsp_codec_set_device(uint32_t dev_id, uint32_t enable)
++{
++	struct spacemit_snd_adsp_client *adsp_client = spacemit_snd_get_adsp_client(0, NULL);
++
++	struct spacemit_snd_ipc_codec_set_device set_codec_device;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, dev_id=%d, enable=%d\n", __func__, dev_id, enable);
++	set_codec_device.dev_id = dev_id;
++	set_codec_device.enable = enable;
++	return spacemit_snd_ipc_send_msg_wait(ipc, NULL, CMD2HEADER(adsp_client, IPC_GLOBAL_MSG_CODEC_SET_DEVICE),
++		&set_codec_device, sizeof(set_codec_device), NULL, 0, SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++}
++EXPORT_SYMBOL(spacemit_snd_adsp_codec_set_device);
++
++int spacemit_snd_adsp_set_reg(uint32_t reg_adr, uint32_t mask, uint32_t val)
++{
++	struct spacemit_snd_adsp_client *adsp_client = spacemit_snd_get_adsp_client(0, NULL);
++
++	struct spacemit_snd_ipc_audio_reg audio_reg;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	audio_reg.reg_adr = reg_adr;
++	audio_reg.mask = mask;
++	audio_reg.val = val;
++
++	return spacemit_snd_ipc_send_msg_wait(ipc, NULL,
++		CMD2HEADER(adsp_client, IPC_GLOBAL_MSG_AUDIO_SET_REG),
++		&audio_reg, sizeof(audio_reg),
++		NULL, 0, SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++}
++EXPORT_SYMBOL(spacemit_snd_adsp_set_reg);
++
++int spacemit_snd_adsp_get_reg(uint32_t reg_adr, uint32_t mask, uint32_t *val)
++{
++	struct spacemit_snd_adsp_client *adsp_client = spacemit_snd_get_adsp_client(0, NULL);
++	struct spacemit_snd_ipc_audio_reg audio_reg;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++	int ret;
++
++	audio_reg.reg_adr = reg_adr;
++	audio_reg.mask = mask;
++	audio_reg.val = 0;
++	ret = spacemit_snd_ipc_send_msg_wait(ipc, NULL,
++		CMD2HEADER(adsp_client, IPC_GLOBAL_MSG_AUDIO_GET_REG),
++		&audio_reg, sizeof(audio_reg),// tx size
++		&audio_reg, sizeof(audio_reg),// rx size
++		SPACEMIT_SND_IPC_TIMEOUT_MSECS);
++
++	*val = audio_reg.val;
++	pr_debug("func: %s, reg_adr=0x%x,mask=0x%x, val=0x%x\n", __func__, audio_reg.reg_adr, audio_reg.mask, audio_reg.val);
++
++	return ret;
++}
++EXPORT_SYMBOL(spacemit_snd_adsp_get_reg);
++
++int spacemit_snd_adsp_stream_set_rec_mode(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t mode)
++{
++	struct spacemit_snd_ipc_stream_set_rec_mode stream_rec_mode;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++
++	pr_debug("func: %s, record_mode:%d\n", __func__, mode);
++	stream_rec_mode.stream_type =  s->type;
++	stream_rec_mode.mode = mode;
++	return spacemit_snd_ipc_send_msg(ipc, NULL, NULL, NULL, CMD2HEADER(adsp_client, IPC_STREAM_MSG_SET_RECORD_MODE),
++		&stream_rec_mode, sizeof(stream_rec_mode), IPC_MSG_NEEDS_ACK(IPC_STREAM_MSG_SET_RECORD_MODE));
++
++}
++
++static DEFINE_MUTEX(ev_handlers_mtx);
++static LIST_HEAD(ev_handlers);
++
++static int _spacemit_snd_ipc_rx_data(void *arg)
++{
++	uint32_t id;
++	uint32_t header;
++	uint32_t dir;
++	uint32_t token;
++	uint32_t err_no;
++	int32_t ret;
++	void *body;
++	DEFINE_WAIT(wait);
++
++	struct spacemit_snd_adsp_event_handler_ *handler_;
++	struct spacemit_snd_adsp_client *adsp_client = (struct spacemit_snd_adsp_client *)arg;
++	struct spacemit_snd_ipc *ipc = &adsp_client->ipc;
++	adsp_channel_t *ipc_ch = adsp_client->ch;
++	wait_queue_head_t *wq = adsp_ipc_get_rxwaitq(ipc_ch);
++	struct sched_param param = {.sched_priority = MAX_RT_PRIO - 1 };
++
++	ret = sched_setscheduler(current, SCHED_FIFO, &param);
++	if (ret < 0)
++		pr_err("%s, ret = %d\n", __func__, ret);
++
++	set_freezable();
++
++	do {
++		wq = adsp_ipc_get_rxwaitq(ipc_ch);
++		if (!wq) {
++			msleep(400);
++			continue;
++		}
++		try_to_freeze();
++		prepare_to_wait(wq, &wait, TASK_INTERRUPTIBLE);
++		if (adsp_ipc_rx_available(ipc_ch) <= 0)
++			schedule();
++		finish_wait(wq, &wait);
++
++		if ((ret = adsp_ipc_rx(ipc_ch, adsp_client->data_mem, 1, 0)) != 1) {
++			if (ret < 0)
++				pr_info("_spacemit_snd_ipc_rx_data warning rx, ret=%d!\n", ret);
++			continue;
++		}
++		header = *(uint32_t *)adsp_client->data_mem;
++		dir = header & IPC_MSG_DIR_MASK;
++		if (IPC_MSG_DIR_ADSP2AP_REPLY == dir) {
++			token = header & ~IPC_MSG_DIR_MASK;
++			err_no = *(uint32_t *)(adsp_client->data_mem + sizeof(header));
++			spin_lock(&adsp_client->spinlock);
++			body = adsp_client->data_mem + sizeof(header);
++			spacemit_snd_ipc_handle_reply_msg(ipc, ~IPC_MSG_DIR_MASK, body, token);
++
++			spin_unlock(&adsp_client->spinlock);
++		} else if (IPC_MSG_DIR_ADSP2AP_NOTIFICATION == dir) {
++			id = header & ~IPC_MSG_DIR_MASK;
++			body = adsp_client->data_mem + sizeof(header);
++			mutex_lock(&ev_handlers_mtx);
++			list_for_each_entry(handler_, &ev_handlers, node) {
++				if (handler_->ev_handler && handler_->ev_handler->handle_event) {
++					handler_->ev_handler->handle_event(handler_->ev_handler, id, body);
++				}
++			}
++			mutex_unlock(&ev_handlers_mtx);
++		}
++	} while (!kthread_should_stop());
++
++	pr_err("%s, exit \n", __func__);
++
++	return 0;
++}
++
++static int __spacemit_snd_ipc_tx_data(struct spacemit_snd_ipc *ipc, void *tx_data, size_t len)
++{
++	/*FIXME*/
++	unsigned char tbuf[IPC_MSG_BYTES_MAX];
++	struct spacemit_snd_adsp_client *adsp;
++	int ret = 0;
++
++	if (len > IPC_MSG_BYTES_MAX) {
++		pr_err("__spacemit_snd_ipc_tx_data tx error len:%ld\n", len);
++		return -EINVAL;
++	}
++
++	adsp = container_of(ipc, struct spacemit_snd_adsp_client, ipc);
++
++	memset(tbuf, 0, IPC_MSG_BYTES_MAX);
++	memcpy(tbuf, tx_data, len);
++	ret = adsp_ipc_tx(adsp->ch, tbuf, 1, 0);
++	if (ret != 1) {
++		pr_err("__spacemit_snd_ipc_tx_data tx err, ret=%d\n", ret);
++		if (ret == 0)
++			return -EAGAIN;
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct spacemit_snd_ipc_ops _spacemit_snd_ipc_ops = {
++	.tx_data = __spacemit_snd_ipc_tx_data,
++};
++
++/*
++ * All substreams (pcm/compress) share the same adsp client (and also IPC channel).
++ * If different adsp clients are needed for separate substreams, please rewrite the following function.
++ */
++static struct spacemit_snd_adsp_client *_global_adsp_client = NULL;
++static DEFINE_MUTEX(_adsp_client_mtx);
++
++static int spacemit_snd_adsp_client_init(struct spacemit_snd_adsp_client *adsp_client)
++{
++	int ret = 0;
++	pr_debug("enter %s\n", __func__);
++
++	adsp_client->ch = adsp_ipc_open(ADSP_CHANL_AUDIO_CTRL, ADSP_TYPE_BIDIR, IPC_MSG_BYTES_MAX, 64);
++	if (!adsp_client->ch) {
++		pr_err("snd adsp ipc open failed\n");
++		goto fail;
++	}
++
++	atomic_set(&adsp_client->seq_no, 0);
++	spin_lock_init(&adsp_client->spinlock);
++
++	adsp_client->ipc.tx_data_max_size = IPC_MSG_BYTES_MAX;
++	adsp_client->ipc.rx_data_max_size = IPC_MSG_BYTES_MAX;
++
++	adsp_client->data_mem = kzalloc(IPC_MSG_BYTES_MAX, GFP_KERNEL);
++	if (!adsp_client->data_mem) {
++		ret = -ENOMEM;
++		goto fail0;
++	}
++
++	adsp_client->ipc.name = adsp_client->name;
++	ret = spacemit_snd_ipc_open(&adsp_client->ipc, &_spacemit_snd_ipc_ops);
++	if (ret)
++		goto fail1;
++
++	adsp_client->rx_thread = kthread_run(_spacemit_snd_ipc_rx_data, \
++					(void *)adsp_client, adsp_client->name);
++	if (IS_ERR(adsp_client->rx_thread)) {
++		long err = PTR_ERR(adsp_client->rx_thread);
++		pr_debug("failed to start sound rx data thread: %ld\n", err);
++		goto fail2;
++	}
++
++	pr_info("adsp snd ipc client inited\n");
++
++	return 0;
++
++fail2:
++	spacemit_snd_ipc_close(&adsp_client->ipc);
++fail1:
++	kfree(adsp_client->data_mem);
++fail0:
++	adsp_ipc_close(adsp_client->ch);
++fail:
++	return ret;
++}
++
++struct spacemit_snd_adsp_client *spacemit_snd_get_adsp_client(int id, char *name)
++{
++	struct spacemit_snd_adsp_client *adsp_client;
++
++	mutex_lock(&_adsp_client_mtx);
++	if (NULL == _global_adsp_client) {
++		_global_adsp_client = kzalloc(sizeof(struct spacemit_snd_adsp_client), GFP_KERNEL);
++		if (_global_adsp_client) {
++			_global_adsp_client->name = name;
++			if (spacemit_snd_adsp_client_init(_global_adsp_client) < 0) {
++				pr_err("failed to init adsp snd ipc client\n");
++				kfree(_global_adsp_client);
++				_global_adsp_client = NULL;
++			}
++		}
++	}
++	adsp_client = _global_adsp_client;
++	mutex_unlock(&_adsp_client_mtx);
++
++	return adsp_client;
++}
++EXPORT_SYMBOL(spacemit_snd_get_adsp_client);
++
++void spacemit_snd_adsp_init(const char *name)
++{
++	spacemit_snd_get_adsp_client(0, (char *)name);
++}
++EXPORT_SYMBOL(spacemit_snd_adsp_init);
++
++int spacemit_snd_adsp_register_event_handler(struct spacemit_snd_adsp_event_handler *handler)
++{
++	struct spacemit_snd_adsp_event_handler_ *handler_;
++
++	handler_ = kmalloc(sizeof(*handler_), GFP_KERNEL);
++	if (!handler_)
++		return -ENOMEM;
++
++	handler_->ev_handler = handler;
++
++	mutex_lock(&ev_handlers_mtx);
++	list_add_tail(&handler_->node, &ev_handlers);
++	mutex_unlock(&ev_handlers_mtx);
++
++	return 0;
++}
++
++void spacemit_snd_adsp_unregister_event_handler(struct spacemit_snd_adsp_event_handler *handler)
++{
++	struct spacemit_snd_adsp_event_handler_ *handler_, *n_;
++
++	mutex_lock(&ev_handlers_mtx);
++	list_for_each_entry_safe(handler_, n_, &ev_handlers, node) {
++		if (handler_->ev_handler == handler) {
++			list_del(&handler_->node);
++			kfree(handler_);
++			break;
++		}
++	}
++	mutex_unlock(&ev_handlers_mtx);
++}
+diff --git a/sound/soc/spacemit/spacemit-snd-adsp.h b/sound/soc/spacemit/spacemit-snd-adsp.h
+new file mode 100644
+index 000000000000..dc158b1e99d1
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-adsp.h
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_ADSP_H
++#define _SPACEMIT_SND_ADSP_H
++
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/kref.h>
++#include <soc/spacemit/adsp_ipc.h>
++
++#include "spacemit-snd-ipc.h"
++#include "spacemit-snd-memory.h"
++
++struct spacemit_snd_adsp_stream {
++	uint32_t type;
++	uint32_t format;
++	uint32_t sample_rate;
++	uint32_t bits;
++	uint32_t channels;
++	uint32_t bit_rate;
++	uint32_t hw_dev;
++	dma_addr_t dma_enhancement;
++};
++
++struct spacemit_snd_adsp_event_handler {
++	void (*handle_event)(struct spacemit_snd_adsp_event_handler *, uint32_t ev, void *);
++};
++
++struct spacemit_snd_adsp_client;
++
++int spacemit_snd_adsp_stream_alloc(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_free(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_resume(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_pause(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_eos(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_write_data(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, \
++	struct spacemit_snd_adsp_stream *s, struct audio_buffer *abuf);
++int spacemit_snd_adsp_stream_read_data(struct spacemit_snd_adsp_client *adsp_client, msg_cbf_t callback, \
++	struct spacemit_snd_adsp_stream *s, struct audio_buffer *abuf);
++int spacemit_snd_adsp_stream_flush(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s);
++int spacemit_snd_adsp_stream_set_volume(struct spacemit_snd_adsp_client *adsp_client, struct spacemit_snd_adsp_stream *s, uint32_t lvol, uint32_t rvol, uint32_t curve_duration);
++int spacemit_snd_adsp_stream_set_mic_mute(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t mute, uint32_t curve_duration);
++int spacemit_snd_adsp_stream_set_hw_dev(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t device);
++
++int spacemit_snd_adsp_stream_set_route(struct spacemit_snd_adsp_client *adsp_client,
++	uint32_t id, uint32_t dir, uint32_t backend_id);
++int spacemit_snd_adsp_stream_set_rec_mode(struct spacemit_snd_adsp_client *adsp_client,
++	struct spacemit_snd_adsp_stream *s, uint32_t mode);
++struct spacemit_snd_adsp_client *spacemit_snd_get_adsp_client(int id, char *name);
++void spacemit_snd_adsp_init(const char *name);
++
++int spacemit_snd_adsp_register_event_handler(struct spacemit_snd_adsp_event_handler *handler);
++void spacemit_snd_adsp_unregister_event_handler(struct spacemit_snd_adsp_event_handler *handler);
++
++int spacemit_snd_adsp_codec_set_device(uint32_t dev_id, uint32_t enable);
++int spacemit_snd_adsp_set_reg(uint32_t reg_adr, uint32_t mask, uint32_t val);
++int spacemit_snd_adsp_get_reg(uint32_t reg_adr, uint32_t mask, uint32_t *val);
++
++#endif
++
+diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
+new file mode 100644
+index 000000000000..ca2c5b1945da
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-card.c
+@@ -0,0 +1,219 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/of.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/jack.h>
++#include <sound/soc.h>
++#include <linux/io.h>
++#include <linux/uaccess.h>
++#include <linux/input.h>
++#include <soc/spacemit/plat.h>
++
++#include "spacemit-snd.h"
++#include "spacemit-snd-soc.h"
++
++SND_SOC_DAILINK_DEF(dummy,
++	DAILINK_COMP_ARRAY(COMP_DUMMY()));
++
++SND_SOC_DAILINK_DEF(sspa0,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSPA0")));
++
++SND_SOC_DAILINK_DEF(sspa1,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSPA1")));
++
++SND_SOC_DAILINK_DEF(sspa2,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSPA2")));
++
++SND_SOC_DAILINK_DEF(sspa3,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSPA3")));
++
++SND_SOC_DAILINK_DEF(pcm,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("spacemit-snd-pcm")));
++
++SND_SOC_DAILINK_DEF(i2s0,
++	DAILINK_COMP_ARRAY(COMP_CPU("i2s-dai0")));
++
++SND_SOC_DAILINK_DEF(i2s1,
++	DAILINK_COMP_ARRAY(COMP_CPU("i2s-dai1")));
++
++SND_SOC_DAILINK_DEF(pcm_dma0,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("spacemit-snd-dma0")));
++
++SND_SOC_DAILINK_DEF(pcm_dma1,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("spacemit-snd-dma1")));
++
++static int spacemit_be_audcodec_fixup(struct snd_soc_pcm_runtime *rtd,
++  				      struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	return 0;
++}
++
++struct snd_soc_jack jack;
++
++static int spacemit_audcodec_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret;
++	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
++
++	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 |
++			SND_JACK_BTN_1 | SND_JACK_BTN_2, &jack,
++			NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++
++	snd_soc_component_set_jack(component, &jack, NULL);
++
++	return ret;
++}
++
++static struct snd_soc_dai_link spacemit_snd_dai_links[] = {
++	{
++		.name = "ADSP SSPA0 PCM",
++		.stream_name = "ADSP SSPA0 Playback/Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBM_CFM,
++		.be_hw_params_fixup = spacemit_be_audcodec_fixup,
++  		.init = spacemit_audcodec_init,
++		SND_SOC_DAILINK_REG(sspa0, dummy, pcm)
++	},
++	{
++		.name = "ADSP SSPA1 PCM",
++		.stream_name = "ADSP SSPA1 Playback/Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBM_CFM,
++		SND_SOC_DAILINK_REG(sspa1, dummy, pcm)
++	},
++	{
++		.name = "ADSP SSPA2 PCM",
++		.stream_name = "ADSP SSPA2 Playback",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBM_CFM,
++		SND_SOC_DAILINK_REG(sspa2, dummy, pcm)
++	},
++	{
++		.name = "ADSP SSPA3 PCM",
++		.stream_name = "ADSP SSPA3 Playback/Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBM_CFM,
++		SND_SOC_DAILINK_REG(sspa3, dummy, pcm)
++	},
++};
++
++
++static struct snd_soc_card spacemit_snd_card = {
++	.name = "spacemit-snd",
++	.owner = THIS_MODULE,
++};
++
++static int spacemit_snd_pdev_probe(struct platform_device *pdev)
++{
++	int ret;
++	pr_debug("enter %s\n", __func__);
++	//spacemit_snd_dai_links[0].codecs->name = "c0882000.spacemit-audio-codec";
++	//spacemit_snd_dai_links[0].codecs->dai_name = "spacemit-audcodec";
++	spacemit_snd_card.dev = &pdev->dev;
++	spacemit_snd_card.dai_link = &spacemit_snd_dai_links[0];
++	spacemit_snd_card.num_links = ARRAY_SIZE(spacemit_snd_dai_links);
++
++	spacemit_snd_card.late_probe = spacemit_snd_soc_init;
++	printk("spacemit %s\n", __func__);
++	platform_set_drvdata(pdev, &spacemit_snd_card);
++
++	ret =  devm_snd_soc_register_card(&pdev->dev, &spacemit_snd_card);
++	printk("spacemit %s, register card ret = %d\n", __func__,ret);
++	return ret;
++}
++
++static struct of_device_id spacemit_snd_dt_ids[] = {
++	{.compatible = "spacemit,spacemit-snd",},
++	{}
++};
++
++static struct platform_driver spacemit_snd_pdrv = {
++	.probe = spacemit_snd_pdev_probe,
++	.driver = {
++		.name = "spacemit-snd",
++		.of_match_table = spacemit_snd_dt_ids,
++		.pm = &snd_soc_pm_ops,
++	},
++};
++
++#if IS_MODULE(CONFIG_SND_SOC_spacemit)
++extern int spacemit_snd_register_sspa_pdrv(void);
++extern int spacemit_snd_register_pcm_pdrv(void);
++extern int spacemit_snd_register_dmaclient_pdrv(void);
++extern int spacemit_snd_register_i2s_pdrv(void);
++
++extern void spacemit_snd_unregister_sspa_pdrv(void);
++extern void spacemit_snd_unregister_pcm_pdrv(void);
++extern void spacemit_snd_unregister_dmaclient_pdrv(void);
++extern void spacemit_snd_unregister_i2s_pdrv(void);
++
++static int __init spacemit_snd_init(void)
++{
++	int ret = 0;
++
++	ret = spacemit_snd_register_sspa_pdrv();
++	if (ret)
++		goto exit;
++
++	ret = spacemit_snd_register_pcm_pdrv();
++	if (ret)
++		goto exit;
++
++	ret = spacemit_snd_register_dmaclient_pdrv();
++	if (ret)
++		goto exit;
++
++	ret = spacemit_snd_register_i2s_pdrv();
++	if (ret)
++		goto exit;
++	ret = platform_driver_register(&spacemit_snd_pdrv);
++
++exit:
++	return ret;
++}
++module_init(spacemit_snd_init);
++
++static void __exit spacemit_snd_exit(void)
++{
++	platform_driver_unregister(&spacemit_snd_pdrv);
++	spacemit_snd_unregister_pcm_pdrv();
++	spacemit_snd_unregister_sspa_pdrv();
++	spacemit_snd_unregister_dmaclient_pdrv();
++	spacemit_snd_unregister_i2s_pdrv();
++}
++module_exit(spacemit_snd_exit);
++#else
++module_platform_driver(spacemit_snd_pdrv);
++#endif
++
++/* Module information */
++MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
++MODULE_LICENSE("GPL");
++
+diff --git a/sound/soc/spacemit/spacemit-snd-ipc.c b/sound/soc/spacemit/spacemit-snd-ipc.c
+new file mode 100644
+index 000000000000..87ef4f8d09b2
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-ipc.c
+@@ -0,0 +1,310 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/kernel.h>
++#include <linux/spinlock.h>
++#include <linux/slab.h>
++#include <linux/freezer.h>
++
++#include "spacemit-snd-ipc.h"
++
++#define SPACEMIT_SND_IPC_MSGS_MAX  32
++
++extern void adsp_monitor_err_handler(const char * id, int errno);
++
++static int _alloc_msgs_pool(struct spacemit_snd_ipc *ipc)
++{
++	int i;
++
++	ipc->msgs = kzalloc(sizeof(struct spacemit_snd_ipc_msg) * SPACEMIT_SND_IPC_MSGS_MAX, GFP_KERNEL);
++	if (!ipc->msgs)
++		return -ENOMEM;
++
++	for (i = 0; i < SPACEMIT_SND_IPC_MSGS_MAX; i++) {
++		ipc->msgs[i].tx_data = kzalloc(ipc->tx_data_max_size, GFP_KERNEL);
++		if (ipc->msgs[i].tx_data == NULL)
++			goto fail;
++
++		ipc->msgs[i].rx_data = kzalloc(ipc->rx_data_max_size, GFP_KERNEL);
++		if (ipc->msgs[i].rx_data == NULL) {
++			kfree(ipc->msgs[i].tx_data);
++			goto fail;
++		}
++
++		init_waitqueue_head(&ipc->msgs[i].waitq);
++		list_add(&ipc->msgs[i].list, &ipc->empty_list);
++	}
++
++	return 0;
++
++fail:
++	while (i > 0) {
++		kfree(ipc->msgs[i-1].tx_data);
++		kfree(ipc->msgs[i-1].rx_data);
++		--i;
++	}
++	kfree(ipc->msgs);
++
++	return -ENOMEM;
++}
++
++static void _free_msgs_pool(struct spacemit_snd_ipc *ipc)
++{
++	if (ipc->msgs) {
++		int i;
++		for (i = 0; i < SPACEMIT_SND_IPC_MSGS_MAX; i++) {
++			kfree(ipc->msgs[i].tx_data);
++			kfree(ipc->msgs[i].rx_data);
++		}
++		kfree(ipc->msgs);
++
++		INIT_LIST_HEAD(&ipc->tx_list);
++		INIT_LIST_HEAD(&ipc->rx_list);
++		INIT_LIST_HEAD(&ipc->empty_list);
++	}
++}
++
++static struct spacemit_snd_ipc_msg *_get_msg_from_pool(struct spacemit_snd_ipc *ipc)
++{
++	struct spacemit_snd_ipc_msg *msg = NULL;
++
++	if (!list_empty(&ipc->empty_list)) {
++		msg = list_first_entry(&ipc->empty_list, struct spacemit_snd_ipc_msg, list);
++		list_del(&msg->list);
++	}
++
++	return msg;
++}
++
++static int _spacemit_snd_ipc_wait_tx_done(struct spacemit_snd_ipc *ipc, struct spacemit_snd_ipc_msg *msg,
++	void *rx_data, uint32_t wait)
++{
++	int ret;
++
++	ret = wait_event_timeout(msg->waitq, msg->complete,
++		msecs_to_jiffies(wait));
++
++	spin_lock(&ipc->spin);
++	if (ret == 0) {
++		ret = -ETIMEDOUT;
++	} else {
++		if((msg->rx_size) && (rx_data))
++			memcpy(rx_data, msg->rx_data, msg->rx_size);
++		ret = msg->errno;
++	}
++
++	if (ret) {
++		pr_info("%s: warning ret(%d)\n", __func__, ret);
++		if (ret == -ETIMEDOUT)
++			adsp_monitor_err_handler("audio", ret);
++	}
++
++	list_del(&msg->list);
++	list_add_tail(&msg->list, &ipc->empty_list);
++	spin_unlock(&ipc->spin);
++
++	return ret;
++}
++
++static int _spacemit_snd_ipc_send_msg(struct spacemit_snd_ipc *ipc, void *owner, msg_cbf_t cbf, void *arg, \
++	uint32_t header, void *tx_data, size_t tx_size, void *rx_data, size_t rx_size, uint32_t wait, uint32_t needs_ack)
++{
++	struct spacemit_snd_ipc_msg *msg;
++
++	if (tx_size + sizeof(header) > ipc->tx_data_max_size ||
++			rx_size + sizeof(header) > ipc->rx_data_max_size)
++		return -EINVAL;
++
++	spin_lock(&ipc->spin);
++	msg = _get_msg_from_pool(ipc);
++	if (msg == NULL) {
++		spin_unlock(&ipc->spin);
++		pr_err("failed to get msg from pool\n");
++		return -EBUSY;
++	}
++	spin_unlock(&ipc->spin);
++
++	msg->header = header;
++	msg->owner = owner;
++	msg->tx_size = sizeof(header) + tx_size;
++	msg->rx_size = rx_size;
++	msg->wait = wait;
++	msg->needs_ack = false;
++	if (wait)
++		msg->needs_ack = true;
++	else {
++		if (needs_ack)
++			msg->needs_ack = true;
++	}
++	msg->errno = 0;
++	msg->complete = false;
++	msg->cbf = cbf;
++	msg->arg = arg;
++	memcpy(msg->tx_data, &header, sizeof(header));
++	memcpy(msg->tx_data + sizeof(header), tx_data, tx_size);
++
++	spin_lock(&ipc->spin);
++	list_add_tail(&msg->list, &ipc->tx_list);
++	spin_unlock(&ipc->spin);
++
++	wake_up_process(ipc->tx_thread);
++
++	return wait ? _spacemit_snd_ipc_wait_tx_done(ipc, msg, rx_data, wait) : 0;
++}
++
++int spacemit_snd_ipc_send_msg_wait(struct spacemit_snd_ipc *ipc, void *owner, uint32_t header, \
++	void *tx_data, size_t tx_size, void *rx_data, size_t rx_size, uint32_t wait)
++{
++	return _spacemit_snd_ipc_send_msg(ipc, owner, NULL, NULL, header, tx_data, tx_size, rx_data, rx_size, wait, true);
++}
++
++int spacemit_snd_ipc_send_msg(struct spacemit_snd_ipc *ipc, void *owner, msg_cbf_t cbf, void *arg, uint32_t header, \
++	void *tx_data, size_t tx_size, uint32_t needs_ack)
++{
++	return _spacemit_snd_ipc_send_msg(ipc, owner, cbf, arg, header, tx_data, tx_size, NULL, 0, 0, needs_ack);
++}
++
++void spacemit_snd_ipc_drop_msgs(struct spacemit_snd_ipc *ipc, void *owner)
++{
++	struct spacemit_snd_ipc_msg *msg, *msg_next;
++
++	spin_lock(&ipc->spin);
++	list_for_each_entry_safe(msg, msg_next, &ipc->rx_list, list) {
++		if (msg->owner == owner)
++			list_move_tail(&msg->list, &ipc->empty_list);
++	}
++	spin_unlock(&ipc->spin);
++}
++
++static int _spacemit_snd_ipc_tx_msg(void *arg)
++{
++	struct spacemit_snd_ipc_msg *msg;
++	struct spacemit_snd_ipc *ipc = (struct spacemit_snd_ipc *)arg;
++	int ret;
++	DEFINE_WAIT(wq);
++
++	struct sched_param param = {.sched_priority = MAX_RT_PRIO - 1 };
++	ret = sched_setscheduler(current, SCHED_FIFO, &param);
++	if (ret < 0)
++		pr_err("%s, ret = %d\n", __func__, ret);
++
++	set_freezable();
++
++	while (!kthread_should_stop()) {
++		set_current_state(TASK_INTERRUPTIBLE);
++
++		spin_lock(&ipc->spin);
++		if (!list_empty(&ipc->tx_list)) {
++			set_current_state(TASK_RUNNING);
++			msg = list_first_entry(&ipc->tx_list, struct spacemit_snd_ipc_msg, list);
++			if (msg->needs_ack)
++				list_move_tail(&msg->list, &ipc->rx_list);
++			else
++				list_move_tail(&msg->list, &ipc->empty_list);
++
++			spin_unlock(&ipc->spin);
++			if (ipc->ops && ipc->ops->tx_data)
++				ipc->ops->tx_data(ipc, msg->tx_data, msg->tx_size);
++			continue;
++		}
++		spin_unlock(&ipc->spin);
++		if (!freezing(current))
++			schedule();
++		try_to_freeze();
++	}
++
++	pr_err("exit %s\n", __func__);
++
++	return 0;
++}
++
++static struct spacemit_snd_ipc_msg *spacemit_snd_ipc_reply_find_msg(struct spacemit_snd_ipc *ipc, uint32_t mask, uint32_t token)
++{
++	struct spacemit_snd_ipc_msg *msg;
++
++	spin_lock(&ipc->spin);
++	if (list_empty(&ipc->rx_list)) {
++		spin_unlock(&ipc->spin);
++		return NULL;
++	}
++
++	list_for_each_entry(msg, &ipc->rx_list, list) {
++		if (token == (msg->header & mask)) {
++			spin_unlock(&ipc->spin);
++			return msg;
++		}
++	}
++	spin_unlock(&ipc->spin);
++
++	return NULL;
++}
++
++static void spacemit_snd_ipc_reply_msg_complete(struct spacemit_snd_ipc *ipc, struct spacemit_snd_ipc_msg *msg)
++{
++	msg->complete = true;
++	if (!msg->wait) {
++		spin_lock(&ipc->spin);
++		list_move_tail(&msg->list, &ipc->empty_list);
++		spin_unlock(&ipc->spin);
++		return;
++	}
++	wake_up(&msg->waitq);
++}
++
++void spacemit_snd_ipc_handle_reply_msg(struct spacemit_snd_ipc *ipc, uint32_t mask, void *body, uint32_t token)
++{
++	uint32_t err_no;
++	struct spacemit_snd_ipc_msg *ipc_msg;
++
++	err_no = *(uint32_t *)(body);
++	ipc_msg = spacemit_snd_ipc_reply_find_msg(ipc, mask, token);
++	if (ipc_msg) {
++		ipc_msg->errno = err_no;
++		if (ipc_msg->rx_size)
++			memcpy(ipc_msg->rx_data, body + sizeof(err_no), ipc_msg->rx_size);
++
++		if (ipc_msg->cbf)
++			ipc_msg->cbf(ipc_msg->arg, ipc_msg->rx_data);
++
++		spacemit_snd_ipc_reply_msg_complete(ipc, ipc_msg);
++	} else {
++		pr_warn("cannot find message by token=0x%x\n", token);
++	}
++}
++
++int spacemit_snd_ipc_open(struct spacemit_snd_ipc *ipc, struct spacemit_snd_ipc_ops *ops)
++{
++	int ret;
++
++	spin_lock_init(&ipc->spin);
++
++	INIT_LIST_HEAD(&ipc->tx_list);
++	INIT_LIST_HEAD(&ipc->rx_list);
++	INIT_LIST_HEAD(&ipc->empty_list);
++
++	ipc->ops = ops;
++
++	ret = _alloc_msgs_pool(ipc);
++	if (ret < 0)
++		return -ENOMEM;
++
++	ipc->tx_thread = kthread_run(_spacemit_snd_ipc_tx_msg, ipc, ipc->name);
++	if (IS_ERR(ipc->tx_thread)) {
++		ret = PTR_ERR(ipc->tx_thread);
++		_free_msgs_pool(ipc);
++		return ret;
++	}
++
++	return 0;
++}
++
++void spacemit_snd_ipc_close(struct spacemit_snd_ipc *ipc)
++{
++	if (ipc->tx_thread)
++		kthread_stop(ipc->tx_thread);
++
++	_free_msgs_pool(ipc);
++}
++
+diff --git a/sound/soc/spacemit/spacemit-snd-ipc.h b/sound/soc/spacemit/spacemit-snd-ipc.h
+new file mode 100644
+index 000000000000..abb38f96f02f
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-ipc.h
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_IPC_H
++#define _SPACEMIT_SND_IPC_H
++
++#include <linux/kernel.h>
++#include <linux/kthread.h>
++#include <linux/list.h>
++#include <uapi/linux/sched/types.h>
++
++struct spacemit_snd_ipc;
++struct spacemit_snd_ipc_ops {
++	int (*tx_data)(struct spacemit_snd_ipc *ipc, void *data, size_t len);
++};
++
++struct spacemit_snd_ipc;
++struct spacemit_snd_ipc_msg;
++typedef void (*msg_cbf_t)(void *arg, void *rx_data);
++struct spacemit_snd_ipc_msg {
++	uint32_t header;
++	struct list_head list;
++	void *owner;
++	void *tx_data;
++	size_t tx_size;
++	void *rx_data;
++	size_t rx_size;
++	wait_queue_head_t waitq;
++	msg_cbf_t cbf;
++	void *arg;
++
++	bool complete;
++	uint32_t wait;
++	bool needs_ack;
++	int errno;
++};
++
++struct spacemit_snd_ipc {
++	const char *name;
++
++	spinlock_t spin;
++	struct list_head tx_list;
++	struct list_head rx_list;
++	struct list_head empty_list;
++
++	struct task_struct *tx_thread;
++
++	struct spacemit_snd_ipc_msg *msgs;
++	int tx_data_max_size;
++	int rx_data_max_size;
++	struct spacemit_snd_ipc_ops *ops;
++};
++
++int spacemit_snd_ipc_open(struct spacemit_snd_ipc *ipc, struct spacemit_snd_ipc_ops *ops);
++void spacemit_snd_ipc_close(struct spacemit_snd_ipc *ipc);
++int spacemit_snd_ipc_send_msg(struct spacemit_snd_ipc *ipc, void *owner, msg_cbf_t cbf, void *arg, \
++	uint32_t header, void *tx_data, size_t tx_size, uint32_t needs_ack);
++int spacemit_snd_ipc_send_msg_wait(struct spacemit_snd_ipc *ipc, void *owner, uint32_t header, void *tx_data, \
++	size_t tx_size, void *rx_data, size_t rx_size, uint32_t wait);
++void spacemit_snd_ipc_drop_msgs(struct spacemit_snd_ipc *ipc, void *owner);
++void spacemit_snd_ipc_handle_reply_msg(struct spacemit_snd_ipc *ipc, uint32_t mask, void *body, uint32_t token);
++
++#endif
+diff --git a/sound/soc/spacemit/spacemit-snd-memory.c b/sound/soc/spacemit/spacemit-snd-memory.c
+new file mode 100644
+index 000000000000..3a64e201a1c4
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-memory.c
+@@ -0,0 +1,223 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/types.h>
++#include <linux/slab.h>
++#include <linux/list.h>
++#include <linux/wait.h>
++#include <linux/atomic.h>
++#include <linux/mm.h>
++#include <linux/highmem.h>
++#include <linux/mm_types.h>
++#include <linux/vmalloc.h>
++
++#include <soc/spacemit/adsp_ipc.h>
++
++#include "spacemit-snd-memory.h"
++
++struct _audio_buffer {
++	struct audio_buffer buffer;
++	struct list_head node;
++};
++
++struct audio_memory_manager {
++	int dir;
++	size_t size;
++
++	void *vaddr;
++	dma_addr_t paddr;
++
++	struct _audio_buffer *_abuf;
++	struct list_head rendered_list; // buffers that have been rendered to ADSP
++	struct list_head ready_list; // buffer that can be accessed by AP
++	struct list_head free_list; // buffers that cannot be accessed by AP, nor are they renderd to ADSP
++
++	spinlock_t spin;
++	wait_queue_head_t w;
++};
++
++int spacemit_snd_alloc_memory(struct audio_memory_manager **memmgr, int dir, int buf_cnt, size_t buf_size)
++{
++	int i;
++	size_t total;
++	struct _audio_buffer *_abuf;
++	struct audio_memory_manager *_memmgr;
++
++	pr_debug("enter %s, buffer count: %d, buffer size: %zd\n", __func__,
++		buf_cnt, buf_size);
++
++	if (!memmgr || buf_cnt <= 0 || 0 == buf_size)
++		return -EINVAL;
++
++	*memmgr = NULL;
++	_memmgr = kzalloc(sizeof(struct audio_memory_manager), GFP_KERNEL);
++	if (!_memmgr)
++		return -ENOMEM;
++
++	_memmgr->dir = dir;
++
++	INIT_LIST_HEAD(&_memmgr->rendered_list);
++	INIT_LIST_HEAD(&_memmgr->ready_list);
++	INIT_LIST_HEAD(&_memmgr->free_list);
++
++	spin_lock_init(&_memmgr->spin);
++	init_waitqueue_head(&_memmgr->w);
++
++	total = buf_cnt*buf_size;
++	_memmgr->size = total;
++
++	_memmgr->vaddr = adsp_ipc_shm_alloc(total, &_memmgr->paddr);
++	if (!_memmgr->vaddr)
++		goto fail0;
++
++	_abuf = kzalloc(sizeof(struct _audio_buffer)*buf_cnt, GFP_KERNEL);
++	if (!_abuf)
++		goto fail1;
++
++	_memmgr->_abuf = _abuf;
++
++	for (i = 0; i < buf_cnt; i++) {
++		_abuf[i].buffer.size = buf_size;
++		_abuf[i].buffer.vaddr = _memmgr->vaddr + buf_size*i;
++		_abuf[i].buffer.paddr = _memmgr->paddr + buf_size*i;
++
++		if (MEMORY_DIR_OUT == _memmgr->dir) {
++			list_add_tail(&_abuf[i].node, &_memmgr->ready_list);
++		} else
++			list_add_tail(&_abuf[i].node, &_memmgr->free_list);
++	}
++
++	*memmgr = _memmgr;
++
++	return 0;
++
++fail1:
++	adsp_ipc_shm_free(_memmgr->vaddr, _memmgr->size);
++fail0:
++	kfree(_memmgr);
++
++	return -ENOMEM;
++}
++
++struct audio_buffer *spacemit_snd_get_next_buffer(struct audio_memory_manager * memmgr, int msecs)
++{
++	int timeout = 0;
++	DEFINE_WAIT(wait);
++	struct _audio_buffer *_abuf = NULL;
++	if (!memmgr)
++		return NULL;
++
++	if (msecs > 0)
++		timeout = msecs_to_jiffies(msecs);
++
++	do {
++		spin_lock(&memmgr->spin);
++		if (list_empty(&memmgr->ready_list)) {
++			if (timeout) {
++				spin_unlock(&memmgr->spin);
++
++				prepare_to_wait(&memmgr->w, &wait, TASK_INTERRUPTIBLE);
++				timeout = schedule_timeout(timeout);
++				finish_wait(&memmgr->w, &wait);
++				continue;
++			}
++		} else {
++			_abuf = list_first_entry(&memmgr->ready_list, struct _audio_buffer, node);
++			list_move_tail(&_abuf->node, &memmgr->rendered_list);
++		}
++		spin_unlock(&memmgr->spin);
++	} while(!_abuf && timeout);
++
++	return _abuf ? &_abuf->buffer : NULL;
++}
++
++struct audio_buffer *spacemit_snd_get_free_buffer(struct audio_memory_manager * memmgr)
++{
++	struct _audio_buffer *_abuf;
++	if (!memmgr || MEMORY_DIR_OUT == memmgr->dir)
++		return NULL;
++
++	spin_lock(&memmgr->spin);
++	if (list_empty(&memmgr->free_list)) {
++		spin_unlock(&memmgr->spin);
++		return NULL;
++	}
++
++	_abuf = list_first_entry(&memmgr->free_list, struct _audio_buffer, node);
++	list_move_tail(&_abuf->node, &memmgr->rendered_list);
++	spin_unlock(&memmgr->spin);
++
++	return &_abuf->buffer;
++}
++
++struct audio_buffer *spacemit_snd_get_first_rendered_buffer(struct audio_memory_manager *memmgr)
++{
++	struct _audio_buffer *_abuf;
++
++	if (!memmgr)
++		return NULL;
++
++	spin_lock(&memmgr->spin);
++	if (list_empty(&memmgr->rendered_list))
++		_abuf = NULL;
++	else
++		_abuf = list_first_entry(&memmgr->rendered_list, struct _audio_buffer, node);
++	spin_unlock(&memmgr->spin);
++
++	return _abuf ? &_abuf->buffer : NULL;
++}
++
++int spacemit_snd_finish_one_buffer(struct audio_memory_manager *memmgr, struct audio_buffer *abuf)
++{
++	struct _audio_buffer *_abuf = (struct _audio_buffer *)abuf;
++
++	if (!memmgr || !_abuf)
++		return -EINVAL;
++
++	spin_lock(&memmgr->spin);
++	if (memmgr->dir == MEMORY_DIR_OUT) {
++		_abuf->buffer.filled = 0;
++	} else {
++		_abuf->buffer.offset = 0;
++	}
++	list_move_tail(&_abuf->node, &memmgr->ready_list);
++	spin_unlock(&memmgr->spin);
++
++	wake_up(&memmgr->w);
++
++	return 0;
++}
++
++int spacemit_snd_free_memory(struct audio_memory_manager *memmgr)
++{
++	if (!memmgr)
++		return -EINVAL;
++
++	kfree(memmgr->_abuf);
++
++	if (memmgr->vaddr)
++		adsp_ipc_shm_free(memmgr->vaddr, memmgr->size);
++
++	kfree(memmgr);
++
++	return 0;
++}
++
++void *spacemit_snd_get_memory_vaddr(struct audio_memory_manager *memmgr)
++{
++	if (!memmgr)
++		return NULL;
++
++	return memmgr->vaddr;
++}
++
++int spacemit_snd_get_memory_paddr(struct audio_memory_manager *memmgr, dma_addr_t *paddr)
++{
++	if (!memmgr || !paddr)
++		return -EINVAL;
++
++	*paddr = memmgr->paddr;
++	return 0;
++}
+diff --git a/sound/soc/spacemit/spacemit-snd-memory.h b/sound/soc/spacemit/spacemit-snd-memory.h
+new file mode 100644
+index 000000000000..1bde459fa2fc
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-memory.h
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_MEMORY_H
++#define _SPACEMIT_SND_MEMORY_H
++
++#include <linux/kernel.h>
++#include <linux/list.h>
++
++enum {
++	MEMORY_DIR_OUT,
++	MEMORY_DIR_IN
++};
++
++struct audio_buffer {
++	union {
++		size_t offset;
++		size_t filled;
++	};
++	size_t size;
++	void *vaddr;
++	dma_addr_t paddr;
++};
++
++struct audio_memory_manager;
++int spacemit_snd_alloc_memory(struct audio_memory_manager **memmgr, int dir, int buf_num, size_t buf_size);
++struct audio_buffer *spacemit_snd_get_next_buffer(struct audio_memory_manager *memmgr, int wait);
++struct audio_buffer *spacemit_snd_get_free_buffer(struct audio_memory_manager * memmgr);
++struct audio_buffer *spacemit_snd_get_first_rendered_buffer(struct audio_memory_manager *memmgr);
++int spacemit_snd_finish_one_buffer(struct audio_memory_manager *memmgr, struct audio_buffer *abuf);
++int spacemit_snd_free_memory(struct audio_memory_manager *memmgr);
++void *spacemit_snd_get_memory_vaddr(struct audio_memory_manager *memmgr);
++int spacemit_snd_get_memory_paddr(struct audio_memory_manager *memmgr, dma_addr_t *paddr);
++
++#endif
++
+diff --git a/sound/soc/spacemit/spacemit-snd-msgs.h b/sound/soc/spacemit/spacemit-snd-msgs.h
+new file mode 100644
+index 000000000000..1fecda0d3938
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-msgs.h
+@@ -0,0 +1,244 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_MSG_H
++#define _SPACEMIT_SND_MSG_H
++
++#include <linux/types.h>
++
++#define IPC_MSG_DIR_SHIFT                    28
++#define IPC_MSG_TYPE_SHFIT                   24
++#define IPC_MSG_ID_SHIFT                     16
++#define IPC_MSG_SEQ_NO_SHIFT                 0
++
++#define IPC_MSG_DIR_MASK                     (0xF << IPC_MSG_DIR_SHIFT)
++#define IPC_MSG_DIR_AP2ADSP                  (0 << IPC_MSG_DIR_SHIFT)
++#define IPC_MSG_DIR_AP2ADSP_NEEDS_ACK        (1 << IPC_MSG_DIR_SHIFT)
++#define IPC_MSG_DIR_ADSP2AP_REPLY            (2 << IPC_MSG_DIR_SHIFT)
++#define IPC_MSG_DIR_ADSP2AP_NOTIFICATION     (3 << IPC_MSG_DIR_SHIFT)
++
++#define IPC_MSG_NEEDS_ACK(x)                 (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK == ((x) & IPC_MSG_DIR_MASK))
++
++#define IPC_MSG_TYPE_GLOBAL                  (0 << IPC_MSG_TYPE_SHFIT)
++#define IPC_MSG_TYPE_STREAM                  (1 << IPC_MSG_TYPE_SHFIT)
++
++#define STREAM_ALLOC                         (0 << IPC_MSG_ID_SHIFT)
++#define STREAM_FREE                          (1 << IPC_MSG_ID_SHIFT)
++#define STREAM_RESUME                        (2 << IPC_MSG_ID_SHIFT)
++#define STREAM_PAUSE                         (3 << IPC_MSG_ID_SHIFT)
++#define STREAM_WRITE_DATA                    (4 << IPC_MSG_ID_SHIFT)
++#define STREAM_READ_DATA                     (5 << IPC_MSG_ID_SHIFT)
++#define STREAM_GET_RENDERED_FRAMES           (6 << IPC_MSG_ID_SHIFT)
++#define STREAM_EOS                           (7 << IPC_MSG_ID_SHIFT)
++#define STREAM_FLUSH                         (8 << IPC_MSG_ID_SHIFT)
++#define STREAM_SET_VOLUME                    (9 << IPC_MSG_ID_SHIFT)
++#define STREAM_SET_ROUTE                     (10 << IPC_MSG_ID_SHIFT)
++#define STREAM_SET_MIC_MUTE                  (11 << IPC_MSG_ID_SHIFT)
++#define STREAM_SET_RECORD_MODE               (12 << IPC_MSG_ID_SHIFT)
++#define STREAM_SET_HW_DEV                    (13 << IPC_MSG_ID_SHIFT)
++
++
++#define STREAM_EFFECT_GET_ENABLE             (16 << IPC_MSG_ID_SHIFT)
++#define STREAM_EFFECT_SET_ENABLE             (17 << IPC_MSG_ID_SHIFT)
++#define STREAM_EFFECT_GET_PARAMS             (18 << IPC_MSG_ID_SHIFT)
++#define STREAM_EFFECT_SET_PARAMS             (19 << IPC_MSG_ID_SHIFT)
++#define STREAM_VOICE_ENHANCEMENT_SET         (20 << IPC_MSG_ID_SHIFT)
++#define STREAM_VOICE_ENHANCEMENT_GET         (21 << IPC_MSG_ID_SHIFT)
++
++#define AUDIO_CODEC_SET_DEVICE               (22 << IPC_MSG_ID_SHIFT)
++#define AUDIO_SET_REG                        (23 << IPC_MSG_ID_SHIFT)
++#define AUDIO_GET_REG                        (24 << IPC_MSG_ID_SHIFT)
++
++#define IPC_STREAM_MSG_ALLOC                 (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_ALLOC)
++#define IPC_STREAM_MSG_FREE                  (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_FREE)
++#define IPC_STREAM_MSG_RESUME                (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_RESUME)
++#define IPC_STREAM_MSG_PAUSE                 (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_PAUSE)
++#define IPC_STREAM_MSG_WRITE_DATA            (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_WRITE_DATA)
++#define IPC_STREAM_MSG_READ_DATA             (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_READ_DATA)
++#define IPC_STREAM_MSG_GET_RENDERED_FRAMES   (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_GET_RENDERED_FRAMES)
++#define IPC_STREAM_MSG_EOS                   (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_EOS)
++#define IPC_STREAM_MSG_FLUSH                 (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_FLUSH)
++#define IPC_STREAM_MSG_SET_VOLUME            (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_SET_VOLUME)
++#define IPC_STREAM_MSG_SET_ROUTE             (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_SET_ROUTE)
++#define IPC_STREAM_MSG_SET_MIC_MUTE          (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_SET_MIC_MUTE)
++#define IPC_STREAM_MSG_SET_HW_DEV            (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_SET_HW_DEV)
++#define IPC_STREAM_MSG_SET_RECORD_MODE       (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_SET_RECORD_MODE)
++
++#define IPC_GLOBAL_MSG_CODEC_SET_DEVICE      (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_GLOBAL | AUDIO_CODEC_SET_DEVICE)
++
++#define IPC_GLOBAL_MSG_AUDIO_SET_REG         (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_GLOBAL | AUDIO_SET_REG)
++#define IPC_GLOBAL_MSG_AUDIO_GET_REG         (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_GLOBAL | AUDIO_GET_REG)
++
++#define IPC_STREAM_MSG_EFFECT_GET_ENABLE     (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_EFFECT_GET_ENABLE)
++#define IPC_STREAM_MSG_EFFECT_SET_ENABLE     (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_EFFECT_SET_ENABLE)
++#define IPC_STREAM_MSG_EFFECT_GET_PARAMS     (IPC_MSG_DIR_AP2ADSP | IPC_MSG_TYPE_STREAM | STREAM_EFFECT_GET_PARAMS)
++#define IPC_STREAM_MSG_EFFECT_SET_PARAMS     (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_EFFECT_SET_PARAMS)
++
++#define IPC_STREAM_MSG_VOICE_ENHANCEMENT_SET (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_VOICE_ENHANCEMENT_SET)
++#define IPC_STREAM_MSG_VOICE_ENHANCEMENT_GET (IPC_MSG_DIR_AP2ADSP_NEEDS_ACK | IPC_MSG_TYPE_STREAM | STREAM_VOICE_ENHANCEMENT_GET)
++
++#define IPC_MSG_SEQ_NO_MASK                  0xFFFF
++#define IPC_MSG_SEQ_NO(x)                    ((x) & IPC_MSG_SEQ_NO_MASK)
++
++/* match with adsp definition in include/audio/audio_ipc.h */
++#define IPC_MSG_NOTIFY_TYPE_JACK_EVENT       0x3
++
++#define IPC_GET_NOTIFY_TYPE(x)               (((x) & (0xF << IPC_MSG_TYPE_SHFIT)) >> IPC_MSG_TYPE_SHFIT)
++
++/*
++ * maximum bytes of all types of messages
++ */
++#define IPC_MSG_BYTES_MAX                    256
++
++enum {
++	STREAM_DIR_PLAYBACK = 0x1,
++	STREAM_DIR_CAPTURE  = 0x2
++};
++
++#define STREAM_TYPE(dir, id) (((dir) << 16) | (id))
++
++enum {
++	/*
++	 * follow definitions in compress_params.h
++	 */
++	STREAM_FORMAT_PCM = 0x1,
++	STREAM_FORMAT_MP3 = 0x2,
++	STREAM_FORMAT_AAC = 0x6
++};
++
++enum {
++	EFFECT_VIRTUALIZER,
++	EFFECT_REVERB,
++	EFFECT_BASS_BOOST,
++	EFFECT_EQ,
++};
++
++struct spacemit_snd_ipc_stream_alloc {
++	uint32_t stream_type;
++	uint32_t format;
++	uint32_t bits;
++	uint32_t sample_rate;
++	uint32_t channels;
++	uint32_t bit_rate;
++	uint32_t hw_dev;
++	uint32_t dma_enhancement;
++};
++
++struct spacemit_snd_ipc_stream_free {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_resume {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_pause {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_eos {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_write_data {
++	uint32_t stream_type;
++	uint32_t paddr;
++	uint32_t filled;
++};
++
++struct spacemit_snd_ipc_stream_read_data {
++	uint32_t stream_type;
++	uint32_t paddr;
++	uint32_t required;
++};
++
++struct spacemit_snd_ipc_stream_write_data_done {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_flush {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_get_rendered_frames {
++	uint32_t stream_type;
++};
++
++struct spacemit_snd_ipc_stream_get_rendered_frames_reply {
++	uint32_t rendered_frames;
++};
++
++struct spacemit_snd_ipc_stream_set_volume {
++	uint32_t stream_type;
++	uint32_t left_volume;
++	uint32_t right_volume;
++	uint32_t curve_duration;
++};
++
++struct spacemit_snd_ipc_stream_set_mic_mute {
++	uint32_t stream_type;
++	uint32_t mute;
++	uint32_t curve_duration;
++};
++
++struct spacemit_snd_ipc_stream_set_hw_dev {
++	uint32_t stream_type;
++	uint32_t device;
++};
++
++struct spacemit_snd_ipc_stream_set_route {
++	uint32_t stream_type;/*include stream id and dir */
++	uint32_t backend_id;
++};
++
++struct spacemit_snd_ipc_codec_set_device {
++	uint32_t dev_id;
++	uint32_t enable;
++};
++
++struct spacemit_snd_ipc_audio_reg {
++	uint32_t reg_adr;
++	uint32_t mask;
++	uint32_t val;
++};
++
++struct spacemit_snd_ipc_stream_set_rec_mode {
++	uint32_t stream_type;/*include stream id and dir */
++	uint32_t mode;
++};
++
++struct spacemit_snd_ipc_jack_event {
++    uint32_t report_type;
++    uint32_t jack_type;
++    uint32_t key_type;
++};
++
++#define REPORT_JACK_TYPE 0x1
++#define REPORT_KEY_TYPE  0x2
++
++#define SPACEMIT_EFFECT_PARAMS 0
++#define SPACEMIT_EFFECT_ENABLE 1
++#define SPACEMIT_VOICE_PARAMS_LOAD 2
++
++
++enum {
++    VE_MODULE_HPF = 0,
++    VE_MODULE_LPF,
++    VE_MODULE_EQ,
++    VE_MODULE_EC,
++    VE_MODULE_NS,
++    VE_MODULE_AVC,
++    VE_MODULE_VOL,
++
++    VE_MODULE_MAX
++};
++
++enum {
++    VE_PATH_TX = 0,
++    VE_PATH_RX
++};
++
++#endif
++
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm.c b/sound/soc/spacemit/spacemit-snd-pcm.c
+new file mode 100644
+index 000000000000..844f9cf8c0d6
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-pcm.c
+@@ -0,0 +1,662 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
++#include <linux/of.h>
++
++#include <sound/pxa2xx-lib.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/dmaengine_pcm.h>
++
++#include "spacemit-snd.h"
++#include "spacemit-snd-adsp.h"
++#include "spacemit-snd-msgs.h"
++#include "spacemit-snd-memory.h"
++
++struct spacemit_snd_pcm_stream {
++	size_t period_bytes;
++	size_t buffer_bytes;
++	size_t offset_bytes; // 0 ~ buffer_bytes
++	int period_msecs;
++
++	unsigned long prepared;
++	atomic_t out_bufs;
++
++	wait_queue_head_t eos_wait;
++
++	struct audio_buffer *cur_buf;
++
++	struct snd_pcm_substream *substream;
++	struct spacemit_snd_adsp_stream  adsp_stream;
++	struct spacemit_snd_adsp_client *adsp_client;
++	struct audio_memory_manager *memmgr;
++};
++
++#define SPACEMIT_SND_PCM_PLAYBACK_MIN_CHANNELS      1
++#define SPACEMIT_SND_PCM_PLAYBACK_MAX_CHANNELS      8
++
++#define SPACEMIT_SND_PCM_PLAYBACK_MIN_NUM_PERIODS   2
++#define SPACEMIT_SND_PCM_PLAYBACK_MAX_NUM_PERIODS   8
++#define SPACEMIT_SND_PCM_PLAYBACK_MIN_PERIOD_SIZE   128
++#define SPACEMIT_SND_PCM_PLAYBACK_MAX_PERIOD_SIZE   12288
++
++#define SPACEMIT_SND_PCM_CAPTURE_MIN_CHANNELS       1
++#define SPACEMIT_SND_PCM_CAPTURE_MAX_CHANNELS       4
++
++#define SPACEMIT_SND_PCM_CAPTURE_MIN_NUM_PERIODS    2
++#define SPACEMIT_SND_PCM_CAPTURE_MAX_NUM_PERIODS    8
++#define SPACEMIT_SND_PCM_CAPTURE_MIN_PERIOD_SIZE    64
++#define SPACEMIT_SND_PCM_CAPTURE_MAX_PERIOD_SIZE    16384
++
++static unsigned int supported_sample_rates[] = {
++	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
++	88200, 96000, 176400, 192000
++};
++
++static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
++	.count = ARRAY_SIZE(supported_sample_rates),
++	.list = supported_sample_rates,
++	.mask = 0,
++};
++
++static struct snd_pcm_hardware spacemit_snd_pcm_hardware_playback = {
++	.info =                 (SNDRV_PCM_INFO_MMAP |
++				SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				SNDRV_PCM_INFO_MMAP_VALID |
++				SNDRV_PCM_INFO_INTERLEAVED |
++				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE),
++	.rates =                SNDRV_PCM_RATE_8000_192000,
++	.rate_min =             8000,
++	.rate_max =             192000,
++	.channels_min =         SPACEMIT_SND_PCM_PLAYBACK_MIN_CHANNELS,
++	.channels_max =         SPACEMIT_SND_PCM_PLAYBACK_MAX_CHANNELS,
++	.buffer_bytes_max =     SPACEMIT_SND_PCM_PLAYBACK_MAX_NUM_PERIODS *
++				SPACEMIT_SND_PCM_PLAYBACK_MAX_PERIOD_SIZE,
++	.period_bytes_min =	SPACEMIT_SND_PCM_PLAYBACK_MIN_PERIOD_SIZE,
++	.period_bytes_max =     SPACEMIT_SND_PCM_PLAYBACK_MAX_PERIOD_SIZE,
++	.periods_min =          SPACEMIT_SND_PCM_PLAYBACK_MIN_NUM_PERIODS,
++	.periods_max =          SPACEMIT_SND_PCM_PLAYBACK_MAX_NUM_PERIODS,
++	.fifo_size =            0,
++};
++
++static struct snd_pcm_hardware spacemit_snd_pcm_hardware_capture = {
++	.info =                 (SNDRV_PCM_INFO_MMAP |
++				SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				SNDRV_PCM_INFO_MMAP_VALID |
++				SNDRV_PCM_INFO_INTERLEAVED |
++				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE),
++	.rates =                SNDRV_PCM_RATE_8000_48000,
++	.rate_min =             8000,
++	.rate_max =             48000,
++	.channels_min =         SPACEMIT_SND_PCM_CAPTURE_MIN_CHANNELS,
++	.channels_max =         SPACEMIT_SND_PCM_CAPTURE_MAX_CHANNELS,
++	.buffer_bytes_max =     SPACEMIT_SND_PCM_CAPTURE_MAX_NUM_PERIODS *
++				SPACEMIT_SND_PCM_CAPTURE_MAX_PERIOD_SIZE,
++	.period_bytes_min =	SPACEMIT_SND_PCM_CAPTURE_MIN_PERIOD_SIZE,
++	.period_bytes_max =     SPACEMIT_SND_PCM_CAPTURE_MAX_PERIOD_SIZE,
++	.periods_min =          SPACEMIT_SND_PCM_CAPTURE_MIN_NUM_PERIODS,
++	.periods_max =          SPACEMIT_SND_PCM_CAPTURE_MAX_NUM_PERIODS,
++	.fifo_size =            0,
++};
++
++static int spacemit_snd_pcm_open(struct snd_soc_component *component, struct snd_pcm_substream *substream)
++{
++	int ret;
++	struct snd_pcm_runtime *runtime;
++	struct spacemit_snd_pcm_stream *pcm_stream;
++
++	pr_debug("enter %s\n", __func__);
++
++	pcm_stream = kzalloc(sizeof(struct spacemit_snd_pcm_stream), GFP_KERNEL);
++	if (!pcm_stream)
++		return -ENOMEM;
++
++	pr_debug("pcm_stream 0x%p\n", pcm_stream);
++	pcm_stream->substream = substream;
++
++	init_waitqueue_head(&pcm_stream->eos_wait);
++	atomic_set(&pcm_stream->out_bufs, 0);
++
++	runtime = substream->runtime;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		runtime->hw = spacemit_snd_pcm_hardware_playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		runtime->hw = spacemit_snd_pcm_hardware_capture;
++	else {
++		pr_err("invalid stream type %d\n", substream->stream);
++		kfree(pcm_stream);
++		return -EINVAL;
++	}
++
++	ret = snd_pcm_hw_constraint_list(runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE, &constraints_sample_rates);
++	if (ret < 0)
++		pr_debug("snd_pcm_hw_constraint_list failed\n");
++
++	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		pr_debug("snd_pcm_hw_constraint_integer failed\n");
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++			SPACEMIT_SND_PCM_PLAYBACK_MIN_NUM_PERIODS * SPACEMIT_SND_PCM_PLAYBACK_MIN_PERIOD_SIZE,
++			SPACEMIT_SND_PCM_PLAYBACK_MAX_NUM_PERIODS * SPACEMIT_SND_PCM_PLAYBACK_MAX_PERIOD_SIZE);
++		if (ret < 0)
++			pr_err("constraint for buffer bytes min max ret = %d\n", ret);
++	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		ret = snd_pcm_hw_constraint_minmax(runtime,
++			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++			SPACEMIT_SND_PCM_CAPTURE_MIN_NUM_PERIODS * SPACEMIT_SND_PCM_CAPTURE_MIN_PERIOD_SIZE,
++			SPACEMIT_SND_PCM_CAPTURE_MAX_NUM_PERIODS * SPACEMIT_SND_PCM_CAPTURE_MAX_PERIOD_SIZE);
++		if (ret < 0)
++			pr_err("constraint for buffer bytes min max ret = %d\n", ret);
++	}
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
++	if (ret < 0)
++		pr_err("constraint for period bytes step ret = %d\n", ret);
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
++	if (ret < 0)
++		pr_err("constraint for buffer bytes step ret = %d\n", ret);
++
++	runtime->private_data = pcm_stream;
++
++	return 0;
++}
++
++static int spacemit_snd_pcm_close(struct snd_soc_component *component, struct snd_pcm_substream *substream)
++{
++#define EOS_MIN_TIMEOUT_LENGTH  100
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct spacemit_snd_pcm_stream *pcm_stream = runtime->private_data;
++
++	pr_debug("enter %s\n", __func__);
++
++	if (pcm_stream) {
++		int ret;
++		uint32_t timeout;
++
++		if (pcm_stream->adsp_client) {
++			ret = spacemit_snd_adsp_stream_eos(pcm_stream->adsp_client, NULL, &pcm_stream->adsp_stream);
++			if (ret)
++				pr_err("fatal error, failed to issue eos\n");
++		}
++
++		if (runtime->frame_bits == 0 || runtime->rate == 0) {
++			timeout = EOS_MIN_TIMEOUT_LENGTH;
++		} else {
++#define MULTIPLIER 50 // for safety guard
++			timeout = runtime->period_size * HZ * MULTIPLIER /
++				((runtime->frame_bits / 8) * runtime->rate);
++			if (timeout < EOS_MIN_TIMEOUT_LENGTH)
++				timeout = EOS_MIN_TIMEOUT_LENGTH;
++		}
++
++		pr_debug("wait for eos done, timeout: %d\n", timeout);
++		ret = wait_event_timeout(pcm_stream->eos_wait,
++			0 == atomic_read(&pcm_stream->out_bufs), timeout);
++		if (!ret)
++			pr_err("%s: warning, eos not finished, timeout=%d ms\n", __func__, timeout);
++
++		if (pcm_stream->adsp_client) {
++			ret = spacemit_snd_adsp_stream_pause(pcm_stream->adsp_client, &pcm_stream->adsp_stream);
++			if (ret < 0)
++				pr_err("failed to pause stream\n");
++
++			ret = spacemit_snd_adsp_stream_free(pcm_stream->adsp_client, &pcm_stream->adsp_stream);
++			if (ret < 0)
++				pr_err("failed to free stream\n");
++
++			pcm_stream->adsp_client = NULL;
++		}
++
++		if (pcm_stream->memmgr) {
++			spacemit_snd_free_memory(pcm_stream->memmgr);
++			pcm_stream->memmgr = NULL;
++		}
++
++		kfree(pcm_stream);
++	}
++
++	runtime->private_data = NULL;
++
++	return 0;
++}
++
++static int spacemit_snd_pcm_hw_params(struct snd_soc_component *component,
++                                 struct snd_pcm_substream *substream,
++                                 struct snd_pcm_hw_params *params)
++{
++	int ret;
++	int dir;
++	struct snd_pcm_runtime *runtime;
++	struct snd_dma_buffer *dma_buf;
++	struct spacemit_snd_pcm_stream *pcm_stream;
++
++	pr_debug("enter %s, hw_params add:%p\n", __func__, params);
++
++	runtime = substream->runtime;
++	dma_buf = &substream->dma_buffer;
++
++	pcm_stream = runtime->private_data;
++	dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? MEMORY_DIR_OUT : MEMORY_DIR_IN;
++
++	if (pcm_stream->memmgr) {
++		pr_info("%s, dir=%d, pcm_stream->memmgr=0x%px\n", __func__, dir, pcm_stream->memmgr);
++	}
++
++	pr_debug("buffer bytes: %d, periods: %d\n", \
++		params_buffer_bytes(params), params_periods(params));
++	ret = spacemit_snd_alloc_memory(&pcm_stream->memmgr, dir,
++			params_periods(params), (params_buffer_bytes(params) / params_periods(params)));
++	if (ret < 0) {
++		pr_err("failed to allocate memory for substream %s\n", substream->name);
++		return -ENOMEM;
++	}
++
++	dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	dma_buf->dev.dev = substream->pcm->card->dev;
++	dma_buf->private_data = NULL;
++	dma_buf->area = spacemit_snd_get_memory_vaddr(pcm_stream->memmgr);
++	ret =  spacemit_snd_get_memory_paddr(pcm_stream->memmgr, &dma_buf->addr);
++	if (!dma_buf->area || ret < 0) {
++		spacemit_snd_free_memory(pcm_stream->memmgr);
++		pcm_stream->memmgr = NULL;
++		pr_err("invalid memory for substream %s\n", substream->name);
++		return -ENOMEM;
++	}
++	dma_buf->bytes = params_buffer_bytes(params);
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++
++	return 0;
++}
++
++static void __pcm_capture_read_data_done(void *arg, void *data)
++{
++	struct audio_buffer *abuf;
++	struct spacemit_snd_adsp_stream *adsp_stream;
++	struct spacemit_snd_pcm_stream *pcm_stream;
++
++	//pr_debug("enter %s\n", __func__);
++	adsp_stream = (struct spacemit_snd_adsp_stream *)arg;
++	if (!adsp_stream) {
++		pr_err("%s:adsp_stream null,FAIL\n", __func__);
++		return;
++	}
++
++	pcm_stream = container_of(adsp_stream, struct spacemit_snd_pcm_stream, adsp_stream);
++
++	abuf = spacemit_snd_get_first_rendered_buffer(pcm_stream->memmgr);
++	BUG_ON(!abuf);
++
++	pcm_stream->offset_bytes += pcm_stream->period_bytes;
++	if (pcm_stream->offset_bytes >= pcm_stream->buffer_bytes)
++		pcm_stream->offset_bytes = 0;
++
++	spacemit_snd_finish_one_buffer(pcm_stream->memmgr, abuf);
++	snd_pcm_period_elapsed(pcm_stream->substream);
++
++	return;
++}
++
++static int spacemit_snd_pcm_prepare(struct snd_soc_component *component, struct snd_pcm_substream *substream)
++{
++	int ret;
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_runtime = (struct snd_soc_pcm_runtime *)substream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct spacemit_snd_pcm_stream *pcm_stream = runtime->private_data;
++	int stream_id = cpu_dai->id;
++
++	pcm_stream->adsp_client = spacemit_snd_get_adsp_client(0, substream->pcm->card->shortname);
++	if (!pcm_stream->adsp_client) {
++		pr_err("failed to get adsp client\n");
++		return -ENXIO;
++	}
++
++	if (pcm_stream->prepared)
++		return 0;
++
++	pcm_stream->period_bytes = snd_pcm_lib_period_bytes(substream);
++	pcm_stream->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
++
++	pr_debug("%s, period_bytes: %zd, buffer_bytes: %zd\n", __func__, \
++		pcm_stream->period_bytes, pcm_stream->buffer_bytes);
++
++	pcm_stream->offset_bytes = 0;
++
++	pcm_stream->adsp_stream.type = STREAM_TYPE(substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
++		STREAM_DIR_PLAYBACK : STREAM_DIR_CAPTURE, stream_id);
++	pcm_stream->adsp_stream.format = STREAM_FORMAT_PCM;
++
++	pcm_stream->adsp_stream.bits = 16;
++	pcm_stream->adsp_stream.channels = runtime->channels;
++	pcm_stream->adsp_stream.sample_rate = runtime->rate;
++
++	pcm_stream->period_msecs = bytes_to_frames(runtime, pcm_stream->period_bytes) * 1000 /
++					pcm_stream->adsp_stream.sample_rate;
++
++	ret = spacemit_snd_adsp_stream_alloc(pcm_stream->adsp_client, &pcm_stream->adsp_stream);
++	if (ret) {
++		pr_err("failed to get adsp stream\n");
++		goto close_client;
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		struct audio_buffer *abuf;
++		struct spacemit_snd_adsp_client *adsp_client = pcm_stream->adsp_client;
++		struct audio_memory_manager *memmgr = pcm_stream->memmgr;
++		while ((abuf = spacemit_snd_get_free_buffer(memmgr))) {
++			if (spacemit_snd_adsp_stream_read_data(adsp_client, __pcm_capture_read_data_done, \
++					&pcm_stream->adsp_stream, abuf) < 0)
++				goto free_stream;
++		}
++	}
++	pcm_stream->prepared = 1;
++
++	return 0;
++
++free_stream:
++	spacemit_snd_adsp_stream_free(pcm_stream->adsp_client, &pcm_stream->adsp_stream);
++close_client:
++	pcm_stream->adsp_client = NULL;
++
++	return -EIO;
++}
++
++static int spacemit_snd_pcm_trigger(struct snd_soc_component *component, struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct spacemit_snd_pcm_stream *pcm_stream = runtime->private_data;
++	struct spacemit_snd_adsp_client *adsp_client = pcm_stream->adsp_client;
++
++	pr_debug("enter %s, cmd: %d\n", __func__, cmd);
++
++	if (!adsp_client) {
++		pr_err("adsp is not conncted..., quit\n");
++		return -ENODEV;
++	}
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		pr_debug("SNDRV_PCM_TRIGGER_START/resume/release:cmd=%d\n", cmd);
++		ret = spacemit_snd_adsp_stream_resume(adsp_client, &pcm_stream->adsp_stream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pr_debug("SNDRV_PCM_TRIGGER_STOP\n");
++		if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK) {
++			ret = spacemit_snd_adsp_stream_pause(adsp_client, &pcm_stream->adsp_stream);
++			break;
++		}
++
++		ret = spacemit_snd_adsp_stream_eos(adsp_client, NULL, &pcm_stream->adsp_stream);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		pr_debug("SNDRV_PCM_TRIGGER_PAUSE,cmd %d\n", cmd);
++		ret = spacemit_snd_adsp_stream_pause(adsp_client, &pcm_stream->adsp_stream);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t spacemit_snd_pcm_pointer(struct snd_soc_component *component, struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct spacemit_snd_pcm_stream *pcm_stream = runtime->private_data;
++	return bytes_to_frames(runtime, pcm_stream->offset_bytes);
++}
++
++static int spacemit_snd_pcm_mmap(struct snd_soc_component *component, struct snd_pcm_substream *substream,
++			struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned long off = vma->vm_pgoff;
++
++	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++	return remap_pfn_range(vma, vma->vm_start,
++			__phys_to_pfn(runtime->dma_addr) + off,
++				vma->vm_end - vma->vm_start, vma->vm_page_prot);
++}
++
++static void __pcm_playback_write_data_done(void *arg, void *data)
++{
++	struct audio_buffer *abuf;
++	struct spacemit_snd_adsp_stream *adsp_stream;
++	struct spacemit_snd_pcm_stream *pcm_stream;
++	struct spacemit_snd_adsp_client *adsp_client;
++
++	adsp_stream = (struct spacemit_snd_adsp_stream *)arg;
++	if (!adsp_stream) {
++		pr_err("write data done, stream data corrupted\n");
++		return;
++	}
++
++	pcm_stream = container_of(adsp_stream, struct spacemit_snd_pcm_stream, adsp_stream);
++
++	adsp_client = pcm_stream->adsp_client;
++	if (!adsp_client) {
++		pr_err("write data done, client data corrupted\n");
++		return;
++	}
++
++	atomic_dec(&pcm_stream->out_bufs);
++	wake_up(&pcm_stream->eos_wait); //This only takes effect when end of stream
++
++	abuf = spacemit_snd_get_first_rendered_buffer(pcm_stream->memmgr);
++	BUG_ON(!abuf);
++
++	pcm_stream->offset_bytes += abuf->filled;
++	if (pcm_stream->offset_bytes >= pcm_stream->buffer_bytes)
++		pcm_stream->offset_bytes = 0;
++
++	spacemit_snd_finish_one_buffer(pcm_stream->memmgr, abuf);
++	snd_pcm_period_elapsed(pcm_stream->substream);
++	pr_debug("enter %s, pcm_stream->buffer_bytes=%zd\n", __func__, pcm_stream->buffer_bytes);
++
++	return;
++}
++
++static int _spacemit_snd_pcm_playback_copy(struct spacemit_snd_pcm_stream *pcm_stream, int channel,
++                                      snd_pcm_uframes_t pos, void __user *buf, unsigned long bytes)
++{
++	struct audio_buffer *abuf;
++	ssize_t offset, copy_bytes, buf_avail_bytes;
++
++	ssize_t buf_bytes = bytes;
++	struct spacemit_snd_adsp_client *adsp_client = pcm_stream->adsp_client;
++
++	//pr_debug("enter %s, buf_bytes=%zd\n", __func__, buf_bytes);
++
++	offset = 0;
++	while (buf_bytes) {
++		abuf = spacemit_snd_get_next_buffer(pcm_stream->memmgr, 2*pcm_stream->period_msecs); // multiple by 2 for safety guard
++		if (!abuf) {
++			pr_err("failed to get next available bufer\n");
++			return -ENOMEM;
++		}
++
++		copy_bytes = buf_bytes;
++		buf_avail_bytes = abuf->size - abuf->filled;
++		if (copy_bytes > buf_avail_bytes)
++			copy_bytes = buf_avail_bytes;
++
++		if (copy_from_user(abuf->vaddr, buf + offset, copy_bytes)) {
++			pr_err("failed to copy from user\n");
++			return -EFAULT;
++		}
++
++		abuf->filled = copy_bytes;
++
++		offset += copy_bytes;
++		buf_bytes -= copy_bytes;
++
++		if (spacemit_snd_adsp_stream_write_data(adsp_client, __pcm_playback_write_data_done,\
++				&pcm_stream->adsp_stream, abuf) < 0) {
++			pr_err("failed to render buffers\n");
++			return -EIO;
++		}
++		atomic_inc(&pcm_stream->out_bufs);
++	}
++
++	return 0;
++}
++
++static int _spacemit_snd_pcm_capture_copy(struct spacemit_snd_pcm_stream *pcm_stream, int channel,
++                                     snd_pcm_uframes_t pos, void __user *buf, unsigned long bytes)
++{
++	struct audio_buffer *cur_buf;
++	ssize_t copy_bytes, buf_avail_bytes;
++
++	ssize_t buf_bytes = bytes;
++	struct spacemit_snd_adsp_client *adsp_client = pcm_stream->adsp_client;
++
++	//pr_debug("enter %s, buffer bytes: %zd\n", __func__, buf_bytes);
++
++	while (buf_bytes) {
++		if (!pcm_stream->cur_buf) {
++			pcm_stream->cur_buf = spacemit_snd_get_next_buffer(pcm_stream->memmgr, 2*pcm_stream->period_msecs);
++			if (!pcm_stream->cur_buf) {
++				pr_err("%s:pcm_stream->cur_buf=NULL,FAIL\n", __func__);
++				return -ENOMEM;
++			}
++		}
++
++		cur_buf = pcm_stream->cur_buf;
++		copy_bytes = buf_bytes;
++		buf_avail_bytes = cur_buf->size - cur_buf->offset;
++		if (copy_bytes > buf_avail_bytes)
++			copy_bytes = buf_avail_bytes;
++
++		if (copy_to_user(buf, cur_buf->vaddr + cur_buf->offset, copy_bytes)) {
++			pr_err("%s: copy_to_user FAIL\n", __func__);
++			return -EFAULT;
++		}
++
++		cur_buf->offset += copy_bytes;
++		buf_bytes -= copy_bytes;
++		if (cur_buf->offset == cur_buf->size) {
++			if (spacemit_snd_adsp_stream_read_data(adsp_client, __pcm_capture_read_data_done,\
++					&pcm_stream->adsp_stream, cur_buf) < 0) {
++				pr_err("%s: failed\n", __func__);
++				return -EIO;
++			}
++			pcm_stream->cur_buf = NULL;
++		}
++	}
++
++	return 0;
++
++}
++
++static int spacemit_snd_pcm_copy(struct snd_soc_component *component,
++                            struct snd_pcm_substream *substream, int channel,
++                            snd_pcm_uframes_t pos, void __user  *buf, unsigned long bytes)
++{
++	int ret = 0;
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct spacemit_snd_pcm_stream *pcm_stream = runtime->private_data;
++	if (!pcm_stream->adsp_client) {
++		return -ENODEV;
++	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = _spacemit_snd_pcm_playback_copy(pcm_stream, channel, pos, buf, bytes);
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		ret = _spacemit_snd_pcm_capture_copy(pcm_stream, channel, pos, buf, bytes);
++
++	return ret;
++}
++
++static int spacemit_snd_pcm_new(struct snd_soc_component *component, struct snd_soc_pcm_runtime *rtd)
++{
++	pr_debug("enter %s\n", __func__);
++
++	return 0;
++}
++
++static struct snd_soc_component_driver spacemit_snd_pcm_component = {
++	.open = spacemit_snd_pcm_open,
++	.close = spacemit_snd_pcm_close,
++	.hw_params = spacemit_snd_pcm_hw_params,
++	.prepare = spacemit_snd_pcm_prepare,
++	.trigger = spacemit_snd_pcm_trigger,
++	.pointer = spacemit_snd_pcm_pointer,
++	.mmap = spacemit_snd_pcm_mmap,
++	.copy_user = spacemit_snd_pcm_copy,
++	.pcm_construct = spacemit_snd_pcm_new
++};
++
++static int spacemit_snd_pcm_pdev_probe(struct platform_device *pdev)
++{
++	pr_debug("%s: dev name %s\n", __func__, dev_name(&pdev->dev));
++	return snd_soc_register_component(&pdev->dev, &spacemit_snd_pcm_component, NULL, 0);
++}
++
++static int spacemit_snd_pcm_pdev_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_component(&pdev->dev);
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id spacemit_snd_pcm_dt_match[] = {
++	{.compatible = "spacemit,spacemit-snd-pcm"},
++	{}
++};
++#endif
++
++static struct platform_driver spacemit_snd_pcm_pdrv = {
++	.driver = {
++		.name = "spacemit-snd-pcm",
++		.of_match_table = of_match_ptr(spacemit_snd_pcm_dt_match),
++	},
++	.probe = spacemit_snd_pcm_pdev_probe,
++	.remove = spacemit_snd_pcm_pdev_remove,
++};
++
++#if IS_MODULE(CONFIG_SND_SOC_SPACEMIT)
++int spacemit_snd_register_pcm_pdrv(void)
++{
++	return platform_driver_register(&spacemit_snd_pcm_pdrv);
++}
++EXPORT_SYMBOL(spacemit_snd_register_pcm_pdrv);
++
++void spacemit_snd_unregister_pcm_pdrv(void)
++{
++	platform_driver_unregister(&spacemit_snd_pcm_pdrv);
++}
++EXPORT_SYMBOL(spacemit_snd_unregister_pcm_pdrv);
++#else
++module_platform_driver(spacemit_snd_pcm_pdrv);
++#endif
++
++MODULE_DESCRIPTION("SPACEMIT Aquila ASoC PCM Platform Driver");
++MODULE_LICENSE("GPL");
++
+diff --git a/sound/soc/spacemit/spacemit-snd-soc.c b/sound/soc/spacemit/spacemit-snd-soc.c
+new file mode 100644
+index 000000000000..7218c7231cce
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-soc.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include "linux/export.h"
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include "spacemit-snd-adsp.h"
++#include "spacemit-snd-msgs.h"
++#include "spacemit-snd-soc.h"
++
++extern struct snd_soc_jack jack;
++
++static void spacemit_snd_jack_handle_event(struct spacemit_snd_adsp_event_handler *ev_handler,
++                                      uint32_t ev, void *arg)
++{
++	struct spacemit_snd_ipc_jack_event *info = (struct spacemit_snd_ipc_jack_event *)arg;
++
++	if (IPC_GET_NOTIFY_TYPE(ev) != IPC_MSG_NOTIFY_TYPE_JACK_EVENT) {
++		pr_err("invalid event 0x%x\n", ev);
++		return;
++	}
++
++	pr_info("info report_type 0x%x jack_type 0x%x key_type 0x%x\n", info->report_type, info->jack_type, info->key_type);
++
++	if (info->report_type == REPORT_JACK_TYPE) {
++		snd_soc_jack_report(&jack, info->jack_type, SND_JACK_HEADSET);
++	} else if (info->report_type == REPORT_KEY_TYPE) {
++		snd_soc_jack_report(&jack, info->key_type, (SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2));
++	}
++}
++
++static struct spacemit_snd_adsp_event_handler jack_event_handler = {
++	.handle_event = spacemit_snd_jack_handle_event
++};
++
++int spacemit_snd_soc_init(struct snd_soc_card *card)
++{
++	spacemit_snd_adsp_register_event_handler(&jack_event_handler);
++	spacemit_snd_adsp_init(card->name);
++
++	return 0;
++}
++
+diff --git a/sound/soc/spacemit/spacemit-snd-soc.h b/sound/soc/spacemit/spacemit-snd-soc.h
+new file mode 100644
+index 000000000000..015881bdd065
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-soc.h
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_SOC_H_
++#define _SPACEMIT_SND_SOC_H_
++
++struct snd_soc_card;
++int spacemit_snd_soc_init(struct snd_soc_card *card);
++
++#endif
+diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
+new file mode 100644
+index 000000000000..f3e3ccef2f68
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-sspa.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/slab.h>
++#include <linux/io.h>
++#include <linux/of.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/pxa2xx-lib.h>
++#include <sound/dmaengine_pcm.h>
++
++#include "spacemit-snd-sspa.h"
++#include "spacemit-snd.h"
++
++#define SPACEMIT_SND_SSPA_RATES SNDRV_PCM_RATE_8000_192000
++#define SPACEMIT_SND_SSPA_FORMATS (SNDRV_PCM_FMTBIT_S8 | \
++               SNDRV_PCM_FMTBIT_S16_LE | \
++               SNDRV_PCM_FMTBIT_S24_LE | \
++               SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver spacemit_snd_sspa_dai[] = {
++	{
++		.name = "SSPA0",
++		.id = SPACEMIT_SND_SSPA0,
++		.playback = {
++			.stream_name = "SSPA0 TX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++		.capture = {
++			.stream_name = "SSPA0 RX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++	},
++	{
++		.name = "SSPA1",
++		.id = SPACEMIT_SND_SSPA1,
++		.playback = {
++			.stream_name = "SSPA1 TX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++		.capture = {
++			.stream_name = "SSPA1 RX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++	},
++	{
++		.name = "SSPA2",
++		.id = SPACEMIT_SND_SSPA2,
++		.playback = {
++			.stream_name = "SSPA2 TX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++	},
++
++	{
++		.name = "SSPA3",
++		.id = SPACEMIT_SND_SSPA3,
++		.playback = {
++			.stream_name = "SSPA3 TX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++		.capture = {
++			.stream_name = "SSPA3 RX",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SPACEMIT_SND_SSPA_RATES,
++			.formats = SPACEMIT_SND_SSPA_FORMATS,
++		},
++	},
++};
++
++static const struct snd_soc_component_driver spacemit_snd_sspa_component = {
++	.name		= "spacemit-snd-sspa",
++};
++
++static int spacemit_snd_sspa_pdev_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	dev_dbg(&pdev->dev, "enter %s\n", __FUNCTION__);
++	ret = devm_snd_soc_register_component(&pdev->dev, &spacemit_snd_sspa_component,
++						   spacemit_snd_sspa_dai, ARRAY_SIZE(spacemit_snd_sspa_dai));
++	if (ret != 0) {
++		dev_err(&pdev->dev, "failed to register DAI\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id spacemit_snd_sspa_ids[] = {
++	{ .compatible = "spacemit,spacemit-snd-sspa", },
++	{ /* sentinel */ }
++};
++#endif
++
++static struct platform_driver spacemit_snd_sspa_pdrv = {
++	.driver = {
++		.name = "spacemit-snd-sspa",
++		.of_match_table = of_match_ptr(spacemit_snd_sspa_ids),
++	},
++	.probe = spacemit_snd_sspa_pdev_probe,
++};
++
++#if IS_MODULE(CONFIG_SND_SOC_SPACEMIT)
++int spacemit_snd_register_sspa_pdrv(void)
++{
++	return platform_driver_register(&spacemit_snd_sspa_pdrv);
++}
++EXPORT_SYMBOL(spacemit_snd_register_sspa_pdrv);
++
++void spacemit_snd_unregister_sspa_pdrv(void)
++{
++	platform_driver_unregister(&spacemit_snd_sspa_pdrv);
++}
++EXPORT_SYMBOL(spacemit_snd_unregister_sspa_pdrv);
++#else
++module_platform_driver(spacemit_snd_sspa_pdrv);
++#endif
++
++MODULE_DESCRIPTION("SPACEMIT Aquila ASoC SSPA Driver");
++MODULE_LICENSE("GPL");
++
+diff --git a/sound/soc/spacemit/spacemit-snd-sspa.h b/sound/soc/spacemit/spacemit-snd-sspa.h
+new file mode 100644
+index 000000000000..5158bbc31c60
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd-sspa.h
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_SSPA_H_
++#define _SPACEMIT_SND_SSPA_H_
++
++/*
++ * SSPA Registers
++ */
++#define SSPA_RXD		(0x00)
++#define SSPA_RXID		(0x04)
++#define SSPA_RXCTL		(0x08)
++#define SSPA_RXSP		(0x0c)
++#define SSPA_RXFIFO_UL		(0x10)
++#define SSPA_RXINT_MASK		(0x14)
++#define SSPA_RXC		(0x18)
++#define SSPA_RXFIFO_NOFS	(0x1c)
++#define SSPA_RXFIFO_SIZE	(0x20)
++
++#define SSPA_TXD		(0x80)
++#define SSPA_TXID		(0x84)
++#define SSPA_TXCTL		(0x88)
++#define SSPA_TXSP		(0x8c)
++#define SSPA_TXFIFO_LL		(0x90)
++#define SSPA_TXINT_MASK		(0x94)
++#define SSPA_TXC		(0x98)
++#define SSPA_TXFIFO_NOFS	(0x9c)
++#define SSPA_TXFIFO_SIZE	(0xa0)
++
++/* SSPA Control Register */
++#define	SSPA_CTL_XPH		(1 << 31)	/* Read Phase */
++#define	SSPA_CTL_XFIG		(1 << 15)	/* Transmit Zeros when FIFO Empty */
++#define	SSPA_CTL_JST		(1 << 3)	/* Audio Sample Justification */
++#define	SSPA_CTL_XFRLEN2_MASK	(7 << 24)
++#define	SSPA_CTL_XFRLEN2(x)	((x) << 24)	/* Transmit Frame Length in Phase 2 */
++#define	SSPA_CTL_XWDLEN2_MASK	(7 << 21)
++#define	SSPA_CTL_XWDLEN2(x)	((x) << 21)	/* Transmit Word Length in Phase 2 */
++#define	SSPA_CTL_XDATDLY(x)	((x) << 19)	/* Tansmit Data Delay */
++#define	SSPA_CTL_XSSZ2_MASK	(7 << 16)
++#define	SSPA_CTL_XSSZ2(x)	((x) << 16)	/* Transmit Sample Audio Size */
++#define	SSPA_CTL_XFRLEN1_MASK	(7 << 8)
++#define	SSPA_CTL_XFRLEN1(x)	((x) << 8)	/* Transmit Frame Length in Phase 1 */
++#define	SSPA_CTL_XWDLEN1_MASK	(7 << 5)
++#define	SSPA_CTL_XWDLEN1(x)	((x) << 5)	/* Transmit Word Length in Phase 1 */
++#define	SSPA_CTL_XSSZ1_MASK	(7 << 0)
++#define	SSPA_CTL_XSSZ1(x)	((x) << 0)	/* XSSZ1 */
++
++#define SSPA_CTL_8_BITS		(0x0)		/* Sample Size */
++#define SSPA_CTL_12_BITS	(0x1)
++#define SSPA_CTL_16_BITS	(0x2)
++#define SSPA_CTL_20_BITS	(0x3)
++#define SSPA_CTL_24_BITS	(0x4)
++#define SSPA_CTL_32_BITS	(0x5)
++
++/* SSPA Serial Port Register */
++#define	SSPA_SP_WEN		(1 << 31)	/* Write Configuration Enable */
++#define	SSPA_SP_MSL		(1 << 18)	/* Master Slave Configuration */
++#define	SSPA_SP_CLKP		(1 << 17)	/* CLKP Polarity Clock Edge Select */
++#define	SSPA_SP_FSP		(1 << 16)	/* FSP Polarity Clock Edge Select */
++#define	SSPA_SP_FIX		(1 << 3)	/* SSPA fsync fix */
++#define	SSPA_SP_FFLUSH		(1 << 2)	/* FIFO Flush */
++#define	SSPA_SP_S_RST		(1 << 1)	/* Active High Reset Signal */
++#define	SSPA_SP_S_EN		(1 << 0)	/* Serial Clock Domain Enable */
++#define	SSPA_SP_FWID(x)		((x) << 20)	/* Frame-Sync Width */
++#define	SSPA_TXSP_FPER(x)	((x) << 4)	/* Frame-Sync Active */
++
++/* sspa clock sources */
++#define MMP_SSPA_CLK_PLL	0
++#define MMP_SSPA_CLK_VCXO	1
++#define MMP_SSPA_CLK_AUDIO	3
++
++/* sspa pll id */
++#define MMP_SYSCLK		0
++#define MMP_SSPA_CLK		1
++
++#endif /* _MMP_SSPA_H */
++
+diff --git a/sound/soc/spacemit/spacemit-snd.h b/sound/soc/spacemit/spacemit-snd.h
+new file mode 100644
+index 000000000000..dcec4c65e89a
+--- /dev/null
++++ b/sound/soc/spacemit/spacemit-snd.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022 SPACEMIT Micro Limited
++ */
++
++#ifndef _SPACEMIT_SND_H
++#define _SPACEMIT_SND_H
++
++enum {
++	SPACEMIT_SND_SSPA0 = 0,
++	SPACEMIT_SND_SSPA1,
++	SPACEMIT_SND_SSPA2,
++	SPACEMIT_SND_SSPA3
++};
++
++#endif
+-- 
+2.47.0
+

@@ -1,0 +1,38 @@
+From b9a51c1584650edf8c5a7c08f19296c236b8629f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:18:40 +0800
+Subject: [PATCH 1161/1202] usb: gadget: fix compile warning
+
+Change-Id: Ia64f55355194ef621c11ed8dad6e88459bfb4f1e
+---
+ drivers/usb/gadget/udc/k1x_ci_udc.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
+index 629f7bbc7eeb..85960a6505ce 100644
+--- a/drivers/usb/gadget/udc/k1x_ci_udc.h
++++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
+@@ -334,17 +334,17 @@ struct mv_dtd {
+ 	struct mv_dtd *next_dtd_virt;
+ };
+ 
+-uint32_t UDC_READ_REG32(uint32_t volatile *reg)
++inline uint32_t UDC_READ_REG32(uint32_t volatile *reg)
+ {
+ 	return readl(reg);
+ }
+ 
+-void DWC_WRITE_REG32(uint32_t volatile *reg, uint32_t value)
++inline void DWC_WRITE_REG32(uint32_t volatile *reg, uint32_t value)
+ {
+ 	writel(value, reg);
+ }
+ 
+-void UDC_MODIFY_REG32(uint32_t volatile *reg, uint32_t clear_mask, uint32_t set_mask)
++inline void UDC_MODIFY_REG32(uint32_t volatile *reg, uint32_t clear_mask, uint32_t set_mask)
+ {
+ 	writel((readl(reg) & ~clear_mask) | set_mask, reg);
+ }
+-- 
+2.47.0
+

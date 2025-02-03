@@ -1,0 +1,26 @@
+From 1f30614c4d2687b1650ea1fc43a54fc13d0115e0 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Fri, 10 May 2024 10:13:22 +0800
+Subject: [PATCH 0642/1202] display: fix hdmi compatibility issues
+
+Change-Id: Ic9a2da3320f542fc456367c7d41a2d653869e1f6
+---
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index b621ece123ce..c40fe06744da 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -574,7 +574,7 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,
+ 		// 08H, 09H: ID Manufacturer Nanme
+ 		// 0AH, 0BH: ID Product Code
+ 		if ((hdmi_data->edid[8] == 0x30) && (hdmi_data->edid[9] == 0xa3) &&
+-			(hdmi_data->edid[10] == 0x88) && (hdmi_data->edid[11] == 0x23)) {
++			((hdmi_data->edid[10] == 0x88) || (hdmi_data->edid[10] == 0x89)) && (hdmi_data->edid[11] == 0x23)) {
+ 			// Lecoo HU20238FB0
+ 			bit_depth = EIGHT_BPP;
+ 			DRM_INFO("%s() 8bpc \n", __func__);
+-- 
+2.47.0
+

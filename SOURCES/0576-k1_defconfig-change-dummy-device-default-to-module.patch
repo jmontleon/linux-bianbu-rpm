@@ -1,0 +1,26 @@
+From 36bae5570339bd50c428ad2c806a72d96b524177 Mon Sep 17 00:00:00 2001
+From: maguoqun <guoqun.ma@spacemit.com>
+Date: Thu, 11 Apr 2024 15:12:51 +0800
+Subject: [PATCH 0576/1202] k1_defconfig: change dummy device default to module
+
+Change-Id: I220beb56936ac8a4d2e48c567a9cbffa26714ff8
+---
+ arch/riscv/configs/k1_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index df9a895bb353..d363217454cc 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -267,7 +267,7 @@ CONFIG_TARGET_CORE=y
+ CONFIG_TCM_IBLOCK=y
+ CONFIG_TCM_FILEIO=y
+ CONFIG_NETDEVICES=y
+-CONFIG_DUMMY=y
++CONFIG_DUMMY=m
+ CONFIG_MACVLAN=y
+ CONFIG_IPVLAN=y
+ CONFIG_VXLAN=y
+-- 
+2.47.0
+

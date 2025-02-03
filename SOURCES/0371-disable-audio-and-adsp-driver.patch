@@ -1,0 +1,36 @@
+From 7950e4c50ea8a1348cb0b0a704b64f871fb48ffb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 13 Jan 2024 03:38:41 +0800
+Subject: [PATCH 0371/1202] disable audio and adsp driver
+
+Change-Id: I36aad6782d2a6076c32a6a2f825353dc82b17659
+---
+ arch/riscv/configs/k1-x_deb2_defconfig | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index a0fc0ddb38d4..848cbbc09cc9 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -199,7 +199,6 @@ CONFIG_AIC_LOADFW_SUPPORT=m
+ CONFIG_INPUT_EVDEV=y
+ # CONFIG_INPUT_KEYBOARD is not set
+ # CONFIG_INPUT_MOUSE is not set
+-# CONFIG_VT_HW_CONSOLE_BINDING=y
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_SERIAL_PXA=y
+ CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
+@@ -395,10 +394,6 @@ CONFIG_POWERVR_ROGUE=y
+ CONFIG_FB=y
+ CONFIG_BACKLIGHT_PWM=y
+ # CONFIG_VGA_CONSOLE is not set
+-CONFIG_SOUND=y
+-CONFIG_SND=y
+-CONFIG_SND_SOC=y
+-CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_LOGO=y
+ CONFIG_USB_HIDDEV=y
+-- 
+2.47.0
+

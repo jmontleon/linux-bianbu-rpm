@@ -1,7 +1,7 @@
-From 9719d23cba85919122fba839e5337ff119b7d1ff Mon Sep 17 00:00:00 2001
+From 8d765bbba6384dba71cb726b1491b5001282604e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
-Subject: [PATCH 0095/1206] mmc: support spacemit k1x platform
+Subject: [PATCH 0095/1202] mmc: support spacemit k1x platform
 
 Change-Id: Iac553b07dd96bc7f80dcd521b8e41733bdda828a
 ---
@@ -168,10 +168,10 @@ index 1cf64e0952fb..5472fe829859 100644
  	if (ret)
  		return ret;
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index d996d39c0d6f..7bec1eb7d752 100644
+index 5241528f8b90..64a31bb20270 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
-@@ -1205,6 +1205,11 @@ int mmc_host_set_uhs_voltage(struct mmc_host *host)
+@@ -1202,6 +1202,11 @@ int mmc_host_set_uhs_voltage(struct mmc_host *host)
  
  	/* Keep clock gated for at least 10 ms, though spec only says 5 ms */
  	mmc_delay(10);
@@ -183,7 +183,7 @@ index d996d39c0d6f..7bec1eb7d752 100644
  	host->ios.clock = clock;
  	mmc_set_ios(host);
  
-@@ -1266,6 +1271,11 @@ int mmc_set_uhs_voltage(struct mmc_host *host, u32 ocr)
+@@ -1263,6 +1268,11 @@ int mmc_set_uhs_voltage(struct mmc_host *host, u32 ocr)
  	if (host->ops->card_busy && host->ops->card_busy(host))
  		err = -EAGAIN;
  
@@ -195,7 +195,7 @@ index d996d39c0d6f..7bec1eb7d752 100644
  power_cycle:
  	if (err) {
  		pr_debug("%s: Signal voltage switch failed, "
-@@ -1430,6 +1440,12 @@ void _mmc_detect_change(struct mmc_host *host, unsigned long delay, bool cd_irq)
+@@ -1427,6 +1437,12 @@ void _mmc_detect_change(struct mmc_host *host, unsigned long delay, bool cd_irq)
  		__pm_wakeup_event(host->ws, 5000);
  
  	host->detect_change = 1;
@@ -208,7 +208,7 @@ index d996d39c0d6f..7bec1eb7d752 100644
  	mmc_schedule_delayed_work(&host->detect, delay);
  }
  
-@@ -2108,6 +2124,11 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+@@ -2105,6 +2121,11 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
  			return 0;
  	}
  
@@ -220,7 +220,7 @@ index d996d39c0d6f..7bec1eb7d752 100644
  	/* Order's important: probe SDIO, then SD, then MMC */
  	if (!(host->caps2 & MMC_CAP2_NO_SDIO))
  		if (!mmc_attach_sdio(host))
-@@ -2121,6 +2142,11 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+@@ -2118,6 +2139,11 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
  		if (!mmc_attach_mmc(host))
  			return 0;
  
@@ -232,7 +232,7 @@ index d996d39c0d6f..7bec1eb7d752 100644
  out:
  	mmc_power_off(host);
  	return -EIO;
-@@ -2330,6 +2356,10 @@ void mmc_start_host(struct mmc_host *host)
+@@ -2327,6 +2353,10 @@ void mmc_start_host(struct mmc_host *host)
  	}
  
  	mmc_gpiod_request_cd_irq(host);
@@ -2277,7 +2277,7 @@ index 000000000000..8f93a718e9ce
 +#endif /* K1X_DT_BINDINGS_MMC_SDHCI_H */
 +
 diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index f166d6611ddb..8e3b91850b79 100644
+index 68f09a955a90..3cacea9fb955 100644
 --- a/include/linux/mmc/host.h
 +++ b/include/linux/mmc/host.h
 @@ -272,6 +272,15 @@ struct mmc_host_ops {

@@ -1,0 +1,40 @@
+From 5756702da9c9ccd099e3bb010360111b03628895 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Mon, 22 Jan 2024 14:40:49 +0800
+Subject: [PATCH 0390/1202] clock/reset: fix pwm0 clk/reset reg bit
+
+Change-Id: Ied1e282a6c292b57501c54741f325f417e94d4be
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 2 +-
+ drivers/reset/reset-spacemit-k1x.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 22c42e63ba94..553dac7784dd 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -486,7 +486,7 @@ static const char *pwm_parent_names[] = {
+ };
+ static SPACEMIT_CCU_MUX_GATE(pwm0_clk, "pwm0_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM0_CLK_RST,
+-	4, 3, 0x3, 0x3, 0x0,
++	4, 3, 0x2, 0x2, 0x0,
+ 	0);
+ static SPACEMIT_CCU_MUX_GATE(pwm1_clk, "pwm1_clk", pwm_parent_names,
+ 	BASE_TYPE_APBC, APBC_PWM1_CLK_RST,
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 91004f711e3e..58780258dc41 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -175,7 +175,7 @@ static const struct spacemit_reset_signal
+ 	[RESET_UART1]   = { APBC_UART1_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_UART2]   = { APBC_UART2_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_GPIO]    = { APBC_GPIO_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
+-	[RESET_PWM0]    = { APBC_PWM0_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC },
++	[RESET_PWM0]    = { APBC_PWM0_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_PWM1]    = { APBC_PWM1_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_PWM2]    = { APBC_PWM2_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
+ 	[RESET_PWM3]    = { APBC_PWM3_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
+-- 
+2.47.0
+

@@ -1,0 +1,48 @@
+From bdebb6fc5ac79e9a2fccd33b06334c91e4b89086 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 22 Feb 2024 22:01:36 +0800
+Subject: [PATCH 0426/1202] k1x:defconfig: enable mailbox & rproc &
+ rpmsg_virtio defconfig
+
+Change-Id: Id7a026cba05941940db984c74cae3ab0d509af01
+---
+ arch/riscv/configs/k1_defconfig | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 58acb80beb69..79f573807f58 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -203,7 +203,6 @@ CONFIG_BT_HIDP=y
+ CONFIG_BT_HCIUART=y
+ CONFIG_BT_HCIUART_H4=y
+ CONFIG_BT_HCIUART_RTL=y
+-CONFIG_RTL_BT_LPM=y
+ CONFIG_CFG80211=y
+ CONFIG_RFKILL=y
+ # CONFIG_ETHTOOL_NETLINK is not set
+@@ -597,7 +596,13 @@ CONFIG_DMABUF_HEAPS_CMA=y
+ # CONFIG_VHOST_MENU is not set
+ # CONFIG_SURFACE_PLATFORMS is not set
+ CONFIG_SPACEMIT_K1X_CCU=y
++CONFIG_MAILBOX=y
++CONFIG_SPACEMIT_MAILBOX=y
++CONFIG_K1X_MAILBOX=y
+ # CONFIG_IOMMU_SUPPORT is not set
++CONFIG_REMOTEPROC=y
++CONFIG_K1X_REMOTEPROC=y
++CONFIG_RPMSG_VIRTIO=y
+ # CONFIG_DPAA2_CONSOLE is not set
+ CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_SPACEMIT_REBOOT_CONTROL=y
+@@ -659,7 +664,6 @@ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ISO8859_1=y
+ CONFIG_INIT_STACK_NONE=y
+ CONFIG_CRYPTO_DH=y
+-CONFIG_CRYPTO_ECDH=y
+ CONFIG_CRYPTO_CURVE25519=y
+ CONFIG_CRYPTO_DES=y
+ CONFIG_CRYPTO_OFB=y
+-- 
+2.47.0
+

@@ -1,7 +1,7 @@
-From 7789b73954cd1da74a89fdd4c26c79c5644979b1 Mon Sep 17 00:00:00 2001
+From 997d489119db9f2629b95b5923281206a2dbcefc Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 3 Jan 2024 22:25:56 +0800
-Subject: [PATCH 0308/1206] k1x:cpufreq: support adjust the ace/tcm's frequency
+Subject: [PATCH 0308/1202] k1x:cpufreq: support adjust the ace/tcm's frequency
  accroding to cpu
 
 by the way, set the frequency of cci to 614M by default
@@ -108,10 +108,10 @@ index 41645a0e588c..94e43259e0b7 100644
  				clock-latency-ns = <200000>;
  			};
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index d35a28dd9463..9100a37277bb 100644
+index 890fff99f37d..32f7acf80549 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
-@@ -107,3 +107,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
+@@ -108,3 +108,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
  obj-$(CONFIG_SH_CPU_FREQ)		+= sh-cpufreq.o
  obj-$(CONFIG_SPARC_US2E_CPUFREQ)	+= sparc-us2e-cpufreq.o
  obj-$(CONFIG_SPARC_US3_CPUFREQ)		+= sparc-us3-cpufreq.o

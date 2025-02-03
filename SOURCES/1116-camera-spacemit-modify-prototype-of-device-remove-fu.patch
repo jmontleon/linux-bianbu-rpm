@@ -1,0 +1,172 @@
+From 559faf9dc365bc2b4205c419029bbcc361304115 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:25:20 +0800
+Subject: [PATCH 1116/1202] camera: spacemit: modify prototype of device remove
+ function
+
+Change-Id: I22351863dc77f1ed453b36b2a9e036c86e922afd
+---
+ drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c    | 4 +---
+ drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c      | 4 +---
+ drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c      | 4 +---
+ drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c  | 3 +--
+ drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c    | 4 +---
+ .../media/platform/spacemit/camera/cam_sensor/cam_sensor.c    | 4 +---
+ drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c       | 3 +--
+ 7 files changed, 7 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+index 2bcaa1a9f834..b029e248b11e 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
+@@ -1234,7 +1234,7 @@ static int k1x_ccic_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int k1x_ccic_remove(struct platform_device *pdev)
++static void k1x_ccic_remove(struct platform_device *pdev)
+ {
+ 	struct ccic_dev *ccic_dev;
+ 	struct ccic_dma *dma;
+@@ -1248,8 +1248,6 @@ static int k1x_ccic_remove(struct platform_device *pdev)
+ 
+ 	/* disable runtime pm */
+ 	pm_runtime_disable(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id k1x_ccic_dt_match[] = {
+diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+index e43623b27f49..7a9ad7dad050 100644
+--- a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
++++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
+@@ -316,7 +316,7 @@ static int k1x_csiphy_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int k1x_csiphy_remove(struct platform_device *pdev)
++static void k1x_csiphy_remove(struct platform_device *pdev)
+ {
+ 	struct csiphy_device *csiphy_dev;
+ 
+@@ -328,8 +328,6 @@ static int k1x_csiphy_remove(struct platform_device *pdev)
+ 
+ 	devm_kfree(&pdev->dev, csiphy_dev);
+ 	pr_debug("%s removed", dev_name(&pdev->dev));
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id k1x_csiphy_dt_match[] = {
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index 024644514d2c..baceb07e0b6d 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -1381,7 +1381,7 @@ static int cpp_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int cpp_remove(struct platform_device *pdev)
++static void cpp_remove(struct platform_device *pdev)
+ {
+ 	struct cpp_device *cpp_dev;
+ 
+@@ -1400,8 +1400,6 @@ static int cpp_remove(struct platform_device *pdev)
+ 	mutex_destroy(&cpp_dev->mutex);
+ 	devm_kfree(&pdev->dev, cpp_dev);
+ 	cam_dbg("%s removed", dev_name(&pdev->dev));
+-
+-	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+index f8e3374b798d..8faa5bb954bb 100644
+--- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
++++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
+@@ -726,7 +726,7 @@ int k1xisp_dev_context_destroy(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int k1xisp_dev_remove(struct platform_device *pdev)
++static void k1xisp_dev_remove(struct platform_device *pdev)
+ {
+ 	/* disable runtime pm */
+ 	pm_runtime_disable(&pdev->dev);
+@@ -734,7 +734,6 @@ static int k1xisp_dev_remove(struct platform_device *pdev)
+ 	k1xisp_cdevs_destroy();
+ 
+ 	isp_log_dbg("k1xisp device drvier remove successful!");
+-	return 0;
+ }
+ 
+ 
+diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+index 7ee841a1c1d1..cfab6f543e53 100644
+--- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
++++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
+@@ -217,7 +217,7 @@ static int plat_cam_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int plat_cam_remove(struct platform_device *pdev)
++static void plat_cam_remove(struct platform_device *pdev)
+ {
+ 	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
+ 	struct plat_cam_device *plat_cam_dev = to_plat_cam_dev(v4l2_dev);
+@@ -232,8 +232,6 @@ static int plat_cam_remove(struct platform_device *pdev)
+ 
+ 	mutex_destroy(&plat_cam_dev->mutex);
+ 	kfree(plat_cam_dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id plat_cam_dt_match[] = {
+diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+index 8504c7a4eeaf..bbe56134d529 100644
+--- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
++++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
+@@ -1444,7 +1444,7 @@ static int camsnr_of_parse(struct cam_sensor_device *sensor)
+ 	return ret;
+ }
+ 
+-static int cam_sensor_remove(struct platform_device *pdev)
++static void cam_sensor_remove(struct platform_device *pdev)
+ {
+ 	struct cam_sensor_device *msnr_dev;
+ 
+@@ -1457,8 +1457,6 @@ static int cam_sensor_remove(struct platform_device *pdev)
+ 	cam_snr_dev_destroy(&msnr_dev->cdev, msnr_dev->id);
+ 	cam_dbg("camera sensor%d removed", msnr_dev->id);
+ 	devm_kfree(&pdev->dev, msnr_dev);
+-
+-	return 0;
+ }
+ 
+ static int cam_sensor_probe(struct platform_device *pdev)
+diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
+index b96e4ef3ee70..00bd316d00e1 100644
+--- a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
++++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
+@@ -499,7 +499,7 @@ static int k1xvi_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int k1xvi_remove(struct platform_device *pdev)
++static void k1xvi_remove(struct platform_device *pdev)
+ {
+ 	struct k1xvi_platform_data *drvdata = platform_get_drvdata(pdev);
+ 
+@@ -516,7 +516,6 @@ static int k1xvi_remove(struct platform_device *pdev)
+ #endif
+ 
+ 	cam_dbg("%s leave.", __func__);
+-	return 0;
+ }
+ 
+ static const struct of_device_id k1xvi_dt_match[] = {
+-- 
+2.47.0
+

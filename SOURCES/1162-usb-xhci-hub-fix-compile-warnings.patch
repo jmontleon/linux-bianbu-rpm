@@ -1,0 +1,38 @@
+From f980a45197362f2ffaadb424a10f19bc76ba9b67 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:19:07 +0800
+Subject: [PATCH 1162/1202] usb: xhci-hub: fix compile warnings
+
+Change-Id: I59fb905213138fc103ad759b71bb91b55cd8a0f8
+---
+ drivers/usb/host/xhci-hub.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+index ce3489c6de82..1fe26b9dd6e6 100644
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -13,6 +13,9 @@
+ #include <linux/unaligned.h>
+ #include <linux/bitfield.h>
+ #include <linux/usb/phy.h>
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++#include <soc/spacemit/spacemit_misc.h>
++#endif
+ 
+ #include "xhci.h"
+ #include "xhci-trace.h"
+@@ -577,10 +580,6 @@ static void xhci_disable_port(struct xhci_hcd *xhci, struct xhci_port *port)
+ 		 hcd->self.busnum, port->hcd_portnum + 1, portsc);
+ }
+ 
+-#if defined(CONFIG_SOC_SPACEMIT_K1X)
+-extern void dwc3_spacemit_clear_disconnect(struct device *dev);
+-#endif
+-
+ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
+ 		u16 wIndex, __le32 __iomem *addr, u32 port_status)
+ {
+-- 
+2.47.0
+

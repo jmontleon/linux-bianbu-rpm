@@ -1,0 +1,137 @@
+From 12590c247d29f0a0abd7608cb5418d6d1c39fbed Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Fri, 23 Feb 2024 10:52:57 +0800
+Subject: [PATCH 0434/1202] audio: modify hdmi audio params, set enable ctrl
+ reg
+
+Change-Id: I2652d0da2801f2c9d735937ed04189460e9b81a5
+---
+ sound/soc/spacemit/spacemit-snd-card.c    | 16 ++++++++++++
+ sound/soc/spacemit/spacemit-snd-pcm-dma.c | 32 +++++++++++++++++++----
+ sound/soc/spacemit/spacemit-snd-sspa.c    | 11 ++++++++
+ 3 files changed, 54 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
+index f53bba1ffb02..94b0883b27b9 100644
+--- a/sound/soc/spacemit/spacemit-snd-card.c
++++ b/sound/soc/spacemit/spacemit-snd-card.c
+@@ -88,7 +88,23 @@ static struct platform_driver spacemit_snd_pdrv = {
+ 	},
+ };
+ 
++#if IS_MODULE(CONFIG_SND_SOC_SPACEMIT)
++static int __init spacemit_snd_init(void)
++{
++	int ret = 0;
++	ret = platform_driver_register(&spacemit_snd_pdrv);
++	return ret;
++}
++module_init(spacemit_snd_init);
++
++static void __exit spacemit_snd_exit(void)
++{
++	platform_driver_unregister(&spacemit_snd_pdrv);
++}
++module_exit(spacemit_snd_exit);
++#else
+ module_platform_driver(spacemit_snd_pdrv);
++#endif
+ 
+ /* Module information */
+ MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+index 61e25f3e9f64..a7588fe9099a 100755
+--- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
++++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+@@ -110,9 +110,9 @@ static int spacemit_snd_dma_init(struct device *paraent, struct spacemit_snd_soc
+ 
+ static const struct snd_pcm_hardware spacemit_snd_pcm_hardware = {
+ 
+-	.info             = SNDRV_PCM_INFO_INTERLEAVED |
+-	                    SNDRV_PCM_INFO_BATCH |
+-	                    SNDRV_PCM_INFO_PAUSE,
++	.info		  = SNDRV_PCM_INFO_INTERLEAVED |
++			    SNDRV_PCM_INFO_BATCH |
++			    SNDRV_PCM_INFO_PAUSE,
+ 	.buffer_bytes_max = 64 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
+@@ -120,6 +120,23 @@ static const struct snd_pcm_hardware spacemit_snd_pcm_hardware = {
+ 	.periods_max	  = 32,
+ };
+ 
++static const struct snd_pcm_hardware spacemit_snd_pcm_hardware_hdmi = {
++
++	.info		  = SNDRV_PCM_INFO_INTERLEAVED |
++			    SNDRV_PCM_INFO_BATCH |
++			    SNDRV_PCM_INFO_PAUSE,
++	.formats	  = SNDRV_PCM_FMTBIT_S16_LE,
++	.rates		  = SNDRV_PCM_RATE_48000,
++	.rate_min	  = SNDRV_PCM_RATE_48000,
++	.rate_max	  = SNDRV_PCM_RATE_48000,
++	.channels_min	  = 2,
++	.channels_max	  = 2,
++	.buffer_bytes_max = 256 * 4 * 4,
++	.period_bytes_min = 256 * 4,
++	.period_bytes_max = 256 * 4,
++	.periods_min	  = 4,
++	.periods_max	  = 4,
++};
+ static int spacemit_dma_slave_config(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params,
+ 		struct dma_slave_config *slave_config,
+@@ -242,7 +259,7 @@ static int spacemit_snd_pcm_hdmi_hw_params(struct snd_soc_component *component,
+ 	struct spacemit_snd_dmadata *dmadata = runtime->private_data;
+ 	const char *name = dev_name(component->dev);
+ 
+-	printk("enter %s!! allocbytes=%d, dmadata=0x%lx\n",
++	pr_debug("enter %s!! allocbytes=%d, dmadata=0x%lx\n",
+ 		__FUNCTION__, params_buffer_bytes(params), (unsigned long)dmadata);
+ 
+ 	memset(&slave_config, 0, sizeof(slave_config));
+@@ -435,7 +452,12 @@ static int spacemit_snd_pcm_open(struct snd_soc_component *component, struct snd
+ 	}
+ 
+ 	dmadata = &dev->dmadata[substream->stream];
+-	ret = snd_soc_set_runtime_hwparams(substream, &spacemit_snd_pcm_hardware);
++	if (!strcmp(name, "c08d0400.spacemit-snd-dma-hdmi")) {
++		ret = snd_soc_set_runtime_hwparams(substream, &spacemit_snd_pcm_hardware_hdmi);
++	} else {
++		ret = snd_soc_set_runtime_hwparams(substream, &spacemit_snd_pcm_hardware);
++	}
++
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
+index 74af804da309..a6562b2e52b5 100644
+--- a/sound/soc/spacemit/spacemit-snd-sspa.c
++++ b/sound/soc/spacemit/spacemit-snd-sspa.c
+@@ -39,13 +39,24 @@ struct sspa_priv {
+ static int mmp_sspa_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
++	u32 value = 0;
++	void __iomem *hdmi_addr = (void __iomem *)ioremap(0xC0400500, 1);
++
++	value = readl_relaxed(hdmi_addr + 0x30);
++	value |= BIT(0);
++	writel(value, hdmi_addr + 0x30);
+ 	return 0;
+ }
+ 
+ static void mmp_sspa_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
++	u32 value = 0;
++	void __iomem *hdmi_addr = (void __iomem *)ioremap(0xC0400500, 1);
+ 
++	value = readl_relaxed(hdmi_addr + 0x30);
++	value &= ~BIT(0);
++	writel(value, hdmi_addr + 0x30);
+ }
+ 
+ static int mmp_sspa_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+-- 
+2.47.0
+

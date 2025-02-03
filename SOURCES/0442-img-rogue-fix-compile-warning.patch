@@ -1,0 +1,31 @@
+From 31412b288d4be2fe5ea1eb8eeeb39ab1697f63d8 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 14:48:44 +0800
+Subject: [PATCH 0442/1202] img-rogue: fix compile warning
+
+Change-Id: I06c493a48588e3956019db3b5392c06dad596f9a
+---
+ drivers/gpu/drm/img-rogue/physmem_extmem.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem.c b/drivers/gpu/drm/img-rogue/physmem_extmem.c
+index d365524f9a9c..4ca2c56903c0 100644
+--- a/drivers/gpu/drm/img-rogue/physmem_extmem.c
++++ b/drivers/gpu/drm/img-rogue/physmem_extmem.c
+@@ -46,11 +46,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ #include "pvrsrv.h"
+ #include "physmem_extmem.h"
+ 
+-
++#if 0
+ #if defined(LMA)
+ #pragma message "WARNING! You are compiling SUPPORT_WRAP_EXTMEM on a platform with LMA. " \
+ 	"Make sure the memory you wrap is actually accessible by the GPU!"
+ #endif
++#endif
+ 
+ PVRSRV_ERROR
+ PhysmemWrapExtMem(CONNECTION_DATA * psConnection,
+-- 
+2.47.0
+

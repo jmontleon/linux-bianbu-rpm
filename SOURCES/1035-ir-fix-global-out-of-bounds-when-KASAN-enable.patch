@@ -1,0 +1,82 @@
+From 8d58af17be762ad3948852227c79624867ffd09c Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 25 Oct 2024 18:12:57 +0800
+Subject: [PATCH 1035/1202] ir: fix global-out-of-bounds when KASAN enable
+
+log:
+[    5.992174] ==================================================================
+[    5.999530] BUG: KASAN: global-out-of-bounds in of_match_node+0xe2/0xfc
+[    6.006255] Read of size 1 at addr ffffffff84bacd28 by task swapper/0/1
+[    6.012962]
+[    6.014472] CPU: 6 PID: 1 Comm: swapper/0 Not tainted 6.6.36 #3
+[    6.020474] Hardware name: M1-MUSE-BOOK (DT)
+[    6.024796] Call Trace:
+[    6.027279] [<ffffffff8000cc1e>] dump_backtrace+0x1c/0x24
+[    6.032757] [<ffffffff82eeca3a>] show_stack+0x2c/0x38
+[    6.037890] [<ffffffff82f2918a>] dump_stack_lvl+0x3c/0x54
+[    6.043378] [<ffffffff82ef429c>] print_report+0x19e/0x4b4
+[    6.048871] [<ffffffff805f926a>] kasan_report+0xaa/0x130
+[    6.054263] [<ffffffff805fab12>] __asan_report_load1_noabort+0x12/0x1a
+[    6.060894] [<ffffffff823ae70e>] of_match_node+0xe2/0xfc
+[    6.066279] [<ffffffff823b398e>] of_match_device+0x5e/0x98
+[    6.071841] [<ffffffff8188579c>] platform_match+0x8c/0x1e2
+[    6.077410] [<ffffffff8188013a>] __driver_attach+0x56/0x404
+[    6.083074] [<ffffffff8187af44>] bus_for_each_dev+0xdc/0x158
+[    6.088814] [<ffffffff8187e5c4>] driver_attach+0x30/0x4a
+[    6.094208] [<ffffffff8187d290>] bus_add_driver+0x22c/0x4c0
+[    6.099856] [<ffffffff81882474>] driver_register+0x12c/0x38c
+[    6.105600] [<ffffffff81884fde>] __platform_driver_register+0x50/0x76
+[    6.112141] [<ffffffff83050b60>] spacemit_ir_driver_init+0x1a/0x22
+[    6.118416] [<ffffffff80003402>] do_one_initcall+0xa8/0x54a
+[    6.124072] [<ffffffff83001e58>] kernel_init_freeable+0x46e/0x4d8
+[    6.130254] [<ffffffff82f2a536>] kernel_init+0x20/0x12e
+[    6.135554] [<ffffffff82f44162>] ret_from_fork+0xe/0x1c
+[    6.140859]
+[    6.142373] The buggy address belongs to the variable:
+[    6.147573]  spacemit_ir_match+0xc8/0x100
+[    6.151648]
+[    6.153161] The buggy address belongs to the physical page:
+[    6.158808] page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4dac
+[    6.168161] flags: 0x4000(reserved|zone=0)
+[    6.172325] page_type: 0xffffffff()
+[    6.175861] raw: 0000000000004000 ffffffda75ec3608 ffffffda75ec3608 0000000000000000
+[    6.183704] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+[    6.191545] page dumped because: kasan: bad access detected
+[    6.197187]
+[    6.198699] Memory state around the buggy address:
+[    6.203553]  ffffffff84bacc00: f9 f9 f9 f9 00 05 f9 f9 f9 f9 f9 f9 00 00 00 00
+[    6.210871]  ffffffff84bacc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    6.218187] >ffffffff84bacd00: 00 00 00 00 00 f9 f9 f9 f9 f9 f9 f9 00 00 f9 f9
+[    6.225503]                                   ^
+[    6.230089]  ffffffff84bacd80: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+[    6.237408]  ffffffff84bace00: 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9 f9
+[    6.244726] ==================================================================
+
+Change-Id: I3e46d92f9b53079a414103051cbf8a7462678316
+---
+ drivers/media/rc/ir-spacemit.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
+index 65572dbb2418..0005461aad9d 100644
+--- a/drivers/media/rc/ir-spacemit.c
++++ b/drivers/media/rc/ir-spacemit.c
+@@ -320,6 +320,7 @@ static const struct of_device_id spacemit_ir_match[] = {
+ 		.compatible = "spacemit,k1x-irc",
+ 		.data = &spacemit_k1x_ir_data,
+ 	},
++	{ /* end of list */ }
+ };
+ 
+ static struct platform_driver spacemit_ir_driver = {
+@@ -345,6 +346,7 @@ static const struct of_device_id spacemit_rir_match[] = {
+ 		.compatible = "spacemit,k1x-rirc",
+ 		.data = &spacemit_k1x_rir_data,
+ 	},
++	{ /* end of list */ }
+ };
+ 
+ static struct platform_driver spacemit_rir_driver = {
+-- 
+2.47.0
+

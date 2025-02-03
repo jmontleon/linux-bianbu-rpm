@@ -1,0 +1,65 @@
+From 78f15f7cefa84c50c2a525c2d29c2d74feb940f3 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 23 Apr 2024 17:51:33 +0800
+Subject: [PATCH 0604/1202] spi: fix the bug of accessing illegal pointers when
+ transmitting messages
+
+  Because the spi driver uses a work queue to process messages, the spi framework
+  function will return immediately. It will appear that the memory space of the
+  current message has been released before it has been processed. This causes
+  the spi driver to access an illegal pointer.
+
+Change-Id: I10d11842901b3b177bedc5aaf40ecf3fad8eaa79
+---
+ drivers/spi/spi-k1x.c | 6 ++++++
+ drivers/spi/spi-k1x.h | 1 +
+ 2 files changed, 7 insertions(+)
+
+diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
+index f013b91d6c09..359954541a71 100644
+--- a/drivers/spi/spi-k1x.c
++++ b/drivers/spi/spi-k1x.c
+@@ -297,6 +297,7 @@ static void giveback(struct spi_driver_data *drv_data)
+ 
+ 	if (drv_data->slave_mode)
+ 		del_timer(&drv_data->slave_rx_timer);
++	complete(&drv_data->cur_msg_completion);
+ }
+ 
+ static void reset_fifo_ctrl(struct spi_driver_data *drv_data)
+@@ -725,8 +726,11 @@ static int k1x_spi_transfer_one_message(struct spi_master *master,
+ 		clk_set_rate(drv_data->clk, master->max_speed_hz);
+ 	}
+ 
++	reinit_completion(&drv_data->cur_msg_completion);
+ 	/* Mark as busy and launch transfers */
+ 	queue_work(system_wq, &drv_data->pump_transfers);
++	wait_for_completion(&drv_data->cur_msg_completion);
++
+ 	return 0;
+ }
+ 
+@@ -1020,6 +1024,8 @@ static int k1x_spi_probe(struct platform_device *pdev)
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+ 
++	init_completion(&drv_data->cur_msg_completion);
++
+ 	/* Register with the SPI framework */
+ 	platform_set_drvdata(pdev, drv_data);
+ 	status = devm_spi_register_master(&pdev->dev, master);
+diff --git a/drivers/spi/spi-k1x.h b/drivers/spi/spi-k1x.h
+index d576c87655c5..24f62bac10b9 100755
+--- a/drivers/spi/spi-k1x.h
++++ b/drivers/spi/spi-k1x.h
+@@ -184,6 +184,7 @@ struct spi_driver_data {
+ 	struct spi_message *cur_msg;
+ 	struct spi_transfer *cur_transfer;
+ 	struct chip_data *cur_chip;
++	struct completion   cur_msg_completion;
+ 	size_t len;
+ 	void *tx;
+ 	void *tx_end;
+-- 
+2.47.0
+

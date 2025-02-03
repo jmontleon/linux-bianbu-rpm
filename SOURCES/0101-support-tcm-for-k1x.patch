@@ -1,7 +1,7 @@
-From d4ccc81a107c1a3e5a5fd3f687e7f2763c00e0c0 Mon Sep 17 00:00:00 2001
+From bb4482340ce035daa6cc9a53849663f79154b087 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 11 Sep 2023 16:15:53 +0800
-Subject: [PATCH 0101/1206] support tcm for k1x
+Subject: [PATCH 0101/1202] support tcm for k1x
 
 Change-Id: Ib1a2c8a17b74cdc580b81015c8744fbd6b1d6c21
 ---
@@ -49,10 +49,10 @@ index fdf40aa1cfe4..84fbf029e632 100644
  
  	pmu {
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 09cbe3f0ab1e..1acbee2d8249 100644
+index 56bc72c7ce4a..a0d679eec71e 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
-@@ -634,6 +634,13 @@ config MCHP_LAN966X_PCI
+@@ -632,6 +632,13 @@ config MCHP_LAN966X_PCI
  	    - lan966x-miim (MDIO_MSCC_MIIM)
  	    - lan966x-switch (LAN966X_SWITCH)
  
@@ -67,10 +67,10 @@ index 09cbe3f0ab1e..1acbee2d8249 100644
  source "drivers/misc/eeprom/Kconfig"
  source "drivers/misc/cb710/Kconfig"
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 46aea8e7520d..e9ab4454613c 100644
+index b9625073c0f0..56fabababfa6 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
-@@ -74,4 +74,4 @@ lan966x-pci-objs		:= lan966x_pci.o
+@@ -75,4 +75,4 @@ lan966x-pci-objs		:= lan966x_pci.o
  lan966x-pci-objs		+= lan966x_pci.dtbo.o
  obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
  obj-y				+= keba/

@@ -1,0 +1,36 @@
+From 8d97b967c83d6373347264af4c3eb6df90b580aa Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:25:51 +0800
+Subject: [PATCH 1117/1202] vpu: spacemit: modify prototype of device remove
+ function
+
+Change-Id: I28092e5eb9d9cd09da18e96ba53cf2334b01039d
+---
+ drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+index 689607f97c51..38e035b2f748 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
+@@ -539,7 +539,7 @@ static int mvx_pdev_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int mvx_pdev_remove(struct platform_device *pdev)
++static void mvx_pdev_remove(struct platform_device *pdev)
+ {
+ 	struct mvx_dev_ctx *ctx = platform_get_drvdata(pdev);
+ 	int ret;
+@@ -549,8 +549,6 @@ static int mvx_pdev_remove(struct platform_device *pdev)
+ 	ret = mvx_dev_remove(ctx);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+-
+-	return ret;
+ }
+ 
+ #ifdef CONFIG_PM
+-- 
+2.47.0
+

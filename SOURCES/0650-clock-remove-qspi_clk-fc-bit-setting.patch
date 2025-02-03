@@ -1,0 +1,29 @@
+From 98815e79b32b19de7b49db7e400052fa12306d11 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 14 May 2024 15:55:50 +0800
+Subject: [PATCH 0650/1202] clock: remove qspi_clk fc bit setting
+
+Change-Id: I141225d7af4dbef4427c5cedaf356c1d9086c757
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 752112214a2e..b1b1ff299b4a 100755
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -892,9 +892,9 @@ static SPACEMIT_CCU_GATE_NO_PARENT(usb30_clk, "usb30_clk", NULL,
+ 	0);
+ static const char * const qspi_parent_names[] = {"pll1_d6_409p6", "pll2_d8", "pll1_d8_307p2",
+ 		"pll1_d10_245p76", "pll1_d11_223p4", "pll1_d23_106p8", "pll1_d5_491p52", "pll1_d13_189"};
+-static SPACEMIT_CCU_DIV_MFC_MUX_GATE(qspi_clk, "qspi_clk", qspi_parent_names,
++static SPACEMIT_CCU_DIV_MUX_GATE(qspi_clk, "qspi_clk", qspi_parent_names,
+ 	BASE_TYPE_APMU, APMU_QSPI_CLK_RES_CTRL,
+-	9, 3, BIT(12),
++	9, 3,
+ 	6, 3, BIT(4), BIT(4), 0x0,
+ 	0);
+ static SPACEMIT_CCU_GATE_NO_PARENT(qspi_bus_clk, "qspi_bus_clk", NULL,
+-- 
+2.47.0
+

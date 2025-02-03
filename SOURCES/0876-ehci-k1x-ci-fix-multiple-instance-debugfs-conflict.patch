@@ -1,0 +1,29 @@
+From e9ea6fc5c808618e2684fb48f28c194e65a6fc74 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Fri, 14 Jun 2024 21:42:23 +0800
+Subject: [PATCH 0876/1202] ehci-k1x-ci: fix multiple instance debugfs conflict
+
+When we have two ehci instances, kernel will print err log:
+[    2.623279] debugfs: Directory 'mv ehci' with parent 'ehci' already present!
+
+Change-Id: Id3d06e47b02825e60ab11723972c745c52cd5ed4
+---
+ drivers/usb/host/ehci-k1x-ci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
+index e457d1684649..ab26783d76df 100644
+--- a/drivers/usb/host/ehci-k1x-ci.c
++++ b/drivers/usb/host/ehci-k1x-ci.c
+@@ -285,7 +285,7 @@ static int mv_ehci_probe(struct platform_device *pdev)
+ 	if (usb_disabled())
+ 		return -ENODEV;
+ 
+-	hcd = usb_create_hcd(&mv_ehci_hc_driver, &pdev->dev, "mv ehci");
++	hcd = usb_create_hcd(&mv_ehci_hc_driver, &pdev->dev, dev_name(dev));
+ 	if (!hcd)
+ 		return -ENOMEM;
+ 
+-- 
+2.47.0
+

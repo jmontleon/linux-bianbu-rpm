@@ -1,0 +1,41 @@
+From 9158f1ce1d1a2732fb2eb74c32061f54c0902281 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 5 Aug 2024 09:01:37 +0800
+Subject: [PATCH 0839/1202] k1:cpufreq: using the default vf table of we did
+ not find the right one for m1
+
+Change-Id: I3efcc078e70276c82eae34dcb38c46a83734be59
+---
+ drivers/cpufreq/spacemit-cpufreq.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
+index ce81b344a1c6..bff603076d6e 100644
+--- a/drivers/cpufreq/spacemit-cpufreq.c
++++ b/drivers/cpufreq/spacemit-cpufreq.c
+@@ -394,7 +394,7 @@ static int spacemit_dt_cpufreq_pre_early_init(struct device *dev, int cpu, int i
+ 
+ static int spacemit_dt_cpufreq_pre_probe(struct platform_device *pdev)
+ {
+-	int cpu;
++	int cpu, ret;
+ 	struct device_node *cpus;
+ 	struct device_node *product_id, *wafer_id;
+ 	u32 prop = 0;
+@@ -423,9 +423,11 @@ static int spacemit_dt_cpufreq_pre_probe(struct platform_device *pdev)
+ 			if (prop <= FILTER_POINTS_0)
+ 				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_0);
+ 			else if (prop <= FILTER_POINTS_1)
+-				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_1);
++				ret = spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_1);
+ 			else
+-				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_2);
++				ret = spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_2);
++			if (ret)
++				spacemit_dt_cpufreq_pre_early_init(&pdev->dev, cpu, FREQ_TABLE_0);
+ 		}
+ 	} else {
+ 		for_each_possible_cpu(cpu) {
+-- 
+2.47.0
+

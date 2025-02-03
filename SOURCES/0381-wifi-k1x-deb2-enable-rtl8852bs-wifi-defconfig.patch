@@ -1,0 +1,33 @@
+From 583064178b3920be19842482b5db23f2b1b7e68f Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 16 Jan 2024 21:04:37 +0800
+Subject: [PATCH 0381/1202] wifi: k1x-deb2: enable rtl8852bs wifi defconfig
+
+Change-Id: I25e35e727fdc61246ec4632fc618d7f8e980d09d
+---
+ arch/riscv/configs/k1-x_deb2_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index 848cbbc09cc9..3751eba38d96 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -65,6 +65,7 @@ CONFIG_VLAN_8021Q_MVRP=y
+ CONFIG_NETLINK_DIAG=y
+ CONFIG_CAN=y
+ CONFIG_CFG80211=y
++CONFIG_RFKILL=y
+ CONFIG_FAILOVER=y
+ # CONFIG_ETHTOOL_NETLINK is not set
+ CONFIG_PCI=y
+@@ -187,6 +188,7 @@ CONFIG_USB_USBNET=y
+ # CONFIG_WLAN_VENDOR_MICROCHIP is not set
+ # CONFIG_WLAN_VENDOR_PURELIFI is not set
+ # CONFIG_WLAN_VENDOR_RALINK is not set
++CONFIG_RTL8852BS=m
+ # CONFIG_WLAN_VENDOR_RSI is not set
+ # CONFIG_WLAN_VENDOR_SILABS is not set
+ # CONFIG_WLAN_VENDOR_ST is not set
+-- 
+2.47.0
+

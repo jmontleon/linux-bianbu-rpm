@@ -1,0 +1,46 @@
+From 762e50917af9b349f786043f625b8bae5035f135 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 26 Mar 2024 17:22:56 +0800
+Subject: [PATCH 0522/1202] eth: improve the through of gmac
+
+  1. enable scatter gather
+  2. Use gro api to process rx packets
+
+Change-Id: I12301d9f7700578d42ed624ad0ff39087d509315
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 9544ebfe41f3..6f1bd85eaf62 100755
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -1383,7 +1383,7 @@ static int emac_rx_clean_desc(struct emac_priv *priv, int budget)
+ 
+ 			skb->ip_summed = CHECKSUM_NONE;
+ 
+-			netif_receive_skb(skb);
++			napi_gro_receive(&priv->napi, skb);
+ 
+ 			ndev->stats.rx_packets++;
+ 			ndev->stats.rx_bytes += skb_len;
+@@ -1522,7 +1522,7 @@ static int emac_tx_mem_map(struct emac_priv *priv, struct sk_buff *skb,
+ 
+ 	/* if the data is fragmented */
+ 	for (f = 0; f < frag_num; f++) {
+-		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
++		const skb_frag_t *frag = &skb_shinfo(skb)->frags[f];
+ 
+ 		len = skb_frag_size(frag);
+ 
+@@ -2678,6 +2678,7 @@ static int emac_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ndev->hw_features = NETIF_F_SG;
++	ndev->features |= ndev->hw_features;
+ 	priv = netdev_priv(ndev);
+ 	priv->ndev = ndev;
+ 	priv->pdev = pdev;
+-- 
+2.47.0
+

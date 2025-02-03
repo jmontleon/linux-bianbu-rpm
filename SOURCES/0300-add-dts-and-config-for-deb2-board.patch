@@ -1,7 +1,7 @@
-From b01ef4118565948a5c9ffd3baaee4bc9fc220753 Mon Sep 17 00:00:00 2001
+From 7455689aec315e4c23194d775b610a915be21a1a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 3 Jan 2024 00:27:49 +0800
-Subject: [PATCH 0300/1206] add dts and config for deb2 board
+Subject: [PATCH 0300/1202] add dts and config for deb2 board
 
 Change-Id: Ib9cd6ccf997b6e68ad091f05238bb649752c4947
 ---
@@ -13,11 +13,12 @@ Change-Id: Ib9cd6ccf997b6e68ad091f05238bb649752c4947
  create mode 100644 arch/riscv/configs/k1-x_deb2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 08ced801d98c..e2fd6e0c9ea7 100644
+index b59e2b607b0c..2c595d5a817f 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
  # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1x4.dtb k1-pro_fpga_2x2.dtb k1-pro_qemu.dtb k1-pro_verify.dtb
 -dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb k1-x_deb2.dtb

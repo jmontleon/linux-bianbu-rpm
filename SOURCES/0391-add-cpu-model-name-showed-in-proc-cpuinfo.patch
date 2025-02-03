@@ -1,0 +1,102 @@
+From fc81b8ebd365f8374b17385360e89131e69748f8 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 23 Jan 2024 12:08:24 +0800
+Subject: [PATCH 0391/1202] add cpu model name showed in /proc/cpuinfo
+
+Change-Id: Ic16c1742c580ffdc7c67e5849a9ea162ffc0a096
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 8 ++++++++
+ arch/riscv/kernel/cpu.c                | 5 ++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 76cf244cb632..9ccf559eebdb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -42,6 +42,7 @@ cpus: cpus {
+ 		cpu_0: cpu@0 {
+ 			compatible = "riscv";
+ 			device_type = "cpu";
++			model = "Spacemit(R) X60";
+ 			reg = <0>;
+ 			status = "okay";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+@@ -77,6 +78,7 @@ cpu_1: cpu@1 {
+ 			reg = <1>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -110,6 +112,7 @@ cpu_2: cpu@2 {
+ 			reg = <2>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -143,6 +146,7 @@ cpu_3: cpu@3 {
+ 			reg = <3>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -176,6 +180,7 @@ cpu_4: cpu@4 {
+ 			reg = <4>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -209,6 +214,7 @@ cpu_5: cpu@5 {
+ 			reg = <5>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -242,6 +248,7 @@ cpu_6: cpu@6 {
+ 			reg = <6>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+@@ -275,6 +282,7 @@ cpu_7: cpu@7 {
+ 			reg = <7>;
+ 			status = "okay";
+ 			compatible = "riscv";
++			model = "Spacemit(R) X60";
+ 			riscv,isa = "rv64imafdcvsu_zicsr_zifencei_zicbom_zihintpause_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
+ 			riscv,cbom-block-size = <64>;
+ 			i-cache-block-size = <64>;
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index f6b13e9f5e6c..0b9c7a66e9ef 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -333,11 +333,14 @@ static int c_show(struct seq_file *m, void *v)
+ 	unsigned long cpu_id = (unsigned long)v - 1;
+ 	struct riscv_cpuinfo *ci = per_cpu_ptr(&riscv_cpuinfo, cpu_id);
+ 	struct device_node *node;
+-	const char *compat;
++	const char *compat, *model;
+ 
+ 	seq_printf(m, "processor\t: %lu\n", cpu_id);
+ 	seq_printf(m, "hart\t\t: %lu\n", cpuid_to_hartid_map(cpu_id));
+ 
++	if (!of_property_read_string(node, "model", &model))
++		seq_printf(m, "model name\t: %s\n", model);
++
+ 	/*
+ 	 * For historical raisins, the isa: line is limited to the lowest common
+ 	 * denominator of extensions supported across all harts. A true list of
+-- 
+2.47.0
+

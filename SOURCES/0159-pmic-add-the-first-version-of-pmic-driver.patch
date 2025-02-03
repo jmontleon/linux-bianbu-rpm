@@ -1,7 +1,7 @@
-From 898688cc974efa70efb41882f76a6757101235a9 Mon Sep 17 00:00:00 2001
+From 907ee4aee5b1e610be29c679a0a1021009b7ba23 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 10 Nov 2023 14:39:01 +0800
-Subject: [PATCH 0159/1206] pmic: add the first version of pmic driver
+Subject: [PATCH 0159/1202] pmic: add the first version of pmic driver
 
 Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
 ---
@@ -20,7 +20,7 @@ Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
  create mode 100644 include/linux/mfd/spacemit/spm8821.h
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index ae23b317a64e..ffe9839e68e3 100644
+index 6b0682af6e32..ea98e56424c7 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
 @@ -2269,6 +2269,16 @@ config MFD_QCOM_PM8008
@@ -41,15 +41,14 @@ index ae23b317a64e..ffe9839e68e3 100644
  	depends on ARCH_SA1100
  
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index e057d6d6faef..a36ce5946be8 100644
+index 9220eaf7cf12..bbb5314f1e46 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
-@@ -290,3 +290,4 @@ obj-$(CONFIG_MFD_ATC260X_I2C)	+= atc260x-i2c.o
- 
- obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
+@@ -294,3 +294,4 @@ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
  obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu_spi.o rsmu_core.o
+ 
+ obj-$(CONFIG_MFD_UPBOARD_FPGA)	+= upboard-fpga.o
 +obj-$(CONFIG_MFD_SPACEMIT_PMIC) += spacemit-mfd.o
-\ No newline at end of file
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
 new file mode 100644
 index 000000000000..ea8ab1c92adf

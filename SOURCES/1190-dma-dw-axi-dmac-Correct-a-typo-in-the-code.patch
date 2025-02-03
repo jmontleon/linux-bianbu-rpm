@@ -1,0 +1,26 @@
+From 18ecf2562ded318794f5f55042af3cb8561de611 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 26 Dec 2024 20:55:44 +0800
+Subject: [PATCH 1190/1202] dma: dw-axi-dmac: Correct a typo in the code
+
+Change-Id: I151e20532e3ece2a135c796fb2a6c89ead9d1c6e
+---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index 094d7e34998d..6ebe9aab8869 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -1690,7 +1690,7 @@ static const struct of_device_id dw_dma_of_id_table[] = {
+ 		.data = (void *)AXI_DMA_FLAG_HAS_RESETS,
+ 	}, {
+ 		.compatible = "spacemit,k1pro-axi-dma",
+-		.data = (void *)AXI_DMA_FLAG_HAS_RE
++		.data = (void *)AXI_DMA_FLAG_HAS_RESETS,
+ 	},
+ 	{}
+ };
+-- 
+2.47.0
+

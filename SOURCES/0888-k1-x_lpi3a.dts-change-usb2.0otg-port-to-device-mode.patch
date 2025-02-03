@@ -1,0 +1,34 @@
+From ec75193429f39297203930f3878b5e4863bc81d0 Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Tue, 30 Jul 2024 15:56:44 +0800
+Subject: [PATCH 0888/1202] k1-x_lpi3a.dts: change usb2.0otg port to device
+ mode
+
+Change-Id: Ifc0ba3ff59157240dce99a332132fd89ca6079b3
+Signed-off-by: xudong <dong.xu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index 4b7b8f865c84..e02cf1191fcc 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -916,12 +916,12 @@ &udc {
+ 	/*spacemit,udc-mode = <MV_USB_MODE_OTG>;
+ 	spacemit,extern-attr = <MV_USB_HAS_VBUS_IDPIN_DETECTION>;*/
+ 	spacemit,udc-mode = <MV_USB_MODE_UDC>;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &ehci {
+         spacemit,udc-mode = <MV_USB_MODE_HOST>;
+-        status = "okay";
++        status = "disabled";
+ };
+ 
+ 
+-- 
+2.47.0
+

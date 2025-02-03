@@ -1,0 +1,44 @@
+From 3036910910a4fe9d52e51129d98f0991126432f6 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:46:37 +0800
+Subject: [PATCH 1130/1202] ax88179a: porting to linux-6.12
+
+Change-Id: I775c1bc9ff735e34e462a0615bde36d72b0837d5
+---
+ drivers/net/usb/asix_usb/ax88179a_772d.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/usb/asix_usb/ax88179a_772d.c b/drivers/net/usb/asix_usb/ax88179a_772d.c
+index 064fc45b46a5..f771fe9269cb 100644
+--- a/drivers/net/usb/asix_usb/ax88179a_772d.c
++++ b/drivers/net/usb/asix_usb/ax88179a_772d.c
+@@ -92,7 +92,7 @@ static int ax88179a_chk_eee(struct ax_device *axdev)
+ }
+ 
+ static int ax88179a_ethtool_get_eee(struct ax_device *axdev,
+-				    struct ethtool_eee *data)
++				    struct ethtool_keee *data)
+ {
+ 	int val;
+ 
+@@ -115,7 +115,7 @@ static int ax88179a_ethtool_get_eee(struct ax_device *axdev,
+ 	return 0;
+ }
+ 
+-static int ax88179a_get_eee(struct net_device *net, struct ethtool_eee *edata)
++static int ax88179a_get_eee(struct net_device *net, struct ethtool_keee *edata)
+ {
+ 	struct ax_device *axdev = netdev_priv(net);
+ 
+@@ -131,7 +131,7 @@ static void ax88179a_eee_setting(struct ax_device *axdev, bool enable)
+ 		     enable, 0, NULL);
+ }
+ 
+-static int ax88179a_set_eee(struct net_device *net, struct ethtool_eee *edata)
++static int ax88179a_set_eee(struct net_device *net, struct ethtool_keee *edata)
+ {
+ 	struct ax_device *axdev = netdev_priv(net);
+ 
+-- 
+2.47.0
+

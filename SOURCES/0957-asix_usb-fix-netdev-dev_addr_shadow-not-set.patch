@@ -1,0 +1,40 @@
+From d03ce6f1ec05639f3619b8c0a7608cfdbfc6299b Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 26 Aug 2024 10:07:32 +0800
+Subject: [PATCH 0957/1202] asix_usb: fix netdev->dev_addr_shadow not set
+
+This commit fix the following netdev warning:
+k1 kernel: ax_usb_nic 3-1.1.4:1.0 enx0826ae3f3810: Current addr: 00 82 6a e3 f3 81 00 00 00 ...
+k1 kernel: ax_usb_nic 3-1.1.4:1.0 enx0826ae3f3810: Expected addr: 00 00 00 00 00 00 00 00 00 ...
+
+Change-Id: Ieb63e7b3c727a3bbf2dea695edebffe05ee0c11a
+---
+ drivers/net/usb/asix_usb/ax_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/usb/asix_usb/ax_main.c b/drivers/net/usb/asix_usb/ax_main.c
+index 93253f0e144f..20fbb2bf04ce 100644
+--- a/drivers/net/usb/asix_usb/ax_main.c
++++ b/drivers/net/usb/asix_usb/ax_main.c
+@@ -2095,12 +2095,17 @@ static int ax_get_mac_address(struct ax_device *axdev)
+ {
+ 	struct net_device *netdev = axdev->netdev;
+ 
++	char addr_buf[ETH_ALEN];
++	memset(addr_buf, 0, ETH_ALEN);
++
+ 	if (ax_read_cmd(axdev, AX_ACCESS_MAC, AX_NODE_ID, ETH_ALEN,
+-			ETH_ALEN, (void *)netdev->dev_addr, 0) < 0) {
++			ETH_ALEN, (void *)addr_buf, 0) < 0) {
+ 		dev_err(&axdev->intf->dev, "Failed to read MAC address");
+ 		return -ENODEV;
+ 	}
+ 
++	eth_hw_addr_set(netdev, addr_buf);
++
+ 	if (ax_check_ether_addr(axdev))
+ 		dev_warn(&axdev->intf->dev, "Found invalid MAC address value");
+ 
+-- 
+2.47.0
+

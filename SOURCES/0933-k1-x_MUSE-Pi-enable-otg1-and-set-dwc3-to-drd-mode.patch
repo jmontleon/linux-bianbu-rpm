@@ -1,0 +1,80 @@
+From 27d1453e1cc35b029a20317f349e5881305f92c5 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 15 Aug 2024 16:51:04 +0800
+Subject: [PATCH 0933/1202] k1-x_MUSE-Pi: enable otg1 and set dwc3 to drd mode
+
+Change-Id: I58f4661cbfd9d694c83d539cddad8d293f039163
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 27 ++++++++++++-------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 2475978cc61a..6d8e6f3c510d 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -174,12 +174,6 @@ led1 {
+ 			status = "okay";
+ 		};
+ 	};
+-
+-	usb2hub: usb2hub {
+-		compatible = "spacemit,usb3-hub";
+-		vbus-gpios = <&gpio 123 0>;	/* for usb2 hub output vbus */
+-		status = "okay";
+-	};
+ };
+ 
+ &uart0 {
+@@ -830,8 +824,6 @@ &usbphy {
+ };
+ 
+ &udc {
+-	/*spacemit,udc-mode = <MV_USB_MODE_OTG>;
+-	spacemit,extern-attr = <MV_USB_HAS_VBUS_IDPIN_DETECTION>;*/
+ 	spacemit,udc-mode = <MV_USB_MODE_UDC>;
+ 	status = "okay";
+ };
+@@ -840,7 +832,22 @@ &usbphy1 {
+ 	status = "okay";
+ };
+ 
++&otg1 {
++	usb-role-switch;
++	role-switch-user-control;
++	spacemit,reset-on-resume;
++	role-switch-default-mode = "host";
++	vbus-gpios = <&gpio 123 0>;
++	status = "okay";
++};
++
++&udc1 {
++	spacemit,udc-mode = <MV_USB_MODE_OTG>;
++	status = "okay";
++};
++
+ &ehci1 {
++	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+ 	spacemit,reset-on-resume;
+ 	status = "okay";
+ };
+@@ -862,7 +869,7 @@ &usbdrd3 {
+ 	status = "okay";
+ 	reset-on-resume;
+ 	dwc3@c0a00000 {
+-		dr_mode = "host";
++		dr_mode = "otg";
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+@@ -871,6 +878,8 @@ dwc3@c0a00000 {
+ 		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis-tx-ipgap-linecheck-quirk;
+ 		snps,parkmode-disable-ss-quirk;
++		usb-role-switch;
++		role-switch-default-mode = "host";
+ 	};
+ };
+ 
+-- 
+2.47.0
+

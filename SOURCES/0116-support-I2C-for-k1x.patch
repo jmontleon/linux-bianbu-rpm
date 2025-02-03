@@ -1,7 +1,7 @@
-From 606b6893b65d5aad0d7a4806d0471b28a152cbb0 Mon Sep 17 00:00:00 2001
+From d30d5d550d3f46d2beebe90bb3b975ca8c67d163 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Fri, 15 Sep 2023 16:02:47 +0800
-Subject: [PATCH 0116/1206] support I2C for k1x
+Subject: [PATCH 0116/1202] support I2C for k1x
 
 Change-Id: I0644dc6f9babad657ec298970519d11496b30d9b
 ---
@@ -125,7 +125,7 @@ index 96f3c976a4c2..a64b22186990 100644
  			compatible = "spacemit,k1x-pwm";
  			reg = <0x0 0xd401a000 0x0 0x10>;
 diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index ceb3ecdf884b..2f5aef53c7e5 100644
+index fc438f445771..7d4cdfdb8b1e 100644
 --- a/drivers/i2c/busses/Kconfig
 +++ b/drivers/i2c/busses/Kconfig
 @@ -303,6 +303,14 @@ config I2C_SIS96X

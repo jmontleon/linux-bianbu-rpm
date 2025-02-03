@@ -1,0 +1,49 @@
+From 2f7c1046e2979deafdddf3a96f2d9f6f433e91bb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 2 Nov 2024 10:29:50 +0800
+Subject: [PATCH 1065/1202] riscv: Flush the icache of all cores related to the
+ current process
+
+there is an invalid instrucation crash when run node.js:
+
+[  443.219580] node[3123]: unhandled signal 4 code 0x1 at 0x00000038be663620
+[  443.226499] CPU: 5 PID: 3123 Comm: node Not tainted 6.6.36+ #11
+[  443.232501] Hardware name: spacemit k1-x deb1 board (DT)
+[  443.237875] epc : 00000038be663620 ra : 00000038be652e00 sp : 0000003ff310a000
+[  443.245195]  gp : 000000000447d6d0 tp : 0000003f82e2b780 t0 : 0000003e5c000000
+[  443.252501]  t1 : 00000000000d31b8 t2 : 0000000000000063 s0 : 0000003ff310a050
+[  443.259815]  s1 : 0000003ff3109fd0 a0 : 0000003c1e11ba29 a1 : 0000000000000004
+[  443.267121]  a2 : 00000000000d31b8 a3 : 0000000000000003 a4 : 000000000019759e
+[  443.274435]  a5 : 0000000000000075 a6 : 000000000000006c a7 : 0000000000000065
+[  443.281749]  s2 : 00000000010df958 s3 : 0000000000000001 s4 : 0000003e5c0d31b8
+[  443.289054]  s5 : 00000000045442e0 s6 : 0000000004544260 s7 : 0000000ba8d91399
+[  443.296368]  s8 : 0000000000000000 s9 : 00000038be650168 s10: 0000000ba8d9fa81
+[  443.303674]  s11: 0000000000000000 t3 : 00000038be650198 t4 : 0000002200000000
+[  443.310980]  t5 : 0000000000000008 t6 : 00000038be663620
+[  443.316352] status: 8000000200006020 badaddr: 0000000000800e13 cause: 0000000000000002
+the op-code 0x00800e13 should be a valid instruction 'li t3, 0'
+the cause of the issue is that the i-cache data is wrong, when flush i-cahce request from user-space,
+icache of all cores related to the process should be flushed
+
+Change-Id: I0a06c77a2a3c1aa7aaf1e930eaa774d405e6fddb
+---
+ arch/riscv/kernel/sys_riscv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
+index d77afe05578f..8a7902fb3d35 100644
+--- a/arch/riscv/kernel/sys_riscv.c
++++ b/arch/riscv/kernel/sys_riscv.c
+@@ -63,7 +63,8 @@ SYSCALL_DEFINE3(riscv_flush_icache, uintptr_t, start, uintptr_t, end,
+ 	if (unlikely(flags & ~SYS_RISCV_FLUSH_ICACHE_ALL))
+ 		return -EINVAL;
+ 
+-	flush_icache_mm(current->mm, flags & SYS_RISCV_FLUSH_ICACHE_LOCAL);
++	//flush_icache_mm(current->mm, flags & SYS_RISCV_FLUSH_ICACHE_LOCAL);
++	flush_icache_mm(current->mm, false);
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

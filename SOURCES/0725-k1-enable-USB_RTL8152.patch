@@ -1,0 +1,25 @@
+From 304e47a42b6395eb6a73a4d559f96e92c10dd1d3 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 19 Jun 2024 15:49:51 +0800
+Subject: [PATCH 0725/1202] k1: enable USB_RTL8152
+
+Change-Id: I4a8a8f86a98cc254b70c70ef4ff413ca7aaa46d3
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 57bab257cce2..f8a0ae8041bb 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -321,6 +321,7 @@ CONFIG_K1X_EMAC=y
+ # CONFIG_NET_VENDOR_XILINX is not set
+ CONFIG_REALTEK_PHY=y
+ CONFIG_CAN_FLEXCAN=y
++CONFIG_USB_RTL8152=m
+ CONFIG_USB_USBNET=y
+ # CONFIG_USB_NET_AX8817X is not set
+ # CONFIG_USB_NET_AX88179_178A is not set
+-- 
+2.47.0
+

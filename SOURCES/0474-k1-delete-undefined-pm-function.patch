@@ -1,0 +1,25 @@
+From fdb467edbb88764e05e8862585900db5f3ee4524 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Wed, 13 Mar 2024 16:02:03 +0800
+Subject: [PATCH 0474/1202] k1: delete undefined pm function
+
+Change-Id: I087c10d1fb5a454c71b071bd25aaf73989ce2357
+---
+ drivers/i2c/busses/i2c-k1x.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index 041ef8ae7578..6c522fdb3b2b 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1628,7 +1628,6 @@ static int spacemit_i2c_suspend(struct device *dev)
+ 	/* grab mutex to make sure the i2c transaction is over */
+ 	mutex_lock(&spacemit_i2c->mtx);
+ 	if (!pm_runtime_status_suspended(dev)) {
+-		spacemit_i2c_pm_runtime_suspend(dev);
+ 
+ 		/*
+ 		 * sync runtime pm and system pm states:
+-- 
+2.47.0
+

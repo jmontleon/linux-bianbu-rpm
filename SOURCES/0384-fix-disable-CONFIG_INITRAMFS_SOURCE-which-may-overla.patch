@@ -1,0 +1,27 @@
+From c0f0400a6ec22ca30fbdcb9d50a534c6f0c2c872 Mon Sep 17 00:00:00 2001
+From: max <guoqun.ma@spacemit.com>
+Date: Wed, 17 Jan 2024 16:42:36 +0800
+Subject: [PATCH 0384/1202] fix: disable CONFIG_INITRAMFS_SOURCE which may
+ overlay external intramfs
+
+Change-Id: I7e0ce0abbb0ec606a7c8e18b0df356057dcfff0e
+---
+ arch/riscv/configs/k1_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 2f9ff03b60e8..5888595c87ce 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -13,7 +13,7 @@ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_CHECKPOINT_RESTORE=y
+ CONFIG_BLK_DEV_INITRD=y
+-CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
++CONFIG_INITRAMFS_SOURCE=""
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+ # CONFIG_RD_XZ is not set
+-- 
+2.47.0
+

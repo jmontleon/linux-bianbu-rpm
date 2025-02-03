@@ -1,7 +1,7 @@
-From 9547dd3c39bb13201d20898ac5eebc8f44ea3e9b Mon Sep 17 00:00:00 2001
+From 4c45e16b2caf28d2b94f9d0332187d4e50061ec5 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 26 May 2023 17:26:33 +0800
-Subject: [PATCH 0102/1206] add udma driver for userspace
+Subject: [PATCH 0102/1202] add udma driver for userspace
 
 Change-Id: Ie84319fc6da89696b664cbf0b6c937187ffcb794
 ---
@@ -12,7 +12,7 @@ Change-Id: Ie84319fc6da89696b664cbf0b6c937187ffcb794
  create mode 100644 drivers/dma/udma.c
 
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 2159a3e9bcb8..a6acdb189fb0 100644
+index b1003517d2bd..8320439513cc 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -752,6 +752,12 @@ config XILINX_ZYNQMP_DPDMA
@@ -29,10 +29,10 @@ index 2159a3e9bcb8..a6acdb189fb0 100644
  source "drivers/dma/amd/Kconfig"
  
 diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index edf3a930b3b0..2fd23343c055 100644
+index 15d0e632ef9d..46ea0668a441 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
-@@ -83,6 +83,7 @@ obj-$(CONFIG_UNIPHIER_MDMAC) += uniphier-mdmac.o
+@@ -82,6 +82,7 @@ obj-$(CONFIG_UNIPHIER_MDMAC) += uniphier-mdmac.o
  obj-$(CONFIG_UNIPHIER_XDMAC) += uniphier-xdmac.o
  obj-$(CONFIG_XGENE_DMA) += xgene-dma.o
  obj-$(CONFIG_ST_FDMA) += st_fdma.o

@@ -1,7 +1,7 @@
-From c804472ef45db385c1a633c270e55f46044932b3 Mon Sep 17 00:00:00 2001
+From 29f805a63e121f0a0122ad7238f5ad0e78229770 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E7=8E=8B=E6=A5=9A?= <chu.wang@spacemit.com>
 Date: Wed, 27 Sep 2023 19:25:54 +0800
-Subject: [PATCH 0149/1206] add tcm_cfg_save/restore
+Subject: [PATCH 0149/1202] add tcm_cfg_save/restore
 
 Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
 ---
@@ -9,10 +9,10 @@ Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 37bdea65bbd8..751504d6a007 100644
+index 6fed42e37705..7057961b5f93 100644
 --- a/arch/riscv/include/asm/csr.h
 +++ b/arch/riscv/include/asm/csr.h
-@@ -429,6 +429,11 @@
+@@ -444,6 +444,11 @@
  #define CSR_VTYPE		0xc21
  #define CSR_VLENB		0xc22
  
@@ -24,7 +24,7 @@ index 37bdea65bbd8..751504d6a007 100644
  /* Scalar Crypto Extension - Entropy */
  #define CSR_SEED		0x015
  #define SEED_OPST_MASK		_AC(0xC0000000, UL)
-@@ -560,6 +565,11 @@
+@@ -575,6 +580,11 @@
  			      : "memory");			\
  })
  

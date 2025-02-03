@@ -1,0 +1,234 @@
+From af58efb2b08daacdb23b08f56e8d10edb47d8c65 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 26 Mar 2024 11:19:16 +0800
+Subject: [PATCH 0518/1202] phy-k1x-ci-usb2: add notify callbacks, remove
+ unused code
+
+Change-Id: I96f14d3db4b0d82917e46831f6b48e84bdec9bbb
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  6 ---
+ drivers/usb/phy/phy-k1x-ci-usb2.c      | 63 ++++++--------------------
+ drivers/usb/phy/phy-k1x-ci-usb2.h      | 54 +++++++++-------------
+ 3 files changed, 35 insertions(+), 88 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index e82fb9a5524f..d03ff7a22f1e 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1637,8 +1637,6 @@ extcon: extcon@d428287c {
+ 		usbphy: usbphy@c0940000 {
+ 			compatible = "spacemit,usb2-phy";
+ 			reg = <0x0 0xc0940000 0x0 0x200>;
+-			spacemit,phy-name = "mv-usb-phy";
+-			spacemit,pll-lock-bypass;
+ 			clocks = <&ccu CLK_USB_AXI>;
+ 			status = "disabled";
+ 		};
+@@ -1690,8 +1688,6 @@ ehci: ehci@c0900100 {
+ 		usbphy1: usbphy1@c09c0000 {
+ 			compatible = "spacemit,usb2-phy";
+ 			reg = <0x0 0xc09c0000 0x0 0x200>;
+-			spacemit,phy-name = "mv-usb-phy";
+-			spacemit,pll-lock-bypass;
+ 			clocks = <&ccu CLK_USB_P1>;
+ 			status = "disabled";
+ 		};
+@@ -1725,8 +1721,6 @@ combphy: phy@c0b10000{
+ 		usb2phy: usb2phy@0xc0a30000 {
+ 			compatible = "spacemit,usb2-phy";
+ 			reg = <0x0 0xc0a30000  0x0 0x200>;
+-			spacemit,phy-name = "mv-usb-phy";
+-			spacemit,pll-lock-bypass;
+ 			clocks = <&ccu CLK_USB30>;
+ 			status = "disabled";
+ 		};
+diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
+index 5f3bf6b6ee94..116e8fd84f4b 100755
+--- a/drivers/usb/phy/phy-k1x-ci-usb2.c
++++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
+@@ -17,30 +17,9 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/k1x_ci_usb.h>
+-#include <linux/usb/phy.h>
+ #include <linux/of_address.h>
+ #include "phy-k1x-ci-usb2.h"
+ 
+-/* phy regs */
+-
+-#define USB2_PHY_REG01			0x4
+-#define USB2_PHY_REG01_PLL_IS_READY	(0x1 << 0)
+-#define USB2_PHY_REG04			0x10
+-#define USB2_PHY_REG04_EN_HSTSOF	(0x1 << 0)
+-#define USB2_PHY_REG04_AUTO_CLEAR_DIS	(0x1 << 2)
+-#define USB2_PHY_REG08			0x20
+-#define USB2_PHY_REG08_DISCON_DET	(0x1 << 9)
+-#define USB2_PHY_REG0D			0x34
+-#define USB2_PHY_REG26			0x98
+-#define USB2_PHY_REG22			0x88
+-#define USB2_CFG_FORCE_CDRCLK		(0x1 << 6)
+-#define USB2_PHY_REG06			0x18
+-#define USB2_CFG_HS_SRC_SEL		(0x1 << 0)
+-
+-#define USB2D_CTRL_RESET_TIME_MS	50
+-
+-static struct mv_usb2_phy *mv_phy_ptr;
+-
+ static int mv_usb2_phy_init(struct usb_phy *phy)
+ {
+ 	struct mv_usb2_phy *mv_phy = container_of(phy, struct mv_usb2_phy, phy);
+@@ -92,26 +71,16 @@ static void mv_usb2_phy_shutdown(struct usb_phy *phy)
+ 	clk_disable(mv_phy->clk);
+ }
+ 
+-static const struct of_device_id mv_usbphy_dt_match[];
+-
+-static int mv_usb2_get_phydata(struct platform_device *pdev,
+-				struct mv_usb2_phy *mv_phy)
++static int mv_usb2_phy_connect_change(struct usb_phy *phy,
++					  enum usb_device_speed speed)
+ {
+-	struct device_node *np = pdev->dev.of_node;
+-	const struct of_device_id *match;
+-	u32 phy_rev;
+-
+-	match = of_match_device(mv_usbphy_dt_match, &pdev->dev);
+-	if (!match)
+-		return -ENODEV;
+-
+-	mv_phy->drv_data.phy_type = (unsigned long)match->data;
+-
+-	if (!of_property_read_u32(np, "spacemit,usb2-phy-rev", &phy_rev))
+-		mv_phy->drv_data.phy_rev = phy_rev;
+-	else
+-		dev_info(&pdev->dev, "No PHY revision found, use the default setting!");
+-
++	struct mv_usb2_phy *mv_phy = container_of(phy, struct mv_usb2_phy, phy);
++	uint32_t reg;
++	if (!mv_phy->handle_connect_change)
++		return 0;
++	reg = readl(mv_phy->base + USB2_PHY_REG40);
++	reg |= USB2_PHY_REG40_CLR_DISC;
++	writel(reg, mv_phy->base + USB2_PHY_REG40);
+ 	return 0;
+ }
+ 
+@@ -119,7 +88,6 @@ static int mv_usb2_phy_probe(struct platform_device *pdev)
+ {
+ 	struct mv_usb2_phy *mv_phy;
+ 	struct resource *r;
+-	int ret = 0;
+ 
+ 	dev_dbg(&pdev->dev, "k1x-ci-usb-phy-probe: Enter...\n");
+ 	mv_phy = devm_kzalloc(&pdev->dev, sizeof(*mv_phy), GFP_KERNEL);
+@@ -130,12 +98,6 @@ static int mv_usb2_phy_probe(struct platform_device *pdev)
+ 
+ 	mv_phy->pdev = pdev;
+ 
+-	ret = mv_usb2_get_phydata(pdev, mv_phy);
+-	if (ret) {
+-		dev_err(&pdev->dev, "No matching phy founded\n");
+-		return ret;
+-	}
+-
+ 	mv_phy->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(mv_phy->clk)) {
+ 		dev_err(&pdev->dev, "failed to get clock.\n");
+@@ -154,18 +116,21 @@ static int mv_usb2_phy_probe(struct platform_device *pdev)
+ 		return -EBUSY;
+ 	}
+ 
++	mv_phy->handle_connect_change = device_property_read_bool(&pdev->dev,
++		"spacemit,handle_connect_change");
++
+ 	mv_phy->phy.dev = &pdev->dev;
+ 	mv_phy->phy.label = "mv-usb2";
+ 	mv_phy->phy.type = USB_PHY_TYPE_USB2;
+ 	mv_phy->phy.init = mv_usb2_phy_init;
+ 	mv_phy->phy.shutdown = mv_usb2_phy_shutdown;
++	mv_phy->phy.notify_disconnect = mv_usb2_phy_connect_change;
++	mv_phy->phy.notify_connect = mv_usb2_phy_connect_change;
+ 
+ 	usb_add_phy_dev(&mv_phy->phy);
+ 
+ 	platform_set_drvdata(pdev, mv_phy);
+ 
+-	mv_phy_ptr = mv_phy;
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.h b/drivers/usb/phy/phy-k1x-ci-usb2.h
+index 43dd8c0ab112..2a001de2f456 100755
+--- a/drivers/usb/phy/phy-k1x-ci-usb2.h
++++ b/drivers/usb/phy/phy-k1x-ci-usb2.h
+@@ -2,45 +2,33 @@
+ 
+ #ifndef __MV_USB2_H
+ #define __MV_USB2_H
+-
+-#define MV_USB2_PHY_INDEX	0
+-#define MV_USB2_OTG_PHY_INDEX	1
+-
+-#define PHY_28LP	0x2800
+-#define PHY_40LP	0x4000
+-#define PHY_55LP	0x5500
+-
+-#define MV_PHY_FLAG_PLL_LOCK_BYPASS	(1 << 0)
+-
+-/* phy_flag is used to record the feature supported */
+-struct mv_usb2_phydata {
+-	unsigned long phy_type;
+-	u32 phy_rev;
+-	u32 phy_flag;
+-};
++#include <linux/usb/phy.h>
++
++/* phy regs */
++#define USB2_PHY_REG01			0x4
++#define USB2_PHY_REG01_PLL_IS_READY	(0x1 << 0)
++#define USB2_PHY_REG04			0x10
++#define USB2_PHY_REG04_EN_HSTSOF	(0x1 << 0)
++#define USB2_PHY_REG04_AUTO_CLEAR_DIS	(0x1 << 2)
++#define USB2_PHY_REG08			0x20
++#define USB2_PHY_REG08_DISCON_DET	(0x1 << 9)
++#define USB2_PHY_REG0D			0x34
++#define USB2_PHY_REG40			0x40
++#define USB2_PHY_REG40_CLR_DISC	(0x1 << 0)
++#define USB2_PHY_REG26			0x98
++#define USB2_PHY_REG22			0x88
++#define USB2_CFG_FORCE_CDRCLK		(0x1 << 6)
++#define USB2_PHY_REG06			0x18
++#define USB2_CFG_HS_SRC_SEL		(0x1 << 0)
++
++#define USB2D_CTRL_RESET_TIME_MS	50
+ 
+ struct mv_usb2_phy {
+ 	struct usb_phy		phy;
+ 	struct platform_device	*pdev;
+ 	void __iomem		*base;
+ 	struct clk		*clk;
+-	struct mv_usb2_phydata  drv_data;
++	bool		handle_connect_change;
+ };
+ 
+-/*
+- * PHY revision: For those has small difference with default setting.
+- * bit [15..8]: represent PHY IP as below:
+- *     PHY_55LP        0x5500,
+- *     PHY_40LP        0x4000,
+- *     PHY_28LP        0x2800,
+- */
+-#define REV_PXA168     0x5500
+-#define REV_PXA910     0x5501
+-
+-#ifdef CONFIG_USB_GADGET_CHARGE_ONLY
+-extern int is_charge_only_mode(void);
+-extern void charge_only_send_uevent(int event);
+-extern void usb_phy_force_dp_dm(struct usb_phy *phy, bool is_force);
+-#endif /* CONFIG_USB_GADGET_CHARGE_ONLY */
+-
+ #endif
+-- 
+2.47.0
+

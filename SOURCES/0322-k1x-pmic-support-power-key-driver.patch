@@ -1,7 +1,7 @@
-From 72112b4f5808359723fcee059d72cb845e99cbdf Mon Sep 17 00:00:00 2001
+From c5a66ce8f6041b1e94b7adb02402811bbc4e0503 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 6 Jan 2024 16:19:44 +0800
-Subject: [PATCH 0322/1206] k1x:pmic:support power-key driver
+Subject: [PATCH 0322/1202] k1x:pmic:support power-key driver
 
 Change-Id: Ifd49f342de92762bc71e1a6cf72dfb150667fb18
 ---
@@ -14,12 +14,12 @@ Change-Id: Ifd49f342de92762bc71e1a6cf72dfb150667fb18
  create mode 100644 drivers/input/misc/spacemit-pwrkey.c
 
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 6a852c76331b..e3f2eeb3d237 100644
+index 13d135257e06..58825c8a055c 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
-@@ -917,6 +917,15 @@ config INPUT_HISI_POWERKEY
+@@ -929,6 +929,15 @@ config INPUT_QNAP_MCU
  	  To compile this driver as a module, choose M here: the
- 	  module will be called hisi_powerkey.
+ 	  module will be called qnap-mcu-input.
  
 +config INPUT_SPACEMIT_POWERKEY
 +	tristate "Spacemit PMIC pwrkey support"
@@ -34,10 +34,10 @@ index 6a852c76331b..e3f2eeb3d237 100644
  	tristate "RAVE SP Power button Driver"
  	depends on RAVE_SP_CORE
 diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index 4f7f736831ba..30d4ed8dadc6 100644
+index 6d91804d0a6f..24292feba761 100644
 --- a/drivers/input/misc/Makefile
 +++ b/drivers/input/misc/Makefile
-@@ -92,3 +92,4 @@ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
+@@ -93,3 +93,4 @@ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
  obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
  obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
  obj-$(CONFIG_INPUT_IDEAPAD_SLIDEBAR)	+= ideapad_slidebar.o

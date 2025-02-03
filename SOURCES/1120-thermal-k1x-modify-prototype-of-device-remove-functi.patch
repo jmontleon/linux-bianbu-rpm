@@ -1,0 +1,44 @@
+From ad06cdc12656e88ec2b119c7b6df203952606bdb Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:29:52 +0800
+Subject: [PATCH 1120/1202] thermal: k1x: modify prototype of device remove
+ function
+
+Change-Id: Ied6f66d061bb6712d5cc9840dc2eada64d5357af
+---
+ drivers/thermal/k1x-thermal.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/thermal/k1x-thermal.c b/drivers/thermal/k1x-thermal.c
+index e9bae21a0aec..eaf5d345628f 100644
+--- a/drivers/thermal/k1x-thermal.c
++++ b/drivers/thermal/k1x-thermal.c
+@@ -9,6 +9,7 @@
+ #include <linux/of_device.h>
+ #include <linux/thermal.h>
+ #include <linux/reset.h>
++#include "thermal_core.h"
+ #include "thermal_hwmon.h"
+ #include "k1x-thermal.h"
+ 
+@@ -318,7 +319,7 @@ static int k1x_thermal_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int k1x_thermal_remove(struct platform_device *pdev)
++static void k1x_thermal_remove(struct platform_device *pdev)
+ {
+ 	int i;
+ 	struct k1x_thermal_sensor *s = platform_get_drvdata(pdev);
+@@ -331,8 +332,6 @@ static int k1x_thermal_remove(struct platform_device *pdev)
+ 		devm_thermal_of_zone_unregister(&pdev->dev, s->sdesc[i].tzd);
+ 		devm_free_irq(&pdev->dev, s->irq, s->sdesc + i);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id of_k1x_thermal_match[] = {
+-- 
+2.47.0
+

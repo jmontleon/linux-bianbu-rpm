@@ -1,0 +1,25 @@
+From 101442033bfebdf54042d82351153777c2b91396 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 2 Aug 2024 10:53:13 +0800
+Subject: [PATCH 0875/1202] k1: MUSE-Paper: update card detection logic
+
+Change-Id: I1416c89f1ed0c0f0ef8236b32b554f875c722f4d
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index f665dce8891b..26f6423c86af 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -576,7 +576,6 @@ &sdhci0 {
+ 	pinctrl-1 = <&pinctrl_mmc1_fast>;
+ 	bus-width = <4>;
+ 	cd-gpios = <&gpio 80 0>;
+-	cd-inverted;
+ 	vmmc-supply = <&dcdc_4>;
+ 	vqmmc-supply = <&ldo_1>;
+ 	no-mmc;
+-- 
+2.47.0
+

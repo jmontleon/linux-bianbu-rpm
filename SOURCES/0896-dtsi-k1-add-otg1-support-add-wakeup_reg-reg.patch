@@ -1,0 +1,88 @@
+From d7b03d57d64d5469393a16f4443c19a2ba15b133 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 6 Aug 2024 16:54:30 +0800
+Subject: [PATCH 0896/1202] dtsi: k1: add otg1 support, add wakeup_reg reg
+
+Change-Id: I0ddea9d46eed913007e57b749ba6d42c1c5a935d
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 37 +++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 61a29cbed9d1..0fa82a0ce791 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1766,7 +1766,8 @@ usbphy: usbphy@c0940000 {
+ 
+ 		otg: otg@c0900100 {
+ 			compatible = "spacemit,mv-otg";
+-			reg = <0x0 0xc0900100 0x0 0x4000>;
++			reg = <0x0 0xc0900100 0x0 0x4000>,
++				  <0x0 0xd428287c 0x0 0x4>;
+ 			interrupts = <105>;
+ 			interrupt-parent = <&intc>;
+ 			spacemit,otg-name = "mv-otg";
+@@ -1774,7 +1775,6 @@ otg: otg@c0900100 {
+ 			clocks = <&ccu CLK_USB_AXI>;
+ 			resets = <&reset RESET_USB_AXI>;
+ 			usb-phy = <&usbphy>;
+-			extcon = <&extcon>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1822,13 +1822,43 @@ usbphy1: usbphy1@c09c0000 {
+ 			status = "disabled";
+ 		};
+ 
++		otg1: otg1@c0980100 {
++			compatible = "spacemit,mv-otg";
++			reg = <0x0 0xc0980100 0x0 0x4000>,
++				  <0x0 0xd4282bc4 0x0 0x4>;
++			interrupts = <118>;
++			interrupt-parent = <&intc>;
++			spacemit,otg-name = "mv-otg1";
++			spacemit,otg-force-a-bus-req;
++			clocks = <&ccu CLK_USB_P1>;
++			resets = <&reset RESET_USBP1_AXI>;
++			usb-phy = <&usbphy1>;
++			status = "disabled";
++		};
++
++		udc1: udc1@c0980100 {
++			compatible = "spacemit,mv-udc";
++			reg = <0x0 0xc0980100 0x0 0x4000>;
++			interrupts = <118>;
++			interrupt-parent = <&intc>;
++			spacemit,udc-name = "mv-udc1";
++			spacemit,otg-force-a-bus-req;
++			resets = <&reset RESET_USBP1_AXI>;
++			clocks = <&ccu CLK_USB_P1>;
++			usb-phy = <&usbphy1>;
++			usb-otg = <&otg1>;
++			interconnects = <&dram_range0>;
++			interconnect-names = "dma-mem";
++			status = "disabled";
++		};
++
+ 		ehci1: ehci1@c0980100 {
+ 			compatible = "spacemit,mv-ehci";
+ 			reg = <0x0 0xc0980100 0x0 0x4000>,
+ 				  <0x0 0xd4282bc4 0x0 0x4>;
+ 			interrupts = <118>,<148>;
+ 			interrupt-parent = <&intc>;
+-			spacemit,ehci-name = "mv-ehci";
++			spacemit,ehci-name = "mv-ehci1";
+ 			spacemit,otg-force-a-bus-req;
+ 			resets = <&reset RESET_USBP1_AXI>;
+ 			clocks = <&ccu CLK_USB_P1>;
+@@ -1837,6 +1867,7 @@ ehci1: ehci1@c0980100 {
+ 			regulator,pm-runtime,no-sleep;
+ 			cpuidle,pm-runtime,sleep;
+ 			usb-phy = <&usbphy1>;
++			usb-otg = <&otg1>;
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
+ 			status = "disabled";
+-- 
+2.47.0
+

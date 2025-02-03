@@ -1,0 +1,26 @@
+From 45e3830ec45f72312d8b620c9c61cd0d8863aa82 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Fri, 18 Oct 2024 19:04:46 +0800
+Subject: [PATCH 1089/1202] es8326: fix es8326 no sound due to data-length
+ setting do not take effect
+
+Change-Id: I86d89580cc8df150e4010821e2ab2249424b9fa2
+---
+ sound/soc/codecs/es8326.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 121dc6618599..560b1b4a01be 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -1256,6 +1256,7 @@ static void es8326_init(struct snd_soc_component *component)
+ 	regmap_write(es8326->regmap, ES8326_CLK_DIV_LRCK, 0xff);
+ 	regmap_write(es8326->regmap, ES8326_ADC1_SRC, 0x44);
+ 	regmap_write(es8326->regmap, ES8326_ADC2_SRC, 0x66);
++	regmap_write(es8326->regmap, ES8326_FMT, 0x0c);
+ 	es8326_disable_micbias(es8326->component);
+ 	if (es8326->version > ES8326_VERSION_B) {
+ 		regmap_update_bits(es8326->regmap, ES8326_ANA_MICBIAS, 0x73, 0x10);
+-- 
+2.47.0
+

@@ -1,0 +1,35 @@
+From 276fe02be07cd0efd16648e1f3be0cfc92d37424 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 14:50:58 +0800
+Subject: [PATCH 0445/1202] eeprom/at24: fix compile warning
+
+Change-Id: If214581d7f9e297f12ed76e51a5879e3cc854634
+---
+ drivers/misc/eeprom/at24.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index edd1f8fc0a63..7f04beddbfbf 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -801,17 +801,11 @@ static void at24_remove(struct i2c_client *client)
+ 
+ static int __maybe_unused at24_suspend(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct at24_data *at24 = i2c_get_clientdata(client);
+-
+ 	return 0;
+ }
+ 
+ static int __maybe_unused at24_resume(struct device *dev)
+ {
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct at24_data *at24 = i2c_get_clientdata(client);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.47.0
+

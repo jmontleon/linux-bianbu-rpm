@@ -1,7 +1,7 @@
-From 71535c92f4e24ae1565d1ec7dadfb03fbb746519 Mon Sep 17 00:00:00 2001
+From 2a1850c4ccaa9a788fe0fb043e302516c560c04c Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 21 Dec 2023 10:30:28 +0800
-Subject: [PATCH 0208/1206] k1x-dma 1.add pm func in dma driver 2.modify
+Subject: [PATCH 0208/1202] k1x-dma 1.add pm func in dma driver 2.modify
  dma-Kconfig
 
 Change-Id: Ia6978dd5cdb545afd5accfa5500bf6c8c8d3f325
@@ -24,7 +24,7 @@ index abbfabc670d0..0dc7257d0c72 100644
  CONFIG_USERSPACE_DMA=y
  CONFIG_SW_SYNC=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index a6acdb189fb0..42bbe7338274 100644
+index 8320439513cc..f3e8b74ac836 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -441,11 +441,12 @@ config MILBEAUT_XDMAC

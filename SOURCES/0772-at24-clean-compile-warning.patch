@@ -1,0 +1,37 @@
+From 8040d946b19264ccc47618a3e708ad72b3b550e9 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 26 Jun 2024 13:43:33 +0800
+Subject: [PATCH 0772/1202] at24: clean compile warning
+
+Change-Id: Ib0d8bda66bc11c42ab5547c18b41456bca17c777
+---
+ drivers/misc/eeprom/at24.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 7f04beddbfbf..74ad6f5caab4 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -609,10 +609,8 @@ static int at24_probe(struct i2c_client *client)
+ 	bool i2c_fn_i2c, i2c_fn_block;
+ 	unsigned int i, num_addresses;
+ 	struct at24_data *at24;
+-	bool full_power;
+ 	struct regmap *regmap;
+ 	bool writable;
+-	u8 test_byte;
+ 	int err;
+ 
+ 	i2c_fn_i2c = i2c_check_functionality(client->adapter, I2C_FUNC_I2C);
+@@ -791,8 +789,6 @@ static int at24_probe(struct i2c_client *client)
+ 
+ static void at24_remove(struct i2c_client *client)
+ {
+-	struct at24_data *at24 = i2c_get_clientdata(client);
+-
+ 	pm_runtime_disable(&client->dev);
+ 	if (acpi_dev_state_d0(&client->dev)) {
+ 		pm_runtime_set_suspended(&client->dev);
+-- 
+2.47.0
+

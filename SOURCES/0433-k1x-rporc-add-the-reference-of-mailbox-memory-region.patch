@@ -1,0 +1,70 @@
+From 21cec3f8768e08e6c45348264fbf41ddb8399c99 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 23 Feb 2024 09:10:57 +0800
+Subject: [PATCH 0433/1202] k1x: rporc: add the reference of mailbox &
+ memory-region
+
+Change-Id: I7d7fcd88face6e9d0547b66e23351cb9126b3adb
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts |  5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts |  5 +++++
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts  | 11 ++++++++---
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index ca5b0fd8d717..116b8467407f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -832,6 +832,11 @@ opp1600000000 {
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
++	mboxes = <&mailbox 0>, <&mailbox 1>;
++	mbox-names = "vq0", "vq1";
++	interconnects = <&dram_range0>;
++	interconnect-names = "dma-mem";
++	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 3b746d931347..5ffd7f348281 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -885,6 +885,11 @@ opp1600000000 {
+ &rcpu {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rcpu>;
++	mboxes = <&mailbox 0>, <&mailbox 1>;
++	mbox-names = "vq0", "vq1";
++	interconnects = <&dram_range0>;
++	interconnect-names = "dma-mem";
++	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 5ab8cc0249e4..e595359a6014 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -826,9 +826,14 @@ opp1600000000 {
+ };
+ 
+ &rcpu {
+-       pinctrl-names = "default";
+-       pinctrl-0 = <&pinctrl_rcpu>;
+-       status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rcpu>;
++	mboxes = <&mailbox 0>, <&mailbox 1>;
++	mbox-names = "vq0", "vq1";
++	interconnects = <&dram_range0>;
++	interconnect-names = "dma-mem";
++	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>;
++	status = "okay";
+ };
+ 
+ &cls0_trip3 {
+-- 
+2.47.0
+

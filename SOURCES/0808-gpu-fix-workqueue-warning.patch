@@ -1,0 +1,140 @@
+From edeb24de31358fb7ca1dee961718d1f17f535ae1 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Tue, 9 Jul 2024 15:42:11 +0800
+Subject: [PATCH 0808/1202] gpu: fix workqueue warning
+
+deprecated flush_scheduled_work
+
+Change-Id: I46d75a90ad2be2f456a615a4143df4b449993fcb
+---
+ drivers/gpu/drm/img-rogue/osfunc.c            | 23 +++++++++++++++++++
+ drivers/gpu/drm/img-rogue/pvr_buffer_sync.c   |  2 +-
+ drivers/gpu/drm/img-rogue/pvr_fence.c         |  2 +-
+ drivers/gpu/drm/img-rogue/pvr_fence.h         |  6 +++++
+ .../drm/img-rogue/services_kernel_client.h    |  5 ++++
+ 5 files changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
+index 03a297b55466..4935536cd631 100644
+--- a/drivers/gpu/drm/img-rogue/osfunc.c
++++ b/drivers/gpu/drm/img-rogue/osfunc.c
+@@ -582,6 +582,7 @@ IMG_UINT32 OSStringUINT32ToStr(IMG_CHAR *pszBuf, size_t uSize,
+ 
+ #if defined(SUPPORT_NATIVE_FENCE_SYNC) || defined(SUPPORT_BUFFER_SYNC)
+ static struct workqueue_struct *gpFenceStatusWq;
++static struct workqueue_struct *gpFenceCtxDestroyWq;
+ 
+ static PVRSRV_ERROR _NativeSyncInit(void)
+ {
+@@ -593,12 +594,21 @@ static PVRSRV_ERROR _NativeSyncInit(void)
+ 		return PVRSRV_ERROR_INIT_FAILURE;
+ 	}
+ 
++	gpFenceCtxDestroyWq = create_freezable_workqueue("pvr_fence_context_destroy");
++	if (!gpFenceCtxDestroyWq)
++	{
++		PVR_DPF((PVR_DBG_ERROR, "%s: Failed to create foreign fence context destruction workqueue",
++				 __func__));
++		return PVRSRV_ERROR_INIT_FAILURE;
++	}
++
+ 	return PVRSRV_OK;
+ }
+ 
+ static void _NativeSyncDeinit(void)
+ {
+ 	destroy_workqueue(gpFenceStatusWq);
++	destroy_workqueue(gpFenceCtxDestroyWq);
+ }
+ 
+ struct workqueue_struct *NativeSyncGetFenceStatusWq(void)
+@@ -613,6 +623,19 @@ struct workqueue_struct *NativeSyncGetFenceStatusWq(void)
+ 
+ 	return gpFenceStatusWq;
+ }
++
++struct workqueue_struct *NativeSyncGetFenceCtxDestroyWq(void)
++{
++	if (!gpFenceCtxDestroyWq)
++	{
++#if defined(DEBUG)
++		PVR_ASSERT(gpFenceCtxDestroyWq);
++#endif
++		return NULL;
++	}
++
++	return gpFenceCtxDestroyWq;
++}
+ #endif
+ 
+ PVRSRV_ERROR OSInitEnvData(void)
+diff --git a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
+index 203e2360a779..0dc3dffdbad8 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
++++ b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
+@@ -300,7 +300,7 @@ pvr_buffer_sync_check_fences_create(struct pvr_fence_context *fence_ctx,
+ 		}
+ 	}
+ 
+-	WARN_ON((i != nr_pmrs) || (data->nr_fences != fence_count));
++	WARN_ON(i != nr_pmrs);
+ 
+ 	return data;
+ 
+diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.c b/drivers/gpu/drm/img-rogue/pvr_fence.c
+index 5638dad8212c..52b8aeaffbfb 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_fence.c
++++ b/drivers/gpu/drm/img-rogue/pvr_fence.c
+@@ -508,7 +508,7 @@ static void pvr_fence_context_destroy_kref(struct kref *kref)
+ 
+ 	trace_pvr_fence_context_destroy_kref(fctx);
+ 
+-	schedule_work(&fctx->destroy_work);
++	queue_work(NativeSyncGetFenceCtxDestroyWq(), &fctx->destroy_work);
+ }
+ 
+ /**
+diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.h b/drivers/gpu/drm/img-rogue/pvr_fence.h
+index 2a63f4ba77d9..25ecc8bb9911 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_fence.h
++++ b/drivers/gpu/drm/img-rogue/pvr_fence.h
+@@ -189,14 +189,20 @@ u32 pvr_fence_dump_info_on_stalled_ufos(struct pvr_fence_context *fctx,
+ 					u32 nr_ufos,
+ 					u32 *vaddrs);
+ 
++#if defined(SUPPORT_NATIVE_FENCE_SYNC) || defined(SUPPORT_BUFFER_SYNC)
+ static inline void pvr_fence_cleanup(void)
+ {
+ 	/*
+ 	 * Ensure all PVR fence contexts have been destroyed, by flushing
+ 	 * the global workqueue.
+ 	 */
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 36))
++	flush_workqueue(NativeSyncGetFenceCtxDestroyWq());
++#else
+ 	flush_scheduled_work();
++#endif
+ }
++#endif
+ 
+ #if defined(PVR_FENCE_DEBUG)
+ #define PVR_FENCE_CTX_TRACE(c, fmt, ...)                                   \
+diff --git a/drivers/gpu/drm/img-rogue/services_kernel_client.h b/drivers/gpu/drm/img-rogue/services_kernel_client.h
+index 44e3a4e1ce83..8b66fcb6dea5 100644
+--- a/drivers/gpu/drm/img-rogue/services_kernel_client.h
++++ b/drivers/gpu/drm/img-rogue/services_kernel_client.h
+@@ -284,6 +284,11 @@ struct _PVRSRV_DEVICE_NODE_ *SyncCheckpointGetAssociatedDevice(PSYNC_CHECKPOINT_
+ @Return         struct workqueue_struct ptr on success, NULL otherwise.
+ */ /**************************************************************************/
+ struct workqueue_struct *NativeSyncGetFenceStatusWq(void);
++/*************************************************************************/ /*!
++@Function       NativeSyncGetFenceCtxDestroyWq
++@Return         struct workqueue_struct ptr on success, NULL otherwise.
++*/ /**************************************************************************/
++struct workqueue_struct *NativeSyncGetFenceCtxDestroyWq(void);
+ #endif
+ 
+ #endif /* __SERVICES_KERNEL_CLIENT__ */
+-- 
+2.47.0
+

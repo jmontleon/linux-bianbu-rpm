@@ -1,0 +1,726 @@
+From ec0bbf86a5062aa3569618fb04a611dac60a2937 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:27:27 +0800
+Subject: [PATCH 1173/1202] drm: k1x: fix compile warning
+
+Change-Id: Id5f873f389ffaf95ae514fe5360beaaba3d1c617
+---
+ .../gpu/drm/spacemit/dphy/spacemit_dphy_drv.c | 10 +-
+ drivers/gpu/drm/spacemit/dpu/dpu_debug.c      |  2 +-
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c     | 14 ++-
+ .../gpu/drm/spacemit/dsi/spacemit_dsi_drv.c   | 16 ++--
+ drivers/gpu/drm/spacemit/lt8911exb.c          | 91 +++++++------------
+ .../gpu/drm/spacemit/spacemit_bootloader.c    |  2 +
+ drivers/gpu/drm/spacemit/spacemit_drm.c       |  4 +-
+ drivers/gpu/drm/spacemit/spacemit_gem.c       |  4 +-
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c      | 42 +++++----
+ .../gpu/drm/spacemit/spacemit_mipi_panel.c    |  3 +-
+ drivers/gpu/drm/spacemit/spacemit_planes.c    |  4 +-
+ drivers/gpu/drm/spacemit/spacemit_wb.c        |  2 +-
+ drivers/gpu/drm/spacemit/spacemit_wb.h        |  2 -
+ 13 files changed, 87 insertions(+), 109 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
+index 079332eba7e9..cfa07c8c7f87 100644
+--- a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
++++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
+@@ -338,7 +338,7 @@ static void dphy_get_setting(struct spacemit_dphy_ctx *dphy_ctx, struct device_n
+ }
+ 
+ 
+-void spacemit_dphy_core_get_status(struct spacemit_dphy_ctx *dphy_ctx)
++static void spacemit_dphy_core_get_status(struct spacemit_dphy_ctx *dphy_ctx)
+ {
+ 	pr_debug("%s\n", __func__);
+ 
+@@ -355,7 +355,7 @@ void spacemit_dphy_core_get_status(struct spacemit_dphy_ctx *dphy_ctx)
+ 	pr_debug("%s: dphy_status2 = 0x%x\n", __func__, dphy_ctx->dphy_status2);
+ }
+ 
+-void spacemit_dphy_core_reset(struct spacemit_dphy_ctx *dphy_ctx)
++static void spacemit_dphy_core_reset(struct spacemit_dphy_ctx *dphy_ctx)
+ {
+ 	pr_debug("%s\n", __func__);
+ 
+@@ -379,7 +379,7 @@ void spacemit_dphy_core_reset(struct spacemit_dphy_ctx *dphy_ctx)
+  * This function has no return value.
+  *
+  */
+-void spacemit_dphy_core_init(struct spacemit_dphy_ctx *dphy_ctx)
++static void spacemit_dphy_core_init(struct spacemit_dphy_ctx *dphy_ctx)
+ {
+ 	pr_debug("%s\n", __func__);
+ 
+@@ -423,7 +423,7 @@ void spacemit_dphy_core_init(struct spacemit_dphy_ctx *dphy_ctx)
+  * This function has no return value.
+  *
+  */
+-void spacemit_dphy_core_uninit(struct spacemit_dphy_ctx *dphy_ctx)
++static void spacemit_dphy_core_uninit(struct spacemit_dphy_ctx *dphy_ctx)
+ {
+ 	pr_debug("%s\n", __func__);
+ 
+@@ -445,7 +445,7 @@ void spacemit_dphy_core_uninit(struct spacemit_dphy_ctx *dphy_ctx)
+ 	dphy_ctx->status = DPHY_STATUS_UNINIT;
+ }
+ 
+-int spacemit_dphy_core_parse_dt(struct spacemit_dphy_ctx *dphy_ctx, struct device_node *np)
++static int spacemit_dphy_core_parse_dt(struct spacemit_dphy_ctx *dphy_ctx, struct device_node *np)
+ {
+ 	if (!dphy_ctx) {
+ 		pr_err("%s: Param is NULL\n",__func__);
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+index d3e262cc85b6..9245ee407c29 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
+@@ -168,7 +168,7 @@ static void dump_dpu_regs_by_enum(void __iomem *io_base, phys_addr_t phy_base, d
+ 	}
+ }
+ 
+-bool dpu_reg_enum_valid(dpu_reg_enum reg_enum)
++static bool dpu_reg_enum_valid(dpu_reg_enum reg_enum)
+ {
+ 	int size = ARRAY_SIZE(SATURN_LE_DPU_REG_ENUM_LISTS);
+ 	int i = 0;
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index e4862f19032e..535f953d2861 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -165,20 +165,18 @@ const u32 saturn_le_rdma_fixed_fbcmem_sizes[] = {
+ };
+ 
+ static atomic_t mclk_cnt = ATOMIC_INIT(0);;
+-bool dpu_mclk_exclusive_get(void)
++static bool dpu_mclk_exclusive_get(void)
+ {
+ 	if (0 == atomic_cmpxchg(&mclk_cnt, 0, 1))
+ 		return true;
+ 	else
+ 		return false;
+ }
+-EXPORT_SYMBOL(dpu_mclk_exclusive_get);
+ 
+-void dpu_mclk_exclusive_put(void)
++static void dpu_mclk_exclusive_put(void)
+ {
+ 	atomic_set(&mclk_cnt, 0);
+ }
+-EXPORT_SYMBOL(dpu_mclk_exclusive_put);
+ 
+ struct spacemit_hw_device spacemit_dp_devices[DP_MAX_DEVICES] = {
+ 	[SATURN_HDMI] = {
+@@ -279,7 +277,7 @@ static unsigned int dpu_get_bpp(u32 format)
+ 	return SPACEMIT_DPU_INVALID_FORMAT_ID;
+ }
+ 
+-int dpu_calc_plane_mclk_bw(struct drm_plane *plane, \
++static int dpu_calc_plane_mclk_bw(struct drm_plane *plane, \
+ 		struct drm_plane_state *new_state)
+ {
+ 	/* For some platform without aclk, mclk = max(aclk, mclk) */
+@@ -850,7 +848,7 @@ static void saturn_conf_scaler_x(struct drm_plane_state *state)
+ 	write_to_cmdlist(priv, RDMA_PATH_X_REG, module_base, LEFT_SCL_RATIO_V, 0x1 << 20 | ver_delta_phase);
+ }
+ 
+-void saturn_conf_scaler_coefs(struct drm_plane *plane, struct spacemit_plane_state *spacemit_pstate){
++static void saturn_conf_scaler_coefs(struct drm_plane *plane, struct spacemit_plane_state *spacemit_pstate){
+ 	struct drm_property_blob * blob = spacemit_pstate->scale_coefs_blob_prop;
+ 	struct spacemit_drm_private *priv = plane->dev->dev_private;
+ 	int scale_num = 192;
+@@ -1390,7 +1388,7 @@ static void saturn_ctrl_sw_start(struct spacemit_dpu *dpu, bool enable)
+ 	}
+ }
+ 
+-void saturn_wb_disable(struct spacemit_dpu *dpu)
++static void saturn_wb_disable(struct spacemit_dpu *dpu)
+ {
+ 	struct spacemit_drm_private *priv = dpu->crtc.dev->dev_private;
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
+@@ -1399,7 +1397,7 @@ void saturn_wb_disable(struct spacemit_dpu *dpu)
+ 	dpu_write_reg(hwdev, DPU_CTL_REG, DPU_CTRL_BASE_ADDR, ctl2_nml_cfg_rdy, 1);
+ }
+ 
+-void saturn_wb_config(struct spacemit_dpu *dpu)
++static void saturn_wb_config(struct spacemit_dpu *dpu)
+ {
+ 
+ }
+diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
+index 8ef2eff9a2d5..d4a05bf185dd 100644
+--- a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
++++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
+@@ -706,7 +706,7 @@ static void dsi_ready_dphy(struct spacemit_dsi_device* device_ctx)
+ {
+ }
+ 
+-int spacemit_dsi_open(struct spacemit_dsi_device* device_ctx, bool ready)
++static int spacemit_dsi_open(struct spacemit_dsi_device* device_ctx, bool ready)
+ {
+ 	int lane_number;
+ 	struct spacemit_mipi_info *mipi_info = &device_ctx->mipi_info;
+@@ -751,7 +751,7 @@ int spacemit_dsi_open(struct spacemit_dsi_device* device_ctx, bool ready)
+ 	return 0;
+ }
+ 
+-int spacemit_dsi_close(struct spacemit_dsi_device* device_ctx)
++static int spacemit_dsi_close(struct spacemit_dsi_device* device_ctx)
+ {
+ #ifdef LCD_IS_READY
+ 	return 0;
+@@ -774,7 +774,7 @@ int spacemit_dsi_close(struct spacemit_dsi_device* device_ctx)
+ 	return 0;
+ }
+ 
+-int spacemit_dsi_ready_for_datatx(struct spacemit_dsi_device* device_ctx)
++static int spacemit_dsi_ready_for_datatx(struct spacemit_dsi_device* device_ctx)
+ {
+ 	struct spacemit_mipi_info *mipi_info = &device_ctx->mipi_info;
+ 
+@@ -799,7 +799,7 @@ int spacemit_dsi_ready_for_datatx(struct spacemit_dsi_device* device_ctx)
+ 	return 0;
+ }
+ 
+-int spacemit_dsi_close_datatx(struct spacemit_dsi_device* device_ctx)
++static int spacemit_dsi_close_datatx(struct spacemit_dsi_device* device_ctx)
+ {
+ #ifdef LCD_IS_READY
+ 	return 0;
+@@ -818,7 +818,7 @@ int spacemit_dsi_close_datatx(struct spacemit_dsi_device* device_ctx)
+ 	return 0;
+ }
+ 
+-int spacemit_dsi_write_cmds(struct spacemit_dsi_device* device_ctx,
++static int spacemit_dsi_write_cmds(struct spacemit_dsi_device* device_ctx,
+ 									struct spacemit_dsi_cmd_desc *cmds, int count)
+ {
+ #ifdef LCD_IS_READY
+@@ -835,7 +835,7 @@ int spacemit_dsi_write_cmds(struct spacemit_dsi_device* device_ctx,
+ 	return dsi_write_cmd_array(device_ctx, cmds, count);
+ }
+ 
+-int spacemit_dsi_read_cmds(struct spacemit_dsi_device* device_ctx, struct spacemit_dsi_rx_buf *dbuf,
++static int spacemit_dsi_read_cmds(struct spacemit_dsi_device* device_ctx, struct spacemit_dsi_rx_buf *dbuf,
+ 								struct spacemit_dsi_cmd_desc *cmds, int count)
+ {
+ #ifdef LCD_IS_READY
+@@ -851,12 +851,12 @@ int spacemit_dsi_read_cmds(struct spacemit_dsi_device* device_ctx, struct spacem
+ 	return dsi_read_cmd_array(device_ctx, dbuf, cmds, count);
+ }
+ 
+-int spacemit_dsi_parse_dt(struct spacemit_dsi_device* device_ctx, struct device_node *np)
++static int spacemit_dsi_parse_dt(struct spacemit_dsi_device* device_ctx, struct device_node *np)
+ {
+ 	return 0;
+ }
+ 
+-int spacemit_dsi_isr(struct spacemit_dsi_device* device_ctx)
++static int spacemit_dsi_isr(struct spacemit_dsi_device* device_ctx)
+ {
+ 	uint32_t irq_st;
+ 
+diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
+index 7d222c80f075..3ca4762bf5f2 100644
+--- a/drivers/gpu/drm/spacemit/lt8911exb.c
++++ b/drivers/gpu/drm/spacemit/lt8911exb.c
+@@ -206,7 +206,7 @@ static struct lt8911exb *panel_to_lt8911exb(struct drm_panel *panel)
+ 	return container_of(panel, struct lt8911exb, base);
+ }
+ 
+-void lt8911exb_mipi_video_timing(struct lt8911exb *lt8911exb)
++static void lt8911exb_mipi_video_timing(struct lt8911exb *lt8911exb)
+ {
+ 	__maybe_unused unsigned int tmp;
+ 
+@@ -281,7 +281,7 @@ void lt8911exb_mipi_video_timing(struct lt8911exb *lt8911exb)
+ #endif
+ }
+ 
+-void lt8911exb_edp_video_cfg(struct lt8911exb *lt8911exb)
++static void lt8911exb_edp_video_cfg(struct lt8911exb *lt8911exb)
+ {
+ 	__maybe_unused unsigned int tmp;
+ 
+@@ -359,7 +359,7 @@ void lt8911exb_edp_video_cfg(struct lt8911exb *lt8911exb)
+ #endif
+ }
+ 
+-void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
++static void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
+ {
+ #ifdef _read_edid_
+ 	u8 i, j;
+@@ -384,15 +384,11 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
+ 	regmap_read(lt8911exb->regmap, 0x25, &reg);
+ 	DRM_INFO("lt8911exb_read_edid 0x25 0x%x\n", reg);
+ 
+-	if( ( reg & 0x0f ) == 0x0c )
+-	{
+-		for( j = 0; j < 8; j++ )
+-		{
+-			if( j == 7 )
+-			{
++	if ((reg & 0x0f) == 0x0c) {
++		for (j=0; j<8; j++) {
++			if (j == 7) {
+ 				regmap_write(lt8911exb->regmap, 0x2b, 0x10 ); //MOT
+-			}else
+-			{
++			} else {
+ 				regmap_write(lt8911exb->regmap, 0x2b, 0x50 );
+ 			}
+ 
+@@ -404,34 +400,21 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
+ 
+ 			regmap_read(lt8911exb->regmap, 0x39, &reg);
+ 			DRM_INFO("lt8911exb_read_edid 0x39 0x%x\n", reg);
+-			if (reg == 0x31)
+-			{
++			if (reg == 0x31) {
+ 				regmap_read(lt8911exb->regmap, 0x2b, &reg);
+ 				DRM_INFO("lt8911exb_read_edid 0x2b 0x%x\n", reg);
+-				for( i = 0; i < 16; i++ )
+-				{
++				for (i=0; i<16; i++) {
+ 					regmap_read(lt8911exb->regmap, 0x2b, &reg);
+ 					EDID_DATA[j * 16 + i] = reg;
+ 				}
+ 
+ 				EDID_Reply = 1;
+-			}else
+-			{
++			} else {
+ 				EDID_Reply = 0;
+ 				return;
+ 			}
+ 		}
+ 
+-		// for( i = 0; i < 128; i++ ) //print edid data
+-		// {
+-		// 	if( ( i % 16 ) == 0 )
+-		// 	{
+-		// 		DRM_INFO( "\n" );
+-		// 	}
+-		// 	DRM_INFO( "%x", EDID_DATA[i] );
+-		// }
+-
+-
+ 		EDID_Timing[hfp] = (EDID_DATA[0x41] & 0xC0) * 4 + EDID_DATA[0x3e];
+ 		EDID_Timing[hs] = (EDID_DATA[0x41] & 0x30) * 16 + EDID_DATA[0x3f];
+ 		EDID_Timing[hbp] = ((EDID_DATA[0x3a] & 0x0f) * 0x100 + EDID_DATA[0x39]) - ((EDID_DATA[0x41] & 0x30) * 16 + EDID_DATA[0x3f]) - ((EDID_DATA[0x41] & 0xC0 ) * 4 + EDID_DATA[0x3e]);
+@@ -454,7 +437,7 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
+ #endif
+ }
+ 
+-void lt8911exb_setup(struct lt8911exb *lt8911exb)
++static void lt8911exb_setup(struct lt8911exb *lt8911exb)
+ {
+ 	u8	i;
+ 	u8	pcr_pll_postdiv;
+@@ -482,14 +465,11 @@ void lt8911exb_setup(struct lt8911exb *lt8911exb)
+ 	regmap_write(lt8911exb->regmap, 0x49, 0x7f);
+ 
+ 	regmap_write(lt8911exb->regmap, 0xff, 0x82);
++
+ #if (eDP_lane == 2)
+-	{
+-		regmap_write(lt8911exb->regmap, 0x12, 0x33);
+-	}
++	regmap_write(lt8911exb->regmap, 0x12, 0x33);
+ #elif (eDP_lane == 1)
+-	{
+-		regmap_write(lt8911exb->regmap, 0x12, 0x11);
+-	}
++	regmap_write(lt8911exb->regmap, 0x12, 0x11);
+ #endif
+ 
+ 	/* mipi Rx analog */
+@@ -743,7 +723,7 @@ void lt8911exb_setup(struct lt8911exb *lt8911exb)
+ 	regmap_write(lt8911exb->regmap, 0x01, (u8)(Nvid_Val[_Nvid] % 256));	// 0x00
+ }
+ 
+-void lt8911exb_video_check(struct lt8911exb *lt8911exb)
++static void lt8911exb_video_check(struct lt8911exb *lt8911exb)
+ {
+ 	unsigned int reg;
+ 	unsigned int temp2;
+@@ -835,16 +815,12 @@ void lt8911exb_video_check(struct lt8911exb *lt8911exb)
+ 
+ }
+ 
+-void DpcdWrite(struct lt8911exb *lt8911exb, u32 Address, u8 Data)
++static void DpcdWrite(struct lt8911exb *lt8911exb, u32 Address, u8 Data)
+ {
+-	/***************************
+-	   注意大小端的问题!
+-	   这里默认是大端模式
+-
+-	   Pay attention to the Big-Endian and Little-Endian!
+-	   The default mode is Big-Endian here.
+-
+-	 ****************************/
++	/*
++	 * Pay attention to the Big-Endian and Little-Endian!
++	 * The default mode is Big-Endian here.
++	 */
+ 	u8	AddressH = 0x0f & (Address >> 16);
+ 	u8	AddressM = 0xff & (Address >> 8);
+ 	u8	AddressL = 0xff & Address;
+@@ -866,17 +842,12 @@ void DpcdWrite(struct lt8911exb *lt8911exb, u32 Address, u8 Data)
+ 	}
+ }
+ 
+-unsigned int DpcdRead( struct lt8911exb *lt8911exb, u32 Address )
++static unsigned int DpcdRead( struct lt8911exb *lt8911exb, u32 Address )
+ {
+-	/***************************
+-	   注意大小端的问题!
+-	   这里默认是大端模式
+-
+-	   Pay attention to the Big-Endian and Little-Endian!
+-	   The default mode is Big-Endian here.
+-
+-	 ****************************/
+-
++	/*
++	 * Pay attention to the Big-Endian and Little-Endian!
++	 * The default mode is Big-Endian here.
++	 */
+ 	unsigned int DpcdValue = 0x00;
+ 	unsigned int AddressH = 0x0f & (Address >> 16);
+ 	unsigned int AddressM = 0xff & (Address >> 8);
+@@ -919,7 +890,7 @@ unsigned int DpcdRead( struct lt8911exb *lt8911exb, u32 Address )
+ 
+ 
+ 
+-void lt8911exb_link_train(struct lt8911exb *lt8911exb)
++static void lt8911exb_link_train(struct lt8911exb *lt8911exb)
+ {
+ 	regmap_write(lt8911exb->regmap, 0xff, 0x81);
+ 	regmap_write(lt8911exb->regmap, 0x06, 0xdf); // rset VID TX
+@@ -983,7 +954,7 @@ void lt8911exb_link_train(struct lt8911exb *lt8911exb)
+ #endif
+ }
+ 
+-void lt8911exb_reset(struct lt8911exb *lt8911exb)
++static void lt8911exb_reset(struct lt8911exb *lt8911exb)
+ {
+ 	if (!lt8911exb->reset_gpio) {
+ 		DRM_DEBUG_ATOMIC("no gpio, no reset\n");
+@@ -998,7 +969,7 @@ void lt8911exb_reset(struct lt8911exb *lt8911exb)
+ 	usleep_range(5*1000, 10*1000); //10ms
+ }
+ 
+-void LT8911EX_TxSwingPreSet(struct lt8911exb *lt8911exb)
++static void LT8911EX_TxSwingPreSet(struct lt8911exb *lt8911exb)
+ {
+ 	regmap_write(lt8911exb->regmap, 0xFF, 0x82);
+ 	regmap_write(lt8911exb->regmap, 0x22, Swing_Setting1[Level]);	//lane 0 tap0
+@@ -1014,7 +985,7 @@ void LT8911EX_TxSwingPreSet(struct lt8911exb *lt8911exb)
+ #endif
+ }
+ 
+-void LT8911EXB_LinkTrainResultCheck( struct lt8911exb *lt8911exb)
++static void LT8911EXB_LinkTrainResultCheck( struct lt8911exb *lt8911exb)
+ {
+ #ifdef _link_train_enable_
+ 	u8	i;
+@@ -1064,7 +1035,7 @@ void LT8911EXB_LinkTrainResultCheck( struct lt8911exb *lt8911exb)
+ }
+ 
+ 
+-void LT8911EX_link_train_result(struct lt8911exb *lt8911exb)
++static void LT8911EX_link_train_result(struct lt8911exb *lt8911exb)
+ {
+ 	u8 i;
+ 	unsigned int reg;
+@@ -1092,7 +1063,7 @@ void LT8911EX_link_train_result(struct lt8911exb *lt8911exb)
+ 	}
+ }
+ 
+-void PCR_Status(struct lt8911exb *lt8911exb)	// for debug
++static void PCR_Status(struct lt8911exb *lt8911exb)
+ {
+ #ifdef _uart_debug_
+ 	unsigned int reg;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.c b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
+index 1bd746026330..26ff6af49f8f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_bootloader.c
++++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
+@@ -10,6 +10,8 @@
+ #include <linux/of_reserved_mem.h>
+ #include <linux/mm.h>
+ #include <linux/memblock.h>
++#include "spacemit_bootloader.h"
++
+ 
+ static bool spacemit_dpu_free_logo = false;
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index 1e2b74024f40..de942a9bf89f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -29,7 +29,7 @@
+ #define DRIVER_MAJOR	1
+ #define DRIVER_MINOR	0
+ 
+-void spacemit_drm_atomic_commit_tail(struct drm_atomic_state *old_state)
++static void spacemit_drm_atomic_commit_tail(struct drm_atomic_state *old_state)
+ {
+ 	struct drm_device *dev = old_state->dev;
+ 
+@@ -313,7 +313,7 @@ static int compare_of(struct device *dev, void *data)
+ 	return dev->of_node == np;
+ }
+ 
+-int spacemit_drm_of_component_probe(struct device *dev,
++static int spacemit_drm_of_component_probe(struct device *dev,
+ 			   int (*compare_of)(struct device *, void *),
+ 			   const struct component_master_ops *m_ops)
+ {
+diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
+index 09f4eef6f728..830f6aaac552 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_gem.c
++++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
+@@ -227,7 +227,7 @@ static struct sg_table *spacemit_gem_prime_get_sg_table(struct drm_gem_object *g
+ 	return __dup_sg_table(spacemit_obj->sgt);
+ }
+ 
+-int spacemit_gem_prime_vmap(struct drm_gem_object *gem_obj, struct iosys_map *map)
++static int spacemit_gem_prime_vmap(struct drm_gem_object *gem_obj, struct iosys_map *map)
+ {
+ 	struct spacemit_gem_object *spacemit_obj = to_spacemit_obj(gem_obj);
+ 	struct sg_page_iter piter;
+@@ -272,7 +272,7 @@ int spacemit_gem_prime_vmap(struct drm_gem_object *gem_obj, struct iosys_map *ma
+ 	return -ENOMEM;
+ }
+ 
+-void spacemit_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
++static void spacemit_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
+ {
+ 	struct spacemit_gem_object *spacemit_obj = to_spacemit_obj(obj);
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index fa59b6b874dd..00c85c3f0a2d 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -169,7 +169,8 @@ enum bit_depth{
+ 	TWELVE_BPP =2,
+ };
+ 
+-int power_of_two(int n) {
++static int power_of_two(int n)
++{
+ 	int result = 1;
+ 	for (int i = 0; i < n; ++i) {
+ 		result <<= 1;
+@@ -178,7 +179,8 @@ int power_of_two(int n) {
+ 	return result;
+ }
+ 
+-int pll8_bit_5_6 (int bit_clock, int n){
++static int pll8_bit_5_6 (int bit_clock, int n)
++{
+ 	int ret = 0;
+ 	bit_clock = bit_clock / n;
+ 
+@@ -194,7 +196,8 @@ int pll8_bit_5_6 (int bit_clock, int n){
+ 	return ret;
+ }
+ 
+-int pll6_bit_4_5 (int bit_clock, int n){
++static int pll6_bit_4_5 (int bit_clock, int n)
++{
+ 	int ret = 0;
+ 	bit_clock = bit_clock / n;
+ 
+@@ -216,7 +219,8 @@ int pll6_bit_4_5 (int bit_clock, int n){
+ 	return ret;
+ }
+ 
+-int pll5_bit_0_2 (int bit_clock, int n){
++static int pll5_bit_0_2 (int bit_clock, int n)
++{
+ 	int value =  bit_clock * power_of_two(pll8_bit_5_6(bit_clock, n)) / n;
+ 	int ret;
+ 
+@@ -242,7 +246,8 @@ int pll5_bit_0_2 (int bit_clock, int n){
+ 
+ int PLL9_BIT0_1[3] = {0x0, 0x1, 0x2};
+ 
+-void pll_reg_cal(int bit_clock, int ref_clock, int n, int *integer_part, u32 *hmdi_e8_reg) {
++static void pll_reg_cal(int bit_clock, int ref_clock, int n, int *integer_part, u32 *hmdi_e8_reg)
++{
+ 	long long int_para = 1000000000;
+ 	long long value = (power_of_two(pll8_bit_5_6(bit_clock, n))) * bit_clock * int_para / (n * (pll6_bit_4_5(bit_clock, n) + 1) * ref_clock);
+ 	long long integer = (power_of_two(pll8_bit_5_6(bit_clock, n)))* bit_clock / (n * (pll6_bit_4_5(bit_clock, n) + 1) * ref_clock) * int_para;
+@@ -259,7 +264,7 @@ void pll_reg_cal(int bit_clock, int ref_clock, int n, int *integer_part, u32 *hm
+ 	*integer_part = negative ? integer/int_para + 1 : integer/int_para;
+ 
+ 
+-	for (int i = 0; i < 20; i++){
++	for (int i = 0; i < 20; i++) {
+ 		if (bit >= int_para) {
+ 			frac_20bit |= 1 << (19 - i);
+ 			fraction -= int_para;
+@@ -268,7 +273,7 @@ void pll_reg_cal(int bit_clock, int ref_clock, int n, int *integer_part, u32 *hm
+ 		bit = fraction;
+ 	}
+ 
+-	if (!negative){
++	if (!negative) {
+ 		pll2_reg = ((frac_20bit & 0xF0000) >> 16) | (1 << 5);
+ 	} else {
+ 		frac_20bit = (~frac_20bit + 1) & 0xfffff;
+@@ -280,7 +285,8 @@ void pll_reg_cal(int bit_clock, int ref_clock, int n, int *integer_part, u32 *hm
+ 	*hmdi_e8_reg = (0x20 << 24) | (pll2_reg << 16) | (pll1_reg << 8) | pll0_reg;
+ }
+ 
+-int pll_reg (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth) {
++static int pll_reg (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth)
++{
+ 	int pll9_reg = 0, pll8_reg = 0, pll7_reg = 0, pll6_reg = 0, pll5_reg = 0, pll4_reg = 0;
+ 	int n = 100;
+ 	int ref_clock = 24;
+@@ -362,7 +368,7 @@ static void hdmi_i2c_read(struct spacemit_hdmi *hdmi, uint8_t addr, uint8_t* mes
+ 
+ 	DRM_DEBUG("hdmi_i2c_read ++%u\r\n", length);
+ 
+-	do{
++	do {
+ 		if(left <= 16)
+ 			count = left;
+ 		else
+@@ -375,12 +381,12 @@ static void hdmi_i2c_read(struct spacemit_hdmi *hdmi, uint8_t addr, uint8_t* mes
+ 		reg = hdmi_readb(hdmi, 0xC);
+ 		num = (reg & 0x1f0) >> 4;
+ 
+-		while(num < count){
++		while(num < count) {
+ 			reg = hdmi_readb(hdmi, 0xC);
+ 			num = (reg & 0x1f0) >> 4;
+ 		}
+ 
+-		for(i = 0; i < count; i++){
++		for(i = 0; i < count; i++) {
+ 			value = hdmi_readb(hdmi, 0x4);
+ 			*pvalue++ = value;
+ 		}
+@@ -425,7 +431,7 @@ static int hdmi_i2c_write(struct spacemit_hdmi *hdmi, uint8_t addr, uint8_t* mes
+ 			count = 16;
+ 		left -= count;
+ 
+-		for(i = 0; i < count; i++){
++		for(i = 0; i < count; i++) {
+ 			value = *pvalue++;
+ 			hdmi_writeb(hdmi, 0x0, value & 0xFF);
+ 		}
+@@ -460,7 +466,8 @@ static int hdmi_i2c_write(struct spacemit_hdmi *hdmi, uint8_t addr, uint8_t* mes
+ 
+ }
+ 
+-int edid_read (struct spacemit_hdmi *hdmi){
++static int edid_read (struct spacemit_hdmi *hdmi)
++{
+ 	int i;
+ 	struct hdmi_data_info *hdmi_data = hdmi->hdmi_data;
+ 	uint8_t offset;
+@@ -493,7 +500,7 @@ int edid_read (struct spacemit_hdmi *hdmi){
+ 		}
+ 	}
+ 
+-	for(i = 0; i < 256; i += 8){
++	for(i = 0; i < 256; i += 8) {
+ 		DRM_DEBUG("EDID 0x%x: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\r\n", i,
+ 			hdmi_data->edid[i], hdmi_data->edid[i+1], hdmi_data->edid[i+2], hdmi_data->edid[i+3],
+ 			hdmi_data->edid[i+4], hdmi_data->edid[i+5], hdmi_data->edid[i+6], hdmi_data->edid[i+7]);
+@@ -547,7 +554,7 @@ static int spacemit_hdmi_get_edid_block(void *data, unsigned char *buf, unsigned
+ 	return 0;
+ }
+ 
+-void hdmi_write_bits(struct spacemit_hdmi *hdmi, u16 offset, u32 value, u32 mask, u32 shifts)
++static void hdmi_write_bits(struct spacemit_hdmi *hdmi, u16 offset, u32 value, u32 mask, u32 shifts)
+ {
+ 	u32 reg_val;
+ 
+@@ -557,7 +564,8 @@ void hdmi_write_bits(struct spacemit_hdmi *hdmi, u16 offset, u32 value, u32 mask
+ 	writel_relaxed(reg_val, hdmi->regs + (offset));
+ }
+ 
+-void hdmi_init (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth){
++static void hdmi_init (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth)
++{
+ 	u32 value = 0;
+ 	int color_depth = bit_depth == EIGHT_BPP ? 4 : 5;
+ 
+@@ -1018,7 +1026,7 @@ static int hdmi_rt_pm_resume(struct device *dev)
+ 
+ 	clk_val = clk_get_rate(hdmi->hdmi_mclk);
+ 	DRM_DEBUG("get hdmi mclk=%lld\n", clk_val);
+-	if(clk_val != DPU_MCLK_DEFAULT){
++	if (clk_val != DPU_MCLK_DEFAULT) {
+ 		clk_val = clk_round_rate(hdmi->hdmi_mclk, DPU_MCLK_DEFAULT);
+ 		clk_set_rate(hdmi->hdmi_mclk, clk_val);
+ 		DRM_INFO("set hdmi mclk=%lld\n", clk_val);
+diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+index 680f391d384a..e7135843a057 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
++++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+@@ -143,7 +143,8 @@ static int spacemit_panel_unprepare(struct drm_panel *p)
+ 	return 0;
+ }
+ 
+-void spacemit_prepare_regulator (struct spacemit_panel *panel){
++__maybe_unused static void spacemit_prepare_regulator (struct spacemit_panel *panel)
++{
+ 	int ret = 0;
+ 
+ 	if (panel->vdd_2v8 != NULL) {
+diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
+index a979f8612609..06baa22a32f6 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_planes.c
++++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
+@@ -572,7 +572,7 @@ static const char * const color_range_name[] = {
+ 	[DRM_COLOR_YCBCR_LIMITED_RANGE] = "YCbCr limited range",
+ };
+ 
+-int spacemit_drm_plane_create_color_properties(struct drm_plane *plane,
++static int spacemit_drm_plane_create_color_properties(struct drm_plane *plane,
+ 				      u32 supported_encodings,
+ 				      u32 supported_ranges,
+ 				      enum drm_color_encoding default_encoding,
+@@ -580,7 +580,7 @@ int spacemit_drm_plane_create_color_properties(struct drm_plane *plane,
+ {
+ 	struct drm_device *dev = plane->dev;
+ 	struct drm_property *prop;
+-	struct drm_prop_enum_list enum_list[MAX(DRM_COLOR_ENCODING_MAX, DRM_COLOR_RANGE_MAX)];
++	struct drm_prop_enum_list enum_list[MAX((int)DRM_COLOR_ENCODING_MAX, (int)DRM_COLOR_RANGE_MAX)];
+ 	int i, len;
+ 
+ 	if (WARN_ON(supported_encodings == 0 ||
+diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
+index 6aa3360e578d..784bf71bac52 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_wb.c
++++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
+@@ -110,7 +110,7 @@ static const struct drm_connector_helper_funcs spacemit_wb_connector_helper_func
+ 	.mode_valid = spacemit_wb_connector_mode_valid,
+ };
+ 
+-void spacemit_wb_drm_atomic_helper_connector_destroy_state(struct drm_connector *connector,
++static void spacemit_wb_drm_atomic_helper_connector_destroy_state(struct drm_connector *connector,
+ 					  struct drm_connector_state *state)
+ {
+ 	struct drm_crtc *crtc = NULL;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.h b/drivers/gpu/drm/spacemit/spacemit_wb.h
+index ff1f21a4aff4..de32df877a04 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_wb.h
++++ b/drivers/gpu/drm/spacemit/spacemit_wb.h
+@@ -54,6 +54,4 @@ struct spacemit_wb {
+ 	struct spacemit_wb_device ctx;
+ };
+ 
+-void saturn_wb_config(struct spacemit_dpu *dpu);
+-
+ #endif
+-- 
+2.47.0
+

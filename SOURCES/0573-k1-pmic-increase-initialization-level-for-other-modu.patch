@@ -1,0 +1,48 @@
+From f0999aa11f122653088f15fb417cfcb130d2252d Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 11 Apr 2024 13:45:51 +0800
+Subject: [PATCH 0573/1202] k1:pmic: increase initialization level for other
+ modules resources dependence
+
+Change-Id: I9cd94bdb8714967db16a639ed5434fd667e5ad5b
+---
+ drivers/mfd/spacemit-mfd.c             | 6 +++++-
+ drivers/regulator/spacemit-regulator.c | 6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
+index e2d41162e4fc..85458ef5ac63 100644
+--- a/drivers/mfd/spacemit-mfd.c
++++ b/drivers/mfd/spacemit-mfd.c
+@@ -225,6 +225,10 @@ static struct i2c_driver spacemit_pmic_i2c_driver = {
+ 	.shutdown = spacemit_pmic_shutdown,
+ };
+ 
+-module_i2c_driver(spacemit_pmic_i2c_driver);
++static int spacemit_mfd_init(void)
++{
++	return i2c_add_driver(&spacemit_pmic_i2c_driver);
++}
++subsys_initcall(spacemit_mfd_init);
+ 
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
+index d4943521ab3c..b96323366cf0 100644
+--- a/drivers/regulator/spacemit-regulator.c
++++ b/drivers/regulator/spacemit-regulator.c
+@@ -99,7 +99,11 @@ static struct platform_driver spacemit_regulator_driver = {
+ 	},
+ };
+ 
+-module_platform_driver(spacemit_regulator_driver);
++static int spacemit_regulator_init(void)
++{
++	return platform_driver_register(&spacemit_regulator_driver);
++}
++subsys_initcall(spacemit_regulator_init);
+ 
+ MODULE_DESCRIPTION("regulator drivers for the Spacemit series PMICs");
+ 
+-- 
+2.47.0
+

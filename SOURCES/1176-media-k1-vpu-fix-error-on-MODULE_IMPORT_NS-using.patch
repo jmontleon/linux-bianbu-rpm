@@ -1,0 +1,27 @@
+From 861fe223bf6f2984c42165cd3334b13e7fd5566c Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 6 Dec 2024 13:40:32 +0800
+Subject: [PATCH 1176/1202] media: k1/vpu: fix error on MODULE_IMPORT_NS()
+ using
+
+Change-Id: Ie22fdde88b27dce9a93a211fcd480e2273053d6b
+---
+ drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+index 99a50944bbdb..8de69e15ec75 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+@@ -45,7 +45,7 @@
+ #include "mvx_mmu.h"
+ #include "mvx_log_group.h"
+ 
+-MODULE_IMPORT_NS(DMA_BUF);
++MODULE_IMPORT_NS("DMA_BUF");
+ 
+ /****************************************************************************
+  * Defines
+-- 
+2.47.0
+

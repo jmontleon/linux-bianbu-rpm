@@ -1,0 +1,50 @@
+From d4a83ffacf08ad3d67013fe166ebb78bea7e8393 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Wed, 3 Apr 2024 10:51:00 +0800
+Subject: [PATCH 0562/1202] jpu: support suspend and resume
+
+Change-Id: Iec710647f27a86ddea15c8db7518ac27faefa6fc
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 1 +
+ drivers/soc/spacemit/jpu/jpu.c         | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 163d26665568..6723d53a1330 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2222,6 +2222,7 @@ jpu@c02f8000 {
+ 			page-size = <4>;
+ 			interconnects = <&dram_range1>;
+ 			interconnect-names = "dma-mem";
++			clk,pm-runtime,no-sleep;
+ 			status = "okay";
+ 		};
+ 
+diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
+index 3dbdb7b38e2d..93dc44d82449 100644
+--- a/drivers/soc/spacemit/jpu/jpu.c
++++ b/drivers/soc/spacemit/jpu/jpu.c
+@@ -1070,9 +1070,11 @@ static long jpu_ioctl(struct file *filp, u_int cmd, u_long arg)
+ 		}
+ 
+ 		if (clkgate) {
++			pm_runtime_get_sync(jdev->jdev);
+ 			jpu_clk_enable(jdev);
+ 		} else {
+ 			jpu_clk_disable(jdev);
++			pm_runtime_put_sync(jdev->jdev);
+ 		}
+ 
+ 		up(&jdev->s_jpu_sem);
+@@ -1723,6 +1725,7 @@ static int jpu_remove(struct platform_device *pdev)
+ 	}
+ #ifndef CONFIG_SOC_SPACEMIT_K1_FPGA
+ 	jpu_clk_disable(jdev);
++	pm_runtime_put_sync(jdev->jdev);
+ 	pm_runtime_disable(&pdev->dev);
+ #endif
+ 	sysfs_remove_groups(&pdev->dev.kobj, jpu_frequency_group);
+-- 
+2.47.0
+

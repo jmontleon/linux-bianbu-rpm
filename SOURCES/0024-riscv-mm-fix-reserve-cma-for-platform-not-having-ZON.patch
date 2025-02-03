@@ -1,7 +1,7 @@
-From 204aee310dc0adc07a8a35c91512d76cbba23f82 Mon Sep 17 00:00:00 2001
+From 3068a21bb1782ba12708125569cf2598ec2673eb Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
-Subject: [PATCH 0024/1206] riscv: mm: fix reserve cma for platform not having
+Subject: [PATCH 0024/1202] riscv: mm: fix reserve cma for platform not having
  ZONE_DMA32
 
 In case the phys_ram_base is exceeding SZ_4G, zone dma32 is empty,
@@ -15,10 +15,10 @@ Change-Id: I5504523c5b54a4e9d5582fcdbeb2665efb5292f3
  2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index d4a7ca0388c0..773f4a172ea4 100644
+index 7612c52e9b1e..4e393a071e3f 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -212,6 +212,7 @@ config RISCV
+@@ -214,6 +214,7 @@ config RISCV
  	select UACCESS_MEMCPY if !MMU
  	select USER_STACKTRACE_SUPPORT
  	select ZONE_DMA32 if 64BIT
@@ -27,10 +27,10 @@ index d4a7ca0388c0..773f4a172ea4 100644
  config RUSTC_SUPPORTS_RISCV
  	def_bool y
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 8d167e09f1fe..088f9779ec3d 100644
+index 15b2eda4c364..d8c5016905af 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -314,7 +314,12 @@ static void __init setup_bootmem(void)
+@@ -318,7 +318,12 @@ static void __init setup_bootmem(void)
  	if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  

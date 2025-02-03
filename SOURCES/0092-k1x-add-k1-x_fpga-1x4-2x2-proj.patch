@@ -1,7 +1,7 @@
-From cd7d6fce9fe6c5417aef8ae7b9a6fa6fd463c23c Mon Sep 17 00:00:00 2001
+From b55de42ab86a2d73c3bf3507fe2e8ebd6ed2c013 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 29 Aug 2023 17:43:33 +0800
-Subject: [PATCH 0092/1206] k1x: add k1-x_fpga 1x4 & 2x2 proj
+Subject: [PATCH 0092/1202] k1x: add k1-x_fpga 1x4 & 2x2 proj
 
 we add isa 'sstc' and disable CONFIG_CLINT_TIMER configuration
 to reduce the number of times that traps into opensbi
@@ -23,11 +23,12 @@ Change-Id: I457de37335f0bb58f4f7d3ac6b17b17017b2274d
  create mode 100644 arch/riscv/configs/k1-x_fpga_2x2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 3825afb840e3..308ddedb35e9 100644
+index 6992ce490379..6b646a3ab33f 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
  # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb
 -dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb

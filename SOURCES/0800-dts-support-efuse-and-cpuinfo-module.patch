@@ -1,0 +1,206 @@
+From 06ceb5a6942f7e0b0abfbc902adc0c3fd73e386d Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 4 Jul 2024 12:47:25 +0800
+Subject: [PATCH 0800/1202] dts: support efuse and cpuinfo module
+
+Change-Id: I650511e64daaea0a1246ebc22f0e5cd182d32414
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi              | 13 +++++++++++++
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts       |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts     |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts       |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts       |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts          |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts          |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts           |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts         |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts         |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts         |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts         |  1 +
+ arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts |  1 +
+ 14 files changed, 26 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 0bb6c5093ac6..73ab099caa80 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2435,6 +2435,19 @@ spacemit_crypto_engine@d8600000 {
+ 			status = "okay";
+ 		};
+ 
++		efuse: fuse@f0702800 {
++			compatible = "simple-mfd";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x0 0xf0702800 0x400>;
++			status = "disabled";
++		};
++
++		socinfo: socinfo@0 {
++			compatible = "spacemit,socinfo-k1x";
++			status = "disabled";
++		};
++
+ 		ciu: ciu@d4282c00 {
+ 			compatible = "spacemit,aquila-ciu", "spacemit,ciu", "syscon";
+ 			reg = <0x0 0xd4282c00 0x0 0x2d0>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 8fc049e6e802..1c17bd735d23 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_lt9711_dp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index 1f5e9ea1546b..966efcf683fc 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_lt8911_edp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 51eb7d02ce3b..a27954e45b85 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 13cb26440d32..68e9dd4e6831 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 7d01aa120dd0..a3099f73e310 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 30d03669d85a..66420dc53399 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 738de1439d50..0ed80cd17ae2 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_icnl9911c_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 7ca153e78218..82c30191fcf8 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_lt8911_edp_1920x1200.dtsi"
+ #include "k1-x-lcd.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 30e5eb99a3c5..8dd137733b1f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_lt8911_edp_1920x1080.dtsi"
+ #include "k1-x-lcd.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+index d7be57021907..274431024206 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_jd9365da_mipi_1280x800.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+index 7d746c2e2468..728a630aa8e1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_orisetech_ota7290b_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 7a9796351c83..edf90c4b66f5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+index 917638102a48..3a5c15291046 100644
+--- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
+@@ -4,6 +4,7 @@
+ /dts-v1/;
+ 
+ #include "k1-x.dtsi"
++#include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_orisetech_ota7290b_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+-- 
+2.47.0
+

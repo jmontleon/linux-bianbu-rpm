@@ -1,0 +1,36 @@
+From 1d088786c247871946d5aa62315789292784ac11 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 09:56:48 +0800
+Subject: [PATCH 1097/1202] usb: dwc3: modify prototype of device remove
+ function
+
+Change-Id: I617f27e9401bb83a7393b7239e2ea3a181a49048
+---
+ drivers/usb/dwc3/dwc3-spacemit.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 6dc59930683d..d5f5339aaeae 100644
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -349,7 +349,7 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int dwc3_spacemit_remove(struct platform_device *pdev)
++static void dwc3_spacemit_remove(struct platform_device *pdev)
+ {
+ 	struct dwc3_spacemit	*spacemit = platform_get_drvdata(pdev);
+ 	bool do_wakeup = device_may_wakeup(&pdev->dev);
+@@ -364,8 +364,6 @@ static int dwc3_spacemit_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_put_noidle(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct dwc3_spacemit_driverdata spacemit_k1pro_drvdata = {
+-- 
+2.47.0
+

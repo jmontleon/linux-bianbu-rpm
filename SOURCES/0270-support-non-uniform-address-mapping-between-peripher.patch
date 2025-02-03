@@ -1,7 +1,7 @@
-From 4a6012268c8eb78f58946e2c4fed1cd825ef461d Mon Sep 17 00:00:00 2001
+From e5c188fefc9e025f7505c8f91e21f831f56f02ee Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 27 Dec 2023 17:01:21 +0800
-Subject: [PATCH 0270/1206] support non-uniform address mapping between
+Subject: [PATCH 0270/1202] support non-uniform address mapping between
  peripherals and cpu
 
 cpu access dram mapping is ddr:0GB~2GB -> cpu:0GB~2GB, ddr:2GB~16GB -> cpu:4GB~18GB
@@ -365,10 +365,10 @@ index 87ba95d003f6..3706fc179110 100644
  		};
  	};
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index c6d4444d4e94..8954ffccc5a5 100644
+index 67bbd0add75f..2caea47d4e21 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -293,7 +293,12 @@ static void __init setup_bootmem(void)
+@@ -297,7 +297,12 @@ static void __init setup_bootmem(void)
  	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
  
@@ -381,7 +381,7 @@ index c6d4444d4e94..8954ffccc5a5 100644
  	set_max_mapnr(max_low_pfn - ARCH_PFN_OFFSET);
  
  	reserve_initrd_mem();
-@@ -315,12 +320,7 @@ static void __init setup_bootmem(void)
+@@ -319,12 +324,7 @@ static void __init setup_bootmem(void)
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  
  #ifdef CONFIG_ZONE_DMA32

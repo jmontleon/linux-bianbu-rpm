@@ -1,0 +1,25 @@
+From 3ddca766a079065f1e73892bcbc3dd99272a18f6 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 27 Aug 2024 14:12:39 +0800
+Subject: [PATCH 0965/1202] k1_defconfig: enable qmi_wwan_f as module
+
+Change-Id: I51e32cf81ec675d67a8faa40fb18bbf33366995d
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index c015784a09b5..b36d82e434f2 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -642,6 +642,7 @@ CONFIG_USB_USBNET=y
+ # CONFIG_USB_NET_AX88179_178A is not set
+ CONFIG_USB_NET_CDC_NCM=m
+ # CONFIG_USB_NET_NET1080 is not set
++CONFIG_USB_NET_QMI_WWAN_F=m
+ CONFIG_USB_NET_QMI_WWAN=m
+ CONFIG_USB_NET_ASIX=m
+ # CONFIG_WLAN_VENDOR_ADMTEK is not set
+-- 
+2.47.0
+

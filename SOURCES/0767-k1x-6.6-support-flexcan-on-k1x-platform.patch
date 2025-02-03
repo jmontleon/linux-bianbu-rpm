@@ -1,0 +1,45 @@
+From 78a0d63114bb88a5f0265bb47ba8a9d4144bd98c Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 25 Jun 2024 17:42:12 +0800
+Subject: [PATCH 0767/1202] k1x-6.6:support flexcan on k1x platform
+
+Change-Id: I796836b60825783d70214b52231697c74bf87590
+---
+ drivers/net/can/flexcan/flexcan-core.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 02a6eccd284f..0b986dd228d9 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -402,6 +402,17 @@ static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
+ 		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR,
+ };
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++static const struct flexcan_devtype_data spacemit_k1x_devtype_data = {
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_USE_RX_MAILBOX | FLEXCAN_QUIRK_SUPPORT_FD |
++		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR |
++		FLEXCAN_QUIRK_SUPPORT_ECC,
++};
++#endif
++
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	.name = DRV_NAME,
+ 	.tseg1_min = 4,
+@@ -2098,6 +2109,9 @@ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,vf610-flexcan", .data = &fsl_vf610_devtype_data, },
+ 	{ .compatible = "fsl,ls1021ar2-flexcan", .data = &fsl_ls1021a_r2_devtype_data, },
+ 	{ .compatible = "fsl,lx2160ar1-flexcan", .data = &fsl_lx2160a_r1_devtype_data, },
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	{ .compatible = "spacemit,k1x-flexcan", .data = &spacemit_k1x_devtype_data, },
++#endif
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, flexcan_of_match);
+-- 
+2.47.0
+

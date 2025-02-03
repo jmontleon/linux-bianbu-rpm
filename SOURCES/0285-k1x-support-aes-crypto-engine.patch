@@ -1,7 +1,7 @@
-From b13711b5466db72a8b8849c4e9b79a9552408d9e Mon Sep 17 00:00:00 2001
+From 1cc9b6f89955f555335e13c00ded314b4d1aaea1 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 30 Dec 2023 22:44:04 +0800
-Subject: [PATCH 0285/1206] k1x:support aes-crypto engine
+Subject: [PATCH 0285/1202] k1x:support aes-crypto engine
 
 Change-Id: Ia10a1b5a4e4cee457942dd85e5a3ab0d660713c5
 ---
@@ -61,10 +61,10 @@ index 3ebf54036f06..15b9b5f183c3 100644
  CONFIG_DMA_CMA=y
  CONFIG_PRINTK_TIME=y
 diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 0a9cdd31cbd9..2a32b6f8e9ef 100644
+index 19ab145f912e..2b7660223b96 100644
 --- a/drivers/crypto/Kconfig
 +++ b/drivers/crypto/Kconfig
-@@ -872,5 +872,6 @@ config CRYPTO_DEV_SA2UL
+@@ -855,5 +855,6 @@ config CRYPTO_DEV_SA2UL
  
  source "drivers/crypto/aspeed/Kconfig"
  source "drivers/crypto/starfive/Kconfig"
@@ -72,10 +72,10 @@ index 0a9cdd31cbd9..2a32b6f8e9ef 100644
  
  endif # CRYPTO_HW
 diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index ad4ccef67d12..90fdf7b53c07 100644
+index fef18ffdb128..941c7c46ab58 100644
 --- a/drivers/crypto/Makefile
 +++ b/drivers/crypto/Makefile
-@@ -52,3 +52,4 @@ obj-y += hisilicon/
+@@ -50,3 +50,4 @@ obj-y += hisilicon/
  obj-$(CONFIG_CRYPTO_DEV_AMLOGIC_GXL) += amlogic/
  obj-y += intel/
  obj-y += starfive/

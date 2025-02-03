@@ -1,0 +1,27 @@
+From cf289a2a3f3f4999dd00f506fd5efad863cd0181 Mon Sep 17 00:00:00 2001
+From: liweizhi <weizhi.li@spacemit.com>
+Date: Thu, 4 Jul 2024 20:00:56 +0800
+Subject: [PATCH 0805/1202] scripts/package/mkdebian
+
+linux-image-6.6.deb depends on spacemit-flash-dtbs.deb
+
+Change-Id: I0f5faaf2cbe7a47d89955faaab0f2712db203af2
+---
+ scripts/package/mkdebian | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
+index b6dd98ca860b..33476356b3d1 100755
+--- a/scripts/package/mkdebian
++++ b/scripts/package/mkdebian
+@@ -217,6 +217,7 @@ Architecture: $debarch
+ Description: Linux kernel, version $version
+  This package contains the Linux kernel, modules and corresponding other
+  files, version: $version.
++Depends: spacemit-flash-dtbs
+ EOF
+ 
+ if [ "${SRCARCH}" != um ]; then
+-- 
+2.47.0
+

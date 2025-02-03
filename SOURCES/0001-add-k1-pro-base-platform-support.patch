@@ -1,13 +1,13 @@
-From f3bb72e46fcc502d913c4cb8e52a4aa1ce7b5b66 Mon Sep 17 00:00:00 2001
+From 7e9cb62c08ffa905c77dba9586688e508dd978d8 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Mon, 21 Nov 2022 02:15:04 +0000
-Subject: [PATCH 0001/1206] add k1-pro base platform support
+Subject: [PATCH 0001/1202] add k1-pro base platform support
 
 Change-Id: I293e2a4b69742275917d3dc73d5d8eeed449691a
 ---
  arch/riscv/Kconfig.socs                      |  31 ++++
  arch/riscv/boot/dts/Makefile                 |   1 +
- arch/riscv/boot/dts/spacemit/Makefile        |   3 +
+ arch/riscv/boot/dts/spacemit/Makefile        |   2 +
  arch/riscv/boot/dts/spacemit/k1-pro.dtsi     | 153 +++++++++++++++++++
  arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts |  23 +++
  arch/riscv/boot/dts/spacemit/k1-pro_qemu.dts | 128 ++++++++++++++++
@@ -15,8 +15,7 @@ Change-Id: I293e2a4b69742275917d3dc73d5d8eeed449691a
  arch/riscv/configs/k1-pro_fpga_defconfig     | 125 +++++++++++++++
  arch/riscv/configs/k1-pro_qemu_defconfig     | 126 +++++++++++++++
  arch/riscv/configs/k1-pro_sim_defconfig      | 125 +++++++++++++++
- 10 files changed, 738 insertions(+)
- create mode 100644 arch/riscv/boot/dts/spacemit/Makefile
+ 10 files changed, 737 insertions(+)
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-pro.dtsi
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-pro_qemu.dts
@@ -26,10 +25,10 @@ Change-Id: I293e2a4b69742275917d3dc73d5d8eeed449691a
  create mode 100644 arch/riscv/configs/k1-pro_sim_defconfig
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index f51bb24bc84c..92e7a7328895 100644
+index 1916cf7ba450..4c5cfaa2a66d 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
-@@ -80,4 +80,35 @@ config SOC_CANAAN_K210
+@@ -85,4 +85,35 @@ config SOC_CANAAN_K210
  	help
  	  This enables support for Canaan Kendryte K210 SoC platform hardware.
  
@@ -66,23 +65,23 @@ index f51bb24bc84c..92e7a7328895 100644
 +
  endmenu # "SoC selection"
 diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index fdae05bbf556..249595e9cd8f 100644
+index bff887d38abe..f11e132081d1 100644
 --- a/arch/riscv/boot/dts/Makefile
 +++ b/arch/riscv/boot/dts/Makefile
-@@ -7,5 +7,6 @@ subdir-y += sifive
- subdir-y += sophgo
+@@ -8,5 +8,6 @@ subdir-y += sophgo
+ subdir-y += spacemit
  subdir-y += starfive
  subdir-y += thead
 +subdir-y += spacemit
  
  obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-new file mode 100644
-index 000000000000..261673b0c692
---- /dev/null
+index ac617319a574..73cba7cfa3f1 100644
+--- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
+@@ -1,2 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb
 +obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi

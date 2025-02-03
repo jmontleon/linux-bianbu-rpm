@@ -1,0 +1,34 @@
+From 2c9c837f7132320ebea31653f859e8d037fabd81 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Thu, 11 Apr 2024 11:48:41 +0800
+Subject: [PATCH 0575/1202] fix gpu_clk clock setting timeout
+
+Change-Id: I027bb5ce640e9227a3c40cfa663821516c3220d3
+---
+ drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
+index 40fa7570076d..8f160924e8c8 100644
+--- a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
++++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
+@@ -339,6 +339,8 @@ struct st_context *RgxStInit(PVRSRV_DEVICE_CONFIG* psDevConfig)
+ 		goto fail;
+ 	}
+ 
++	reset_control_deassert(platform->gpu_reset);
++
+ 	clk_prepare_enable(platform->gpu_clk);
+ 	clk_set_rate(platform->gpu_clk, RGX_ST_CORE_CLOCK_SPEED);
+ 
+@@ -347,6 +349,7 @@ struct st_context *RgxStInit(PVRSRV_DEVICE_CONFIG* psDevConfig)
+ 		psRGXData->psRGXTimingInfo->ui32CoreClockSpeed = clk_get_rate(platform->gpu_clk);
+ 	}
+ 
++	reset_control_assert(platform->gpu_reset);
+ 
+ 	mutex_init(&platform->set_power_state);
+ 
+-- 
+2.47.0
+

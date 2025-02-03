@@ -1,0 +1,36 @@
+From da1c1a91d31c2749ba116990f840b3449e08997b Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 10 Apr 2024 14:24:13 +0800
+Subject: [PATCH 0571/1202] drm: fix the buffer allocation failed
+
+All memory may be allocated for cache data, then, if __GFP_NORETRY set
+and __GFP_RECLAIM cleared, the buffer allocation will be failed, cause
+some system error.
+
+Change-Id: I0fd6879cdb2ca5270e37caa94d8a171fd7ea89b0
+---
+ drivers/gpu/drm/spacemit/spacemit_gem.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
+index 95b7c89da715..9b5772a05556 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_gem.c
++++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
+@@ -33,12 +33,8 @@ static struct page *__alloc_largest_available(size_t size,
+ 		if (max_order < order)
+ 			continue;
+ 
+-		if (order > 0)
+-			gfp_flags = (/*GFP_HIGHUSER*/__GFP_DMA32 | __GFP_ZERO | __GFP_NOWARN |
+-					__GFP_COMP | __GFP_NORETRY) & ~__GFP_RECLAIM;
+-		else
+-			gfp_flags = (/*GFP_HIGHUSER*/__GFP_DMA32 | __GFP_ZERO |
+-					__GFP_COMP);
++		gfp_flags = (/*GFP_HIGHUSER*/__GFP_DMA32 | __GFP_ZERO |
++				__GFP_COMP | __GFP_RECLAIM);
+ 
+ 		page = alloc_pages(gfp_flags, order);
+ 		if (!page)
+-- 
+2.47.0
+

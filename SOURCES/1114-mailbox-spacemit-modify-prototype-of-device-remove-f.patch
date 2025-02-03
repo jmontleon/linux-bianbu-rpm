@@ -1,0 +1,57 @@
+From dcf1c853823e7deeb9883ca5f665abdff44c67be Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:22:53 +0800
+Subject: [PATCH 1114/1202] mailbox: spacemit: modify prototype of device
+ remove function
+
+Change-Id: I3cee90f7edb660c614b363a5561c438065a21884
+---
+ drivers/mailbox/spacemit/k1pro-mailbox.c | 4 +---
+ drivers/mailbox/spacemit/k1x-mailbox.c   | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mailbox/spacemit/k1pro-mailbox.c b/drivers/mailbox/spacemit/k1pro-mailbox.c
+index af65d48be2b1..67611af5e5b4 100644
+--- a/drivers/mailbox/spacemit/k1pro-mailbox.c
++++ b/drivers/mailbox/spacemit/k1pro-mailbox.c
+@@ -254,14 +254,12 @@ static int spacemit_mailbox_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_mailbox_remove(struct platform_device *pdev)
++static void spacemit_mailbox_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_mailbox *mbox = platform_get_drvdata(pdev);
+ 
+ 	mbox_controller_unregister(&mbox->controller);
+ 	clk_disable_unprepare(mbox->clk);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_mailbox_of_match[] = {
+diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
+index 1380e9206e51..a810e508badc 100644
+--- a/drivers/mailbox/spacemit/k1x-mailbox.c
++++ b/drivers/mailbox/spacemit/k1x-mailbox.c
+@@ -217,7 +217,7 @@ static int spacemit_mailbox_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_mailbox_remove(struct platform_device *pdev)
++static void spacemit_mailbox_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_mailbox *mbox = platform_get_drvdata(pdev);
+ 
+@@ -225,8 +225,6 @@ static int spacemit_mailbox_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_put_sync(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_mailbox_of_match[] = {
+-- 
+2.47.0
+

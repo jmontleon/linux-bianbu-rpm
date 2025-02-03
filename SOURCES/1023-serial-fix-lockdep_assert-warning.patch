@@ -1,0 +1,65 @@
+From bdfbf9de20ee40dd749655fee0e03042e50a0aa6 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 23 Oct 2024 11:11:01 +0800
+Subject: [PATCH 1023/1202] serial: fix lockdep_assert warning
+
+err log:
+[   95.350714] WARNING: CPU: 0 PID: 0 at drivers/tty/serial/serial_core.c:3510 uart_handle_cts_change+0x6e/0x88
+[   95.350744] Modules linked in: 8021q garp stp mrp llc 8852bs
+[   95.350766] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W          6.6.36 #23
+[   95.350774] Hardware name: spacemit k1-x deb1 board (DT)
+[   95.350777] epc : uart_handle_cts_change+0x6e/0x88
+[   95.350784]  ra : uart_handle_cts_change+0x6c/0x88
+[   95.350790] epc : ffffffff8076c45a ra : ffffffff8076c458 sp : ffffffc800003dd0
+[   95.350794]  gp : ffffffff83541fe0 tp : ffffffff8322a680 t0 : 0000000000000040
+[   95.350798]  t1 : 0000000000000001 t2 : ffffffff82801230 s0 : ffffffc800003df0
+[   95.350802]  s1 : ffffffd901870c00 a0 : 0000000000000000 a1 : ffffffffffffffff
+[   95.350807]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : ffffffda74e76908
+[   95.350811]  a5 : ffffffff8247e908 a6 : 00000000065c7fe4 a7 : 0000000000080075
+[   95.350814]  s2 : 0000000000000001 s3 : ffffffff83547220 s4 : 000000000000004a
+[   95.350818]  s5 : ffffffff8320da80 s6 : ffffffd901870800 s7 : 0000000000000001
+[   95.350823]  s8 : 000000000000004a s9 : 0000000000000060 s10: 0000000014547234
+[   95.350826]  s11: 0000000000200000 t3 : ffffffda74e76908 t4 : 0000000000000402
+[   95.350830]  t5 : ffffffd90004d720 t6 : ffffffd90004d770
+[   95.350833] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+[   95.350838] [<ffffffff8076c45a>] uart_handle_cts_change+0x6e/0x88
+[   95.350847] [<ffffffff80774050>] serial_pxa_irq+0x5e4/0x796
+[   95.350853] [<ffffffff80088c20>] __handle_irq_event_percpu+0x64/0x250
+[   95.350866] [<ffffffff80088e96>] handle_irq_event+0x3c/0x86
+[   95.350873] [<ffffffff8008cc9c>] handle_fasteoi_irq+0x9c/0x1d2
+[   95.350881] [<ffffffff80087f3a>] generic_handle_domain_irq+0x1c/0x2a
+[   95.350890] [<ffffffff806c4930>] plic_handle_irq+0x7e/0xf6
+[   95.350900] [<ffffffff80087f3a>] generic_handle_domain_irq+0x1c/0x2a
+[   95.350907] [<ffffffff806c455c>] riscv_intc_irq+0x26/0x60
+[   95.350914] [<ffffffff80fa9e9c>] handle_riscv_irq+0x4a/0x74
+[   95.350924] [<ffffffff80fb6726>] call_on_irq_stack+0x32/0x40
+[   95.350933] ---[ end trace 0000000000000000 ]---
+
+Change-Id: I60437933143f2a3e87b77365a580200bde547507
+---
+ drivers/tty/serial/pxa_k1x.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index ca16dd56c231..50d49151a097 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -514,6 +514,7 @@ static inline void check_modem_status(struct uart_pxa_port *up)
+ 	if ((status & UART_MSR_ANY_DELTA) == 0)
+ 		return;
+ 
++	spin_lock(&up->port.lock);
+ 	if (status & UART_MSR_TERI)
+ 		up->port.icount.rng++;
+ 	if (status & UART_MSR_DDSR)
+@@ -522,6 +523,7 @@ static inline void check_modem_status(struct uart_pxa_port *up)
+ 		uart_handle_dcd_change(&up->port, status & UART_MSR_DCD);
+ 	if (status & UART_MSR_DCTS)
+ 		uart_handle_cts_change(&up->port, status & UART_MSR_CTS);
++	spin_unlock(&up->port.lock);
+ 
+ 	wake_up_interruptible(&up->port.state->port.delta_msr_wait);
+ }
+-- 
+2.47.0
+

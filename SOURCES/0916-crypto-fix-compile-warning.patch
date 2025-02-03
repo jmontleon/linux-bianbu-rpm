@@ -1,0 +1,71 @@
+From 48171f5407f01a703bf7e191f4882dad5012a4d7 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 12 Aug 2024 12:36:47 +0800
+Subject: [PATCH 0916/1202] crypto: fix compile warning
+
+Change-Id: Icdac45f110081d869e52298be86b64051c63a360
+---
+ drivers/crypto/spacemit/spacemit-ce-glue.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
+index a6cc7f5a0cdd..e7b06926c5cd 100644
+--- a/drivers/crypto/spacemit/spacemit-ce-glue.c
++++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
+@@ -50,7 +50,7 @@ static int ecb_encrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+ 	int page_len = 0, singal_len = 0;
+@@ -112,7 +112,7 @@ static int ecb_decrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+ 	int page_len = 0, singal_len = 0;
+@@ -172,7 +172,7 @@ static int cbc_encrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+ 	int page_len = 0, singal_len = 0;
+@@ -234,7 +234,7 @@ static int cbc_decrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+ 	int page_len = 0, singal_len = 0;
+@@ -294,7 +294,7 @@ static int xts_encrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	uint32_t xts_key_len = ctx->key_length / 2;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+@@ -357,7 +357,7 @@ static int xts_decrypt(struct skcipher_request *req)
+ 	int i;
+ 	unsigned char* map_addr;
+ 	struct scatterlist* sg, *start_srcsg, *start_dstsg;
+-	int len = 0,sgl_len;
++	int len = 0, sgl_len = 0;
+ 	uint32_t xts_key_len = ctx->key_length / 2;
+ 	unsigned char* sg_va,*in_buffer,*out_buffer;
+ 	int total_len = req->cryptlen;
+-- 
+2.47.0
+

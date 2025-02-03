@@ -1,0 +1,102 @@
+From 3d75090fcbe9cd5e3ca1c754e21225fadd4681f2 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Thu, 1 Feb 2024 13:52:51 +0800
+Subject: [PATCH 0405/1202] k1x: support PCIE-SATA JMB585 board
+
+Change-Id: I7522a3dfd6d8b84f664362f6aeacbebf35810d09
+---
+ arch/riscv/configs/k1-x_deb1_defconfig | 3 ++-
+ arch/riscv/configs/k1-x_deb2_defconfig | 3 ++-
+ arch/riscv/configs/k1-x_evb_defconfig  | 3 ++-
+ arch/riscv/configs/k1_defconfig        | 3 ++-
+ drivers/ata/libata-pmp.c               | 3 ++-
+ 5 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
+index 48d623a7745e..f8407a84f8e1 100644
+--- a/arch/riscv/configs/k1-x_deb1_defconfig
++++ b/arch/riscv/configs/k1-x_deb1_defconfig
+@@ -85,10 +85,11 @@ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
+ CONFIG_SRAM=y
+ CONFIG_EEPROM_AT24=y
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_ATA=y
++CONFIG_SATA_AHCI=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=y
+ CONFIG_BCACHE=y
+diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
+index 0b56be782b98..80fcbac22f45 100644
+--- a/arch/riscv/configs/k1-x_deb2_defconfig
++++ b/arch/riscv/configs/k1-x_deb2_defconfig
+@@ -85,10 +85,11 @@ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
+ CONFIG_SRAM=y
+ CONFIG_EEPROM_AT24=y
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_ATA=y
++CONFIG_SATA_AHCI=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=y
+ CONFIG_BCACHE=y
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 08702a156d52..78fe0ff1d74f 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -85,10 +85,11 @@ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
+ CONFIG_SRAM=y
+ CONFIG_EEPROM_AT24=y
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_ATA=y
++CONFIG_SATA_AHCI=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=y
+ CONFIG_BCACHE=y
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 7e72cda06519..b79f883ecc7c 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -217,10 +217,11 @@ CONFIG_BLK_DEV_NVME=y
+ CONFIG_NVME_VERBOSE_ERRORS=y
+ CONFIG_SRAM=y
+ CONFIG_EEPROM_AT24=y
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_SCSI_LOWLEVEL is not set
++CONFIG_ATA=y
++CONFIG_SATA_AHCI=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=y
+ CONFIG_BCACHE=y
+diff --git a/drivers/ata/libata-pmp.c b/drivers/ata/libata-pmp.c
+index d5d189328ae6..6c07a0c33ebc 100644
+--- a/drivers/ata/libata-pmp.c
++++ b/drivers/ata/libata-pmp.c
+@@ -446,10 +446,11 @@ static void sata_pmp_quirks(struct ata_port *ap)
+ 		 * otherwise.  Don't try hard to recover it.
+ 		 */
+ 		ap->pmp_link[ap->nr_pmp_links - 1].flags |= ATA_LFLAG_NO_RETRY;
+-	} else if (vendor == 0x197b && (devid == 0x2352 || devid == 0x0325)) {
++	} else if (vendor == 0x197b && (devid == 0x2352 || devid == 0x0325 || devid == 0x0585)) {
+ 		/*
+ 		 * 0x2352: found in Thermaltake BlackX Duet, jmicron JMB350?
+ 		 * 0x0325: jmicron JMB394.
++		 * 0x0325: jmicron JMB585.
+ 		 */
+ 		ata_for_each_link(link, ap, EDGE) {
+ 			/* SRST breaks detection and disks get misclassified
+-- 
+2.47.0
+

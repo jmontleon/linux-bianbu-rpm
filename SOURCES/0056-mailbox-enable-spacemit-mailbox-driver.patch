@@ -1,7 +1,7 @@
-From b8655ef9553c2799b5220b06adde2e0bbd682eba Mon Sep 17 00:00:00 2001
+From d482e9c8ccea292828c310afa243c981d3f98b7e Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 29 Jun 2023 09:01:48 +0800
-Subject: [PATCH 0056/1206] mailbox: enable spacemit mailbox driver
+Subject: [PATCH 0056/1202] mailbox: enable spacemit mailbox driver
 
 Change-Id: If9bd59b3168665aa85af896d0b224e0cd8336f36
 ---
@@ -55,10 +55,10 @@ index a209ded8df1e..b4c1ba470ce7 100644
  CONFIG_REMOTEPROC=y
  CONFIG_SPACEMIT_REMOTEPROC=y
 diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 8ecba7fb999e..2c71777f70db 100644
+index ed52db272f4d..84fa24da8b0c 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
-@@ -306,4 +306,12 @@ config THEAD_TH1520_MBOX
+@@ -330,4 +330,12 @@ config THEAD_TH1520_MBOX
  	  kernel is running, and E902 core used for power management among other
  	  things.
  
@@ -72,10 +72,10 @@ index 8ecba7fb999e..2c71777f70db 100644
 +
  endif
 diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index 5f4f5b0ce2cc..e56088f04363 100644
+index 9a1542b55539..08b83ea09455 100644
 --- a/drivers/mailbox/Makefile
 +++ b/drivers/mailbox/Makefile
-@@ -66,3 +66,5 @@ obj-$(CONFIG_QCOM_CPUCP_MBOX)	+= qcom-cpucp-mbox.o
+@@ -70,3 +70,5 @@ obj-$(CONFIG_QCOM_CPUCP_MBOX)	+= qcom-cpucp-mbox.o
  obj-$(CONFIG_QCOM_IPCC)		+= qcom-ipcc.o
  
  obj-$(CONFIG_THEAD_TH1520_MBOX)	+= mailbox-th1520.o

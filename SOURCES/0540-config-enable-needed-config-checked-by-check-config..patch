@@ -1,0 +1,58 @@
+From 1de3fec69a2e17a92a119c0d6248eb3d22a2c4da Mon Sep 17 00:00:00 2001
+From: maguoqun <guoqun.ma@spacemit.com>
+Date: Tue, 2 Apr 2024 10:49:38 +0800
+Subject: [PATCH 0540/1202] config: enable needed config checked by
+ check-config.sh for docker
+
+1. netfilter enable NF_CONNTRACK_FTP and NF_CONNTRACK_TFTP
+2. enable dummy device
+2. IPv4 enable IP_NF_MANGLE
+3. ext4 enable EXT4_FS_SECURITY
+
+url: https://github.com/coreos/docker/blob/master/contrib/check-config.sh
+
+Change-Id: I9047ef2276cc8c03afd3fde8c11cef80fd32f2ce
+---
+ arch/riscv/configs/k1_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index cbc333212990..1e485e1ada43 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -85,6 +85,8 @@ CONFIG_NETFILTER=y
+ CONFIG_BRIDGE_NETFILTER=y
+ # CONFIG_NETFILTER_INGRESS is not set
+ CONFIG_NF_CONNTRACK=y
++CONFIG_NF_CONNTRACK_FTP=y
++CONFIG_NF_CONNTRACK_TFTP=y
+ CONFIG_NF_TABLES=y
+ CONFIG_NF_TABLES_INET=y
+ CONFIG_NF_TABLES_NETDEV=y
+@@ -183,6 +185,7 @@ CONFIG_IP_NF_NAT=y
+ CONFIG_IP_NF_TARGET_MASQUERADE=y
+ CONFIG_IP_NF_TARGET_NETMAP=y
+ CONFIG_IP_NF_TARGET_REDIRECT=y
++CONFIG_IP_NF_MANGLE=y
+ CONFIG_NF_TABLES_BRIDGE=y
+ CONFIG_NF_CONNTRACK_BRIDGE=y
+ CONFIG_BRIDGE_NF_EBTABLES=y
+@@ -264,6 +267,7 @@ CONFIG_TARGET_CORE=y
+ CONFIG_TCM_IBLOCK=y
+ CONFIG_TCM_FILEIO=y
+ CONFIG_NETDEVICES=y
++CONFIG_DUMMY=y
+ CONFIG_MACVLAN=y
+ CONFIG_IPVLAN=y
+ CONFIG_VXLAN=y
+@@ -648,6 +652,7 @@ CONFIG_RESET_K1X_SPACEMIT=y
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_EXT4_FS_SECURITY=y
+ CONFIG_XFS_FS=y
+ CONFIG_XFS_QUOTA=y
+ CONFIG_XFS_POSIX_ACL=y
+-- 
+2.47.0
+

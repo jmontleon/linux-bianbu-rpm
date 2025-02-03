@@ -1,7 +1,7 @@
-From 10e94a5154def6836224f7939fa2cddccc95cd8d Mon Sep 17 00:00:00 2001
+From b15d8776d33a80c02fb1bf06850f5b9009c227f4 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 12 Oct 2023 19:24:26 +0800
-Subject: [PATCH 0131/1206] qspi: adding driver for k1x qspi controller
+Subject: [PATCH 0131/1202] qspi: adding driver for k1x qspi controller
 
 Change-Id: I387f8c5823bd9d0d10206bd771c5f1663fc35bab
 ---
@@ -58,7 +58,7 @@ index d55106762211..cade7cecf55c 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 3bf15dc15cd4..bb335d77f6ee 100644
+index 9eacd255a2f7..94ff0c20340a 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -329,6 +329,14 @@ config SPI_DESIGNWARE_EXT
@@ -77,7 +77,7 @@ index 3bf15dc15cd4..bb335d77f6ee 100644
  	tristate "DesignWare SPI controller core support"
  	imply SPI_MEM
 diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index fb9c1636b35f..4245f76e03a9 100644
+index f0056cd25d31..ca550d9662fc 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
 @@ -47,6 +47,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o

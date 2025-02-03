@@ -1,7 +1,7 @@
-From 5e21b7eb3a22516428ca5ecac418e6d241df0e84 Mon Sep 17 00:00:00 2001
+From f007e8807e47d52bea4cc4f1ea38ec55ac4cff6c Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 17 Nov 2023 09:42:35 +0800
-Subject: [PATCH 0156/1206] display: Add spacemit drm driver
+Subject: [PATCH 0156/1202] display: Add spacemit drm driver
 
 Change-Id: I831e1fb0eec8448b84a8e873a6a517c5f39c3608
 ---
@@ -425,10 +425,10 @@ index 39aca611c0b5..07cd6ac76650 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 772fc7625639..0584f8177462 100644
+index fbef3f471bd0..24e652b87ccb 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
-@@ -513,6 +513,8 @@ source "drivers/gpu/drm/sprd/Kconfig"
+@@ -451,6 +451,8 @@ source "drivers/gpu/drm/sprd/Kconfig"
  
  source "drivers/gpu/drm/imagination/Kconfig"
  
@@ -438,10 +438,10 @@ index 772fc7625639..0584f8177462 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && MMU && HYPERV
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 463afad1b5ca..1f9800899947 100644
+index 19fb370fbc56..7ea5b9eb9884 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
-@@ -228,3 +228,4 @@ obj-y			+= solomon/
+@@ -223,3 +223,4 @@ obj-y			+= solomon/
  obj-$(CONFIG_DRM_SPRD) += sprd/
  obj-$(CONFIG_DRM_LOONGSON) += loongson/
  obj-$(CONFIG_DRM_POWERVR) += imagination/

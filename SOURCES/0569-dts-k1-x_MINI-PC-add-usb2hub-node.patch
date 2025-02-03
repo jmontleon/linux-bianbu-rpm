@@ -1,0 +1,33 @@
+From 1c256eed37713a3339ab28570600b54e2a4093b8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 10 Apr 2024 09:32:47 +0800
+Subject: [PATCH 0569/1202] dts: k1-x_MINI-PC: add usb2hub node
+
+Change-Id: I8582331fabb11ebc572369a61b23a2318961bdfb
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index db7d7843e5ff..6fd0fb37d158 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -155,6 +155,15 @@ bt_pwrseq: bt-pwrseq {
+ 			reset-gpios     = <&gpio 63 0>;
+ 		};
+ 	};
++
++	usb2hub: usb2hub {
++		compatible = "spacemit,usb3-hub";
++		hub-gpios = <&gpio 74 0>;	/* usb2 hub en */
++		vbus-gpios = <
++			&gpio 91 0
++			&gpio 92 0>;	/* for usb2 hub output vbus */
++		status = "okay";
++	};
+ };
+ 
+ &pinctrl {
+-- 
+2.47.0
+

@@ -1,0 +1,52 @@
+From d833029b19144342f6e17f76eb128b6f00a44a99 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Wed, 21 Feb 2024 11:49:55 +0800
+Subject: [PATCH 0421/1202] k1-x: enable ehci for deb1 and deb2
+
+Change-Id: Icc4fa04bb7cbedfdd89ef8f1965f7e1d3bd4dcf5
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 8 ++++++++
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts | 8 ++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index d67883295def..ca5b0fd8d717 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -671,6 +671,14 @@ &udc {
+ 	status = "okay";
+ };
+ 
++&usbphy1 {
++	status = "okay";
++};
++
++&ehci1 {
++	status = "okay";
++};
++
+ &usb2phy {
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 450659023bd5..3b746d931347 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -728,6 +728,14 @@ &usb2phy {
+ 	status = "okay";
+ };
+ 
++&usbphy1 {
++	status = "okay";
++};
++
++&ehci1 {
++	status = "okay";
++};
++
+ &combphy {
+ 	status = "okay";
+ };
+-- 
+2.47.0
+

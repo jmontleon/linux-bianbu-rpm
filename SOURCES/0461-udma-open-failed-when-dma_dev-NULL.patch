@@ -1,0 +1,26 @@
+From 6e51077b89baa23e474560870c590cd74af751c0 Mon Sep 17 00:00:00 2001
+From: wangchu <chu.wang@spacemit.com>
+Date: Wed, 6 Mar 2024 17:44:35 +0800
+Subject: [PATCH 0461/1202] udma open failed when (dma_dev == NULL)
+
+Change-Id: Ida9096c3999e0f08123937a91a349d242beae9da
+---
+ drivers/dma/udma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
+index 07e7b49554d5..e3d6b3f22d67 100644
+--- a/drivers/dma/udma.c
++++ b/drivers/dma/udma.c
+@@ -90,7 +90,7 @@ static void dma_callback_func(void *priv)
+ 
+ static int dma_open(struct inode *inode, struct file *filp)
+ {
+-	return 0;
++	return (dma_dev != NULL) ? 0 : -EPERM;
+ }
+ 
+ static int dma_release(struct inode *inode, struct file *filp)
+-- 
+2.47.0
+

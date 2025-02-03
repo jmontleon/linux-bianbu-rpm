@@ -1,0 +1,124 @@
+From 8df666badae762a05341d6153cf49656fb446555 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 11 Jun 2024 10:59:21 +0800
+Subject: [PATCH 0721/1202] k1: change sdio max clock frequency to 187MHz
+
+Change-Id: I1a52d046b7a3bc6c7024040c8acce3d48ce48070
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+index 89e5edd463a0..2322b6e1b081 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -515,7 +515,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index e9801434f6d4..fc56a8bc5415 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -665,7 +665,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 6753e98c0506..4fdb50bbe6bc 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -648,7 +648,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index a87632a0bbb4..4aa0a52a2496 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -612,7 +612,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index ac5f50ded19c..738de1439d50 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -566,7 +566,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index bb2d2073e6f6..9dc8c0afd67c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -617,7 +617,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index ba8d38e852d1..d6f735945504 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -589,7 +589,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 9b9e14acad3e..380d75bda682 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -472,7 +472,7 @@ SDHCI_QUIRK2_BROKEN_PHY_MODULE
+ 			)>;
+ 	spacemit,rx_dline_reg = <0x0>;
+ 	spacemit,rx_tuning_limit = <50>;
+-	spacemit,sdh-freq = <204800000>;
++	spacemit,sdh-freq = <375000000>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

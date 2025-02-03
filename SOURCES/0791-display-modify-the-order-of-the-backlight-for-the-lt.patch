@@ -1,0 +1,153 @@
+From ae00a15554e9da7540c811977e5faf269a42cffa Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
+Date: Tue, 2 Jul 2024 14:46:15 +0800
+Subject: [PATCH 0791/1202] display: modify the order of the backlight for the
+ lt8911ext driver
+
+Change-Id: Ieb3591a8264c099914433eb2fe9f0044370c9ccc
+---
+ drivers/gpu/drm/spacemit/lt8911exb.c | 63 +++++++++++++---------------
+ 1 file changed, 28 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
+index ccda58bc8e2f..055257078026 100644
+--- a/drivers/gpu/drm/spacemit/lt8911exb.c
++++ b/drivers/gpu/drm/spacemit/lt8911exb.c
+@@ -422,14 +422,14 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)
+ 			}
+ 		}
+ 
+-		for( i = 0; i < 128; i++ ) //print edid data
+-		{
+-			if( ( i % 16 ) == 0 )
+-			{
+-				DRM_INFO( "\n" );
+-			}
+-			DRM_INFO( "%x", EDID_DATA[i] );
+-		}
++		// for( i = 0; i < 128; i++ ) //print edid data
++		// {
++		// 	if( ( i % 16 ) == 0 )
++		// 	{
++		// 		DRM_INFO( "\n" );
++		// 	}
++		// 	DRM_INFO( "%x", EDID_DATA[i] );
++		// }
+ 
+ 
+ 		EDID_Timing[hfp] = (EDID_DATA[0x41] & 0xC0) * 4 + EDID_DATA[0x3e];
+@@ -991,9 +991,9 @@ void lt8911exb_reset(struct lt8911exb *lt8911exb)
+ 	}
+ 
+ 	gpiod_direction_output(lt8911exb->reset_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
++	usleep_range(50*1000, 100*1000); //100ms
+ 	gpiod_direction_output(lt8911exb->reset_gpio, 0);
+-	usleep_range(100*1000, 150*1000); //150ms
++	usleep_range(50*1000, 100*1000); //100ms
+ 	gpiod_direction_output(lt8911exb->reset_gpio, 1);
+ 	usleep_range(100*1000, 150*1000); //150ms
+ }
+@@ -1154,14 +1154,11 @@ static int lt8911exb_panel_enable(struct drm_panel *panel)
+ 	DRM_INFO("%s()\n", __func__);
+ 
+ 	gpiod_direction_output(lt8911exb->enable_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
+ 	gpiod_direction_output(lt8911exb->standby_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
+-
+-	gpiod_direction_output(lt8911exb->bl_gpio, 1);
++	usleep_range(50*1000, 100*1000); //100ms
+ 
+ 	schedule_delayed_work(&lt8911exb->init_work,
+-				msecs_to_jiffies(2000));
++				msecs_to_jiffies(500));
+ 	lt8911exb->init_work_pending = true;
+ 
+ 	return 0;
+@@ -1174,11 +1171,9 @@ static int lt8911exb_panel_disable(struct drm_panel *panel)
+ 	DRM_INFO("%s()\n", __func__);
+ 
+ 	gpiod_direction_output(lt8911exb->bl_gpio, 0);
+-
+ 	gpiod_direction_output(lt8911exb->standby_gpio, 0);
+-	usleep_range(100*1000, 150*1000); //150ms
+ 	gpiod_direction_output(lt8911exb->enable_gpio, 0);
+-	usleep_range(100*1000, 150*1000); //150ms
++	usleep_range(50*1000, 100*1000); //100ms
+ 
+ 	if (lt8911exb->init_work_pending) {
+ 		cancel_delayed_work_sync(&lt8911exb->init_work);
+@@ -1249,11 +1244,7 @@ static void init_work_func(struct work_struct *work)
+ 
+ 	DRM_DEBUG(" %s() \n", __func__);
+ 
+-	gpiod_direction_output(lt8911exb->enable_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
+-
+ 	lt8911exb_reset(lt8911exb);
+-
+ 	lt8911exb_chip_id(lt8911exb);
+ 
+ 	lt8911exb_edp_video_cfg(lt8911exb);
+@@ -1272,8 +1263,8 @@ static void init_work_func(struct work_struct *work)
+ 
+ 	PCR_Status(lt8911exb);
+ 
++	gpiod_direction_output(lt8911exb->bl_gpio, 1);
+ }
+-
+ static int lt8911exb_probe(struct i2c_client *client)
+ {
+ 	struct lt8911exb *lt8911exb;
+@@ -1322,9 +1313,6 @@ static int lt8911exb_probe(struct i2c_client *client)
+ 		dev_err(&client->dev, "Failed get enable gpio\n");
+ 		return PTR_ERR(lt8911exb->enable_gpio);
+ 	}
+-	//disable firstly
+-	gpiod_direction_output(lt8911exb->enable_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
+ 
+ 	lt8911exb->standby_gpio = devm_gpiod_get_optional(dev, "standby",
+ 						GPIOD_IN);
+@@ -1333,8 +1321,21 @@ static int lt8911exb_probe(struct i2c_client *client)
+ 		return PTR_ERR(lt8911exb->standby_gpio);
+ 	}
+ 
++	lt8911exb->bl_gpio = devm_gpiod_get_optional(dev, "bl",
++						GPIOD_IN);
++	if (IS_ERR(lt8911exb->bl_gpio)) {
++		dev_err(&client->dev, "Failed get bl gpio\n");
++		return PTR_ERR(lt8911exb->bl_gpio);
++	}
++	gpiod_direction_output(lt8911exb->bl_gpio, 0);
++
++	//disable firstly
++	gpiod_direction_output(lt8911exb->standby_gpio, 0);
++	gpiod_direction_output(lt8911exb->enable_gpio, 0);
++	usleep_range(50*1000, 100*1000); //100ms
++	gpiod_direction_output(lt8911exb->enable_gpio, 1);
+ 	gpiod_direction_output(lt8911exb->standby_gpio, 1);
+-	usleep_range(100*1000, 150*1000); //150ms
++	usleep_range(50*1000, 100*1000); //100ms
+ 
+ 	lt8911exb->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+ 						GPIOD_IN);
+@@ -1345,14 +1346,6 @@ static int lt8911exb_probe(struct i2c_client *client)
+ 
+ 	lt8911exb_reset(lt8911exb);
+ 
+-	lt8911exb->bl_gpio = devm_gpiod_get_optional(dev, "bl",
+-						GPIOD_IN);
+-	if (IS_ERR(lt8911exb->bl_gpio)) {
+-		dev_err(&client->dev, "Failed get bl gpio\n");
+-		return PTR_ERR(lt8911exb->bl_gpio);
+-	}
+-	gpiod_direction_output(lt8911exb->bl_gpio, 1);
+-
+ 	i2c_set_clientdata(client, lt8911exb);
+ 
+ 	//check i2c communicate
+-- 
+2.47.0
+

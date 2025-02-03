@@ -1,0 +1,1673 @@
+From 67c2987adebab83cfc29bf64a428092dff8834c3 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 10 Sep 2024 09:23:02 +0800
+Subject: [PATCH 1047/1202] k1x:support ddr bandwidth tool driver
+
+Change-Id: I4b6c4d76fa0a18dffff14660d3845ebde59553ca
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi       |    6 +
+ arch/riscv/configs/k1_defconfig              |    1 +
+ drivers/soc/spacemit/Kconfig                 |    6 +
+ drivers/soc/spacemit/Makefile                |    1 +
+ drivers/soc/spacemit/ddr-bw/Makefile         |    1 +
+ drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c | 1214 ++++++++++++++++++
+ drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h |  363 ++++++
+ 7 files changed, 1592 insertions(+)
+ create mode 100644 drivers/soc/spacemit/ddr-bw/Makefile
+ create mode 100644 drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c
+ create mode 100644 drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index bfdaa7862995..7ea166ca6fb0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1647,6 +1647,12 @@ r_ircrx: irc-rx@c088e000 {
+ 			status = "disabled";
+ 		};
+ 
++		ddraxi_mon: ddraxi_mon@c0058500 {
++			compatible = "spacemit,ddraxi-mon";
++			reg = <0 0xc0058500 0 0x80>;
++			status = "ok";
++		};
++
+ 		timer0: timer@d4014000 {
+ 			compatible = "spacemit,soc-timer";
+ 			reg = <0x0 0xd4014000 0x0 0xc8>;
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 96b901efef54..3e668aba8b65 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -1036,6 +1036,7 @@ CONFIG_SPACEMIT_REBOOT_CONTROL=y
+ CONFIG_SPACEMIT_LID_CONTROL=y
+ CONFIG_SPACEMI_K1X_DMA_RANGE=y
+ CONFIG_SPACEMI_SOCINFO=y
++CONFIG_SPACEMIT_DDRBW=y
+ CONFIG_CHIP_MEDIA_JPU=y
+ CONFIG_SPACEMIT_V2D=y
+ CONFIG_SPACEMIT_RFKILL=y
+diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
+index c1c3536488d8..8f317aeb928a 100644
+--- a/drivers/soc/spacemit/Kconfig
++++ b/drivers/soc/spacemit/Kconfig
+@@ -43,6 +43,12 @@ config SPACEMI_SOCINFO
+ 	  Spacemit SoCs information driver, which get information from efuse and
+ 	  report to userspace.
+ 
++config SPACEMIT_DDRBW
++	tristate "ddr_bw driver for spacemit k1x soc"
++	depends on SOC_SPACEMIT_K1X
++	help
++	  Spacemit k1x soc ddrbw driver.
++
+ source "drivers/soc/spacemit/jpu/Kconfig"
+ source "drivers/soc/spacemit/v2d/Kconfig"
+ source "drivers/soc/spacemit/spacemit-rf/Kconfig"
+diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
+index 523fe88365b9..cac9938be4c7 100644
+--- a/drivers/soc/spacemit/Makefile
++++ b/drivers/soc/spacemit/Makefile
+@@ -7,3 +7,4 @@ obj-$(CONFIG_PM) += pm/
+ obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain/
+ obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-rf/
+ obj-$(CONFIG_SPACEMIT_V2D)    += v2d/
++obj-$(CONFIG_SPACEMIT_DDRBW) += ddr-bw/
+diff --git a/drivers/soc/spacemit/ddr-bw/Makefile b/drivers/soc/spacemit/ddr-bw/Makefile
+new file mode 100644
+index 000000000000..ef9d58fc3cf0
+--- /dev/null
++++ b/drivers/soc/spacemit/ddr-bw/Makefile
+@@ -0,0 +1 @@
++obj-y += spacemit_ddrbw.o
+diff --git a/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c
+new file mode 100644
+index 000000000000..23316490d127
+--- /dev/null
++++ b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c
+@@ -0,0 +1,1214 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2024 Spacemit Co., Ltd.
++ */
++#include "linux/export.h"
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/delay.h>
++#include <linux/devfreq.h>
++#include <linux/devfreq_cooling.h>
++#include <linux/io.h>
++#include <linux/jiffies.h>
++#include <linux/kthread.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/platform_device.h>
++#include <linux/pm_qos.h>
++#include <linux/regulator/machine.h>
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include <linux/string.h>
++#include <linux/uaccess.h>
++#include <linux/cdev.h>
++#include "spacemit_ddrbw.h"
++
++struct ddr_dev {
++	struct cdev chrdevcdev;
++	int major;
++	dev_t dev;
++	struct class *dev_class;
++};
++static struct ddr_dev ddrdev;
++
++static u32 ddr_bw_info_index;
++static struct ddr_perf_data *ddr_perf_data;
++static struct spacemit_ddr_bw_info ddr_bw_info[DDR_FC_BW_SIZE];
++
++
++static int get_ddr_burst(void __iomem *base)
++{
++	static bool flag = false;
++	static int cmds_len = DDR_LEN_64;
++	u32 burst_len, data_width;
++	u32 val, tmp;
++
++	if (flag)
++		return cmds_len;
++
++	val = readl(base + MC_CONTROL_0);
++	tmp = (val >> MC_DATA_WIDTH) & 0x7;
++	if (tmp == 0x2)
++		data_width = DDR_LEN_16;
++	else if (tmp == 0x3)
++		data_width = DDR_LEN_32;
++	else if (tmp == 0x4)
++		data_width = DDR_LEN_64;
++	else {
++		pr_err("Wrong device data width\n");
++		return cmds_len;
++	}
++
++	tmp = (val >> MC_BURST_LEN) & 0x7;
++	if (tmp == 0x2)
++		burst_len = 4;
++	else if (tmp == 0x3)
++		burst_len = 8;
++	else if (tmp == 0x4)
++		burst_len = 16;
++	else {
++		pr_err("Wrong device burst length\n");
++		return cmds_len;
++	}
++	cmds_len = (burst_len * data_width) / 8;
++	flag = true;
++	return cmds_len;
++}
++
++static void ddraxi_mon_enable(struct ddraxi_mon *monitor, int enable)
++{
++	u32 mon_ctrl;
++
++	if (monitor->master_is_lcd) {
++		mon_ctrl = readl(ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++		if (enable)
++			mon_ctrl |= (MON_CTRL_EN | MON_CTRL_LATCH) ;
++		else
++			mon_ctrl &= ~(MON_CTRL_EN | MON_CTRL_LATCH);
++
++		writel(mon_ctrl, ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++		return;
++	}
++	if (monitor->id == 0) {
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++		if (enable)
++			mon_ctrl |= (MON_CTRL_EN | MON_CTRL_LATCH) ;
++		else
++			mon_ctrl &= ~(MON_CTRL_EN | MON_CTRL_LATCH);
++
++		writel(mon_ctrl, ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++	}
++	else {
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_id_reg(monitor->port_id));
++		if (enable)
++			mon_ctrl |= (1 << ((monitor->id - 1)  + IDMON_CTRL_EN));
++		else
++			mon_ctrl &= ~(1 << ((monitor->id - 1)  + IDMON_CTRL_EN));
++
++
++		if (enable)
++			mon_ctrl &= ~(1 << ((monitor->id - 1)  + IDMON_CLK_EN));
++		else
++			mon_ctrl |= (1 << ((monitor->id - 1)  + IDMON_CLK_EN));
++
++		writel(mon_ctrl, ddraxi_mon_data->reg_base	\
++			 + mon_id_reg(monitor->port_id));
++
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_id_sel(monitor->id, monitor->port_id));
++		mon_ctrl = (0x3 << 16) | monitor->mid;
++		writel(mon_ctrl, ddraxi_mon_data->reg_base 	\
++			+ mon_id_sel(monitor->id, monitor->port_id));
++	}
++
++}
++
++static void ddraxi_mon_latch(struct ddraxi_mon *monitor, int latch)
++{
++	u32 mon_ctrl;
++
++	if (monitor->master_is_lcd)
++		mon_ctrl = readl(ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++	else
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++
++	if (latch)
++		mon_ctrl |= MON_CTRL_READ;
++	else
++		mon_ctrl &= ~MON_CTRL_READ;
++	if (monitor->master_is_lcd)
++		writel(mon_ctrl, ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++	else
++		writel(mon_ctrl, ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++}
++
++static void ddraxi_mon_get_id_mon(struct ddraxi_mon *monitor)
++{
++	u32 mon_ctrl;
++
++	mon_ctrl = readl(ddraxi_mon_data->reg_base + mon_id_reg(monitor->port_id));
++	mon_ctrl &= ~SPACEMIT_MON_ID_SEL;
++	mon_ctrl |= monitor->id;
++	writel(mon_ctrl, ddraxi_mon_data->reg_base + mon_id_reg(monitor->port_id));
++}
++
++static void ddraxi_mon_get_evt(struct ddraxi_mon *monitor)
++{
++	u32 mon_ctrl, i;
++	u32 data;
++
++	if (monitor->master_is_lcd)
++		mon_ctrl = readl(ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++	else
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++
++	for (i = 0; i < SPACEMIT_MON_EVT_NUM; i++) {
++		mon_ctrl &= ~SPACEMIT_MON_EVT_MASK;
++		mon_ctrl |= mon_evt_id[i];
++		if (monitor->master_is_lcd) {
++			writel(mon_ctrl, ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++			data = readl(ddraxi_mon_data->ciu_base	\
++				+ LCD_MON_BASE + SPACEMIT_MON_DATA);
++			monitor->evt_num[i] = data;
++		}
++		else {
++			writel(mon_ctrl, ddraxi_mon_data->reg_base	\
++				+ mon_ctrl_reg(monitor->port_id));
++			/* read monitor data register */
++			monitor->evt_num[i] = readl(ddraxi_mon_data->reg_base	\
++				+ mon_data_reg(monitor->port_id));
++		}
++	}
++}
++
++static void ddraxi_mon_get_lat(struct ddraxi_mon *monitor)
++{
++	u32 mon_ctrl, i;
++	u32 data;
++
++	if (monitor->master_is_lcd)
++		mon_ctrl = readl(ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++	else
++		mon_ctrl = readl(ddraxi_mon_data->reg_base	\
++			+ mon_ctrl_reg(monitor->port_id));
++
++	for (i = 0; i < SPACEMIT_MON_LAT_NUM; i++) {
++		mon_ctrl &= ~SPACEMIT_MON_EVT_MASK;
++		mon_ctrl |= mon_lat_id[i];
++		if (monitor->master_is_lcd) {
++			writel(mon_ctrl, ddraxi_mon_data->ciu_base + LCD_MON_BASE);
++			data = readl(ddraxi_mon_data->ciu_base	\
++				+ LCD_MON_BASE + SPACEMIT_MON_DATA);
++			monitor->lat_num[i] = data;
++		}
++		else {
++			writel(mon_ctrl, ddraxi_mon_data->reg_base	\
++				+ mon_ctrl_reg(monitor->port_id));
++			/* read monitor data register */
++			monitor->lat_num[i] = readl(ddraxi_mon_data->reg_base	\
++				+ mon_data_reg(monitor->port_id));
++		}
++
++
++	}
++}
++
++struct ddraxi_mon *ddraxi_mon_get_mon(void)
++{
++	int i;
++
++	for (i = 0; i < SPACEMIT_ID_MON_CTRL_NUM + SPACEMIT_MON_CTRL_NUM + 1; i++)
++		if (ddraxi_mon_data->mon[i].free)
++			return &ddraxi_mon_data->mon[i];
++	return NULL;
++}
++
++int ddraxi_mon_enable_mon(struct ddraxi_mon *monitor)
++{
++	if (is_mon_valid(monitor->id) < 0 || !ddraxi_mon_data)
++		return -EINVAL;
++
++	monitor->init = true;
++
++	spin_lock(&monitor->lock);
++	monitor->free = false;
++
++	/* enable the monitor */
++	ddraxi_mon_enable(monitor, 1);
++
++	spin_unlock(&monitor->lock);
++
++	return 0;
++}
++
++int ddraxi_mon_update_mon(struct ddraxi_mon *monitor)
++{
++	if (!ddraxi_mon_data || is_mon_valid(monitor->id) < 0 || !monitor->init)
++		return -EINVAL;
++
++	/* disable monitor latch */
++	ddraxi_mon_latch(monitor, 0);
++
++	/* latch and update monitor */
++	ddraxi_mon_latch(monitor, 1);
++
++	if (monitor->master_is_lcd == false) {
++		ddraxi_mon_get_id_mon(monitor);
++	}
++	ddraxi_mon_get_evt(monitor);
++
++	if (monitor->lat_en)
++		ddraxi_mon_get_lat(monitor);
++
++	return 0;
++}
++
++int ddraxi_mon_disable_mon(struct ddraxi_mon *monitor)
++{
++	if (is_mon_valid(monitor->id) < 0 || !ddraxi_mon_data)
++		return -EINVAL;
++
++	/* read monitor data */
++	ddraxi_mon_update_mon(monitor);
++
++	spin_lock(&monitor->lock);
++	/* disable the monitor */
++	ddraxi_mon_enable(monitor, 0);
++
++	monitor->free = true;
++	spin_unlock(&monitor->lock);
++
++	return 0;
++}
++
++static void ddraxi_mon_init(struct spacemit_ddraxi_mon_data *data)
++{
++	int i;
++
++	for (i = 0; i < SPACEMIT_MON_CTRL_NUM; i++) {
++		data->mon[i].id = 0;
++		data->mon[i].port_id = i;
++		data->mon[i].lat_th = 0;
++		data->mon[i].init = false;
++		data->mon[i].enable = false;
++		data->mon[i].lat_en = false;
++		data->mon[i].free = true;
++		data->mon[i].master_is_lcd = false;
++		spin_lock_init(&data->mon[i].lock);
++
++		writel(0, data->reg_base + mon_ctrl_reg(data->mon[i].port_id));
++	}
++
++	for (i = SPACEMIT_MON_CTRL_NUM; i < SPACEMIT_MON_CTRL_NUM	\
++			+ SPACEMIT_ID_MON_CTRL_NUM + 1; i++) {
++		data->mon[i].id = ((i - 1) % 3) + 1;
++		data->mon[i].lat_th = 0;
++		data->mon[i].init = false;
++		data->mon[i].enable = false;
++		data->mon[i].lat_en = false;
++		data->mon[i].free = true;
++		/* last monitor for lcd */
++		if (i == SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM)
++			data->mon[i].master_is_lcd = true;
++		spin_lock_init(&data->mon[i].lock);
++	}
++
++}
++
++static int ddr_mon_enable(struct ddr_dfreq_data *data, int en)
++{
++	int ret, i;
++
++	/* enable port monitor */
++	if (((en == DDR_PORT_DEBUG_LAT) || (en == DDR_PORT_DEBUG_BW))	\
++			&& !data->ddr_mon_debug) {
++
++		for (i = 0; i < SPACEMIT_MON_CTRL_NUM; i++) {
++			data->axi_mon[i] = ddraxi_mon_get_mon();
++			if (!data->axi_mon[i]) {
++				pr_err("no free ddr axi mon\n");
++				return -EINVAL;
++			}
++
++			/*
++			 * each port get 3 id  monitors
++			 * id 0 is configured to noraml port id
++			 * without master id mask
++			 */
++			data->axi_mon[i]->id = 0;
++			data->axi_mon[i]->port_id = i;
++			data->axi_mon[i]->mid = 0;
++			if(en == DDR_PORT_DEBUG_LAT)
++				data->axi_mon[i]->lat_en = true;
++			ret = ddraxi_mon_enable_mon(data->axi_mon[i]);
++			if (ret < 0)
++				return ret;
++		}
++		for (i = SPACEMIT_MON_CTRL_NUM; i < SPACEMIT_ID_MASTER_NUM	\
++				+ SPACEMIT_MON_CTRL_NUM; i++) {
++			if((i == 10) || (i == 14) || (i == 18)) {
++				data->axi_mon[i] = kmalloc(sizeof(struct ddraxi_mon), GFP_KERNEL);
++				data->axi_mon[i]->id =  \
++					((i - (SPACEMIT_MON_CTRL_NUM + 3)) % 4) + 1;
++				data->axi_mon[i]->port_id = ((i - 3) / 4);
++				data->axi_mon[i]->mid = master_id[i - SPACEMIT_MON_CTRL_NUM];
++				continue;
++			} else {
++				data->axi_mon[i] = ddraxi_mon_get_mon();
++				if (!data->axi_mon[i]) {
++					pr_err("no free ddr id axi mon\n");
++					return -EINVAL;
++				}
++				if(i >= SPACEMIT_MON_CTRL_NUM + 3) {
++					data->axi_mon[i]->id =  \
++						((i - (SPACEMIT_MON_CTRL_NUM + 3)) % 4) + 1;
++					data->axi_mon[i]->port_id = ((i - 3) / 4);
++				} else {
++					data->axi_mon[i]->id = ((i - 1) % 3) + 1;
++					data->axi_mon[i]->port_id = ((i - 1) / 3) - 1;
++				}
++				data->axi_mon[i]->mid = master_id[i - SPACEMIT_MON_CTRL_NUM];
++				if(en == DDR_PORT_DEBUG_LAT)
++					data->axi_mon[i]->lat_en = true;
++				ret = ddraxi_mon_enable_mon(data->axi_mon[i]);
++				if (ret < 0)
++					return ret;
++			}
++		}
++		i = SPACEMIT_ID_MASTER_NUM + SPACEMIT_MON_CTRL_NUM;
++		data->axi_mon[i] = ddraxi_mon_get_mon();
++		if (!data->axi_mon[i]) {
++			pr_err("no free ddr id axi mon\n");
++			return -EINVAL;
++		}
++		data->axi_mon[i]->id = 0;
++		data->axi_mon[i]->port_id = 0;
++		data->axi_mon[i]->mid = 0;
++		data->axi_mon[i]->master_is_lcd = true;
++		if(en == DDR_PORT_DEBUG_LAT)
++				data->axi_mon[i]->lat_en = true;
++		ret = ddraxi_mon_enable_mon(data->axi_mon[i]);
++		if (ret < 0)
++			return ret;
++
++		data->ddr_mon_debug = en;
++	} else if (!en && data->ddr_mon_debug) {
++		data->ddr_mon_debug = en;
++
++		for (i = 0; i < SPACEMIT_ID_MASTER_NUM	\
++				+ SPACEMIT_MON_CTRL_NUM +1; i++) {
++			if(data->axi_mon[i]->mid == 3)
++				continue;
++			ddraxi_mon_disable_mon(data->axi_mon[i]);
++		}
++	}
++
++	return 0;
++}
++
++/* Get DDR port bandwidth status */
++static int ddr_get_port_bw_a0(struct ddr_dfreq_data *data,
++	u32 time_diff, struct spacemit_ddrbw_status *stat)
++{
++	u64 bw_num, req_num;
++	s64 rd_bytes, wr_bytes, rd_reqs, wr_reqs;
++	u64 max_rd, max_wr;
++	s64 avr_rd, avr_wr;
++	struct ddraxi_mon *t_mon;
++	u32 bw_fixed, req_fixed;
++	int i, burst_len;
++	u64 tmp;
++
++	burst_len = get_ddr_burst(data->base);
++
++	ddr_bw_info[ddr_bw_info_index].curr_freq = stat->current_frequency;
++	ddr_bw_info[ddr_bw_info_index].total_bw = data->throughput;
++
++	for (i = 0; i < SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1; i++) {
++		if(data->axi_mon[i]->mid != 3)
++			ddraxi_mon_update_mon(data->axi_mon[i]);
++	}
++	/* bandwidth len is 256 */
++	bw_fixed = 16;
++	if (unlikely(!bw_fixed))
++		bw_fixed = 1;
++	/* burst len is 64 */
++	req_fixed = burst_len;
++	if (unlikely(!req_fixed))
++		req_fixed = 1;
++
++	for (i = 0; i < SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM; i++) {
++		/* calculate port bandwidth by total rd/wr bytes */
++		if(data->axi_mon[i]->mid != 3) {
++			t_mon = data->axi_mon[i];
++			if (t_mon->evt_num[0] >= data->total_rd_bytes[i])
++				rd_bytes = t_mon->evt_num[0] - data->total_rd_bytes[i];
++			else
++				rd_bytes = (u32)(-1) - data->total_rd_bytes[i] + t_mon->evt_num[0];
++
++			if (t_mon->evt_num[1] >= data->total_wr_bytes[i])
++				wr_bytes = (t_mon->evt_num[1] - data->total_wr_bytes[i]);
++			else
++				wr_bytes = (u32)(-1) - data->total_wr_bytes[i] + t_mon->evt_num[1];
++			/* calculate port bandwidth by total rd/wr requests */
++			if (t_mon->evt_num[2] >= data->rd_reqs[i])
++				rd_reqs = (t_mon->evt_num[2] - data->rd_reqs[i]);
++			else
++				rd_reqs = (u32)(-1) - data->rd_reqs[i] + t_mon->evt_num[2];
++			if (t_mon->evt_num[3] >= data->wr_reqs[i])
++				wr_reqs = (t_mon->evt_num[3] - data->wr_reqs[i]);
++			else
++				wr_reqs = (u32)(-1) - data->wr_reqs[i] + t_mon->evt_num[3];
++
++			/* get latency data */
++			if (data->ddr_mon_debug == DDR_PORT_DEBUG_LAT) {
++				/* prepare latency parameters */
++				t_mon = data->axi_mon[i];
++				max_rd = t_mon->lat_num[0];
++				max_wr = t_mon->lat_num[1];
++
++				tmp = max_rd * 1000;
++				do_div(tmp, DDR_FCLK);
++				max_rd = tmp;
++				tmp = max_wr * 1000;
++				do_div(tmp, DDR_FCLK);
++				max_wr = tmp;
++				/* total ltency*/
++				if (t_mon->lat_num[2] >= data->tol_rd_lat[i])
++					avr_rd = (t_mon->lat_num[2]	\
++						- data->tol_rd_lat[i]);
++				else
++					avr_rd = (u32)(-1) - data->tol_rd_lat[i]	\
++						+ t_mon->lat_num[2];
++
++				if (t_mon->lat_num[3] >= data->tol_wr_lat[i])
++					avr_wr = (t_mon->lat_num[3]	\
++						- data->tol_wr_lat[i]);
++				else
++					avr_wr = (u32)(-1) - data->tol_wr_lat[i]	\
++						+ t_mon->lat_num[3];
++
++				if (rd_reqs == 0)
++					avr_rd = 0;
++				else {
++					tmp = ((avr_rd << 8) * 1000);
++					do_div(tmp, rd_reqs);
++
++					do_div(tmp, DDR_FCLK);
++					avr_rd = tmp;
++				}
++
++				if (wr_reqs == 0)
++					avr_wr = 0;
++				else {
++					tmp = ((avr_wr << 8) * 1000);
++					do_div(tmp, wr_reqs);
++					do_div(tmp, DDR_FCLK);
++					avr_wr = tmp;
++				}
++				data->tol_rd_lat[i] = t_mon->lat_num[2];
++				data->tol_wr_lat[i] = t_mon->lat_num[3];
++				mon_info[i].max_rd = max_rd;
++				mon_info[i].max_wr = max_wr;
++				mon_info[i].avr_wr = avr_wr;
++				mon_info[i].avr_rd = avr_rd;
++			}
++			bw_num = ((rd_bytes + wr_bytes) >> 10) * bw_fixed;
++			if (i == 0) {
++				data->p0_r_thpt = max(rd_bytes * bw_fixed, rd_reqs * bw_fixed);
++				data->p0_w_thpt = max(wr_bytes * bw_fixed, wr_reqs * bw_fixed);
++				data->p0_thpt = data->p0_r_thpt + data->p0_w_thpt;
++			}
++
++			data->total_rd_bytes[i] = t_mon->evt_num[0];
++			data->total_wr_bytes[i] = t_mon->evt_num[1];
++			data->rd_reqs[i] = t_mon->evt_num[2];
++			data->wr_reqs[i] = t_mon->evt_num[3];
++			mon_info[i].wr_bytes = wr_bytes;
++			mon_info[i].rd_bytes = rd_bytes;
++			mon_info[i].rd_reqs = rd_reqs;
++			mon_info[i].wr_reqs = wr_reqs;
++			mon_info[i].byte_thpt = bw_num>>10;
++			mon_info[i].req_thpt = req_num>>10;
++			bw_num = (rd_bytes >> 10) * bw_fixed;
++			mon_info[i].rd_thpt = bw_num>>10;
++			bw_num = (wr_bytes >> 10) * bw_fixed;
++			mon_info[i].wr_thpt = bw_num>>10;
++		}
++		else {
++			int port_index = data->axi_mon[i]->port_id;
++			if(mon_info[port_index].wr_bytes >= (mon_info[i-3].wr_bytes +
++						mon_info[i-2].wr_bytes + mon_info[i-1].wr_bytes))
++				mon_info[i].wr_bytes = mon_info[port_index].wr_bytes	\
++					- mon_info[i-3].wr_bytes - mon_info[i-2].wr_bytes	\
++					- mon_info[i-1].wr_bytes;
++			else
++				 mon_info[i].wr_bytes = 0;
++			if(mon_info[port_index].rd_bytes >= (mon_info[i-3].rd_bytes +
++						mon_info[i-2].rd_bytes + mon_info[i-1].rd_bytes))
++				mon_info[i].rd_bytes = mon_info[port_index].rd_bytes	\
++					- mon_info[i-3].rd_bytes - mon_info[i-2].rd_bytes	\
++					- mon_info[i-1].rd_bytes;
++			else
++				mon_info[i].rd_bytes = 0;
++			if(mon_info[port_index].wr_reqs >= (mon_info[i-3].wr_reqs +
++						mon_info[i-2].wr_reqs + mon_info[i-1].wr_reqs))
++				mon_info[i].wr_reqs = mon_info[port_index].wr_reqs	\
++					- mon_info[i-3].wr_reqs - mon_info[i-2].wr_reqs	\
++					- mon_info[i-1].wr_reqs;
++			else
++				 mon_info[i].wr_reqs = 0;
++			if(mon_info[port_index].rd_reqs >= (mon_info[i-3].rd_reqs +
++						mon_info[i-2].rd_reqs + mon_info[i-1].rd_reqs))
++				mon_info[i].rd_reqs = mon_info[port_index].rd_reqs	\
++					- mon_info[i-3].rd_reqs - mon_info[i-2].rd_reqs	\
++					- mon_info[i-1].rd_reqs;
++			else
++				 mon_info[i].rd_reqs = 0;
++			if(mon_info[port_index].byte_thpt >= (mon_info[i-3].byte_thpt +
++						mon_info[i-2].byte_thpt + mon_info[i-1].byte_thpt))
++				mon_info[i].byte_thpt = mon_info[port_index].byte_thpt	\
++					- mon_info[i-3].byte_thpt - mon_info[i-2].byte_thpt	\
++					- mon_info[i-1].byte_thpt;
++			else
++				 mon_info[i].byte_thpt = 0;
++			if(mon_info[port_index].req_thpt >= (mon_info[i-3].req_thpt +
++						 mon_info[i-2].req_thpt + mon_info[i-1].req_thpt))
++				mon_info[i].req_thpt = mon_info[port_index].req_thpt	\
++					- mon_info[i-3].req_thpt - mon_info[i-2].req_thpt	\
++					- mon_info[i-1].req_thpt;
++			else
++				mon_info[i].req_thpt = 0;
++			bw_num = (mon_info[i].rd_bytes >> 10) * bw_fixed;
++			mon_info[i].rd_thpt = bw_num>>10;
++			bw_num = (mon_info[i].wr_bytes >> 10) * bw_fixed;
++			mon_info[i].wr_thpt = bw_num>>10;
++		}
++	}
++
++	/* lcd monitor */
++	i = SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM;
++	t_mon = data->axi_mon[i];
++	if (t_mon->evt_num[0] >= data->total_rd_bytes[i])
++		rd_bytes = t_mon->evt_num[0] - data->total_rd_bytes[i];
++	else
++		rd_bytes = (u32)(-1) - data->total_rd_bytes[i] + t_mon->evt_num[0];
++
++	if (t_mon->evt_num[1] >= data->total_wr_bytes[i])
++		wr_bytes = (t_mon->evt_num[1] - data->total_wr_bytes[i]);
++	else
++		wr_bytes = (u32)(-1) - data->total_wr_bytes[i] + t_mon->evt_num[1];
++	/* calculate port bandwidth by total rd/wr requests */
++	if (t_mon->evt_num[2] >= data->rd_reqs[i])
++		rd_reqs = (t_mon->evt_num[2] - data->rd_reqs[i]);
++	else
++		rd_reqs = (u32)(-1) - data->rd_reqs[i] + t_mon->evt_num[2];
++	if (t_mon->evt_num[3] >= data->wr_reqs[i])
++		wr_reqs = (t_mon->evt_num[3] - data->wr_reqs[i]);
++	else
++		wr_reqs = (u32)(-1) - data->wr_reqs[i] + t_mon->evt_num[3];
++
++	/* get latency data */
++	if (data->ddr_mon_debug == DDR_PORT_DEBUG_LAT) {
++		/* prepare latency parameters */
++		t_mon = data->axi_mon[i];
++
++		max_rd = t_mon->lat_num[0];
++		max_wr = t_mon->lat_num[1];
++
++		tmp = max_rd * 1000;
++		do_div(tmp, DDR_FCLK);
++		max_rd = tmp;
++		tmp = max_wr * 1000;
++		do_div(tmp, DDR_FCLK);
++		max_wr = tmp;
++		/* total ltency*/
++		if (t_mon->lat_num[2] >= data->tol_rd_lat[i])
++			avr_rd = (t_mon->lat_num[2] - data->tol_rd_lat[i]);
++		else
++			avr_rd = (u32)(-1) - data->tol_rd_lat[i] + t_mon->lat_num[2];
++
++		if (t_mon->lat_num[3] >= data->tol_wr_lat[i])
++			avr_wr = (t_mon->lat_num[3] - data->tol_wr_lat[i]);
++		else
++			avr_wr = (u32)(-1) - data->tol_wr_lat[i] + t_mon->lat_num[3];
++		if (rd_reqs == 0)
++			avr_rd = 0;
++		else {
++			tmp = ((avr_rd << 8) * 1000);
++			do_div(tmp, rd_reqs);
++			do_div(tmp, DDR_FCLK);
++			avr_rd = tmp;
++		}
++		if (wr_reqs == 0)
++			avr_rd = 0;
++		else {
++			tmp = ((avr_wr << 8) * 1000);
++			do_div(tmp, wr_reqs);
++			do_div(tmp, DDR_FCLK);
++			avr_wr = tmp;
++		}
++		data->tol_rd_lat[i] = t_mon->lat_num[2];
++		data->tol_wr_lat[i] = t_mon->lat_num[3];
++		mon_info[i].max_rd = max_rd;
++		mon_info[i].max_wr = max_wr;
++		mon_info[i].avr_wr = avr_wr;
++		mon_info[i].avr_rd = avr_rd;
++	}
++
++	bw_num = ((rd_bytes + wr_bytes) >> 10) * bw_fixed;
++
++	req_num = ((rd_reqs + wr_reqs) >> 10) * req_fixed;
++
++	data->total_rd_bytes[i] = t_mon->evt_num[0];
++	data->total_wr_bytes[i] = t_mon->evt_num[1];
++	data->rd_reqs[i] = t_mon->evt_num[2];
++	data->wr_reqs[i] = t_mon->evt_num[3];
++
++	mon_info[i].wr_bytes = wr_bytes;
++	mon_info[i].rd_bytes = rd_bytes;
++	mon_info[i].rd_reqs = rd_reqs;
++	mon_info[i].wr_reqs = wr_reqs;
++	mon_info[i].byte_thpt = bw_num>>10;
++	mon_info[i].req_thpt = req_num>>10;
++	bw_num = (rd_bytes >> 10) * bw_fixed;
++	mon_info[i].rd_thpt = bw_num>>10;
++	bw_num = (wr_bytes >> 10) * bw_fixed;
++	mon_info[i].wr_thpt = bw_num>>10;
++	ddr_bw_info_index = (ddr_bw_info_index + 1) % DDR_FC_BW_SIZE;
++
++	return 0;
++}
++
++static void ddr_perf_counter_init(struct ddr_perf_data *data)
++{
++	int i;
++
++	for (i = 0; i < PERF_CNT_NUM; i++) {
++		data->cnt[i].id = i;
++		data->cnt[i].evt_sel = PERF_INVALID_EVT_SEL;
++		data->cnt[i].enable = false;
++		data->cnt[i].free = true;
++		spin_lock_init(&data->cnt[i].lock);
++	}
++}
++
++static int ddr_perf_conf(struct ddr_perf_data *data)
++{
++	/* 0: start counting when enabled; 1: start counting on first data access */
++	u32 pc_start_cond = 0, pc_start_index = 0;
++	/* 0: continue count when overflow; 1: stop counting on any overflow */
++	u32 pc_stop_cond = 1, pc_stop_index = 0x4;
++	/* clock should be done in clock tree */
++	u32 pc_control = readl(data->base + PERF_CNT_CTRL);
++
++	pc_control &= ~((0x1 << pc_start_index) | (0x1 << pc_stop_index));
++	pc_control |= ((pc_start_cond << pc_start_index) | (pc_stop_cond << pc_stop_index));
++
++	writel_relaxed(pc_control, data->base + PERF_CNT_CTRL);
++
++	ddr_perf_counter_init(data);
++
++	return 0;
++}
++
++int ddr_perf_init_cnt(struct device *dev, void __iomem *base)
++{
++	ddr_perf_data = devm_kzalloc(dev, sizeof(struct ddr_perf_data), GFP_KERNEL);
++	if (ddr_perf_data == NULL)
++		return -ENOMEM;
++
++	ddr_perf_data->base = base;
++	ddr_perf_conf(ddr_perf_data);
++
++	return 0;
++}
++
++static int ddr_perf_read_cnt(u32 cnt)
++{
++	int val;
++
++	val = readl(ddr_perf_data->base + perf_cnt_reg(cnt));
++
++	return val;
++}
++
++struct ddr_perf_cnt *ddr_perf_cnt_get(void)
++{
++	int i;
++
++	for (i = 0; i < PERF_CNT_NUM; i++)
++		if (ddr_perf_data->cnt[i].free)
++			return &ddr_perf_data->cnt[i];
++	return NULL;
++}
++
++int ddr_perf_cnt_update(struct ddr_perf_cnt *counter)
++{
++	/* read event number */
++	counter->evt_num = ddr_perf_read_cnt(counter->id);
++
++	return 0;
++}
++
++static int ddr_perf_cnt_enable(struct ddr_perf_cnt *counter)
++{
++	union perf_cnt_config cnt_conf;
++	u32 conf, cnt = counter->id, reg_offset = PERF_CNT_CONF0;
++
++	if (is_cnt_valid(cnt) < 0 || !ddr_perf_data	\
++			|| counter->evt_sel == PERF_INVALID_EVT_SEL) {
++		pr_err("wrong performance counter number: 0x%x\n", cnt);
++		return -EINVAL;
++	}
++
++	spin_lock(&counter->lock);
++	counter->enable = true;
++	counter->free = false;
++
++	cnt_conf.bit.enable = 1;
++	cnt_conf.bit.evt_sel = counter->evt_sel;
++	/* clear non-used bit */
++	cnt_conf.conf &= 0xff;
++
++	/* performance counter: 4 - 7 */
++	if (cnt > 3) {
++		cnt = cnt - 4;
++		reg_offset = PERF_CNT_CONF1;
++	}
++
++	conf = readl(ddr_perf_data->base + reg_offset);
++	conf &= ~(0xff << perf_cnt_conf_base(cnt));
++	conf |= (cnt_conf.conf << perf_cnt_conf_base(cnt));
++
++	writel(conf, ddr_perf_data->base + reg_offset);
++	spin_unlock(&counter->lock);
++
++	return 0;
++}
++
++int ddr_perf_cnt_disable(struct ddr_perf_cnt *counter)
++{
++	u32 conf, cnt = counter->id, reg_offset = PERF_CNT_CONF0;
++
++	if (is_cnt_valid(cnt) < 0 || !ddr_perf_data) {
++		pr_err("wrong performance counter number: 0x%x\n", cnt);
++		return -EINVAL;
++	}
++
++	/* performance counter: 4 - 7 */
++	if (cnt > 3) {
++		cnt = cnt - 4;
++		reg_offset = PERF_CNT_CONF1;
++	}
++
++	ddr_perf_cnt_update(counter);
++
++	spin_lock(&counter->lock);
++	/* disable performance counter */
++	conf = readl(ddr_perf_data->base + reg_offset);
++	conf &= ~(PERF_CNT_EN << perf_cnt_conf_base(cnt));
++	writel(conf, ddr_perf_data->base + reg_offset);
++	counter->free = true;
++	counter->enable = false;
++	spin_unlock(&counter->lock);
++
++	return 0;
++}
++
++static int ddr_get_dev_status(struct device *dev, struct spacemit_ddrbw_status *stat)
++{
++	/* add dev freq-change code later */
++	struct spacemit_ddraxi_mon_data *mon_data = dev_get_drvdata(dev);
++	struct ddr_dfreq_data *data = mon_data->data;
++	int ret, burst_len;
++	u64 now;
++	u64 busy_cycle, busy_diff, cmd_number, cmd_diff;
++	u64 clk_diff, clk_cycle, utility, time_diff;
++	u64 last_count = (u32)-1;
++	unsigned long flags;
++	u64 thpt;
++	u64 tmp;
++
++	if (!data)
++		return 0;
++
++	burst_len = get_ddr_burst(data->base);
++
++	//stat->current_frequency = spacemit_get_ddr_freq();
++	stat->current_frequency = 2400000000;
++	/* read ddr channel 0/1 read/write event number */
++	if (!data->cnt_en) {
++		/* clock cycles */
++		data->perf_ch0 = ddr_perf_cnt_get();
++		if (!data->perf_ch0) {
++			dev_err(dev, "no free ddr performance counter\n");
++			return -EINVAL;
++		}
++		data->perf_ch0->evt_sel = DDR_CLK_CYCLES;
++		ret = ddr_perf_cnt_enable(data->perf_ch0);
++		if (ret < 0)
++			return ret;
++
++		/* busy cycles */
++		data->perf_ch1 = ddr_perf_cnt_get();
++		if (!data->perf_ch1) {
++			dev_err(dev, "no free ddr performance counter\n");
++			return -EINVAL;
++		}
++
++		data->perf_ch1->evt_sel = DDR_CH0_BUSY;
++		ret = ddr_perf_cnt_enable(data->perf_ch1);
++		if (ret < 0)
++			return ret;
++
++		/* read/write command number */
++		data->perf_ch2 = ddr_perf_cnt_get();
++		if (!data->perf_ch2) {
++			dev_err(dev, "no free ddr performance counter\n");
++			return -EINVAL;
++		}
++
++		data->perf_ch2->evt_sel = DDR_RD_WR_CMD;
++		ret = ddr_perf_cnt_enable(data->perf_ch2);
++		if (ret < 0)
++			return ret;
++
++		data->ddr_mon_debug = 0;
++		ddr_mon_enable(data, DDR_PORT_DEBUG_LAT);
++
++		data->last_poll = jiffies;
++		data->cnt_en = true;
++
++		data->throughput = 0;
++		return 0;
++	}
++
++	spin_lock_irqsave(&data->lock, flags);
++	now = jiffies;
++
++	/* DDR counter may be udpated and enabled in one jiffies */
++	if (unlikely(now == data->last_poll)) {
++		spin_unlock_irqrestore(&data->lock, flags);
++		return 0;
++	}
++
++	ddr_perf_cnt_update(data->perf_ch0);
++	ddr_perf_cnt_update(data->perf_ch1);
++	ddr_perf_cnt_update(data->perf_ch2);
++
++	clk_cycle = data->perf_ch0->evt_num;
++	busy_cycle = data->perf_ch1->evt_num;
++	cmd_number = data->perf_ch2->evt_num;
++
++	if (clk_cycle < data->clk_cycle)
++		clk_diff = last_count - data->clk_cycle + clk_cycle;
++	else
++		clk_diff = clk_cycle - data->clk_cycle;
++
++	if (busy_cycle < data->busy_cycle)
++		busy_diff = last_count - data->busy_cycle + busy_cycle;
++	else
++		busy_diff = busy_cycle - data->busy_cycle;
++
++	if (cmd_number < data->cmd_number)
++		cmd_diff = last_count - data->cmd_number + cmd_number;
++	else
++		cmd_diff = cmd_number - data->cmd_number;
++
++	if (now < data->last_poll)
++		time_diff = last_count - data->last_poll + now;
++	else
++		time_diff = now - data->last_poll;
++
++	time_diff = jiffies_to_msecs(time_diff);
++
++	thpt = cmd_diff & last_count;
++	thpt = thpt * burst_len * 1000;
++	do_div(thpt, time_diff);
++
++	tmp = (busy_diff + cmd_diff * 8) * 100;
++	do_div(tmp, (clk_diff * 2));
++	utility = tmp;
++	data->last_poll = now;
++
++	data->clk_cycle = clk_cycle;
++	data->busy_cycle = busy_cycle;
++	data->cmd_number = cmd_number;
++	data->cmd_diff = cmd_diff;
++	stat->total_time = time_diff;
++	data->throughput = thpt >> 20;
++
++	if (data->ddr_mon_debug) {
++		ddr_get_port_bw_a0(data, time_diff, stat);
++
++	}
++
++	spin_unlock_irqrestore(&data->lock, flags);
++	return 0;
++}
++
++static void ddr_init_mon_data(struct spacemit_ddraxi_mon_data *mon_data)
++{
++	struct ddr_dfreq_data *data = mon_data->data;
++
++	data->clk_cycle = 0;
++	data->busy_cycle = 0;
++	data->cmd_diff = 0;
++
++	memset(data->rd_reqs, 0, sizeof(data->rd_reqs));
++	memset(data->wr_reqs, 0, sizeof(data->wr_reqs));
++	memset(data->total_rd_bytes, 0, sizeof(data->total_rd_bytes));
++	memset(data->total_wr_bytes, 0, sizeof(data->total_wr_bytes));
++	memset(data->tol_rd_lat, 0, sizeof(data->tol_rd_lat));
++	memset(data->tol_wr_lat, 0, sizeof(data->total_wr_bytes));
++	memset(data->overflow_rd_num, 0, sizeof(data->overflow_rd_num));
++	memset(data->overflow_wr_num, 0, sizeof(data->overflow_wr_num));
++}
++
++static int spacemit_ddrbw_open(struct inode *inode, struct file *file)
++{
++	mon_info = (struct aximon_info*)kcalloc((SPACEMIT_MON_CTRL_NUM	\
++		+ SPACEMIT_ID_MASTER_NUM + 1), 	\
++		sizeof(struct aximon_info), GFP_KERNEL);
++	ddr_init_mon_data(ddraxi_mon_data);
++	return 0;
++}
++
++static int spacemit_ddrbw_release(struct inode *inode, struct file *file)
++{
++	int i;
++	ddr_mon_enable(ddraxi_mon_data->data, 0);
++	ddraxi_mon_data->data->cnt_en = 0;
++	ddr_perf_cnt_disable(ddraxi_mon_data->data->perf_ch0);
++	ddr_perf_cnt_disable(ddraxi_mon_data->data->perf_ch1);
++	ddr_perf_cnt_disable(ddraxi_mon_data->data->perf_ch2);
++	for(i = 0;i < (SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1);i++) {
++		memset(&mon_info[i],0,sizeof(struct aximon_info));
++		if(ddraxi_mon_data->data->axi_mon[i]->mid == 3)
++			kfree(ddraxi_mon_data->data->axi_mon[i]);
++	}
++
++	kfree(mon_info);
++	return 0;
++}
++
++static ssize_t spacemit_ddrbw_read(struct file *fp,	\
++		char __user *buf, size_t size, loff_t *pos)
++{
++	int rc;
++	struct ddrbw_info *bw_info;
++
++	bw_info = kzalloc(sizeof(struct ddrbw_info), GFP_KERNEL);
++	rc = ddr_get_dev_status(ddraxi_mon_data->dev, ddraxi_mon_data->stat);
++	if(rc < 0) {
++		pr_err("get dev status failed!");
++		return -EFAULT;
++	}
++
++	bw_info->total_time = ddraxi_mon_data->stat->total_time;
++	bw_info->clk_cycle = ddraxi_mon_data->data->clk_cycle;
++	bw_info->busy_cycle = ddraxi_mon_data->data->busy_cycle;
++	bw_info->current_frequency = ddraxi_mon_data->stat->current_frequency;
++	bw_info->throughput = ddraxi_mon_data->data->throughput;
++	bw_info->p0_r_thpt = ddraxi_mon_data->data->p0_r_thpt;
++	bw_info->p0_w_thpt = ddraxi_mon_data->data->p0_w_thpt;
++	bw_info->p0_thpt = ddraxi_mon_data->data->p0_thpt;
++	bw_info->cmd_number = ddraxi_mon_data->data->cmd_diff;
++	bw_info->total_num = SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1;
++	bw_info->port_num = SPACEMIT_MON_CTRL_NUM;
++
++	rc = copy_to_user(buf, bw_info, sizeof(struct ddrbw_info));
++	if(rc < 0) {
++		pr_err("copy_to_user failed!");
++		return -EFAULT;
++	}
++	return size;
++}
++
++static long spacemit_ddrbw_ioctl(struct file *file,	\
++		unsigned int cmd, unsigned long arg)
++{
++	int err, i;
++	void __user *argp = (void __user *)arg;
++	for(i = 0; i < SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1; i++)
++	{
++		strcpy(mon_info[i].name,master_name[i]);
++		mon_info[i].id = ddraxi_mon_data->data->axi_mon[i]->id;
++		mon_info[i].port_id = ddraxi_mon_data->data->axi_mon[i]->port_id;
++		mon_info[i].mid = ddraxi_mon_data->data->axi_mon[i]->mid;
++		if(ddraxi_mon_data->data->axi_mon[i]->master_is_lcd == true)
++			mon_info[i].single_master = 1;
++		else
++			mon_info[i].single_master = 0;
++	}
++	switch(cmd){
++	case 0:
++		err = copy_to_user(argp, mon_info, (SPACEMIT_MON_CTRL_NUM	\
++			+ SPACEMIT_ID_MASTER_NUM + 1)	\
++			* sizeof(struct aximon_info)) ? -EFAULT : 0;
++		break;
++	}
++	return err;
++}
++
++static const struct file_operations spacemit_ddrbw_fops = {
++	.owner		= THIS_MODULE,
++	.unlocked_ioctl	= spacemit_ddrbw_ioctl,
++	.read		= spacemit_ddrbw_read,
++	.open		= spacemit_ddrbw_open,
++	.release	= spacemit_ddrbw_release,
++};
++
++static int ddrbw_detect_init(void)
++{
++	int rc = 0, ret = 0;
++	struct device *devices;
++
++	rc = alloc_chrdev_region(&ddrdev.dev, 0, DDRBWTOOL_COUNT, "ddr_dw");
++	if(rc < 0){
++		printk("alloc_chrdev_region error\r\n");
++		ret =  -EBUSY;
++		goto fail;
++	}
++	printk("[ddrbw] MAJOR is %d\n", MAJOR(ddrdev.dev));
++	printk("[ddrbw] MINOR is %d\n", MINOR(ddrdev.dev));
++
++	ddrdev.major = MAJOR(ddrdev.dev);
++	cdev_init(&ddrdev.chrdevcdev, &spacemit_ddrbw_fops);
++	rc = cdev_add(&ddrdev.chrdevcdev, ddrdev.dev, DDRBWTOOL_COUNT);
++	if (rc < 0) {
++		printk("cdev_add error\r\n");
++		ret =  -EBUSY;
++		goto fail1;
++	}
++
++	ddrdev.dev_class = class_create("ddr_bw_class");
++	if (IS_ERR(ddrdev.dev_class)) {
++		printk("class_create error\r\n");
++		ret =  -EBUSY;
++		goto fail2;
++	}
++
++	devices = device_create(ddrdev.dev_class, NULL, 	\
++			MKDEV(ddrdev.major,0), NULL, "ddr_bw");
++	if(NULL == devices){
++		printk("device_create error\r\n");
++		ret =  -EBUSY;
++		goto fail3;
++	}
++
++	return 0;
++
++fail3:
++	class_destroy(ddrdev.dev_class);
++
++fail2:
++	cdev_del(&ddrdev.chrdevcdev);
++fail1:
++	unregister_chrdev_region(ddrdev.dev,DDRBWTOOL_COUNT);
++fail:
++	return ret;
++}
++
++static int ddraxi_mon_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct spacemit_ddraxi_mon_data *data = NULL;
++	struct resource resource;
++	int i = 0;
++	resource_size_t map_base, map_size;
++	int ret = 0;
++
++	data = devm_kzalloc(dev, sizeof(struct spacemit_ddraxi_mon_data), GFP_KERNEL);
++	if (data == NULL)
++		return -ENOMEM;
++
++	data->data = devm_kzalloc(dev, sizeof(struct ddr_dfreq_data), GFP_KERNEL);
++	if (data->data == NULL)
++		return -ENOMEM;
++
++	ret = of_address_to_resource(pdev->dev.of_node, 0, &resource);
++	if (ret) {
++		dev_err(dev, "invalid address\n");
++		return -EINVAL;
++	}
++
++	map_base = resource.start;
++	map_size = resource_size(&resource);
++
++	data->reg_base = devm_ioremap(dev, map_base, map_size);
++	if (!data->reg_base) {
++		dev_err(dev, "Failed to get register\n");
++		return -EIO;
++	}
++	data->ciu_base = ioremap(0xd4282c00, 0x1000);
++	data->data->base = ioremap(0xc0000000, 0x1800);
++
++	platform_set_drvdata(pdev, data);
++
++	for (i = 0; i < SPACEMIT_MON_LAT_NUM; i++)
++		mon_lat_id[i] = mon_lat_id_a0[i];
++
++	ddraxi_mon_data = data;
++	ddraxi_mon_data->dev = dev;
++	ddraxi_mon_data->stat = devm_kzalloc(dev,	\
++		sizeof(struct spacemit_ddrbw_status), GFP_KERNEL);
++	ddraxi_mon_init(data);
++
++	ddr_init_mon_data(ddraxi_mon_data);
++	ddr_perf_init_cnt(dev, data->data->base);
++	ret = ddrbw_detect_init();
++	if(ret){
++		dev_err(dev, "register ddr detect tool failed\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int ddraxi_mon_remove(struct platform_device *pdev)
++{
++	struct spacemit_ddraxi_mon_data *mon_data = platform_get_drvdata(pdev);
++	mon_data = NULL;
++
++	return 0;
++}
++
++static const struct of_device_id spacemit_ddraxi_dt_match[] = {
++	{.compatible = "spacemit,ddraxi-mon" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, spacemit_ddraxi_dt_match);
++
++
++static struct platform_driver spacemit_ddraxi_mon_driver = {
++	.probe = ddraxi_mon_probe,
++	.remove = ddraxi_mon_remove,
++	.driver = {
++		.name = "spacemit-ddraxi-mon",
++		.of_match_table = of_match_ptr(spacemit_ddraxi_dt_match),
++	},
++};
++
++static int __init spacemit_ddraxi_mon_init(void)
++{
++	return platform_driver_register(&spacemit_ddraxi_mon_driver);
++}
++module_init(spacemit_ddraxi_mon_init);
++
++static void __exit spacemit_ddraxi_mon_exit(void)
++{
++	platform_driver_unregister(&spacemit_ddraxi_mon_driver);
++}
++module_exit(spacemit_ddraxi_mon_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("SPACEMIT ddr-axi monitor driver");
+diff --git a/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
+new file mode 100644
+index 000000000000..1bd4bb948c1f
+--- /dev/null
++++ b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
+@@ -0,0 +1,363 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2024 Spacemit Co., Ltd.
++ */
++#ifndef __SPACEMIT_DDRBW_H_
++#define __SPACEMIT_DDRBW_H_
++
++#define DDR_FCLK		24
++#define DDR_FC_NODE_LEN		20
++
++#define DDR_UPTHRESHOLD		60
++#define DDR_DOWNDIFF		10
++#define DDR_THPT_CONS		(DDR_PORT_WIDTH * 2)
++
++#define DDR_THPT_DENOM		1000
++#define CMD_LEN			128
++
++#define KHZ			1000
++#define MHZ			1000000
++/* default voltage 1v for opp registration */
++#define DDR_FC_VOL		1000000
++/* avoid to use too slow level0 freq, keep it in case corner cases */
++#define DDR_SLOW_FREQ		100
++#define MC_CONTROL_0		0x44
++#define MC_DATA_WIDTH		8
++#define MC_BURST_LEN		16
++
++#define DDRC_ISR		0x140
++#define DDRC_IER		0x144
++#define DDRC_REFCTRL		0x378
++#define DDR_RFTIMING		0x3fc
++#define PEND_REF_OVERFLOW_CH0	BIT(16)
++#define REFRT_INT_CH0		BIT(14)
++#define REF_EXCEED_LIMIT_CH0	BIT(12)
++#define MB_INT_CH0		BIT(10)
++#define DECODE_ERR		BIT(2)
++#define DDRC_INT_ISR		0x140
++#define DDRC_INT_IER		0x144
++#define DDRC_ERR_INFO		0x150
++#define DDRC_ERR_ADR_L		0x154
++#define DDRC_ERR_ADR_H		0x158
++#define DDRC_ERR_ID		0x15
++
++#define SPACEMIT_PERF_EVT_NUM	4
++#define DDR_FC_BW_SIZE		4
++
++#define SPACEMIT_PERF_CNT_NUM	0x8
++#define PERF_CNT_NUM		0x7
++#define SPACEMIT_MON_CTRL_NUM	0x4
++#define SPACEMIT_ID_MON_CTRL_NUM	12
++#define SPACEMIT_ID_MASTER_NUM	15
++#define SPACEMIT_PERF_CNT_ALL	0xff
++
++#define DDR_RD_WR_EVT_CH0	12
++#define DDR_RD_WR_EVT_CH1	47
++
++/* DDR port width 128bit(16byte) */
++#define DDR_PORT_WIDTH		16
++#define DDR_LEN_16		16
++#define DDR_LEN_32		32
++#define DDR_LEN_64		64
++
++#define DDR_P0_WDW_LEN		6
++#define DDR_P0_NOM		80
++#define DDR_P0_DENOM		100
++#define DDR_P0_DECAY		(DDR_P0_DENOM - DDR_P0_NOM)
++
++#define SPACEMIT_MON_EVT_NUM	6
++#define SPACEMIT_MON_EVT_MASK	0x1f
++#define SPACEMIT_MON_LAT	12
++#define SPACEMIT_MON_LAT_NUM	4
++#define SPACEMIT_MON_LAT_MASK	0xffff
++#define SPACEMIT_MON_ID_SEL	0x7
++
++#define DDR_CLK_CYCLES		0
++#define DDR_CH0_BUSY		0x38
++#define DDR_RD_WR_CMD		0x56
++
++#define DDR_PORT_DEBUG_BW	1
++#define DDR_PORT_DEBUG_LAT	2
++
++#define DDRBWTOOL_COUNT		1
++
++#define DDR_MAX_FREQ_LV		8
++
++#define PERF_CNT_CONF0		0x100
++#define PERF_CNT_CONF1		0x104
++/* check whether overflow or not */
++#define PERF_CNT_STATUS		0x108
++#define PERF_CNT_CTRL		0x10c
++
++#define PERF_CNT_BASE		0x110
++
++#define PERF_CNT_ISR		0x140
++#define PERF_CNT_IER		0x144
++
++/* reg range: 0x10 - 0x2c, step 0x4 */
++#define perf_cnt_reg(n)		(PERF_CNT_BASE + (n << 2))
++
++#define perf_cnt_conf_base(n)	(n << 3)
++#define PERF_CNT_EN		(1 << 7)
++
++#define is_cnt_valid(cnt)	((cnt < PERF_CNT_NUM) ? 0 : -EINVAL)
++
++#define PERF_INVALID_EVT_SEL	0xffff
++#define PERF_SYS_NODE_LEN	20
++
++struct spacemit_ddr_pbw {
++	u64 byte_bw;	/* bytes throughput */
++	u64 req_bw;	/* requests throughtput */
++	u32 rd_reqs;	/* read requests number */
++	u32 wr_reqs;	/* write requests number */
++};
++struct spacemit_ddr_bw_info {
++	u64 curr_freq;
++	u64 total_bw;
++	struct spacemit_ddr_pbw port_bw[4];
++};
++
++struct ddr_perf_cnt {
++	u32 id;
++	u32 evt_sel;
++	u32 evt_num;
++	bool init;
++	bool enable;
++	bool free;
++	spinlock_t lock;
++};
++
++struct devfreq_throughput_table {
++	u64 max;
++	u64 min;
++};
++
++struct devfreq_throughput_data {
++	struct devfreq_throughput_table *ddr_thpt_tbl;
++
++	u32 tbl_len;
++	u32 upthreshold;
++	u32 downdifferential;
++};
++
++struct ddr_perf_mon {
++	u32 id;
++	u32 th_x;
++	u32 th_y;
++	u32 evt_sel;
++	u32 evt_num[SPACEMIT_PERF_EVT_NUM];
++	bool init;
++	bool enable;
++	bool free;
++	spinlock_t lock;
++};
++
++struct ddraxi_mon {
++	u32 mid;
++	u32 port_id;
++	u32 id;
++	u32 lat_th;
++	u32 evt_num[SPACEMIT_MON_EVT_NUM];
++	u32 lat_num[SPACEMIT_MON_LAT_NUM];
++	bool master_is_lcd;
++	bool init;
++	bool enable;
++	bool free;
++	bool lat_en;
++	spinlock_t lock;
++};
++
++struct ddr_dfreq_data {
++	struct ddraxi_mon *axi_mon[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	struct work_struct work_sum_qos;
++	struct devfreq *devfreq;
++	struct clk *ddr_clk;
++	void __iomem *base;
++	int ddr_mon_debug;
++	bool cnt_en;
++
++	unsigned long qos_min_freq;
++	unsigned long qos_max_freq;
++	const char *clk_name;
++
++	spinlock_t lock;
++	u64 last_poll;
++	/* perf-cnt events */
++	u64 clk_cycle;
++	u64 busy_cycle;
++	u64 cmd_number;
++	u64 cmd_diff;
++
++	/* axi monitor events */
++	u64 rd_reqs[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 wr_reqs[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 tol_rd_lat[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 tol_wr_lat[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 total_rd_bytes[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 total_wr_bytes[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 overflow_rd_num[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u64 overflow_wr_num[SPACEMIT_MON_CTRL_NUM + SPACEMIT_ID_MASTER_NUM + 1];
++	u32 ovfl_threshold;
++
++	struct ddr_perf_cnt *perf_ch0;
++	struct ddr_perf_cnt *perf_ch1;
++	struct ddr_perf_cnt *perf_ch2;
++
++	unsigned long throughput;
++	unsigned long p0_r_thpt;
++	unsigned long p0_w_thpt;
++	unsigned long p0_thpt;
++};
++
++struct ddrbw_info {
++	u64 last_poll;
++	/* perf-cnt events */
++	u64 clk_cycle;
++	u64 busy_cycle;
++	u64 cmd_number;
++	int port_num;
++	int total_num;
++	u32 ovfl_threshold;
++	unsigned long throughput;
++	unsigned long p0_r_thpt;
++	unsigned long p0_w_thpt;
++	unsigned long p0_thpt;
++	unsigned long total_time;
++	unsigned long busy_time;
++	unsigned long current_frequency;
++};
++
++struct aximon_info {
++	u32 mid;
++	u32 port_id;
++	u32 id;
++	u32 single_master;
++	s64 rd_bytes;
++	s64 wr_bytes;
++	u64 max_rd;
++	u64 max_wr;
++	u64 avr_rd;
++	u64 avr_wr;
++	u64 rd_reqs;
++	u64 wr_reqs;
++	u64 wr_thpt;
++	u64 rd_thpt;
++	u64 byte_thpt;
++	u64 req_thpt;
++	char name[10];
++};
++struct aximon_info *mon_info;
++char *master_name[20] = {
++	"P0", "P1", "P2", "P3", "CPU", "GPU",
++	"AES", "USBMMC", "GMAC1", "RCPU", "GMAC0",
++	"VPU", "PCIE0", "PCIE1", "PCIE2", "ISP",
++	"DSI", "V2D", "HDMI", "LCD"
++};
++
++/*
++	mid0	mid1	mid2
++  p0  	CPU	GPU	aes
++  p1	USBMMC	GMAC1	RCPU	GMAC0
++  p2	vpu	pcie0	PCIE1	pcie2
++  p3	ISP	dsi	v2d	hdmi
++*/
++
++struct spacemit_ddrbw_status {
++	/* both since the last measure */
++	unsigned long total_time;
++	unsigned long busy_time;
++	unsigned long current_frequency;
++	void *private_data;
++	unsigned long throughput;
++	unsigned long p0_r_thpt;
++	unsigned long p0_w_thpt;
++	unsigned long p0_thpt;
++};
++
++#define LCD_MON_BASE		0x200
++#define SPACEMIT_MON_BASE	0x0
++#define SPACEMIT_MON_ID_BASE	0x8
++#define SPACEMIT_MON_DATA	0xc
++#define SPACEMIT_MON_ID_REG	0x40
++
++/* reg range: 0x0 - 0x30, step 0x10 */
++#define mon_ctrl_reg(n)		(SPACEMIT_MON_BASE + (n << 4))
++/* reg range: 0x3c - 0x6c, step 0x10 */
++#define mon_data_reg(n)		(SPACEMIT_MON_DATA + (n << 4))
++
++/* id monitor reg range 0x08 `0x38, step 0x10 */
++#define mon_id_reg(n)		(SPACEMIT_MON_ID_BASE + (n << 4))
++/* id monitor sel range 0x40 `0x7c, step 0x4 */
++#define mon_id_sel(n, m)	(SPACEMIT_MON_ID_REG + (m << 4) + (n << 2))
++
++#define MON_CTRL_SEL		(1 << 4)
++#define MON_CTRL_LATCH		(1 << 5)
++#define MON_CTRL_READ		(1 << 6)
++#define MON_CTRL_EN		(1 << 31)
++
++/* ID MON */
++#define IDMON_CTRL_EN		24
++#define IDMON_CLK_EN		16
++
++#define is_mon_valid(mon)	((mon < (SPACEMIT_MON_CTRL_NUM + \
++		SPACEMIT_ID_MASTER_NUM + 1)) ? 0 : -EINVAL)
++
++#define PERF_SYS_NODE_LEN	20
++
++/*
++ * bandwidth calculation:
++ * event 16: total read bytes
++ * event 18: total write bytes
++ * event 17: counter numbers of read-lat exceed threshold
++ * event 19: counter numbers of write-lat exceed threshold
++ * event 1: total read request
++ * event 9: total write request
++ * int mon_evt_id[SPACEMIT_MON_EVT_NUM] = {17, 19, 16, 18, 1, 9};
++ */
++/* Monitor bandwidth by default. */
++int mon_evt_id[SPACEMIT_MON_EVT_NUM] = {16, 18, 1, 9, 17, 19};
++/* need to enable/disable monitor for max rd/wr latency data */
++int mon_lat_id[SPACEMIT_MON_LAT_NUM];
++/* we will just use evnet 5 and event 13 on k1 */
++int mon_lat_id_z1[SPACEMIT_MON_LAT_NUM] = {5, 13, 5, 13};
++/*
++ * latency for a0:
++ * event 0x14: max rd
++ * event 0x15: max wr
++ * event 0x18: total_read_latency on fclk
++ * evnet 0x19: total_write_latency on fclk
++ */
++int mon_lat_id_a0[SPACEMIT_MON_LAT_NUM] = {0x14, 0x15, 0x18, 0x19};
++struct spacemit_ddraxi_mon_data {
++	void __iomem *reg_base;
++	void __iomem *ciu_base;
++	struct device *dev;
++	struct ddraxi_mon mon[SPACEMIT_ID_MON_CTRL_NUM + SPACEMIT_MON_CTRL_NUM + 1];
++	struct ddr_dfreq_data *data;
++	struct spacemit_ddrbw_status *stat;
++};
++
++static struct spacemit_ddraxi_mon_data *ddraxi_mon_data;
++
++static u32 master_id[SPACEMIT_ID_MASTER_NUM] = {
++	0, 1, 2,
++	0, 1, 2, 3,
++	0, 1, 2, 3,
++	0, 1, 2, 3
++};
++
++union perf_cnt_config {
++	struct {
++		u32 evt_sel:7;
++		u32 enable:1;
++		u32 reserved1:24;
++	} bit;
++	u32 conf;
++};
++
++struct ddr_perf_data {
++	void __iomem *base;
++	struct ddr_perf_cnt cnt[PERF_CNT_NUM];
++};
++
++#endif	/* __SPACEMIT_DDRBW_H_ */
+-- 
+2.47.0
+
