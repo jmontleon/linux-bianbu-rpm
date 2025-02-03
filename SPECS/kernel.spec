@@ -920,41 +920,16 @@ Source22: filtermods.py
 %if 0%{?include_rhel}
 Source23: x509.genkey.rhel
 
-Source24: %{name}-aarch64-rhel.config
-Source25: %{name}-aarch64-debug-rhel.config
-
-Source27: %{name}-ppc64le-rhel.config
-Source28: %{name}-ppc64le-debug-rhel.config
-Source29: %{name}-s390x-rhel.config
-Source30: %{name}-s390x-debug-rhel.config
-Source31: %{name}-s390x-zfcpdump-rhel.config
-Source32: %{name}-x86_64-rhel.config
-Source33: %{name}-x86_64-debug-rhel.config
-
 Source34: def_variants.yaml.rhel
 
 Source41: x509.genkey.centos
-# ARM64 64K page-size kernel config
-Source42: %{name}-aarch64-64k-rhel.config
-Source43: %{name}-aarch64-64k-debug-rhel.config
 
 %endif
 
 %if 0%{?include_fedora}
 Source50: x509.genkey.fedora
 
-Source52: %{name}-aarch64-fedora.config
-Source53: %{name}-aarch64-debug-fedora.config
-Source54: %{name}-aarch64-16k-fedora.config
-Source55: %{name}-aarch64-16k-debug-fedora.config
-Source56: %{name}-ppc64le-fedora.config
-Source57: %{name}-ppc64le-debug-fedora.config
-Source58: %{name}-s390x-fedora.config
-Source59: %{name}-s390x-debug-fedora.config
-Source60: %{name}-x86_64-fedora.config
-Source61: %{name}-x86_64-debug-fedora.config
 Source700: %{name}-riscv64-fedora.config
-Source701: %{name}-riscv64-debug-fedora.config
 
 Source62: def_variants.yaml.fedora
 %endif
@@ -1021,27 +996,12 @@ Source301: kernel-kabi-dw-%{kabiversion}.tar.xz
 
 %if 0%{include_rt}
 %if 0%{include_rhel}
-Source474: %{name}-aarch64-rt-rhel.config
-Source475: %{name}-aarch64-rt-debug-rhel.config
-Source476: %{name}-x86_64-rt-rhel.config
-Source477: %{name}-x86_64-rt-debug-rhel.config
 %endif
 %if 0%{include_fedora}
-Source478: %{name}-aarch64-rt-fedora.config
-Source479: %{name}-aarch64-rt-debug-fedora.config
-Source480: %{name}-x86_64-rt-fedora.config
-Source481: %{name}-x86_64-rt-debug-fedora.config
-Source482: %{name}-riscv64-rt-fedora.config
-Source483: %{name}-riscv64-rt-debug-fedora.config
 %endif
 %endif
 
 %if %{include_automotive}
-# automotive config files
-Source484: %{name}-aarch64-automotive-rhel.config
-Source485: %{name}-aarch64-automotive-debug-rhel.config
-Source486: %{name}-x86_64-automotive-rhel.config
-Source487: %{name}-x86_64-automotive-debug-rhel.config
 %endif
 
 
