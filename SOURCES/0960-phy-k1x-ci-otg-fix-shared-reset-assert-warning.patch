@@ -1,7 +1,7 @@
 From 5b7818b12ae536954234f76158779fd0af19660b Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Aug 2024 10:10:47 +0800
-Subject: [PATCH 0960/1202] phy-k1x-ci-otg: fix shared reset assert warning
+Subject: [PATCH 0960/1203] phy-k1x-ci-otg: fix shared reset assert warning
 
 Current reset cause warning becasue deassert after assert
 cannot apply to shared without deasserted first. Fix it by

@@ -1,7 +1,7 @@
 From 373de061f5c024e969b6eb4a96e038cfaa8147e9 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Fri, 29 Mar 2024 19:39:10 +0800
-Subject: [PATCH 0532/1202] pcie: change the dma ranges of pcie to drma_range2
+Subject: [PATCH 0532/1203] pcie: change the dma ranges of pcie to drma_range2
 
   As the pcie controller occasionally makes errors when accessing dram 2G-4G space,
   the dma ranges of pcie does not include 2G-4G.

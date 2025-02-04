@@ -1,7 +1,7 @@
 From 149357839f55ba8ed2f20868d46053da7bb0acec Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 18 Dec 2023 16:15:39 +0800
-Subject: [PATCH 0191/1202] usb: udc: k1x_udc: fix udc disconnect
+Subject: [PATCH 0191/1203] usb: udc: k1x_udc: fix udc disconnect
 
 	driver->driver.bus is used in udc/core.c when disconnect.
 	There is no reason to set it NULL here.

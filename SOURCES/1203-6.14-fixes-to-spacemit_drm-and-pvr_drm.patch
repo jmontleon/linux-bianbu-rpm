@@ -1,0 +1,62 @@
+From 1dc1c49badd3a75a373538ff01204ce1c4702355 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Mon, 3 Feb 2025 13:41:26 -0500
+Subject: [PATCH 1203/1203] 6.14 fixes to spacemit_drm and pvr_drm
+
+---
+ drivers/gpu/drm/img-rogue/pvr_drm.c     | 2 --
+ drivers/gpu/drm/spacemit/spacemit_drm.c | 4 +---
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
+index d2d732c09911..babb592921ab 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_drm.c
++++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
+@@ -78,7 +78,6 @@
+ 
+ #define PVR_DRM_DRIVER_NAME PVR_DRM_NAME
+ #define PVR_DRM_DRIVER_DESC "Imagination Technologies PVR DRM"
+-#define	PVR_DRM_DRIVER_DATE "20170530"
+ 
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
+ #define	PVR_DRM_DRIVER_PRIME 0
+@@ -548,7 +547,6 @@ const struct drm_driver pvr_drm_generic_driver = {
+ 
+ 	.name			= PVR_DRM_DRIVER_NAME,
+ 	.desc			= PVR_DRM_DRIVER_DESC,
+-	.date			= PVR_DRM_DRIVER_DATE,
+ 	.major			= PVRVERSION_MAJ,
+ 	.minor			= PVRVERSION_MIN,
+ 	.patchlevel		= PVRVERSION_BUILD,
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index f408f85da95a..0d2e79b2789b 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -13,7 +13,7 @@
+ #include <drm/drm_fbdev_dma.h>
+ #include <drm/drm_ioctl.h>
+ #include <drm/drm_of.h>
+-#include <drm/drm_client_setup.h>
++#include <drm/clients/drm_client_setup.h>
+ #include <linux/component.h>
+ #include <linux/mutex.h>
+ #include <linux/of_graph.h>
+@@ -26,7 +26,6 @@
+ 
+ #define DRIVER_NAME	"spacemit"
+ #define DRIVER_DESC	"Spacemit SoCs' DRM Driver"
+-#define DRIVER_DATE	"20231115"
+ #define DRIVER_MAJOR	1
+ #define DRIVER_MINOR	0
+ 
+@@ -209,7 +208,6 @@ static struct drm_driver spacemit_drm_drv = {
+ 
+ 	.name		= DRIVER_NAME,
+ 	.desc			= DRIVER_DESC,
+-	.date			= DRIVER_DATE,
+ 	.major		= DRIVER_MAJOR,
+ 	.minor		= DRIVER_MINOR,
+ };
+-- 
+2.47.0
+

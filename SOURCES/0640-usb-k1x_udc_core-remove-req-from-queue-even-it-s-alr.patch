@@ -1,7 +1,7 @@
 From dada8c22698e403accddfaa7cc4aa47557f1ea0d Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 18:34:48 +0800
-Subject: [PATCH 0640/1202] usb: k1x_udc_core: remove req from queue even it's
+Subject: [PATCH 0640/1203] usb: k1x_udc_core: remove req from queue even it's
  already unmapped
 
 done() is always called with req from queue, so it's safe to delete

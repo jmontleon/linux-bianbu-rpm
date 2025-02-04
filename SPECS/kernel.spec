@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.0
-%define specversion 6.13.0
-%define patchversion 6.13
-%define pkgrelease 62
+%define specrpmversion 6.14.0
+%define specversion 6.14.0
+%define patchversion 6.14
+%define pkgrelease 0.rc1.15
 %define kversion 6
-%define tarfile_release 6.13
+%define tarfile_release 6.14-rc1
 # This is needed to do merge window version magic
-%define patchlevel 13
+%define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 62%{?buildid}%{?dist}
+%define specrelease 0.rc1.15%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.0
+%define kabiversion 6.14.0
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -684,7 +684,7 @@ Summary: The Linux kernel
 
 
 Name: %{package_name}
-License: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-2-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR CDDL-1.0) AND ((GPL-2.0-only WITH Linux-syscall-note) OR Linux-OpenIB) AND ((GPL-2.0-only WITH Linux-syscall-note) OR MIT) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR MIT) AND 0BSD AND BSD-2-Clause AND (BSD-2-Clause OR Apache-2.0) AND BSD-3-Clause AND BSD-3-Clause-Clear AND CC0-1.0 AND GFDL-1.1-no-invariants-or-later AND GPL-1.0-or-later AND (GPL-1.0-or-later OR BSD-3-Clause) AND (GPL-1.0-or-later WITH Linux-syscall-note) AND GPL-2 AND GPL-2.0-only AND (GPL-2.0-only OR Apache-2.0) AND (GPL-2.0-only OR BSD-2-Clause) AND (GPL-2.0-only OR BSD-3-Clause) AND (GPL-2.0-only OR CDDL-1.0) AND (GPL-2.0-only OR GFDL-1.1-no-invariants-or-later) AND (GPL-2.0-only OR GFDL-1.2-no-invariants-only) AND (GPL-2.0-only WITH Linux-syscall-note) AND GPL-2.0-or-later AND (GPL-2.0-or-later OR BSD-2-Clause) AND (GPL-2.0-or-later OR BSD-3-Clause) AND (GPL-2.0-or-later OR CC-BY-4.0) AND (GPL-2.0-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH Linux-syscall-note) AND ISC AND LGPL-2.0-or-later AND (LGPL-2.0-or-later OR BSD-2-Clause) AND (LGPL-2.0-or-later WITH Linux-syscall-note) AND LGPL-2.1-only AND (LGPL-2.1-only OR BSD-2-Clause) AND (LGPL-2.1-only WITH Linux-syscall-note) AND LGPL-2.1-or-later AND (LGPL-2.1-or-later WITH Linux-syscall-note) AND (Linux-OpenIB OR GPL-2.0-only) AND (Linux-OpenIB OR GPL-2.0-only OR BSD-2-Clause) AND Linux-man-pages-copyleft AND MIT AND (MIT OR Apache-2.0) AND (MIT OR GPL-2.0-only) AND (MIT OR GPL-2.0-or-later) AND (MIT OR LGPL-2.1-only) AND (MPL-1.1 OR GPL-2.0-only) AND (X11 OR GPL-2.0-only) AND (X11 OR GPL-2.0-or-later) AND Zlib AND (copyleft-next-0.3.1 OR GPL-2.0-or-later)
+License: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-2-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-only WITH Linux-syscall-note) OR CDDL-1.0) AND ((GPL-2.0-only WITH Linux-syscall-note) OR Linux-OpenIB) AND ((GPL-2.0-only WITH Linux-syscall-note) OR MIT) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR BSD-3-Clause) AND ((GPL-2.0-or-later WITH Linux-syscall-note) OR MIT) AND 0BSD AND BSD-2-Clause AND (BSD-2-Clause OR Apache-2.0) AND BSD-3-Clause AND BSD-3-Clause-Clear AND CC0-1.0 AND GFDL-1.1-no-invariants-or-later AND GPL-1.0-or-later AND (GPL-1.0-or-later OR BSD-3-Clause) AND (GPL-1.0-or-later WITH Linux-syscall-note) AND GPL-2.0-only AND (GPL-2.0-only OR Apache-2.0) AND (GPL-2.0-only OR BSD-2-Clause) AND (GPL-2.0-only OR BSD-3-Clause) AND (GPL-2.0-only OR CDDL-1.0) AND (GPL-2.0-only OR GFDL-1.1-no-invariants-or-later) AND (GPL-2.0-only OR GFDL-1.2-no-invariants-only) AND (GPL-2.0-only WITH Linux-syscall-note) AND GPL-2.0-or-later AND (GPL-2.0-or-later OR BSD-2-Clause) AND (GPL-2.0-or-later OR BSD-3-Clause) AND (GPL-2.0-or-later OR CC-BY-4.0) AND (GPL-2.0-or-later WITH GCC-exception-2.0) AND (GPL-2.0-or-later WITH Linux-syscall-note) AND ISC AND LGPL-2.0-or-later AND (LGPL-2.0-or-later OR BSD-2-Clause) AND (LGPL-2.0-or-later WITH Linux-syscall-note) AND LGPL-2.1-only AND (LGPL-2.1-only OR BSD-2-Clause) AND (LGPL-2.1-only WITH Linux-syscall-note) AND LGPL-2.1-or-later AND (LGPL-2.1-or-later WITH Linux-syscall-note) AND (Linux-OpenIB OR GPL-2.0-only) AND (Linux-OpenIB OR GPL-2.0-only OR BSD-2-Clause) AND Linux-man-pages-copyleft AND MIT AND (MIT OR Apache-2.0) AND (MIT OR GPL-2.0-only) AND (MIT OR GPL-2.0-or-later) AND (MIT OR LGPL-2.1-only) AND (MPL-1.1 OR GPL-2.0-only) AND (X11 OR GPL-2.0-only) AND (X11 OR GPL-2.0-or-later) AND Zlib AND (copyleft-next-0.3.1 OR GPL-2.0-or-later)
 URL: https://www.kernel.org/
 Version: %{specrpmversion}
 Release: %{pkg_release}
@@ -711,7 +711,7 @@ BuildRequires: kmod, bash, coreutils, tar, git-core, which
 BuildRequires: bzip2, xz, findutils, m4, perl-interpreter, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk, %compression
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc, bison, flex, gcc-c++
 %if 0%{?fedora}
-BuildRequires: rust, rust-src, bindgen
+BuildRequires: rust, rust-src, bindgen, rustfmt
 %endif
 BuildRequires: net-tools, hostname, bc, elfutils-devel
 BuildRequires: dwarves
@@ -814,6 +814,13 @@ BuildRequires: pesign >= 0.10-4
 BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %define __strip %{_build_arch}-linux-gnu-strip
+
+# Work around find-debuginfo for cross builds.
+# find-debuginfo doesn't support any of CROSS options (RHEL-21797),
+# and since debugedit > 5.0-16.el10, or since commit
+#   dfe1f7ff30f4 ("find-debuginfo.sh: Exit with real exit status in parallel jobs")
+# it now aborts and build fails.
+%undefine _include_gdb_index
 %endif
 
 # These below are required to build man pages
@@ -923,6 +930,7 @@ Source23: x509.genkey.rhel
 Source34: def_variants.yaml.rhel
 
 Source41: x509.genkey.centos
+# ARM64 64K page-size kernel config
 
 %endif
 
@@ -1002,6 +1010,7 @@ Source301: kernel-kabi-dw-%{kabiversion}.tar.xz
 %endif
 
 %if %{include_automotive}
+# automotive config files
 %endif
 
 
@@ -1026,6 +1035,7 @@ Source4002: gating.yaml
 %if !%{nopatches}
 
 Patch1: patch-%{patchversion}-redhat.patch
+
 
 
 
@@ -2233,6 +2243,7 @@ Patch11199: 1199-remove-unused-var.patch
 Patch11200: 1200-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 Patch11201: 1201-fix-includes-for-timestamp.patch
 Patch11202: 1202-remove-debug-rdinit-from-m1-bpi.patch
+Patch11203: 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 
 
 
@@ -3069,6 +3080,7 @@ cp -a %{SOURCE1} .
 %if !%{nopatches}
 
 ApplyOptionalPatch patch-%{patchversion}-redhat.patch
+
 
 
 
@@ -4276,6 +4288,7 @@ ApplyOptionalPatch 1199-remove-unused-var.patch
 ApplyOptionalPatch 1200-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 ApplyOptionalPatch 1201-fix-includes-for-timestamp.patch
 ApplyOptionalPatch 1202-remove-debug-rdinit-from-m1-bpi.patch
+ApplyOptionalPatch 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 
 
 
@@ -6243,7 +6256,6 @@ fi\
 %{_libdir}/libperf-jvmti.so
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
-%{_datadir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
 %{_sysconfdir}/bash_completion.d/perf
 %doc linux-%{KVERREL}/tools/perf/Documentation/examples.txt
@@ -6558,245 +6570,133 @@ fi\
 #
 #
 %changelog
-* Mon Jan 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.0-62]
+* Mon Feb 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc1.15]
+- Add -fzero-init-padding-bits to bindgen_skip_cflags (Justin M. Forbes)
+- apply -Wno-error=unterminated-string-initialization temporarily (Thorsten Leemhuis)
+- x86/boot: Use '-std=gnu11' to fix build with GCC 15 (Nathan Chancellor)
 - include/linux: Adjust headers for C23 (Jakub Jelinek)
-
-* Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-62]
-- Fix build with merged-sbin (Adam Williamson)
 - x86/insn_decoder_test: allow longer symbol-names (David Rheinsberg)
-- kernel.spec: update license field (Scott Weaver)
 
-* Mon Jan 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-61]
+* Mon Feb 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc1.14]
+- redhat: generalize rule for kunit and test kmod placement (Jan Stancek)
+- Linux v6.14.0-0.rc1
+
+* Sun Feb 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.a86bf2283d2c.13]
+- Linux v6.14.0-0.rc0.a86bf2283d2c
+
+* Sat Feb 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.60c828cf80c0.12]
+- Move CONFIG_PCI_REALLOC_ENABLE_AUTO out of common as they have diverged (Justin M. Forbes)
+- fedora: arm64: enable Silicon Mitus SM5502 Extcon driver (Sam Day)
+- fedora: arm64: enable Richtek RT5033 MFD+charger+regulator modules (Sam Day)
+- configs/fedora: Enable CONFIG_PCI_REALLOC_ENABLE_AUTO (Yanko Kaneti)
+- Enable CONFIG_INTEL_MEI_PXP and CONFIG_DRM_I915_PXP on rhel (Jocelyn Falempe)
+- Enable Intel Xe Graphics (Mika Penttilä)
+- Linux v6.14.0-0.rc0.60c828cf80c0
+
+* Fri Jan 31 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.69e858e0b8b2.11]
+- Turn on CONFIG_DRM_ACCEL_AMDXDNA for Fedora (Justin M. Forbes)
+- Linux v6.14.0-0.rc0.69e858e0b8b2
+
+* Thu Jan 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.72deda0abee6.10]
+- redhat/configs: disable CONFIG_AF_UNIX_OOB on RHEL (Marcelo Ricardo Leitner)
+- redhat/configs: automotive: Disable wireless network and it's dependencies (Dorinda Bassey)
+- Linux v6.14.0-0.rc0.72deda0abee6
+
+* Wed Jan 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.05dbaf8dd8bf.9]
+- Linux v6.14.0-0.rc0.05dbaf8dd8bf
+
+* Tue Jan 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.6d61a53dd6f5.8]
+- redhat/kernel.spec: work around find-debuginfo aborting cross builds (Jan Stancek)
+- redhat/configs: Default to batched invalidation on s390 (Jerry Snitselaar)
+- Linux v6.14.0-0.rc0.6d61a53dd6f5
+
+* Mon Jan 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.9c5968db9e62.7]
+- Linux v6.14.0-0.rc0.9c5968db9e62
+
+* Mon Jan 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.aa22f4da2a46.6]
+- redhat/configs: automotive: set CONFIG_TIMEOUT_PANIC (Enric Balletbo i Serra)
+- drop %%{_datadir}/perf-core/* from kernel.spec (Thorsten Leemhuis)
+- put new misc_minor_kunit in modules-internal (Thorsten Leemhuis)
+- put new cirrus kunit tests in modules-internal (Thorsten Leemhuis)
+- redhat/configs: enable iBFT parsing on aarch64 (Chris Leech)
+- redhat: kernel.spec: fix build with merged-sbin (Zbigniew Jędrzejewski-Szmek)
+
+* Sun Jan 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.aa22f4da2a46.5]
+- Fix up CONFIG_REGMAP mismatch (Scott Weaver)
+- Linux v6.14.0-0.rc0.aa22f4da2a46
+
+* Fri Jan 24 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.bc8198dc7ebc.4]
+- redhat: fix modules.order target (Scott Weaver)
+- Linux v6.14.0-0.rc0.bc8198dc7ebc
+
+* Thu Jan 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.d0d106a2bd21.3]
+- Fix up CONFIG_CRC_T10DIF_IMPL_GENERIC mismatch (Justin M. Forbes)
+- Fix mismatches for 6.13 merge window (Justin M. Forbes)
+- Linux v6.14.0-0.rc0.d0d106a2bd21
+
+* Wed Jan 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.c4b9570cfb63.2]
+- Reset rhelver and trim changelog for 6.14 (Justin M. Forbes)
+- Linux v6.14.0-0.rc0.c4b9570cfb63
+
+* Tue Jan 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.14.0-0.rc0.95ec54a420b8.62]
+- Turn off CONFIG_ARM_TIMER_SP804 for automotive (Justin M. Forbes)
+- Set ARM_TIMER_SP804 (Justin M. Forbes)
+- redhat/configs: enable addtional sa8775 related Kconfigs (Brian Masney)
+- redhat: Add rustfmt to deps (Peter Robinson)
 - redhat/configs: Disable deprecated CONFIG_LCS option on s390 (Mete Durlu) [RHEL-68296]
 - redhat/configs: make modular/disable NFS support (Dorinda Bassey)
 - redhat/configs: Disable unsafe queuing disciplines (Dorinda Bassey)
-- Linux v6.13.0
-
-* Sun Jan 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.fda5e3f28400.60]
-- Linux v6.13.0-0.rc7.fda5e3f28400
-
-* Sat Jan 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.595523945be0.59]
-- Linux v6.13.0-0.rc7.595523945be0
-
-* Fri Jan 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.9bffa1ad25b8.58]
 - configs: move pending RT configs into rhel/rt/generic (Clark Williams)
 - Turn on PROVE_RAW_LOCK_NESTING for RHEL debug builds (Justin M. Forbes)
 - redhat/Makefile: Fix long dist-full-help execution time (Prarit Bhargava)
 - redhat/self-test: Update data to add HELP_TYPES variable (Prarit Bhargava)
 - redhat/Makefile: Add new dist-help functionality (Prarit Bhargava)
 - Makefile: Do not output LOCALVERSION message for help commands (Prarit Bhargava)
-- Linux v6.13.0-0.rc7.9bffa1ad25b8
-
-* Thu Jan 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.619f0b6fad52.57]
 - Fedora 6.13 configs part 2 (Justin M. Forbes)
 - Fedora 6.13 configs part 1 (Justin M. Forbes)
-
-* Wed Jan 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.619f0b6fad52.56]
 - redhat/configs: enable CONFIG_VFAT_FS as a module (Dorinda Bassey)
 - redhat: create 'debug' addon for UKI (Li Tian)
-- Linux v6.13.0-0.rc7.619f0b6fad52
-
-* Tue Jan 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.c45323b7560e.55]
 - kernel.spec: Build cpupower on riscv64 (Yanko Kaneti)
-- Linux v6.13.0-0.rc7.c45323b7560e
-
-* Mon Jan 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc7.54]
-- Linux v6.13.0-0.rc7
-
-* Sun Jan 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.b62cef9a5c67.53]
-- Linux v6.13.0-0.rc6.b62cef9a5c67
-
-* Sat Jan 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.77a903cd8e5a.52]
-- Linux v6.13.0-0.rc6.77a903cd8e5a
-
-* Fri Jan 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.2144da25584e.51]
 - RHEL: Set correct config option for CRYPTO_HMAC_S390 (Mete Durlu) [RHEL-24137]
 - redhat/kernel.spec: add iputils to the requires list for selftests-internal (Brian Masney)
-- Linux v6.13.0-0.rc6.2144da25584e
-
-* Thu Jan 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.eea6e4b4dfb8.50]
-- Linux v6.13.0-0.rc6.eea6e4b4dfb8
-
-* Wed Jan 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.09a0fa92e5b4.49]
 - redhat/kernel.spec.template: Require kernel-tools-libs in rtla (Tomas Glozar)
 - redhat: make kernel-debug-uki-virt installable without kernel-debug-core (Vitaly Kuznetsov)
 - redhat/configs: enable CONFIG_USB_XHCI_PCI_RENESAS on RHEL (Desnes Nunes) [RHEL-72093]
 - redhat/configs: Re-enable ZRAM backends and unify configuration (Neal Gompa)
-- Linux v6.13.0-0.rc6.09a0fa92e5b4
-
-* Tue Jan 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.fbfd64d25c7a.48]
-- Linux v6.13.0-0.rc6.fbfd64d25c7a
-
-* Mon Jan 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc6.47]
-- Linux v6.13.0-0.rc6
-
-* Sun Jan 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.ab75170520d4.46]
-- Linux v6.13.0-0.rc5.ab75170520d4
-
-* Sat Jan 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.63676eefb7a0.45]
-- Linux v6.13.0-0.rc5.63676eefb7a0
-
-* Fri Jan 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.0bc21e701a6f.44]
-- Linux v6.13.0-0.rc5.0bc21e701a6f
-
-* Thu Jan 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.56e6a3499e14.43]
-- Linux v6.13.0-0.rc5.56e6a3499e14
-
-* Tue Dec 31 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.ccb98ccef0e5.42]
-- Linux v6.13.0-0.rc5.ccb98ccef0e5
-
-* Mon Dec 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc5.41]
-- Linux v6.13.0-0.rc5
-
-* Sun Dec 29 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.059dd502b263.40]
-- Linux v6.13.0-0.rc4.059dd502b263
-
-* Sat Dec 28 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.fd0584d220fe.39]
-- Linux v6.13.0-0.rc4.fd0584d220fe
-
-* Fri Dec 27 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.d6ef8b40d075.38]
-- Linux v6.13.0-0.rc4.d6ef8b40d075
-
-* Wed Dec 25 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.9b2ffa6148b1.37]
-- Linux v6.13.0-0.rc4.9b2ffa6148b1
-
-* Tue Dec 24 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.f07044dd0df0.36]
-- Linux v6.13.0-0.rc4.f07044dd0df0
-
-* Mon Dec 23 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc4.35]
-- Linux v6.13.0-0.rc4
-
-* Sun Dec 22 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.48f506ad0b68.34]
-- Linux v6.13.0-0.rc3.48f506ad0b68
-
-* Sat Dec 21 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.499551201b5f.33]
-- Linux v6.13.0-0.rc3.499551201b5f
-
-* Fri Dec 20 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.8faabc041a00.32]
-- Linux v6.13.0-0.rc3.8faabc041a00
-
-* Thu Dec 19 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.eabcdba3ad40.31]
 - redhat/configs: automotive: disable CONFIG_AIO (Davide Caratti)
-- Linux v6.13.0-0.rc3.eabcdba3ad40
-
-* Wed Dec 18 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.aef25be35d23.30]
-- Linux v6.13.0-0.rc3.aef25be35d23
-
-* Tue Dec 17 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.f44d154d6e3d.29]
 - redhat/configs: Re-enable CONFIG_INFINIBAND_VMWARE_PVRDMA (Vitaly Kuznetsov)
 - redhat/configs: PREEMPT_NOTIFIERS does not need to be explicitly listed (Michal Schmidt)
 - redhat/configs: delete all CONFIG_PREEMPT_*BEHAVIOUR (Michal Schmidt)
-- Linux v6.13.0-0.rc3.f44d154d6e3d
-
-* Mon Dec 16 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc3.28]
 - redhat/configs: automotive: disable CONFIG_NET_DROP_MONITOR (Davide Caratti)
-- Linux v6.13.0-0.rc3
-
-* Sun Dec 15 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.2d8308bf5b67.27]
-- Linux v6.13.0-0.rc2.2d8308bf5b67
-
-* Sat Dec 14 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.a446e965a188.26]
-- Linux v6.13.0-0.rc2.a446e965a188
-
-* Fri Dec 13 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.f932fb9b4074.25]
 - redhat/configs: Enable the CS42L84 driver on Fedora (Neal Gompa)
-- Linux v6.13.0-0.rc2.f932fb9b4074
-
-* Thu Dec 12 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.231825b2e1ff.24]
 - generic: Remove and cleanups from staging 6.13 (Peter Robinson)
 - redhat: configs: Clean up DVB settings in RHEL (Kate Hsuan)
 - Move CONFIG_ARCH_TEGRA_241_SOC config/common so that it is enabled for RHEL as well as Fedora. Get rid of uneeded CONFIG_TEGRA241_CMDQV in configs/fedora while we're at it. (Mark Salter)
 - fedora: arm64: Enable the rockchip HDMI QP support (Peter Robinson)
-- Linux v6.13.0-0.rc2.231825b2e1ff
-
-* Wed Dec 11 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.f92f4749861b.23]
 - crypto: rng - Fix extrng EFAULT handling (Herbert Xu)
 - redhat: configs: rhel: aarch64: Support NV Jetson MIPI camera (Kate Hsuan)
-- Linux v6.13.0-0.rc2.f92f4749861b
-
-* Tue Dec 10 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.7cb1b4663150.22]
 - gitlab-ci: disable clang CI pipelines (Scott Weaver)
 - redhat/configs: Remove obsolete arch64/64k/CONFIG_FORCE_MAX_ZONEORDER (Waiman Long)
 - Fix up QCOM_EMAC config for Fedora (Justin M. Forbes)
-- Linux v6.13.0-0.rc2.7cb1b4663150
-
-* Mon Dec 09 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc2.21]
 - redhat/configs: automotive: disable CONFIG_IO_URING (Ian Mullins)
-- Linux v6.13.0-0.rc2
-
-* Sun Dec 08 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.7503345ac5f5.20]
-- Linux v6.13.0-0.rc1.7503345ac5f5
-
-* Sat Dec 07 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.b5f217084ab3.19]
-- Linux v6.13.0-0.rc1.b5f217084ab3
-
-* Fri Dec 06 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.b8f52214c61a.18]
 - redhat/kernel.spec.template: Link rtla against in-tree libcpupower (Tomas Glozar)
-- Linux v6.13.0-0.rc1.b8f52214c61a
-
-* Thu Dec 05 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.feffde684ac2.17]
 - redhat: configs: enable INTEL_PLR_TPMI for RHEL (David Arcari)
 - configs: Enable CONFIG_NETKIT for RHEL (Toke Høiland-Jørgensen)
 - redhat: fix build/install targets in netfilter kselftest (Davide Caratti)
 - RHEL: disable the btt driver (Jeff Moyer)
-
-* Wed Dec 04 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.feffde684ac2.16]
-- Linux v6.13.0-0.rc1.feffde684ac2
-
-* Tue Dec 03 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.cdd30ebb1b9f.15]
 - redhat/configs: default to PREEMPT_LAZY on x86, riscv (Michal Schmidt)
 - redhat/configs: New config CONFIG_PREEMPT_LAZY (Michal Schmidt)
-- Linux v6.13.0-0.rc1.cdd30ebb1b9f
-
-* Mon Dec 02 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc1.e70140ba0d2b.14]
-- Linux v6.13.0-0.rc1.e70140ba0d2b
-
-* Sat Nov 30 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.2ba9f676d0a2.13]
-- Linux v6.13.0-0.rc0.2ba9f676d0a2
-
-* Fri Nov 29 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.7af08b57bcb9.12]
-- Linux v6.13.0-0.rc0.7af08b57bcb9
-
-* Thu Nov 28 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.b86545e02e8c.11]
 - crypto: sig - Disable signing (Herbert Xu)
-- Linux v6.13.0-0.rc0.b86545e02e8c
-
-* Wed Nov 27 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.aaf20f870da0.10]
 - redhat/configs: enable SERIAL_AMBA_PL011 for automotive (Radu Rendec)
 - c10s: disable tests in CKI pipelines (Michael Hofmann)
 - redhat: Drop bpftool from kernel spec (Viktor Malik)
-- Linux v6.13.0-0.rc0.aaf20f870da0
-
-* Tue Nov 26 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.7eef7e306d3c.9]
-- Linux v6.13.0-0.rc0.7eef7e306d3c
-
-* Sun Nov 24 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.9f16d5e6f220.8]
-- Linux v6.13.0-0.rc0.9f16d5e6f220
-
-* Sat Nov 23 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.228a1157fb9f.7]
 - Better fixes for the fedora mismatch (Justin M. Forbes)
 - Mismatch fix ups for Fedora (Justin M. Forbes)
-- Linux v6.13.0-0.rc0.228a1157fb9f
-
-* Sat Nov 23 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.28eb75e178d3.6]
-- Linux v6.13.0-0.rc0.28eb75e178d3
-
-* Fri Nov 22 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.fcc79e1714e8.5]
 - redhat/configs: Enable Intel Bluetooth PCIE drivers (Bastien Nocera)
-
-* Thu Nov 21 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.fcc79e1714e8.4]
 - One more pending to fix a mismatch (Justin M. Forbes)
 - redhat: fix RT PREEMPT configs for Fedora and RHEL (Clark Williams)
 - Pending fixes to avoid mismatch for 6.13 (Justin M. Forbes)
-- Linux v6.13.0-0.rc0.fcc79e1714e8
-
-* Thu Nov 21 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.bf9aa14fc523.3]
-- Linux v6.13.0-0.rc0.bf9aa14fc523
-
-* Wed Nov 20 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.158f238aa69d.2]
 - Reset changelog for 6.13 (Justin M. Forbes)
-
-* Tue Nov 19 2024 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.13.0-0.rc0.158f238aa69d.1]
 - Reset RHEL_RELEASE for 6.13 (Justin M. Forbes)
 - redhat: Move perf_dlfilter.h from libperf-devel to perf (Akihiko Odaki)
 - Consolidate configs to common for 6.12 (Justin M. Forbes)
@@ -9429,7 +9329,7 @@ fi\
 - [initial commit] Add scripts (Laura Abbott)
 - [initial commit] Add configs (Laura Abbott)
 - [initial commit] Add Makefiles (Laura Abbott)
-- Linux v6.13.0-0.rc0.158f238aa69d
+- Linux v6.14.0-0.rc0.95ec54a420b8
 
 ###
 # The following Emacs magic makes C-c C-e use UTC dates.
