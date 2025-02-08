@@ -1,0 +1,35 @@
+From 39a842b10f391f2b248500e89451d28ad9d71656 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 12 Jun 2024 09:54:29 +0800
+Subject: [PATCH 0848/1204] k1x:fix dldo1-always-on to aldo1-always-on
+
+Change-Id: I0ef10f9031ff042348d2e89fb4a8dfae479fd69a
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index b1bdeed21a82..d5bd449e260a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -492,7 +492,7 @@ ldo_1: LDO_REG1 {
+ 				regulator-name = "ldo1";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+-				regulator-boot-on;
++				regulator-always-on;
+ 
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+@@ -538,7 +538,7 @@ ldo_5: LDO_REG5 {
+ 				regulator-name = "ldo5";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+-				regulator-always-on;
++				regulator-boot-on;
+ 
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+-- 
+2.47.0
+

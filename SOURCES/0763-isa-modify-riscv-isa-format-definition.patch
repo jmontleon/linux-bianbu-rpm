@@ -1,0 +1,170 @@
+From 6453e6488aa5220fef3cc691d0fb8ff67e166ed4 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 21 Jun 2024 18:39:08 +0800
+Subject: [PATCH 0763/1204] isa: modify riscv,isa format definition
+
+Change-Id: Icc7e99ff99f492d02331227801066ca09b130498
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 82 +++++++++++++++++++++++---
+ 1 file changed, 73 insertions(+), 9 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 191462fbacbd..cb9493a8cb60 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -45,8 +45,16 @@ cpu_0: cpu@0 {
+ 			model = "Spacemit(R) X60";
+ 			reg = <0>;
+ 			status = "okay";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -73,8 +81,16 @@ cpu_1: cpu@1 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -101,8 +117,16 @@ cpu_2: cpu@2 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -129,8 +153,16 @@ cpu_3: cpu@3 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -157,8 +189,16 @@ cpu_4: cpu@4 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -185,8 +225,16 @@ cpu_5: cpu@5 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -213,8 +261,16 @@ cpu_6: cpu@6 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -241,8 +297,16 @@ cpu_7: cpu@7 {
+ 			status = "okay";
+ 			compatible = "riscv";
+ 			model = "Spacemit(R) X60";
+-			riscv,isa = "rv64imafdcv_zicsr_zifencei_zicbom_zicboz_zicbop_zihintpause_zicond_zba_zbb_zbc_zbs_svpbmt_sstc_sscofpmf";
++			riscv,isa = "rv64imafdcv";
++			riscv,isa-base = "rv64i";
++			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "v",
++					"zicbom", "zicboz", "zicntr", "zicond",
++					"zicsr", "zifencei", "zihintpause", "zihpm",
++					"zfh", "zfhmin", "zba", "zbb", "zbc", "zbs",
++					"zkt", "zvfh", "zvfhmin", "zvkt", "sscofpmf",
++					"sstc", "svinval", "svnapot", "svpbmt" ;
+ 			riscv,cbom-block-size = <64>;
++			riscv,cboz-block-size = <64>;
+ 			i-cache-block-size = <64>;
+ 			i-cache-size = <32768>;
+ 			i-cache-sets = <512>;
+@@ -466,7 +530,7 @@ reserved-memory {
+ 		ranges;
+ 
+ 		area_reserved@80000000 {
+-			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */			
++			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */
+ 			reg = <0x0 0x80000000 0x0 0x40800000>;
+ 			no-map;
+ 		};
+-- 
+2.47.0
+

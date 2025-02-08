@@ -1,0 +1,44 @@
+From 2d9208b72b643854de02f43c6df5e2311fcd5eec Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 3 Jun 2024 10:35:03 +0800
+Subject: [PATCH 0683/1204] k1: dma: adjust vm_flags_set() and class_create()
+ func
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I075762b9f769d82ac7e69815f46f74b8fcaec72c
+---
+ drivers/dma/udma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
+index e3d6b3f22d67..53845e66ae02 100644
+--- a/drivers/dma/udma.c
++++ b/drivers/dma/udma.c
+@@ -218,7 +218,7 @@ static int dma_mmap(struct file *file, struct vm_area_struct *vma)
+ 
+ 	vma->vm_ops		= &dma_vm_ops;
+ 	vma->vm_private_data	= dma_info;
+-	vma->vm_flags		|= VM_DONTCOPY;
++	vm_flags_set(vma, VM_DONTCOPY);
+ 
+ 	list_add(&dma_info->list, &dmabuf_list);
+ 	return 0;
+@@ -392,7 +392,7 @@ static int dma_init(void)
+ 	if (dma_major < 0)
+ 		return dma_major;
+ 
+-	dma_class = class_create(THIS_MODULE, DEVICE_NAME);
++	dma_class = class_create(DEVICE_NAME);
+ 	if (IS_ERR(dma_class))
+ 		return -1;
+ 
+@@ -429,4 +429,4 @@ static void dma_exit(void)
+ module_init(dma_init);
+ module_exit(dma_exit);
+ 
+-MODULE_LICENSE("GPL");
+\ No newline at end of file
++MODULE_LICENSE("GPL");
+-- 
+2.47.0
+

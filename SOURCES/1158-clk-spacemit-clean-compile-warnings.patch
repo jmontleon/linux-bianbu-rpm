@@ -1,0 +1,111 @@
+From 18a3e6e9f93abb5338f98702995da1ee6fe4f357 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:14:56 +0800
+Subject: [PATCH 1158/1204] clk: spacemit: clean compile warnings
+
+Change-Id: I44a45d4b04615d6758e106d4e781cf2b4d199faf
+---
+ drivers/clk/spacemit/ccu-spacemit-k1x.c | 39 ++-----------------------
+ drivers/clk/spacemit/ccu_ddr.c          |  2 +-
+ drivers/clk/spacemit/ccu_mix.c          |  2 +-
+ 3 files changed, 5 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 71bc111626c0..8b28495947f3 100644
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -1541,7 +1541,7 @@ static struct clk_hw_table bootup_enable_clk_table[] = {
+ 	{"pmua_aclk", 	CLK_PMUA_ACLK},
+ };
+ 
+-void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
++static void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
+ {
+ 	int i;
+ 	struct clk *clk;
+@@ -1556,7 +1556,7 @@ void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
+ }
+ 
+ unsigned long spacemit_k1x_ddr_freq_tbl[MAX_FREQ_LV + 1] = {0};
+-void spacemit_fill_ddr_freq_tbl(void)
++static void spacemit_fill_ddr_freq_tbl(void)
+ {
+ 	int i;
+ 	struct clk *clk;
+@@ -1571,7 +1571,7 @@ void spacemit_fill_ddr_freq_tbl(void)
+ 	}
+ }
+ 
+-int ccu_common_init(struct clk_hw * hw, struct spacemit_k1x_clk *clk_info)
++static int ccu_common_init(struct clk_hw * hw, struct spacemit_k1x_clk *clk_info)
+ {
+ 	struct ccu_common *common = hw_to_ccu_common(hw);
+ 	struct ccu_pll *pll = hw_to_ccu_pll(hw);
+@@ -1751,38 +1751,5 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)
+ 	return;
+ }
+ 
+-void * spacemit_get_ddr_freq_tbl(void)
+-{
+-	return spacemit_k1x_ddr_freq_tbl;
+-}
+-EXPORT_SYMBOL_GPL(spacemit_get_ddr_freq_tbl);
+-
+-u32 spacemit_get_ddr_freq_level(void)
+-{
+-	u32 ddr_freq_lvl = 0;
+-
+-	struct clk_hw *hw = spacemit_k1x_hw_clks.hws[CLK_DDR];
+-	ddr_freq_lvl = clk_hw_get_parent_index(hw);
+-
+-	return ddr_freq_lvl;
+-}
+-EXPORT_SYMBOL_GPL(spacemit_get_ddr_freq_level);
+-
+-int spacemit_set_ddr_freq_level(u32 level)
+-{
+-	int ret = 0;
+-	struct clk_hw *hw = spacemit_k1x_hw_clks.hws[CLK_DDR];
+-
+-	if (level < 0 || level > MAX_FREQ_LV)
+-		return -EINVAL;
+-
+-	ret = clk_hw_set_parent(hw, clk_hw_get_parent_by_index(hw, level));
+-	if (ret)
+-		pr_err("%s : set ddr freq fail\n", __func__);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(spacemit_set_ddr_freq_level);
+-
+ CLK_OF_DECLARE(k1x_clock, "spacemit,k1x-clock", spacemit_k1x_ccu_probe);
+ 
+diff --git a/drivers/clk/spacemit/ccu_ddr.c b/drivers/clk/spacemit/ccu_ddr.c
+index ae5af8f88742..5cd74994b9b0 100644
+--- a/drivers/clk/spacemit/ccu_ddr.c
++++ b/drivers/clk/spacemit/ccu_ddr.c
+@@ -135,7 +135,7 @@ static long ccu_ddr_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	return rate;
+ }
+ 
+-unsigned long ccu_ddr_calc_best_rate(struct clk_hw *hw, unsigned long rate,
++static unsigned long ccu_ddr_calc_best_rate(struct clk_hw *hw, unsigned long rate,
+ 				u32 *mux_val)
+ {
+ 	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
+diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
+index 47e963e92d63..4add1fa636df 100644
+--- a/drivers/clk/spacemit/ccu_mix.c
++++ b/drivers/clk/spacemit/ccu_mix.c
+@@ -271,7 +271,7 @@ static long ccu_mix_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	return rate;
+ }
+ 
+-unsigned long ccu_mix_calc_best_rate(struct clk_hw *hw, unsigned long rate, u32 *mux_val, u32 *div_val)
++static unsigned long ccu_mix_calc_best_rate(struct clk_hw *hw, unsigned long rate, u32 *mux_val, u32 *div_val)
+ {
+ 	struct ccu_mix *mix = hw_to_ccu_mix(hw);
+ 	struct ccu_common * common = &mix->common;
+-- 
+2.47.0
+

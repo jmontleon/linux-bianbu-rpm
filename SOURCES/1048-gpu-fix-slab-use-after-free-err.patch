@@ -1,0 +1,109 @@
+From 3f7e6be67c561ae39c8cd1fca8b7e4f125ae924d Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 30 Oct 2024 15:45:49 +0800
+Subject: [PATCH 1048/1204] gpu: fix slab-use-after-free err
+
+log:
+[ 3165.945852] ==================================================================
+[ 3165.953259] BUG: KASAN: slab-use-after-free in PVRSRVDeviceRelease+0x1ae/0x1c6
+[ 3165.960669] Read of size 1 at addr ffffffd94a3077b8 by task chrome/10620
+
+[ 3165.969157] CPU: 5 PID: 10620 Comm: chrome Not tainted 6.6.36 #20241025175156
+[ 3165.976504] Hardware name: M1-MUSE-BOOK (DT)
+[ 3165.980895] Call Trace:
+[ 3165.983461] [<ffffffff8000cd28>] dump_backtrace+0x1c/0x24
+[ 3165.989057] [<ffffffff82fa48a8>] show_stack+0x2c/0x38
+[ 3165.994312] [<ffffffff82fe1d6e>] dump_stack_lvl+0x3c/0x54
+[ 3165.999919] [<ffffffff82fac564>] print_report+0x19e/0x4b4
+[ 3166.005477] [<ffffffff8062b218>] kasan_report+0xbc/0x170
+[ 3166.010941] [<ffffffff8062caf0>] __asan_report_load1_noabort+0x12/0x1a
+[ 3166.017661] [<ffffffff818942f6>] PVRSRVDeviceRelease+0x1ae/0x1c6
+[ 3166.023882] [<ffffffff818ac65a>] pvr_drm_release+0x40/0x7a
+[ 3166.029569] [<ffffffff81698fb0>] drm_file_free+0x45c/0x7a4
+[ 3166.035303] [<ffffffff81699ed6>] drm_release+0x27a/0x4e0
+[ 3166.040759] [<ffffffff8069adbe>] __fput+0x2a0/0x7b0
+[ 3166.045809] [<ffffffff8069b37c>] __fput_sync+0x36/0x40
+[ 3166.051078] [<ffffffff8068f69e>] __riscv_sys_close+0x5e/0xa2
+[ 3166.056925] [<ffffffff8000bf26>] syscall_handler+0x64/0xf0
+[ 3166.062630] [<ffffffff82fe2460>] do_trap_ecall_u+0x9c/0x9e
+[ 3166.068288] [<ffffffff83001df6>] ret_from_exception+0x0/0x6e
+
+[ 3166.075685] Allocated by task 10620:
+[ 3166.079378]  stack_trace_save+0xa0/0xd2
+[ 3166.079492]  kasan_save_stack+0x2c/0x58
+[ 3166.079527]  kasan_set_track+0x1a/0x26
+[ 3166.079549]  kasan_save_alloc_info+0x1a/0x24
+[ 3166.079567]  __kasan_kmalloc+0xa4/0xaa
+[ 3166.079587]  __kmalloc+0x42/0xe6
+[ 3166.079616]  OSAllocZMemNoStats+0x30/0x8a
+[ 3166.079641]  PVRSRVCommonConnectionConnect+0x7e/0x730
+[ 3166.079673]  PVRSRVDeviceServicesOpen+0xfe/0x320
+[ 3166.079695]  drm_pvr_srvkm_init+0x27a/0x47e
+[ 3166.079713]  drm_ioctl_kernel+0x1c4/0x340
+[ 3166.079742]  drm_ioctl+0x44a/0x928
+[ 3166.079761]  __riscv_sys_ioctl+0x108/0x140
+[ 3166.079784]  syscall_handler+0x64/0xf0
+[ 3166.079807]  do_trap_ecall_u+0x9c/0x9e
+[ 3166.079833]  ret_from_exception+0x0/0x6e
+
+[ 3166.081391] Freed by task 108:
+[ 3166.084535]  stack_trace_save+0xa0/0xd2
+[ 3166.084593]  kasan_save_stack+0x2c/0x58
+[ 3166.084626]  kasan_set_track+0x1a/0x26
+[ 3166.084649]  kasan_save_free_info+0x28/0x46
+[ 3166.084667]  __kasan_slab_free+0xde/0x15a
+[ 3166.084682]  slab_free_freelist_hook+0x84/0x188
+[ 3166.084701]  __kmem_cache_free+0x1b0/0x2b8
+[ 3166.084721]  kfree+0x86/0x14c
+[ 3166.084742]  OSFreeMemNoStats+0x36/0x42
+[ 3166.084767]  ConnectionDataDestroy+0x22c/0x40e
+[ 3166.084791]  _CleanupThreadPurgeConnectionData+0x44/0xc6
+[ 3166.084811]  CleanupThread+0x566/0x15b0
+[ 3166.084833]  OSThreadRun+0x52/0xf6
+[ 3166.084851]  kthread+0x26c/0x33c
+[ 3166.084873]  ret_from_fork+0xe/0x1c
+
+[ 3166.086439] The buggy address belongs to the object at ffffffd94a307700
+                which belongs to the cache kmalloc-192 of size 192
+[ 3166.099150] The buggy address is located 184 bytes inside of
+                freed 192-byte region [ffffffd94a307700, ffffffd94a3077c0)
+
+[ 3166.113230] The buggy address belongs to the physical page:
+[ 3166.118939] page:00000000ae2d5fa4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14a306
+[ 3166.119000] head:00000000ae2d5fa4 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[ 3166.119020] flags: 0x4000000000000840(slab|head|zone=1)
+[ 3166.119052] page_type: 0xffffffff()
+[ 3166.119074] raw: 4000000000000840 ffffffd900002a00 0000000000000122 0000000000000000
+[ 3166.119092] raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+[ 3166.119105] page dumped because: kasan: bad access detected
+
+[ 3166.120659] Memory state around the buggy address:
+[ 3166.125569]  ffffffd94a307680: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
+[ 3166.132945]  ffffffd94a307700: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 3166.140310] >ffffffd94a307780: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+[ 3166.147632]                                         ^
+[ 3166.152790]  ffffffd94a307800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 3166.160147]  ffffffd94a307880: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
+[ 3166.167514] ==================================================================
+
+Change-Id: I4fff5252afc4c830b7534df03712c5b8fa840ecd
+---
+ drivers/gpu/drm/img-rogue/module_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/module_common.c b/drivers/gpu/drm/img-rogue/module_common.c
+index 1f454c91fdb0..bd6a6e9ebcc9 100644
+--- a/drivers/gpu/drm/img-rogue/module_common.c
++++ b/drivers/gpu/drm/img-rogue/module_common.c
+@@ -720,7 +720,7 @@ void PVRSRVDeviceRelease(PVRSRV_DEVICE_NODE *psDeviceNode,
+ #endif
+ #endif
+ 			psConnection = psConnectionPriv->pvConnectionData;
+-			if (psConnection->bSyncConnection == IMG_TRUE)
++			if (psConnection && psConnection->bSyncConnection == IMG_TRUE)
+ 			{
+ 				if (psConnection->hOsPrivateData != NULL)
+ 				{
+-- 
+2.47.0
+

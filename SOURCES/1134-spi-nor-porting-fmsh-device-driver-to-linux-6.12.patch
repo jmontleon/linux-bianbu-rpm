@@ -1,0 +1,33 @@
+From dce8038935e37dcfa3565080893673565c961b6a Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:50:00 +0800
+Subject: [PATCH 1134/1204] spi-nor: porting fmsh device driver to linux-6.12
+
+Change-Id: I69440caaac63d205c7ad1daf50bb7b432847584d
+---
+ drivers/mtd/spi-nor/fmsh.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fmsh.c b/drivers/mtd/spi-nor/fmsh.c
+index 73004e94476e..992643844fda 100644
+--- a/drivers/mtd/spi-nor/fmsh.c
++++ b/drivers/mtd/spi-nor/fmsh.c
+@@ -8,9 +8,12 @@
+ #include "core.h"
+ 
+ static const struct flash_info fmsh_nor_parts[] = {
+-	{ "FM25Q64AI3", INFO(0xa14017, 0, 4 * 1024,  2048)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
+-			      SPI_NOR_DUAL_READ) },
++	{
++		.id = SNOR_ID(0xa1, 0x40, 0x17),
++		.name = "FM25Q64AI3",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	},
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_fmsh = {
+-- 
+2.47.0
+

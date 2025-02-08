@@ -1,0 +1,27 @@
+From 9be008dc6a9860223d494e071e56a0d8eb6c7c25 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 13 Jun 2024 21:52:56 +0800
+Subject: [PATCH 0827/1204] phy-k1x-ci-otg: adjust Makefile order
+
+Change-Id: I59d5ff1a1abc29e427feb646d477b755fe9bbf97
+---
+ drivers/usb/phy/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
+index f16976e353f2..f29444b265de 100644
+--- a/drivers/usb/phy/Makefile
++++ b/drivers/usb/phy/Makefile
+@@ -23,5 +23,5 @@ obj-$(CONFIG_USB_MXS_PHY)		+= phy-mxs-usb.o
+ obj-$(CONFIG_USB_ULPI)			+= phy-ulpi.o
+ obj-$(CONFIG_USB_ULPI_VIEWPORT)		+= phy-ulpi-viewport.o
+ obj-$(CONFIG_KEYSTONE_USB_PHY)		+= phy-keystone.o
+-obj-$(CONFIG_K1XCI_USB2_PHY)	+= phy-k1x-ci-usb2.o
+-obj-$(CONFIG_USB_K1XCI_OTG)		+= phy-k1x-ci-otg.o
+\ No newline at end of file
++obj-$(CONFIG_USB_K1XCI_OTG)		+= phy-k1x-ci-otg.o
++obj-$(CONFIG_K1XCI_USB2_PHY)	+= phy-k1x-ci-usb2.o
+\ No newline at end of file
+-- 
+2.47.0
+

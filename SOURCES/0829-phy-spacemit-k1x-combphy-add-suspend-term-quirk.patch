@@ -1,0 +1,53 @@
+From a656292941d0e0401c1660d4b2c54bbb07e4999c Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Fri, 19 Jul 2024 19:29:16 +0800
+Subject: [PATCH 0829/1204] phy-spacemit-k1x-combphy: add suspend-term-quirk
+
+Change-Id: I34416a0afd2065fc89f580ee132ee3317938a239
+---
+ drivers/phy/spacemit/phy-spacemit-k1x-combphy.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
+index 374c621dff79..ddd40d3fbf1f 100644
+--- a/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
++++ b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
+@@ -29,6 +29,7 @@
+ #define SPACEMIT_COMBPHY_USB_PLL_REG 0x8
+ #define SPACEMIT_COMBPHY_USB_PLL_MASK 0x1
+ #define SPACEMIT_COMBPHY_USB_PLL_VAL 0x1
++#define SPACEMIT_COMBPHY_USB_TERM_SHORT 0x3000
+ 
+ struct spacemit_combphy_priv;
+ 
+@@ -41,6 +42,7 @@ struct spacemit_combphy_priv {
+ 	void __iomem *puphy_base;
+ 	struct phy *phy;
+ 	u8 type;
++	bool suspend_term_quirk;
+ };
+ 
+ static inline void spacemit_reg_updatel(void __iomem *reg, u32 offset, u32 mask,
+@@ -93,6 +95,10 @@ static int spacemit_combphy_init_usb(struct spacemit_combphy_priv *priv)
+ 					  SPACEMIT_COMBPHY_USB_PLL_MASK,
+ 					  SPACEMIT_COMBPHY_USB_PLL_VAL);
+ 
++	if (priv->suspend_term_quirk) {
++		spacemit_reg_updatel(base, 0x18, 0, SPACEMIT_COMBPHY_USB_TERM_SHORT);
++	}
++
+ 	if (ret)
+ 		dev_err(priv->dev, "USB3 PHY init timeout!\n");
+ 
+@@ -208,7 +214,7 @@ static int spacemit_combphy_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(priv->phy_sel);
+ 		return ret;
+ 	}
+-
++	priv->suspend_term_quirk = device_property_read_bool(&pdev->dev, "suspend-term-quirk");
+ 	priv->dev = dev;
+ 	priv->type = PHY_NONE;
+ 
+-- 
+2.47.0
+

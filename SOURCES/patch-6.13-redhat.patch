@@ -672,7 +672,7 @@ index 0fa7c5728f1e..e404279c8610 100644
  M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
  L:	platform-driver-x86@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 7bc322bc7ad8..785632e8a69d 100644
+index 9de0dc460a83..1355ab12aeb6 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -778,7 +778,7 @@ index 7d12a1305fc9..569b92def9b7 100644
 +	return !!ipl_secure_flag;
 +}
 diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index a3fea683b227..a3162d93f437 100644
+index 99f165726ca9..70b4ef0d86b8 100644
 --- a/arch/s390/kernel/setup.c
 +++ b/arch/s390/kernel/setup.c
 @@ -49,6 +49,7 @@
@@ -9299,7 +9299,7 @@ index b9682264e2f5..c2a399e3bb41 100644
  	.probe = ov08x40_probe,
  	.remove = ov08x40_remove,
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index a970168a3014..6b5f6ce38e6b 100644
+index 12e7ae1f99e2..354d116a8b6f 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
 @@ -276,6 +276,9 @@ void nvme_delete_ctrl_sync(struct nvme_ctrl *ctrl)
@@ -9473,7 +9473,7 @@ index 76f4df75b08a..d7af71f1825b 100644
   * Intersil/Techwell TW686[4589]-based video capture cards have an empty (zero)
   * class code.  Fix it.
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 8947dab132d7..9586e4fcd745 100644
+index af62a8ed8620..bf275aac44e1 100644
 --- a/drivers/scsi/sd.c
 +++ b/drivers/scsi/sd.c
 @@ -121,6 +121,14 @@ static const char *sd_cache_types[] = {
@@ -9491,7 +9491,7 @@ index 8947dab132d7..9586e4fcd745 100644
  static void sd_set_flush_flag(struct scsi_disk *sdkp,
  		struct queue_limits *lim)
  {
-@@ -4377,6 +4385,8 @@ static int __init init_sd(void)
+@@ -4370,6 +4378,8 @@ static int __init init_sd(void)
  		goto err_out_class;
  	}
  

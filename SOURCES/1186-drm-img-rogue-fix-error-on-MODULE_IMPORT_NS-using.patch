@@ -1,0 +1,27 @@
+From 52f1363148281a0cfde3bedf268e7a8151f91215 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 6 Dec 2024 13:46:23 +0800
+Subject: [PATCH 1186/1204] drm: img-rogue: fix error on MODULE_IMPORT_NS()
+ using
+
+Change-Id: I02e082edd74eae5578a3d8394065f146aa91c827
+---
+ drivers/gpu/drm/img-rogue/pvr_platform_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+index 6b875a03e4d9..9efafff5ca5f 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
++++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+@@ -66,7 +66,7 @@
+ /* This header must always be included last */
+ #include "kernel_compatibility.h"
+ 
+-MODULE_IMPORT_NS(DMA_BUF);
++MODULE_IMPORT_NS("DMA_BUF");
+ 
+ static struct drm_driver pvr_drm_platform_driver;
+ 
+-- 
+2.47.0
+

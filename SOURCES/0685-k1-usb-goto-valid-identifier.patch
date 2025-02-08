@@ -1,0 +1,36 @@
+From e88052af0a0e7c7ca8bb3e3bf71f6f4440bbc4bf Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 3 Jun 2024 10:41:50 +0800
+Subject: [PATCH 0685/1204] k1: usb: goto valid identifier
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: I528ec7db161cdef545cb1910874cb945fb23c6ed
+---
+ drivers/usb/dwc3/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index e34313c6dcbb..bea70dc6f953 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -2213,7 +2213,7 @@ static int dwc3_probe(struct platform_device *pdev)
+ 		IS_ENABLED(CONFIG_SOC_SPACEMIT_K1PRO)) {
+ 		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(40));
+ 		if (ret)
+-			goto disable_clks;
++			goto err_disable_clks;
+ 	}
+ 
+ 	/*
+@@ -2233,7 +2233,7 @@ static int dwc3_probe(struct platform_device *pdev)
+ 	if (IS_ENABLED(CONFIG_SOC_SPACEMIT_K1X)) {
+ 		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
+ 		if (ret)
+-			goto disable_clks;
++			goto err_disable_clks;
+ 	}
+ 
+ 	spin_lock_init(&dwc->lock);
+-- 
+2.47.0
+

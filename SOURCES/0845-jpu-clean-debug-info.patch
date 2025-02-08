@@ -1,0 +1,35 @@
+From 613685f8aa7a91f4af797d217eb589c58528074f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 7 Jun 2024 15:09:50 +0800
+Subject: [PATCH 0845/1204] jpu: clean debug info
+
+Change-Id: I1e9f3b3ab1e7b650f38f6f30e2ee3f7d4dded590
+---
+ drivers/soc/spacemit/jpu/jpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
+index 8594854857ff..c57548c4974d 100644
+--- a/drivers/soc/spacemit/jpu/jpu.c
++++ b/drivers/soc/spacemit/jpu/jpu.c
+@@ -1695,7 +1695,7 @@ static int jpu_probe(struct platform_device *pdev)
+ 	cpuid = 0;
+ 	cpumask_set_cpu(cpuid, &mask);
+ 	irq_set_affinity(jdev->s_jpu_irq, &mask);
+-	dev_notice(jdev->jdev, "driver probe successfully\n");
++	dev_dbg(jdev->jdev, "driver probe successfully\n");
+ 	return 0;
+ err0:
+ 	return -1;
+@@ -1730,7 +1730,7 @@ static int jpu_remove(struct platform_device *pdev)
+ #endif
+ 	sysfs_remove_groups(&pdev->dev.kobj, jpu_frequency_group);
+ 
+-	dev_notice(jdev->jdev, "driver removed\n");
++	dev_dbg(jdev->jdev, "driver removed\n");
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

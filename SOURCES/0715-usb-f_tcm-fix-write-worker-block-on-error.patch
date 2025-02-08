@@ -1,0 +1,25 @@
+From 9756856535eb2604028e3f47abbb8d93a60af571 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 3 Jun 2024 16:30:48 +0800
+Subject: [PATCH 0715/1204] usb: f_tcm: fix write worker block on error
+
+Change-Id: Ieae43ea54a00624e1be33408e851769730bbf53e
+---
+ drivers/usb/gadget/function/tcm.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/gadget/function/tcm.h b/drivers/usb/gadget/function/tcm.h
+index 5cb21e9c7003..ea73fce74478 100644
+--- a/drivers/usb/gadget/function/tcm.h
++++ b/drivers/usb/gadget/function/tcm.h
+@@ -75,6 +75,7 @@ struct usbg_cmd {
+ 	struct se_cmd se_cmd;
+ 	void *data_buf; /* used if no sg support available */
+ 	struct f_uas *fu;
++	bool write_aborted;
+ 	struct completion write_complete;
+ 	struct kref ref;
+ 
+-- 
+2.47.0
+

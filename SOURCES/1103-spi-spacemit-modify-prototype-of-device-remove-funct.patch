@@ -1,0 +1,41 @@
+From e218dbc6aa978a80e0fd64a065024f9eb617e6f3 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 09:59:01 +0800
+Subject: [PATCH 1103/1204] spi: spacemit: modify prototype of device remove
+ function
+
+Change-Id: I7d3f5f3da33eb03d1716ff11d14b368e6d282cc5
+---
+ drivers/spi/spi-k1x.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
+index 152c04cfa6bb..67a28851bb1b 100644
+--- a/drivers/spi/spi-k1x.c
++++ b/drivers/spi/spi-k1x.c
+@@ -1049,12 +1049,12 @@ static int k1x_spi_probe(struct platform_device *pdev)
+ 	return status;
+ }
+ 
+-static int k1x_spi_remove(struct platform_device *pdev)
++static void k1x_spi_remove(struct platform_device *pdev)
+ {
+ 	struct spi_driver_data *drv_data = platform_get_drvdata(pdev);
+ 
+ 	if (!drv_data)
+-		return 0;
++		return;
+ 
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
+@@ -1076,7 +1076,6 @@ static int k1x_spi_remove(struct platform_device *pdev)
+ 	free_irq(drv_data->irq, drv_data);
+ 
+ 	deinit_dvfm_constraint(drv_data);
+-	return 0;
+ }
+ 
+ static void k1x_spi_shutdown(struct platform_device *pdev)
+-- 
+2.47.0
+

@@ -1,0 +1,41 @@
+From 14be49119db7dadc0e9180c30cb7d05392bfc618 Mon Sep 17 00:00:00 2001
+From: James Deng <james.deng@spacemit.com>
+Date: Wed, 10 Jul 2024 17:06:52 +0800
+Subject: [PATCH 0889/1204] arch:riscv:boot:dts: Enable MUSE Book eeprom by
+ default
+
+Change-Id: Ie9052b906c2373ef5aa37f9b912f65db6c18e1e2
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index ee775696776c..7459b66771cf 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -250,7 +250,7 @@ eeprom@50{
+ 		#size-cells = <1>;
+ 
+ 		power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		mac_address0: mac_address0@0 {
+ 			reg = <0x0 6>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index df04d7728d1e..c3bff62c562f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -263,7 +263,7 @@ eeprom@50{
+ 		#size-cells = <1>;
+ 
+ 		power-domains = <&power K1X_PMU_DUMMY_PWR_DOMAIN>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		mac_address0: mac_address0@0 {
+ 			reg = <0x0 6>;
+-- 
+2.47.0
+

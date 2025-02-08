@@ -1,0 +1,33 @@
+From 05867c045928ca741b3975fddd85db9b0684092d Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 20 May 2024 14:55:11 +0800
+Subject: [PATCH 0671/1204] k1: usb: update quirks for usbdrd3 in k1-x_MINI-PC
+
+Change-Id: I7d49e663109ab8d5be06b1519321ae68eccb2959
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index f7bf9752810f..18ae87d0ebdd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -649,13 +649,10 @@ dwc3@c0a00000 {
+ 		phy_type = "utmi";
+ 		snps,hsphy_interface = "utmi";
+ 		snps,dis_enblslpm_quirk;
+-		snps,dis-u1u2-quirk;
+-		snps,dis-u2-freeclk-exists-quirk;
+-		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+-		snps,dis_rxdet_inp3_quirk;
+-		snps,xhci-trb-ent-quirk;
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
+ 		snps,parkmode-disable-ss-quirk;
+ 	};
+ };
+-- 
+2.47.0
+

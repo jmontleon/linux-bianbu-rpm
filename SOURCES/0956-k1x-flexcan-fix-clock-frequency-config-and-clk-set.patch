@@ -1,0 +1,39 @@
+From 98fa3cd83478d707c7667afa97ead1057bb8a404 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Fri, 23 Aug 2024 10:25:12 +0800
+Subject: [PATCH 0956/1204] k1x:flexcan fix clock-frequency config and clk set
+
+Change-Id: I544a6eb43a600fabe74c9d8c55206d813b669713
+---
+ drivers/net/can/flexcan/flexcan-core.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 33fd0f024b06..44d826684b1d 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -2227,6 +2227,21 @@ static int flexcan_probe(struct platform_device *pdev)
+ 			return PTR_ERR(clk_per);
+ 		}
+ 		clock_freq = clk_get_rate(clk_per);
++	} else {
++		clk_per = devm_clk_get(&pdev->dev, "per");
++		if (IS_ERR(clk_per)) {
++			dev_err(&pdev->dev, "no per clock defined\n");
++			return PTR_ERR(clk_per);
++		}
++		clk_set_rate(clk_per, clock_freq);
++	}
++
++	if (!clk_ipg) {
++		clk_ipg = devm_clk_get(&pdev->dev, "ipg");
++		if (IS_ERR(clk_ipg)) {
++			dev_err(&pdev->dev, "no ipg clock defined\n");
++			return PTR_ERR(clk_ipg);
++		}
+ 	}
+ 
+ 	reset = devm_reset_control_get_optional(&pdev->dev,NULL);
+-- 
+2.47.0
+

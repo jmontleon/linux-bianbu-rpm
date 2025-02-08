@@ -1,0 +1,53 @@
+From 3f17e1b408901de008e891a3f6e766cc55ebe842 Mon Sep 17 00:00:00 2001
+From: fuqiang <qiang.fu@spacemit.com>
+Date: Thu, 24 Oct 2024 15:02:49 +0800
+Subject: [PATCH 1029/1204] vpu: Fix dma_buf warning with enabled lockdep
+
+Change-Id: Iafec5527d7f255c6224b14bd2a945cd1c3243773
+---
+ drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+index b50c19f83ece..a6d174a03b4f 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
+@@ -866,7 +866,7 @@ struct mvx_mmu_pages *mvx_mmu_alloc_pages_dma_buf(struct device *dev,
+ 		return (struct mvx_mmu_pages *)attach;
+ 	}
+ 
+-	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
++	sgt = dma_buf_map_attachment_unlocked(attach, DMA_BIDIRECTIONAL);
+ 	if (IS_ERR(sgt)) {
+ 		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
+ 			      "Failed to get SG table from DMA buffer.");
+@@ -890,7 +890,7 @@ struct mvx_mmu_pages *mvx_mmu_alloc_pages_dma_buf(struct device *dev,
+ 	list_add_tail(&mbuf->head, &pages->dmabuf);
+ 
+ unmap:
+-	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
++	dma_buf_unmap_attachment_unlocked(attach, sgt, DMA_BIDIRECTIONAL);
+ 
+ detach:
+ 	dma_buf_detach(dmabuf, attach);
+@@ -920,7 +920,7 @@ int mvx_mmu_pages_append_dma_buf(struct mvx_mmu_pages *pages,
+ 		return PTR_ERR(attach);
+ 	}
+ 
+-	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
++	sgt = dma_buf_map_attachment_unlocked(attach, DMA_BIDIRECTIONAL);
+ 	if (IS_ERR(sgt)) {
+ 		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
+ 			      "Failed to get SG table from DMA buffer.");
+@@ -947,7 +947,7 @@ int mvx_mmu_pages_append_dma_buf(struct mvx_mmu_pages *pages,
+ 	list_add_tail(&mbuf->head, &pages->dmabuf);
+ 
+ unmap:
+-	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
++	dma_buf_unmap_attachment_unlocked(attach, sgt, DMA_BIDIRECTIONAL);
+ 
+ detach:
+ 	dma_buf_detach(dmabuf, attach);
+-- 
+2.47.0
+

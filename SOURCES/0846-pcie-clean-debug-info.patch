@@ -1,0 +1,26 @@
+From c1429c43eb86afdb751dd51c512c28b39bda0d41 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Fri, 7 Jun 2024 15:10:05 +0800
+Subject: [PATCH 0846/1204] pcie: clean debug info
+
+Change-Id: Iec388c254156f5f5c7588d6463ffed4befbf8eae
+---
+ drivers/tty/serial/pxa_k1x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 73be034c3da9..a00ef2129710 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -2075,7 +2075,7 @@ static int serial_pxa_probe_dt(struct platform_device *pdev, struct uart_pxa_por
+ 
+ #ifdef CONFIG_PM
+ 	if (of_property_read_u32(np, "edge-wakeup-pin", &sport->edge_wakeup_gpio)) {
+-		dev_dbg(&pdev->dev, "no edge-wakeup-pin defined\n");
++		dev_dbg(&pdev->dev, "no edge-wakeup-pin defined.\n");
+ 	}
+ #endif
+ 	sport->device_ctrl_rts = of_property_read_bool(np, "device-control-rts");
+-- 
+2.47.0
+

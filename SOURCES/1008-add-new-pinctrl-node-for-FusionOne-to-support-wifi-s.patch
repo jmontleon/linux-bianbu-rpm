@@ -1,0 +1,111 @@
+From 8816039de47773d040c95ebee508511713595485 Mon Sep 17 00:00:00 2001
+From: huanghaiqiang <chris.huang@spacemit.com>
+Date: Mon, 30 Sep 2024 17:56:46 +0800
+Subject: [PATCH 1008/1204] add new pinctrl node for FusionOne to support
+ wifi/ssd and hdmi
+
+Change-Id: I57d86148e5614f11e728b78719b4ad8866486d7d
+---
+ .../boot/dts/spacemit/k1-x_FusionOne.dts      | 44 ++++++++++---------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+index e077ddc2b7f2..931058685efd 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+@@ -163,18 +163,6 @@ bt_pwrseq: bt-pwrseq {
+ 		};
+ 	};
+ 
+-	/* led-controller { */
+-	/* 	compatible = "pwm-leds"; */
+-
+-	/* 	led-2 { */
+-	/* 		pwms = <&pwm3 0 7812500>; */
+-	/* 		active-low; */
+-	/* 		color = <LED_COLOR_ID_GREEN>; */
+-	/* 		max-brightness = <255>; */
+-	/* 		label = "d12"; */
+-	/* 	}; */
+-	/* }; */
+-
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
+@@ -340,6 +328,13 @@ ldo_2: LDO_REG2 {
+ 				regulator-name = "ldo2";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <500000>;
++				};
+ 			};
+ 
+ 			ldo_3: LDO_REG3 {
+@@ -410,6 +405,10 @@ pmic_pinctrl: pinctrl {
+ 			gpio-controller;
+ 			#gpio-cells = <2>;
+ 			spacemit,npins = <6>;
++			gpadc2_pins: gpadc2-pins {
++				pins = "PIN2";
++				function = "adcin";
++			};
+ 		};
+ 
+ 		pwr_key: key {
+@@ -419,6 +418,9 @@ pwr_key: key {
+ 		ext_rtc: rtc {
+ 			compatible = "pmic,rtc,spm8821";
+ 		};
++		ext_adc: adc {
++			compatible = "pmic,adc,spm8821";
++		};
+ 	};
+ };
+ 
+@@ -447,6 +449,14 @@ K1X_PADCONF(GPIO_48, MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* r_uart0_r
+ 		>;
+ 	};
+ 
++	pinctrl_sspa0_2: sspa0_2_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(GPIO_118, MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* sspa0_clk */
++			K1X_PADCONF(GPIO_119, MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* sspa0_frm */
++			K1X_PADCONF(GPIO_121, MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* sspa0_rxd */
++		>;
++	};
++
+ 	pinctrl_gmac0: gmac0_grp {
+ 		pinctrl-single,pins =<
+ 			K1X_PADCONF(GPIO_00, MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))	/* gmac0_rxdv */
+@@ -767,14 +777,6 @@ flash@0 {
+ 	};
+ };
+ 
+-/* &rcpu { */
+-/* 	mboxes = <&mailbox 0>, <&mailbox 1>; */
+-/* 	mbox-names = "vq0", "vq1"; */
+-/* 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>; */
+-/* 	status = "okay"; */
+-/* }; */
+-
+-
+ &cpp {
+ 	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
+ };
+@@ -790,7 +792,7 @@ &rcpu {
+ 
+ &i2s0 {
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_sspa0_0>;
++	pinctrl-0 = <&pinctrl_sspa0_2>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

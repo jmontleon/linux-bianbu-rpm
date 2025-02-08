@@ -1,0 +1,30 @@
+From 7d0924977eb2990123fded41927c35a2e7e26803 Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Mon, 2 Dec 2024 17:42:00 +0800
+Subject: [PATCH 1147/1204] display: resolve the issue of no display on HDMI
+
+When spacemit_drm_fops is not configured with
+.fop_flags = FOP_UNSIGNED_OFFSET,
+the system will return directly when calling the drm_open_helper
+function, resulting in the spacemit device can not being found.
+
+Change-Id: I685f79509d9d39c877ee9c2e00dce36ef8b1e15c
+---
+ drivers/gpu/drm/spacemit/spacemit_drm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index 4c7b372a2d3e..1e2b74024f40 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -187,6 +187,7 @@ static const struct file_operations spacemit_drm_fops = {
+ 	.poll			= drm_poll,
+ 	.read			= drm_read,
+ 	.mmap		= spacemit_gem_mmap,
++	.fop_flags = FOP_UNSIGNED_OFFSET,
+ };
+ 
+ const struct vm_operations_struct spacemit_gem_vm_ops = {
+-- 
+2.47.0
+

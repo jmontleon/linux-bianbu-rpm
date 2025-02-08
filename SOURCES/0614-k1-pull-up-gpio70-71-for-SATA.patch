@@ -1,0 +1,52 @@
+From fca8e348d7005dbde30f2dafca11d66ffb05b9c6 Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Wed, 24 Apr 2024 15:39:25 +0800
+Subject: [PATCH 0614/1204] k1: pull-up gpio70/71 for SATA
+
+Change-Id: Ieef4bc13ccd36abbcfeaf78380c05e2f21661d65
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index f4c3240b2359..22e67487f59f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -163,6 +163,24 @@ &gpio 91 0
+ 			&gpio 92 0>;	/* for usb2 hub output vbus */
+ 		status = "okay";
+ 	};
++
++	vcc_pcie2_0: vcc-pcie2-0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_pcie2_0";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		enable-active-high;
++		gpios = <&gpio 70 0>;
++	};
++
++	vcc_pcie2_1: vcc-pcie2-1 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_pcie2_1";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		enable-active-high;
++		gpios = <&gpio 71 0>;
++	};
+ };
+ 
+ &pinctrl {
+@@ -650,6 +668,9 @@ &pcie2_rc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_pcie2_4>;
+ 	num-lanes = <1>;
++	pcie2_0-supply = <&vcc_pcie2_0>;
++	pcie2_1-supply = <&vcc_pcie2_1>;
++	vin-supply-names = "pcie2_0", "pcie2_1";
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

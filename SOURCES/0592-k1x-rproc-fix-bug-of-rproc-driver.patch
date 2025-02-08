@@ -1,7 +1,7 @@
-From 4b4d3fd0678914a0ecfe6bb1838e5501233a760d Mon Sep 17 00:00:00 2001
+From d8f766f062a37c1865040ef55cc4ab705a7f954b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 17 Apr 2024 20:55:15 +0800
-Subject: [PATCH 0592/1206] k1x:rproc: fix bug of rproc driver
+Subject: [PATCH 0592/1204] k1x:rproc: fix bug of rproc driver
 
 1. we should initialize the semaphoref first to prevent the thread from starting prematureing
 2. we'd better stop the thread when system shutdown or reboot

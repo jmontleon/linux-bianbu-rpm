@@ -1,0 +1,26 @@
+From 1ae904ce359701bcefbffc22c3e2102ca8f47c05 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 7 Nov 2024 14:45:56 +0800
+Subject: [PATCH 1073/1204] k1x:MUSE-Paper-mini-4g support charger
+
+Change-Id: I9211f4d8cd92243fcba73b0ceb4ef8062d2023da
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 05998394978b..9d1a954053c2 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -640,7 +640,7 @@ ext_adc: adc {
+ 	};
+ 
+ 	sgm4154x: sgm4154x@1a {
+-		status = "disabled";
++		status = "okay";
+ 		compatible = "sgm,sgm41515";
+ 		reg = <0x1a>;
+ 		interrupt-parent = <&gpio>;
+-- 
+2.47.0
+

@@ -1,0 +1,817 @@
+From a0506b1ec0474b12c59f06ca7acc6cc59e9913cb Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Fri, 30 Aug 2024 11:02:25 +0800
+Subject: [PATCH 1012/1204] clock: add dpll and ddr clocks
+
+Change-Id: Ic72f607334094c48977b732f758712f1519c56f9
+---
+ drivers/clk/spacemit/Makefile                 |   2 +-
+ drivers/clk/spacemit/ccu-spacemit-k1x.c       | 134 +++++++++
+ drivers/clk/spacemit/ccu_ddr.c                | 266 ++++++++++++++++++
+ drivers/clk/spacemit/ccu_ddr.h                |  48 ++++
+ drivers/clk/spacemit/ccu_dpll.c               | 125 ++++++++
+ drivers/clk/spacemit/ccu_dpll.h               |  80 ++++++
+ drivers/clk/spacemit/ccu_mix.h                |  18 ++
+ .../dt-bindings/clock/spacemit-k1x-clock.h    |  14 +-
+ 8 files changed, 685 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/clk/spacemit/ccu_ddr.c
+ create mode 100644 drivers/clk/spacemit/ccu_ddr.h
+ create mode 100644 drivers/clk/spacemit/ccu_dpll.c
+ create mode 100644 drivers/clk/spacemit/ccu_dpll.h
+
+diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
+index 02efb5f39a26..61f3fa43222b 100644
+--- a/drivers/clk/spacemit/Makefile
++++ b/drivers/clk/spacemit/Makefile
+@@ -4,5 +4,5 @@
+ #
+ 
+ #SoC support
+-obj-$(CONFIG_SPACEMIT_K1X_CCU)     += ccu-spacemit-k1x.o ccu_mix.o ccu_pll.o ccu_ddn.o
++obj-$(CONFIG_SPACEMIT_K1X_CCU)     += ccu-spacemit-k1x.o ccu_mix.o ccu_pll.o ccu_dpll.o ccu_ddn.o ccu_ddr.o
+ obj-$(CONFIG_SPACEMIT_K1PRO_CCU)   += ccu-spacemit-k1pro.o
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 2aa5727a6a00..9a9da1cc1232 100644
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -17,6 +17,8 @@
+ #include "ccu_mix.h"
+ #include "ccu_pll.h"
+ #include "ccu_ddn.h"
++#include "ccu_dpll.h"
++#include "ccu_ddr.h"
+ 
+ #define LOG_INFO(fmt, arg...)    pr_info("[K1X-CLK][%s][%d]:" fmt "\n", __func__, __LINE__, ##arg)
+ 
+@@ -154,6 +156,23 @@ DEFINE_SPINLOCK(g_cru_lock);
+ 
+ #define APMU_EMAC0_CLK_RES_CTRL     0x3e4
+ #define APMU_EMAC1_CLK_RES_CTRL     0x3ec
++
++#define APMU_DFC_AP                 0x180
++#define APMU_DFC_STATUS             0x188
++
++#define APMU_DFC_LEVEL0             0x190
++#define APMU_DFC_LEVEL1             0x194
++#define APMU_DFC_LEVEL2             0x198
++#define APMU_DFC_LEVEL3             0x19c
++#define APMU_DFC_LEVEL4             0x1a0
++#define APMU_DFC_LEVEL5             0x1a4
++#define APMU_DFC_LEVEL6             0x1a8
++#define APMU_DFC_LEVEL7             0x1ac
++
++#define APMU_DPLL1_CLK_CTRL1        0x39c
++#define APMU_DPLL1_CLK_CTRL2        0x3a0
++#define APMU_DPLL2_CLK_CTRL1        0x3a8
++#define APMU_DPLL2_CLK_CTRL2        0x3ac
+ /* end of APMU register offset */
+ 
+ /* APBC2 register offset */
+@@ -434,6 +453,59 @@ static SPACEMIT_CCU_GATE(pll1_d2_1228p8, "pll1_d2_1228p8", "pll1_d2",
+ 	BIT(16), BIT(16), 0x0,
+ 	CLK_IGNORE_UNUSED);
+ 
++//dpll
++static const struct ccu_dpll_rate_tbl dpll1_rate_tbl[] = {
++	DPLL_RATE(2400000000UL, 0x00, 0x00, 0x20, 0x2a, 0x32, 0x64, 0xdd, 0x50), //5000ppm
++	DPLL_RATE(2400000000UL, 0x00, 0x3b, 0x20, 0x2a, 0x32, 0x64, 0xdd, 0x50), //5000ppm + pre-setting
++};
++
++static const struct ccu_dpll_rate_tbl dpll2_rate_tbl[] = {
++	DPLL_RATE(3200000000UL, 0x55, 0x55, 0x3d, 0x2a, 0x43, 0x67, 0xdd, 0x50), //5000ppm
++};
++
++static SPACEMIT_CCU_DPLL(dpll1, "dpll1", &dpll1_rate_tbl, ARRAY_SIZE(dpll1_rate_tbl),
++	BASE_TYPE_APMU, APMU_DPLL1_CLK_CTRL1, APMU_DPLL1_CLK_CTRL2,
++	0, CLK_IGNORE_UNUSED);
++
++static SPACEMIT_CCU_DPLL(dpll2, "dpll2", &dpll2_rate_tbl, ARRAY_SIZE(dpll2_rate_tbl),
++	BASE_TYPE_APMU, APMU_DPLL2_CLK_CTRL1, APMU_DPLL2_CLK_CTRL2,
++	0, CLK_IGNORE_UNUSED);
++
++static const char * const dfc_lvl_parents[] = {
++	"dpll2", "dpll1"
++};
++
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl0, "dfc_lvl0", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL0,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl1, "dfc_lvl1", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL1,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl2, "dfc_lvl2", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL2,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl3, "dfc_lvl3", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL3,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl4, "dfc_lvl4", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL4,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl5, "dfc_lvl5", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL5,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl6, "dfc_lvl6", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL6,
++	14, 2, 8, 1, 0);
++static SPACEMIT_CCU_DIV_MUX(dfc_lvl7, "dfc_lvl7", dfc_lvl_parents,
++	BASE_TYPE_APMU, APMU_DFC_LEVEL7,
++	14, 2, 8, 1, 0);
++static const char * const ddr_clk_parents[] = {
++	"dfc_lvl0", "dfc_lvl1", "dfc_lvl2", "dfc_lvl3", "dfc_lvl4", "dfc_lvl5", "dfc_lvl6", "dfc_lvl7"
++};
++static SPACEMIT_CCU_DDR_FC(ddr, "ddr", ddr_clk_parents,
++	BASE_TYPE_APMU, APMU_DFC_AP, BIT(0),
++	1, 3, 0);
++
+ //mpmu
+ static struct ccu_ddn_info uart_ddn_mask_info = {
+ 	.factor = 2,
+@@ -1372,6 +1444,17 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
+ 		[CLK_RCPU_IR] 		= &rir_clk.common.hw,
+ 		[CLK_RCPU_UART0] 	= &ruart0_clk.common.hw,
+ 		[CLK_RCPU_UART1] 	= &ruart1_clk.common.hw,
++		[CLK_DPLL1] 	= &dpll1.common.hw,
++		[CLK_DPLL2] 	= &dpll2.common.hw,
++		[CLK_DFC_LVL0] 	= &dfc_lvl0.common.hw,
++		[CLK_DFC_LVL1] 	= &dfc_lvl1.common.hw,
++		[CLK_DFC_LVL2] 	= &dfc_lvl2.common.hw,
++		[CLK_DFC_LVL3] 	= &dfc_lvl3.common.hw,
++		[CLK_DFC_LVL4] 	= &dfc_lvl4.common.hw,
++		[CLK_DFC_LVL5] 	= &dfc_lvl5.common.hw,
++		[CLK_DFC_LVL6] 	= &dfc_lvl6.common.hw,
++		[CLK_DFC_LVL7] 	= &dfc_lvl7.common.hw,
++		[CLK_DDR] 	= &ddr.common.hw,
+ 	},
+ 	.num = CLK_MAX_NO,
+ };
+@@ -1409,6 +1492,22 @@ void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
+ 	}
+ }
+ 
++unsigned long spacemit_k1x_ddr_freq_tbl[MAX_FREQ_LV + 1] = {0};
++void spacemit_fill_ddr_freq_tbl(void)
++{
++	int i;
++	struct clk *clk;
++
++	for (i = 0; i < ARRAY_SIZE(spacemit_k1x_ddr_freq_tbl); i++) {
++		clk = clk_hw_get_clk(spacemit_k1x_hw_clks.hws[CLK_DFC_LVL0 + i], ddr_clk_parents[i]);
++
++		if (!IS_ERR_OR_NULL(clk))
++			spacemit_k1x_ddr_freq_tbl[i] = clk_get_rate(clk);
++		else
++			pr_err("%s : can't find clk %s\n", __func__, ddr_clk_parents[i]);
++	}
++}
++
+ int ccu_common_init(struct clk_hw * hw, struct spacemit_k1x_clk *clk_info)
+ {
+ 	struct ccu_common *common = hw_to_ccu_common(hw);
+@@ -1492,6 +1591,8 @@ int spacemit_ccu_probe(struct device_node *node, struct spacemit_k1x_clk *clk_in
+ 
+ 	//enable some clocks
+ 	spacemit_clocks_enable(bootup_enable_clk_table, ARRAY_SIZE(bootup_enable_clk_table));
++	//fill ddr frequency table
++	spacemit_fill_ddr_freq_tbl();
+ 
+ 	return 0;
+ 
+@@ -1587,5 +1688,38 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)
+ 	return;
+ }
+ 
++void * spacemit_get_ddr_freq_tbl(void)
++{
++	return spacemit_k1x_ddr_freq_tbl;
++}
++EXPORT_SYMBOL_GPL(spacemit_get_ddr_freq_tbl);
++
++u32 spacemit_get_ddr_freq_level(void)
++{
++	u32 ddr_freq_lvl = 0;
++
++	struct clk_hw *hw = spacemit_k1x_hw_clks.hws[CLK_DDR];
++	ddr_freq_lvl = clk_hw_get_parent_index(hw);
++
++	return ddr_freq_lvl;
++}
++EXPORT_SYMBOL_GPL(spacemit_get_ddr_freq_level);
++
++int spacemit_set_ddr_freq_level(u32 level)
++{
++	int ret = 0;
++	struct clk_hw *hw = spacemit_k1x_hw_clks.hws[CLK_DDR];
++
++	if (level < 0 || level > MAX_FREQ_LV)
++		return -EINVAL;
++
++	ret = clk_hw_set_parent(hw, clk_hw_get_parent_by_index(hw, level));
++	if (ret)
++		pr_err("%s : set ddr freq fail\n", __func__);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(spacemit_set_ddr_freq_level);
++
+ CLK_OF_DECLARE(k1x_clock, "spacemit,k1x-clock", spacemit_k1x_ccu_probe);
+ 
+diff --git a/drivers/clk/spacemit/ccu_ddr.c b/drivers/clk/spacemit/ccu_ddr.c
+new file mode 100644
+index 000000000000..ae5af8f88742
+--- /dev/null
++++ b/drivers/clk/spacemit/ccu_ddr.c
+@@ -0,0 +1,266 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Spacemit clock type ddr
++ *
++ * Copyright (c) 2023, spacemit Corporation.
++ *
++ */
++#include <linux/clk-provider.h>
++#include <linux/io.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++#include <linux/err.h>
++#include <linux/clk.h>
++#include "ccu_ddr.h"
++
++#define PMU_AP_IMR			(0x098)
++#define AP_DCLK_FC_DONE_INT_MSK		BIT(15)
++#define DCLK_FC_DONE_INT_MSK		BIT(4)
++
++#define PMU_AP_ISR			(0x0a0)
++#define AP_DCLK_FC_DONE_INT_STS		BIT(15)
++#define DCLK_FC_DONE_INT_STS		BIT(4)
++#define AP_FC_STS			BIT(1)
++
++#define DFC_AP				(0x180)
++#define DFC_FREQ_LV			0x1
++#define DFC_REQ				BIT(0)
++
++#define DFC_STATUS			(0x188)
++#define DFC_CAUSE_SHIFT			0x7
++#define DFC_STS				BIT(0)
++
++/* enable/disable ddr frequency change done interrupt */
++static void ccu_ddr_enable_dfc_int(struct ccu_common * common, bool enable)
++{
++	u32 val;
++	unsigned long flags;
++
++	spin_lock_irqsave(common->lock, flags);
++	val = readl(common->base + PMU_AP_IMR);
++	if (enable) {
++		val |= AP_DCLK_FC_DONE_INT_MSK;
++	} else {
++		val &= ~AP_DCLK_FC_DONE_INT_MSK;
++	}
++	writel(val, common->base + PMU_AP_IMR);
++	spin_unlock_irqrestore(common->lock, flags);
++}
++
++/* clear ddr frequency change done interrupt status*/
++static void ccu_ddr_clear_dfc_int_status(struct ccu_common * common)
++{
++	u32 val;
++	unsigned long flags;
++
++	spin_lock_irqsave(common->lock, flags);
++	val = readl(common->base + PMU_AP_ISR);
++	val &= ~(AP_DCLK_FC_DONE_INT_STS | AP_FC_STS);
++	writel(val, common->base + PMU_AP_ISR);
++	spin_unlock_irqrestore(common->lock, flags);
++}
++
++static int ccu_ddr_wait_freq_change_done(struct ccu_common * common)
++{
++	int timeout = 100;
++	u32 val;
++
++	while (--timeout) {
++		udelay(10);
++		val = readl(common->base + PMU_AP_ISR);
++		if (val & AP_DCLK_FC_DONE_INT_STS)
++			break;
++	}
++	if (!timeout) {
++		pr_err("%s: timeout! can not wait dfc done interrupt\n", __func__);
++		return -EBUSY;
++	}
++	return 0;
++}
++
++static int ccu_ddr_freq_chg(struct ccu_common * common, struct ccu_mux_config *mux, u8 level)
++{
++	u32 reg;
++	u32 timeout;
++	unsigned long flags;
++
++	if (level > MAX_FREQ_LV) {
++		pr_err("%s: invalid %d freq level\n", __func__, level);
++		return -EINVAL;
++	}
++
++	/* check if dfc in progress */
++	timeout = 1000;
++	while (--timeout) {
++		if (!(readl(common->base + DFC_STATUS) & DFC_STS))
++				break;
++		udelay(10);
++	}
++
++	if (!timeout) {
++		pr_err("%s: another dfc is in pregress. status:0x%x\n", __func__, readl(common->base + DFC_STATUS));
++		return -EBUSY;
++	}
++
++	spin_lock_irqsave(common->lock, flags);
++	reg = readl(common->base + common->reg_sel);
++	reg &= ~GENMASK(mux->width + mux->shift - 1, mux->shift);
++	writel(reg | (level << mux->shift) | common->fc, common->base + common->reg_sel);
++	spin_unlock_irqrestore(common->lock, flags);
++
++	timeout = 1000;
++	while (--timeout) {
++		udelay(10);
++		if (!(readl(common->base + DFC_STATUS) & DFC_STS))
++			break;
++	}
++
++	if (!timeout) {
++		pr_err("dfc error! status:0x%x\n", readl(common->base + DFC_STATUS));
++		return -EBUSY;
++	}
++
++	return 0;
++}
++
++static unsigned long ccu_ddr_recalc_rate(struct clk_hw *hw,
++				unsigned long parent_rate)
++{
++	return parent_rate;
++}
++
++static long ccu_ddr_round_rate(struct clk_hw *hw, unsigned long rate,
++				unsigned long *prate)
++{
++	return rate;
++}
++
++unsigned long ccu_ddr_calc_best_rate(struct clk_hw *hw, unsigned long rate,
++				u32 *mux_val)
++{
++	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
++	struct ccu_common * common = &ddr->common;
++	struct clk_hw *parent;
++	unsigned long parent_rate = 0, best_rate = 0;
++	u32 i;
++
++	for (i = 0; i < common->num_parents; i++) {
++		parent = clk_hw_get_parent_by_index(hw, i);
++		if (!parent)
++			continue;
++		parent_rate = clk_get_rate(clk_hw_get_clk(parent, common->name));
++		if (abs(parent_rate - rate) < abs(best_rate - rate)) {
++			best_rate = parent_rate;
++			*mux_val = i;
++		}
++	}
++	return best_rate;
++}
++
++static int ccu_ddr_set_rate(struct clk_hw *hw, unsigned long rate,
++			   unsigned long parent_rate)
++{
++	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
++	struct ccu_common * common = &ddr->common;
++	struct ccu_mux_config *mux = ddr->mux? ddr->mux: NULL;
++	unsigned long best_rate = 0;
++	u32 cur_mux, mux_val = 0;
++	u32 reg = 0;
++
++	if (!mux) {
++		return 0;
++	}
++
++	best_rate = ccu_ddr_calc_best_rate(hw, rate, &mux_val);
++
++	reg = readl(common->base + common->reg_sel);
++	if (mux) {
++		cur_mux = reg >> mux->shift;
++		cur_mux &= (1 << mux->width) - 1;
++		if (cur_mux != mux_val)
++			clk_hw_set_parent(hw, clk_hw_get_parent_by_index(hw, mux_val));
++	}
++	return 0;
++}
++
++static u8 ccu_ddr_get_parent(struct clk_hw *hw)
++{
++	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
++	struct ccu_common *common = &ddr->common;
++	struct ccu_mux_config *mux = ddr->mux;
++	u32 reg;
++	u8 parent;
++
++	if (!mux)
++		return 0;
++
++	reg = readl(common->base + common->reg_sel);
++
++	parent = reg >> mux->shift;
++	parent &= (1 << mux->width) - 1;
++
++	if (mux->table) {
++		int num_parents = clk_hw_get_num_parents(&common->hw);
++		int i;
++
++		for (i = 0; i < num_parents; i++)
++			if (mux->table[i] == parent)
++				return i;
++	}
++	return parent;
++}
++
++static int ccu_ddr_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
++	struct ccu_common * common = &ddr->common;
++	struct ccu_mux_config *mux = ddr->mux;
++	int ret = 0;
++
++	if (!mux)
++		return 0;
++
++	if (mux->table)
++		index = mux->table[index];
++
++	/* request change begin */
++	ccu_ddr_enable_dfc_int(common, true);
++
++	/* change parent*/
++	ret = ccu_ddr_freq_chg(common, mux, index);
++	if (ret < 0) {
++		pr_err("%s: ddr_freq_chg fail. ret = %d\n", __func__, ret);
++		return ret;
++	}
++
++	/* wait for frequency change done */
++	ret = ccu_ddr_wait_freq_change_done(common);
++	if (ret < 0) {
++		pr_err("%s: wait_freq_change_done timeout. ret = %d\n", __func__, ret);
++		return ret;
++	}
++	ccu_ddr_clear_dfc_int_status(common);
++	ccu_ddr_enable_dfc_int(common, false);
++
++	return 0;
++}
++
++static int ccu_ddr_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
++{
++	unsigned long best_rate = req->rate;
++	u32 mux_val = 0;
++
++	best_rate = ccu_ddr_calc_best_rate(hw, req->rate, &mux_val);
++	req->rate = best_rate;
++	return 0;
++}
++
++const struct clk_ops ccu_ddr_ops = {
++	.get_parent	= ccu_ddr_get_parent,
++	.set_parent	= ccu_ddr_set_parent,
++	.determine_rate	= ccu_ddr_determine_rate,
++	.round_rate	= ccu_ddr_round_rate,
++	.recalc_rate	= ccu_ddr_recalc_rate,
++	.set_rate	= ccu_ddr_set_rate,
++};
++
+diff --git a/drivers/clk/spacemit/ccu_ddr.h b/drivers/clk/spacemit/ccu_ddr.h
+new file mode 100644
+index 000000000000..e4fed50b1349
+--- /dev/null
++++ b/drivers/clk/spacemit/ccu_ddr.h
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023, spacemit Corporation.
++ *
++ */
++
++#ifndef _CCU_DDR_H_
++#define _CCU_DDR_H_
++
++#include <linux/clk-provider.h>
++#include "ccu-spacemit-k1x.h"
++#include "ccu_mix.h"
++
++struct ccu_ddr {
++	struct ccu_mux_config *mux;
++	struct ccu_common common;
++};
++
++#define MAX_FREQ_LV			7  //level0~7
++
++#define SPACEMIT_CCU_DDR_FC(_struct, _name, _parents, _base_type, _reg,	_fc,\
++						  _shift, _width, _flags) \
++	struct ccu_ddr _struct = {					\
++		.mux	= CCU_MUX_INIT(_shift, _width, NULL, 0),	 \
++		.common = { 					\
++			.reg_sel		= _reg, 			\
++			.fc			= _fc,				\
++			.base_type		= _base_type,			\
++			.name			= _name,			\
++			.parent_names		= _parents,			\
++			.num_parents		= ARRAY_SIZE(_parents),		\
++			.hw.init		= CLK_HW_INIT_PARENTS(_name,	\
++							  _parents,		\
++							  &ccu_ddr_ops, \
++							  _flags|CLK_GET_RATE_NOCACHE),		\
++		}							\
++	}
++
++static inline struct ccu_ddr *hw_to_ccu_ddr(struct clk_hw *hw)
++{
++	struct ccu_common *common = hw_to_ccu_common(hw);
++
++	return container_of(common, struct ccu_ddr, common);
++}
++
++extern const struct clk_ops ccu_ddr_ops;
++
++#endif /* _CCU_DDR_H_ */
+diff --git a/drivers/clk/spacemit/ccu_dpll.c b/drivers/clk/spacemit/ccu_dpll.c
+new file mode 100644
+index 000000000000..e7fd840c5aca
+--- /dev/null
++++ b/drivers/clk/spacemit/ccu_dpll.c
+@@ -0,0 +1,125 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Spacemit clock type pll
++ *
++ * Copyright (c) 2023, spacemit Corporation.
++ *
++ */
++
++#include <linux/io.h>
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
++#include <linux/delay.h>
++
++#include "ccu_dpll.h"
++
++#define DPLL_MIN_FREQ 1700000000
++#define DPLL_MAX_FREQ 3400000000
++
++#define pll_readl(reg)			readl(reg)
++#define pll_readl_pll_swcr1(p)		pll_readl(p.base + p.reg_ctrl)
++#define pll_readl_pll_swcr2(p)		pll_readl(p.base + p.reg_sel)
++
++#define pll_writel(val, reg)		writel(val, reg)
++#define pll_writel_pll_swcr1(val, p)	pll_writel(val, p.base + p.reg_ctrl)
++#define pll_writel_pll_swcr2(val, p)	pll_writel(val, p.base + p.reg_sel)
++
++/* unified dpllx_swcr1 for dpll1~2 */
++union dpllx_swcr1 {
++	struct {
++		unsigned int reg0:8;
++		unsigned int reg1:8;
++		unsigned int reg2:8;
++		unsigned int reg3:8;
++	} b;
++	unsigned int v;
++};
++
++/* unified dpllx_swcr2 for dpll1~2 */
++union dpllx_swcr2 {
++	struct {
++		unsigned int reg4:8;
++		unsigned int reg5:8;
++		unsigned int reg6:8;
++		unsigned int reg7:8;
++	} b;
++	unsigned int v;
++};
++
++/* frequency unit Mhz, return pll vco freq */
++static unsigned long __get_vco_freq(struct clk_hw *hw)
++{
++	unsigned int reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, size, i;
++	struct ccu_dpll_rate_tbl *freq_pll_regs_table;
++	struct ccu_dpll *p = hw_to_ccu_dpll(hw);
++	union dpllx_swcr1 swcr1;
++	union dpllx_swcr2 swcr2;
++
++	swcr1.v = pll_readl_pll_swcr1(p->common);
++	swcr2.v = pll_readl_pll_swcr2(p->common);
++
++	reg0 = swcr1.b.reg0;
++	reg1 = swcr1.b.reg1;
++	reg2 = swcr1.b.reg2;
++	reg3 = swcr1.b.reg3;
++	reg4 = swcr2.b.reg4;
++	reg5 = swcr2.b.reg5;
++	reg6 = swcr2.b.reg6;
++	reg7 = swcr2.b.reg7;
++
++	freq_pll_regs_table = p->dpll.rate_tbl;
++	size = p->dpll.tbl_size;
++
++	for (i = 0; i < size; i++) {
++		if ((freq_pll_regs_table[i].reg0 == reg0)
++			&& (freq_pll_regs_table[i].reg1 == reg1)
++			&& (freq_pll_regs_table[i].reg2 == reg2)
++			&& (freq_pll_regs_table[i].reg3 == reg3)
++			&& (freq_pll_regs_table[i].reg4 == reg4)
++			&& (freq_pll_regs_table[i].reg5 == reg5)
++			&& (freq_pll_regs_table[i].reg6 == reg6)
++			&& (freq_pll_regs_table[i].reg7 == reg7))
++				return freq_pll_regs_table[i].rate;
++	}
++	pr_err("Unknown rate for clock %s\n", __clk_get_name(hw->clk));
++	return 0;
++}
++
++static unsigned long ccu_dpll_recalc_rate(struct clk_hw *hw,
++				unsigned long parent_rate)
++{
++	return __get_vco_freq(hw);
++}
++
++static long ccu_dpll_round_rate(struct clk_hw *hw, unsigned long rate,
++				unsigned long *prate)
++{
++	struct ccu_dpll *p = hw_to_ccu_dpll(hw);
++	unsigned long max_rate = 0;
++	unsigned int i;
++	struct ccu_dpll_config *params = &p->dpll;
++
++	if (rate > DPLL_MAX_FREQ || rate < DPLL_MIN_FREQ) {
++		pr_err("%lu rate out of range!\n", rate);
++		return -EINVAL;
++	}
++
++	if (params->rate_tbl) {
++		for (i = 0; i < params->tbl_size; i++) {
++			if (params->rate_tbl[i].rate <= rate) {
++				if (max_rate < params->rate_tbl[i].rate)
++					max_rate = params->rate_tbl[i].rate;
++			}
++		}
++	} else {
++		pr_err("don't find freq table for pll\n");
++	}
++	return max_rate;
++}
++
++const struct clk_ops ccu_dpll_ops = {
++	.recalc_rate = ccu_dpll_recalc_rate,
++	.round_rate = ccu_dpll_round_rate,
++};
++
+diff --git a/drivers/clk/spacemit/ccu_dpll.h b/drivers/clk/spacemit/ccu_dpll.h
+new file mode 100644
+index 000000000000..49a7fe504dcc
+--- /dev/null
++++ b/drivers/clk/spacemit/ccu_dpll.h
+@@ -0,0 +1,80 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023, spacemit Corporation.
++ *
++ */
++
++#ifndef _CCU_DPLL_H_
++#define _CCU_DPLL_H_
++
++#include <linux/spinlock_types.h>
++#include <linux/clk-provider.h>
++#include "ccu-spacemit-k1x.h"
++
++struct ccu_dpll_rate_tbl {
++	unsigned long long rate;
++	u32 reg0;
++	u32 reg1;
++	u32 reg2;
++	u32 reg3;
++	u32 reg4;
++	u32 reg5;
++	u32 reg6;
++	u32 reg7;
++};
++
++struct ccu_dpll_config {
++	struct ccu_dpll_rate_tbl * rate_tbl;
++	u32 tbl_size;
++};
++
++#define DPLL_RATE(_rate, _reg0, _reg1, _reg2, _reg3, _reg4, _reg5, _reg6, _reg7)		\
++	{						\
++		.rate	=	(_rate),			\
++		.reg0	=	(_reg0),			\
++		.reg1	=	(_reg1),			\
++		.reg2	=	(_reg2),			\
++		.reg3	=	(_reg3),			\
++		.reg4	=	(_reg4),			\
++		.reg5	=	(_reg5),			\
++		.reg6	=	(_reg6),			\
++		.reg7	=	(_reg7),			\
++	}
++
++struct ccu_dpll {
++	struct ccu_dpll_config	dpll;
++	struct ccu_common	common;
++};
++
++#define _SPACEMIT_CCU_DPLL_CONFIG(_table, _size)	\
++	{						\
++		.rate_tbl	= (struct ccu_dpll_rate_tbl *)_table,	\
++		.tbl_size	= _size,			\
++	}
++
++#define SPACEMIT_CCU_DPLL(_struct, _name, _table, _size,	\
++						 _base_type, _reg_ctrl, _reg_sel, _is_pll,	\
++						 _flags)				\
++	struct ccu_dpll _struct = {					\
++		.dpll	= _SPACEMIT_CCU_DPLL_CONFIG(_table, _size),	\
++		.common = { 					\
++			.reg_ctrl		= _reg_ctrl,		\
++			.reg_sel		= _reg_sel,		\
++			.base_type		= _base_type,		\
++			.is_pll			= 0,			\
++			.hw.init		= CLK_HW_INIT_NO_PARENT(_name,	\
++							&ccu_dpll_ops,	\
++							_flags),	\
++		}							\
++	}
++
++static inline struct ccu_dpll *hw_to_ccu_dpll(struct clk_hw *hw)
++{
++	struct ccu_common *common = hw_to_ccu_common(hw);
++
++	return container_of(common, struct ccu_dpll, common);
++}
++
++extern const struct clk_ops ccu_dpll_ops;
++
++#endif
+diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
+index f0dfeb91b713..91f7ce8cd830 100644
+--- a/drivers/clk/spacemit/ccu_mix.h
++++ b/drivers/clk/spacemit/ccu_mix.h
+@@ -323,6 +323,24 @@ struct ccu_mix {
+ 		},							\
+ 	}
+ 
++#define SPACEMIT_CCU_DIV_MUX(_struct, _name, _parents, _base_type, _reg_ctrl,		\
++					  _mshift, _mwidth, _muxshift, _muxwidth, _flags)					\
++	struct ccu_mix _struct = {					\
++		.div	= CCU_DIV_INIT(_mshift, _mwidth, NULL, 0),		\
++		.mux	= CCU_MUX_INIT(_muxshift, _muxwidth, NULL, 0), \
++		.common = { 					\
++			.reg_ctrl		= _reg_ctrl,		\
++			.base_type		= _base_type,		\
++			.name			= _name,		\
++			.parent_names		= _parents,		\
++			.num_parents		= ARRAY_SIZE(_parents),		\
++			.hw.init		= CLK_HW_INIT_PARENTS(_name,	\
++							  _parents,		\
++							  &ccu_mix_ops,		\
++							  _flags|CLK_GET_RATE_NOCACHE),	\
++		},							\
++	}
++
+ #define SPACEMIT_CCU_DIV_FC_MUX(_struct, _name, _parents, _base_type, _reg_ctrl,		\
+ 					  _mshift, _mwidth, _fc, _muxshift, _muxwidth, _flags)					\
+ 	struct ccu_mix _struct = {					\
+diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
+index df27435111dd..be4c4e1f834b 100644
+--- a/include/dt-bindings/clock/spacemit-k1x-clock.h
++++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
+@@ -203,6 +203,18 @@
+ #define CLK_RCPU_UART0      190
+ #define CLK_RCPU_UART1      191
+ 
++#define CLK_DPLL1           192
++#define CLK_DPLL2           193
+ 
+-#define CLK_MAX_NO      192
++#define CLK_DFC_LVL0        194
++#define CLK_DFC_LVL1        195
++#define CLK_DFC_LVL2        196
++#define CLK_DFC_LVL3        197
++#define CLK_DFC_LVL4        198
++#define CLK_DFC_LVL5        199
++#define CLK_DFC_LVL6        200
++#define CLK_DFC_LVL7        201
++#define CLK_DDR             202
++
++#define CLK_MAX_NO      203
+ #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
+-- 
+2.47.0
+

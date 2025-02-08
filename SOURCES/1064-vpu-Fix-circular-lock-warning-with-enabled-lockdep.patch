@@ -1,0 +1,95 @@
+From afbf7514d6b2502f1d73847996b6b551c02fb249 Mon Sep 17 00:00:00 2001
+From: mengbinghan <binghan.meng@spacemit.com>
+Date: Mon, 4 Nov 2024 17:55:16 +0800
+Subject: [PATCH 1064/1204] vpu: Fix circular lock warning with enabled lockdep
+
+log:
+[   16.643159] ======================================================
+[   16.649361] WARNING: possible circular locking dependency detected
+[   16.655570] 6.6.36 #3 Not tainted
+[   16.658910] ------------------------------------------------------
+[   16.665136] v4l_id/269 is trying to acquire lock:
+[   16.669855] ffffffd90450a278 (mvx_v4l2_ctrls:918:(hnd)->_lock){+.+.}-{4:4}, at: v4l2_ctrl_handler_free+0x36/0x158
+[   16.680214]
+[   16.680214] but task is already holding lock:
+[   16.686089] ffffffd904508208 (&vsession->mutex){+.+.}-{4:4}, at: mvx_v4l2_release+0x5e/0x116
+[   16.694599]
+[   16.694599] which lock already depends on the new lock.
+[   16.694599]
+[   16.702805]
+[   16.702805] the existing dependency chain (in reverse order) is:
+[   16.710342]
+[   16.710342] -> #1 (&vsession->mutex){+.+.}-{4:4}:
+[   16.716608]        lock_acquire+0x102/0x2e8
+[   16.720867]        __mutex_lock+0x78/0x7ea
+[   16.725013]        mutex_lock_interruptible_nested+0x14/0x1c
+[   16.730733]        set_ctrl+0x3c/0x7b0
+[   16.734549]        __v4l2_ctrl_handler_setup+0xe8/0x124
+[   16.739860]        v4l2_ctrl_handler_setup+0x22/0x3c
+[   16.744920]        mvx_v4l2_ctrls_init+0xb46/0xb8a
+[   16.749776]        mvx_v4l2_open+0xd8/0x1b2
+[   16.753983]        v4l2_open+0x96/0xfe
+[   16.757791]        chrdev_open+0x9c/0x1fa
+[   16.761847]        do_dentry_open+0x182/0x398
+[   16.766284]        vfs_open+0x22/0x2a
+[   16.769994]        path_openat+0x5dc/0x91a
+[   16.774125]        do_filp_open+0x68/0xe2
+[   16.778166]        do_sys_openat2+0x7a/0xaa
+[   16.782397]        __riscv_sys_openat+0x42/0x86
+[   16.787008]        do_trap_ecall_u+0xba/0x12e
+[   16.791419]        ret_from_exception+0x0/0x6e
+[   16.795916]
+[   16.795916] -> #0 (mvx_v4l2_ctrls:918:(hnd)->_lock){+.+.}-{4:4}:
+[   16.803478]        check_noncircular+0x13c/0x150
+[   16.808139]        __lock_acquire+0x1000/0x2172
+[   16.812695]        lock_acquire+0x102/0x2e8
+[   16.816907]        __mutex_lock+0x78/0x7ea
+[   16.821037]        mutex_lock_nested+0x14/0x1c
+[   16.825516]        v4l2_ctrl_handler_free+0x36/0x158
+[   16.830557]        mvx_v4l2_ctrls_done+0xc/0x14
+[   16.835129]        mvx_v4l2_release+0x68/0x116
+[   16.839653]        v4l2_release+0x92/0xbc
+[   16.843694]        __fput+0xbc/0x208
+[   16.847312]        __fput_sync+0x1e/0x26
+[   16.851252]        __riscv_sys_close+0x28/0x60
+[   16.855726]        do_trap_ecall_u+0xba/0x12e
+[   16.860120]        ret_from_exception+0x0/0x6e
+[   16.864605]
+[   16.864605] other info that might help us debug this:
+[   16.864605]
+[   16.872641]  Possible unsafe locking scenario:
+[   16.872641]
+[   16.878585]        CPU0                    CPU1
+[   16.883150]        ----                    ----
+[   16.887709]   lock(&vsession->mutex);
+[   16.891406]                                lock(mvx_v4l2_ctrls:918:(hnd)->_lock);
+[   16.898927]                                lock(&vsession->mutex);
+[   16.905147]   lock(mvx_v4l2_ctrls:918:(hnd)->_lock);
+[   16.910139]
+[   16.910139]  *** DEADLOCK ***
+
+Change-Id: Ie8b72cbaaa4d1d9d1cdff6730f12cb1cb1e89b37
+---
+ .../media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c   | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
+index fd07c7c65a27..b1b457dbcfd3 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
+@@ -114,10 +114,10 @@ int mvx_v4l2_release(struct file *file)
+ 
+ 	MVX_SESSION_INFO(&vsession->session, "v4l2: Release.");
+ 
+-	mutex_lock(&vsession->mutex);
+-
+ 	mvx_v4l2_ctrls_done(vsession->fh.ctrl_handler);
+ 
++	mutex_lock(&vsession->mutex);
++
+ 	for (i = 0; i < MVX_DIR_MAX; i++)
+ 		if (vsession->port[i].q_set != false) {
+ 			vb2_queue_release(&vsession->port[i].vb2_queue);
+-- 
+2.47.0
+

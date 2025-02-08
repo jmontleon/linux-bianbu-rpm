@@ -1,0 +1,26 @@
+From 85d8260403743800de703ff7793e014187bb1d6e Mon Sep 17 00:00:00 2001
+From: liyeshan <yeshan.li@spacemit.com>
+Date: Thu, 7 Nov 2024 22:01:37 +0800
+Subject: [PATCH 1080/1204] k1: add radeon module in k1_defconfig
+
+Change-Id: I8dead6090afc6212c481abec14f594d15923fb77
+---
+ arch/riscv/configs/k1_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index d856cbe9d651..7c21c59b72b9 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -881,6 +881,8 @@ CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ # CONFIG_DVB_CXD2099 is not set
+ # CONFIG_DVB_SP2 is not set
+ # CONFIG_DRM_DEBUG_MODESET_LOCK is not set
++CONFIG_DRM_RADEON=m
++CONFIG_DRM_RADEON_USERPTR=y
+ CONFIG_DRM_SPACEMIT=y
+ CONFIG_SPACEMIT_MIPI_PANEL=y
+ CONFIG_SPACEMIT_HDMI=y
+-- 
+2.47.0
+

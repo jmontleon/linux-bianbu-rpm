@@ -1,0 +1,59 @@
+From 8f530ca708a69fe59dde08ddb9022ead62df1431 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 29 Jul 2024 21:09:57 +0800
+Subject: [PATCH 0874/1204] k1-x_MUSE-Book: not reset usb during suspend
+
+Change-Id: I0b6e58f20658a8c0612bd7f4f702d978000f9ee1
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+index c73c45ba4be8..27f75160bbaf 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
+@@ -369,11 +369,6 @@ dcdc_4: DCDC_REG4 {
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-ramp-delay = <5000>;
+ 				regulator-always-on;
+-
+-				regulator-state-mem {
+-					regulator-off-in-suspend;
+-					regulator-suspend-microvolt = <3300000>;
+-				};
+ 			};
+ 
+ 			dcdc_5: DCDC_REG5 {
+@@ -668,7 +663,6 @@ &usbphy {
+ };
+ 
+ &ehci {
+-	spacemit,reset-on-resume;
+ 	status = "okay";
+ };
+ 
+@@ -677,7 +671,6 @@ &usbphy1 {
+ };
+ 
+ &ehci1 {
+-	spacemit,reset-on-resume;
+ 	status = "okay";
+ };
+ 
+@@ -691,12 +684,12 @@ &combphy {
+ 
+ &usb3hub {
+ 	hub-gpios = <&gpio 123 0>;	/* usb3 hub en */
++	suspend_power_on;
+ 	status = "okay";
+ };
+ 
+ &usbdrd3 {
+ 	status = "okay";
+-	reset-on-resume;
+ 	dwc3@c0a00000 {
+ 		dr_mode = "host";
+ 		phy_type = "utmi";
+-- 
+2.47.0
+

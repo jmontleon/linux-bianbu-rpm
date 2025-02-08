@@ -1,0 +1,142 @@
+From 205d8caeb60728cb9b14b7d116591bd46cedfa38 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 14 May 2024 21:31:11 +0800
+Subject: [PATCH 0653/1204] k1:dts:rproc: delete the dma-range property which
+ will cause warning in system bootup process
+
+Change-Id: I6616b9fe8617649fc9b1492e0203a917e2e64b8b
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts     | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts   | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_kx312.dts   | 2 --
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts   | 2 --
+ 9 files changed, 18 deletions(-)
+ mode change 100755 => 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 22e67487f59f..363414789c99 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -715,8 +715,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+old mode 100755
+new mode 100644
+index 6150ff2556d1..7e7c4a9701a9
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
+@@ -717,8 +717,6 @@ opp1600000000 {
+ &rcpu {
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index d3e08c16f6b6..6f0a0c552816 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -963,8 +963,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 647e95679998..87c53a0ed55c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -956,8 +956,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 4d60f115109a..70fd97ee7d05 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -918,8 +918,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 9bb480dee340..b2e854475f22 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -852,8 +852,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index 340285d3d64a..e0a4b93427c1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -751,8 +751,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+index 545873231e05..184560f090f6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
+@@ -725,8 +725,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 3881291f7809..cd5e5d9cb70f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -593,8 +593,6 @@ &rcpu {
+ 	pinctrl-0 = <&pinctrl_rcpu>;
+ 	mboxes = <&mailbox 0>, <&mailbox 1>;
+ 	mbox-names = "vq0", "vq1";
+-	interconnects = <&dram_range0>;
+-	interconnect-names = "dma-mem";
+ 	memory-region = <&rcpu_mem_0>, <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>, <&rsc_table>, <&rcpu_mem_snapshots>;
+ 	status = "okay";
+ };
+-- 
+2.47.0
+

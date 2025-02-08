@@ -1,0 +1,45 @@
+From a1397e9806ddb71cc6d7eadba2f028a36f61213a Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:17:39 +0800
+Subject: [PATCH 1111/1204] spacemit: jpu: modify prototype of device remove
+ function
+
+Change-Id: I30b6f12034ab3ff136025d973ce4c4f0e757b819
+---
+ drivers/soc/spacemit/jpu/jpu.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
+index 7106f79978c8..2b3eeb7a7df7 100644
+--- a/drivers/soc/spacemit/jpu/jpu.c
++++ b/drivers/soc/spacemit/jpu/jpu.c
+@@ -16,7 +16,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+-//#include <linux/sched.h>
++#include <linux/vmalloc.h>
+ #include <linux/sched/signal.h>
+ #include <linux/pm_runtime.h>
+ #include <asm/io.h>
+@@ -1701,7 +1701,7 @@ static int jpu_probe(struct platform_device *pdev)
+ 	return -1;
+ }
+ 
+-static int jpu_remove(struct platform_device *pdev)
++static void jpu_remove(struct platform_device *pdev)
+ {
+ 	struct jpu_device *jdev = platform_get_drvdata(pdev);
+ 
+@@ -1731,8 +1731,6 @@ static int jpu_remove(struct platform_device *pdev)
+ 	sysfs_remove_groups(&pdev->dev.kobj, jpu_frequency_group);
+ 
+ 	dev_dbg(jdev->jdev, "driver removed\n");
+-
+-	return 0;
+ }
+ 
+ #ifdef CONFIG_PM
+-- 
+2.47.0
+

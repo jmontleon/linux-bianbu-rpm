@@ -1,0 +1,40 @@
+From b799dfeb980a96629ce29885e9fc698d96a648f7 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 2 Dec 2024 16:58:57 +0800
+Subject: [PATCH 1146/1204] k1:regulator: enable the driver of regulator
+
+Change-Id: Ic5e414c9e9a8ca62b535116d835a0714eec222d1
+---
+ arch/riscv/configs/k1_defconfig        | 2 ++
+ drivers/regulator/spacemit-regulator.c | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 6d639c3a6d10..39d5ecb559a1 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -684,7 +684,9 @@ CONFIG_CPU_THERMAL=y
+ CONFIG_K1X_THERMAL=y
+ CONFIG_WATCHDOG=y
+ CONFIG_SPACEMIT_WATCHDOG=y
++CONFIG_MFD_SPACEMIT_PMIC=y
+ CONFIG_REGULATOR=y
++CONFIG_REGULATOR_SPACEMIT=y
+ CONFIG_RC_CORE=y
+ CONFIG_RC_DEVICES=y
+ CONFIG_IR_SPACEMIT=y
+diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
+index 4e28ef0025f3..ddeb84ce7778 100644
+--- a/drivers/regulator/spacemit-regulator.c
++++ b/drivers/regulator/spacemit-regulator.c
+@@ -13,6 +13,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/regulator/driver.h>
++#include <linux/platform_device.h>
+ #include <linux/regulator/of_regulator.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/mfd/spacemit/spacemit_pmic.h>
+-- 
+2.47.0
+

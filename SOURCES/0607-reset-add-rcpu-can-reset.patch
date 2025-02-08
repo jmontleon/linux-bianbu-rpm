@@ -1,0 +1,66 @@
+From cd5d48e27ac80d526701c6d4c581886e2d25fd32 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Thu, 25 Apr 2024 09:14:09 +0800
+Subject: [PATCH 0607/1204] reset: add rcpu can reset
+
+Change-Id: I1beed0cc71dd0b206535bc5c7b7eb7bd53d557c6
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi         | 2 +-
+ drivers/reset/reset-spacemit-k1x.c             | 4 +++-
+ include/dt-bindings/reset/spacemit-k1x-reset.h | 5 +++--
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index fdf4575f720f..8267f7461be0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -610,7 +610,7 @@ reset: reset-controller@d4050000 {
+ 				<0x0 0xd8440000 0x0 0x98>,
+ 				<0x0 0xc0000000 0x0 0x4280>,
+ 				<0x0 0xf0610000 0x0 0x20>,
+-				<0x0 0xc0882000 0x0 0x50>;
++				<0x0 0xc0880000 0x0 0x2050>;
+ 			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2", "rcpu";
+ 			#reset-cells = <1>;
+ 			status = "okay";
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 14095c381603..90af43a69c37 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -128,7 +128,8 @@
+ /* end of APBC2 register offset */
+ 
+ /* RCPU register offset */
+-#define RCPU_HDMI_CLK_RST		0x44
++#define RCPU_HDMI_CLK_RST		0x2044
++#define RCPU_CAN_CLK_RST		0x4c
+ /* end of RCPU register offset */
+ 
+ enum spacemit_reset_base_type{
+@@ -283,6 +284,7 @@ static const struct spacemit_reset_signal
+ 	[RESET_SEC_GPIO] 	= { APBC2_GPIO_CLK_RST, BIT(2), 0, BIT(2), RST_BASE_TYPE_APBC2 },
+ 	//RCPU
+ 	[RESET_RCPU_HDMIAUDIO] 	= { RCPU_HDMI_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
++	[RESET_RCPU_CAN] 	= { RCPU_CAN_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ };
+ 
+ static struct spacemit_reset *to_spacemit_reset(
+diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
+index ea82147027cf..ed4b24f6d380 100644
+--- a/include/dt-bindings/reset/spacemit-k1x-reset.h
++++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
+@@ -112,8 +112,9 @@
+ #define	RESET_SEC_KPC      99
+ #define	RESET_SEC_GPIO     100
+ 
+-#define RESET_RCPU_HDMIAUDIO 101
++#define	RESET_RCPU_HDMIAUDIO 101
++#define	RESET_RCPU_CAN       102
+ 
+-#define	RESET_NUMBER       102
++#define	RESET_NUMBER       103
+ 
+ #endif /* __DT_BINDINGS_RESET_SAPCEMIT_K1X_H__ */
+-- 
+2.47.0
+

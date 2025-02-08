@@ -1,0 +1,183 @@
+From e508a90fb8498c170aeb6a5f029021d9f2d31035 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:15:51 +0800
+Subject: [PATCH 1109/1204] soc:spacemit: modify prototype of device remove
+ function
+
+Change-Id: I6bd2bc7eca5e4818b23ad31e35d87e42bb99894c
+---
+ drivers/soc/spacemit/spacemit-rf/spacemit-bt.c     | 6 ++----
+ drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c | 4 +---
+ drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h | 4 ++++
+ drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c | 4 +---
+ drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c   | 6 ++----
+ drivers/soc/spacemit/spacemit-socinfo.c            | 6 ++----
+ drivers/soc/spacemit/spacemit_reboot.c             | 3 +--
+ 7 files changed, 13 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+index ab164855b536..da8781ba6294 100644
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
+@@ -20,7 +20,7 @@
+ #include <linux/clk.h>
+ #include <linux/rfkill.h>
+ #include <linux/property.h>
+-#include <linux/of_device.h>
++#include <linux/of_platform.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+ #include "spacemit-pwrseq.h"
+@@ -142,7 +142,7 @@ static int spacemit_bt_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_bt_remove(struct platform_device *pdev)
++static void spacemit_bt_remove(struct platform_device *pdev)
+ {
+ 	struct bt_pwrseq *pwrseq = platform_get_drvdata(pdev);
+ 
+@@ -153,8 +153,6 @@ static int spacemit_bt_remove(struct platform_device *pdev)
+ 
+ 	if (!IS_ERR_OR_NULL(pwrseq->ext_clk))
+ 		clk_disable_unprepare(pwrseq->ext_clk);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_bt_ids[] = {
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
+index eb9afa9bced3..f71c9e888b86 100644
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
+@@ -262,7 +262,7 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_pwrseq_remove(struct platform_device *pdev)
++static void spacemit_pwrseq_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_pwrseq *pwrseq = platform_get_drvdata(pdev);
+ 
+@@ -271,8 +271,6 @@ static int spacemit_pwrseq_remove(struct platform_device *pdev)
+ 
+ 	mutex_destroy(&pwrseq->pwrseq_mutex);
+ 	of_platform_depopulate(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_pwrseq_ids[] = {
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
+index 22ff01890757..2189a3b8aa3e 100644
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
+@@ -19,6 +19,10 @@ struct spacemit_pwrseq {
+ 	atomic_t pwrseq_count;
+ };
+ 
++
++void spacemit_wlan_set_power(bool on_off);
++int spacemit_wlan_get_oob_irq(void);
++int spacemit_wlan_get_oob_irq_flags(void);
+ void spacemit_power_on(struct spacemit_pwrseq *pwrseq, bool on_off);
+ struct spacemit_pwrseq *spacemit_get_pwrseq_from_dev(struct device*);
+ #endif
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
+index e08da8d256ed..2469eadd9deb 100644
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
+@@ -258,7 +258,7 @@ static int spacemit_rfkill_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_rfkill_remove(struct platform_device *pdev)
++static void spacemit_rfkill_remove(struct platform_device *pdev)
+ {
+ 	struct rfkill_pwrseq *pwrseq = platform_get_drvdata(pdev);
+ 
+@@ -269,8 +269,6 @@ static int spacemit_rfkill_remove(struct platform_device *pdev)
+ 
+ 	if (!IS_ERR_OR_NULL(pwrseq->ext_clk))
+ 		clk_disable_unprepare(pwrseq->ext_clk);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_rfkill_ids[] = {
+diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+index f9bb8130088c..74cf3332b720 100644
+--- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
++++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
+@@ -18,7 +18,7 @@
+ #include <linux/device.h>
+ #include <linux/delay.h>
+ #include <linux/property.h>
+-#include <linux/of_device.h>
++#include <linux/of_platform.h>
+ #include <linux/interrupt.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+@@ -142,14 +142,12 @@ static int spacemit_wlan_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_wlan_remove(struct platform_device *pdev)
++static void spacemit_wlan_remove(struct platform_device *pdev)
+ {
+ 	struct wlan_pwrseq *pwrseq = platform_get_drvdata(pdev);
+ 
+ 	mutex_destroy(&pwrseq->wlan_mutex);
+ 	pdata = NULL;
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_wlan_ids[] = {
+diff --git a/drivers/soc/spacemit/spacemit-socinfo.c b/drivers/soc/spacemit/spacemit-socinfo.c
+index 0dfec63b7a8d..d512751f46b1 100644
+--- a/drivers/soc/spacemit/spacemit-socinfo.c
++++ b/drivers/soc/spacemit/spacemit-socinfo.c
+@@ -176,13 +176,11 @@ static int spacemit_socinfo_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_socinfo_remove(struct platform_device *pdev)
++static void spacemit_socinfo_remove(struct platform_device *pdev)
+ {
+ 	struct soc_device *soc_dev = platform_get_drvdata(pdev);
+ 
+ 	soc_device_unregister(soc_dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id spacemit_socinfo_dt_match[] = {
+@@ -202,4 +200,4 @@ static struct platform_driver spacemit_socinfo_driver = {
+ module_platform_driver(spacemit_socinfo_driver);
+ 
+ MODULE_DESCRIPTION("Spacemit soc information driver");
+-MODULE_LICENSE("GPL v2");
+\ No newline at end of file
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/soc/spacemit/spacemit_reboot.c b/drivers/soc/spacemit/spacemit_reboot.c
+index 37ea23766908..8ac2d500899d 100644
+--- a/drivers/soc/spacemit/spacemit_reboot.c
++++ b/drivers/soc/spacemit/spacemit_reboot.c
+@@ -69,12 +69,11 @@ static int spacemit_reboot_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int spacemit_reboot_remove(struct platform_device *pdev)
++static void spacemit_reboot_remove(struct platform_device *pdev)
+ {
+ 	struct spacemit_reboot_ctrl *info = platform_get_drvdata(pdev);
+ 
+ 	unregister_restart_handler(&info->reset_handler);
+-	return 0;
+ }
+ 
+ static struct platform_driver spacemit_reboot_driver = {
+-- 
+2.47.0
+

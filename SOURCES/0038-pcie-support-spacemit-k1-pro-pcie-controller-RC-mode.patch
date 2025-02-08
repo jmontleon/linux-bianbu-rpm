@@ -1,7 +1,7 @@
-From 5ed63e24bf5b3abfa6e36f790d93ca7996e57b1a Mon Sep 17 00:00:00 2001
+From fb593f9e689817f27f95ba83422e141da03b87cd Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sat, 3 Jun 2023 11:21:18 +0800
-Subject: [PATCH 0038/1206] pcie: support spacemit k1-pro pcie controller RC
+Subject: [PATCH 0038/1204] pcie: support spacemit k1-pro pcie controller RC
  mode
 
 Change-Id: Idfa11a7f7b1d6df612de509d9addf5caff49bb07
@@ -111,7 +111,7 @@ index a8308d9ea986..5e8408757226 100644
  # The following drivers are for devices that use the generic ACPI
  # pci_root.c driver but don't support standard ECAM config access.
 diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index d2291c3ceb8b..4ef9ce007096 100644
+index cf146ff6a3ea..308d5ae47fbd 100644
 --- a/drivers/pci/controller/dwc/pcie-designware-host.c
 +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
 @@ -372,7 +372,11 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)

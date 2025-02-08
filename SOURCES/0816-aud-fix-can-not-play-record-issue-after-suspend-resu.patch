@@ -1,0 +1,32 @@
+From 48131ca15a61760b2120cde8d044c36a649a4f10 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Mon, 15 Jul 2024 16:27:35 +0800
+Subject: [PATCH 0816/1204] aud: fix can not play/record issue after
+ suspend/resume on sound setting interface
+
+Change-Id: I47d82199c833e489141917eb11984f92b6361500
+---
+ sound/soc/spacemit/spacemit-snd-pcm-dma.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+index 57764c40652e..b6bc02edcb85 100644
+--- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
++++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+@@ -551,8 +551,12 @@ static int spacemit_snd_pcm_trigger(struct snd_soc_component *component, struct
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		if (runtime->info & SNDRV_PCM_INFO_PAUSE)
+ 			dmaengine_pause(dmadata->dma_chan);
+-		else
++		else {
+ 			dmaengine_terminate_async(dmadata->dma_chan);
++			dmadata->playback_data = 0;
++			dmadata->pos = 0;
++			spacemit_update_stream_status(dev, dmadata->stream, false);
++		}
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-- 
+2.47.0
+

@@ -1,0 +1,239 @@
+From de0df9b68ad7ba819d26c78f0fa072df2ba0e160 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:45:01 +0800
+Subject: [PATCH 1130/1204] emac: k1x: fix compile warning on function
+ prototype
+
+Change-Id: I47d2e3515c4ffc1443a04be88db1ae285c080b91
+---
+ drivers/net/ethernet/spacemit/emac_ptp.c | 16 ++++++-------
+ drivers/net/ethernet/spacemit/k1x-emac.c | 29 ++++++++++++------------
+ drivers/net/ethernet/spacemit/k1x-emac.h |  4 ++--
+ 3 files changed, 24 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
+index 1dc34544b0c6..7caa692f9a87 100644
+--- a/drivers/net/ethernet/spacemit/emac_ptp.c
++++ b/drivers/net/ethernet/spacemit/emac_ptp.c
+@@ -47,7 +47,7 @@
+ #define INCVALUE_SHIFT_100MHZ	17
+ #define INCPERIOD_100MHZ	1
+ 
+-void emac_hw_timestamp_config(struct emac_priv *priv, u32 enable, u8 rx_ptp_type, u32 ptp_msg_id)
++static void emac_hw_timestamp_config(struct emac_priv *priv, u32 enable, u8 rx_ptp_type, u32 ptp_msg_id)
+ {
+ 	void __iomem *ioaddr = priv->iobase;
+ 	u32 val;
+@@ -73,7 +73,7 @@ void emac_hw_timestamp_config(struct emac_priv *priv, u32 enable, u8 rx_ptp_type
+ 		writel(0, ioaddr + PTP_1588_CTRL);
+ }
+ 
+-u32 emac_hw_config_systime_increment(struct emac_priv *priv, u32 ptp_clock,
++static u32 emac_hw_config_systime_increment(struct emac_priv *priv, u32 ptp_clock,
+                                         u32 adj_clock)
+ {
+ 	void __iomem *ioaddr = priv->iobase;
+@@ -106,7 +106,7 @@ u32 emac_hw_config_systime_increment(struct emac_priv *priv, u32 ptp_clock,
+ 	return 0;
+ }
+ 
+-u64 emac_hw_get_systime(struct emac_priv *priv)
++static u64 emac_hw_get_systime(struct emac_priv *priv)
+ {
+ 	void __iomem *ioaddr = priv->iobase;
+ 	u64 systimel, systimeh;
+@@ -121,7 +121,7 @@ u64 emac_hw_get_systime(struct emac_priv *priv)
+ 	return systim;
+ }
+ 
+-u64 emac_hw_get_phc_time(struct emac_priv *priv)
++static u64 emac_hw_get_phc_time(struct emac_priv *priv)
+ {
+ 	unsigned long flags;
+ 	u64 cycles, ns;
+@@ -136,7 +136,7 @@ u64 emac_hw_get_phc_time(struct emac_priv *priv)
+ 	return ns;
+ }
+ 
+-u64 emac_hw_get_tx_timestamp(struct emac_priv *priv)
++static u64 emac_hw_get_tx_timestamp(struct emac_priv *priv)
+ {
+ 	void __iomem *ioaddr = priv->iobase;
+ 	unsigned long flags;
+@@ -156,7 +156,7 @@ u64 emac_hw_get_tx_timestamp(struct emac_priv *priv)
+ 	return ns;
+ }
+ 
+-u64 emac_hw_get_rx_timestamp(struct emac_priv *priv)
++static u64 emac_hw_get_rx_timestamp(struct emac_priv *priv)
+ {
+ 	void __iomem *ioaddr = priv->iobase;
+ 	unsigned long flags;
+@@ -187,7 +187,7 @@ static u64 emac_cyclecounter_read(const struct cyclecounter *cc)
+ 	return emac_hw_get_systime(priv);
+ }
+ 	/* according to spec , set system time upper register and adjust time */
+-int emac_hw_init_systime(struct emac_priv *priv, u64 set_ns)
++static int emac_hw_init_systime(struct emac_priv *priv, u64 set_ns)
+ {
+ 	unsigned long flags;
+ 
+@@ -200,7 +200,7 @@ int emac_hw_init_systime(struct emac_priv *priv, u64 set_ns)
+ 	return 0;
+ }
+ 
+-struct emac_hw_ptp emac_hwptp = {
++static struct emac_hw_ptp emac_hwptp = {
+ 	.config_hw_tstamping = emac_hw_timestamp_config,
+ 	.config_systime_increment = emac_hw_config_systime_increment,
+ 	.init_systime = emac_hw_init_systime,
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 8932171243b4..e85f79457eda 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -148,7 +148,7 @@ static int emac_sw_init(struct emac_priv *priv);
+ 
+ static void emac_tx_timeout_task(struct work_struct *work);
+ 
+-void register_dump(struct emac_priv *priv)
++__maybe_unused static void register_dump(struct emac_priv *priv)
+ {
+ 	int i;
+ 	void __iomem *base = priv->iobase;
+@@ -165,7 +165,7 @@ void register_dump(struct emac_priv *priv)
+ 	}
+ }
+ 
+-void print_pkt(unsigned char *buf, int len)
++__maybe_unused static void print_pkt(unsigned char *buf, int len)
+ {
+ 	int i = 0;
+ 
+@@ -185,7 +185,7 @@ void print_pkt(unsigned char *buf, int len)
+ 	}
+ }
+ 
+-void print_desc(unsigned char *buf, int len)
++__maybe_unused static void print_desc(unsigned char *buf, int len)
+ {
+ 	int i;
+ 
+@@ -200,12 +200,12 @@ void print_desc(unsigned char *buf, int len)
+ 	}
+ }
+ 
+-bool emac_is_rmii(struct emac_priv *priv)
++static bool emac_is_rmii(struct emac_priv *priv)
+ {
+ 	return priv->phy_interface == PHY_INTERFACE_MODE_RMII;
+ }
+ 
+-void emac_enable_axi_single_id_mode(struct emac_priv *priv, int en)
++static void emac_enable_axi_single_id_mode(struct emac_priv *priv, int en)
+ {
+ 	u32 val;
+ 
+@@ -217,7 +217,7 @@ void emac_enable_axi_single_id_mode(struct emac_priv *priv, int en)
+ 	writel(val, priv->ctrl_reg);
+ }
+ 
+-void emac_phy_interface_config(struct emac_priv *priv)
++static void emac_phy_interface_config(struct emac_priv *priv)
+ {
+ 	u32 val;
+ 
+@@ -348,12 +348,12 @@ int emac_set_mac_addr(struct emac_priv *priv, const unsigned char *addr)
+ 	return 0;
+ }
+ 
+-void emac_dma_start_transmit(struct emac_priv *priv)
++static void emac_dma_start_transmit(struct emac_priv *priv)
+ {
+ 	emac_wr(priv, DMA_TRANSMIT_POLL_DEMAND, 0xFF);
+ }
+ 
+-void emac_enable_interrupt(struct emac_priv *priv)
++static void emac_enable_interrupt(struct emac_priv *priv)
+ {
+ 	u32 val;
+ 	val = emac_rd(priv, DMA_INTERRUPT_ENABLE);
+@@ -362,7 +362,7 @@ void emac_enable_interrupt(struct emac_priv *priv)
+ 	emac_wr(priv, DMA_INTERRUPT_ENABLE, val);
+ }
+ 
+-void emac_disable_interrupt(struct emac_priv *priv)
++static void emac_disable_interrupt(struct emac_priv *priv)
+ {
+ 	u32 val;
+ 	val = emac_rd(priv, DMA_INTERRUPT_ENABLE);
+@@ -901,7 +901,7 @@ void emac_ptp_deinit(struct emac_priv *priv)
+  *		It also starts one watchdog timer to monitor
+  *		the net interface link status.
+  */
+-int emac_up(struct emac_priv *priv)
++static int emac_up(struct emac_priv *priv)
+ {
+ 	struct net_device *ndev = priv->ndev;
+ 	struct platform_device *pdev  = priv->pdev;
+@@ -1739,7 +1739,7 @@ static int emac_set_mac_address(struct net_device *ndev, void *addr)
+ 	return ret;
+ }
+ 
+-void emac_mac_multicast_filter_clear(struct emac_priv *priv)
++static void emac_mac_multicast_filter_clear(struct emac_priv *priv)
+ {
+ 	emac_wr(priv, MAC_MULTICAST_HASH_TABLE1, 0x0);
+ 	emac_wr(priv, MAC_MULTICAST_HASH_TABLE2, 0x0);
+@@ -2317,7 +2317,7 @@ static int emac_mdio_deinit(struct emac_priv *priv)
+ }
+ 
+ static int emac_get_ts_info(struct net_device *dev,
+-			      struct ethtool_ts_info *info)
++			      struct kernel_ethtool_ts_info *info)
+ {
+ 	struct emac_priv *priv = netdev_priv(dev);
+ 
+@@ -2462,7 +2462,7 @@ static int emac_set_link_ksettings(struct net_device *ndev,
+ static void emac_get_drvinfo(struct net_device *dev,
+ 				struct ethtool_drvinfo *info)
+ {
+-	strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
++	strscpy(info->driver, DRIVER_NAME, sizeof(info->driver));
+ 	info->n_stats = ARRAY_SIZE(emac_ethtool_stats);
+ }
+ 
+@@ -2776,7 +2776,7 @@ static int emac_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int emac_remove(struct platform_device *pdev)
++static void emac_remove(struct platform_device *pdev)
+ {
+ 	struct emac_priv *priv = platform_get_drvdata(pdev);
+ 
+@@ -2788,7 +2788,6 @@ static int emac_remove(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->mac_clk);
+ 	if (priv->ref_clk_frm_soc)
+ 		clk_disable_unprepare(priv->phy_clk);
+-	return 0;
+ }
+ 
+ static void emac_shutdown(struct platform_device *pdev)
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.h b/drivers/net/ethernet/spacemit/k1x-emac.h
+index fde9ce3743e8..30b39903d5a7 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.h
++++ b/drivers/net/ethernet/spacemit/k1x-emac.h
+@@ -724,8 +724,8 @@ void emac_free_rx_resources(struct emac_priv *priv);
+ u32 ReadRxStatCounters(struct emac_priv *priv, u8 cnt);
+ u32 ReadTxStatCounters(struct emac_priv *priv, u8 cnt);
+ 
+-extern void emac_ptp_register(struct emac_priv *priv);
+-extern void emac_ptp_unregister(struct emac_priv *priv);
++void emac_ptp_register(struct emac_priv *priv);
++void emac_ptp_unregister(struct emac_priv *priv);
+ void emac_ptp_init(struct emac_priv *priv);
+ void emac_ptp_deinit(struct emac_priv *priv);
+ #endif /* _K1X_EMAC_H_ */
+-- 
+2.47.0
+

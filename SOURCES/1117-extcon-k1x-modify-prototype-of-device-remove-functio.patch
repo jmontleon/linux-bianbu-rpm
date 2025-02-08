@@ -1,0 +1,36 @@
+From b960cf16f31b37229f71ed65c2fa5636446be1ea Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 10:24:00 +0800
+Subject: [PATCH 1117/1204] extcon: k1x: modify prototype of device remove
+ function
+
+Change-Id: Icfb191f90ca7202e6f6f9033a0b176cb82e2a6e2
+---
+ drivers/extcon/extcon-k1xci.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/extcon/extcon-k1xci.c b/drivers/extcon/extcon-k1xci.c
+index 4ca0334d543b..688b7128d460 100644
+--- a/drivers/extcon/extcon-k1xci.c
++++ b/drivers/extcon/extcon-k1xci.c
+@@ -323,7 +323,7 @@ static int mv_usb_extcon_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int mv_usb_extcon_remove(struct platform_device *pdev)
++static void mv_usb_extcon_remove(struct platform_device *pdev)
+ {
+ 	struct mv_usb_extcon_info *info = platform_get_drvdata(pdev);
+ 
+@@ -331,8 +331,6 @@ static int mv_usb_extcon_remove(struct platform_device *pdev)
+ 	device_init_wakeup(&pdev->dev, 0);
+ 
+ 	freq_qos_remove_request(&info->qos_idle);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id mv_usb_extcon_dt_match[] = {
+-- 
+2.47.0
+

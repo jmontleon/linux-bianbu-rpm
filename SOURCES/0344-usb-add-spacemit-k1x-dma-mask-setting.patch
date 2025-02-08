@@ -1,7 +1,7 @@
-From 186dc9f0829c9552749a3f70b5f03bd8982f0b62 Mon Sep 17 00:00:00 2001
+From 5e5cec89b70270f232227d72d016887b99b360e2 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
-Subject: [PATCH 0344/1206] usb: add spacemit k1x dma mask setting
+Subject: [PATCH 0344/1204] usb: add spacemit k1x dma mask setting
 
 Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
 ---
@@ -10,10 +10,10 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 7565a44cc9d8..e273ac6b77fe 100644
+index 3ad10f6f3ac5..e34313c6dcbb 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -2218,6 +2218,12 @@ static int dwc3_probe(struct platform_device *pdev)
+@@ -2230,6 +2230,12 @@ static int dwc3_probe(struct platform_device *pdev)
  		dwc->num_usb3_ports = 1;
  	}
  

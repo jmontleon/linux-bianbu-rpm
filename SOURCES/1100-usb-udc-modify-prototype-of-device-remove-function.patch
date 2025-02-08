@@ -1,0 +1,45 @@
+From dbb2f67906f08cf6d9cb65624507edaa51d66621 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Tue, 26 Nov 2024 09:57:48 +0800
+Subject: [PATCH 1100/1204] usb: udc: modify prototype of device remove
+ function
+
+Change-Id: I2ca660fe2188a28aa147045cf029983cd935e103
+---
+ drivers/usb/gadget/udc/k1x_udc_core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index 157a0d90dac2..84a3a4d4b2aa 100644
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -32,7 +32,7 @@
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/platform_data/k1x_ci_usb.h>
+-#include <asm/unaligned.h>
++#include <linux/unaligned.h>
+ #include <dt-bindings/usb/k1x_ci_usb.h>
+ #include <linux/power_supply.h>
+ #include <linux/reset.h>
+@@ -2281,7 +2281,7 @@ static void gadget_release(struct device *_dev)
+ 	complete(&udc->done);
+ }
+ 
+-static int mv_udc_remove(struct platform_device *pdev)
++static void mv_udc_remove(struct platform_device *pdev)
+ {
+ 	struct mv_udc *udc;
+ 
+@@ -2309,8 +2309,6 @@ static int mv_udc_remove(struct platform_device *pdev)
+ 
+ 	/* free dev, wait for the release() finished */
+ 	wait_for_completion(&udc->done);
+-
+-	return 0;
+ }
+ 
+ static int mv_udc_dt_parse(struct platform_device *pdev,
+-- 
+2.47.0
+

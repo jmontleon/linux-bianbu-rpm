@@ -1,0 +1,52 @@
+From dc41553480618bc25893e2284949605eba632492 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Tue, 29 Oct 2024 20:29:54 +0800
+Subject: [PATCH 1044/1204] k1x:fix xts-aes key2 error
+
+Change-Id: I4c63e363a5578678a716238dd61903bebfff79e4
+---
+ drivers/crypto/spacemit/spacemit-ce-glue.c   | 4 ++--
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 5 +++++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
+index e7b06926c5cd..b3388788256f 100644
+--- a/drivers/crypto/spacemit/spacemit-ce-glue.c
++++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
+@@ -327,7 +327,7 @@ static int xts_encrypt(struct skcipher_request *req)
+ 		start_srcsg = sg_next(sg);
+ 
+ 		spacemit_aes_xts_encrypt(0,in_buffer, out_buffer,(u8 *)(ctx->key_enc),
+-				(u8 *)(ctx->key_enc + xts_key_len), xts_key_len, (u8 *)req->iv,singal_len / AES_BLOCK_SIZE);
++				((u8 *)ctx->key_enc + xts_key_len), xts_key_len, (u8 *)req->iv,singal_len / AES_BLOCK_SIZE);
+ 
+ 		map_addr = out_buffer;
+ 		for(sg = start_dstsg,len = 0;len<singal_len;len += sg->length)
+@@ -389,7 +389,7 @@ static int xts_decrypt(struct skcipher_request *req)
+ 			memcpy(map_addr, align, singal_len-page_len);
+ 
+ 		spacemit_aes_xts_decrypt(0,in_buffer, out_buffer,(u8 *)(ctx->key_dec),
+-				(u8 *)(ctx->key_dec + xts_key_len), xts_key_len, (u8 *)req->iv,singal_len / AES_BLOCK_SIZE);
++				((u8 *)ctx->key_dec + xts_key_len), xts_key_len, (u8 *)req->iv,singal_len / AES_BLOCK_SIZE);
+ 
+ 		map_addr = out_buffer;
+ 		for(sg = start_dstsg,len = 0;len<singal_len;len += sg->length)
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 0016813dab0a..13a597f608c3 100644
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -1082,6 +1082,11 @@ static int ce_aes_process_nblocks(int index, const unsigned char *buf_in, unsign
+ 				dev_err_once(dev, "%s : %d : crypto_aes_set_key2 failed!\n",__func__,__LINE__);
+ 				goto error;
+ 			}
++			ret = crypto_aes_set_iv(index, inv);
++			if (ret != 0) {
++				dev_err_once(dev, "%s : %d : crypto_aes_set_iv failed!\n",__func__,__LINE__);
++				goto error;
++			}
+ 			break;
+ 		case E_AES_CBC:
+ 		case E_AES_CTR:
+-- 
+2.47.0
+

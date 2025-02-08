@@ -1,0 +1,71 @@
+From 3e27060caa7e4b106fff8f465d87516d2ff01d15 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Mon, 30 Sep 2024 17:37:27 +0800
+Subject: [PATCH 1006/1204] MUSE-Paper support volume up/dowm key event
+
+Change-Id: Ic62e367778a17c325f951acf61677500d1d709b0
+---
+ .../boot/dts/spacemit/k1-x_MUSE-Paper.dts      | 18 ++++++++++++++++++
+ arch/riscv/configs/k1_defconfig                |  3 +--
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 3584629f83b7..abae801812b6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -12,6 +12,8 @@
+ #include "k1-x_opp_table.dtsi"
+ #include "k1-x_thermal_cooling.dtsi"
+ #include <dt-bindings/usb/pd.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
+ 
+ / {
+ 	model = "M1-MUSE-PAPER";
+@@ -234,6 +236,22 @@ hall_sensor: hall-sensor {
+ 		compatible = "spacemit,hall-sensor-as1911";
+ 		detect-gpio = <&gpio 74 0>;
+ 	};
++
++	gpio_keys: gpio_keys {
++		compatible = "gpio-keys";
++
++		key0: volumeup {
++			label = "KEY0";
++			linux,code = <KEY_VOLUMEUP>;
++			gpios = <&gpio 70 GPIO_ACTIVE_LOW>;
++		};
++
++		key1: volumedown {
++			label = "KEY1";
++			linux,code = <KEY_VOLUMEDOWN>;
++			gpios = <&gpio 71 GPIO_ACTIVE_LOW>;
++		};
++	};
+ };
+ 
+ &uart0 {
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 8940cc2dcd62..672c5db37091 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -671,7 +671,7 @@ CONFIG_RTL8852BE=m
+ CONFIG_AIC_WLAN_SUPPORT=y
+ CONFIG_AIC8800_WLAN_SUPPORT=m
+ CONFIG_INPUT_EVDEV=y
+-# CONFIG_INPUT_KEYBOARD is not set
++CONFIG_KEYBOARD_GPIO=y
+ # CONFIG_INPUT_MOUSE is not set
+ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_TOUCHSCREEN_GT9XX=y
+@@ -681,7 +681,6 @@ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_UINPUT=y
+ CONFIG_INPUT_SPACEMIT_POWERKEY=y
+ CONFIG_HALL_SENSOR_AS1911=y
+-CONFIG_SERIO_LIBPS2=y
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_SERIAL_PXA=y
+ CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
+-- 
+2.47.0
+

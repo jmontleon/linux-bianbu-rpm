@@ -1,0 +1,34 @@
+From 633547ffe1f179447b44842b47bd49c313b1e2d2 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 5 Dec 2024 21:19:40 +0800
+Subject: [PATCH 1165/1204] wdt: k1: fix compile warning
+
+Change-Id: I811b7049561164f91967be7e0a3f1c192644885f
+---
+ drivers/watchdog/k1x_wdt.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index 091958e31829..6d6691e24699 100644
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -107,7 +107,7 @@ struct spa_wdt_info {
+ 	struct notifier_block restart_handler;
+ };
+ 
+-void spa_wdt_shutdown_reason(char *cmd)
++static void spa_wdt_shutdown_reason(char *cmd)
+ {
+ 	void __iomem *mpmu_arsr;
+ 	u32 reg;
+@@ -144,7 +144,6 @@ void spa_wdt_shutdown_reason(char *cmd)
+ 		reg |= MPMU_ARSR_REBOOT_CMD(REBOOT_CMD_VALID);
+ 	writel(reg, mpmu_arsr);
+ }
+-EXPORT_SYMBOL(spa_wdt_shutdown_reason);
+ 
+ static inline u32 spa_wdt_read(struct spa_wdt_info *info,
+ 				unsigned reg)
+-- 
+2.47.0
+
