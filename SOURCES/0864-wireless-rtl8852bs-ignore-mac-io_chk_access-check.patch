@@ -1,0 +1,26 @@
+From f22e1265d73769004978d7ed93e013314307fefa Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 24 Jun 2024 17:49:44 +0800
+Subject: [PATCH 0864/1448] wireless: rtl8852bs: ignore mac io_chk_access check
+
+Change-Id: I7e9d2a1567de406f3cc7862fd24a507eb7da946e
+---
+ drivers/net/wireless/realtek/rtl8852bs/include/drv_conf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/include/drv_conf.h b/drivers/net/wireless/realtek/rtl8852bs/include/drv_conf.h
+index 5db8e0899a30..f9af384b91b1 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/include/drv_conf.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/include/drv_conf.h
+@@ -635,7 +635,7 @@ power down etc.) in last time, we can unmark this flag to avoid some unpredictab
+ #endif
+ 
+ /* for phl illegal mac io access check*/
+-#define CONFIG_MAC_REG_RW_CHK
++//#define CONFIG_MAC_REG_RW_CHK
+ 
+ /* To enable the CONFIG_PHL_P2PPS definition in phl_config.h */
+ #ifdef CONFIG_P2P_PS
+-- 
+2.47.0
+

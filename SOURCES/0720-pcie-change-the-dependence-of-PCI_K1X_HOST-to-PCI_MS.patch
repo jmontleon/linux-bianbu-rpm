@@ -1,0 +1,27 @@
+From 656e4087c02c090a92481d2a0dacefc0ccf48881 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 11 Jun 2024 10:55:32 +0800
+Subject: [PATCH 0720/1448] pcie: change the dependence of PCI_K1X_HOST to
+ PCI_MSI in the kernel 6.6
+
+Change-Id: Ibd9c0c1eb08b91bc9ed5446274626507f5c57263
+---
+ drivers/pci/controller/dwc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+index 09c9060d7419..4f76ad04999e 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -430,7 +430,7 @@ config PCI_K1X
+ config PCI_K1X_HOST
+ 	bool "Spacemit K1X PCIe Controller - Host Mode"
+ 	depends on SOC_SPACEMIT_K1X
+-	depends on PCI && PCI_MSI_IRQ_DOMAIN
++	depends on PCI && PCI_MSI
+ 	depends on OF && HAS_IOMEM
+ 	select PCIE_DW_HOST
+ 	select PCI_K1X
+-- 
+2.47.0
+

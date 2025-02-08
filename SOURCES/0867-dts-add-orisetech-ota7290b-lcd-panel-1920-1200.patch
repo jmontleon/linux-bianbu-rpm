@@ -1,0 +1,119 @@
+From 842805a766a0abdca2e33973aa145d13b75236ae Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Fri, 14 Jun 2024 16:05:03 +0800
+Subject: [PATCH 0867/1448] dts: add orisetech ota7290b lcd panel[1920*1200]
+
+Signed-off-by: xudong <dong.xu@spacemit.com>
+Change-Id: I8143ab59f41b7444f0cfb0d79ecb5c1967cd9f84
+---
+ .../boot/dts/spacemit/k1-x_milkv-jupiter.dts  |  6 +-
+ .../lcd/lcd_orisetech_ota7290b_mipi.dtsi      | 66 +++++++++++++++++++
+ 2 files changed, 69 insertions(+), 3 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_orisetech_ota7290b_mipi.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+index d5c156f89d08..b63ba0dfaf27 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
+@@ -5,7 +5,7 @@
+ 
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+-#include "lcd/lcd_gx09inx101_mipi.dtsi"
++#include "lcd/lcd_orisetech_ota7290b_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+@@ -215,7 +215,7 @@ panel2: panel2@0 {
+ 		gpios-dc = <82 83>;
+ 		id = <2>;
+ 		delay-after-reset = <10>;
+-		force-attached = "lcd_gx09inx101_mipi";
++		force-attached = "lcd_orisetech_ota7290b_mipi";
+ 	};
+ };
+ 
+@@ -873,7 +873,7 @@ &pwm_bl {
+ 		224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239
+ 		240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255
+ 	>;
+-	default-brightness-level = <100>;
++	default-brightness-level = <200>;
+ 
+ 	status = "okay";
+ };
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_orisetech_ota7290b_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_orisetech_ota7290b_mipi.dtsi
+new file mode 100644
+index 000000000000..9e2a12429193
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_orisetech_ota7290b_mipi.dtsi
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/ { lcds: lcds {
++	lcd_orisetech_ota7290b_mipi: lcd_orisetech_ota7290b_mipi {
++		dsi-work-mode = <1>; /* video burst mode*/
++		dsi-lane-number = <4>;
++		dsi-color-format = "rgb888";
++		width-mm = <135>;
++		height-mm = <217>;
++		use-dcs-write;
++
++		/*mipi info*/
++		height = <1920>;
++		width = <1200>;
++		hfp = <80>;
++		hbp = <60>;
++		hsync = <4>;
++		vfp = <35>;
++		vbp = <25>;
++		vsync = <4>;
++		fps = <55>;
++		work-mode = <0>;
++		rgb-mode = <3>;
++		lane-number = <4>;
++		phy-bit-clock = <1000000000>;
++		phy-esc-clock = <76800000>;
++		split-enable = <0>;
++		eotp-enable = <0>;
++		burst-mode = <2>;
++		esd-check-enable = <0>;
++
++		/* DSI_CMD, DSI_MODE, timeout, len, cmd */
++		initial-command = [
++			39 01 F0 01 11
++			39 01 28 01 29
++		];
++		sleep-in-command = [
++			39 01 78 01 28
++			39 01 78 01 10
++		];
++		sleep-out-command = [
++			39 01 96 01 11
++			39 01 32 01 29
++		];
++		read-id-command = [
++			37 01 00 01 05
++			14 01 00 05 fb fc fd fe ff
++		];
++
++		display-timings {
++			timing0 {
++				clock-frequency = <143000000>;
++				hactive = <1200>;
++				hfront-porch = <80>;
++				hback-porch = <60>;
++				hsync-len = <4>;
++				vactive = <1920>;
++				vfront-porch = <35>;
++				vback-porch = <25>;
++				vsync-len = <4>;
++				vsync-active = <0>;
++				hsync-active = <0>;
++			};
++		};
++	};
++};};
+-- 
+2.47.0
+

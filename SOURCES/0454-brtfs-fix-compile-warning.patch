@@ -1,0 +1,26 @@
+From d16bea9e745966cd552277d8f87c8ebe3cd1693f Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 28 Feb 2024 20:29:47 +0800
+Subject: [PATCH 0454/1448] brtfs: fix compile warning
+
+Change-Id: I2b57d174d516467dd1a7f92f2a215d8d0611e2fa
+---
+ fs/btrfs/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 512d4cbac1ca..35a51075802d 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -636,7 +636,7 @@ static const struct attribute_group btrfs_debug_feature_attr_group = {
+ 
+ #endif
+ 
+-static ssize_t btrfs_show_u64(u64 *value_ptr, spinlock_t *lock, char *buf)
++static noinline ssize_t btrfs_show_u64(u64 *value_ptr, spinlock_t *lock, char *buf)
+ {
+ 	u64 val;
+ 	if (lock)
+-- 
+2.47.0
+

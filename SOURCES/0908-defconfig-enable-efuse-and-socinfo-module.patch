@@ -1,0 +1,41 @@
+From 32454827b16e9a97f5f300b4df52a728bd0528ad Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 4 Jul 2024 14:18:21 +0800
+Subject: [PATCH 0908/1448] defconfig: enable efuse and socinfo module
+
+Change-Id: I199a867bb02ad695a55c251fce90a8ec77c21cae
+---
+ arch/riscv/configs/k1_defconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index ed6d51348bfe..bd3bd74dfa2f 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -394,7 +394,6 @@ CONFIG_CPU_THERMAL=y
+ CONFIG_K1X_THERMAL=y
+ CONFIG_WATCHDOG=y
+ CONFIG_SPACEMIT_WATCHDOG=y
+-CONFIG_MFD_SYSCON=y
+ CONFIG_MFD_SPACEMIT_PMIC=y
+ CONFIG_REGULATOR=y
+ CONFIG_REGULATOR_SPACEMIT=y
+@@ -699,6 +698,7 @@ CONFIG_SPACEMIT_PM_DOMAINS=y
+ CONFIG_SPACEMIT_REBOOT_CONTROL=y
+ CONFIG_SPACEMIT_LID_CONTROL=y
+ CONFIG_SPACEMI_K1X_DMA_RANGE=y
++CONFIG_SPACEMI_SOCINFO=y
+ CONFIG_CHIP_MEDIA_JPU=y
+ CONFIG_SPACEMIT_V2D=y
+ CONFIG_SPACEMIT_RFKILL=y
+@@ -710,6 +710,7 @@ CONFIG_RESET_CONTROLLER=y
+ CONFIG_RESET_K1X_SPACEMIT=y
+ # CONFIG_RESET_K1MATRIX_SPACEMIT is not set
+ # CONFIG_PHY_MVEBU_A3700_UTMI is not set
++CONFIG_NVMEM_SPACEMIT_EFUSE=y
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+ CONFIG_EXT4_FS_SECURITY=y
+-- 
+2.47.0
+

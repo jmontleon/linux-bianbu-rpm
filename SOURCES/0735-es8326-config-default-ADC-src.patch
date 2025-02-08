@@ -1,0 +1,29 @@
+From 68a97c7179bad894b608c22b9bf12011b3931029 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Sat, 23 Mar 2024 17:09:13 +0800
+Subject: [PATCH 0735/1448] es8326: config default ADC src
+
+Change-Id: I2dc376922e4f9bc50cfa54d3848c619ee7e86305
+---
+ sound/soc/codecs/es8326.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index da428f08330b..7c55a4e667ad 100755
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -999,7 +999,10 @@ static int es8326_resume(struct snd_soc_component *component)
+ 			   ES8326_MUTE);
+ 
+ 	regmap_write(es8326->regmap, ES8326_ADC_MUTE, 0x0f);
+-
++#ifdef SPACEMIT_CONFIG_CODEC_ES8326
++	regmap_write(es8326->regmap, ES8326_ADC1_SRC, es8326->mic1_src);
++	regmap_write(es8326->regmap, ES8326_ADC2_SRC, es8326->mic2_src);
++#endif
+ 	es8326->jack_remove_retry = 0;
+ 	es8326->hp = 0;
+ 	return 0;
+-- 
+2.47.0
+

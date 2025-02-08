@@ -1,0 +1,26 @@
+From df0fd09559b8bb1f867584e61458ecc89306b054 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 4 Sep 2024 10:48:21 +0800
+Subject: [PATCH 1134/1448] deconfig: enable spinlock_debug
+
+Change-Id: Id97b70eb63d75c69794ce147d2e852aa3017bc81
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ arch/riscv/configs/k1_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 1f52884da53a..3bec2b75bbc0 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -1298,6 +1298,7 @@ CONFIG_SCHED_STACK_END_CHECK=y
+ CONFIG_KFENCE=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
++CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.0
+

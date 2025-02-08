@@ -1,0 +1,27 @@
+From 26cdf9452376f23e2af2cf125468dd25a5d42f2d Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 25 Dec 2024 20:54:15 +0800
+Subject: [PATCH 1399/1448] remoteproc: k1: fix compile warning
+
+Change-Id: Ifcc22b50f0627f3e031b1a165885b606faf1566c
+---
+ drivers/remoteproc/k1x-rproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index ccfd3bef6b41..fbd7ca8f7669 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -790,8 +790,8 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
+ #ifdef CONFIG_HIBERNATION
+ err_3:
+ 	kfree(hibernate_rcpu_snapshot);
+-#endif
+ err_2:
++#endif
+ 	rproc_shutdown(rproc);
+ err_1:
+ 	while (--i >= 0) {
+-- 
+2.47.0
+

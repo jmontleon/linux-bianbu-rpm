@@ -1,0 +1,39 @@
+From b1e83a5ac74732a08607945ebe0030c6f9c76cdb Mon Sep 17 00:00:00 2001
+From: Andrew Jones <ajones@ventanamicro.com>
+Date: Mon, 18 Sep 2023 15:15:20 +0200
+Subject: [PATCH 0810/1448] RISC-V: Make zicbom/zicboz errors consistent
+
+commit c818fea83de4 ("riscv: say disabling zicbom if no or bad
+riscv,cbom-block-size found") improved the error messages for
+zicbom but zicboz was missed since its patches were in flight
+at the same time. Get 'em now.
+
+Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://lore.kernel.org/r/20230918131518.56803-9-ajones@ventanamicro.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I5e958c7cccf5cc67d9ed92d431598d3a4be2b15b
+---
+ arch/riscv/kernel/cpufeature.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index e44b393e521e..3251966f128e 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -121,10 +121,10 @@ static bool riscv_isa_extension_check(int id)
+ 		return true;
+ 	case RISCV_ISA_EXT_ZICBOZ:
+ 		if (!riscv_cboz_block_size) {
+-			pr_err("Zicboz detected in ISA string, but no cboz-block-size found\n");
++			pr_err("Zicboz detected in ISA string, disabling as no cboz-block-size found\n");
+ 			return false;
+ 		} else if (!is_power_of_2(riscv_cboz_block_size)) {
+-			pr_err("cboz-block-size present, but is not a power-of-2\n");
++			pr_err("Zicboz disabled as cboz-block-size present, but is not a power-of-2\n");
+ 			return false;
+ 		}
+ 		return true;
+-- 
+2.47.0
+

@@ -1,0 +1,456 @@
+From 246729294efe797e9fde83fedeb9461d56746ae4 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Mon, 27 May 2024 16:22:42 +0800
+Subject: [PATCH 0887/1448] display: fix dsi dphy hs prepare and hs zero cycle
+
+Change-Id: I4a8a838a0ffdc486c13c3f7a2fc88eaebf286d9a
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts    |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts    |  1 +
+ .../dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi    |  5 +-
+ .../dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi |  7 +--
+ .../dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi  |  6 +-
+ .../lcd/lcd_lt8911_edp_1920x1080.dtsi         |  6 +-
+ .../lcd/lcd_lt8911_edp_1920x1200.dtsi         |  6 +-
+ .../gpu/drm/spacemit/dphy/spacemit_dphy_drv.c | 60 +++++++++++--------
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c     | 11 ++--
+ .../gpu/drm/spacemit/dsi/spacemit_dsi_drv.c   |  5 ++
+ drivers/gpu/drm/spacemit/spacemit_dphy.h      |  3 +
+ drivers/gpu/drm/spacemit/spacemit_dpu.h       |  1 +
+ drivers/gpu/drm/spacemit/spacemit_dsi.c       | 13 +++-
+ drivers/gpu/drm/spacemit/spacemit_dsi.h       |  3 +-
+ 15 files changed, 72 insertions(+), 57 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+index 451de7cc0be8..13cb26440d32 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
+@@ -200,6 +200,7 @@ &pwm14 {
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	spacemit-dpu-bitclk = <1000000000>;
++	spacemit-dpu-escclk = <76800000>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+ 	status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 59601d1e0b4f..7d01aa120dd0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -202,6 +202,7 @@ &pwm14 {
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	spacemit-dpu-bitclk = <1000000000>;
++	spacemit-dpu-escclk = <76800000>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+ 	status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 61a28b257c06..30d03669d85a 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -182,6 +182,7 @@ &pwm14 {
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	spacemit-dpu-bitclk = <1000000000>;
++	spacemit-dpu-escclk = <76800000>;
+ 	dsi_1v2-supply = <&ldo_17>;
+ 	vin-supply-names = "dsi_1v2";
+ 	status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
+index 84c80076cc28..e41a2ce3af40 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
+@@ -5,11 +5,10 @@ lcd_gc9503v_mipi: lcd_gc9503v_mipi {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+ 		dsi-color-format = "rgb888";
+-		phy-bit-clock = <911000>;	/* kbps */
+-		phy-escape-clock = <52000>;/* kHz */
+ 		width-mm = <72>;
+ 		height-mm = <126>;
+ 		use-dcs-write;
++
+ 		/*mipi info*/
+ 		height = <640>;
+ 		width = <480>;
+@@ -23,7 +22,7 @@ lcd_gc9503v_mipi: lcd_gc9503v_mipi {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <2>;
+-		phy-freq = <341000>;
++		phy-bit-clock = <341000000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <0>;
+ 		burst-mode = <2>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+index e722c4840f14..5fac6d4a9af1 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+@@ -5,12 +5,8 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+ 		dsi-color-format = "rgb888";
+-		phy-bit-clock = <911000>;	/* kbps */
+-		phy-escape-clock = <52000>;/* kHz */
+-
+ 		width-mm = <142>;
+ 		height-mm = <228>;
+-
+ 		use-dcs-write;
+ 
+ 		/*mipi info*/
+@@ -26,7 +22,8 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <4>;
+-		phy-freq = <1000000>;
++		phy-bit-clock = <1000000000>;
++		phy-esc-clock = <76800000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <0>;
+ 		burst-mode = <2>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+index e459306f6f6e..fbc3d70bbb60 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
+@@ -5,12 +5,8 @@ lcd_icnl9911c_mipi: lcd_icnl9911c_mipi {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+ 		dsi-color-format = "rgb888";
+-		phy-bit-clock = <911000>;	/* kbps */
+-		phy-escape-clock = <52000>;/* kHz */
+-
+ 		width-mm = <72>;
+ 		height-mm = <126>;
+-
+ 		use-dcs-write;
+ 
+ 		/*mipi info*/
+@@ -26,7 +22,7 @@ lcd_icnl9911c_mipi: lcd_icnl9911c_mipi {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <4>;
+-		phy-freq = <624000>;
++		phy-bit-clock = <624000000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <0>;
+ 		burst-mode = <2>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
+index 59427e12c7e5..92a97bb458a7 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
+@@ -5,12 +5,8 @@ lcd_lt8911_edp_1920x1080: lcd_lt8911_edp_1920x1080 {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+ 		dsi-color-format = "rgb888";
+-		phy-bit-clock = <911000>;	/* kbps */
+-		phy-escape-clock = <52000>;/* kHz */
+-
+ 		width-mm = <309>;
+ 		height-mm = <174>;
+-
+ 		use-dcs-write;
+ 
+ 		/*mipi info*/
+@@ -26,7 +22,7 @@ lcd_lt8911_edp_1920x1080: lcd_lt8911_edp_1920x1080 {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <4>;
+-		phy-freq = <933000>;
++		phy-bit-clock = <933000000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <1>;
+ 		burst-mode = <2>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
+index 0d9636b904b6..62d767b87418 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
+@@ -5,12 +5,8 @@ lcd_lt8911_edp_1920x1200: lcd_lt8911_edp_1920x1200 {
+ 		dsi-work-mode = <1>; /* video burst mode*/
+ 		dsi-lane-number = <4>;
+ 		dsi-color-format = "rgb888";
+-		phy-bit-clock = <911000>;	/* kbps */
+-		phy-escape-clock = <52000>;/* kHz */
+-
+ 		width-mm = <301>;
+ 		height-mm = <188>;
+-
+ 		use-dcs-write;
+ 
+ 		/*mipi info*/
+@@ -26,7 +22,7 @@ lcd_lt8911_edp_1920x1200: lcd_lt8911_edp_1920x1200 {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <4>;
+-		phy-freq = <1000000>;
++		phy-bit-clock = <1000000000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <1>;
+ 		burst-mode = <2>;
+diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
+index c222cbb9d26f..df77156ba916 100644
+--- a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
++++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
+@@ -130,11 +130,12 @@ static void dphy_set_bit_clk_src(void __iomem *base_addr, uint32_t bit_clk_src,
+ 
+ static void dphy_set_timing(struct spacemit_dphy_ctx *dphy_ctx)
+ {
+-	uint32_t bitclk;
++	uint32_t bitclk, lpx_clk, lpx_time, ta_get, ta_go;
+ 	int ui, wakeup, reg;
+-	int hs_prep, hs_zero, hs_trail, hs_exit, ck_zero, ck_trail;
++	int hs_prep, hs_zero, hs_trail, hs_exit, ck_zero, ck_trail, ck_exit;
+ 	int esc_clk, esc_clk_t;
+ 	struct spacemit_dphy_timing *phy_timing;
++	uint32_t value;
+ 
+ 	if(NULL == dphy_ctx) {
+ 		pr_err("%s: Invalid param!\n", __func__);
+@@ -143,22 +144,21 @@ static void dphy_set_timing(struct spacemit_dphy_ctx *dphy_ctx)
+ 
+ 	phy_timing = &(dphy_ctx->dphy_timing);
+ 
++	DRM_DEBUG("%s() phy_freq %d esc_clk %d \n", __func__, dphy_ctx->phy_freq, dphy_ctx->esc_clk);
++
+ 	esc_clk = dphy_ctx->esc_clk/1000;
+ 	esc_clk_t = 1000/esc_clk;
+ 
+ 	bitclk = dphy_ctx->phy_freq / 1000;
+ 	ui = 1000/bitclk + 1;
+-#if 0
+-	/*Jessica: Why +1?, should be -1?*/
++
+ 	lpx_clk = (phy_timing->lpx_constant + phy_timing->lpx_ui * ui) / esc_clk_t + 1;
+ 	lpx_time = lpx_clk * esc_clk_t;
+ 
+ 	/* Below is for NT35451 */
+ 	ta_get = lpx_time * 5 / esc_clk_t - 1;
+ 	ta_go = lpx_time * 4 / esc_clk_t - 1;
+-#endif
+ 
+-	/*Jessica: Why no wakeup_ui?*/
+ 	wakeup = phy_timing->wakeup_constant;
+ 	wakeup = wakeup / esc_clk_t + 1;
+ 
+@@ -191,56 +191,55 @@ static void dphy_set_timing(struct spacemit_dphy_ctx *dphy_ctx)
+ 
+ 	ck_trail = phy_timing->ck_trail_constant + phy_timing->ck_trail_ui * ui;
+ 	ck_trail = ck_trail / esc_clk_t + 1;
+-#if 0
++
+ 	ck_exit = hs_exit;
+ 
+ 	reg = (hs_exit << CFG_DPHY_TIME_HS_EXIT_SHIFT)
+ 		| (hs_trail << CFG_DPHY_TIME_HS_TRAIL_SHIFT)
+ 		| (hs_zero << CFG_DPHY_TIME_HS_ZERO_SHIFT)
+ 		| (hs_prep << CFG_DPHY_TIME_HS_PREP_SHIFT);
+-#endif
+-	pr_debug("%s: dphy timing 0 :0x%x\n", __func__, reg);
++
++	DRM_DEBUG("%s dphy time0 hs_exit %d hs_trail %d hs_zero %d hs_prep %d reg 0x%x\n", __func__, hs_exit, hs_trail, hs_zero, hs_prep, reg);
+ #ifdef DPTC_DPHY_TEST
+ 	dptc_dsi_write(0x40 , 0x01000000);
+ #else
+-	//dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_0, reg);
+-	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_0, 0x06010603);
++	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_0, reg);
++	// dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_0, 0x06010603);
+ #endif
+-#if 0
++
+ 	reg = (ta_get << CFG_DPHY_TIME_TA_GET_SHIFT)
+ 		| (ta_go << CFG_DPHY_TIME_TA_GO_SHIFT)
+ 		| (wakeup << CFG_DPHY_TIME_WAKEUP_SHIFT);
+-#endif
+-	pr_debug("%s: dphy timing 1 :0x%x\n", __func__, reg);
++
++	DRM_INFO("%s dphy time1 ta_get %d ta_go %d wakeup %d reg 0x%x\n", __func__, ta_get, ta_go, wakeup, reg);
+ #ifdef DPTC_DPHY_TEST
+ 	dptc_dsi_write(0x44, 0x0403001F);
+ #else
+-	//dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_1, reg);
+-	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_1, 0x130fcd98);
++	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_1, reg);
++	// dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_1, 0x130fcd98);
+ #endif
+-#if 0
+ 	reg = (ck_exit << CFG_DPHY_TIME_CLK_EXIT_SHIFT)
+ 		| (ck_trail << CFG_DPHY_TIME_CLK_TRAIL_SHIFT)
+ 		| (ck_zero << CFG_DPHY_TIME_CLK_ZERO_SHIFT)
+ 		| (lpx_clk << CFG_DPHY_TIME_CLK_LPX_SHIFT);
+-#endif
+-	pr_debug("%s: dphy timing 2 :0x%x\n", __func__, reg);
++
++	DRM_INFO("%s dphy time2 ck_exit %d ck_trail %d ck_zero %d lpx_clk %d reg 0x%x\n", __func__, ck_exit, ck_trail, ck_zero, lpx_clk, reg);
+ #ifdef DPTC_DPHY_TEST
+ 	dptc_dsi_write(0x48, 0x02010500);
+ #else
+-	//dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_2, reg);
+-	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_2, 0x06040c04);
++	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_2, reg);
++	// dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_2, 0x06040c04);
+ #endif
+-#if 0
++
+ 	reg = (lpx_clk << CFG_DPHY_TIME_LPX_SHIFT)
+ 		| phy_timing->req_ready << CFG_DPHY_TIME_REQRDY_SHIFT;
+-#endif
+-	pr_debug("%s: dphy timing 3 :0x%x\n", __func__, reg);
++
++	DRM_INFO("%s dphy time3 lpx_clk %d req_ready %d reg 0x%x\n", __func__, lpx_clk, phy_timing->req_ready, reg);
+ #ifdef DPTC_DPHY_TEST
+ 	dptc_dsi_write(0x4c, 0x001F);
+ #else
+-	//dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_3, reg);
+-	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_3, 0x43c);
++	dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_3, reg);
++	// dsi_write(dphy_ctx->base_addr, DSI_PHY_TIME_3, 0x43c);
+ #endif
+ 	/* calculated timing on brownstone:
+ 	 * DSI_PHY_TIME_0 0x06080204
+@@ -248,6 +247,15 @@ static void dphy_set_timing(struct spacemit_dphy_ctx *dphy_ctx)
+ 	 * DSI_PHY_TIME_2 0x603130a
+ 	 * DSI_PHY_TIME_3 0xa3c
+ 	 */
++
++	value = dsi_read(dphy_ctx->base_addr, DSI_PHY_TIME_0);
++	DRM_DEBUG("%s() DSI_PHY_TIME_0 offset 0x%x value 0x%x\n", __func__, DSI_PHY_TIME_0, value);
++	value = dsi_read(dphy_ctx->base_addr, DSI_PHY_TIME_1);
++	DRM_DEBUG("%s() DSI_PHY_TIME_1 offset 0x%x value 0x%x\n", __func__, DSI_PHY_TIME_1, value);
++	value = dsi_read(dphy_ctx->base_addr, DSI_PHY_TIME_2);
++	DRM_DEBUG("%s() DSI_PHY_TIME_2 offset 0x%x value 0x%x\n", __func__, DSI_PHY_TIME_2, value);
++	value = dsi_read(dphy_ctx->base_addr, DSI_PHY_TIME_3);
++	DRM_DEBUG("%s() DSI_PHY_TIME_3 offset 0x%x value 0x%x\n", __func__, DSI_PHY_TIME_3, value);
+ }
+ 
+ static void dphy_get_setting(struct spacemit_dphy_ctx *dphy_ctx, struct device_node *np)
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index cd4602c4d549..1bc77000783f 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -220,8 +220,6 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ {
+ 	struct dpu_clk_context *clk_ctx = &dpu->clk_ctx;
+ 
+-
+-
+ 	clk_ctx->pxclk = of_clk_get_by_name(np, "pxclk");
+ 	if (IS_ERR(clk_ctx->pxclk)) {
+ 		pr_debug("%s, read pxclk failed from dts!\n", __func__);
+@@ -260,6 +258,10 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
+ 
+ 	if (of_property_read_u32(np, "spacemit-dpu-bitclk", &dpu->bitclk))
+ 		dpu->bitclk = DPU_BITCLK_DEFAULT;
++
++	if (of_property_read_u32(np, "spacemit-dpu-escclk", &dpu->escclk))
++		dpu->escclk = DPU_ESCCLK_DEFAULT;
++
+ 	return 0;
+ }
+ 
+@@ -625,8 +627,9 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ 		}
+ 
+ 		clk_val = clk_get_rate(clk_ctx->escclk);
+-		if(clk_val != DPU_ESCCLK_DEFAULT){
+-			clk_val = clk_round_rate(clk_ctx->escclk, DPU_ESCCLK_DEFAULT);
++		set_clk_val = dpu->escclk;
++		if(clk_val != set_clk_val){
++			clk_val = clk_round_rate(clk_ctx->escclk, set_clk_val);
+ 			clk_set_rate(clk_ctx->escclk, clk_val);
+ 			DRM_DEBUG("set escclk=%lld\n", clk_val);
+ 		}
+diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
+index 34f58dbb33f2..8ef2eff9a2d5 100644
+--- a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
++++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
+@@ -680,6 +680,9 @@ static void dsi_open_dphy(struct spacemit_dsi_device* device_ctx, bool ready)
+ 	dphy_config->base_addr = device_ctx->base_addr;
+ 	//dphy_config->phy_freq = device_ctx->bit_clk_rate / 1000;
+ 	//dphy_config->esc_clk = device_ctx->esc_clk_rate / 1000;
++	dphy_config->phy_freq = mipi_info->phy_bit_clock / 1000;
++	dphy_config->esc_clk = mipi_info->phy_esc_clock / 1000;
++
+ 	if(mipi_info->split_enable)
+ 		dphy_config->lane_num = mipi_info->lane_number >> 1;
+ 	else
+@@ -712,6 +715,8 @@ int spacemit_dsi_open(struct spacemit_dsi_device* device_ctx, bool ready)
+ 	return 0;
+ #endif
+ 
++	DRM_DEBUG("%s() \n", __func__);
++
+ 	if((NULL == device_ctx) || (NULL == mipi_info)){
+ 		pr_err("%s: Invalid param\n", __func__);
+ 		return -1;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.h b/drivers/gpu/drm/spacemit/spacemit_dphy.h
+index 2a2462b75f3b..80c452756cc1 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dphy.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dphy.h
+@@ -16,6 +16,9 @@
+ 
+ #include "spacemit_lib.h"
+ 
++#define DPHY_BITCLK_DEFAULT	614400000
++#define DPHY_ESCCLK_DEFAULT	51200000
++
+ enum spacemit_dphy_lane_map {
+ 	DPHY_LANE_MAP_0123 = 0,
+ 	DPHY_LANE_MAP_0312 = 1,
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+index a7d986d32495..05e49653d625 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+@@ -141,6 +141,7 @@ struct spacemit_dpu {
+ 	uint64_t cur_bw;
+ 	struct drm_property *color_matrix_property;
+ 	uint32_t bitclk;
++	uint32_t escclk;
+ 	struct reset_control *dsi_reset;
+ 	struct reset_control *mclk_reset;
+ 	struct reset_control *lcd_reset;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
+index 0a0e4911fb7b..235720894b23 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
+@@ -265,11 +265,18 @@ static void spacemit_dsi_get_mipi_info(struct device_node *lcd_node, struct spac
+ 	else
+ 		mipi_info->lane_number = val;
+ 
+-	ret = of_property_read_u32(lcd_node, "phy-freq", &val);
++	ret = of_property_read_u32(lcd_node, "phy-bit-clock", &val);
+ 	if (ret)
+-		DRM_ERROR("of get mipi phy-freq failed\n");
++		mipi_info->phy_bit_clock = DPHY_BITCLK_DEFAULT;
+ 	else
+-		mipi_info->phy_freq = val;
++		mipi_info->phy_bit_clock = val;
++
++
++	ret = of_property_read_u32(lcd_node, "phy-esc-clock", &val);
++	if (ret)
++		mipi_info->phy_esc_clock = DPHY_ESCCLK_DEFAULT;
++	else
++		mipi_info->phy_esc_clock = val;
+ 
+ 	ret = of_property_read_u32(lcd_node, "split-enable", &val);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
+index f9fdc4d30090..38996bb09591 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dsi.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
+@@ -150,7 +150,8 @@ struct spacemit_mipi_info {
+ 	unsigned int work_mode; /*command_mode, video_mode*/
+ 	unsigned int rgb_mode;
+ 	unsigned int lane_number;
+-	unsigned int phy_freq;
++	unsigned int phy_bit_clock;
++	unsigned int phy_esc_clock;
+ 	unsigned int split_enable;
+ 	unsigned int eotp_enable;
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,44 @@
+From 6afcdd4634ac5fd365d548a7604fa697310423de Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Sat, 14 Dec 2024 16:34:24 +0800
+Subject: [PATCH 1364/1448] k1:display: do not show the cursor when the cursor
+ position out of the range
+
+Change-Id: Id694707bc5ccb1eac6651aa855fe9b36807ce29c
+---
+ drivers/gpu/drm/spacemit/spacemit_planes.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
+index 7ac03567728f..1de3ea9568a9 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_planes.c
++++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
+@@ -316,7 +316,7 @@ static void spacemit_plane_atomic_update(struct drm_plane *plane,
+ 			spacemit_pstate->dst_crop_w = (crtc_w / 4);
+ 			spacemit_pstate->dst_crop_h = crtc_h;
+ 			spacemit_pstate->is_crop = true;
+-		} else if ((crtc_x > (hdisplay - (crtc_w / 4))) && (crtc_x <= hdisplay)) {
++		} else if ((crtc_x > (hdisplay - (crtc_w / 4))) && (crtc_x < (hdisplay - (crtc_w / 16)))) {
+ 			spacemit_pstate->src_crop_x = src_x;
+ 			spacemit_pstate->src_crop_y = src_y;
+ 			spacemit_pstate->src_crop_w = (src_w / 4);
+@@ -326,6 +326,16 @@ static void spacemit_plane_atomic_update(struct drm_plane *plane,
+ 			spacemit_pstate->dst_crop_w = (crtc_w / 4);
+ 			spacemit_pstate->dst_crop_h = crtc_h;
+ 			spacemit_pstate->is_crop = true;
++		} else if ((crtc_x >= (hdisplay - (crtc_w / 16))) && (crtc_x <= hdisplay)) {
++			spacemit_pstate->src_crop_x = src_x;
++			spacemit_pstate->src_crop_y = src_y;
++			spacemit_pstate->src_crop_w = (src_w / 4);
++			spacemit_pstate->src_crop_h = src_h;
++			spacemit_pstate->dst_crop_x = -2;
++			spacemit_pstate->dst_crop_y = crtc_y;
++			spacemit_pstate->dst_crop_w = (crtc_w / 4);
++			spacemit_pstate->dst_crop_h = crtc_h;
++			spacemit_pstate->is_crop = true;
+ 		} else {
+ 			spacemit_pstate->is_crop = false;
+ 		}
+-- 
+2.47.0
+

@@ -1,0 +1,47 @@
+From 1e81d58a229f8231a16afd40db89573d32e4b9cb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:37 -0500
+Subject: [PATCH 0815/1448] riscv: add ISA extension parsing for Zbc
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Zbc was documented in the dt-bindings but actually not supported in ISA
+string parsing. Add it.
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-2-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I9533e38c659e0febedb10e38f2debf97e0891df8
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 1606b98ec0ce..c1eb336e82ee 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -60,6 +60,7 @@
+ #define RISCV_ISA_EXT_ZIHPM		42
+ #define RISCV_ISA_EXT_SMSTATEEN		43
+ #define RISCV_ISA_EXT_ZICOND		44
++#define RISCV_ISA_EXT_ZBC		45
+ 
+ #define RISCV_ISA_EXT_MAX		64
+ 
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index e4ebd6f5c27d..320a0f64441e 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -202,6 +202,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
+ 	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
++	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
+ 	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
+ 	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
+ 	__RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
+-- 
+2.47.0
+

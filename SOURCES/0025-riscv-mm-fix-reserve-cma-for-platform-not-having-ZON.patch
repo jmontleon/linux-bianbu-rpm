@@ -1,7 +1,7 @@
-From 16f028c3edf545306604e337d86799906ecacdf4 Mon Sep 17 00:00:00 2001
+From 1cf92cad4e141c8fd76bd569ed86dc2ea4902c3e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
-Subject: [PATCH 0025/1451] riscv: mm: fix reserve cma for platform not having
+Subject: [PATCH 0025/1448] riscv: mm: fix reserve cma for platform not having
  ZONE_DMA32
 
 In case the phys_ram_base is exceeding SZ_4G, zone dma32 is empty,

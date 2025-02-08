@@ -1,0 +1,52 @@
+From e7da95876653b9192ffbfbc3b5676d4138ba0565 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Wed, 21 Feb 2024 09:31:06 +0100
+Subject: [PATCH 0858/1448] riscv: hwprobe: export Zihintpause ISA extension
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export the Zihintpause ISA extension through hwprobe which allows using
+"pause" instructions. Some userspace applications (OpenJDK for
+instance) uses this to handle some locking back-off.
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Link: https://lore.kernel.org/r/20240221083108.1235311-1-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I0f449e18829a487f4d4380fbc8b633ab8543fd1f
+---
+ Documentation/arch/riscv/hwprobe.rst  | 4 ++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index 4f212746e5bd..39a77b4f968d 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -185,6 +185,10 @@ The following keys are defined:
+        manual starting from commit 95cf1f9 ("Add changes requested by Ved
+        during signoff")
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZIHINTPAUSE`: The Zihintpause extension is
++       supported as defined in the RISC-V ISA manual starting from commit
++       d8ab5c78c207 ("Zihintpause is ratified").
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 2902f68dc913..dda76a05420b 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -59,6 +59,7 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
+ #define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 34)
+ #define		RISCV_HWPROBE_EXT_ZICOND	(1ULL << 35)
++#define		RISCV_HWPROBE_EXT_ZIHINTPAUSE	(1ULL << 36)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

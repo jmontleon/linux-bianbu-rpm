@@ -1,0 +1,94 @@
+From 011521610dae62787f15ca09223d220ac102d7de Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 21 Aug 2024 11:30:28 +0800
+Subject: [PATCH 1089/1448] k1:pinctrl: we'd better clean the edge-detect
+ pending first before enable the irq
+
+fiex bug like:
+[    0.327242] pinctrl-single d401e000.pinctrl: 256 pins, size 1024
+[    0.378624] irq 12: nobody cared (try booting with the "irqpoll" option)
+[    0.382473] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.6.36 #0
+[    0.388460] Hardware name: spacemit k1-x MUSE-N1 board (DT)
+[    0.394103] Call Trace:
+[    0.396619] [<ffffffff80005cf8>] dump_backtrace+0x1c/0x24
+[    0.402088] [<ffffffff80005d28>] show_stack+0x28/0x34
+[    0.407209] [<ffffffff80c9cd7c>] dump_stack_lvl+0x40/0x58
+[    0.412678] [<ffffffff80c9cda8>] dump_stack+0x14/0x1c
+[    0.417799] [<ffffffff8005e366>] __report_bad_irq+0x42/0xba
+[    0.423442] [<ffffffff8005e6b2>] note_interrupt+0x22e/0x270
+[    0.429084] [<ffffffff8005c144>] handle_irq_event+0x84/0x86
+[    0.434726] [<ffffffff8005f2cc>] handle_fasteoi_irq+0xc0/0x20e
+[    0.440629] [<ffffffff8005b60e>] generic_handle_domain_irq+0x1c/0x2a
+[    0.447053] [<ffffffff80635e30>] plic_handle_irq+0x84/0xf8
+[    0.452608] [<ffffffff8005b60e>] generic_handle_domain_irq+0x1c/0x2a
+[    0.459032] [<ffffffff80635aa2>] riscv_intc_irq+0x26/0x60
+[    0.464501] [<ffffffff80cbbb66>] handle_riscv_irq+0x6e/0xb0
+[    0.470144] [<ffffffff80cc469e>] call_on_irq_stack+0x32/0x40
+[    0.475873] handlers:
+[    0.478216] [<(____ptrval____)>] pcs_irq_handler
+[    0.482903] Disabling IRQ #12
+
+Change-Id: I4627f1b1e95d87eff88dfd4c1a331e91bd7fa1e5
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  2 +-
+ drivers/pinctrl/pinctrl-single.c       | 17 ++++++++++++++++-
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9a9bb3244bd8..21c428dcb443 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -625,7 +625,7 @@ &cpu7_intc 11 &cpu7_intc 9
+ 
+ 		pinctrl: pinctrl@d401e000 {
+ 			compatible = "pinconf-single-aib";
+-			reg = <0x0 0xd401e000 0x0 0x400>,
++			reg = <0x0 0xd401e000 0x0 0x250>,
+ 				<0x0 0xd4019800 0x0 0x10>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index 5f058fe20c23..d8dd362434e4 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -44,6 +44,8 @@
+ 
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+ #define EDGE_CLEAR			6
++#define EDGE_FALL_EN			5
++#define EDGE_RISE_EN			4
+ #endif
+ 
+ /**
+@@ -1827,7 +1829,10 @@ static int pcs_probe(struct platform_device *pdev)
+ 	struct pcs_device *pcs;
+ 	const struct pcs_soc_data *soc;
+ 	int ret;
+-
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	u32 regval, i;
++	void __iomem *base;
++#endif
+ 	soc = of_device_get_match_data(&pdev->dev);
+ 	if (WARN_ON(!soc))
+ 		return -EINVAL;
+@@ -1977,6 +1982,16 @@ static int pcs_probe(struct platform_device *pdev)
+ 		pcs->desc.confops = &pcs_pinconf_ops;
+ 	pcs->desc.owner = THIS_MODULE;
+ 
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	for (i = 4, base = pcs->base + 4; i < pcs->size; i += 4, base += 4) {
++		regval = pcs->read((void __iomem *)base);
++		regval |= (1 << EDGE_CLEAR);
++		regval &= ~(1 << EDGE_FALL_EN);
++		regval &= ~(1 << EDGE_RISE_EN);
++		pcs->write(regval, (void __iomem *)base);
++	}
++#endif
++
+ 	ret = pcs_allocate_pin_table(pcs);
+ 	if (ret < 0)
+ 		goto free;
+-- 
+2.47.0
+

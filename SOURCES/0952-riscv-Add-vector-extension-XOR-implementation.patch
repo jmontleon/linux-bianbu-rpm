@@ -1,0 +1,165 @@
+From f0fe4f7855e5edb45fe197c8918a34c599f173f6 Mon Sep 17 00:00:00 2001
+From: Greentime Hu <greentime.hu@sifive.com>
+Date: Mon, 15 Jan 2024 05:59:22 +0000
+Subject: [PATCH 0952/1448] riscv: Add vector extension XOR implementation
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This patch adds support for vector optimized XOR and it is tested in
+qemu.
+
+Co-developed-by: Han-Kuan Chen <hankuan.chen@sifive.com>
+Signed-off-by: Han-Kuan Chen <hankuan.chen@sifive.com>
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20240115055929.4736-4-andy.chiu@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: Id688272bc7c439404308a95e272fee6eba3d0739
+---
+ arch/riscv/include/asm/asm-prototypes.h | 18 ++++++++++++++++++
+ arch/riscv/include/asm/xor.h            | 17 +----------------
+ arch/riscv/lib/Makefile                 |  1 +
+ arch/riscv/lib/xor.S                    | 20 ++++++++++----------
+ 4 files changed, 30 insertions(+), 26 deletions(-)
+
+diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+index 36b955c762ba..6db1a9bbff4c 100644
+--- a/arch/riscv/include/asm/asm-prototypes.h
++++ b/arch/riscv/include/asm/asm-prototypes.h
+@@ -9,6 +9,24 @@ long long __lshrti3(long long a, int b);
+ long long __ashrti3(long long a, int b);
+ long long __ashlti3(long long a, int b);
+ 
++#ifdef CONFIG_RISCV_ISA_V
++
++void xor_regs_2_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2);
++void xor_regs_3_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3);
++void xor_regs_4_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3,
++		 const unsigned long *__restrict p4);
++void xor_regs_5_(unsigned long bytes, unsigned long *__restrict p1,
++		 const unsigned long *__restrict p2,
++		 const unsigned long *__restrict p3,
++		 const unsigned long *__restrict p4,
++		 const unsigned long *__restrict p5);
++
++#endif /* CONFIG_RISCV_ISA_V */
+ 
+ #define DECLARE_DO_ERROR_INFO(name)	asmlinkage void name(struct pt_regs *regs)
+ 
+diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
+index 6707d3822623..96011861e46b 100644
+--- a/arch/riscv/include/asm/xor.h
++++ b/arch/riscv/include/asm/xor.h
+@@ -1,4 +1,3 @@
+-
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+  * Copyright (C) 2021 SiFive
+@@ -9,21 +8,7 @@
+ #ifdef CONFIG_RISCV_ISA_V
+ #include <asm/vector.h>
+ #include <asm/switch_to.h>
+-
+-void xor_regs_2_(unsigned long bytes, unsigned long *__restrict p1,
+-		 const unsigned long *__restrict p2);
+-void xor_regs_3_(unsigned long bytes, unsigned long *__restrict p1,
+-		 const unsigned long *__restrict p2,
+-		 const unsigned long *__restrict p3);
+-void xor_regs_4_(unsigned long bytes, unsigned long *__restrict p1,
+-		 const unsigned long *__restrict p2,
+-		 const unsigned long *__restrict p3,
+-		 const unsigned long *__restrict p4);
+-void xor_regs_5_(unsigned long bytes, unsigned long *__restrict p1,
+-		 const unsigned long *__restrict p2,
+-		 const unsigned long *__restrict p3,
+-		 const unsigned long *__restrict p4,
+-		 const unsigned long *__restrict p5);
++#include <asm/asm-prototypes.h>
+ 
+ static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
+ 			 const unsigned long *__restrict p2)
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index cbf393632ae5..338b7ec24d8c 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -12,3 +12,4 @@ lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
+ lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+ 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
++lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+diff --git a/arch/riscv/lib/xor.S b/arch/riscv/lib/xor.S
+index c351be913462..b28f2430e52f 100644
+--- a/arch/riscv/lib/xor.S
++++ b/arch/riscv/lib/xor.S
+@@ -3,10 +3,10 @@
+  * Copyright (C) 2021 SiFive
+  */
+ #include <linux/linkage.h>
+-#include <asm-generic/export.h>
++#include <linux/export.h>
+ #include <asm/asm.h>
+ 
+-ENTRY(xor_regs_2_)
++SYM_FUNC_START(xor_regs_2_)
+ 	vsetvli a3, a0, e8, m8, ta, ma
+ 	vle8.v v0, (a1)
+ 	vle8.v v8, (a2)
+@@ -17,10 +17,10 @@ ENTRY(xor_regs_2_)
+ 	add a1, a1, a3
+ 	bnez a0, xor_regs_2_
+ 	ret
+-END(xor_regs_2_)
++SYM_FUNC_END(xor_regs_2_)
+ EXPORT_SYMBOL(xor_regs_2_)
+ 
+-ENTRY(xor_regs_3_)
++SYM_FUNC_START(xor_regs_3_)
+ 	vsetvli a4, a0, e8, m8, ta, ma
+ 	vle8.v v0, (a1)
+ 	vle8.v v8, (a2)
+@@ -34,10 +34,10 @@ ENTRY(xor_regs_3_)
+ 	add a1, a1, a4
+ 	bnez a0, xor_regs_3_
+ 	ret
+-END(xor_regs_3_)
++SYM_FUNC_END(xor_regs_3_)
+ EXPORT_SYMBOL(xor_regs_3_)
+ 
+-ENTRY(xor_regs_4_)
++SYM_FUNC_START(xor_regs_4_)
+ 	vsetvli a5, a0, e8, m8, ta, ma
+ 	vle8.v v0, (a1)
+ 	vle8.v v8, (a2)
+@@ -54,10 +54,10 @@ ENTRY(xor_regs_4_)
+ 	add a1, a1, a5
+ 	bnez a0, xor_regs_4_
+ 	ret
+-END(xor_regs_4_)
++SYM_FUNC_END(xor_regs_4_)
+ EXPORT_SYMBOL(xor_regs_4_)
+ 
+-ENTRY(xor_regs_5_)
++SYM_FUNC_START(xor_regs_5_)
+ 	vsetvli a6, a0, e8, m8, ta, ma
+ 	vle8.v v0, (a1)
+ 	vle8.v v8, (a2)
+@@ -77,5 +77,5 @@ ENTRY(xor_regs_5_)
+ 	add a1, a1, a6
+ 	bnez a0, xor_regs_5_
+ 	ret
+-END(xor_regs_5_)
+-EXPORT_SYMBOL(xor_regs_5_)
+\ No newline at end of file
++SYM_FUNC_END(xor_regs_5_)
++EXPORT_SYMBOL(xor_regs_5_)
+-- 
+2.47.0
+

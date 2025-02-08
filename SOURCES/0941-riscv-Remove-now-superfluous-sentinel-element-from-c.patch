@@ -1,0 +1,38 @@
+From 18883dd322c6ee05d383c2b360d4abead9ee8621 Mon Sep 17 00:00:00 2001
+From: Joel Granados <j.granados@samsung.com>
+Date: Mon, 2 Oct 2023 13:30:40 +0200
+Subject: [PATCH 0941/1448] riscv: Remove now superfluous sentinel element from
+ ctl_table array
+
+This commit comes at the tail end of a greater effort to remove the
+empty elements at the end of the ctl_table arrays (sentinels) which
+will reduce the overall build time size of the kernel and run time
+memory bloat by ~64 bytes per sentinel (further information Link :
+https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+
+Remove sentinel element from riscv_v_default_vstate_table. This removal
+is safe because register_sysctl implicitly uses ARRAY_SIZE() in addition
+to checking for the sentinel.
+
+Change-Id: Idbb9cac5c7b453ce78667976a5f12dbad960c831
+Signed-off-by: Joel Granados <j.granados@samsung.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ arch/riscv/kernel/vector.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+index 81886fc36ed6..cdac5560a64e 100644
+--- a/arch/riscv/kernel/vector.c
++++ b/arch/riscv/kernel/vector.c
+@@ -255,7 +255,6 @@ static struct ctl_table riscv_v_default_vstate_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dobool,
+ 	},
+-	{ }
+ };
+ 
+ static int __init riscv_v_sysctl_init(void)
+-- 
+2.47.0
+

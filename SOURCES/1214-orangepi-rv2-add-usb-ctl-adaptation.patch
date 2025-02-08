@@ -1,0 +1,82 @@
+From 39b3e0f6009da2920e4e5befef39f1c652d5fce7 Mon Sep 17 00:00:00 2001
+From: maguoqun <guoqun.ma@spacemit.com>
+Date: Mon, 28 Oct 2024 16:01:32 +0800
+Subject: [PATCH 1214/1448] orangepi-rv2: add usb ctl adaptation
+
+Change-Id: Iaf9e492e647a1a16bc04eb6fdf1a87becb11a1b3
+---
+ .../boot/dts/spacemit/k1-x_orangepi-rv2.dts   | 24 +++++++++----------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+index 91dc01c67dda..4517cd976ead 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+@@ -829,36 +829,36 @@ &usbphy {
+ };
+ 
+ &udc {
+-	spacemit,udc-mode = <MV_USB_MODE_UDC>;
++	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+ 	status = "okay";
+ };
+ 
+ &ehci {
+-	spacemit,reset-on-resume;
+ 	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+-	status = "disabled";
++	spacemit,reset-on-resume;
++	status = "okay";
+ };
+-
+ &otg {
+ 	usb-role-switch;
+ 	role-switch-user-control;
+ 	spacemit,reset-on-resume;
+-	role-switch-default-mode = "peripheral";
+-	vbus-gpios = <&gpio 123 0>;
+-	status = "disabled";
++	role-switch-default-mode = "host";
++	vbus-gpios = <&gpio 126 0>;
++	status = "okay";
+ };
+ 
++
+ &usbphy1 {
+ 	status = "okay";
+ };
+ 
+ &udc1 {
+-	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+-	status = "okay";
++	spacemit,udc-mode = <MV_USB_MODE_UDC>;
++	status = "disabled";
+ };
+ 
+ &ehci1 {
+-	spacemit,udc-mode = <MV_USB_MODE_OTG>;
++	spacemit,udc-mode = <MV_USB_MODE_HOST>;
+ 	spacemit,reset-on-resume;
+ 	status = "okay";
+ };
+@@ -869,7 +869,7 @@ &otg1 {
+ 	spacemit,reset-on-resume;
+ 	role-switch-default-mode = "host";
+ 	vbus-gpios = <&gpio 123 0>;
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &usb2phy {
+@@ -881,7 +881,7 @@ &combphy {
+ };
+ 
+ &usb3hub {
+-	vbus-gpios = <&gpio 79 0>;	/* gpio_79 for usb3 hub output vbus */
++	vbus-gpios = <&gpio 123 0>;	/* gpio_123 for usb3 hub pwr and output vbus */
+ 	status = "okay";
+ };
+ 
+-- 
+2.47.0
+

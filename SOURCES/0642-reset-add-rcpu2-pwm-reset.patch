@@ -1,0 +1,118 @@
+From df6ce199533fd18c096fbfe5273c26ec913b4d3b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 30 Apr 2024 10:33:26 +0800
+Subject: [PATCH 0642/1448] reset: add rcpu2 pwm reset
+
+Change-Id: I06ccb125d1a6657ec17d9e4519e7b4dc3e14cf69
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  5 +++--
+ drivers/reset/reset-spacemit-k1x.c            | 20 +++++++++++++++++++
+ .../dt-bindings/reset/spacemit-k1x-reset.h    |  4 +++-
+ 3 files changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index c994af91e330..9626829a9587 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -611,8 +611,9 @@ reset: reset-controller@d4050000 {
+ 				<0x0 0xd8440000 0x0 0x98>,
+ 				<0x0 0xc0000000 0x0 0x4280>,
+ 				<0x0 0xf0610000 0x0 0x20>,
+-				<0x0 0xc0880000 0x0 0x2050>;
+-			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2", "rcpu";
++				<0x0 0xc0880000 0x0 0x2050>,
++				<0x0 0xc0888000 0x0 0x30>;
++			reg-names = "mpmu", "apmu", "apbc", "apbs", "ciu", "dciu", "ddrc", "apbc2", "rcpu", "rcpu2";
+ 			#reset-cells = <1>;
+ 			status = "okay";
+ 		};
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 90af43a69c37..1cba454051f6 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -132,6 +132,10 @@
+ #define RCPU_CAN_CLK_RST		0x4c
+ /* end of RCPU register offset */
+ 
++/* RCPU2 register offset */
++#define RCPU2_PWM_CLK_RST		0x08
++/* end of RCPU2 register offset */
++
+ enum spacemit_reset_base_type{
+ 	RST_BASE_TYPE_MPMU       = 0,
+ 	RST_BASE_TYPE_APMU       = 1,
+@@ -143,6 +147,7 @@ enum spacemit_reset_base_type{
+ 	RST_BASE_TYPE_AUDC       = 7,
+ 	RST_BASE_TYPE_APBC2      = 8,
+ 	RST_BASE_TYPE_RCPU       = 9,
++	RST_BASE_TYPE_RCPU2      = 10,
+ };
+ 
+ struct spacemit_reset_signal {
+@@ -172,6 +177,7 @@ struct spacemit_reset {
+ 	void __iomem *audio_ctrl_base;
+ 	void __iomem *apbc2_base;
+ 	void __iomem *rcpu_base;
++	void __iomem *rcpu2_base;
+ 	const struct spacemit_reset_signal *signals;
+ };
+ 
+@@ -285,6 +291,8 @@ static const struct spacemit_reset_signal
+ 	//RCPU
+ 	[RESET_RCPU_HDMIAUDIO] 	= { RCPU_HDMI_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_CAN] 	= { RCPU_CAN_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
++	//RCPU2
++	[RESET_RCPU2_PWM] 	= { RCPU2_PWM_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
+ };
+ 
+ static struct spacemit_reset *to_spacemit_reset(
+@@ -328,6 +336,9 @@ static u32 spacemit_reset_read(struct spacemit_reset *reset,
+ 		case RST_BASE_TYPE_RCPU:
+ 			base = reset->rcpu_base;
+ 			break;
++		case RST_BASE_TYPE_RCPU2:
++			base = reset->rcpu2_base;
++			break;
+ 		default:
+ 			base = reset->apbc_base;
+ 			break;
+@@ -372,6 +383,9 @@ static void spacemit_reset_write(struct spacemit_reset *reset, u32 value,
+ 		case RST_BASE_TYPE_RCPU:
+ 			base = reset->rcpu_base;
+ 			break;
++		case RST_BASE_TYPE_RCPU2:
++			base = reset->rcpu2_base;
++			break;
+ 		default:
+ 			base = reset->apbc_base;
+ 			break;
+@@ -502,6 +516,12 @@ static void spacemit_reset_init(struct device_node *np)
+ 			pr_err("failed to map rcpu registers\n");
+ 			goto out;
+ 		}
++
++		reset->rcpu2_base = of_iomap(np, 9);
++		if (!reset->rcpu2_base) {
++			pr_err("failed to map rcpu2 registers\n");
++			goto out;
++		}
+ 	}
+ 
+ 	reset->lock = &g_cru_lock;
+diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
+index ed4b24f6d380..e3cb57034a50 100644
+--- a/include/dt-bindings/reset/spacemit-k1x-reset.h
++++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
+@@ -115,6 +115,8 @@
+ #define	RESET_RCPU_HDMIAUDIO 101
+ #define	RESET_RCPU_CAN       102
+ 
+-#define	RESET_NUMBER       103
++#define	RESET_RCPU2_PWM      103
++
++#define	RESET_NUMBER         104
+ 
+ #endif /* __DT_BINDINGS_RESET_SAPCEMIT_K1X_H__ */
+-- 
+2.47.0
+

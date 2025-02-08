@@ -1,0 +1,45 @@
+From 7ae9dea7545ba34c76ad0e6e5b49e6cab9c1455a Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 27 Aug 2024 11:52:55 +0800
+Subject: [PATCH 1110/1448] mmc: sdhci-of-k1x: use remove_new() instead of
+ remove()
+
+Change-Id: Ia6acc84696d3b797623c69352ff8ede29fd3415f
+---
+ drivers/mmc/host/sdhci-of-k1x.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index fc9d388d637b..66a183817205 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -1754,7 +1754,7 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int spacemit_sdhci_remove(struct platform_device *pdev)
++static void spacemit_sdhci_remove(struct platform_device *pdev)
+ {
+ 	struct sdhci_host *host = platform_get_drvdata(pdev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+@@ -1781,8 +1781,6 @@ static int spacemit_sdhci_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	sdhci_pltfm_free(pdev);
+-
+-	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -1896,7 +1894,7 @@ static struct platform_driver spacemit_sdhci_driver = {
+ 		.pm	= SDHCI_SPACEMIT_PMOPS,
+ 	},
+ 	.probe		= spacemit_sdhci_probe,
+-	.remove		= spacemit_sdhci_remove,
++	.remove_new	= spacemit_sdhci_remove,
+ };
+ 
+ module_platform_driver(spacemit_sdhci_driver);
+-- 
+2.47.0
+

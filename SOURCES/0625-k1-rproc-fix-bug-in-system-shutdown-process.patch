@@ -1,0 +1,31 @@
+From d7995886f56f03e6b1b2d36922994348b9bd00c6 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 22 Apr 2024 11:14:23 +0800
+Subject: [PATCH 0625/1448] k1:rproc: fix bug in system shutdown process
+
+1. we should not release the resources of mailbox in rproc driver to avoid
+   exceptions in mailbox's interrupt callback
+2. the user of mailbox should ensured that no new transfers should be initiated
+   during the shutdown process
+
+Change-Id: Ie308748e05e025246cd37cc264d54bbe1606acc0
+---
+ drivers/remoteproc/k1x-rproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index bc49fcc5ca5f..319497971f20 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -652,7 +652,7 @@ static void spacemit_rproc_shutdown(struct platform_device *pdev)
+ 	for (i = 0; i < MAX_MBOX; ++i) {
+ 		/* release the resource of rt thread */
+ 		kthread_stop(priv->mb[i].mb_thread);
+-		mbox_free_channel(priv->mb[i].chan);
++		/* mbox_free_channel(priv->mb[i].chan); */
+ 	}
+ }
+ 
+-- 
+2.47.0
+

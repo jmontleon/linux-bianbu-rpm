@@ -1,0 +1,27 @@
+From 5ccb47ba52d8e8c712fffd0fc849f32a2b982ee1 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@spacemit.com>
+Date: Wed, 12 Jun 2024 14:50:59 +0800
+Subject: [PATCH 0740/1448] es8326: fix compile error
+
+Change-Id: I54e68caa39483e958246fc70f3dcf5b70369887d
+---
+ sound/soc/codecs/es8326.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index ffe6beecead1..5e469ab3002f 100755
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -1342,8 +1342,7 @@ static const struct snd_soc_component_driver soc_component_dev_es8326 = {
+ 	.endianness		= 1,
+ };
+ 
+-static int es8326_i2c_probe(struct i2c_client *i2c,
+-                           const struct i2c_device_id *id)
++static int es8326_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct es8326_priv *es8326;
+ #ifdef SPACEMIT_CONFIG_CODEC_ES8326
+-- 
+2.47.0
+

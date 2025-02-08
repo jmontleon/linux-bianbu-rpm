@@ -1,0 +1,34 @@
+From e769c671b6e2180b823b9da4621854f866927381 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Mon, 25 Nov 2024 20:18:21 +0800
+Subject: [PATCH 1305/1448] config: disable CONFIG_LEGACY_PTYS to speed up
+ user@.service
+
+speedup user@.service more than 2s
+Change-Id: Ib0d0d9de6ea4832b5813feaa91592c792496900f
+---
+ arch/riscv/configs/k1_defconfig | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 87912e16c251..cbdfc6013a91 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -1318,3 +1318,14 @@ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
++CONFIG_TTY=y
++CONFIG_VT=y
++CONFIG_CONSOLE_TRANSLATIONS=y
++CONFIG_VT_CONSOLE=y
++CONFIG_VT_CONSOLE_SLEEP=y
++CONFIG_HW_CONSOLE=y
++CONFIG_VT_HW_CONSOLE_BINDING=y
++CONFIG_UNIX98_PTYS=y
++# CONFIG_LEGACY_PTYS is not set
++CONFIG_LEGACY_TIOCSTI=y
++CONFIG_LDISC_AUTOLOAD=y
+-- 
+2.47.0
+

@@ -1,0 +1,50 @@
+From 1e8d85a983e9fa97c0d91dd64816a2c7ecff980e Mon Sep 17 00:00:00 2001
+From: xudong <dong.xu@spacemit.com>
+Date: Wed, 27 Nov 2024 09:29:00 +0800
+Subject: [PATCH 1307/1448] k1-x_uav: change gmacx reset gpio
+
+Change-Id: I30c3bb58d2761860f76bcd9135e44cf49256ebd9
+Signed-off-by: xudong <dong.xu@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x_uav.dts | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_uav.dts b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
+index 2535fa9f6bea..06a9bf5466de 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
+@@ -609,6 +609,13 @@ K1X_PADCONF(GPIO_48,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* r_uart0
+ 		>;
+ 	};
+ 
++	pinctrl_r_uart1: r_uart1_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_51,   MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_3V_DS4))  /* r_uart1_txd */
++			K1X_PADCONF(GPIO_52,   MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_3V_DS4))  /* r_uart1_rxd */
++		>;
++	};
++
+ 	pinctrl_gmac0: gmac0_grp {
+ 		pinctrl-single,pins =<
+ 			K1X_PADCONF(GPIO_00,    MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))   /* gmac0_rxdv */
+@@ -769,7 +776,7 @@ &eth0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gmac0>;
+ 
+-	emac,reset-gpio = <&gpio 110 0>;
++	emac,reset-gpio = <&gpio 49 0>;
+ 	emac,reset-active-low;
+ 	emac,reset-delays-us = <0 10000 100000>;
+ 
+@@ -810,7 +817,7 @@ &eth1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gmac1>;
+ 
+-	emac,reset-gpio = <&gpio 115 0>;
++	emac,reset-gpio = <&gpio 50 0>;
+ 	emac,reset-active-low;
+ 	emac,reset-delays-us = <0 10000 100000>;
+ 
+-- 
+2.47.0
+

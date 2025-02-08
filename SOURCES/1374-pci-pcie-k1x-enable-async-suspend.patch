@@ -1,0 +1,25 @@
+From 2d5c036ba1641e6ef596838b8118c0cee91d764f Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 28 Nov 2024 21:49:23 +0800
+Subject: [PATCH 1374/1448] pci: pcie-k1x: enable async suspend
+
+Change-Id: Ic148055a78a15e3bd83e2a935412e78c8c1f3a9c
+---
+ drivers/pci/controller/dwc/pcie-k1x.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index 3427a454e60c..2c9ee0359e29 100644
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -1669,6 +1669,7 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_get_sync(&pdev->dev);
+ 	pm_runtime_get_noresume(&pdev->dev);
++	device_enable_async_suspend(&pdev->dev);
+ 
+ 	reset_control_deassert(k1x->reset);
+ 
+-- 
+2.47.0
+

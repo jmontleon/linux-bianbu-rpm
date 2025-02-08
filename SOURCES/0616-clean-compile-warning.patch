@@ -1,41 +1,52 @@
-From 939a6d0c11f0d108771357955a2be81c2d6cfa96 Mon Sep 17 00:00:00 2001
+From 88d128891599bd505b843d04e890522ae28ff59b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
-Date: Tue, 16 Apr 2024 16:29:57 +0800
-Subject: [PATCH 0616/1451] clean compile warning:
+Date: Tue, 16 Apr 2024 16:40:25 +0800
+Subject: [PATCH 0616/1448] clean compile warning:
 
-drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c:560:13: warning: 'mvx_pm_enable_clk' defined but not used [-Wunused-function]
-  560 | static void mvx_pm_enable_clk(struct device *dev)
-      |             ^~~~~~~~~~~~~~~~~
-drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c:546:13: warning: 'mvx_pm_disable_clk' defined but not used [-Wunused-function]
-  546 | static void mvx_pm_disable_clk(struct device *dev)
-      |             ^~~~~~~~~~~~~~~~~~
+drivers/mailbox/spacemit/k1x-mailbox.c: In function 'k1x_mailbox_suspend_noirq':
+drivers/mailbox/spacemit/k1x-mailbox.c:230:34: warning: unused variable 'mbox' [-Wunused-variable]
+  230 |         struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+      |                                  ^~~~
+drivers/mailbox/spacemit/k1x-mailbox.c:229:13: warning: unused variable 'ret' [-Wunused-variable]
+  229 |         int ret;
+      |             ^~~
 
-Change-Id: I014ba1ce1aa1e03e11898c2e2af6409bc0d9452c
+Change-Id: Iebd6746118d5670754ea80c39136b4dfc8a139c4
 ---
- drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mailbox/spacemit/k1x-mailbox.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-index 49a0f6c09a8e..ec949dfd3803 100644
---- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-+++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-@@ -543,6 +543,8 @@ static void reset_hw(struct device *dev)
- }
- 
- static int b_backto_active;
-+
-+#if 0
- static void mvx_pm_disable_clk(struct device *dev)
+diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
+index 220f15d4b1a5..4a7d53e367b1 100644
+--- a/drivers/mailbox/spacemit/k1x-mailbox.c
++++ b/drivers/mailbox/spacemit/k1x-mailbox.c
+@@ -226,20 +226,24 @@ MODULE_DEVICE_TABLE(of, spacemit_mailbox_of_match);
+ #ifdef CONFIG_PM_SLEEP
+ static int k1x_mailbox_suspend_noirq(struct device *dev)
  {
-     struct clk* clock;
-@@ -570,6 +572,7 @@ static void mvx_pm_enable_clk(struct device *dev)
-         clk_prepare_enable(clock);
-     }
- }
++#if 0
+ 	int ret;
+ 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+ 
+-//	ret = reset_control_assert(mbox->reset);
++	ret = reset_control_assert(mbox->reset);
 +#endif
  
- static int mvx_pm_poweron(struct device *dev)
+ 	return 0;
+ }
+ 
+ static int k1x_mailbox_resume_noirq(struct device *dev)
  {
++#if 0
+ 	int ret;
+ 	struct spacemit_mailbox *mbox = dev_get_drvdata(dev);
+ 
+-//	ret = reset_control_deassert(mbox->reset);
++	ret = reset_control_deassert(mbox->reset);
++#endif
+ 
+ 	return 0;
+ }
 -- 
 2.47.0
 

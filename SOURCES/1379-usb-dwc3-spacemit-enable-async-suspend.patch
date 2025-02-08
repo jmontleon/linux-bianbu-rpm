@@ -1,0 +1,25 @@
+From 72097159f9704404f26b2b42e0320a2e488aedb9 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 28 Nov 2024 21:49:37 +0800
+Subject: [PATCH 1379/1448] usb: dwc3-spacemit: enable async suspend
+
+Change-Id: I5c74ad001e9f9ec83c3fb5f7cb513ff315f12ecd
+---
+ drivers/usb/dwc3/dwc3-spacemit.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 6dc59930683d..d936452815d9 100644
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -267,6 +267,7 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(dev);
+ 	pm_runtime_get_noresume(dev);
+ 	pm_runtime_get_sync(dev);
++	device_enable_async_suspend(dev);
+ 
+ 	spacemit->irq = platform_get_irq(pdev, 0);
+ 	if (spacemit->irq < 0) {
+-- 
+2.47.0
+

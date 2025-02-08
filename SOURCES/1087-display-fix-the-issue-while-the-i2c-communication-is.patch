@@ -1,0 +1,46 @@
+From da2c6422ff687df01c5239a4e8ed0c4cc27083af Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Mon, 19 Aug 2024 21:13:42 +0800
+Subject: [PATCH 1087/1448] display: fix the issue while the i2c communication
+ is failed
+
+Change-Id: Icb7572d8f282d243d403c7a445dd5dcf4e037756
+---
+ drivers/gpu/drm/spacemit/lt9711.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
+index 677187c7fcbc..3c019801dd8f 100644
+--- a/drivers/gpu/drm/spacemit/lt9711.c
++++ b/drivers/gpu/drm/spacemit/lt9711.c
+@@ -287,13 +287,6 @@ static int lt9711_probe(struct i2c_client *client)
+ 	i2c_set_clientdata(client, lt9711);
+ 	dev_set_drvdata(dev, lt9711);
+ 
+-	//check i2c communicate
+-	ret = lt9711_i2c_detect(lt9711);
+-	if (ret < 0) {
+-		DRM_INFO("detect DP failed communicate with IC use I2C\n");
+-		return ret;
+-	}
+-
+ 	endpoint = of_graph_get_next_endpoint(dev->of_node, NULL);
+ 	if (!endpoint)
+ 		return -ENODEV;
+@@ -344,6 +337,13 @@ static int lt9711_probe(struct i2c_client *client)
+ 		return PTR_ERR(lt9711->dsi);
+ 	}
+ 
++	//check i2c communicate
++	ret = lt9711_i2c_detect(lt9711);
++	if (ret < 0) {
++		DRM_INFO("detect DP failed communicate with IC use I2C\n");
++		return ret;
++	}
++
+ 	INIT_DELAYED_WORK(&lt9711->detect_work, detect_work_func);
+ 	schedule_delayed_work(&lt9711->detect_work,
+ 				msecs_to_jiffies(2000));
+-- 
+2.47.0
+

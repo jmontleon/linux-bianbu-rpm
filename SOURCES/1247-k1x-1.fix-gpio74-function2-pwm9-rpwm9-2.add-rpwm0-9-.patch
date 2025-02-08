@@ -1,0 +1,162 @@
+From fc5af28e89103083f6dc175558fceb35b958b607 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Wed, 6 Nov 2024 15:20:16 +0800
+Subject: [PATCH 1247/1448] k1x:1.fix gpio74 function2(pwm9->rpwm9) 2.add
+ rpwm0-9 dts support
+
+Change-Id: Iddc40c10a8bc662b1d01e97b00c1828e082083a4
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        | 99 +++++++++++++++++++
+ .../riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi | 12 +--
+ 2 files changed, 105 insertions(+), 6 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 33d121326022..6b80684a38a4 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1615,6 +1615,28 @@ pwm19: pwm@d4022c00 {
+ 			status = "disabled";
+ 		};
+ 
++		rpwm0: pwm@c0888100 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888100 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM0>;
++			resets = <&reset RESET_RCPU2_PWM0>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm1: pwm@c0888200 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888200 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM1>;
++			resets = <&reset RESET_RCPU2_PWM1>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
+ 		rpwm2: pwm@c0888300 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xc0888300 0x0 0x10>;
+@@ -1626,6 +1648,83 @@ rpwm2: pwm@c0888300 {
+ 			status = "disabled";
+ 		};
+ 
++		rpwm3: pwm@c0888400 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888400 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM3>;
++			resets = <&reset RESET_RCPU2_PWM3>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm4: pwm@c0888500 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888500 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM4>;
++			resets = <&reset RESET_RCPU2_PWM4>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm5: pwm@c0888600 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888600 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM5>;
++			resets = <&reset RESET_RCPU2_PWM5>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm6: pwm@c0888700 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888700 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM6>;
++			resets = <&reset RESET_RCPU2_PWM6>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm7: pwm@c0888800 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888800 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM7>;
++			resets = <&reset RESET_RCPU2_PWM7>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm8: pwm@c0888900 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888900 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM8>;
++			resets = <&reset RESET_RCPU2_PWM8>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
++		rpwm9: pwm@c0888a00 {
++			compatible = "spacemit,k1x-pwm";
++			reg = <0x0 0xc0888a00 0x0 0x10>;
++			#pwm-cells = <1>;
++			clocks = <&ccu CLK_RCPU2_PWM9>;
++			resets = <&reset RESET_RCPU2_PWM9>;
++			k1x,pwm-disable-fd;
++			rcpu-pwm;
++			status = "disabled";
++		};
++
+ 		ircrx: irc-rx@d4017f00 {
+ 			compatible = "spacemit,k1x-irc";
+ 			reg = <0x0 0xd4017f00 0x0 0x100>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+index 04fc08d016fd..9e59aed0f7d5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
+@@ -553,12 +553,6 @@ K1X_PADCONF(GPIO_39, MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* pwm9 */
+ 		>;
+ 	};
+ 
+-	pinctrl_pwm9_2: pwm9_2_grp {
+-		pinctrl-single,pins =<
+-			K1X_PADCONF(GPIO_74, MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* pwm9 */
+-		>;
+-	};
+-
+ 	pinctrl_pwm10_0: pwm10_0_grp {
+ 		pinctrl-single,pins =<
+ 			K1X_PADCONF(GPIO_02, MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* pwm10 */
+@@ -685,6 +679,12 @@ K1X_PADCONF(GPIO_79, MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* rcpu_pwm2
+ 		>;
+ 	};
+ 
++	pinctrl_rpwm9_0: rpwm9_0_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_74, MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* rcpu_pwm9 */
++		>;
++	};
++
+ 	pinctrl_sspa0_0: sspa0_0_grp {
+ 		pinctrl-single,pins =<
+ 			K1X_PADCONF(GPIO_118, MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* sspa0_clk */
+-- 
+2.47.0
+

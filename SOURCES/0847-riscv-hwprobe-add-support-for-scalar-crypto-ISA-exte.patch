@@ -1,0 +1,91 @@
+From 7e4d514cf46a1a9aa8d98d3a95edd61c5119ab9e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:40 -0500
+Subject: [PATCH 0847/1448] riscv: hwprobe: add support for scalar crypto ISA
+ extensions
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export the following scalar crypto extensions through hwprobe:
+
+- Zbkb
+- Zbkc
+- Zbkx
+- Zknd
+- Zkne
+- Zknh
+- Zksed
+- Zksh
+- Zkt
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-5-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I270335ef6f8943c8d010ea0968b1227276d60e6e
+---
+ Documentation/arch/riscv/hwprobe.rst  | 27 +++++++++++++++++++++++++++
+ arch/riscv/include/uapi/asm/hwprobe.h |  9 +++++++++
+ 2 files changed, 36 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index 3ac5a3f11f78..cb6b409300d4 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -94,6 +94,33 @@ The following keys are defined:
+   * :c:macro:`RISCV_HWPROBE_EXT_ZBC` The Zbc extension is supported, as defined
+        in version 1.0 of the Bit-Manipulation ISA extensions.
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZBKB` The Zbkb extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZBKC` The Zbkc extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZBKX` The Zbkx extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKND` The Zknd extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKNE` The Zkne extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKNH` The Zknh extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKSED` The Zksed extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKSH` The Zksh extension is supported, as
++       defined in version 1.0 of the Scalar Crypto ISA extensions.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZKT` The Zkt extension is supported, as defined
++       in version 1.0 of the Scalar Crypto ISA extensions.
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 770fa30f113c..5e0a2fdeb5f8 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -31,6 +31,15 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZBS		(1 << 5)
+ #define		RISCV_HWPROBE_EXT_ZICBOZ	(1 << 6)
+ #define		RISCV_HWPROBE_EXT_ZBC		(1 << 7)
++#define		RISCV_HWPROBE_EXT_ZBKB		(1 << 8)
++#define		RISCV_HWPROBE_EXT_ZBKC		(1 << 9)
++#define		RISCV_HWPROBE_EXT_ZBKX		(1 << 10)
++#define		RISCV_HWPROBE_EXT_ZKND		(1 << 11)
++#define		RISCV_HWPROBE_EXT_ZKNE		(1 << 12)
++#define		RISCV_HWPROBE_EXT_ZKNH		(1 << 13)
++#define		RISCV_HWPROBE_EXT_ZKSED		(1 << 14)
++#define		RISCV_HWPROBE_EXT_ZKSH		(1 << 15)
++#define		RISCV_HWPROBE_EXT_ZKT		(1 << 16)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

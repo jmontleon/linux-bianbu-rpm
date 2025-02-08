@@ -1,0 +1,45 @@
+From f545ca65355fc012142cc7bc8693318989e0d9b6 Mon Sep 17 00:00:00 2001
+From: Mayuresh Chitale <mchitale@ventanamicro.com>
+Date: Wed, 13 Sep 2023 22:08:59 +0530
+Subject: [PATCH 0808/1448] RISC-V: Detect Smstateen extension
+
+Extend the ISA string parsing to detect the Smstateen extension. If the
+extension is enabled then access to certain 'state' such as AIA CSRs in
+VS mode is controlled by *stateen0 registers.
+
+Signed-off-by: Mayuresh Chitale <mchitale@ventanamicro.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Signed-off-by: Anup Patel <anup@brainfault.org>
+Change-Id: I6509f22554513d75a420d19baa1b1d631e7b42a8
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index f4157034efa9..5e8a89b38091 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -58,6 +58,7 @@
+ #define RISCV_ISA_EXT_ZICSR		40
+ #define RISCV_ISA_EXT_ZIFENCEI		41
+ #define RISCV_ISA_EXT_ZIHPM		42
++#define RISCV_ISA_EXT_SMSTATEEN		43
+ 
+ #define RISCV_ISA_EXT_MAX		64
+ 
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 1a6b0ef09e36..e54244ef4698 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -203,6 +203,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+ 	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
+ 	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
++	__RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
+ 	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+ 	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+ 	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
+-- 
+2.47.0
+

@@ -1,0 +1,28 @@
+From d2a9680792a723fc848733bb92c0a956f5af8972 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Wed, 31 Jul 2024 11:33:13 +0800
+Subject: [PATCH 0976/1448] MUSE-Paper: remove hdmiaudio support
+
+Change-Id: I58237e5e57a337ed6ed4ef3435844daa284fa36b
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 2f4169cabd65..695e9cce457f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -711,10 +711,6 @@ &i2s0 {
+         status = "okay";
+ };
+ 
+-&sound_hdmi {
+-	status = "okay";
+-};
+-
+ &sound_codec {
+ 	status = "okay";
+ 	simple-audio-card,name = "snd-es8326";
+-- 
+2.47.0
+

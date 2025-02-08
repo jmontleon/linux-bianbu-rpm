@@ -1,0 +1,25 @@
+From 1a2bce1eac14b5c228aae33be6fd9affdbe2a2ea Mon Sep 17 00:00:00 2001
+From: chris <chris.huang@spacemit.com>
+Date: Tue, 30 Apr 2024 16:40:06 +0800
+Subject: [PATCH 0648/1448] 1.increase command line buffer size to 2KB.
+
+Change-Id: I27b2d54996c06f81335342607d7f8ee701638807
+---
+ arch/riscv/include/uapi/asm/setup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/include/uapi/asm/setup.h b/arch/riscv/include/uapi/asm/setup.h
+index 66b13a522880..93b727010d50 100644
+--- a/arch/riscv/include/uapi/asm/setup.h
++++ b/arch/riscv/include/uapi/asm/setup.h
+@@ -3,6 +3,6 @@
+ #ifndef _UAPI_ASM_RISCV_SETUP_H
+ #define _UAPI_ASM_RISCV_SETUP_H
+ 
+-#define COMMAND_LINE_SIZE	1024
++#define COMMAND_LINE_SIZE       1024
+ 
+ #endif /* _UAPI_ASM_RISCV_SETUP_H */
+-- 
+2.47.0
+

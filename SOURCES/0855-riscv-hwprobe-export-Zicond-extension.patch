@@ -1,0 +1,50 @@
+From 4507985ea69a9ae36501588dbf4bc7d122d944d8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Wed, 20 Dec 2023 16:57:22 +0100
+Subject: [PATCH 0855/1448] riscv: hwprobe: export Zicond extension
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export the zicond extension to userspace using hwprobe.
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Link: https://lore.kernel.org/r/20231220155723.684081-7-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: Ia7304e4a2bf75aac650445ae86ed791489f8e7c2
+---
+ Documentation/arch/riscv/hwprobe.rst  | 5 +++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index 192f8308add8..4f212746e5bd 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -180,6 +180,11 @@ The following keys are defined:
+        defined in the Atomic Compare-and-Swap (CAS) instructions manual starting
+        from commit 5059e0ca641c ("update to ratified").
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZICOND`: The Zicond extension is supported as
++       defined in the RISC-V Integer Conditional (Zicond) operations extension
++       manual starting from commit 95cf1f9 ("Add changes requested by Ved
++       during signoff")
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index f859f3d765ad..9f2a8e3ff204 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -58,6 +58,7 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZFA		(1ULL << 32)
+ #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
+ #define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 34)
++#define		RISCV_HWPROBE_EXT_ZICOND	(1ULL << 35)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

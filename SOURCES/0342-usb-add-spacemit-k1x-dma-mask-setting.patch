@@ -1,7 +1,7 @@
-From 35dfbe6320473fdfb3632d7e93df4918dcb4581c Mon Sep 17 00:00:00 2001
+From d8c7d953739e1689d48cae922c246bc4dd5bb7ae Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
-Subject: [PATCH 0342/1451] usb: add spacemit k1x dma mask setting
+Subject: [PATCH 0342/1448] usb: add spacemit k1x dma mask setting
 
 Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
 ---
@@ -10,10 +10,10 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index ac6795b87cf5..16e59ed37ef2 100644
+index a63566fcc489..58c66a1fcd13 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -1979,6 +1979,12 @@ static int dwc3_probe(struct platform_device *pdev)
+@@ -1991,6 +1991,12 @@ static int dwc3_probe(struct platform_device *pdev)
  			goto disable_clks;
  	}
  

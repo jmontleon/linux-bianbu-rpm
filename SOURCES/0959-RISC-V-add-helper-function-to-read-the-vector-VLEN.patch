@@ -1,0 +1,50 @@
+From ed46d77c335037298697051c9eb6f87f38ce97f9 Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Date: Sun, 21 Jan 2024 16:19:12 -0800
+Subject: [PATCH 0959/1448] RISC-V: add helper function to read the vector VLEN
+
+VLEN describes the length of each vector register and some instructions
+need specific minimal VLENs to work correctly.
+
+The vector code already includes a variable riscv_v_vsize that contains
+the value of "32 vector registers with vlenb length" that gets filled
+during boot. vlenb is the value contained in the CSR_VLENB register and
+the value represents "VLEN / 8".
+
+So add riscv_vector_vlen() to return the actual VLEN value for in-kernel
+users when they need to check the available VLEN.
+
+Change-Id: I1a172f3958add0831956ade999c238527bfcbe22
+Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20240122002024.27477-2-ebiggers@kernel.org
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/include/asm/vector.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index 55c49ca93f78..e72a0915272c 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -285,4 +285,15 @@ static inline bool riscv_v_vstate_ctrl_user_allowed(void) { return false; }
+ 
+ #endif /* CONFIG_RISCV_ISA_V */
+ 
++/*
++ * Return the implementation's vlen value.
++ *
++ * riscv_v_vsize contains the value of "32 vector registers with vlenb length"
++ * so rebuild the vlen value in bits from it.
++ */
++static inline int riscv_vector_vlen(void)
++{
++	return riscv_v_vsize / 32 * 8;
++}
++
+ #endif /* ! __ASM_RISCV_VECTOR_H */
+-- 
+2.47.0
+

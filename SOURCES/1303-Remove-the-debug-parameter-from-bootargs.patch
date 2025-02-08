@@ -1,0 +1,68 @@
+From 8bc52fc092e8cd33e1d9bc8184ee835e7422575c Mon Sep 17 00:00:00 2001
+From: goumin <min.gou@spacemit.com>
+Date: Fri, 22 Nov 2024 18:16:48 +0800
+Subject: [PATCH 1303/1448] Remove the debug parameter from bootargs.
+
+Change-Id: I18b6dcbf2ce9076dc3ba6432898371342a6015d2
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts  | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts    | 2 +-
+ arch/riscv/boot/dts/spacemit/k1-x_mingo.dts        | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
+index 076d02072b44..7d2775aefa29 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper2.dts
+@@ -119,7 +119,7 @@ dpu_resv: dpu_reserved@2ff40000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8 swiotlb=65536 rdinit=/init";
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 swiotlb=65536 rdinit=/init";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
+index 3284d8f86537..d58d5478b250 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
+@@ -115,7 +115,7 @@ dpu_resv: dpu_reserved@2ff40000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8 swiotlb=65536 rdinit=/init";
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 swiotlb=65536 rdinit=/init";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
+index e4ec9b9f368f..8c123ed04846 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
+@@ -119,7 +119,7 @@ dpu_resv: dpu_reserved@2ff40000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "earlycon=sbi console=ttyS0,115200n8 debug loglevel=8 swiotlb=65536 rdinit=/init";
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 swiotlb=65536 rdinit=/init";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+index 53a4408113a6..bab9450aaeef 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
+@@ -111,7 +111,7 @@ dpu_resv: dpu_reserved@2ff40000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8,initcall_debug=1 rdinit=/init";
++		bootargs = "earlycon=sbi console=ttyS0,115200n8 loglevel=8 rdinit=/init";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,513 @@
+From 79f71f14cf24a4cf5fe672d477dffc1403eba7cb Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Tue, 12 Mar 2024 16:18:20 +0800
+Subject: [PATCH 0480/1448] display: Fix dpu irqs timeout
+
+Change-Id: Ib04ab3b40115bf0708d5c8bc02647a6944864332
+---
+ arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi |  51 +++++++
+ arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi  |  99 +++++++++++++
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi      | 150 +-------------------
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts  |   8 +-
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts  |   2 +
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts   |   2 +
+ arch/riscv/boot/dts/spacemit/k1-x_fpga.dts  |   3 +
+ arch/riscv/boot/dts/spacemit/k1-x_hs450.dts |   2 +
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c   |  20 ++-
+ drivers/gpu/drm/spacemit/spacemit_drm.c     |   2 +-
+ 10 files changed, 183 insertions(+), 156 deletions(-)
+ create mode 100755 arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+ create mode 100755 arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+new file mode 100755
+index 000000000000..7bc2b8e09e60
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++&soc {
++	display-subsystem-hdmi {
++		compatible = "spacemit,saturn-hdmi";
++		reg = <0 0xc0440000 0 0x2A000>;
++		ports = <&dpu_online2_hdmi>;
++	};
++
++	dpu_online2_hdmi: port@c0440000 {
++		compatible = "spacemit,dpu-online2";
++		interrupt-parent = <&intc>;
++		interrupts = <139>, <138>;
++		interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
++		clocks = <&ccu CLK_HDMI>;
++		clock-names = "hmclk";
++		assigned-clocks = <&ccu CLK_HDMI>;
++		assigned-clock-parents = <&ccu CLK_PLL1_491>;
++		assigned-clock-rates = <491520000>;
++		resets = <&reset RESET_HDMI>;
++		reset-names= "hdmi_reset";
++		power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
++		pipeline-id = <ONLINE2>;
++		ip = "spacemit-saturn";
++		status = "disabled";
++
++		dpu_online2_hdmi_out: endpoint@0 {
++			remote-endpoint = <&hdmi_in>;
++		};
++
++		dpu_offline0_hdmi_out: endpoint@1 {
++			/* remote-endpoint = <&wb0_in>; */
++		};
++	};
++
++	hdmi: hdmi@C0400500 {
++		compatible = "spacemit,hdmi";
++		reg = <0 0xC0400500 0 0x200>;
++		status = "disabled";
++
++		port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			hdmi_in: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&dpu_online2_hdmi_out>;
++			};
++		};
++	};
++};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+new file mode 100755
+index 000000000000..4bb5c4fa5db1
+--- /dev/null
++++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/* Copyright (c) 2023 Spacemit, Inc */
++
++&soc {
++	display-subsystem-dsi {
++		compatible = "spacemit,saturn-le";
++		reg = <0 0xC0340000 0 0x2A000>;
++		ports = <&dpu_online2_dsi>;
++	};
++
++	dpu_online2_dsi: port@c0340000 {
++		compatible = "spacemit,dpu-online2";
++		interrupt-parent = <&intc>;
++		interrupts = <90>, <89>;
++		interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
++		clocks = <&ccu CLK_DPU_PXCLK>,
++			<&ccu CLK_DPU_MCLK>,
++			<&ccu CLK_DPU_HCLK>,
++			<&ccu CLK_DPU_ESC>,
++			<&ccu CLK_DPU_BIT>;
++		clock-names = "pxclk", "mclk", "hclk", "escclk", "bitclk";
++		assigned-clocks = <&ccu CLK_DPU_PXCLK>,
++			<&ccu CLK_DPU_MCLK>,
++			<&ccu CLK_DPU_HCLK>,
++			<&ccu CLK_DPU_ESC>,
++			<&ccu CLK_DPU_BIT>;
++		assigned-clock-parents = <&ccu CLK_PLL1_614>,
++			<&ccu CLK_PLL1_307P2>,
++			<0>,
++			<&ccu CLK_PLL1_51P2_AP>,
++			<&ccu CLK_PLL1_1228>;
++		resets = <&reset RESET_MIPI>,
++			<&reset RESET_LCD_MCLK>,
++			<&reset RESET_LCD>,
++			<&reset RESET_DSI_ESC>;
++		reset-names= "dsi_reset", "mclk_reset", "lcd_reset","esc_reset";
++		power-domains = <&power K1X_PMU_LCD_PWR_DOMAIN>;
++		pipeline-id = <ONLINE2>;
++		ip = "spacemit-saturn";
++		spacemit-dpu-min-mclk = <40960000>;
++		status = "disabled";
++
++		dpu_online2_dsi_out: endpoint@0 {
++			remote-endpoint = <&dsi2_in>;
++		};
++
++		dpu_offline0_dsi_out: endpoint@1 {
++			/* remote-endpoint = <&wb0_in>; */
++		};
++	};
++
++	dsi2: dsi2@d421a800 {
++		compatible = "spacemit,dsi2-host";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0 0xD421A800 0 0x200>;
++		interrupt-parent = <&intc>;
++		interrupts = <95>;
++		ip = "synopsys-dhost";
++		dev-id = <2>;
++		status = "disabled";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				dsi2_out: endpoint {
++					remote-endpoint = <&dphy2_in>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++				dsi2_in: endpoint {
++					remote-endpoint = <&dpu_online2_dsi_out>;
++				};
++			};
++		};
++	};
++
++	dphy2: dphy2@d421a800 {
++		compatible = "spacemit,dsi2-phy";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0 0xD421A800 0 0x200>;
++		ip = "spacemit-dphy";
++		dev-id = <2>;
++		status = "okay";
++
++		port@1 {
++			reg = <1>;
++			dphy2_in: endpoint {
++				remote-endpoint = <&dsi2_out>;
++			};
++		};
++	};
++};
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 32908c0337c3..f698afdd50a5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -2265,110 +2265,6 @@ jpu@c02f8000 {
+ 			status = "okay";
+ 		};
+ 
+-		display-subsystem-dsi {
+-			compatible = "spacemit,saturn-le";
+-			reg = <0 0xC0340000 0 0x2A000>;
+-			ports = <&dpu_online2_dsi>;
+-		};
+-
+-		display-subsystem-hdmi {
+-			compatible = "spacemit,saturn-hdmi";
+-			reg = <0 0xc0440000 0 0x2A000>;
+-			ports = <&dpu_online2_hdmi>;
+-		};
+-
+-		dpu_online2_dsi: port@c0340000 {
+-			compatible = "spacemit,dpu-online2";
+-			interrupt-parent = <&intc>;
+-			interrupts = <90>, <89>;
+-			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
+-			clocks = <&ccu CLK_DPU_PXCLK>,
+-				<&ccu CLK_DPU_MCLK>,
+-				<&ccu CLK_DPU_HCLK>,
+-				<&ccu CLK_DPU_ESC>,
+-				<&ccu CLK_DPU_BIT>;
+-			clock-names = "pxclk", "mclk", "hclk", "escclk", "bitclk";
+-			assigned-clocks = <&ccu CLK_DPU_PXCLK>,
+-				<&ccu CLK_DPU_MCLK>,
+-				<&ccu CLK_DPU_HCLK>,
+-				<&ccu CLK_DPU_ESC>,
+-				<&ccu CLK_DPU_BIT>;
+-			assigned-clock-parents = <&ccu CLK_PLL1_614>,
+-				<&ccu CLK_PLL1_307P2>,
+-				<0>,
+-				<&ccu CLK_PLL1_51P2_AP>,
+-				<&ccu CLK_PLL1_1228>;
+-			resets = <&reset RESET_MIPI>,
+-				<&reset RESET_LCD_MCLK>,
+-				<&reset RESET_LCD>,
+-				<&reset RESET_DSI_ESC>;
+-			reset-names= "dsi_reset", "mclk_reset", "lcd_reset","esc_reset";
+-			power-domains = <&power K1X_PMU_LCD_PWR_DOMAIN>;
+-			pipeline-id = <ONLINE2>;
+-			ip = "spacemit-saturn";
+-			spacemit-dpu-min-mclk = <40960000>;
+-			status = "disabled";
+-
+-			dpu_online2_dsi_out: endpoint@0 {
+-				remote-endpoint = <&dsi2_in>;
+-			};
+-
+-			/*
+-			dpu_offline0_dsi_out: endpoint@1 {
+-				remote-endpoint = <&wb0_in>;
+-			};
+-			*/
+-		};
+-
+-		dsi2: dsi2@d421a800 {
+-			compatible = "spacemit,dsi2-host";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0xD421A800 0 0x200>;
+-			interrupt-parent = <&intc>;
+-			interrupts = <95>;
+-			ip = "synopsys-dhost";
+-			dev-id = <2>;
+-			status = "disabled";
+-
+-			ports {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				port@0 {
+-					reg = <0>;
+-					dsi2_out: endpoint {
+-						remote-endpoint = <&dphy2_in>;
+-					};
+-				};
+-
+-				port@1 {
+-					reg = <1>;
+-					dsi2_in: endpoint {
+-						remote-endpoint = <&dpu_online2_dsi_out>;
+-					};
+-				};
+-
+-			};
+-		};
+-
+-		dphy2: dphy2@d421a800 {
+-			compatible = "spacemit,dsi2-phy";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0 0xD421A800 0 0x200>;
+-			ip = "spacemit-dphy";
+-			dev-id = <2>;
+-			status = "okay";
+-
+-			port@1 {
+-				reg = <1>;
+-				dphy2_in: endpoint {
+-					remote-endpoint = <&dsi2_out>;
+-				};
+-			};
+-		};
+-
+ 		wb0 {
+ 			compatible = "spacemit,wb0";
+ 			dev-id = <2>;
+@@ -2380,55 +2276,13 @@ ports {
+ 				port@0 {
+ 					reg = <0>;
+ 					wb0_in: endpoint {
+-						// remote-endpoint = <&dpu_offline0_dsi_out>;
+-						remote-endpoint = <&dpu_offline0_hdmi_out>;
++						/* remote-endpoint = <&dpu_offline0_dsi_out>; */
++						/* remote-endpoint = <&dpu_offline0_hdmi_out>; */
+ 					};
+ 				};
+ 			};
+ 		};
+ 
+-		dpu_online2_hdmi: port@c0440000 {
+-			compatible = "spacemit,dpu-online2";
+-			interrupt-parent = <&intc>;
+-			interrupts = <139>, <138>;
+-			interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
+-			clocks = <&ccu CLK_HDMI>;
+-			clock-names = "hmclk";
+-			assigned-clocks = <&ccu CLK_HDMI>;
+-			assigned-clock-parents = <&ccu CLK_PLL1_491>;
+-			assigned-clock-rates = <491520000>;
+-			resets = <&reset RESET_HDMI>;
+-			reset-names= "hdmi_reset";
+-			power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
+-			pipeline-id = <ONLINE2>;
+-			ip = "spacemit-saturn";
+-			status = "disabled";
+-
+-			dpu_online2_hdmi_out: endpoint@0 {
+-				remote-endpoint = <&hdmi_in>;
+-			};
+-
+-			dpu_offline0_hdmi_out: endpoint@1 {
+-				remote-endpoint = <&wb0_in>;
+-			};
+-
+-		};
+-
+-		hdmi: hdmi@C0400500 {
+-			compatible = "spacemit,hdmi";
+-			reg = <0 0xC0400500 0 0x200>;
+-			status = "disabled";
+-
+-			port {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				hdmi_in: endpoint@0 {
+-					reg = <0>;
+-					remote-endpoint = <&dpu_online2_hdmi_out>;
+-				};
+-			};
+-		};
+-
+ 		pwm_bl: lcd_backlight {
+ 			compatible = "pwm-backlight";
+ 			status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 025b5b4a16fb..650fd2353e84 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -6,6 +6,8 @@
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ 
+ / {
+@@ -178,11 +180,11 @@ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &dsi2 {
+-	status = "disabled";
++	status = "okay";
+ 
+ 	panel2: panel2@0 {
+ 		status = "ok";
+@@ -198,7 +200,7 @@ panel2: panel2@0 {
+ };
+ 
+ &lcds {
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &dpu_online2_hdmi {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index 698655439e60..02b65426587f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -6,6 +6,8 @@
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index aa5b41984d46..f34564514ce1 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -6,6 +6,8 @@
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_icnl9911c_mipi.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
+ #include "k1-x-camera-sdk.dtsi"
+ 
+ / {
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+index 51d8f1adf3df..7729308c822f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
+@@ -5,6 +5,9 @@
+ 
+ #include "k1-x.dtsi"
+ #include "lcd/lcd_gc9503v_mipi.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
++
+ / {
+ 	model = "spacemit k1-x fpga board";
+ 
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+index b8dcf0e2c6e2..8413a8e323f0 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
+@@ -5,6 +5,8 @@
+ 
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x hs450 board";
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index e128246cb6e5..bf3e362feb02 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -1499,9 +1499,17 @@ static uint32_t dpu_isr(struct spacemit_dpu *dpu)
+ 	u32 base = DPU_INT_BASE_ADDR;
+ 	struct spacemit_drm_private *priv = dpu->crtc.dev->dev_private;
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
+-	static bool flip_done = false;
++	static bool flip_done[DP_MAX_DEVICES];
+ 	struct drm_writeback_connector *wb_conn = &dpu->wb_connector;
+ 	u8 channel = dpu->dev_id;
++	int flip_id;
++
++	if (hwdev->is_hdmi) {
++		flip_id = SATURN_HDMI;
++	} else {
++		flip_id = SATURN_LE;
++	}
++	flip_done[flip_id] = false;
+ 
+ 	trace_dpu_isr(dpu->dev_id);
+ 
+@@ -1530,7 +1538,8 @@ static uint32_t dpu_isr(struct spacemit_dpu *dpu)
+ 		if (irq_raw & DPU_INT_CFG_RDY_CLR) {
+ 			dpu_write_reg_w1c(hwdev, DPU_INTP_REG, base, v.dpu_int_reg_14, DPU_INT_CFG_RDY_CLR);
+ 			trace_dpu_isr_status("cfg_rdy_clr", irq_raw & DPU_INT_CFG_RDY_CLR);
+-			flip_done = false;
++			flip_done[flip_id] = false;
++
+ 			trace_u64_data("irq crtc mclk cur", dpu->cur_mclk);
+ 			trace_u64_data("irq crtc mclk new", dpu->new_mclk);
+ 			trace_u64_data("irq crtc bw cur", dpu->cur_bw);
+@@ -1548,13 +1557,16 @@ static uint32_t dpu_isr(struct spacemit_dpu *dpu)
+ 		if (irq_raw & DPU_INT_FRM_TIMING_VSYNC) {
+ 			struct drm_crtc *crtc = &dpu->crtc;
+ 			dpu_write_reg_w1c(hwdev, DPU_INTP_REG, base, v.dpu_int_reg_14, DPU_INT_FRM_TIMING_VSYNC);
++			trace_u64_data("dpu name", (u64)hwdev->is_hdmi);
+ 			trace_dpu_isr_status("vsync", irq_raw & DPU_INT_FRM_TIMING_VSYNC);
+ 			drm_crtc_handle_vblank(crtc);
+-			if (!flip_done) {
++
++			if (!flip_done[flip_id]) {
+ 				struct drm_device *drm = dpu->crtc.dev;
+ 				struct drm_pending_vblank_event *event = crtc->state->event;
+ 
+-				flip_done = true;
++				flip_done[flip_id] = true;
++
+ 				spin_lock(&drm->event_lock);
+ 				if (crtc->state->event) {
+ 					/*
+diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
+index 4563e2f7d003..6888bd64c4e0 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_drm.c
++++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
+@@ -516,7 +516,7 @@ static void __exit spacemit_drm_drivers_exit(void)
+ 				    ARRAY_SIZE(spacemit_drm_drivers));
+ }
+ 
+-late_initcall(spacemit_drm_drivers_init);
++module_init(spacemit_drm_drivers_init);
+ module_exit(spacemit_drm_drivers_exit);
+ 
+ MODULE_DESCRIPTION("Spacemit DRM KMS Master Driver");
+-- 
+2.47.0
+

@@ -1,0 +1,62 @@
+From 935b4eb7676e8bf5ed4180912216f637af8e396f Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Fri, 11 Oct 2024 15:56:41 +0800
+Subject: [PATCH 1168/1448] rtl8852be: Remove rtl8852be warning message in ltp
+ test
+
+WARNING: CPU: 0 PID: 813234 at drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c:2196 rtw_hal_mac_reg_chk+0x56/0x9c [8852be]
+Modules linked in: tls bpfilter quota_v2 quota_tree nls_utf8 overlay btrfs blake2b_generic xfs sctp ip6_udp_tunnel udp_tunnel nls_iso8859_1 algif_hash algif_skcipher a>
+CPU: 0 PID: 813234 Comm: proc01 Tainted: G    B   W          6.6.36 #20240924102527
+Hardware name: M1-MUSE-BOOK (DT)
+epc : rtw_hal_mac_reg_chk+0x56/0x9c [8852be]
+ra : rtw_hal_mac_reg_chk+0x34/0x9c [8852be]
+epc : ffffffff0237abd4 ra : ffffffff0237abb2 sp : ffffffc8122dbaf0
+gp : ffffffff820e6180 tp : ffffffd9119f3300 t0 : ffffffc8122dbc08
+t1 : 0000000000000089 t2 : ffffffff81401238 s0 : ffffffc8122dbb10
+s1 : 0000000000040008 a0 : 0000000000000001 a1 : 0000000000040008
+a2 : 0000000000000004 a3 : 0000000000000000 a4 : 0000000000000001
+a5 : 0000000000000066 a6 : ffffffffffffe000 a7 : ffffffff02cc3340
+s2 : 0000000000040008 s3 : 0000000000000000 s4 : ffffffc8122dbd48
+s5 : ffffffc8122dbd20 s6 : ffffffc801fa9000 s7 : ffffffffedd64420
+s8 : 0000000000400cc0 s9 : fffffffffffff000 s10: ffffffc809c25000
+s11: ffffffd907800158 t3 : 0000003f813ecbbe t4 : 2f6562323538386c
+t5 : 3073317031506c77 t6 : ffffffc8122dbbe8
+status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff0237abd4>] rtw_hal_mac_reg_chk+0x56/0x9c [8852be]
+[<ffffffff02394534>] _hal_read32+0x18/0x3c [8852be]
+[<ffffffff02391130>] rtw_hal_read32+0x12/0x1c [8852be]
+[<ffffffff022fca20>] rtw_phl_read32+0x18/0x22 [8852be]
+[<ffffffff02298fe8>] get_ax_valid_key+0x492/0x51c [8852be]
+[<ffffffff0224c734>] proc_get_ax_valid_key+0x1a/0x24 [8852be]
+[<ffffffff80252fd6>] seq_read_iter+0xe0/0x34a
+[<ffffffff802532bc>] seq_read+0x7c/0xa8
+[<ffffffff802a7f76>] proc_reg_read+0x40/0x8e
+[<ffffffff8022922a>] vfs_read+0x98/0x230
+[<ffffffff80229b62>] ksys_read+0x54/0xcc
+[<ffffffff80229bee>] __riscv_sys_read+0x14/0x1c
+[<ffffffff80f11382>] do_trap_ecall_u+0xba/0x12e
+[<ffffffff80f1a5b2>] ret_from_exception+0x0/0x6e0
+
+Change-Id: I973691658000597066e805a6c4d88e4ba88050bb
+---
+ .../net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c    | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c
+index 5edfa9ae2fd8..cc8de5933b32 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c
++++ b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/hal_api_mac.c
+@@ -2191,9 +2191,8 @@ bool rtw_hal_mac_reg_chk(struct rtw_hal_com_t *hal_com, u32 addr)
+ 		mac_rst = mac->ops->io_chk_access(mac, addr);
+ 		if (mac_rst != MACSUCCESS) {
+ 			rst = false;
+-			PHL_ERR("%s failed - addr(0x%08x) is err code(%d)\n",
++			pr_warn_once("%s failed - addr(0x%08x) is err code(%d)\n",
+ 				__func__, addr, mac_rst);
+-			_os_warn_on(1);
+ 		}
+ 	}
+ _exit:
+-- 
+2.47.0
+

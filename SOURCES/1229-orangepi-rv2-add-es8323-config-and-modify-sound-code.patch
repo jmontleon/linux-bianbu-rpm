@@ -1,0 +1,55 @@
+From 74c52698dd3b46bd2e8d0f2e390768dbb2a49abb Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Thu, 31 Oct 2024 16:04:58 +0800
+Subject: [PATCH 1229/1448] orangepi-rv2: add es8323 config and modify
+ sound-codec
+
+Change-Id: Ia3dc0401c96982868d362fb49956429e5fde9cf2
+---
+ .../boot/dts/spacemit/k1-x_orangepi-rv2.dts   | 22 ++++++++-----------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+index 306af22d9d59..ba7901464c35 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
+@@ -272,17 +272,13 @@ mac_address1: mac_address1@6 {
+ 		};
+ 	};
+ 
+-	es8326: es8326@19{
+-		compatible = "everest,es8326";
+-		reg = <0x19>;
+-		#sound-dai-cells = <0>;
+-		interrupt-parent = <&gpio>;
+-		interrupts = <126 1>;
+-		spk-ctl-gpio = <&gpio 127 0>;
+-		everest,mic1-src = [44];
+-		everest,mic2-src = [66];
++	es8323: es8323@11 {
+ 		status = "okay";
+-	};
++		#sound-dai-cells = <0>;
++		compatible = "everest,es8323";
++		reg = <0x11>;
++		earphone-sw-gpio = <&gpio 79 0>;
++        };
+ };
+ 
+ &i2c3 {
+@@ -1080,9 +1076,9 @@ simple-audio-card,cpu {
+ 
+ &sound_codec {
+ 	status = "okay";
+-	simple-audio-card,name = "snd-es8326";
+-	spacemit,mclk-fs = <64>;
++	simple-audio-card,name = "snd-es8323";
++	spacemit,mclk-fs = <256>;
+ 	simple-audio-card,codec {
+-		sound-dai = <&es8326>;
++		sound-dai = <&es8323>;
+ 	};
+ };
+-- 
+2.47.0
+

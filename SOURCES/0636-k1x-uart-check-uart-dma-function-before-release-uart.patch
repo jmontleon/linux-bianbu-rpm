@@ -1,0 +1,36 @@
+From eefb23b60a5c6d9d9c4b634db8473befe08f30a2 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Sun, 28 Apr 2024 15:47:25 +0800
+Subject: [PATCH 0636/1448] k1x-uart:check uart dma-function before release
+ uart-dma
+
+Change-Id: I7104f81894a910e960a8dd47a615f48704fb1cb5
+---
+ drivers/tty/serial/pxa_k1x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 6900aa9b95a4..767fe217c6a3 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -1893,7 +1893,7 @@ static int serial_pxa_suspend(struct device *dev)
+ 		return 0;
+ 	}
+ 
+-	if (serial_pxa_is_open(sport)) {
++	if (serial_pxa_is_open(sport) && sport->dma_enable) {
+ 		int sent = 0;
+ 		unsigned long flags;
+ 
+@@ -1973,7 +1973,7 @@ static int serial_pxa_resume(struct device *dev)
+ 	sport->in_resume = true;
+ 	uart_resume_port(&serial_pxa_reg, &sport->port);
+ 
+-	if (serial_pxa_is_open(sport)) {
++	if (serial_pxa_is_open(sport) && sport->dma_enable) {
+ 		if (pxa_dma->tx_saved_len > 0) {
+ 			/*
+ 			 * if this transmit is not finished, we should stop
+-- 
+2.47.0
+

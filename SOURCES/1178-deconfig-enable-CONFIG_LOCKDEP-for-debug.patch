@@ -1,0 +1,44 @@
+From 207521b77fabf679a36f0f4a09a5b58e8812ea81 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 16 Oct 2024 10:51:16 +0800
+Subject: [PATCH 1178/1448] deconfig: enable CONFIG_LOCKDEP for debug
+
+Change-Id: I4a112225270dff0b8a66352fd030e65058fec820
+---
+ arch/riscv/configs/k1_defconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index c90211e64dc7..0caa0b6a4dc6 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -44,7 +44,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
+ # CONFIG_RD_ZSTD is not set
+ CONFIG_BOOT_CONFIG=y
+ CONFIG_EXPERT=y
+-CONFIG_KALLSYMS_ALL=y
+ CONFIG_PROFILING=y
+ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1X=y
+@@ -879,6 +878,7 @@ CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ # CONFIG_DVB_DRX39XYJ is not set
+ # CONFIG_DVB_CXD2099 is not set
+ # CONFIG_DVB_SP2 is not set
++# CONFIG_DRM_DEBUG_MODESET_LOCK is not set
+ CONFIG_DRM_SPACEMIT=y
+ CONFIG_SPACEMIT_MIPI_PANEL=y
+ CONFIG_SPACEMIT_HDMI=y
+@@ -1303,7 +1303,9 @@ CONFIG_DEBUG_WX=y
+ CONFIG_SCHED_STACK_END_CHECK=y
+ CONFIG_KFENCE=y
+ CONFIG_DETECT_HUNG_TASK=y
+-CONFIG_DEBUG_SPINLOCK=y
++CONFIG_LOCK_STAT=y
++CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
++CONFIG_DEBUG_RWSEMS=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.0
+

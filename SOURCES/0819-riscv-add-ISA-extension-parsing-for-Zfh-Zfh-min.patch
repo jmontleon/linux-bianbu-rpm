@@ -1,0 +1,50 @@
+From 21aab5110f58107cccd9e7146e09df214c8b7ab8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:45 -0500
+Subject: [PATCH 0819/1448] riscv: add ISA extension parsing for Zfh/Zfh[min]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add parsing for Zfh[min] ISA extensions[1].
+
+Link: https://drive.google.com/file/d/1z3tQQLm5ALsAD77PM0l0CHnapxWCeVzP/view [1]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-10-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I753acc0421607f93ce4572c2f4ba5b22b864c32d
+---
+ arch/riscv/include/asm/hwcap.h | 2 ++
+ arch/riscv/kernel/cpufeature.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 477254668d82..6a6ee93a3c9a 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -78,6 +78,8 @@
+ #define RISCV_ISA_EXT_ZVKSED		63
+ #define RISCV_ISA_EXT_ZVKSH		64
+ #define RISCV_ISA_EXT_ZVKT		65
++#define RISCV_ISA_EXT_ZFH		66
++#define RISCV_ISA_EXT_ZFHMIN		67
+ 
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 7b6e16cfc005..31bb2cc84661 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -284,6 +284,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
+ 	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+ 	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
++	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
++	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
+ 	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+ 	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
+-- 
+2.47.0
+

@@ -1,0 +1,27 @@
+From 9d3d3f6a492597102a84a2ce2d57c88c18adaa49 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Tue, 29 Oct 2024 15:24:18 +0800
+Subject: [PATCH 1347/1448] k1:emac: support suspend to disk
+
+Change-Id: I93d74cab21a42b2cb01dc457db4ccf2196ed4930
+---
+ drivers/net/ethernet/spacemit/k1x-emac.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 935b7267a0a5..417adb62582f 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2857,8 +2857,7 @@ static int emac_suspend(struct device *dev)
+ #endif
+ 
+ static const struct dev_pm_ops k1x_emac_pm_qos = {
+-        .suspend = emac_suspend,
+-        .resume = emac_resume,
++	SET_SYSTEM_SLEEP_PM_OPS(emac_suspend, emac_resume)
+ };
+ 
+ static const struct of_device_id emac_of_match[] = {
+-- 
+2.47.0
+

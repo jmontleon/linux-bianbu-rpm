@@ -1,0 +1,84 @@
+From ce7496733b361b828356598ab1142effe275893f Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 29 Oct 2024 17:42:36 +0800
+Subject: [PATCH 1219/1448] k1: MUSE-Paper: add SD debug pinctrl
+
+Change-Id: I4db4539c5677c114008e7720cb17b6c2786383ab
+---
+ .../boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts | 15 ++++++++++++++-
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts  | 15 ++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 9c595b3170f1..7db589ad2887 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -704,6 +704,18 @@ pinctrl_wlan_wakeup: wlan_wakeup_grp {
+ 			K1X_PADCONF(GPIO_66, MUX_MODE0, (EDGE_FALL | PULL_DOWN | PAD_3V_DS2))   /* wifi edge detect */
+ 		>;
+ 	};
++
++	pinctrl_mmc1_debug: mmc1_debug_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(MMC1_DAT3, MUX_MODE3, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* uart0_txd */
++			K1X_PADCONF(MMC1_DAT2, MUX_MODE3, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* uart0_rxd */
++			K1X_PADCONF(MMC1_DAT1, MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_d1 */
++			K1X_PADCONF(MMC1_DAT0, MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_d0 */
++			K1X_PADCONF(MMC1_CMD,  MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_cmd */
++			K1X_PADCONF(MMC1_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))	/* mmc1_clk */
++		>;
++	};
++
+ };
+ 
+ &gpio{
+@@ -729,9 +741,10 @@ &pinctrl 123 GPIO_123 5
+ 
+ /* SD */
+ &sdhci0 {
+-	pinctrl-names = "default","fast";
++	pinctrl-names = "default","fast","debug";
+ 	pinctrl-0 = <&pinctrl_mmc1>;
+ 	pinctrl-1 = <&pinctrl_mmc1_fast>;
++	pinctrl-2 = <&pinctrl_mmc1_debug>;
+ 	bus-width = <4>;
+ 	cd-gpios = <&gpio 80 0>;
+ 	vmmc-supply = <&dcdc_4>;
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index 584c0f718450..f6b3391d704b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -808,6 +808,18 @@ pinctrl_wlan_wakeup: wlan_wakeup_grp {
+ 			K1X_PADCONF(GPIO_66, MUX_MODE0, (EDGE_FALL | PULL_DOWN | PAD_3V_DS2))   /* wifi edge detect */
+ 		>;
+ 	};
++
++	pinctrl_mmc1_debug: mmc1_debug_grp {
++		pinctrl-single,pins = <
++			K1X_PADCONF(MMC1_DAT3, MUX_MODE3, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* uart0_txd */
++			K1X_PADCONF(MMC1_DAT2, MUX_MODE3, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* uart0_rxd */
++			K1X_PADCONF(MMC1_DAT1, MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_d1 */
++			K1X_PADCONF(MMC1_DAT0, MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_d0 */
++			K1X_PADCONF(MMC1_CMD,  MUX_MODE0, (EDGE_NONE | PULL_UP   | PAD_3V_DS4))	/* mmc1_cmd */
++			K1X_PADCONF(MMC1_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))	/* mmc1_clk */
++		>;
++	};
++
+ };
+ 
+ &gpio{
+@@ -833,9 +845,10 @@ &pinctrl 123 GPIO_123 5
+ 
+ /* SD */
+ &sdhci0 {
+-	pinctrl-names = "default","fast";
++	pinctrl-names = "default","fast","debug";
+ 	pinctrl-0 = <&pinctrl_mmc1>;
+ 	pinctrl-1 = <&pinctrl_mmc1_fast>;
++	pinctrl-2 = <&pinctrl_mmc1_debug>;
+ 	bus-width = <4>;
+ 	cd-gpios = <&gpio 80 0>;
+ 	vmmc-supply = <&dcdc_4>;
+-- 
+2.47.0
+

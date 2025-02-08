@@ -1,0 +1,26 @@
+From 20d1216fa01316545602e44751a8b8b238a361fd Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 27 Aug 2024 12:31:12 +0800
+Subject: [PATCH 1109/1448] k1: MUSE-Paper-mini-4g: update modules_usrload
+
+Change-Id: I14e82db667b34265a0b41383a96e4fdf1ea75ce3
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 7ec6e3c77110..5cbc20646448 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -18,7 +18,7 @@
+ 
+ / {
+ 	model = "MUSE-PAPER-MINI-4G";
+-	modules_usrload = "8852bs";
++	modules_usrload = "aic8800_bsp,aic8800_fdrv,aic8800_btlpm";
+ 
+ 	cpus: cpus {
+ 		#address-cells = <1>;
+-- 
+2.47.0
+

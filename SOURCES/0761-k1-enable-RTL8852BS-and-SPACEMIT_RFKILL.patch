@@ -1,0 +1,33 @@
+From 1d703b0dd45dffa95266d04222c6d799387d1524 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 18 Jun 2024 17:32:07 +0800
+Subject: [PATCH 0761/1448] k1: enable RTL8852BS and SPACEMIT_RFKILL
+
+Change-Id: I426b0abecfefe864e898aa43c58c1766f009145d
+---
+ arch/riscv/configs/k1_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index bf4010ec2dce..deecc256d400 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -340,6 +340,7 @@ CONFIG_USB_NET_ASIX=m
+ # CONFIG_WLAN_VENDOR_MICROCHIP is not set
+ # CONFIG_WLAN_VENDOR_PURELIFI is not set
+ # CONFIG_WLAN_VENDOR_RALINK is not set
++CONFIG_RTL8852BS=m
+ # CONFIG_WLAN_VENDOR_RSI is not set
+ # CONFIG_WLAN_VENDOR_SILABS is not set
+ # CONFIG_WLAN_VENDOR_ST is not set
+@@ -693,6 +694,7 @@ CONFIG_SPACEMIT_LID_CONTROL=y
+ CONFIG_SPACEMI_K1X_DMA_RANGE=y
+ CONFIG_CHIP_MEDIA_JPU=y
+ # CONFIG_SPACEMIT_V2D is not set
++CONFIG_SPACEMIT_RFKILL=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+ CONFIG_RESET_CONTROLLER=y
+-- 
+2.47.0
+

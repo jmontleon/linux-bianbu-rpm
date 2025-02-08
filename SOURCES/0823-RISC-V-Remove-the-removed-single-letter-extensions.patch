@@ -1,0 +1,61 @@
+From d2dc853980edf8ff8067ef6e5dd6df55590bf95a Mon Sep 17 00:00:00 2001
+From: Palmer Dabbelt <palmer@rivosinc.com>
+Date: Fri, 10 Nov 2023 09:59:03 -0800
+Subject: [PATCH 0823/1448] RISC-V: Remove the removed single-letter extensions
+
+There were a few single-letter extensions that we had references to
+floating around in the kernel, but that never ended up as actual ISA
+specs and have mostly been replaced by multi-letter extensions.  This
+removes the references to those extensions.
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://lore.kernel.org/r/20231110175903.2631-1-palmer@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I1ed88319d3f25601dcf30675de4a0601b99c43b8
+---
+ arch/riscv/include/asm/hwcap.h | 6 ------
+ arch/riscv/kernel/cpufeature.c | 4 ----
+ 2 files changed, 10 deletions(-)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 2438d4685da6..e1a0bd4f394a 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -11,19 +11,13 @@
+ #include <uapi/asm/hwcap.h>
+ 
+ #define RISCV_ISA_EXT_a		('a' - 'a')
+-#define RISCV_ISA_EXT_b		('b' - 'a')
+ #define RISCV_ISA_EXT_c		('c' - 'a')
+ #define RISCV_ISA_EXT_d		('d' - 'a')
+ #define RISCV_ISA_EXT_f		('f' - 'a')
+ #define RISCV_ISA_EXT_h		('h' - 'a')
+ #define RISCV_ISA_EXT_i		('i' - 'a')
+-#define RISCV_ISA_EXT_j		('j' - 'a')
+-#define RISCV_ISA_EXT_k		('k' - 'a')
+ #define RISCV_ISA_EXT_m		('m' - 'a')
+-#define RISCV_ISA_EXT_p		('p' - 'a')
+ #define RISCV_ISA_EXT_q		('q' - 'a')
+-#define RISCV_ISA_EXT_s		('s' - 'a')
+-#define RISCV_ISA_EXT_u		('u' - 'a')
+ #define RISCV_ISA_EXT_v		('v' - 'a')
+ 
+ /*
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index df670490eb87..918812d1f798 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -270,10 +270,6 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(d, RISCV_ISA_EXT_d),
+ 	__RISCV_ISA_EXT_DATA(q, RISCV_ISA_EXT_q),
+ 	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
+-	__RISCV_ISA_EXT_DATA(b, RISCV_ISA_EXT_b),
+-	__RISCV_ISA_EXT_DATA(k, RISCV_ISA_EXT_k),
+-	__RISCV_ISA_EXT_DATA(j, RISCV_ISA_EXT_j),
+-	__RISCV_ISA_EXT_DATA(p, RISCV_ISA_EXT_p),
+ 	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
+ 	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+ 	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+-- 
+2.47.0
+

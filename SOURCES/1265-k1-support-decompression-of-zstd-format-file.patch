@@ -1,0 +1,45 @@
+From 6289973dd3c30ba9d6a7eda905e8b931260e8a61 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 11 Nov 2024 09:49:46 +0800
+Subject: [PATCH 1265/1448] k1:support decompression of zstd format file
+
+enabling this format is to support the requirement of loading
+some firmware which organized by zstd
+
+Change-Id: Ife5f52c3858cd0792f55a6a542b79ff8f2f198bb
+---
+ arch/riscv/configs/k1_defconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index b34aad6eb3f5..e8e44df6d84a 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -41,7 +41,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
+ # CONFIG_RD_XZ is not set
+ # CONFIG_RD_LZO is not set
+ # CONFIG_RD_LZ4 is not set
+-# CONFIG_RD_ZSTD is not set
+ CONFIG_BOOT_CONFIG=y
+ CONFIG_EXPERT=y
+ CONFIG_KALLSYMS_ALL=y
+@@ -497,6 +496,8 @@ CONFIG_PCIEPORTBUS=y
+ CONFIG_PCIEAER=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_FW_LOADER_COMPRESS=y
++CONFIG_FW_LOADER_COMPRESS_ZSTD=y
+ # CONFIG_ARM_SCMI_POWER_DOMAIN is not set
+ # CONFIG_ARM_SCPI_POWER_DOMAIN is not set
+ CONFIG_MTD=y
+@@ -1301,7 +1302,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
+ CONFIG_SPACEMIT_REE_ENGINE=y
+ CONFIG_SPACEMIT_REE_AES=y
+ CONFIG_CORDIC=m
+-CONFIG_XZ_DEC=y
+ CONFIG_DMA_CMA=y
+ CONFIG_IRQ_POLL=y
+ CONFIG_PRINTK_TIME=y
+-- 
+2.47.0
+

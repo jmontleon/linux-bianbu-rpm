@@ -1,0 +1,125 @@
+From 222acde9d4778143168b3af32728dd3f1572d73c Mon Sep 17 00:00:00 2001
+From: Andy Chiu <andy.chiu@sifive.com>
+Date: Mon, 15 Jan 2024 05:59:28 +0000
+Subject: [PATCH 0957/1448] riscv: vector: use kmem_cache to manage vector
+ context
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The allocation size of thread.vstate.datap is always riscv_v_vsize. So
+it is possbile to use kmem_cache_* to manage the allocation. This gives
+users more information regarding allocation of vector context via
+/proc/slabinfo. And it potentially reduces the latency of the first-use
+trap because of the allocation caches.
+
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20240115055929.4736-10-andy.chiu@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I3714cc81d0a1324b206a7ace8d4db0bcb274bca8
+---
+ arch/riscv/include/asm/vector.h |  4 ++++
+ arch/riscv/kernel/process.c     |  7 ++++++-
+ arch/riscv/kernel/vector.c      | 19 ++++++++++++++++++-
+ 3 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index 5e305c0764a9..cf657b93bf14 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -26,6 +26,8 @@ void kernel_vector_begin(void);
+ void kernel_vector_end(void);
+ void get_cpu_vector_context(void);
+ void put_cpu_vector_context(void);
++void riscv_v_thread_free(struct task_struct *tsk);
++void __init riscv_v_setup_ctx_cache(void);
+ 
+ static inline u32 riscv_v_flags(void)
+ {
+@@ -228,6 +230,8 @@ static inline bool riscv_v_vstate_ctrl_user_allowed(void) { return false; }
+ #define __switch_to_vector(__prev, __next)	do {} while (0)
+ #define riscv_v_vstate_off(regs)		do {} while (0)
+ #define riscv_v_vstate_on(regs)			do {} while (0)
++#define riscv_v_thread_free(tsk)		do {} while (0)
++#define riscv_v_setup_ctx_cache()		do {} while (0)
+ 
+ #endif /* CONFIG_RISCV_ISA_V */
+ 
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index ae0344fd9a0d..ac064b3969af 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -177,7 +177,7 @@ void arch_release_task_struct(struct task_struct *tsk)
+ {
+ 	/* Free the vector context of datap. */
+ 	if (has_vector())
+-		kfree(tsk->thread.vstate.datap);
++		riscv_v_thread_free(tsk);
+ }
+ 
+ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+@@ -225,3 +225,8 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+ 	p->thread.sp = (unsigned long)childregs; /* kernel sp */
+ 	return 0;
+ }
++
++void __init arch_task_cache_init(void)
++{
++	riscv_v_setup_ctx_cache();
++}
+diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+index ff20d881554c..c9e6029b238e 100644
+--- a/arch/riscv/kernel/vector.c
++++ b/arch/riscv/kernel/vector.c
+@@ -21,6 +21,7 @@
+ #include <asm/bug.h>
+ 
+ static bool riscv_v_implicit_uacc = IS_ENABLED(CONFIG_RISCV_ISA_V_DEFAULT_ENABLE);
++static struct kmem_cache *riscv_v_user_cachep;
+ 
+ unsigned long riscv_v_vsize __read_mostly;
+ EXPORT_SYMBOL_GPL(riscv_v_vsize);
+@@ -47,6 +48,16 @@ int riscv_v_setup_vsize(void)
+ 	return 0;
+ }
+ 
++void __init riscv_v_setup_ctx_cache(void)
++{
++	if (!has_vector())
++		return;
++
++	riscv_v_user_cachep = kmem_cache_create_usercopy("riscv_vector_ctx",
++							 riscv_v_vsize, 16, SLAB_PANIC,
++							 0, riscv_v_vsize, NULL);
++}
++
+ static bool insn_is_vector(u32 insn_buf)
+ {
+ 	u32 opcode = insn_buf & __INSN_OPCODE_MASK;
+@@ -84,7 +95,7 @@ static int riscv_v_thread_zalloc(void)
+ {
+ 	void *datap;
+ 
+-	datap = kzalloc(riscv_v_vsize, GFP_KERNEL);
++	datap = kmem_cache_zalloc(riscv_v_user_cachep, GFP_KERNEL);
+ 	if (!datap)
+ 		return -ENOMEM;
+ 
+@@ -94,6 +105,12 @@ static int riscv_v_thread_zalloc(void)
+ 	return 0;
+ }
+ 
++void riscv_v_thread_free(struct task_struct *tsk)
++{
++	if (tsk->thread.vstate.datap)
++		kmem_cache_free(riscv_v_user_cachep, tsk->thread.vstate.datap);
++}
++
+ #define VSTATE_CTRL_GET_CUR(x) ((x) & PR_RISCV_V_VSTATE_CTRL_CUR_MASK)
+ #define VSTATE_CTRL_GET_NEXT(x) (((x) & PR_RISCV_V_VSTATE_CTRL_NEXT_MASK) >> 2)
+ #define VSTATE_CTRL_MAKE_NEXT(x) (((x) << 2) & PR_RISCV_V_VSTATE_CTRL_NEXT_MASK)
+-- 
+2.47.0
+

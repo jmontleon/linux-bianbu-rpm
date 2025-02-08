@@ -1,0 +1,59 @@
+From 60e149501a0c45d0c4d3475a8ad4edf9f42bc82c Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Wed, 11 Dec 2024 19:10:19 +0800
+Subject: [PATCH 1356/1448] power: hibernate: modify for k1 support hibernation
+
+Change-Id: I086b45f70068a3ee77225d38ddc32ebdf69415be
+---
+ kernel/power/hibernate.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index c2fc58938dee..3406f0d3cc65 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -171,8 +171,13 @@ static void platform_end(int platform_mode)
+ 
+ static int platform_pre_snapshot(int platform_mode)
+ {
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	return (/* platform_mode && */ hibernation_ops) ?
++		hibernation_ops->pre_snapshot() : 0;
++#else
+ 	return (platform_mode && hibernation_ops) ?
+ 		hibernation_ops->pre_snapshot() : 0;
++#endif
+ }
+ 
+ /**
+@@ -201,8 +206,13 @@ static void platform_leave(int platform_mode)
+  */
+ static void platform_finish(int platform_mode)
+ {
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	if (/* platform_mode && */ hibernation_ops)
++		hibernation_ops->finish();
++#else
+ 	if (platform_mode && hibernation_ops)
+ 		hibernation_ops->finish();
++#endif
+ }
+ 
+ /**
+@@ -217,8 +227,13 @@ static void platform_finish(int platform_mode)
+  */
+ static int platform_pre_restore(int platform_mode)
+ {
++#ifdef CONFIG_SOC_SPACEMIT_K1X
++	return (/* platform_mode && */ hibernation_ops) ?
++		hibernation_ops->pre_restore() : 0;
++#else
+ 	return (platform_mode && hibernation_ops) ?
+ 		hibernation_ops->pre_restore() : 0;
++#endif
+ }
+ 
+ /**
+-- 
+2.47.0
+

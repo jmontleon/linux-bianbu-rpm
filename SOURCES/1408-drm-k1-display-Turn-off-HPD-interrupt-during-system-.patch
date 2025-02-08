@@ -1,0 +1,52 @@
+From a5151cc0705421f6b8f432e7d53b023034fa3901 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Mon, 2 Dec 2024 14:37:00 +0800
+Subject: [PATCH 1408/1448] drm: k1/display: Turn off HPD interrupt during
+ system suspend to avoid screen flickering when the system wakes up
+
+Change-Id: Ia273901b23b0f5c8b8936838c8db72dcc65cc337
+---
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index 7531fe51cb45..7df7bfd4995b 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -1052,9 +1052,16 @@ static int hdmi_rt_pm_suspend(struct device *dev)
+ static int hdmi_drv_pm_suspend(struct device *dev)
+ {
+ 	struct spacemit_hdmi *hdmi = dev_get_drvdata(dev);
++	uint32_t value;
+ 
+ 	DRM_DEBUG("%s()\n", __func__);
+ 
++	value = hdmi_readb(hdmi, SPACEMIT_HDMI_PHY_STATUS);
++	value &= (~SPACEMIT_HDMI_HPD_IQR_MASK);
++	value |= SPACEMIT_HDMI_HPD_IQR;
++	hdmi_writeb(hdmi, SPACEMIT_HDMI_PHY_STATUS, value);
++	udelay(5);
++
+ 	clk_disable_unprepare(hdmi->hdmi_mclk);
+ 
+ 	return 0;
+@@ -1063,10 +1070,16 @@ static int hdmi_drv_pm_suspend(struct device *dev)
+ static int hdmi_drv_pm_resume(struct device *dev)
+ {
+ 	struct spacemit_hdmi *hdmi = dev_get_drvdata(dev);
++	uint32_t value;
+ 
+ 	DRM_DEBUG("%s()\n", __func__);
+ 
+ 	clk_prepare_enable(hdmi->hdmi_mclk);
++	udelay(5);
++
++	value = hdmi_readb(hdmi, SPACEMIT_HDMI_PHY_STATUS);
++	value |= SPACEMIT_HDMI_HPD_IQR_MASK;
++	hdmi_writeb(hdmi, SPACEMIT_HDMI_PHY_STATUS, value);
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

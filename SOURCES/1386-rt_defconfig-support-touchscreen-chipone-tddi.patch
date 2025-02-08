@@ -1,0 +1,57 @@
+From f6797cec03d2ab8ce4eba16124ed58cac22b5bf7 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 23 Dec 2024 14:33:59 +0800
+Subject: [PATCH 1386/1448] rt_defconfig: support touchscreen chipone-tddi
+
+1. fix build err
+ERROR: modpost: "irq_to_desc" [drivers/input/touchscreen/focaltech_touch/focaltech_tp.ko] undefined!
+
+Change-Id: Ia17c8b5fba62b2a7e9d765b14d7b460c11453a5a
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ arch/riscv/configs/k1_rt_defconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_rt_defconfig b/arch/riscv/configs/k1_rt_defconfig
+index e214683ef063..abd7c6eec683 100644
+--- a/arch/riscv/configs/k1_rt_defconfig
++++ b/arch/riscv/configs/k1_rt_defconfig
+@@ -44,6 +44,7 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
+ # CONFIG_RD_ZSTD is not set
+ CONFIG_BOOT_CONFIG=y
+ CONFIG_EXPERT=y
++CONFIG_KALLSYMS_ALL=y
+ CONFIG_PROFILING=y
+ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1X=y
+@@ -675,6 +676,9 @@ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_TOUCHSCREEN_GT9XX=y
+ CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_TOUCHSCREEN_CHIPONE_TDDI=y
++CONFIG_TOUCHSCREEN_CHSC5XXX=y
++CONFIG_SEMI_TOUCH_AUTO_UPDATE_EN=y
++CONFIG_TOUCHSCREEN_FTS=y
+ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_UINPUT=y
+ CONFIG_INPUT_SPACEMIT_POWERKEY=y
+@@ -877,7 +881,6 @@ CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ # CONFIG_DVB_DRX39XYJ is not set
+ # CONFIG_DVB_CXD2099 is not set
+ # CONFIG_DVB_SP2 is not set
+-# CONFIG_DRM_DEBUG_MODESET_LOCK is not set
+ CONFIG_DRM_SPACEMIT=y
+ CONFIG_SPACEMIT_MIPI_PANEL=y
+ CONFIG_SPACEMIT_HDMI=y
+@@ -1309,9 +1312,6 @@ CONFIG_DEBUG_WX=y
+ CONFIG_SCHED_STACK_END_CHECK=y
+ CONFIG_KFENCE=y
+ CONFIG_DETECT_HUNG_TASK=y
+-CONFIG_LOCK_STAT=y
+-CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
+-CONFIG_DEBUG_RWSEMS=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
+-- 
+2.47.0
+

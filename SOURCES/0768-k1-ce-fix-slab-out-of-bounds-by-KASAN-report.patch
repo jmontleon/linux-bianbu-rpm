@@ -1,0 +1,158 @@
+From 6948442b493e144d2fbdcc1c3d92b104440cad9b Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Wed, 19 Jun 2024 14:32:42 +0800
+Subject: [PATCH 0768/1448] k1: ce: fix slab-out-of-bounds by KASAN report
+
+err log:
+==================================================================
+[   48.753045] BUG: KASAN: slab-out-of-bounds in spacemit_aes_xts_decrypt+0x1d8/0x278
+[   48.760734] Read of size 240 at addr ffffffd914909198 by task kworker/u23:2/323
+[   48.768141]
+[   48.769665] CPU: 6 PID: 323 Comm: kworker/u23:2 Not tainted 6.6.31 #5
+[   48.776186] Hardware name: spacemit k1-x deb1 board (DT)
+[   48.781564] Workqueue: kcryptd/251:0 kcryptd_crypt
+[   48.786442] Call Trace:
+[   48.788920] [<ffffffff8000c1fc>] dump_backtrace+0x1c/0x24
+[   48.794406] [<ffffffff83226fca>] show_stack+0x2c/0x38
+[   48.799538] [<ffffffff83266484>] dump_stack_lvl+0x3c/0x54
+[   48.805013] [<ffffffff8322e622>] print_report+0x19e/0x4b4
+[   48.810476] [<ffffffff80575010>] kasan_report+0xaa/0x136
+[   48.815871] [<ffffffff80576a3e>] __asan_report_load_n_noabort+0x10/0x18
+[   48.822567] [<ffffffff8325efce>] spacemit_aes_xts_decrypt+0x1d8/0x278
+[   48.829087] [<ffffffff825aa0e6>] xts_decrypt+0x560/0x7d4
+[   48.834479] [<ffffffff81425dbe>] crypto_skcipher_decrypt+0x92/0xce
+[   48.840751] [<ffffffff823d480c>] crypt_convert+0x2680/0x46d0
+[   48.846481] [<ffffffff823d6bea>] kcryptd_crypt+0x140/0xcee
+[   48.852036] [<ffffffff8007cc1e>] process_one_work+0x41c/0xdf8
+[   48.857847] [<ffffffff80080306>] worker_thread+0x634/0xe3c
+[   48.863399] [<ffffffff80093dcc>] kthread+0x284/0x35e
+[   48.868437] [<ffffffff83282dce>] ret_from_fork+0xe/0x1c
+[   48.873739]
+[   48.875258] Allocated by task 479:
+[   48.878702]  stack_trace_save+0xa0/0xd2
+[   48.882600]  kasan_save_stack+0x2c/0x58
+[   48.886492]  kasan_set_track+0x1a/0x26
+[   48.890300]  kasan_save_alloc_info+0x1a/0x24
+[   48.894624]  __kasan_kmalloc+0x90/0x92
+[   48.898429]  __kmalloc_node+0x48/0x1ee
+[   48.902240]  crypto_alloc_tfmmem.isra.0+0x32/0xde
+[   48.907016]  crypto_create_tfm_node+0x6a/0x254
+[   48.911522]  crypto_alloc_tfm_node+0xae/0x18a
+[   48.915934]  crypto_alloc_skcipher+0x1a/0x22
+[   48.920266]  crypt_alloc_tfms+0x1dc/0x46e
+[   48.924329]  crypt_ctr+0x8ba/0x29fa
+[   48.927868]  dm_table_add_target+0x3a4/0xbbc
+[   48.932199]  table_load+0x282/0x61a
+[   48.935738]  ctl_ioctl+0x3e6/0xaf4
+[   48.939185]  dm_ctl_ioctl+0xc/0x14
+[   48.942640]  __riscv_sys_ioctl+0xfe/0x12e
+[   48.946705]  syscall_handler+0x64/0xf0
+[   48.950508]  do_trap_ecall_u+0x9c/0x9e
+[   48.954310]  ret_from_exception+0x0/0x64
+[   48.958290]
+[   48.959799] The buggy address belongs to the object at ffffffd914909000
+[   48.959799]  which belongs to the cache kmalloc-1k of size 1024
+[   48.972452] The buggy address is located 408 bytes inside of
+[   48.972452]  allocated 532-byte region [ffffffd914909000, ffffffd914909214)
+[   48.985190]
+[   48.986709] The buggy address belongs to the physical page:
+[   48.992338] page:00000000afe68371 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x114908
+[   49.001839] head:00000000afe68371 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[   49.010029] flags: 0x4000000000000840(slab|head|zone=1)
+[   49.015333] page_type: 0xffffffff()
+[   49.018877] raw: 4000000000000840 ffffffd900002dc0 0000000000000122 0000000000000000
+[   49.026709] raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+[   49.034533] page dumped because: kasan: bad access detected
+[   49.040170]
+[   49.041678] Memory state around the buggy address:
+[   49.046525]  ffffffd914909100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   49.053830]  ffffffd914909180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   49.061134] >ffffffd914909200: 00 00 04 fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   49.068434]                          ^
+[   49.072234]  ffffffd914909280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   49.079535]  ffffffd914909300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   49.086834] ==================================================================
+[   49.094297] Disabling lock debugging due to kernel taint
+
+Change-Id: Ib097b8e4672300904a5fc0025c72bef08469cd32
+---
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 170157219152..224f1fe62ebd 100755
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include "linux/dma-direction.h"
++#include <linux/kernel.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/fs.h>
+ #include <linux/module.h>
+@@ -1242,7 +1243,7 @@ int spacemit_aes_ecb_encrypt(int index, const unsigned char *pt,unsigned char *c
+ {
+ 	symmetric_key skey1;
+ 	skey1.rijndael.Nr=len;
+-	memcpy(skey1.rijndael.eK,key,sizeof(skey1.rijndael.eK));
++	memcpy(skey1.rijndael.eK,key,min(len, sizeof(skey1.rijndael.eK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, pt,ct,blocks, &skey1,NULL,E_AES_ECB,NULL, E_AES_ENCRYPT);
+ }
+@@ -1252,7 +1253,7 @@ int spacemit_aes_ecb_decrypt(int index, const unsigned char *ct,unsigned char *p
+ {
+ 	symmetric_key skey1;
+ 	skey1.rijndael.Nr=len;
+-	memcpy(skey1.rijndael.dK,key,sizeof(skey1.rijndael.dK));
++	memcpy(skey1.rijndael.dK,key,min(len, sizeof(skey1.rijndael.dK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, ct,pt,blocks, &skey1,NULL,E_AES_ECB,NULL, E_AES_DECRYPT);
+ }
+@@ -1262,7 +1263,7 @@ int spacemit_aes_cbc_encrypt(int index, const unsigned char *pt,unsigned char *c
+ {
+ 	symmetric_key skey1;
+ 	skey1.rijndael.Nr=len;
+-	memcpy(skey1.rijndael.eK,key,sizeof(skey1.rijndael.eK));
++	memcpy(skey1.rijndael.eK,key,min(len, sizeof(skey1.rijndael.eK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, pt,ct,blocks, &skey1,NULL,E_AES_CBC,IV,E_AES_ENCRYPT);
+ }
+@@ -1272,7 +1273,7 @@ int spacemit_aes_cbc_decrypt(int index, const unsigned char *ct,unsigned char *p
+ {
+ 	symmetric_key skey1;
+ 	skey1.rijndael.Nr=len;
+-	memcpy(skey1.rijndael.dK,key,sizeof(skey1.rijndael.dK));
++	memcpy(skey1.rijndael.dK,key,min(len, sizeof(skey1.rijndael.dK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, ct,pt,blocks, &skey1,NULL,E_AES_CBC,IV,E_AES_DECRYPT);
+ }
+@@ -1285,10 +1286,10 @@ int spacemit_aes_xts_encrypt(int index, const unsigned char *pt, unsigned char *
+ 	symmetric_key skey1, skey2;
+ 
+ 	skey1.rijndael.Nr = len;
+-	memcpy(skey1.rijndael.eK, key1, sizeof(skey1.rijndael.eK));
++	memcpy(skey1.rijndael.eK, key1, min(len, sizeof(skey1.rijndael.eK)));
+ 
+ 	skey2.rijndael.Nr = len;
+-	memcpy(skey2.rijndael.eK, key2, sizeof(skey2.rijndael.eK));
++	memcpy(skey2.rijndael.eK, key2, min(len, sizeof(skey2.rijndael.eK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, pt, ct, blocks, &skey1, &skey2,
+ 				E_AES_XTS, IV, E_AES_ENCRYPT);
+@@ -1302,10 +1303,10 @@ int spacemit_aes_xts_decrypt(int index, const unsigned char *ct, unsigned char *
+ 	symmetric_key skey1, skey2;
+ 
+ 	skey1.rijndael.Nr = len;
+-	memcpy(skey1.rijndael.dK, key1, sizeof(skey1.rijndael.dK));
++	memcpy(skey1.rijndael.dK, key1, min(len, sizeof(skey1.rijndael.dK)));
+ 
+ 	skey2.rijndael.Nr = len;
+-	memcpy(skey2.rijndael.dK, key2, sizeof(skey2.rijndael.dK));
++	memcpy(skey2.rijndael.dK, key2, min(len, sizeof(skey2.rijndael.dK)));
+ 
+ 	return ce_aes_process_nblocks_noalign(index, ct, pt, blocks, &skey1, &skey2,
+ 				E_AES_XTS, IV, E_AES_DECRYPT);
+-- 
+2.47.0
+

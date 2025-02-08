@@ -1,0 +1,53 @@
+From 2ff73a52b028436a5e68bd4d524c1d961d7cd25e Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Wed, 20 Nov 2024 15:33:04 +0800
+Subject: [PATCH 1295/1448] display:enable mipi dsi panel for k1-x_bit-brick
+
+Change-Id: Id7f68309c4d68d403eb1aef8498628a70af86545
+---
+ arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
+index 09e526b195b9..e4ec9b9f368f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
+@@ -6,7 +6,7 @@
+ #include "k1-x.dtsi"
+ #include "k1-x-efuse.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+-#include "lcd/lcd_jd9365dah3_mipi.dtsi"
++#include "lcd/lcd_jd9365aainx101_mipi.dtsi"
+ #include "k1-x-lcd.dtsi"
+ #include "k1-x-hdmi.dtsi"
+ #include "k1-x_opp_table.dtsi"
+@@ -201,8 +201,7 @@ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
+ 	spacemit-dpu-bitclk = <500000000>;
+ 	dsi_1v2-supply = <&ldo_5>;
+-	dsi_1v8-supply = <&ldo_11>;
+-	vin-supply-names = "dsi_1v2", "dsi_1v8";
++	vin-supply-names = "dsi_1v2";
+ 	status = "okay";
+ };
+ 
+@@ -214,13 +213,11 @@ panel2: panel2@0 {
+ 		compatible = "spacemit,mipi-panel2";
+ 		reg = <0>;
+ 
+-		gpios-reset = <30>;
+-		gpios-dc = <34 42>;
+-		gpios-avdd = <35 36>;
+-		gpios-bl = <31>;
++		gpios-reset = <43>;
++		gpios-dc = <42 83>;
+ 		id = <2>;
+ 		delay-after-reset = <10>;
+-		force-attached = "lcd_jd9365dah3_mipi";
++		force-attached = "lcd_jd9365aainx101_mipi";
+ 	};
+ };
+ 
+-- 
+2.47.0
+

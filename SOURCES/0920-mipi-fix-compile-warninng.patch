@@ -1,0 +1,34 @@
+From 7a8991feb606c900769a7a1107414ba7ebe34c47 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 11 Jul 2024 19:16:28 +0800
+Subject: [PATCH 0920/1448] mipi: fix compile warninng
+
+Change-Id: Ia9f5b8d635086d8011b6a1a21780b76e35318b7c
+---
+ drivers/gpu/drm/spacemit/spacemit_mipi_panel.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+index be1c6da15a76..c955c738375b 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
++++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
+@@ -194,7 +194,6 @@ static int spacemit_panel_prepare(struct drm_panel *p)
+ 	spacemit_drm_notifier_call_chain(DRM_PANEL_EVENT_BLANK, &noti_blank);
+ 	pr_info("mipi: UNBLANK!!\n");
+ 
+-out:
+ 	/* update refcnt */
+ 	atomic_set(&panel->prepare_refcnt, 1);
+ 	return 0;
+@@ -240,7 +239,7 @@ static int spacemit_panel_enable(struct drm_panel *p)
+ 				      msecs_to_jiffies(1000));
+ 		panel->esd_work_pending = true;
+ 	}
+-out:
++
+ 	atomic_set(&panel->enable_refcnt, 1);
+ 	return 0;
+ }
+-- 
+2.47.0
+

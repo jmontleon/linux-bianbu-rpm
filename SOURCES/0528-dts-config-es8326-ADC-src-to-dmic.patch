@@ -1,0 +1,42 @@
+From 3482a4dea632acbd6ff4f046b1f943281aabe190 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Sat, 23 Mar 2024 17:10:59 +0800
+Subject: [PATCH 0528/1448] dts: config es8326 ADC src to dmic
+
+Change-Id: Id09db2b0b724be8365a7d4c6f9832c166cd3e66e
+---
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index f9f0bb0efa0a..320aabae77e3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -250,14 +250,16 @@ mac_address1: mac_address1@6 {
+ 	};
+ 
+ 	es8326@19{
+-                compatible = "everest,es8326";
+-                reg = <0x19>;
+-                #sound-dai-cells = <0>;
+-                interrupt-parent = <&gpio>;
+-                interrupts = <126 1>;
+-                spk-ctl-gpio = <&gpio 127 0>;
+-                status = "okay";
+-        };
++		compatible = "everest,es8326";
++		reg = <0x19>;
++		#sound-dai-cells = <0>;
++		interrupt-parent = <&gpio>;
++		interrupts = <126 1>;
++		spk-ctl-gpio = <&gpio 127 0>;
++		everest,mic1-src = [44];
++		everest,mic2-src = [66];
++		status = "okay";
++	};
+ };
+ 
+ &i2c3 {
+-- 
+2.47.0
+

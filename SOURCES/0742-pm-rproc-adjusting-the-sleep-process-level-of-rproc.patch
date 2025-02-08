@@ -1,0 +1,674 @@
+From 793dedf7fb7ecb7a618dbff12f71a4fabe23b378 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 13 Jun 2024 15:01:53 +0800
+Subject: [PATCH 0742/1448] pm:rproc: adjusting the sleep process level of
+ rproc
+
+put the suspend-resume process of rproc into the platfrom's
+operation function and execute it last to prevent other dependency
+sleep failure
+
+Change-Id: I6620b9c6896bd1ba7d0e6aeafd218deb558207b3
+---
+ drivers/mailbox/spacemit/k1x-mailbox.c        |  14 +-
+ drivers/remoteproc/k1x-rproc.c                | 241 ++++++++++--------
+ drivers/soc/spacemit/Makefile                 |   1 +
+ drivers/soc/spacemit/pm/Makefile              |   2 +
+ drivers/soc/spacemit/pm/platform_pm.c         | 146 +++++++++++
+ drivers/soc/spacemit/pm/platform_pm_ops.c     |  63 +++++
+ .../soc/spacemit/pm_domain/k1x-pm_domain.c    |  21 +-
+ include/linux/spacemit/platform_pm_ops.h      |  19 ++
+ 8 files changed, 384 insertions(+), 123 deletions(-)
+ create mode 100644 drivers/soc/spacemit/pm/Makefile
+ create mode 100644 drivers/soc/spacemit/pm/platform_pm.c
+ create mode 100644 drivers/soc/spacemit/pm/platform_pm_ops.c
+ create mode 100644 include/linux/spacemit/platform_pm_ops.h
+
+diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
+index 4a7d53e367b1..1380e9206e51 100644
+--- a/drivers/mailbox/spacemit/k1x-mailbox.c
++++ b/drivers/mailbox/spacemit/k1x-mailbox.c
+@@ -16,11 +16,19 @@
+ #include <linux/reset.h>
+ #include <linux/spinlock.h>
+ #include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
+ #include "../mailbox.h"
+ #include "k1x_mailbox.h"
+ 
+ #define mbox_dbg(mbox, ...)	dev_dbg((mbox)->controller.dev, __VA_ARGS__)
+ 
++#define DEV_PM_QOS_CLK_GATE            1
++#define DEV_PM_QOS_REGULATOR_GATE      2
++#define DEV_PM_QOS_PM_DOMAIN_GATE      4
++#define DEV_PM_QOS_DEFAULT             7
++
++static struct dev_pm_qos_request greq;
++
+ static irqreturn_t spacemit_mbox_irq(int irq, void *dev_id)
+ {
+ 	struct spacemit_mailbox *mbox = dev_id;
+@@ -173,12 +181,16 @@ static int spacemit_mailbox_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pm_runtime_enable(dev);
++	dev_pm_qos_add_request(dev, &greq, DEV_PM_QOS_MAX_FREQUENCY,
++			DEV_PM_QOS_CLK_GATE | DEV_PM_QOS_PM_DOMAIN_GATE);
+ 	pm_runtime_get_sync(dev);
++	/* do not disable the clk of mailbox when suspend */
++	dev_pm_qos_update_request(&greq, DEV_PM_QOS_PM_DOMAIN_GATE);
+ 	pm_runtime_get_noresume(dev);
+ 
+ 	/* request irq */
+ 	ret = devm_request_irq(dev, platform_get_irq(pdev, 0),
+-			       spacemit_mbox_irq, 0, dev_name(dev), mbox);
++			       spacemit_mbox_irq, IRQF_NO_SUSPEND, dev_name(dev), mbox);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register IRQ handler: %d\n", ret);
+ 		return -EINVAL;
+diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
+index 89a66efa97b3..d529e28a4b8b 100644
+--- a/drivers/remoteproc/k1x-rproc.c
++++ b/drivers/remoteproc/k1x-rproc.c
+@@ -22,7 +22,10 @@
+ #include <linux/sched/prio.h>
+ #include <linux/rpmsg.h>
+ #include <linux/pm_qos.h>
++#include <linux/delay.h>
+ #include <linux/syscore_ops.h>
++#include <linux/pm_domain.h>
++#include <linux/spacemit/platform_pm_ops.h>
+ #include "remoteproc_internal.h"
+ 
+ #define MAX_MEM_BASE	2
+@@ -125,12 +128,6 @@ static int spacemit_rproc_prepare(struct rproc *rproc)
+ 	/* enable the power-switch and the clk */
+ 	pm_runtime_get_sync(priv->dev);
+ 
+-	/**
+-	* do not disable the clk & power-switch of the rcpu, it will be done
+-	* by rcpu itself
+-	* */
+-	dev_pm_qos_update_request(&greq, 0);
+-
+ 	/* Register associated reserved memory regions */
+ 	of_phandle_iterator_init(&it, np, "memory-region", NULL, 0);
+ 	while (of_phandle_iterator_next(&it) == 0) {
+@@ -388,24 +385,147 @@ module_rpmsg_driver(rpmsg_rcpu_pm_client);
+ 
+ static int rproc_syscore_suspend(void)
+ {
++	/* reset the rcpu */
++	reset_control_assert(gcore_reset);
++
+ 	return 0;
+ }
+ 
+ static void rproc_syscore_resume(void)
+ {
+-	/* reset the rcpu */
+-	reset_control_assert(gcore_reset);
+ 	reset_control_deassert(gcore_reset);
+-	/**
+-	 * only open the power-swith
+-	* */
+-	dev_pm_qos_update_request(&greq, DEV_PM_QOS_PM_DOMAIN_GATE);
+ }
+ 
+ static struct syscore_ops rproc_syscore_ops = {
+ 	.suspend = rproc_syscore_suspend,
+ 	.resume = rproc_syscore_resume,
+ };
++
++#define RCPU_ENTER_LOW_PWR_MODE		"$"
++
++static int rproc_platform_late(void)
++{
++	int ret;
++	unsigned int val;
++	struct rproc *rproc;
++	struct spacemit_rproc *srproc;
++	struct rproc_mem_entry *rcpu_snapshots_mem;
++	struct platform_device *pdev;
++	struct generic_pm_domain *genpd;
++
++	pdev = (struct platform_device *)rpmsg_rcpu_pwr_management_id_table[0].driver_data;
++
++	rproc = dev_get_drvdata(&pdev->dev);
++	srproc = rproc->priv;
++
++	/* send msg to rcpu to let it enter low power mode */
++	ret = rpmsg_send(srproc->rpdev->ept, RCPU_ENTER_LOW_PWR_MODE,
++			strlen(RCPU_ENTER_LOW_PWR_MODE));
++
++	rcpu_snapshots_mem = rproc_find_carveout_by_name(rproc, "rcpu_mem_snapshots");
++	if (!rcpu_snapshots_mem) {
++		pr_err("Failed to find the rcpu_mem_snapshots\n");
++		return -1;
++	}
++
++	while (1) {
++		/* will be wrotten by rpcu */
++		val = readl(rcpu_snapshots_mem->va);
++		if (val == 1)
++			break;
++	}
++
++	/* wait the rcpu enter wfi */
++	mdelay(10);
++
++	genpd = pd_to_genpd(pdev->dev.pm_domain);
++
++	pdev->dev.power.wakeup_path = false;
++
++	/* close the clk & power-switch */
++	genpd->domain.ops.suspend_noirq(&pdev->dev);
++
++	return 0;
++}
++
++static void rproc_platfrom_wake(void)
++{
++	unsigned int val;
++	struct rproc *rproc;
++	struct spacemit_rproc *srproc;
++	struct rproc_mem_entry *rcpu_sram_mem, *rcpu_snapshots_mem;
++	struct platform_device *pdev;
++	struct generic_pm_domain *genpd;
++
++	pdev = (struct platform_device *)rpmsg_rcpu_pwr_management_id_table[0].driver_data;
++
++	rproc = dev_get_drvdata(&pdev->dev);
++	srproc = rproc->priv;
++
++	genpd = pd_to_genpd(pdev->dev.pm_domain);
++	/* enable the clk & power-switch */
++	genpd->domain.ops.resume_noirq(&pdev->dev);
++
++	/* enable ipc2ap clk & reset--> rcpu side */
++	writel(0xff, srproc->base[BOOTC_MEM_BASE_OFFSET] + ESOS_AON_PER_CLK_RST_CTL_REG);
++
++	/* set ddr map */
++	writel(srproc->ddr_remap_base, srproc->base[SYSCTRL_MEM_BASE_OFFSET] + ESOS_DDR_REGMAP_BASE_REG_OFFSET);
++
++	rcpu_sram_mem = rproc_find_carveout_by_name(rproc, "mem");
++	if (!rcpu_sram_mem) {
++		pr_err("Failed to find the rcpu_mem_0\n");
++		return;
++	}
++
++	rcpu_snapshots_mem = rproc_find_carveout_by_name(rproc, "rcpu_mem_snapshots");
++	if (!rcpu_snapshots_mem) {
++		pr_err("Failed to find the rcpu_mem_snapshots\n");
++		return;
++	}
++
++	/* copy the code */
++	memcpy((void *)rcpu_sram_mem->va,
++			(void *)((u32 *)rcpu_snapshots_mem->va + 1),
++			rcpu_sram_mem->len - sizeof(u32));
++
++	/* luaching up rpcu */	
++	writel(1, srproc->base[BOOTC_MEM_BASE_OFFSET] + ESOS_BOOTUP_REG_OFFSET);
++	
++	while (1) {
++		/* will be wrotten by rpcu */
++		val = readl(rcpu_snapshots_mem->va);
++		if (val == 2)
++			break;
++	}
++
++	memset((void *)rcpu_snapshots_mem->va, 0, rcpu_snapshots_mem->len);
++}
++
++static struct platfrom_pm_ops rproc_platform_pm_ops = {
++	.prepare_late = rproc_platform_late,
++	.wake = rproc_platfrom_wake,
++};
++
++static int spacemit_rproc_suspend(struct device *dev)
++{
++	/* this code do nothing but pretect the power & clk of audio 
++	 * from closing in noirq process when system suspend
++	 * */
++	device_set_wakeup_path(dev);
++
++	return 0;
++}
++
++static int spacemit_rproc_resume(struct device *dev)
++{
++	return 0;
++}
++
++static const struct dev_pm_ops spacemit_rproc_pm_ops = {
++	.suspend = spacemit_rproc_suspend,
++	.resume = spacemit_rproc_resume,
++};
+ #endif
+ 
+ static int spacemit_rproc_probe(struct platform_device *pdev)
+@@ -497,6 +617,8 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
+ 	rpmsg_rcpu_pwr_management_id_table[0].driver_data = (unsigned long long)pdev;
+ 
+ 	register_syscore_ops(&rproc_syscore_ops);
++
++	register_platform_pm_ops(&rproc_platform_pm_ops);
+ #endif
+ 
+ 	rproc->auto_boot = true;
+@@ -547,101 +669,6 @@ static const struct of_device_id spacemit_rproc_of_match[] = {
+ 
+ MODULE_DEVICE_TABLE(of, spacemit_rproc_of_match);
+ 
+-#ifdef CONFIG_PM_SLEEP
+-
+-#define RCPU_ENTER_LOW_PWR_MODE		"$"
+-
+-static int spacemit_rproc_suspend(struct device *dev)
+-{
+-	int ret;
+-	unsigned int val;
+-	struct rproc *rproc;
+-	struct spacemit_rproc *srproc;
+-	struct rproc_mem_entry *rcpu_snapshots_mem;
+-
+-	rproc = dev_get_drvdata(dev);
+-	srproc = rproc->priv;
+-
+-	/* send msg to rcpu to let it enter low power mode */
+-	ret = rpmsg_send(srproc->rpdev->ept, RCPU_ENTER_LOW_PWR_MODE,
+-			strlen(RCPU_ENTER_LOW_PWR_MODE));
+-
+-	rcpu_snapshots_mem = rproc_find_carveout_by_name(rproc, "rcpu_mem_snapshots");
+-	if (!rcpu_snapshots_mem) {
+-		pr_err("Failed to find the rcpu_mem_snapshots\n");
+-		return -1;
+-	}
+-
+-	while (1) {
+-		/* will be wrotten by rpcu */
+-		val = readl(rcpu_snapshots_mem->va);
+-		if (val == 1)
+-			break;
+-	}
+-
+-	return 0;
+-}
+-
+-static int spacemit_rproc_resume(struct device *dev)
+-{
+-	unsigned int val;
+-	struct rproc *rproc;
+-	struct spacemit_rproc *srproc;
+-	struct rproc_mem_entry *rcpu_sram_mem, *rcpu_snapshots_mem;
+-
+-	rproc = dev_get_drvdata(dev);
+-	srproc = rproc->priv;
+-
+-	/*
+-	 * when suspend, do not close the clk & power-switch, it will be
+-	 * done by rcpu itself.
+-	 * */
+-	dev_pm_qos_update_request(&greq, 0);
+-
+-	/* enable ipc2ap clk & reset--> rcpu side */
+-	writel(0xff, srproc->base[BOOTC_MEM_BASE_OFFSET] + ESOS_AON_PER_CLK_RST_CTL_REG);
+-
+-	/* set ddr map */
+-	writel(srproc->ddr_remap_base, srproc->base[SYSCTRL_MEM_BASE_OFFSET] + ESOS_DDR_REGMAP_BASE_REG_OFFSET);
+-
+-	rcpu_sram_mem = rproc_find_carveout_by_name(rproc, "mem");
+-	if (!rcpu_sram_mem) {
+-		pr_err("Failed to find the rcpu_mem_0\n");
+-		return -1;
+-	}
+-
+-	rcpu_snapshots_mem = rproc_find_carveout_by_name(rproc, "rcpu_mem_snapshots");
+-	if (!rcpu_snapshots_mem) {
+-		pr_err("Failed to find the rcpu_mem_snapshots\n");
+-		return -1;
+-	}
+-
+-	/* copy the code */
+-	memcpy((void *)rcpu_sram_mem->va,
+-			(void *)((u32 *)rcpu_snapshots_mem->va + 1),
+-			rcpu_sram_mem->len - sizeof(u32));
+-
+-	/* luaching up rpcu */	
+-	writel(1, srproc->base[BOOTC_MEM_BASE_OFFSET] + ESOS_BOOTUP_REG_OFFSET);
+-	
+-	while (1) {
+-		/* will be wrotten by rpcu */
+-		val = readl(rcpu_snapshots_mem->va);
+-		if (val == 2)
+-			break;
+-	}
+-
+-	memset((void *)rcpu_snapshots_mem->va, 0, rcpu_snapshots_mem->len);
+-
+-	return 0;
+-}
+-
+-static const struct dev_pm_ops spacemit_rproc_pm_ops = {
+-	.suspend = spacemit_rproc_suspend,
+-	.resume = spacemit_rproc_resume,
+-};
+-#endif
+-
+ static void spacemit_rproc_shutdown(struct platform_device *pdev)
+ {
+ 	int i;
+diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
+index 61fc72c15c4e..e5e23be15e73 100644
+--- a/drivers/soc/spacemit/Makefile
++++ b/drivers/soc/spacemit/Makefile
+@@ -5,3 +5,4 @@ obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-rf/
+ obj-$(CONFIG_SPACEMIT_REBOOT_CONTROL)	+= spacemit_reboot.o
+ obj-$(CONFIG_SPACEMI_K1X_DMA_RANGE) += k1x-dma-range.o
+ obj-$(CONFIG_SPACEMIT_LID_CONTROL)	+= spacemit_lid.o
++obj-$(CONFIG_PM) += pm/
+diff --git a/drivers/soc/spacemit/pm/Makefile b/drivers/soc/spacemit/pm/Makefile
+new file mode 100644
+index 000000000000..9aa8704282c0
+--- /dev/null
++++ b/drivers/soc/spacemit/pm/Makefile
+@@ -0,0 +1,2 @@
++obj-y += platform_pm.o
++obj-y += platform_pm_ops.o
+diff --git a/drivers/soc/spacemit/pm/platform_pm.c b/drivers/soc/spacemit/pm/platform_pm.c
+new file mode 100644
+index 000000000000..7498d689d86f
+--- /dev/null
++++ b/drivers/soc/spacemit/pm/platform_pm.c
+@@ -0,0 +1,146 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ * Copyright (c) 2022 Ventana Micro Systems Inc.
++ */
++
++#define pr_fmt(fmt) "suspend: " fmt
++
++#include <linux/ftrace.h>
++#include <linux/suspend.h>
++#include <asm/csr.h>
++#include <asm/sbi.h>
++#include <asm/suspend.h>
++#include <linux/spacemit/platform_pm_ops.h>
++
++static void _suspend_save_csrs(struct suspend_context *context)
++{
++	context->scratch = csr_read(CSR_SCRATCH);
++	context->tvec = csr_read(CSR_TVEC);
++	context->ie = csr_read(CSR_IE);
++
++	/*
++	 * No need to save/restore IP CSR (i.e. MIP or SIP) because:
++	 *
++	 * 1. For no-MMU (M-mode) kernel, the bits in MIP are set by
++	 *    external devices (such as interrupt controller, timer, etc).
++	 * 2. For MMU (S-mode) kernel, the bits in SIP are set by
++	 *    M-mode firmware and external devices (such as interrupt
++	 *    controller, etc).
++	 */
++
++#ifdef CONFIG_MMU
++	context->satp = csr_read(CSR_SATP);
++#endif
++}
++
++static void _suspend_restore_csrs(struct suspend_context *context)
++{
++	csr_write(CSR_SCRATCH, context->scratch);
++	csr_write(CSR_TVEC, context->tvec);
++	csr_write(CSR_IE, context->ie);
++
++#ifdef CONFIG_MMU
++	csr_write(CSR_SATP, context->satp);
++#endif
++}
++
++static int spacemit_cpu_suspend(unsigned long arg,
++		int (*finish)(unsigned long arg,
++			      unsigned long entry,
++			      unsigned long context))
++{
++	int rc = 0;
++	struct suspend_context context = { 0 };
++
++	/* Finisher should be non-NULL */
++	if (!finish)
++		return -EINVAL;
++
++	/* Save additional CSRs*/
++	_suspend_save_csrs(&context);
++
++	/*
++	 * Function graph tracer state gets incosistent when the kernel
++	 * calls functions that never return (aka finishers) hence disable
++	 * graph tracing during their execution.
++	 */
++	pause_graph_tracing();
++
++	/* Save context on stack */
++	if (__cpu_suspend_enter(&context)) {
++		/* Call the finisher */
++		rc = finish(arg, __pa_symbol(__cpu_resume_enter),
++			    (ulong)&context);
++
++		/*
++		 * Should never reach here, unless the suspend finisher
++		 * fails. Successful cpu_suspend() should return from
++		 * __cpu_resume_entry()
++		 */
++		if (!rc)
++			rc = -EOPNOTSUPP;
++	}
++
++	/* Enable function graph tracer */
++	unpause_graph_tracing();
++
++	/* Restore additional CSRs */
++	_suspend_restore_csrs(&context);
++
++	return rc;
++}
++
++#ifdef CONFIG_RISCV_SBI
++static int spacemit_system_suspend(unsigned long sleep_type,
++			      unsigned long resume_addr,
++			      unsigned long opaque)
++{
++	struct sbiret ret;
++
++	ret = sbi_ecall(SBI_EXT_SUSP, SBI_EXT_SUSP_SYSTEM_SUSPEND,
++			sleep_type, resume_addr, opaque, 0, 0, 0);
++	if (ret.error)
++		return sbi_err_map_linux_errno(ret.error);
++
++	return ret.value;
++}
++
++static int spacemit_system_suspend_enter(suspend_state_t state)
++{
++	return spacemit_cpu_suspend(SBI_SUSP_SLEEP_TYPE_SUSPEND_TO_RAM, spacemit_system_suspend);
++}
++
++static int spacemit_prepare_late(void)
++{
++	return platform_pm_prepare_late_suspend();
++}
++
++static void spacemit_wake(void)
++{
++	platform_pm_resume_wake();
++}
++
++static const struct platform_suspend_ops spacemit_system_suspend_ops ={
++	.valid = suspend_valid_only_mem,
++	.enter = spacemit_system_suspend_enter,
++	.prepare_late = spacemit_prepare_late,
++	.wake = spacemit_wake,
++};
++
++extern unsigned long sbi_spec_version;
++
++static int __init spacemit_system_suspend_init(void)
++{
++	if (sbi_spec_version >= sbi_mk_version(1, 0) &&
++	    sbi_probe_extension(SBI_EXT_SUSP) > 0) {
++		pr_info("SBI SUSP extension detected\n");
++		if (IS_ENABLED(CONFIG_SUSPEND))
++			suspend_set_ops(&spacemit_system_suspend_ops);
++	}
++
++	return 0;
++}
++
++late_initcall(spacemit_system_suspend_init);
++#endif /* CONFIG_RISCV_SBI */
+diff --git a/drivers/soc/spacemit/pm/platform_pm_ops.c b/drivers/soc/spacemit/pm/platform_pm_ops.c
+new file mode 100644
+index 000000000000..f59091040093
+--- /dev/null
++++ b/drivers/soc/spacemit/pm/platform_pm_ops.c
+@@ -0,0 +1,63 @@
++#include <linux/mutex.h>
++#include <linux/module.h>
++#include <linux/suspend.h>
++#include <linux/spacemit/platform_pm_ops.h>
++
++static LIST_HEAD(platform_pm_ops_list);
++static DEFINE_MUTEX(platform_pm_ops_lock);
++
++void register_platform_pm_ops(struct platfrom_pm_ops *ops)
++{
++	mutex_lock(&platform_pm_ops_lock);
++	list_add_tail(&ops->node, &platform_pm_ops_list);
++	mutex_unlock(&platform_pm_ops_lock);
++}
++EXPORT_SYMBOL_GPL(register_platform_pm_ops);
++
++void unregister_platform_pm_ops(struct platfrom_pm_ops *ops)
++{
++	mutex_lock(&platform_pm_ops_lock);
++	list_del(&ops->node);
++	mutex_unlock(&platform_pm_ops_lock);
++}
++EXPORT_SYMBOL_GPL(unregister_platform_pm_ops);
++
++#ifdef CONFIG_PM_SLEEP
++int platform_pm_prepare_late_suspend(void)
++{
++	int ret;
++	struct platfrom_pm_ops *ops;
++
++	list_for_each_entry_reverse(ops, &platform_pm_ops_list, node)
++		if (ops->prepare_late) {
++			pm_pr_dbg("Calling %pS\n", ops->prepare_late);
++			ret = ops->prepare_late();
++			if (ret)
++				goto err_out;
++		}
++
++	return 0;
++
++ err_out:
++	pr_err("PM: Platform late suspend callback %pS failed.\n", ops->prepare_late);
++
++	/* we just stall here now !!!!! */
++	while (1);
++
++	return ret;
++
++}
++EXPORT_SYMBOL_GPL(platform_pm_prepare_late_suspend);
++
++void platform_pm_resume_wake(void)
++{
++	struct platfrom_pm_ops *ops;
++
++	list_for_each_entry(ops, &platform_pm_ops_list, node)
++		if (ops->wake) {
++			pm_pr_dbg("Calling %pS\n", ops->wake);
++			ops->wake();
++		}
++}
++EXPORT_SYMBOL_GPL(platform_pm_resume_wake);
++#endif /* CONFIG_PM_SLEEP */
+diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+index 3891cb499564..35d4e03d058c 100644
+--- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
++++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
+@@ -255,12 +255,6 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ 		}
+ 	}
+ 
+-	if (spd->pm_index == K1X_PMU_AUD_PWR_DOMAIN) {
+-		regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], APMU_AUDIO_CLK_RES_CTRL, &val);
+-		val |= (1 << AP_POWER_CTRL_AUDIO_AUTH_OFFSET);
+-		regmap_write(gpmu->regmap[APMU_REGMAP_INDEX], APMU_AUDIO_CLK_RES_CTRL, val);
+-	}
+-
+ 	regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], APMU_POWER_STATUS_REG, &val);
+ 	if (val & (1 << spd->param.bit_pwr_stat)) {
+ 		if (!spd->param.use_hw) {
+@@ -356,13 +350,6 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
+ 		return -EBUSY;
+ 	}
+ 
+-	/* for audio power domain, we should let the rcpu handle it, and disable force power on */
+-	if (spd->pm_index == K1X_PMU_AUD_PWR_DOMAIN) {
+-		regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], APMU_AUDIO_CLK_RES_CTRL, &val);
+-		val &= ~((1 << AP_POWER_CTRL_AUDIO_AUTH_OFFSET) | (1 << FORCE_AUDIO_POWER_ON_OFFSET));
+-		regmap_write(gpmu->regmap[APMU_REGMAP_INDEX], APMU_AUDIO_CLK_RES_CTRL, val);
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -705,9 +692,13 @@ static int spacemit_pm_add_one_domain(struct spacemit_pmu *pmu, struct device_no
+ 	pd->genpd.dev_ops.start = spacemit_genpd_start;
+ 
+ 	/* audio power-domain is power-on by default */
+-	if (id == K1X_PMU_AUD_PWR_DOMAIN)
++	if (id == K1X_PMU_AUD_PWR_DOMAIN) {
++		/* set this flag has nothing affect, just do not want the framework disable
++		 * the clk & power in noirq callback when system suspend.
++		 * */
++		pd->genpd.flags |= GENPD_FLAG_ACTIVE_WAKEUP;
+ 		pm_genpd_init(&pd->genpd, NULL, false);
+-	else
++	} else
+ 		pm_genpd_init(&pd->genpd, NULL, true);
+ 
+ 	pmu->domains[id] = pd;
+diff --git a/include/linux/spacemit/platform_pm_ops.h b/include/linux/spacemit/platform_pm_ops.h
+new file mode 100644
+index 000000000000..018f65e3d34d
+--- /dev/null
++++ b/include/linux/spacemit/platform_pm_ops.h
+@@ -0,0 +1,19 @@
++#ifndef _SPACEMIT_PLATFORM_PM_OPS_H
++#define _SPACEMIT_PLATFORM_PM_OPS_H
++
++#include <linux/list.h>
++
++struct platfrom_pm_ops {
++	struct list_head node;
++	int (*prepare_late)(void);
++	void (*wake)(void);
++};
++
++extern void register_platform_pm_ops(struct platfrom_pm_ops *ops);
++extern void unregister_platform_pm_ops(struct platfrom_pm_ops *ops);
++#ifdef CONFIG_PM_SLEEP
++extern int platform_pm_prepare_late_suspend(void);
++extern void platform_pm_resume_wake(void);
++#endif
++
++#endif
+-- 
+2.47.0
+

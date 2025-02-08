@@ -1,0 +1,28 @@
+From c3495932d5b352680eaa8a99d4d6f7d7aa5ecd77 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 18 Jun 2024 17:30:49 +0800
+Subject: [PATCH 0760/1448] wireless: rtl8852bs: update regulatory_flags
+
+Change-Id: I248c2621f243a0ac4c719097a5430cfbaf367c7b
+---
+ drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
+index 5986af6f9209..c39421a0abb8 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/wifi_regd.c
+@@ -1277,8 +1277,10 @@ int rtw_regd_init(struct wiphy *wiphy)
+ #endif
+ 
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0))
+ 	wiphy->regulatory_flags |= REGULATORY_IGNORE_STALE_KICKOFF;
+ #endif
++#endif
+ 
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0))
+ 	if (rtw_regd_is_wiphy_self_managed(wiphy))
+-- 
+2.47.0
+

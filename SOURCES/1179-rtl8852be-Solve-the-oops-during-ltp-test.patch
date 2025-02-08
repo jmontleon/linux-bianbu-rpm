@@ -1,0 +1,295 @@
+From 6e7fc0e3e51fd56835764034e245d1fb5d846c96 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Wed, 16 Oct 2024 10:43:42 +0800
+Subject: [PATCH 1179/1448] rtl8852be: Solve the oops during ltp test
+
+[ 4684.236411] Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000000000000
+[ 4684.247291] Oops [#1436]
+[ 4684.249857] Modules linked in: btrfs blake2b_generic btusb btintel btbcm binfmt_misc 8852be ip_tables autofs4
+[ 4684.259873] CPU: 5 PID: 62828 Comm: read_all Tainted: G      D            6.6.36 #20241008094330
+[ 4684.268739] Hardware name: M1-MUSE-BOOK (DT)
+[ 4684.273031] epc : proc_set_phydm_cmd+0x82/0x114 [8852be]
+[ 4684.282564]  ra : proc_set_phydm_cmd+0x7e/0x114 [8852be]
+[ 4684.292052] epc : ffffffff0224d572 ra : ffffffff0224d56e sp : ffffffc81340bae0
+[ 4684.299331]  gp : ffffffff820e6478 tp : ffffffd908760cc0 t0 : 3a3153205d46525b
+[ 4684.306600]  t1 : ffffffc81340b768 t2 : 203a3153205d4652 s0 : ffffffc81340bc60
+[ 4684.313869]  s1 : 000000000000000e a0 : 0000000000000000 a1 : ffffffff02d55fb0
+[ 4684.321146]  a2 : 0000000000000002 a3 : ffffffff02d55fb0 a4 : 0000000000000000
+[ 4684.328414]  a5 : 0000000000000007 a6 : ffffffff02d55faf a7 : ffffffffffffffff
+[ 4684.335700]  s2 : ffffffff026b6030 s3 : 0000000000000002 s4 : ffffffd902a6c000
+[ 4684.342977]  s5 : ffffffc81340bd20 s6 : 0000000000000000 s7 : ffffffd906a80a48
+[ 4684.350243]  s8 : 0000000000400cc0 s9 : fffffffffffff000 s10: 000000007ffff000
+[ 4684.357520]  s11: ffffffd906a80a58 t3 : ffffffff820fdbc7 t4 : ffffffff820fdbc7
+[ 4684.364779]  t5 : ffffffff820fdbc8 t6 : ffffffd9586f0137
+[ 4684.370128] status: 0000000200000120 badaddr: 0000000000000000 cause: 000000000000000d
+[ 4684.378107] [<ffffffff0224d572>] proc_set_phydm_cmd+0x82/0x114 [8852be]
+[ 4684.388942] [<ffffffff0224eeda>] proc_get_self_diag_info+0x1b2/0x43c [8852be]
+[ 4684.400294] [<ffffffff80254e66>] seq_read_iter+0xe0/0x34a
+[ 4684.405748] [<ffffffff8025514c>] seq_read+0x7c/0xa8
+[ 4684.410671] [<ffffffff802a9e82>] proc_reg_read+0x40/0x8e
+[ 4684.416022] [<ffffffff8022b0ba>] vfs_read+0x98/0x230
+[ 4684.421026] [<ffffffff8022b9f2>] ksys_read+0x54/0xcc
+[ 4684.426029] [<ffffffff8022ba7e>] __riscv_sys_read+0x14/0x1c
+[ 4684.431632] [<ffffffff80f149b2>] do_trap_ecall_u+0xba/0x12e
+[ 4684.437238] [<ffffffff80f1dbe2>] ret_from_exception+0x0/0x6e
+[ 4684.442979] Code: f593 0ff9 3503 128a d097 000b 80e7 d2a0 3503 0009 (4783) 0005
+[ 4684.450527] ---[ end trace 0000000000000000 ]---
+
+Change-Id: Idc1dad2f764207b65da877ca0a3db9f91c01b39e
+---
+ .../realtek/rtl8852be/os_dep/linux/rtw_proc.c | 107 ++++++++----------
+ 1 file changed, 47 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
+index 30a09dcb78a2..ede8e678fff6 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
+@@ -5736,42 +5736,32 @@ static int proc_get_phy_adaptivity(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static char *phydm_msg = NULL;
+ #define PHYDM_MSG_LEN	80*24*4
++static char phydm_msg[PHYDM_MSG_LEN];
+ 
+-static int proc_get_phydm_cmd(struct seq_file *m, void *v)
++static int proc_get_phydm_cmd(struct seq_file *m, void *v, char *buf, size_t buf_len)
+ {
+ 	struct net_device *netdev = m->private;
+ 	_adapter *padapter = (_adapter *)rtw_netdev_priv(netdev);
+ 
+-	if (NULL == phydm_msg) {
++	if (!buf || strlen(buf) == 0) {
+ 		_RTW_PRINT_SEL(m, "(Nothing to output)\n");
+ 		return 0;
+-#if 0
+-		phydm_msg = rtw_zmalloc(PHYDM_MSG_LEN);
+-		if (NULL == phydm_msg)
+-			return -ENOMEM;
+-
+-		phydm_cmd(phydm, NULL, 0, 0, phydm_msg, PHYDM_MSG_LEN);
+-#endif
+ 	}
+ 
+-	_RTW_PRINT_SEL(m, "%s\n", phydm_msg);
+-
+-	rtw_mfree(phydm_msg, PHYDM_MSG_LEN);
+-	phydm_msg = NULL;
+-
++	_RTW_PRINT_SEL(m, "%s\n", buf);
+ 	return 0;
+ }
+ 
+ static int proc_get_phl_cmd(struct seq_file *m, void *v)
+ {
+-	return proc_get_phydm_cmd(m, v);
++	return proc_get_phydm_cmd(m, v, phydm_msg, PHYDM_MSG_LEN);
+ }
+ 
+ static ssize_t proc_set_phydm_cmd(struct file *file, char *buffer, size_t count,
+ 				  loff_t *pos, void *data,
+-				  enum rtw_proc_cmd_type type)
++				  enum rtw_proc_cmd_type type,
++				  char *out_buf, size_t out_len)
+ {
+ 	struct net_device *netdev = (struct net_device *)data;
+ 	_adapter *padapter = (_adapter *)rtw_netdev_priv(netdev);
+@@ -5781,24 +5771,14 @@ static ssize_t proc_set_phydm_cmd(struct file *file, char *buffer, size_t count,
+ 	if (count < 1)
+ 		return -EFAULT;
+ 
+-	if (buffer) {
+-		if (NULL == phydm_msg) {
+-			phydm_msg = rtw_zmalloc(PHYDM_MSG_LEN);
+-			if (NULL == phydm_msg)
+-				return -ENOMEM;
+-		} else
+-			_rtw_memset(phydm_msg, 0, PHYDM_MSG_LEN);
++	if (buffer && out_buf) {
++		_rtw_memset(out_buf, 0, out_len);
+ 
+ 		cmd.in_type = RTW_ARG_TYPE_BUF;
+ 		cmd.in_cnt_len = count;
+ 		cmd.in.buf = buffer;
+ 
+-		rtw_phl_proc_cmd(GET_PHL_INFO(dvobj), type, &cmd, phydm_msg, PHYDM_MSG_LEN);
+-
+-		if (strlen(phydm_msg) == 0) {
+-			rtw_mfree(phydm_msg, PHYDM_MSG_LEN);
+-			phydm_msg = NULL;
+-		}
++		rtw_phl_proc_cmd(GET_PHL_INFO(dvobj), type, &cmd, out_buf, out_len);
+ 	}
+ 
+ 	return count;
+@@ -5860,7 +5840,7 @@ static ssize_t proc_set_phl_cmd(struct file *file, const char __user *buffer, si
+ 		len--;
+ 	p[len++] = '\0';
+ 
+-	ret = proc_set_phydm_cmd(file, p, len, pos, data, type);
++	ret = proc_set_phydm_cmd(file, p, len, pos, data, type, phydm_msg, PHYDM_MSG_LEN);
+ 
+ err:
+ 	_rtw_mfree(buf, count + 1);
+@@ -6020,11 +6000,6 @@ void rtw_odm_proc_deinit(_adapter  *adapter)
+ 	remove_proc_entry("odm", adapter->dir_dev);
+ 
+ 	adapter->dir_odm = NULL;
+-
+-	if (phydm_msg) {
+-		rtw_mfree(phydm_msg, PHYDM_MSG_LEN);
+-		phydm_msg = NULL;
+-	}
+ }
+ 
+ struct proc_dir_entry *rtw_adapter_proc_init(struct net_device *dev)
+@@ -6125,10 +6100,15 @@ void rtw_adapter_proc_replace(struct net_device *dev)
+ 
+ static int proc_get_self_diag_info(struct seq_file *m, void *v)
+ {
+-	char *buf = NULL;
+-	u32 cmd_len = 0;
++	char *buf = NULL, *out = NULL;
++	u32 cmd_len = 0, out_len = 0;
+ 	char* cmd_string;
+ 
++	out_len = PHYDM_MSG_LEN;
++	out = rtw_zmalloc(out_len);
++	if (out == NULL)
++		return -ENOMEM;
++
+ 	buf = _rtw_malloc(25);
+ 	if (buf) {
+ 
+@@ -6139,8 +6119,8 @@ static int proc_get_self_diag_info(struct seq_file *m, void *v)
+ 		cmd_string = "wdt_log 3E";
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_MAC);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_MAC, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		/* BB */
+ 		RTW_PRINT_SEL(m, "=================================[BB info]==================================\n");
+@@ -6148,22 +6128,22 @@ static int proc_get_self_diag_info(struct seq_file *m, void *v)
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memset(buf, 0, 25);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		cmd_string = "auto_dbg query 2";
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memset(buf, 0, 25);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		cmd_string = "auto_dbg query 3";
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memset(buf, 0, 25);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_BB, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		/* RF */
+ 		RTW_PRINT_SEL(m, "==================================[RF info]==================================\n");
+@@ -6171,25 +6151,26 @@ static int proc_get_self_diag_info(struct seq_file *m, void *v)
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memset(buf, 0, 25);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_RF);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_RF, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		cmd_string = "dz_dbg rtinfo";
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memset(buf, 0, 25);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_RF);
+-		proc_get_phl_cmd(m, v);
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_RF, out, out_len);
++		proc_get_phydm_cmd(m, v, out, out_len);
+ 
+ 		cmd_string = "wdt_log 0";
+ 		cmd_len = strlen(cmd_string);
+ 		_rtw_memcpy(buf, cmd_string,  cmd_len);
+-		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_MAC);
+-
++		proc_set_phydm_cmd(NULL, buf, cmd_len, NULL, dev, RTW_PROC_CMD_MAC, phydm_msg, PHYDM_MSG_LEN);
+ 	}
+ 
+ 	_rtw_mfree(buf, 25);
+ 	buf = NULL;
++	rtw_mfree(out, out_len);
++	out = NULL;
+ 
+ 	RTW_PRINT_SEL(m,"==================================[driver info]==================================\n");
+ 	RTW_PRINT_SEL(m, "driver warn on count = %d \n\n", rtw_warn_on_cnt);
+@@ -6213,6 +6194,7 @@ static ssize_t proc_set_self_diag_info(struct file *file, const char __user *buf
+ 	in_buf = _rtw_malloc(count + 1);
+ 	if (!in_buf)
+ 		return -ENOMEM;
++
+ 	if (copy_from_user(in_buf, buffer, count)){
+ 		_rtw_mfree(in_buf, count + 1);
+ 		return -EFAULT;
+@@ -6225,14 +6207,14 @@ static ssize_t proc_set_self_diag_info(struct file *file, const char __user *buf
+ 	_rtw_mfree(in_buf, count + 1);
+ 
+ 	RTW_INFO("type : %s\n", type);
+-
+ 	if (strcmp(type, "bb") == 0) {
+-		char *buf = NULL;
++		char *buf = NULL, *out_buf = NULL;
+ 		u32 cmd_len = 0;
+ 		char* cmd_string;
+ 
+ 		buf = _rtw_malloc(25);
+-		if (buf) {
++		out_buf = rtw_zmalloc(PHYDM_MSG_LEN);
++		if (buf && out_buf) {
+ 
+ 			struct net_device *dev = data;
+ 
+@@ -6241,19 +6223,24 @@ static ssize_t proc_set_self_diag_info(struct file *file, const char __user *buf
+ 			cmd_len = strlen(cmd_string);
+ 			_rtw_memcpy(buf, cmd_string,  cmd_len);
+ 			_rtw_memcpy(buf+cmd_len-1, &val, 1);
+-			proc_set_phydm_cmd(file, buf, cmd_len, pos, dev, RTW_PROC_CMD_BB);
++			proc_set_phydm_cmd(file, buf, cmd_len, pos, dev, RTW_PROC_CMD_BB, out_buf, PHYDM_MSG_LEN);
+ 
+ 			cmd_string = "auto_dbg type 3 0";
+ 			cmd_len = strlen(cmd_string);
+ 			_rtw_memset(buf, 0, 25);
+ 			_rtw_memcpy(buf, cmd_string,  cmd_len);
+ 			_rtw_memcpy(buf+cmd_len-1, &val, 1);
+-			proc_set_phydm_cmd(file, buf, cmd_len, pos, dev, RTW_PROC_CMD_BB);
+-
++			proc_set_phydm_cmd(file, buf, cmd_len, pos, dev, RTW_PROC_CMD_BB, out_buf, PHYDM_MSG_LEN);
+ 		}
+ 
+-		_rtw_mfree(buf, 25);
+-		buf = NULL;
++		if (out_buf != NULL) {
++			rtw_mfree(out_buf, PHYDM_MSG_LEN);
++			out_buf = NULL;
++		}
++		if (buf != NULL) {
++			_rtw_mfree(buf, 25);
++			buf = NULL;
++		}
+ 
+ 	}
+ 	else if (strcmp(type, "reset_drv_counter") == 0) {
+-- 
+2.47.0
+

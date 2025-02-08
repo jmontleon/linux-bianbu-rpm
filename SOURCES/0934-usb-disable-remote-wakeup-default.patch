@@ -1,0 +1,134 @@
+From 72b2101a12265ab983e8abc1dd1843d14ef2c386 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Thu, 18 Jul 2024 21:07:24 +0800
+Subject: [PATCH 0934/1448] usb: disable remote wakeup default
+
+Change-Id: I35e8fe94d87e9c494a29425da9b7591fea372979
+---
+ drivers/usb/dwc3/dwc3-spacemit.c | 24 +++++++++++++++++-------
+ drivers/usb/host/ehci-k1x-ci.c   | 23 ++++++++++++++++-------
+ 2 files changed, 33 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
+index 18cd71719886..b0fa0eb98009 100644
+--- a/drivers/usb/dwc3/dwc3-spacemit.c
++++ b/drivers/usb/dwc3/dwc3-spacemit.c
+@@ -247,6 +247,7 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 	struct device_node	*node = dev->of_node;
+ 	const struct dwc3_spacemit_driverdata *driver_data;
+ 	struct resource		*res;
++	bool wakeup_source;
+ 	int			i, ret;
+ 
+ 	spacemit = devm_kzalloc(dev, sizeof(*spacemit), GFP_KERNEL);
+@@ -327,8 +328,11 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ 		goto irq_err;
+ 	}
+ 
+-	device_init_wakeup(dev, true);
+-	dev_pm_set_wake_irq(dev, spacemit->irq);
++	wakeup_source = of_property_read_bool(dev->of_node, "wakeup-source");
++	if (wakeup_source) {
++		device_init_wakeup(dev, true);
++		dev_pm_set_wake_irq(dev, spacemit->irq);
++	}
+ 	return 0;
+ 
+ irq_err:
+@@ -341,10 +345,13 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
+ static int dwc3_spacemit_remove(struct platform_device *pdev)
+ {
+ 	struct dwc3_spacemit	*spacemit = platform_get_drvdata(pdev);
++	bool do_wakeup = device_may_wakeup(&pdev->dev);
+ 
+-	dwc3_spacemit_disable_wakeup_irqs(spacemit);
+-	dev_pm_clear_wake_irq(spacemit->dev);
+-	device_init_wakeup(spacemit->dev, false);
++	if (do_wakeup) {
++		dwc3_spacemit_disable_wakeup_irqs(spacemit);
++		dev_pm_clear_wake_irq(spacemit->dev);
++		device_init_wakeup(spacemit->dev, false);
++	}
+ 	of_platform_depopulate(&pdev->dev);
+ 	dwc3_spacemit_exit(spacemit);
+ 
+@@ -382,6 +389,7 @@ MODULE_DEVICE_TABLE(of, spacemit_dwc3_match);
+ static int dwc3_spacemit_suspend(struct device *dev)
+ {
+ 	struct dwc3_spacemit *spacemit = dev_get_drvdata(dev);
++	bool do_wakeup = device_may_wakeup(dev);
+ 	int i, ret;
+ 
+ 	dwc3_spacemit_phy_setup(spacemit, false);
+@@ -394,8 +402,10 @@ static int dwc3_spacemit_suspend(struct device *dev)
+ 	for (i = spacemit->num_clks - 1; i >= 0; i--)
+ 		clk_disable_unprepare(spacemit->clks[i]);
+ 
+-	dwc3_spacemit_clear_wakeup_irqs(spacemit);
+-	dwc3_spacemit_enable_wakeup_irqs(spacemit);
++	if (do_wakeup) {
++		dwc3_spacemit_clear_wakeup_irqs(spacemit);
++		dwc3_spacemit_enable_wakeup_irqs(spacemit);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
+index 1875e9d70ac6..e457d1684649 100644
+--- a/drivers/usb/host/ehci-k1x-ci.c
++++ b/drivers/usb/host/ehci-k1x-ci.c
+@@ -261,6 +261,7 @@ static int mv_ehci_probe(struct platform_device *pdev)
+ 	struct ehci_hcd_mv *ehci_mv;
+ 	struct resource *r;
+ 	int retval = -ENODEV;
++	bool wakeup_source;
+ 	u32 offset;
+ 
+ 	dev_dbg(&pdev->dev, "mv_ehci_probe: Enter ... \n");
+@@ -434,8 +435,11 @@ static int mv_ehci_probe(struct platform_device *pdev)
+ 		goto err_set_vbus;
+ 	}
+ 
+-	device_init_wakeup(dev, true);
+-	dev_pm_set_wake_irq(dev, ehci_mv->irq);
++	wakeup_source = of_property_read_bool(dev->of_node, "wakeup-source");
++	if (wakeup_source) {
++		device_init_wakeup(dev, true);
++		dev_pm_set_wake_irq(dev, ehci_mv->irq);
++	}
+ 
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+@@ -470,10 +474,13 @@ static int mv_ehci_remove(struct platform_device *pdev)
+ {
+ 	struct ehci_hcd_mv *ehci_mv = platform_get_drvdata(pdev);
+ 	struct usb_hcd *hcd = ehci_mv->hcd;
++	bool do_wakeup = device_may_wakeup(&pdev->dev);
+ 
+-	mv_ehci_disable_wakeup_irqs(ehci_mv);
+-	dev_pm_clear_wake_irq(ehci_mv->dev);
+-	device_init_wakeup(ehci_mv->dev, false);
++	if (do_wakeup) {
++		mv_ehci_disable_wakeup_irqs(ehci_mv);
++		dev_pm_clear_wake_irq(ehci_mv->dev);
++		device_init_wakeup(ehci_mv->dev, false);
++	}
+ 
+ 	if (hcd->rh_registered)
+ 		usb_remove_hcd(hcd);
+@@ -540,8 +547,10 @@ static int mv_ehci_suspend(struct device *dev)
+ 	clk_disable_unprepare(ehci_mv->clk);
+ 	dev_dbg(dev, "pm suspend: disable clks and phy\n");
+ 
+-	mv_ehci_clear_wakeup_irqs(ehci_mv);
+-	mv_ehci_enable_wakeup_irqs(ehci_mv);
++	if (do_wakeup) {
++		mv_ehci_clear_wakeup_irqs(ehci_mv);
++		mv_ehci_enable_wakeup_irqs(ehci_mv);
++	}
+ 	return ret;
+ }
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,41 @@
+From 566005170c83caabc402a37e0e196ba979c86180 Mon Sep 17 00:00:00 2001
+From: liyeshan <yeshan.li@spacemit.com>
+Date: Thu, 7 Nov 2024 21:52:42 +0800
+Subject: [PATCH 1258/1448] Radeon: modify cached mapping to writecombine
+
+Change-Id: Ib80ff1fa4d62bc3794ec1e2407608f908d6317d5
+---
+ drivers/gpu/drm/radeon/radeon_ttm.c | 2 +-
+ drivers/gpu/drm/ttm/ttm_module.c    | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index 065a09e7997c..f61ee3100a74 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -511,7 +511,7 @@ static struct ttm_tt *radeon_ttm_tt_create(struct ttm_buffer_object *bo,
+ 		caching = ttm_write_combined;
+ 	else
+ 		caching = ttm_cached;
+-
++	caching = ttm_write_combined;
+ 	if (ttm_sg_tt_init(&gtt->ttm, bo, page_flags, caching)) {
+ 		kfree(gtt);
+ 		return NULL;
+diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
+index b3fffe7b5062..1319178edf03 100644
+--- a/drivers/gpu/drm/ttm/ttm_module.c
++++ b/drivers/gpu/drm/ttm/ttm_module.c
+@@ -74,7 +74,8 @@ pgprot_t ttm_prot_from_caching(enum ttm_caching caching, pgprot_t tmp)
+ #endif /* CONFIG_UML */
+ #endif /* __i386__ || __x86_64__ */
+ #if defined(__ia64__) || defined(__arm__) || defined(__aarch64__) || \
+-	defined(__powerpc__) || defined(__mips__) || defined(__loongarch__)
++	defined(__powerpc__) || defined(__mips__) || defined(__loongarch__) \
++	|| defined(__riscv)
+ 	if (caching == ttm_write_combined)
+ 		tmp = pgprot_writecombine(tmp);
+ 	else
+-- 
+2.47.0
+

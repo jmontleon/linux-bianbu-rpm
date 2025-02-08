@@ -1,0 +1,240 @@
+From fa73a681652dd3f46340028149afbcf19c190cd5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
+Date: Thu, 19 Sep 2024 16:58:33 +0800
+Subject: [PATCH 1156/1448] display: add plane cursor type and support crop
+
+Change-Id: Ied6ada2b5d492382f09a8a3419b7185c705aeefc
+---
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c  |  20 +++++
+ drivers/gpu/drm/spacemit/spacemit_dmmu.c   |   3 +-
+ drivers/gpu/drm/spacemit/spacemit_dmmu.h   |   2 +-
+ drivers/gpu/drm/spacemit/spacemit_dpu.h    |  11 +++
+ drivers/gpu/drm/spacemit/spacemit_planes.c | 100 ++++++++++++++++++++-
+ 5 files changed, 130 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index a77ad3d2837d..e4862f19032e 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -1006,6 +1006,26 @@ void spacemit_plane_update_hw_channel(struct drm_plane *plane)
+ 	crtc_x = state->crtc_x;
+ 	crtc_y = state->crtc_y;
+ 
++	if (spacemit_plane_state->is_crop) {
++
++		// src_w = state->src_w >> 16;
++		src_h = state->src_h >> 16;
++		src_x = state->src_x >> 16;
++		src_y = state->src_y >> 16;
++
++		// crtc_w = state->crtc_w;
++		crtc_h = state->crtc_h;
++		// crtc_x = state->crtc_x;
++		// crtc_y = state->crtc_y;
++
++		src_w = spacemit_plane_state->src_crop_w;
++		crtc_w = spacemit_plane_state->dst_crop_w;
++
++		crtc_x = spacemit_plane_state->dst_crop_x;
++		crtc_y = spacemit_plane_state->dst_crop_y;
++
++	}
++
+ 	if (rdma_id == RDMA_INVALID_ID)
+ 		solid_en = true;
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
+index e91853cf0092..220eb8fc726f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
+@@ -33,8 +33,9 @@ static inline void spacemit_dmmu_fill_pgtable(uint32_t *ttbr, struct sg_table *s
+ 		*ttbr++ = temp;
+ }
+ 
+-int spacemit_dmmu_map(struct drm_framebuffer *fb, struct dpu_mmu_tbl *mmu_tbl, u8 tbu_id, bool wb)
++int spacemit_dmmu_map(struct drm_plane *plane, struct dpu_mmu_tbl *mmu_tbl, u8 tbu_id, bool wb)
+ {
++	struct drm_framebuffer *fb = plane->state->fb;
+ 	struct spacemit_drm_private *priv = fb->dev->dev_private;
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
+ 	const struct drm_format_info *format = NULL;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.h b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
+index a5998c3565bb..b21ba36260c8 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dmmu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
+@@ -87,7 +87,7 @@ struct tbu_instance {
+ 	uint32_t ttb_size[3];
+ };
+ 
+-int spacemit_dmmu_map(struct drm_framebuffer *fb, struct dpu_mmu_tbl *mmu_tbl, u8 tbu_id, bool wb);
++int spacemit_dmmu_map(struct drm_plane *plane, struct dpu_mmu_tbl *mmu_tbl, u8 tbu_id, bool wb);
+ void spacemit_dmmu_unmap(struct drm_plane *plane);
+ 
+ #endif /* _SPACEMIT_DMMU_H_ */
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+index 5f2a4998d14b..0e5012cdf02f 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
+@@ -229,6 +229,17 @@ struct spacemit_plane_state {
+ 	u32 fbcmem_size;
+ 	uint64_t mclk;	//DPU MCLK = MAX(Mclk, Aclk) of all planes
+ 	uint64_t bw;	//BandWidth = SUM(BW_single) * 1.08
++	bool is_crop;
++	u32 src_crop_x;
++	u32 src_crop_y;
++	u32 src_crop_w;
++	u32 src_crop_h;
++	u32 dst_crop_x;
++	u32 dst_crop_y;
++	u32 dst_crop_w;
++	u32 dst_crop_h;
++	u32 screen_width;
++	u32 screen_height;
+ 	struct dpu_mmu_tbl mmu_tbl;
+ 	struct cmdlist cl;
+ 	uint64_t afbc_effc;
+diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
+index f47bbcc474c8..c49b9fe5b33b 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_planes.c
++++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
+@@ -257,9 +257,83 @@ static void spacemit_plane_atomic_update(struct drm_plane *plane,
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
+ 	u32 rdma_id = spacemit_pstate->rdma_id;
+ 
++	struct drm_crtc *dpu_crtc = &dpu->crtc;
++	struct drm_display_mode *mode = NULL;
++	u32 hdisplay;
++	u32 vdisplay;
++	u32 src_x, src_y, src_w, src_h;
++	u32 crtc_x, crtc_y, crtc_w, crtc_h;
++
+ 	DRM_DEBUG("%s()\n", __func__);
+ 	trace_spacemit_plane_atomic_update(dpu->dev_id);
+ 
++	mode = &dpu_crtc->mode;
++	hdisplay = mode->hdisplay;
++	vdisplay = mode->vdisplay;
++
++	src_w = plane->state->src_w >> 16;
++	src_h = plane->state->src_h >> 16;
++	src_x = plane->state->src_x >> 16;
++	src_y = plane->state->src_y >> 16;
++
++	crtc_w = plane->state->crtc_w;
++	crtc_h = plane->state->crtc_h;
++	crtc_x = plane->state->crtc_x;
++	crtc_y = plane->state->crtc_y;
++
++	spacemit_pstate->screen_width = hdisplay;
++	spacemit_pstate->screen_height = vdisplay;
++
++	if ((plane->type == DRM_PLANE_TYPE_CURSOR) && ((crtc_x + crtc_w) > hdisplay)) {
++
++		if ((crtc_x > (hdisplay - crtc_w)) && (crtc_x <= (hdisplay - ((crtc_w * 3) / 4)))) {
++			spacemit_pstate->src_crop_x = src_x;
++			spacemit_pstate->src_crop_y = src_y;
++			spacemit_pstate->src_crop_w = ((src_w * 3) / 4);
++			spacemit_pstate->src_crop_h = src_h;
++			spacemit_pstate->dst_crop_x = crtc_x;
++			spacemit_pstate->dst_crop_y = crtc_y;
++			spacemit_pstate->dst_crop_w = ((crtc_w * 3) / 4);
++			spacemit_pstate->dst_crop_h = crtc_h;
++			spacemit_pstate->is_crop = true;
++		} else if ((crtc_x > (hdisplay - ((crtc_w * 3) / 4))) && (crtc_x <= (hdisplay - (crtc_w  / 2)))) {
++			spacemit_pstate->src_crop_x = src_x;
++			spacemit_pstate->src_crop_y = src_y;
++			spacemit_pstate->src_crop_w = (src_w / 2);
++			spacemit_pstate->src_crop_h = src_h;
++			spacemit_pstate->dst_crop_x = crtc_x;
++			spacemit_pstate->dst_crop_y = crtc_y;
++			spacemit_pstate->dst_crop_w = (crtc_w / 2);
++			spacemit_pstate->dst_crop_h = crtc_h;
++			spacemit_pstate->is_crop = true;
++		} else if ((crtc_x > (hdisplay - (crtc_w / 2))) && (crtc_x <= (hdisplay - (crtc_w / 4)))){
++			spacemit_pstate->src_crop_x = src_x;
++			spacemit_pstate->src_crop_y = src_y;
++			spacemit_pstate->src_crop_w = (src_w / 4);
++			spacemit_pstate->src_crop_h = src_h;
++			spacemit_pstate->dst_crop_x = crtc_x;
++			spacemit_pstate->dst_crop_y = crtc_y;
++			spacemit_pstate->dst_crop_w = (crtc_w / 4);
++			spacemit_pstate->dst_crop_h = crtc_h;
++			spacemit_pstate->is_crop = true;
++		} else if ((crtc_x > (hdisplay - (crtc_w / 4))) && (crtc_x <= hdisplay)) {
++			spacemit_pstate->src_crop_x = src_x;
++			spacemit_pstate->src_crop_y = src_y;
++			spacemit_pstate->src_crop_w = (src_w / 4);
++			spacemit_pstate->src_crop_h = src_h;
++			spacemit_pstate->dst_crop_x = hdisplay - (crtc_w / 4);
++			spacemit_pstate->dst_crop_y = crtc_y;
++			spacemit_pstate->dst_crop_w = (crtc_w / 4);
++			spacemit_pstate->dst_crop_h = crtc_h;
++			spacemit_pstate->is_crop = true;
++		} else {
++			spacemit_pstate->is_crop = false;
++		}
++
++	} else {
++		spacemit_pstate->is_crop = false;
++	}
++
+ 	spacemit_plane_update_hw_channel(plane);
+ 
+ 	spacemit_update_hdr_matrix(plane, spacemit_pstate);
+@@ -279,7 +353,7 @@ static void spacemit_plane_atomic_update(struct drm_plane *plane,
+ 			return;
+ 		}
+ 		tbu_id = !spacemit_pstate->right_image ? (rdma_id * 2) : (rdma_id * 2 + 1);
+-		ret = spacemit_dmmu_map(plane->state->fb, &spacemit_pstate->mmu_tbl, tbu_id, false);
++		ret = spacemit_dmmu_map(plane, &spacemit_pstate->mmu_tbl, tbu_id, false);
+ 		if (!ret)
+ 			cmdlist_regs_packing(plane);
+ 		else
+@@ -328,6 +402,7 @@ static void spacemit_plane_reset(struct drm_plane *plane)
+ 		s->state.zpos = hwdev->plane_nums - p->hw_pid - 1;
+ 		s->rdma_id = RDMA_INVALID_ID;
+ 		s->is_offline = 1;
++		s->is_crop = false;
+ 		s->scaler_id = SCALER_INVALID_ID;
+ 	}
+ }
+@@ -360,6 +435,19 @@ spacemit_plane_atomic_duplicate_state(struct drm_plane *plane)
+ 	s->scaler_id = SCALER_INVALID_ID;
+ 	s->use_scl = false;
+ 	s->fbcmem_size = 0;
++
++	s->is_crop = old_state->is_crop;
++	s->src_crop_x = old_state->src_crop_x;
++	s->src_crop_y = old_state->src_crop_y;
++	s->src_crop_w = old_state->src_crop_w;
++	s->src_crop_h = old_state->src_crop_h;
++	s->dst_crop_x = old_state->dst_crop_x;
++	s->dst_crop_y = old_state->dst_crop_y;
++	s->dst_crop_w = old_state->dst_crop_w;
++	s->dst_crop_h = old_state->dst_crop_h;
++	s->screen_width = old_state->screen_width;
++	s->screen_height = old_state->screen_height;
++
+ 	if (s->hdr_coefs_blob_prop)
+ 		drm_property_blob_get(s->hdr_coefs_blob_prop);
+ 	if (s->scale_coefs_blob_prop)
+@@ -670,9 +758,13 @@ struct drm_plane *spacemit_plane_init(struct drm_device *drm,
+ 		for (j = 0; j < n_formats; j++)
+ 			formats[j] = hwdev->formats[j].format;
+ 
+-		plane_type = (i < priv->num_pipes)
+-			   ? DRM_PLANE_TYPE_PRIMARY
+-			   : DRM_PLANE_TYPE_OVERLAY;
++		// plane_type = (i < priv->num_pipes)
++		// 	   ? DRM_PLANE_TYPE_PRIMARY
++		// 	   : DRM_PLANE_TYPE_OVERLAY;
++
++		plane_type = (i < priv->num_pipes) ? DRM_PLANE_TYPE_PRIMARY :
++			   (i == priv->num_pipes) ? DRM_PLANE_TYPE_CURSOR :
++			   DRM_PLANE_TYPE_OVERLAY;
+ 
+ 		err = drm_universal_plane_init(drm, &p->plane, plane_crtc_mask,
+ 					       &spacemit_plane_funcs, formats,
+-- 
+2.47.0
+

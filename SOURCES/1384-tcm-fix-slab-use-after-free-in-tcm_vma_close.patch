@@ -1,0 +1,133 @@
+From 46e555460a4db85f29248405a5085150e83b0e99 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Tue, 24 Dec 2024 19:11:18 +0800
+Subject: [PATCH 1384/1448] tcm: fix slab-use-after-free in tcm_vma_close
+
+1. sys Oops when ai-tool-io-test APP twice exit
+
+log err:
+[  322.760963] Unable to handle kernel paging request at virtual address 0000006b6b6b6b6b
+[  322.769183] Oops [#1]
+[  322.771511] Modules linked in: veth xt_nat xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo xt_addrtype nft_compat nf_tables br_netfilter bridge stp llc rtw89_8852be rtw89_8852b rtw89_pci rtw89_core overlay binfmt_misc nls_iso8859_1 ip_tables autofs4
+[  322.823717] CPU: 2 PID: 3624 Comm: ai-tool-io-test Tainted: G    B              6.6.36 #20241220133928
+[  322.833266] Hardware name: M1-MUSE-BOOK (DT)
+[  322.837667] epc : tcm_vma_close+0x3a/0x4ec
+[  322.841905]  ra : tcm_vma_close+0x3a/0x4ec
+[  322.846147] epc : ffffffff80defe76 ra : ffffffff80defe76 sp : ffffffc8081ab7b0
+[  322.853556]  gp : ffffffff83ad04c0 tp : ffffffd910ab0040 t0 : 00006c656e72656b
+[  322.860950]  t1 : fffffff801035684 t2 : 74206c656e72656b s0 : ffffffc8081ab830
+[  322.868324]  s1 : ffffffd98a469e20 a0 : 0000000000000000 a1 : 0000000000000008
+[  322.875714]  a2 : 0000000000000000 a3 : ffffffff80defe76 a4 : ffffffff83b07118
+[  322.883091]  a5 : 0000000000000001 a6 : fffffff801035685 a7 : ffffffc8081ab427
+[  322.890468]  s2 : 0000000000000001 s3 : 6b6b6b6b6b6b6b6b s4 : 0000000000000133
+[  322.897857]  s5 : ffffffc8081ab8a0 s6 : 0000000000000cc0 s7 : 00000000000179b2
+[  322.905247]  s8 : ffffffff820bc0c0 s9 : ffffffd948aaece0 s10: ffffffd948aaec80
+[  322.912630]  s11: 1ffffff901035710 t3 : fffffffff2f2f200 t4 : fffffff801035684
+[  322.919987]  t5 : fffffff801035685 t6 : ffffffc8081ab2f8
+[  322.925419] status: 0000000200000120 badaddr: 0000006b6b6b6b6b cause: 000000000000000d
+[  322.933494] [<ffffffff80defe76>] tcm_vma_close+0x3a/0x4ec
+[  322.939043] [<ffffffff80306fda>] remove_vma+0x48/0x8a
+[  322.944222] [<ffffffff8030b822>] exit_mmap+0x1fc/0x446
+[  322.949491] [<ffffffff80024a02>] mmput+0x80/0x1be
+[  322.954334] [<ffffffff800347b6>] do_exit+0x44e/0xe70
+[  322.959428] [<ffffffff80035440>] do_group_exit+0x58/0xe2
+[  322.964862] [<ffffffff8004b34c>] get_signal+0xd52/0xd76
+[  322.970209] [<ffffffff80006da2>] arch_do_signal_or_restart+0x96/0x8a0
+[  322.976791] [<ffffffff80101f92>] exit_to_user_mode_prepare+0x106/0x166
+[  322.983461] [<ffffffff81aad72a>] irqentry_exit_to_user_mode+0x10/0x18
+[  322.990062] [<ffffffff81aad778>] irqentry_exit+0x46/0x5a
+[  322.995491] [<ffffffff81aad56e>] do_irq+0x34/0x48
+[  323.000309] [<ffffffff81abf022>] ret_from_exception+0x0/0x6e
+
+Change-Id: Ie6802c306dd65be9ea5e096f8ebd9d8390810475
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ drivers/misc/tcm.c | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
+index ebc0b2ab2bae..4ae539da4b5a 100644
+--- a/drivers/misc/tcm.c
++++ b/drivers/misc/tcm.c
+@@ -59,6 +59,11 @@ typedef struct {
+ 	size_t			max_size;
+ } list_manager_t;
+ 
++typedef struct {
++	struct list_head	*head;
++	refcount_t refcnt;
++} tcm_private;
++
+ typedef struct {
+ 	size_t			mm_heapsize;
+ 	size_t 			free_size;
+@@ -429,22 +434,34 @@ static int add_req_mem_node(request_mem_t *node)
+ 	return 0;
+ }
+ 
++static void tcm_vma_open(struct vm_area_struct *vma)
++{
++	tcm_private *tcm_pri = (tcm_private *)vma->vm_private_data;
++
++	refcount_inc(&tcm_pri->refcnt);
++}
++
+ static void tcm_vma_close(struct vm_area_struct *vma)
+ {
+ 	mm_alloc_node_t *cur, *next;
+-	struct list_head *head = (struct list_head *)vma->vm_private_data;
++	tcm_private *tcm_pri = (tcm_private *)vma->vm_private_data;
++	struct list_head *head = tcm_pri->head;
+ 
++	if (!refcount_dec_and_test(&tcm_pri->refcnt))
++		return;
+ 	list_for_each_entry_safe(cur, next, head, list) {
+ 		tcm_free((void *)cur->paddr);
+ 		list_del(&cur->list);
+ 		kfree(cur);
+ 	}
+ 	kfree(head);
++	kfree(tcm_pri);
+ 	dev_dbg(tcm.dev, "wake up block thread");
+ 	wake_up_all(&tcm.wait);
+ }
+ 
+ static const struct vm_operations_struct tcm_vm_ops = {
++	.open = tcm_vma_open,
+ 	.close = tcm_vma_close,
+ };
+ 
+@@ -463,6 +480,7 @@ static int tcm_mmap(struct file *file, struct vm_area_struct *vma)
+ 	struct page* page = NULL;
+ 	unsigned long pfn;
+ 	unsigned long addr;
++	tcm_private *tcm_pri;
+ 	struct list_head *head;
+ 	mm_alloc_node_t *node;
+ 
+@@ -473,7 +491,11 @@ static int tcm_mmap(struct file *file, struct vm_area_struct *vma)
+ 	vma->vm_ops = &tcm_vm_ops;
+ 
+ 	mutex_lock(&tcm.mutex);
++	tcm_pri = kmalloc(sizeof(tcm_private), GFP_KERNEL);
++	if (!tcm_pri)
++		return -EINVAL;
+ 	head = tcm_discontinuous_malloc(size);
++	tcm_pri->head = head;
+ 	mutex_unlock(&tcm.mutex);
+ 
+ 	if (!head) {
+@@ -481,8 +503,8 @@ static int tcm_mmap(struct file *file, struct vm_area_struct *vma)
+ 	}
+ 
+ 	list_sort(NULL, head, mmap_compare);
+-
+-	vma->vm_private_data = head;
++	refcount_set(&tcm_pri->refcnt, 1);
++	vma->vm_private_data = tcm_pri;
+ 	addr = vma->vm_start;
+ 
+ 	list_for_each_entry(node, head, list) {
+-- 
+2.47.0
+

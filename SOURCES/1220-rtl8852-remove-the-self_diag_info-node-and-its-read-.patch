@@ -1,0 +1,30 @@
+From b81342a5debcaca1024fd82f77a64c46e16253da Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 29 Oct 2024 10:32:35 +0800
+Subject: [PATCH 1220/1448] rtl8852: remove the self_diag_info node and its
+ read and write functions
+
+Because the read function of the self_diag_info node will operate rf,
+causing wifi to be unavailable during ltp test
+
+Change-Id: Ia3fc564befcbe7ec0921a63aa37de06d76e09cef
+---
+ drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
+index 9b679c8e9b59..5639ad6a6893 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_proc.c
+@@ -5642,7 +5642,7 @@ const struct rtw_proc_hdl adapter_proc_hdls[] = {
+ #endif
+ #endif
+ 
+-	RTW_PROC_HDL_SSEQ("self_diag_info", proc_get_self_diag_info, proc_set_self_diag_info),
++	//RTW_PROC_HDL_SSEQ("self_diag_info", proc_get_self_diag_info, proc_set_self_diag_info),
+ #ifdef CONFIG_USB_HCI
+ 	RTW_PROC_HDL_SSEQ("usb_mode", proc_get_usb_mode, proc_set_usb_mode),
+ #endif
+-- 
+2.47.0
+

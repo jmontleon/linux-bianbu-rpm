@@ -1,0 +1,27 @@
+From 0fdacb0a35e436a892cde3b353f0550923d90a03 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@spacemit.com>
+Date: Wed, 12 Jun 2024 14:26:39 +0800
+Subject: [PATCH 0733/1448] es8326: fix probe func
+
+Change-Id: I1048c0cb3211fb0015937e8bb373ae6317a9aa48
+---
+ sound/soc/codecs/es8326.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 29bb9f09a5bd..c8ce39b0d276 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -1112,7 +1112,8 @@ static const struct snd_soc_component_driver soc_component_dev_es8326 = {
+ 	.endianness		= 1,
+ };
+ 
+-static int es8326_i2c_probe(struct i2c_client *i2c)
++static int es8326_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
+ {
+ 	struct es8326_priv *es8326;
+ 	int ret;
+-- 
+2.47.0
+

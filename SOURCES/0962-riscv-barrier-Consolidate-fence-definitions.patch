@@ -1,0 +1,148 @@
+From e4f4508a77ff26b17b94eba42f51bbc498a1c867 Mon Sep 17 00:00:00 2001
+From: Eric Chan <ericchancf@google.com>
+Date: Sat, 17 Feb 2024 13:13:16 +0000
+Subject: [PATCH 0962/1448] riscv/barrier: Consolidate fence definitions
+
+Disparate fence implementations are consolidated into fence.h.
+Also introduce RISCV_FENCE_ASM to make fence macro more reusable.
+
+Change-Id: Ia0b93540290ecf4bc6aa8876c531baf44c4ed3d0
+Signed-off-by: Eric Chan <ericchancf@google.com>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+Link: https://lore.kernel.org/r/20240217131316.3668927-1-ericchancf@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/include/asm/atomic.h  |  1 -
+ arch/riscv/include/asm/barrier.h |  3 +--
+ arch/riscv/include/asm/cmpxchg.h |  1 -
+ arch/riscv/include/asm/fence.h   | 10 +++++++---
+ arch/riscv/include/asm/io.h      |  8 ++++----
+ arch/riscv/include/asm/mmio.h    |  5 +++--
+ arch/riscv/include/asm/mmiowb.h  |  2 +-
+ 7 files changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+index 31e6e2e7cc18..0e0522e588ca 100644
+--- a/arch/riscv/include/asm/atomic.h
++++ b/arch/riscv/include/asm/atomic.h
+@@ -17,7 +17,6 @@
+ #endif
+ 
+ #include <asm/cmpxchg.h>
+-#include <asm/barrier.h>
+ 
+ #define __atomic_acquire_fence()					\
+ 	__asm__ __volatile__(RISCV_ACQUIRE_BARRIER "" ::: "memory")
+diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+index 173b44a989f8..15857dbc2279 100644
+--- a/arch/riscv/include/asm/barrier.h
++++ b/arch/riscv/include/asm/barrier.h
+@@ -11,13 +11,12 @@
+ #define _ASM_RISCV_BARRIER_H
+ 
+ #ifndef __ASSEMBLY__
++#include <asm/fence.h>
+ 
+ #define nop()		__asm__ __volatile__ ("nop")
+ #define __nops(n)	".rept	" #n "\nnop\n.endr\n"
+ #define nops(n)		__asm__ __volatile__ (__nops(n))
+ 
+-#define RISCV_FENCE(p, s) \
+-	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
+ 
+ /* These barriers need to enforce ordering on both devices or memory. */
+ #define __mb()		RISCV_FENCE(iorw, iorw)
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index a608e4d1a0a4..2fee65cc8443 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -8,7 +8,6 @@
+ 
+ #include <linux/bug.h>
+ 
+-#include <asm/barrier.h>
+ #include <asm/fence.h>
+ 
+ #define __xchg_relaxed(ptr, new, size)					\
+diff --git a/arch/riscv/include/asm/fence.h b/arch/riscv/include/asm/fence.h
+index 6c26c44dfcd6..6bcd80325dfc 100644
+--- a/arch/riscv/include/asm/fence.h
++++ b/arch/riscv/include/asm/fence.h
+@@ -1,10 +1,14 @@
+ #ifndef _ASM_RISCV_FENCE_H
+ #define _ASM_RISCV_FENCE_H
+ 
++#define RISCV_FENCE_ASM(p, s)		"\tfence " #p "," #s "\n"
++#define RISCV_FENCE(p, s) \
++	({ __asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"); })
++
+ #ifdef CONFIG_SMP
+-#define RISCV_ACQUIRE_BARRIER		"\tfence r , rw\n"
+-#define RISCV_RELEASE_BARRIER		"\tfence rw,  w\n"
+-#define RISCV_FULL_BARRIER		"\tfence rw, rw\n"
++#define RISCV_ACQUIRE_BARRIER		RISCV_FENCE_ASM(r, rw)
++#define RISCV_RELEASE_BARRIER		RISCV_FENCE_ASM(rw, w)
++#define RISCV_FULL_BARRIER		RISCV_FENCE_ASM(rw, rw)
+ #else
+ #define RISCV_ACQUIRE_BARRIER
+ #define RISCV_RELEASE_BARRIER
+diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
+index 42497d487a17..1c5c641075d2 100644
+--- a/arch/riscv/include/asm/io.h
++++ b/arch/riscv/include/asm/io.h
+@@ -47,10 +47,10 @@
+  * sufficient to ensure this works sanely on controllers that support I/O
+  * writes.
+  */
+-#define __io_pbr()	__asm__ __volatile__ ("fence io,i"  : : : "memory");
+-#define __io_par(v)	__asm__ __volatile__ ("fence i,ior" : : : "memory");
+-#define __io_pbw()	__asm__ __volatile__ ("fence iow,o" : : : "memory");
+-#define __io_paw()	__asm__ __volatile__ ("fence o,io"  : : : "memory");
++#define __io_pbr()	RISCV_FENCE(io, i)
++#define __io_par(v)	RISCV_FENCE(i, ior)
++#define __io_pbw()	RISCV_FENCE(iow, o)
++#define __io_paw()	RISCV_FENCE(o, io)
+ 
+ /*
+  * Accesses from a single hart to a single I/O address must be ordered.  This
+diff --git a/arch/riscv/include/asm/mmio.h b/arch/riscv/include/asm/mmio.h
+index 07a79ac791a4..9d3fdbe534ef 100644
+--- a/arch/riscv/include/asm/mmio.h
++++ b/arch/riscv/include/asm/mmio.h
+@@ -12,6 +12,7 @@
+ #define _ASM_RISCV_MMIO_H
+ 
+ #include <linux/types.h>
++#include <asm/fence.h>
+ #include <asm/mmiowb.h>
+ 
+ /* Generic IO read/write.  These perform native-endian accesses. */
+@@ -131,8 +132,8 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+  * doesn't define any ordering between the memory space and the I/O space.
+  */
+ #define __io_br()	do {} while (0)
+-#define __io_ar(v)	({ __asm__ __volatile__ ("fence i,ir" : : : "memory"); })
+-#define __io_bw()	({ __asm__ __volatile__ ("fence w,o" : : : "memory"); })
++#define __io_ar(v)	RISCV_FENCE(i, ir)
++#define __io_bw()	RISCV_FENCE(w, o)
+ #define __io_aw()	mmiowb_set_pending()
+ 
+ #define readb(c)	({ u8  __v; __io_br(); __v = readb_cpu(c); __io_ar(__v); __v; })
+diff --git a/arch/riscv/include/asm/mmiowb.h b/arch/riscv/include/asm/mmiowb.h
+index 0b2333e71fdc..52ce4a399d9b 100644
+--- a/arch/riscv/include/asm/mmiowb.h
++++ b/arch/riscv/include/asm/mmiowb.h
+@@ -7,7 +7,7 @@
+  * "o,w" is sufficient to ensure that all writes to the device have completed
+  * before the write to the spinlock is allowed to commit.
+  */
+-#define mmiowb()	__asm__ __volatile__ ("fence o,w" : : : "memory");
++#define mmiowb()	RISCV_FENCE(o, w)
+ 
+ #include <linux/smp.h>
+ #include <asm-generic/mmiowb.h>
+-- 
+2.47.0
+

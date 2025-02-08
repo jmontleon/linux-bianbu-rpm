@@ -1,0 +1,126 @@
+From a9a571eb3b74bbfa69a6701006988d2a03a4c9d0 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Thu, 28 Nov 2024 08:38:44 +0800
+Subject: [PATCH 1312/1448] k1:hdmiaudio: fix bug of hdmiaudio which appeared
+ during suspend process
+
+1. it needs to work together with the application to complete the
+unregister of the audio compenents, so we should put this action
+in suspend notifier callbacks which before freezing the application
+
+2. when determing the disconnection status of HDMI, it is necessary to
+turn on the HDMI clk, so we need to refrence the HDMI clock in DTS
+
+Change-Id: I94abc2a2ff2eea00d129269e4be6fdba2e8ad2f1
+---
+ arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi |  2 +-
+ sound/soc/spacemit/spacemit-snd-sspa.c      | 44 +++++++++++++++++++--
+ 2 files changed, 41 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+index e05ce95df1eb..31a851679e1c 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+@@ -41,7 +41,7 @@ hdmiaudio: spacemit_snd_sspa@C0883900 {
+ 		compatible = "spacemit,spacemit-snd-sspa";
+ 		reg = <0 0xc0883900 0 0x300>,
+ 			<0 0xc0882000 0 0x50>;
+-		clocks = <&ccu CLK_RCPU_HDMIAUDIO>;
++		clocks = <&ccu CLK_RCPU_HDMIAUDIO>, <&ccu CLK_HDMI>;
+ 		resets = <&reset RESET_RCPU_HDMIAUDIO>;
+ 		assigned-clocks = <&ccu CLK_RCPU_HDMIAUDIO>;
+ 		assigned-clock-rates = <48000>;
+diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
+index 17d81e22dcfa..e61fd5cc8e20 100644
+--- a/sound/soc/spacemit/spacemit-snd-sspa.c
++++ b/sound/soc/spacemit/spacemit-snd-sspa.c
+@@ -21,6 +21,7 @@
+ #include <sound/soc.h>
+ #include <sound/pxa2xx-lib.h>
+ #include <sound/dmaengine_pcm.h>
++#include <linux/suspend.h>
+ #include "spacemit-snd-sspa.h"
+ 
+ #include <linux/notifier.h>
+@@ -255,8 +256,8 @@ static int spacemit_sspa_suspend(struct device *dev)
+ {
+ 	struct sspa_priv *priv = dev_get_drvdata(dev);
+ 
+-	spacemit_hdmi_unregister_client(&hdmi_connect_notifier);
+ 	reset_control_assert(priv->rst);
++
+ 	return 0;
+ }
+ 
+@@ -270,7 +271,6 @@ static int spacemit_sspa_resume(struct device *dev)
+ 	value |= BIT(0);
+ 	writel(value, priv->base_hdmi + SPACEMIT_HDMI_AUDIO_EN);
+ 	reset_control_deassert(priv->rst);
+-	spacemit_hdmi_register_client(&hdmi_connect_notifier);
+ 
+ 	if (spacemit_sspa_get_hdmi_status()) {
+ 		ret = devm_snd_soc_register_component(dev, &spacemit_snd_sspa_component,
+@@ -278,8 +278,6 @@ static int spacemit_sspa_resume(struct device *dev)
+ 		if (ret != 0) {
+ 			dev_err(dev, "failed to register DAI\n");
+ 		}
+-	} else {
+-		snd_soc_unregister_component(dev);
+ 	}
+ 
+ 	return 0;
+@@ -290,6 +288,43 @@ const struct dev_pm_ops spacemit_snd_sspa_pm_ops = {
+ 	.resume = spacemit_sspa_resume,
+ };
+ 
++static int sspa_pm_suspend_notifier(struct notifier_block *nb,
++				unsigned long event,
++				void *dummy)
++{
++	int ret;
++
++	switch (event) {
++	case PM_SUSPEND_PREPARE:
++	case PM_HIBERNATION_PREPARE:
++		spacemit_hdmi_unregister_client(&hdmi_connect_notifier);
++		snd_soc_unregister_component(&sspa_platdev->dev);
++		return NOTIFY_DONE;
++
++	case PM_POST_SUSPEND:
++	case PM_POST_HIBERNATION:
++		if (spacemit_sspa_get_hdmi_status()) {
++			ret = devm_snd_soc_register_component(&sspa_platdev->dev, &spacemit_snd_sspa_component,
++				spacemit_snd_sspa_dai, ARRAY_SIZE(spacemit_snd_sspa_dai));
++			if (ret != 0) {
++				dev_err(&sspa_platdev->dev, "failed to register DAI\n");
++			}
++		} else {
++			snd_soc_unregister_component(&sspa_platdev->dev);
++		}
++
++		spacemit_hdmi_register_client(&hdmi_connect_notifier);
++		return NOTIFY_OK;
++
++	default:
++		return NOTIFY_DONE;
++	}
++}
++
++static struct notifier_block sspa_pm_notif_block = {
++	.notifier_call = sspa_pm_suspend_notifier,
++};
++
+ static int spacemit_snd_sspa_pdev_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -351,6 +386,7 @@ static int spacemit_snd_sspa_pdev_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	spacemit_hdmi_register_client(&hdmi_connect_notifier);
++	ret = register_pm_notifier(&sspa_pm_notif_block);
+ 
+ 	return 0;
+ }
+-- 
+2.47.0
+

@@ -1,0 +1,59 @@
+From de913f2c994a5374ae90b167743cb81a7f626ce1 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 5 Jul 2024 21:30:22 +0800
+Subject: [PATCH 0914/1448] nvme: fix nvme dev init warning
+
+err log:
+[    3.265405] ------------[ cut here ]------------
+[    3.265412] WARNING: CPU: 2 PID: 56 at block/blk-settings.c:293 blk_queue_max_segment_size+0x26/0x54
+[    3.265436] Modules linked in:
+[    3.265445] CPU: 2 PID: 56 Comm: kworker/u16:1 Not tainted 6.6.36+ #36
+[    3.265452] Hardware name: spacemit k1-x deb1 board (DT)
+[    3.265455] Workqueue: nvme-wq nvme_scan_work
+[    3.265466] epc : blk_queue_max_segment_size+0x26/0x54
+[    3.265473]  ra : nvme_update_ns_info+0x24e/0x72a
+[    3.265481] epc : ffffffff806d1068 ra : ffffffff809d4490 sp : ffffffc800263b50
+[    3.265486]  gp : ffffffff84cf3380 tp : ffffffd901808000 t0 : 0000000000000000
+[    3.265490]  t1 : 0000000000001000 t2 : 0000000000000000 s0 : ffffffc800263b70
+[    3.265494]  s1 : ffffffd90bea0000 a0 : ffffffd90bea0000 a1 : 0000000000080000
+[    3.265499]  a2 : 0012000000000000 a3 : 0000000000000200 a4 : 0000000000000200
+[    3.265503]  a5 : 0000000000000fff a6 : 0000000000000002 a7 : ffffffffffffffc0
+[    3.265507]  s2 : ffffffc800263c60 s3 : 0000000000000000 s4 : ffffffd90be91400
+[    3.265510]  s5 : 0000000000000200 s6 : 0000000000000200 s7 : 0000000000000200
+[    3.265515]  s8 : 000000003a386030 s9 : 0000000000000000 s10: fffffffffffff6f8
+[    3.265519]  s11: ffffffd900210000 t3 : 00000000000000fd t4 : 00000000000003ff
+[    3.265523]  t5 : 0000000000000000 t6 : ffffffc80016d740
+[    3.265525] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[    3.265531] [<ffffffff806d1068>] blk_queue_max_segment_size+0x26/0x54
+[    3.265540] [<ffffffff809d4490>] nvme_update_ns_info+0x24e/0x72a
+[    3.265546] [<ffffffff809d7960>] nvme_scan_ns+0x50e/0xae6
+[    3.265553] [<ffffffff809d8240>] nvme_scan_work+0x28e/0x534
+[    3.265560] [<ffffffff8002f7b8>] process_one_work+0x128/0x304
+[    3.265570] [<ffffffff8002fc4c>] worker_thread+0x2b8/0x394
+[    3.265577] [<ffffffff8003646a>] kthread+0xda/0xf6
+[    3.265586] [<ffffffff810b1532>] ret_from_fork+0xe/0x1c
+[    3.265596] ---[ end trace 0000000000000000 ]---
+[    3.447157]  nvme0n1:
+
+Change-Id: I8816206eb3a1010821b7022b521ef54a56740ff1
+---
+ block/blk-settings.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 7019b8e204d9..ec79c8b3bd34 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -290,7 +290,9 @@ void blk_queue_max_segment_size(struct request_queue *q, unsigned int max_size)
+ 	}
+ 
+ 	/* see blk_queue_virt_boundary() for the explanation */
++#ifndef CONFIG_SOC_SPACEMIT_K1X
+ 	WARN_ON_ONCE(q->limits.virt_boundary_mask);
++#endif
+ 
+ 	q->limits.max_segment_size = max_size;
+ }
+-- 
+2.47.0
+

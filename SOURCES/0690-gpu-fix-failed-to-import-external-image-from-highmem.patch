@@ -1,0 +1,81 @@
+From 778ca61138de79f1a61402074fd18ba7bc498a77 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Mon, 20 May 2024 13:47:35 +0800
+Subject: [PATCH 0690/1448] gpu: fix failed to import external image from
+ highmem zone
+
+1. Fix swiotlb full error when import external image from highmem zone;
+2. Change some error print info to warning level when resouces were
+not released in time.
+
+Change-Id: Ief2ad70534767d8d3447d14e4961a340cbefefc3
+---
+ drivers/gpu/drm/img-rogue/handle.c                | 4 ++--
+ drivers/gpu/drm/img-rogue/pvr_drm.c               | 1 +
+ drivers/gpu/drm/img-rogue/pvr_platform_drv.c      | 2 +-
+ drivers/gpu/drm/img-rogue/server_srvcore_bridge.c | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/handle.c b/drivers/gpu/drm/img-rogue/handle.c
+index e98443682d1a..286cec731fe7 100644
+--- a/drivers/gpu/drm/img-rogue/handle.c
++++ b/drivers/gpu/drm/img-rogue/handle.c
+@@ -1268,7 +1268,7 @@ PVRSRV_ERROR PVRSRVLookupHandleUnlocked(PVRSRV_HANDLE_BASE *psBase,
+ 	eError = GetHandleData(psBase, &psHandleData, hHandle, eType);
+ 	if (unlikely(eError != PVRSRV_OK))
+ 	{
+-		PVR_DPF((PVR_DBG_ERROR,
++		PVR_DPF((PVR_DBG_WARNING,
+ 			 "%s: Error looking up handle (%s) for base %p of type %s. Handle %p, type %s",
+ 			 __func__,
+ 			 PVRSRVGetErrorString(eError),
+@@ -1276,7 +1276,7 @@ PVRSRV_ERROR PVRSRVLookupHandleUnlocked(PVRSRV_HANDLE_BASE *psBase,
+ 			 HandleBaseTypeToString(psBase->eType),
+ 			 (void*) hHandle,
+ 			 HandleTypeToString(eType)));
+-#if defined(DEBUG) || defined(PVRSRV_NEED_PVR_DPF)
++#if defined(DEBUG) //|| defined(PVRSRV_NEED_PVR_DPF)
+ 		OSDumpStack();
+ #endif
+ 		return eError;
+diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
+index bd42146ad208..a2c2dd62464e 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_drm.c
++++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
+@@ -259,6 +259,7 @@ int pvr_drm_load(struct drm_device *ddev, unsigned long flags)
+ 	if (!ddev->dev->dma_parms)
+ 		ddev->dev->dma_parms = &priv->dma_parms;
+ 	dma_set_max_seg_size(ddev->dev, DMA_BIT_MASK(32));
++	dma_set_mask(ddev->dev, DMA_BIT_MASK(40));
+ 
+ 	mutex_lock(&g_device_mutex);
+ 
+diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+index 051d5301728f..8943913e1144 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
++++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
+@@ -118,7 +118,7 @@ static int pvr_devices_register(void)
+ 		 */
+ 		.dma_mask = DMA_BIT_MASK(40),
+ #else
+-		.dma_mask = DMA_BIT_MASK(32),
++		.dma_mask = DMA_BIT_MASK(40),
+ #endif
+ 	};
+ 	unsigned int i;
+diff --git a/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
+index c8a16df8455d..708a143c0cb2 100644
+--- a/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
++++ b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
+@@ -373,7 +373,7 @@ PVRSRVBridgeEventObjectClose(IMG_UINT32 ui32DispatchTableEntry,
+ 		     (psEventObjectCloseOUT->eError != PVRSRV_ERROR_KERNEL_CCB_FULL) &&
+ 		     (psEventObjectCloseOUT->eError != PVRSRV_ERROR_RETRY)))
+ 	{
+-		PVR_DPF((PVR_DBG_ERROR,
++		PVR_DPF((PVR_DBG_WARNING,
+ 			 "%s: %s", __func__, PVRSRVGetErrorString(psEventObjectCloseOUT->eError)));
+ 		UnlockHandle(psConnection->psHandleBase);
+ 		goto EventObjectClose_exit;
+-- 
+2.47.0
+

@@ -1,0 +1,276 @@
+From 8cbbdd3da8b75c5dfe0e093e29465f83a1a96d1d Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Wed, 6 Nov 2024 14:52:17 +0800
+Subject: [PATCH 1246/1448] clock&reset: add rcpu pwm clocks and resets
+
+Change-Id: I89be20947682e026422cc1c785e2dd6da930e616
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi        |  4 +-
+ drivers/clk/spacemit/ccu-spacemit-k1x.c       | 71 +++++++++++++++++--
+ drivers/reset/reset-spacemit-k1x.c            | 24 ++++++-
+ .../dt-bindings/clock/spacemit-k1x-clock.h    | 45 +++++++-----
+ .../dt-bindings/reset/spacemit-k1x-reset.h    | 23 ++++--
+ 5 files changed, 133 insertions(+), 34 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 0fc429096f4b..33d121326022 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1619,8 +1619,8 @@ rpwm2: pwm@c0888300 {
+ 			compatible = "spacemit,k1x-pwm";
+ 			reg = <0x0 0xc0888300 0x0 0x10>;
+ 			#pwm-cells = <1>;
+-			clocks = <&ccu CLK_RCPU2_PWM>;
+-			resets = <&reset RESET_RCPU2_PWM>;
++			clocks = <&ccu CLK_RCPU2_PWM2>;
++			resets = <&reset RESET_RCPU2_PWM2>;
+ 			k1x,pwm-disable-fd;
+ 			rcpu-pwm;
+ 			status = "disabled";
+diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+index 9a9da1cc1232..71bc111626c0 100644
+--- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
++++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
+@@ -197,7 +197,16 @@ DEFINE_SPINLOCK(g_cru_lock);
+ /* end of RCPU register offset */
+ 
+ /* RCPU2 register offset */
+-#define RCPU2_PWM_CLK_RST		0x08
++#define RCPU2_PWM0_CLK_RST		0x00
++#define RCPU2_PWM1_CLK_RST		0x04
++#define RCPU2_PWM2_CLK_RST		0x08
++#define RCPU2_PWM3_CLK_RST		0x0c
++#define RCPU2_PWM4_CLK_RST		0x10
++#define RCPU2_PWM5_CLK_RST		0x14
++#define RCPU2_PWM6_CLK_RST		0x18
++#define RCPU2_PWM7_CLK_RST		0x1c
++#define RCPU2_PWM8_CLK_RST		0x20
++#define RCPU2_PWM9_CLK_RST		0x24
+ /* end of RCPU2 register offset */
+ 
+ struct spacemit_k1x_clk k1x_clock_controller;
+@@ -1207,8 +1216,53 @@ static SPACEMIT_CCU_GATE_NO_PARENT(rcan_bus_clk, "rcan_bus_clk", NULL,
+ static const char *rpwm_parent_names[] = {
+ 	"pll1_aud_24p5", "pll1_aud_245p7"
+ };
+-static SPACEMIT_CCU_DIV_MUX_GATE(rpwm_clk, "rpwm_clk", rpwm_parent_names,
+-	BASE_TYPE_RCPU2, RCPU2_PWM_CLK_RST,
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm0_clk, "rpwm0_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM0_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm1_clk, "rpwm1_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM1_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm2_clk, "rpwm2_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM2_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm3_clk, "rpwm3_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM3_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm4_clk, "rpwm4_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM4_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm5_clk, "rpwm5_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM5_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm6_clk, "rpwm6_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM6_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm7_clk, "rpwm7_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM7_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm8_clk, "rpwm8_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM8_CLK_RST,
++	8, 11, 4, 2,
++	BIT(1), BIT(1), 0x0,
++	0);
++static SPACEMIT_CCU_DIV_MUX_GATE(rpwm9_clk, "rpwm9_clk", rpwm_parent_names,
++	BASE_TYPE_RCPU2, RCPU2_PWM9_CLK_RST,
+ 	8, 11, 4, 2,
+ 	BIT(1), BIT(1), 0x0,
+ 	0);
+@@ -1438,7 +1492,6 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
+ 		[CLK_RCPU_HDMIAUDIO]	= &rhdmi_audio_clk.common.hw,
+ 		[CLK_RCPU_CAN] 		= &rcan_clk.common.hw,
+ 		[CLK_RCPU_CAN_BUS]	= &rcan_bus_clk.common.hw,
+-		[CLK_RCPU2_PWM] 	= &rpwm_clk.common.hw,
+ 		[CLK_RCPU_I2C0] 	= &ri2c0_clk.common.hw,
+ 		[CLK_RCPU_SSP0] 	= &rssp0_clk.common.hw,
+ 		[CLK_RCPU_IR] 		= &rir_clk.common.hw,
+@@ -1455,6 +1508,16 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
+ 		[CLK_DFC_LVL6] 	= &dfc_lvl6.common.hw,
+ 		[CLK_DFC_LVL7] 	= &dfc_lvl7.common.hw,
+ 		[CLK_DDR] 	= &ddr.common.hw,
++		[CLK_RCPU2_PWM0] 	= &rpwm0_clk.common.hw,
++		[CLK_RCPU2_PWM1] 	= &rpwm1_clk.common.hw,
++		[CLK_RCPU2_PWM2] 	= &rpwm2_clk.common.hw,
++		[CLK_RCPU2_PWM3] 	= &rpwm3_clk.common.hw,
++		[CLK_RCPU2_PWM4] 	= &rpwm4_clk.common.hw,
++		[CLK_RCPU2_PWM5] 	= &rpwm5_clk.common.hw,
++		[CLK_RCPU2_PWM6] 	= &rpwm6_clk.common.hw,
++		[CLK_RCPU2_PWM7] 	= &rpwm7_clk.common.hw,
++		[CLK_RCPU2_PWM8] 	= &rpwm8_clk.common.hw,
++		[CLK_RCPU2_PWM9] 	= &rpwm9_clk.common.hw,
+ 	},
+ 	.num = CLK_MAX_NO,
+ };
+diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
+index 34f12af0d5af..73470c61b1bb 100644
+--- a/drivers/reset/reset-spacemit-k1x.c
++++ b/drivers/reset/reset-spacemit-k1x.c
+@@ -139,7 +139,16 @@
+ /* end of RCPU register offset */
+ 
+ /* RCPU2 register offset */
+-#define RCPU2_PWM_CLK_RST		0x08
++#define RCPU2_PWM0_CLK_RST		0x00
++#define RCPU2_PWM1_CLK_RST		0x04
++#define RCPU2_PWM2_CLK_RST		0x08
++#define RCPU2_PWM3_CLK_RST		0x0c
++#define RCPU2_PWM4_CLK_RST		0x10
++#define RCPU2_PWM5_CLK_RST		0x14
++#define RCPU2_PWM6_CLK_RST		0x18
++#define RCPU2_PWM7_CLK_RST		0x1c
++#define RCPU2_PWM8_CLK_RST		0x20
++#define RCPU2_PWM9_CLK_RST		0x24
+ /* end of RCPU2 register offset */
+ 
+ enum spacemit_reset_base_type{
+@@ -297,14 +306,23 @@ static const struct spacemit_reset_signal
+ 	//RCPU
+ 	[RESET_RCPU_HDMIAUDIO] 	= { RCPU_HDMI_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_CAN] 	= { RCPU_CAN_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+-	//RCPU2
+-	[RESET_RCPU2_PWM] 	= { RCPU2_PWM_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
+ 	//RCPU
+ 	[RESET_RCPU_I2C0] 	= { RCPU_I2C0_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_SSP0] 	= { RCPU_SSP0_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_IR] 	= { RCPU_IR_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_UART0] 	= { RCPU_UART0_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
+ 	[RESET_RCPU_UART1] 	= { RCPU_UART1_CLK_RST, BIT(0), BIT(0), 0, RST_BASE_TYPE_RCPU },
++	//RCPU2
++	[RESET_RCPU2_PWM0] 	= { RCPU2_PWM0_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM1] 	= { RCPU2_PWM1_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM2] 	= { RCPU2_PWM2_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM3] 	= { RCPU2_PWM3_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM4] 	= { RCPU2_PWM4_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM5] 	= { RCPU2_PWM5_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM6] 	= { RCPU2_PWM6_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM7] 	= { RCPU2_PWM7_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM8] 	= { RCPU2_PWM8_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
++	[RESET_RCPU2_PWM9] 	= { RCPU2_PWM9_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_RCPU2 },
+ };
+ 
+ static struct spacemit_reset *to_spacemit_reset(
+diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
+index be4c4e1f834b..cff282ac6256 100644
+--- a/include/dt-bindings/clock/spacemit-k1x-clock.h
++++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
+@@ -195,26 +195,35 @@
+ #define CLK_RCPU_CAN        184
+ #define CLK_RCPU_CAN_BUS    185
+ 
+-#define CLK_RCPU2_PWM       186
++#define CLK_RCPU_I2C0       186
++#define CLK_RCPU_SSP0       187
++#define CLK_RCPU_IR         188
++#define CLK_RCPU_UART0      189
++#define CLK_RCPU_UART1      190
+ 
+-#define CLK_RCPU_I2C0       187
+-#define CLK_RCPU_SSP0       188
+-#define CLK_RCPU_IR         189
+-#define CLK_RCPU_UART0      190
+-#define CLK_RCPU_UART1      191
++#define CLK_DPLL1           191
++#define CLK_DPLL2           192
+ 
+-#define CLK_DPLL1           192
+-#define CLK_DPLL2           193
++#define CLK_DFC_LVL0        193
++#define CLK_DFC_LVL1        194
++#define CLK_DFC_LVL2        195
++#define CLK_DFC_LVL3        196
++#define CLK_DFC_LVL4        197
++#define CLK_DFC_LVL5        198
++#define CLK_DFC_LVL6        199
++#define CLK_DFC_LVL7        200
++#define CLK_DDR             201
+ 
+-#define CLK_DFC_LVL0        194
+-#define CLK_DFC_LVL1        195
+-#define CLK_DFC_LVL2        196
+-#define CLK_DFC_LVL3        197
+-#define CLK_DFC_LVL4        198
+-#define CLK_DFC_LVL5        199
+-#define CLK_DFC_LVL6        200
+-#define CLK_DFC_LVL7        201
+-#define CLK_DDR             202
++#define CLK_RCPU2_PWM0      202
++#define CLK_RCPU2_PWM1      203
++#define CLK_RCPU2_PWM2      204
++#define CLK_RCPU2_PWM3      205
++#define CLK_RCPU2_PWM4      206
++#define CLK_RCPU2_PWM5      207
++#define CLK_RCPU2_PWM6      208
++#define CLK_RCPU2_PWM7      209
++#define CLK_RCPU2_PWM8      210
++#define CLK_RCPU2_PWM9      211
+ 
+-#define CLK_MAX_NO      203
++#define CLK_MAX_NO      212
+ #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
+diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
+index 752995127334..de94abdc7be7 100644
+--- a/include/dt-bindings/reset/spacemit-k1x-reset.h
++++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
+@@ -115,14 +115,23 @@
+ #define	RESET_RCPU_HDMIAUDIO 101
+ #define	RESET_RCPU_CAN       102
+ 
+-#define	RESET_RCPU2_PWM      103
++#define	RESET_RCPU_I2C0      103
++#define	RESET_RCPU_SSP0      104
++#define	RESET_RCPU_IR        105
++#define	RESET_RCPU_UART0     106
++#define	RESET_RCPU_UART1     107
+ 
+-#define	RESET_RCPU_I2C0      104
+-#define	RESET_RCPU_SSP0      105
+-#define	RESET_RCPU_IR        106
+-#define	RESET_RCPU_UART0     107
+-#define	RESET_RCPU_UART1     108
++#define	RESET_RCPU2_PWM0     108
++#define	RESET_RCPU2_PWM1     109
++#define	RESET_RCPU2_PWM2     110
++#define	RESET_RCPU2_PWM3     111
++#define	RESET_RCPU2_PWM4     112
++#define	RESET_RCPU2_PWM5     113
++#define	RESET_RCPU2_PWM6     114
++#define	RESET_RCPU2_PWM7     115
++#define	RESET_RCPU2_PWM8     116
++#define	RESET_RCPU2_PWM9     117
+ 
+-#define	RESET_NUMBER         109
++#define	RESET_NUMBER         118
+ 
+ #endif /* __DT_BINDINGS_RESET_SAPCEMIT_K1X_H__ */
+-- 
+2.47.0
+

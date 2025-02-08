@@ -1,0 +1,27 @@
+From 7ea94eb690f5385178d15a35c8dc563bfe0356b0 Mon Sep 17 00:00:00 2001
+From: weijinmei <jinmei.wei@space-t.cn>
+Date: Fri, 21 Jun 2024 11:49:12 +0800
+Subject: [PATCH 0801/1448] k1x: enable audio support
+
+Change-Id: Ia97b4622fb732aee0842f37274ab23643fa2dfb5
+---
+ arch/riscv/configs/k1_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index cbba41739d10..4db3a825313a 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -567,7 +567,9 @@ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ # CONFIG_SND_SOC_INTEL_SST_TOPLEVEL is not set
++CONFIG_SND_SOC_SPACEMIT=y
+ CONFIG_SND_SOC_ES8326=y
++CONFIG_SND_SIMPLE_CARD=y
+ CONFIG_UHID=y
+ CONFIG_HID_MULTITOUCH=y
+ CONFIG_USB_HIDDEV=y
+-- 
+2.47.0
+

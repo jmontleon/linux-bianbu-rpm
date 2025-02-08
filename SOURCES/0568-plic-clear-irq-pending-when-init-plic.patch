@@ -1,0 +1,43 @@
+From 4fd3501f5ec9350bf83e76c27e711bb002bc844e Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 6 Apr 2024 13:35:59 +0800
+Subject: [PATCH 0568/1448] plic: clear irq pending when init plic
+
+there maybe some irq pending triggered by uboot driver,
+the pending will not be cleared even when irq source is
+cleared. when the irq source driver devm_request_irq, the
+isr will be triggered, but the devm_request_irq is not finished,
+and the driver is not ready, there may be some problems.
+so, try to clear all irq pending when init plic
+
+Change-Id: I88db4db0af7f7e8a9893b0ffb9db07b7d0203c37
+---
+ drivers/irqchip/irq-sifive-plic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index 44cd918592e1..048c911c7280 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -46,6 +46,7 @@
+  * There's one bit for each interrupt source.
+  */
+ #ifdef CONFIG_SOC_SPACEMIT
++#define PENDING_BASE			0x1000
+ #define CONTEXT_ENABLE_BASE		0x2080
+ #define CONTEXT_ENABLE_SIZE		0x100
+ #else
+@@ -573,6 +574,10 @@ static int __init __plic_init(struct device_node *node,
+ done:
+ 		for (hwirq = 1; hwirq <= nr_irqs; hwirq++) {
+ 			plic_toggle(handler, hwirq, 0);
++			#ifdef CONFIG_SOC_SPACEMIT
++			/* clear pending, which maybe triggered by uboot */
++			writel(0, priv->regs + PENDING_BASE + (hwirq/32)*4);
++			#endif
+ 			writel(1, priv->regs + PRIORITY_BASE +
+ 				  hwirq * PRIORITY_PER_ID);
+ 		}
+-- 
+2.47.0
+

@@ -1,0 +1,79 @@
+From 8d6cbdbbd14e1603fdf855735e4aeeb629b1ca77 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Sat, 9 Mar 2024 16:47:48 +0800
+Subject: [PATCH 0471/1448] k1x-dma:support console tx/rx dma-mode
+
+Change-Id: If5b66528d2572dbb34dfdc6fcd30f256d4ed1972
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi |  3 +++
+ drivers/tty/serial/pxa_k1x.c           | 19 +++----------------
+ 2 files changed, 6 insertions(+), 16 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index a3a490b77f98..32908c0337c3 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -828,6 +828,9 @@ uart0: serial@d4017000 {
+ 			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
+ 			clk,pm-runtime,no-sleep;
+ 			cpuidle,pm-runtime,sleep;
++			dmas = <&pdma0 DMA_UART0_RX 1
++				&pdma0 DMA_UART0_TX 1>;
++			dma-names = "rx", "tx";
+ 			interconnects = <&dram_range0>;
+ 			interconnect-names = "dma-mem";
+ 			status = "ok";
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 1737ea7e8d35..c75131730f06 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -57,7 +57,7 @@
+ 
+ #define UARTCLK_FPGA		(14750000)
+ 
+-#define NUM_UART_PORTS		(9)
++#define NUM_UART_PORTS		(10)
+ #define BT_UART_PORT		(2)
+ 
+ #define UART_FCR_PXA_BUS32	(0x20)	/* 32-Bit Peripheral Bus */
+@@ -147,19 +147,6 @@ static unsigned int serial_pxa_tx_empty(struct uart_port *port);
+ static void _pxa_timer_handler(struct uart_pxa_port *up);
+ #endif
+ 
+-
+-static int uart_dma;
+-
+-static int __init uart_dma_setup(char *__unused)
+-{
+-#ifdef CONFIG_MMP_PDMA_SPACEMIT_K1X
+-	uart_dma = 1;
+-#endif
+-	return 1;
+-}
+-
+-__setup("uart_dma", uart_dma_setup);
+-
+ static inline void stop_dma(struct uart_pxa_port *up, int read)
+ {
+ 	unsigned long flags;
+@@ -2076,7 +2063,7 @@ static int serial_pxa_probe_dt(struct platform_device *pdev, struct uart_pxa_por
+ 	}
+ 
+ 	/* device tree is used */
+-	if (uart_dma) {
++	if (of_get_property(np, "dmas", NULL)) {
+ 		sport->dma_enable = 1;
+ 	}
+ 	ret = of_alias_get_id(np, "serial");
+@@ -2208,7 +2195,7 @@ static int serial_pxa_probe(struct platform_device *dev)
+ 
+ 	dma_set_mask(&dev->dev, DMA_BIT_MASK(64));
+ 	dma_set_coherent_mask(&dev->dev, DMA_BIT_MASK(64));
+-	if (ret > 0 && uart_dma) {
++	if (ret > 0 && sport->dma_enable) {
+ 		/* Get Rx DMA mapping value */
+ 		dmares = platform_get_resource(dev, IORESOURCE_DMA, 0);
+ 		if (dmares) {
+-- 
+2.47.0
+

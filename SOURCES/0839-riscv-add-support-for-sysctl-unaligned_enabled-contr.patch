@@ -1,0 +1,72 @@
+From 8fb7b633cb7b7b54b98e2404bc235fb6869e30e2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Wed, 4 Oct 2023 17:14:02 +0200
+Subject: [PATCH 0839/1448] riscv: add support for sysctl unaligned_enabled
+ control
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This sysctl tuning option allows the user to disable misaligned access
+handling globally on the system. This will also be used by misaligned
+detection code to temporarily disable misaligned access handling.
+
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
+Link: https://lore.kernel.org/r/20231004151405.521596-6-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I71cdccc30a7b2ace02d6a3bd56d9303b015c80b0
+---
+ arch/riscv/Kconfig                   | 1 +
+ arch/riscv/kernel/traps_misaligned.c | 9 +++++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 9b4bb18c7a58..47814f5db0d7 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -655,6 +655,7 @@ config THREAD_SIZE_ORDER
+ 
+ config RISCV_MISALIGNED
+ 	bool "Support misaligned load/store traps for kernel and userspace"
++	select SYSCTL_ARCH_UNALIGN_ALLOW
+ 	default y
+ 	help
+ 	  Say Y here if you want the kernel to embed support for misaligned
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index 041fd2dbd955..b5fb1ff078e3 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -396,6 +396,9 @@ union reg_data {
+ 	u64 data_u64;
+ };
+ 
++/* sysctl hooks */
++int unaligned_enabled __read_mostly = 1;	/* Enabled by default */
++
+ int handle_misaligned_load(struct pt_regs *regs)
+ {
+ 	union reg_data val;
+@@ -406,6 +409,9 @@ int handle_misaligned_load(struct pt_regs *regs)
+ 
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+ 
++	if (!unaligned_enabled)
++		return -1;
++
+ 	if (get_insn(regs, epc, &insn))
+ 		return -1;
+ 
+@@ -502,6 +508,9 @@ int handle_misaligned_store(struct pt_regs *regs)
+ 
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, addr);
+ 
++	if (!unaligned_enabled)
++		return -1;
++
+ 	if (get_insn(regs, epc, &insn))
+ 		return -1;
+ 
+-- 
+2.47.0
+

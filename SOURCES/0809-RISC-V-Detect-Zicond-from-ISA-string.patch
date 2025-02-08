@@ -1,0 +1,51 @@
+From 5ed98201b99ecc3d5663f9cad5f53b896fb8d34f Mon Sep 17 00:00:00 2001
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Fri, 15 Sep 2023 14:09:44 +0530
+Subject: [PATCH 0809/1448] RISC-V: Detect Zicond from ISA string
+
+The RISC-V integer conditional (Zicond) operation extension defines
+standard conditional arithmetic and conditional-select/move operations
+which are inspired from the XVentanaCondOps extension. In fact, QEMU
+RISC-V also has support for emulating Zicond extension.
+
+Let us detect Zicond extension from ISA string available through
+DT or ACPI.
+
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Signed-off-by: Anup Patel <anup@brainfault.org>
+Change-Id: Ib1af6c5d3650792b58fff1697a2d73695886a5c2
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 5e8a89b38091..fad292ef7791 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -59,6 +59,7 @@
+ #define RISCV_ISA_EXT_ZIFENCEI		41
+ #define RISCV_ISA_EXT_ZIHPM		42
+ #define RISCV_ISA_EXT_SMSTATEEN		43
++#define RISCV_ISA_EXT_ZICOND		44
+ 
+ #define RISCV_ISA_EXT_MAX		64
+ 
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index e54244ef4698..e44b393e521e 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -195,6 +195,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+ 	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+ 	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
++	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+ 	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+ 	__RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
+ 	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+-- 
+2.47.0
+

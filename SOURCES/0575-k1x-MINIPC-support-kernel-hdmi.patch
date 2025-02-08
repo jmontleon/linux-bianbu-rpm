@@ -1,0 +1,72 @@
+From e815841abb87f7188b440db8b56ec66c3b79032e Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Sun, 7 Apr 2024 09:26:05 +0800
+Subject: [PATCH 0575/1448] k1x:MINIPC support kernel hdmi
+
+Change-Id: I18e7b43ee6446e9ded99c10a98e8ba387ec88fd3
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index fb00a67666ea..9d73c247abeb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -6,6 +6,8 @@
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+ #include "lcd/lcd_gx09inx101_mipi.dtsi"
++#include "k1-x-hdmi.dtsi"
++#include "k1-x-lcd.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MINI-PC board";
+@@ -236,6 +238,45 @@ &pwm14 {
+ 	status = "disabled";
+ };
+ 
++&dpu_online2_dsi {
++	memory-region = <&dpu_resv>;
++	spacemit-dpu-bitclk = <1000000000>;
++	dsi_1v2-supply = <&ldo_5>;
++	vin-supply-names = "dsi_1v2";
++	status = "disabled";
++};
++
++&dsi2 {
++	status = "disabled";
++
++	panel2: panel2@0 {
++		status = "ok";
++		compatible = "spacemit,mipi-panel2";
++		reg = <0>;
++
++		gpios-reset = <81>;
++		gpios-dc = <82 83>;
++		id = <2>;
++		delay-after-reset = <10>;
++		force-attached = "lcd_gx09inx101_mipi";
++	};
++};
++
++&lcds {
++	status = "disabled";
++};
++
++&dpu_online2_hdmi {
++	memory-region = <&dpu_resv>;
++	status = "okay";
++};
++
++&hdmi{
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hdmi_0>;
++	status = "okay";
++};
++
+ &i2c0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c0>;
+-- 
+2.47.0
+

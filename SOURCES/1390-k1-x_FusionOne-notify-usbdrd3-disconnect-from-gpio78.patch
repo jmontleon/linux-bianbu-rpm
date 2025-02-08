@@ -1,0 +1,92 @@
+From 72cec121c2636121d342be8dc9a65c87edee26db Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 12 Dec 2024 20:47:16 +0800
+Subject: [PATCH 1390/1448] k1-x_FusionOne: notify usbdrd3 disconnect from
+ gpio78
+
+Change-Id: I6daf3b8056a3cbb6829c2281342e006b27bbebd5
+---
+ .../boot/dts/spacemit/k1-x_FusionOne.dts      | 28 +++++++++----------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+index b7c4e1694066..6c5426a04ac5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
+@@ -222,8 +222,8 @@ led1 {
+ 			status = "okay";
+ 		};
+ 	};
+-
+ };
++
+ &soc {
+ 	i2c10:i2c10_gpio {
+ 		#address-cells = <1>;
+@@ -480,6 +480,7 @@ ext_adc: adc {
+ 		};
+ 	};
+ };
++
+ &i2c10 {
+ 	i2c-gpio,delay-us = <1000>;
+ 	status = "okay";
+@@ -493,6 +494,7 @@ &range GPIO_63  2 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_65  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_67  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_75  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
++		&range GPIO_78  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_79  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_90  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range GPIO_110 1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+@@ -568,6 +570,7 @@ &pinctrl 58 GPIO_58 1
+ 		&pinctrl 63 GPIO_63 3
+ 		&pinctrl 67 GPIO_67 1
+ 		&pinctrl 75 GPIO_75 1
++		&pinctrl 78 GPIO_78 1
+ 		&pinctrl 79 GPIO_79 2
+ 		&pinctrl 90 GPIO_90 1
+ 		&pinctrl 110 GPIO_110 1
+@@ -778,6 +781,7 @@ &usb2phy {
+ };
+ 
+ &combphy {
++	rx-always-on;
+ 	status = "okay";
+ };
+ 
+@@ -799,23 +803,17 @@ dwc3@c0a00000 {
+ 		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis-tx-ipgap-linecheck-quirk;
+ 		snps,parkmode-disable-ss-quirk;
+-
++		monitor-vbus;
+ 		usb-role-switch;
+ 		role-switch-default-mode = "peripheral";
+ 
+-                ports {
+-                       #address-cells = <1>;
+-                       #size-cells = <0>;
+-/*
+-                       port@0 {
+-                               reg = <0x0>;
+-                               dwc3_role_switch: endpoint {
+-                                       remote-endpoint = <&dwc3_ep>;
+-                               };
+-                       };
+-*/
+-               };
+-
++		connector {
++			/* Report vbus connection state from MCU */
++			compatible = "gpio-usb-b-connector", "usb-b-connector";
++			type = "micro";
++			label = "Type-C";
++			vbus-gpios = <&gpio 78 GPIO_ACTIVE_HIGH>;
++		};
+ 	};
+ };
+ 
+-- 
+2.47.0
+

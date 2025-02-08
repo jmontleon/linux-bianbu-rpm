@@ -1,0 +1,75 @@
+From 535e5b3c1eafc7f8fa8d10746d98e0f2ee0ae773 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Mon, 4 Nov 2024 15:19:18 +0800
+Subject: [PATCH 1339/1448] k1:defconfig: close KFENCE configuration
+
+when we turned on the hibernation feature, it failed to save the
+system snapshot due to the KFENCE function, so we turned it off
+
+the errors detected by kfence are as follows:
+
+[  406.480810] BUG: KFENCE: use-after-free read in swsusp_save+0x25c/0x3aa
+[  406.480810]
+[  406.480810] Use-after-free read at 0x00000000fc442362 (in kfence-#209):
+[  406.480810]  swsusp_save+0x25c/0x3aa
+[  406.480810]  swsusp_arch_suspend+0x36/0x74
+[  406.480810]  hibernation_snapshot+0x1e8/0x468
+[  406.480810]  hibernate+0xe8/0x20e
+[  406.480810]  state_store+0xbe/0xc2
+[  406.480810]  kobj_attr_store+0xe/0x1a
+[  406.480810]  sysfs_kf_write+0x2e/0x4c
+[  406.480810]  kernfs_fop_write_iter+0xfa/0x160
+[  406.480810]  vfs_write+0x1d2/0x37e
+[  406.480810]  ksys_write+0x56/0xd0
+[  406.480810]  __riscv_sys_write+0x14/0x1c
+[  406.480810]  do_trap_ecall_u+0xba/0x12e
+[  406.480810]  ret_from_exception+0x0/0x6e
+[  406.480810]
+[  406.480810] kfence-#209: 0x00000000fc442362-0x0000000006aba4a9, size=184, cache=bio-184
+[  406.480810]
+[  406.480810] allocated by task 80 on cpu 3 at 398.422126s:
+[  406.480810]  mempool_alloc_slab+0x12/0x1a
+[  406.480810]  mempool_alloc+0x52/0x152
+[  406.480810]  bio_alloc_bioset+0x14a/0x35e
+[  406.480810]  __swap_writepage+0x80/0x2e6
+[  406.480810]  swap_writepage+0x2c/0x4e
+[  406.480810]  pageout+0xac/0x266
+[  406.480810]  shrink_folio_list+0x51c/0xa54
+[  406.480810]  evict_folios+0x1e2/0x6ca
+[  406.480810]  try_to_shrink_lruvec+0x15e/0x234
+[  406.480810]  shrink_one+0xb0/0x1ce
+[  406.480810]  shrink_node+0x942/0xc4c
+[  406.480810]  balance_pgdat+0x352/0x7b2
+[  406.480810]  kswapd+0x210/0x47e
+[  406.480810]  kthread+0xda/0xf6
+[  406.480810]  ret_from_fork+0xe/0x1c
+[  406.480810]
+[  406.480810] freed by task 0 on cpu 2 at 399.270007s:
+[  406.480810]  rcu_guarded_free+0x14/0x1c
+[  406.480810]  rcu_core+0x22c/0x630
+[  406.480810]  rcu_core_si+0xc/0x14
+[  406.480810]  handle_softirqs+0x178/0x3a4
+[  406.480810]  irq_exit_rcu+0x72/0x9c
+[  406.480810]  handle_riscv_irq+0x64/0x74
+[  406.480810]  call_on_irq_stack+0x32/0x40
+
+Change-Id: I22c6aa8f456cb90d651148f3c0b39e797d96d73a
+---
+ arch/riscv/configs/k1_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index f48f92baa2db..c8511c28f3c7 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -1316,7 +1316,6 @@ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_WX=y
+ CONFIG_SCHED_STACK_END_CHECK=y
+-CONFIG_KFENCE=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+-- 
+2.47.0
+

@@ -1,0 +1,150 @@
+From c5c94894d7d1c4d5abc7292ba05c015d0d187723 Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Sun, 7 Apr 2024 17:56:53 +0800
+Subject: [PATCH 0578/1448] display: Do not set clock rate in dts
+
+Change-Id: I80eb097dd745ee1a805dff0c34963bb971423668
+---
+ arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi |  6 ------
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c   | 13 ++++++++++++-
+ drivers/gpu/drm/spacemit/spacemit_dpu.c     |  4 ++--
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c    | 12 ++----------
+ 4 files changed, 16 insertions(+), 19 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+index bab7c1618ed0..dffc749ef95f 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
+@@ -15,9 +15,6 @@ dpu_online2_hdmi: port@c0440000 {
+ 		interrupt-names = "ONLINE_IRQ", "OFFLINE_IRQ";
+ 		clocks = <&ccu CLK_HDMI>;
+ 		clock-names = "hmclk";
+-		assigned-clocks = <&ccu CLK_HDMI>;
+-		assigned-clock-parents = <&ccu CLK_PLL1_491>;
+-		assigned-clock-rates = <491520000>;
+ 		resets = <&reset RESET_HDMI>;
+ 		reset-names= "hdmi_reset";
+ 		power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
+@@ -41,9 +38,6 @@ hdmi: hdmi@C0400500 {
+ 		interrupts = <136>;
+ 		clocks = <&ccu CLK_HDMI>;
+ 		clock-names = "hmclk";
+-		assigned-clocks = <&ccu CLK_HDMI>;
+-		assigned-clock-parents = <&ccu CLK_PLL1_491>;
+-		assigned-clock-rates = <491520000>;
+ 		power-domains = <&power K1X_PMU_HDMI_PWR_DOMAIN>;
+ 		status = "disabled";
+ 
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index 9d216889d242..c769afdb57f2 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -478,15 +478,26 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ 	struct drm_crtc *crtc = &dpu->crtc;
+ 	struct drm_display_mode *mode = &crtc->mode;
+ 	uint64_t clk_val;
++	uint64_t set_clk_val;
+ 	struct spacemit_drm_private *priv = dpu->crtc.dev->dev_private;
+ 	struct spacemit_hw_device *hwdev = priv->hwdev;
+ 
+ 	if (hwdev->is_hdmi) {
+ 		clk_prepare_enable(clk_ctx->hmclk);
++
++		clk_val = clk_get_rate(clk_ctx->hmclk);
++		if(clk_val != DPU_MCLK_DEFAULT){
++			clk_val = clk_round_rate(clk_ctx->hmclk, DPU_MCLK_DEFAULT);
++			if (dpu_mclk_exclusive_get()) {
++				clk_set_rate(clk_ctx->hmclk, clk_val);
++				DRM_DEBUG("mclk=%lld\n", clk_val);
++				dpu_mclk_exclusive_put();
++			}
++		}
++
+ 		clk_val = clk_get_rate(clk_ctx->hmclk);
+ 		DRM_INFO("hmclk=%lld\n", clk_val);
+ 	} else {
+-		uint64_t set_clk_val;
+ 
+ 		clk_prepare_enable(clk_ctx->pxclk);
+ 		clk_prepare_enable(clk_ctx->mclk);
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+index f819a16e98e8..85c471bf8a41 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
+@@ -306,13 +306,13 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		spacemit_dpu_free_bootloader_mem();
+ 	}
+ 
+-	pm_runtime_get_sync(dpu->dev);
+ 	if (hwdev->is_hdmi && (!IS_ERR_OR_NULL(dpu->hdmi_reset))) {
+ 		result = reset_control_deassert(dpu->hdmi_reset);
+ 		if (result < 0) {
+ 			DRM_INFO("Failed to deassert hdmi: %d\n", result);
+ 		}
+ 	}
++	pm_runtime_get_sync(dpu->dev);
+ 
+ #ifdef CONFIG_SPACEMIT_DEBUG
+ 	dpu->is_working = true;
+@@ -341,13 +341,13 @@ static void spacemit_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	dpu->is_working = false;
+ #endif
+ 
++	pm_runtime_put(dpu->dev);
+ 	if (hwdev->is_hdmi && (!IS_ERR_OR_NULL(dpu->hdmi_reset))) {
+ 		result = reset_control_assert(dpu->hdmi_reset);
+ 		if (result < 0) {
+ 			DRM_INFO("Failed to assert hdmi: %d\n", result);
+ 		}
+ 	}
+-	pm_runtime_put(dpu->dev);
+ 
+ 	spin_lock_irq(&drm->event_lock);
+ 	if (crtc->state->event) {
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index a59e80f7615c..40a35bb7da4c 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -670,12 +670,6 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)
+ 
+ 	DRM_INFO("%s() \n", __func__);
+ 
+-	ret = pm_runtime_get_sync(hdmi->dev);
+-	if (ret < 0) {
+-		DRM_INFO("%s() pm_runtime_get_sync failed\n", __func__);
+-		return drm_add_modes_noedid(connector, 1920, 1080);
+-	}
+-
+ 	value = hdmi_readb(hdmi, SPACEMIT_HDMI_PHY_STATUS);
+ 	DRM_INFO("%s() hdmi status 0x%x\n", __func__, value);
+ 	value &= ~(SPACEMIT_HDMI_DDC_OTHER_MASK | SPACEMIT_HDMI_DDC_DONE_MASK);
+@@ -697,8 +691,6 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)
+ 		ret = drm_add_modes_noedid(connector, 1920, 1080);
+ 	}
+ 
+-	pm_runtime_put(hdmi->dev);
+-
+ 	return ret;
+ }
+ 
+@@ -824,7 +816,7 @@ static int spacemit_hdmi_bind(struct device *dev, struct device *master,
+ 		return PTR_ERR(hdmi->regs);
+ 
+ 	pm_runtime_enable(&pdev->dev);
+-	//pm_runtime_get_sync(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+@@ -866,7 +858,7 @@ static void spacemit_hdmi_unbind(struct device *dev, struct device *master,
+ 	hdmi->connector.funcs->destroy(&hdmi->connector);
+ 	hdmi->encoder.funcs->destroy(&hdmi->encoder);
+ 
+-	// pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(dev);
+ }
+ 
+-- 
+2.47.0
+

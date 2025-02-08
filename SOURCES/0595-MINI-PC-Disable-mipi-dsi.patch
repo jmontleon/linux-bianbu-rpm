@@ -1,0 +1,62 @@
+From dacda1180660f8d70f9489cda2297cbca10da793 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
+Date: Thu, 11 Apr 2024 14:35:00 +0800
+Subject: [PATCH 0595/1448] MINI-PC: Disable mipi dsi
+
+Change-Id: I8ee26a122dad6c030568012f42b567113aed54ce
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 30 -------------------
+ 1 file changed, 30 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index 6fd0fb37d158..e2218171af95 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -5,9 +5,7 @@
+ 
+ #include "k1-x.dtsi"
+ #include "k1-x_pinctrl.dtsi"
+-#include "lcd/lcd_gx09inx101_mipi.dtsi"
+ #include "k1-x-hdmi.dtsi"
+-#include "k1-x-lcd.dtsi"
+ 
+ / {
+ 	model = "spacemit k1-x MINI-PC board";
+@@ -247,34 +245,6 @@ &pwm14 {
+ 	status = "disabled";
+ };
+ 
+-&dpu_online2_dsi {
+-	memory-region = <&dpu_resv>;
+-	spacemit-dpu-bitclk = <1000000000>;
+-	dsi_1v2-supply = <&ldo_5>;
+-	vin-supply-names = "dsi_1v2";
+-	status = "disabled";
+-};
+-
+-&dsi2 {
+-	status = "disabled";
+-
+-	panel2: panel2@0 {
+-		status = "ok";
+-		compatible = "spacemit,mipi-panel2";
+-		reg = <0>;
+-
+-		gpios-reset = <81>;
+-		gpios-dc = <82 83>;
+-		id = <2>;
+-		delay-after-reset = <10>;
+-		force-attached = "lcd_gx09inx101_mipi";
+-	};
+-};
+-
+-&lcds {
+-	status = "disabled";
+-};
+-
+ &dpu_online2_hdmi {
+ 	memory-region = <&dpu_resv>;
+ 	status = "okay";
+-- 
+2.47.0
+

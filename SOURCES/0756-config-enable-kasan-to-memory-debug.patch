@@ -1,0 +1,51 @@
+From 22e38b438cae62a1a5d7ac30c250165b5019e82c Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 14 Jun 2024 12:03:10 +0800
+Subject: [PATCH 0756/1448] config: enable kasan to memory debug
+
+Signed-off-by: lijuan <juan.li@spacemit.com>
+Change-Id: Ic41981e539ccb396f7e7c6860b36344c83ec98c5
+---
+ arch/riscv/Kconfig              | 4 ++--
+ arch/riscv/configs/k1_defconfig | 3 +++
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 0f3ed29a74fa..7402a6b0f540 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -94,8 +94,8 @@ config RISCV
+ 	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT && !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+-	# select HAVE_ARCH_KASAN if MMU && 64BIT
+-	# select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
++	select HAVE_ARCH_KASAN if MMU && 64BIT
++	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+ 	select HAVE_ARCH_KFENCE if MMU && 64BIT
+ 	select HAVE_ARCH_KGDB if !XIP_KERNEL
+ 	select HAVE_ARCH_KGDB_QXFER_PKT
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 0e80860184b9..a3ae0af87899 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -44,6 +44,7 @@ CONFIG_SOC_SPACEMIT=y
+ CONFIG_SOC_SPACEMIT_K1X=y
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=8
++CONFIG_THREAD_SIZE_ORDER=2
+ CONFIG_RISCV_SBI_V01=y
+ # CONFIG_RISCV_BOOT_SPINWAIT is not set
+ CONFIG_CPU_IDLE=y
+@@ -765,6 +766,8 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_FS=y
++CONFIG_KASAN=y
++CONFIG_KASAN_INLINE=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+-- 
+2.47.0
+

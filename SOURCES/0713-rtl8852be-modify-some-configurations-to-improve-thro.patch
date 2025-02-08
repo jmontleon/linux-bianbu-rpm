@@ -1,0 +1,34 @@
+From 6d36d7f618fb6641f845b746fea7aab62452e9e7 Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 21 May 2024 20:23:02 +0800
+Subject: [PATCH 0713/1448] rtl8852be: modify some configurations to improve
+ throughput
+
+  1. disbable concurrent mode
+  2. enable cpu balance
+
+Change-Id: I303bfd7d5fd67f3a4850cddfc2c437422ad1065c
+---
+ .../wireless/realtek/rtl8852be/platform/riscv_spacemit.mk    | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk b/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
+index 64dd402e16a5..b6e141da02b1 100755
+--- a/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
++++ b/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
+@@ -3,9 +3,10 @@ EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
+ EXTRA_CFLAGS += -DCONFIG_PLATFORM_SPACEMIT
+ EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
+ EXTRA_CFLAGS += -DCONFIG_RADIO_WORK
+-EXTRA_CFLAGS += -DCONFIG_CONCURRENT_MODE
++#EXTRA_CFLAGS += -DCONFIG_CONCURRENT_MODE
++EXTRA_CFLAGS += -DCONFIG_CPU_BALANCE
+ ifeq ($(shell test $(CONFIG_RTW_ANDROID) -ge 11; echo $$?), 0)
+-EXTRA_CFLAGS += -DCONFIG_IFACE_NUMBER=2
++#EXTRA_CFLAGS += -DCONFIG_IFACE_NUMBER=2
+ #EXTRA_CFLAGS += -DCONFIG_SEL_P2P_IFACE=1
+ endif
+ 
+-- 
+2.47.0
+

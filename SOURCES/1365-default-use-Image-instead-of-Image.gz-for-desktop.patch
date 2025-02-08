@@ -1,0 +1,36 @@
+From 8736a90cdc2f9b3ccb498f9f1fcea69832b5c03b Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 16 Dec 2024 16:39:19 +0800
+Subject: [PATCH 1365/1448] default use Image instead of Image.gz for desktop
+
+Change-Id: Ie2440bb8ccfdc9fef8296f14ef54f2e6919880ad
+Signed-off-by: lijuan <juan.li@spacemit.com>
+---
+ arch/riscv/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index b51514092129..feaf0a8a924b 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -130,7 +130,7 @@ boot		:= arch/riscv/boot
+ ifeq ($(CONFIG_XIP_KERNEL),y)
+ KBUILD_IMAGE := $(boot)/xipImage
+ else
+-KBUILD_IMAGE	:= $(boot)/Image.gz
++KBUILD_IMAGE	:= $(boot)/Image
+ endif
+ 
+ libs-y += arch/riscv/lib/
+@@ -155,7 +155,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
+ KBUILD_IMAGE := $(boot)/loader.bin
+ else
+ ifeq ($(CONFIG_EFI_ZBOOT),)
+-KBUILD_IMAGE := $(boot)/Image.gz
++KBUILD_IMAGE := $(boot)/Image
+ else
+ KBUILD_IMAGE := $(boot)/vmlinuz.efi
+ endif
+-- 
+2.47.0
+

@@ -1,0 +1,27 @@
+From 00f528116c987240df185e7733ea73d77333e591 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 6 Jun 2024 16:48:56 +0800
+Subject: [PATCH 0983/1448] k1x-MINIPC:adjust ldo1 to always on for secjtag
+ TRST
+
+Change-Id: Ida3a0a8981e7d7b8e072de504b13ee17eb4206f6
+---
+ arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+index e9d9fb41a96d..b1bdeed21a82 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
+@@ -538,7 +538,7 @@ ldo_5: LDO_REG5 {
+ 				regulator-name = "ldo5";
+ 				regulator-min-microvolt = <500000>;
+ 				regulator-max-microvolt = <3400000>;
+-				regulator-boot-on;
++				regulator-always-on;
+ 
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+-- 
+2.47.0
+

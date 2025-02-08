@@ -1,0 +1,30 @@
+From 5a7938449817b88362c0e17bcc06f7191ea6be8c Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 4 Dec 2024 12:38:19 +0800
+Subject: [PATCH 1362/1448] k1:rproc: reserve memory for rcpu's dtb
+
+Change-Id: Id640bac4419c17b42e57fed3d732a670ce8b5f71
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 9c67ba71ccdf..eafb8fa14211 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -465,6 +465,12 @@ rcpu_mem_snapshots: rcpu_mem_snapshots@30300000 {
+ 			reg = <0x0 0x30300000 0x0 0x40000>;
+ 			no-map;
+ 		};
++
++		/* the dtb file of rcpu */
++		rcpu_mem_dtb: rcpu_mem_dtb@30300000 {
++			reg = <0x0 0x30340000 0x0 0x40000>;
++			no-map;
++		};
+ 	};
+ 
+ 	soc: soc {
+-- 
+2.47.0
+

@@ -1,0 +1,25 @@
+From d5c4a73da32b24fdc85116657689cb1536d4ea81 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 28 Nov 2024 21:50:46 +0800
+Subject: [PATCH 1376/1448] usb: phy-k1x-ci-otg: enable async suspend
+
+Change-Id: Ied5e2306dc644194738fdf5ef282f4fa804309a2
+---
+ drivers/usb/phy/phy-k1x-ci-otg.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
+index 7bf8995347cb..629bc214898c 100644
+--- a/drivers/usb/phy/phy-k1x-ci-otg.c
++++ b/drivers/usb/phy/phy-k1x-ci-otg.c
+@@ -719,6 +719,7 @@ static int mv_otg_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_get_sync(&pdev->dev);
++	device_enable_async_suspend(&pdev->dev);
+ 
+ 	mvotg->vbus_gpio =
+ 		devm_gpiod_get_optional(&pdev->dev, "vbus", GPIOD_OUT_LOW);
+-- 
+2.47.0
+

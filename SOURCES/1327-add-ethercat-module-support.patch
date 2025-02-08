@@ -1,0 +1,39 @@
+From c76b6be58b0e72aa27b48e86b04acd59e93b78b9 Mon Sep 17 00:00:00 2001
+From: zengyu <yu.zeng@spacemit.com>
+Date: Fri, 29 Nov 2024 18:59:06 +0800
+Subject: [PATCH 1327/1448] add ethercat module support
+
+Change-Id: Iba0098e72d1bd12ad389799a4d291918b723debd
+---
+ drivers/net/Kconfig  | 2 ++
+ drivers/net/Makefile | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 44eeb5d61ba9..a39af93af529 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -489,6 +489,8 @@ source "drivers/net/dsa/Kconfig"
+ 
+ source "drivers/net/ethernet/Kconfig"
+ 
++source "drivers/net/ethercat/Kconfig"
++
+ source "drivers/net/fddi/Kconfig"
+ 
+ source "drivers/net/hippi/Kconfig"
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index e15939e77122..46a5952cac4a 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -52,6 +52,7 @@ ifdef CONFIG_NET_DSA
+ obj-y += dsa/
+ endif
+ obj-$(CONFIG_ETHERNET) += ethernet/
++obj-$(CONFIG_ETHERCAT) += ethercat/
+ obj-$(CONFIG_FDDI) += fddi/
+ obj-$(CONFIG_HIPPI) += hippi/
+ obj-$(CONFIG_HAMRADIO) += hamradio/
+-- 
+2.47.0
+

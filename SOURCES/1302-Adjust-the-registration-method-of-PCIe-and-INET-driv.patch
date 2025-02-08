@@ -1,0 +1,85 @@
+From a7ab3edf0382c397530652888f52b9920a17ae93 Mon Sep 17 00:00:00 2001
+From: goumin <min.gou@spacemit.com>
+Date: Fri, 22 Nov 2024 17:59:34 +0800
+Subject: [PATCH 1302/1448] Adjust the registration method of PCIe and INET
+ drivers, and set raid6_select to start asynchronously by default.
+
+Asynchronous modules should now be configured in the DTS file, with an additional variable in the bootargs.
+The recommended configuration is as follows:
+driver_async_probe=spacemit-hdmi-drv,i2c-spacemit-k1x,ri2c-spacemit-k1x,k1xccic,sdhci-spacemit,k1x-dwc-pcie,pxa2xx-uart
+
+Change-Id: I2877696e84cc735c95363a1614dcbf3e5e26d5e0
+---
+ drivers/pci/controller/dwc/pcie-k1x.c |  3 ++-
+ lib/raid6/algos.c                     | 16 +++++++++++++++-
+ net/ipv4/af_inet.c                    |  2 +-
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
+index fe1281ad2629..3427a454e60c 100644
+--- a/drivers/pci/controller/dwc/pcie-k1x.c
++++ b/drivers/pci/controller/dwc/pcie-k1x.c
+@@ -1861,6 +1861,7 @@ static const struct dev_pm_ops k1x_pcie_pm_ops = {
+ };
+ 
+ static struct platform_driver k1x_pcie_driver = {
++	.probe = k1x_pcie_probe,
+ 	.driver = {
+ 		.name	= "k1x-dwc-pcie",
+ 		.of_match_table = of_k1x_pcie_match,
+@@ -1868,4 +1869,4 @@ static struct platform_driver k1x_pcie_driver = {
+ 		.pm	= &k1x_pcie_pm_ops,
+ 	},
+ };
+-builtin_platform_driver_probe(k1x_pcie_driver, k1x_pcie_probe);
++module_platform_driver(k1x_pcie_driver);
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index 0ec534faf019..2c60e3e21754 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -18,6 +18,9 @@
+ #else
+ #include <linux/module.h>
+ #include <linux/gfp.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++#include <linux/async.h>
+ /* In .bss so it's zeroed */
+ const char raid6_empty_zero_page[PAGE_SIZE] __attribute__((aligned(256)));
+ EXPORT_SYMBOL(raid6_empty_zero_page);
+@@ -289,7 +292,18 @@ static void raid6_exit(void)
+ 	do { } while (0);
+ }
+ 
+-subsys_initcall(raid6_select_algo);
++static void raid6_select_algo_wrapper(void *data, long long unsigned int arg)
++{
++	raid6_select_algo();
++}
++
++static int __init raid6_select_algo_async_init(void)
++{
++	async_schedule(raid6_select_algo_wrapper, NULL);
++	return 0;
++}
++
++subsys_initcall(raid6_select_algo_async_init);
+ module_exit(raid6_exit);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("RAID6 Q-syndrome calculations");
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index f336b2ddf972..29dac6af2efa 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -2078,7 +2078,7 @@ static int __init inet_init(void)
+ 	goto out;
+ }
+ 
+-fs_initcall(inet_init);
++subsys_initcall(inet_init);
+ 
+ /* ------------------------------------------------------------------------ */
+ 
+-- 
+2.47.0
+

@@ -1,0 +1,51 @@
+From ff37bdb9bfcb905b92e1b3641f0733208a0ab6ce Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:55 -0500
+Subject: [PATCH 0852/1448] riscv: hwprobe: export Zfa ISA extension
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export Zfa ISA extension[1] through hwprobe.
+
+Link: https://drive.google.com/file/d/1VT6QIggpb59-8QRV266dEE4T8FZTxGq4/view [1]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-20-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I81385adf10966d9b708f6e7dfd0c9bb866e1aa63
+---
+ Documentation/arch/riscv/hwprobe.rst  | 4 ++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index cf5905a77c7e..403f951d2564 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -168,6 +168,10 @@ The following keys are defined:
+        defined in the RISC-V Vector manual starting from commit e2ccd0548d6c
+        ("Remove draft warnings from Zvfh[min]").
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZFA`: The Zfa extension is supported as
++       defined in the RISC-V ISA manual starting from commit 056b6ff467c7
++       ("Zfa is ratified").
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 1fb2087e851e..12062a6345c4 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -55,6 +55,7 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZIHINTNTL	(1 << 29)
+ #define		RISCV_HWPROBE_EXT_ZVFH		(1 << 30)
+ #define		RISCV_HWPROBE_EXT_ZVFHMIN	(1 << 31)
++#define		RISCV_HWPROBE_EXT_ZFA		(1ULL << 32)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

@@ -1,0 +1,27 @@
+From bc3fd2df2b2a1fbeda9fc348e7c3522ba5c2a388 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 26 Dec 2024 08:57:46 +0800
+Subject: [PATCH 1409/1448] pinctrl: fix compile warning
+
+Change-Id: If647781b60f246036479c37ee329ac884b932588
+---
+ drivers/pinctrl/pinctrl-single.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index 6b62a7c68841..b9d7d43d87e1 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -705,8 +705,8 @@ static int pcs_pinconf_set(struct pinctrl_dev *pctldev,
+ 					data |= func->conf[i].enable;
+ 				else
+ 					data |= func->conf[i].disable;
+-				break;
+ 				pcs->write(data, pcs->base + offset);
++				break;
+ 			default:
+ 				return -ENOTSUPP;
+ 			}
+-- 
+2.47.0
+

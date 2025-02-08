@@ -1,0 +1,101 @@
+From 4281efd6328208fc42697f82dfd3ceed3a40b19c Mon Sep 17 00:00:00 2001
+From: lilijun <lijun.li@spacemit.com>
+Date: Thu, 28 Mar 2024 21:48:09 +0800
+Subject: [PATCH 0550/1448] display: modify mipi dsi dpu bit clock
+
+Change-Id: I4df65598b72a12d2d9e7db6cfca90a55cd2d8741
+---
+ arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi             | 10 ----------
+ arch/riscv/boot/dts/spacemit/k1-x_deb1.dts             |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_deb2.dts             |  1 +
+ arch/riscv/boot/dts/spacemit/k1-x_evb.dts              |  1 +
+ .../boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi     |  2 +-
+ drivers/gpu/drm/spacemit/dpu/dpu_saturn.c              |  2 --
+ 6 files changed, 4 insertions(+), 13 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+index 4bb5c4fa5db1..5af4c16848c6 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
+@@ -19,16 +19,6 @@ dpu_online2_dsi: port@c0340000 {
+ 			<&ccu CLK_DPU_ESC>,
+ 			<&ccu CLK_DPU_BIT>;
+ 		clock-names = "pxclk", "mclk", "hclk", "escclk", "bitclk";
+-		assigned-clocks = <&ccu CLK_DPU_PXCLK>,
+-			<&ccu CLK_DPU_MCLK>,
+-			<&ccu CLK_DPU_HCLK>,
+-			<&ccu CLK_DPU_ESC>,
+-			<&ccu CLK_DPU_BIT>;
+-		assigned-clock-parents = <&ccu CLK_PLL1_614>,
+-			<&ccu CLK_PLL1_307P2>,
+-			<0>,
+-			<&ccu CLK_PLL1_51P2_AP>,
+-			<&ccu CLK_PLL1_1228>;
+ 		resets = <&reset RESET_MIPI>,
+ 			<&reset RESET_LCD_MCLK>,
+ 			<&reset RESET_LCD>,
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+index 30548c76455a..63b8f3faf8d5 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
+@@ -190,6 +190,7 @@ &pwm14 {
+ 
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
++	spacemit-dpu-bitclk = <1000000000>;
+ 	dsi_1v2-supply = <&ldo_5>;
+ 	vin-supply-names = "dsi_1v2";
+ 	status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+index fb622e42c66d..dd7b38f614aa 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
+@@ -178,6 +178,7 @@ &pwm14 {
+ 
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
++	spacemit-dpu-bitclk = <1000000000>;
+ 	dsi_1v2-supply = <&ldo_17>;
+ 	vin-supply-names = "dsi_1v2";
+ 	status = "disabled";
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+index 5c22ce29a472..9b1163279110 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
+@@ -151,6 +151,7 @@ &pwm1 {
+ 
+ &dpu_online2_dsi {
+ 	memory-region = <&dpu_resv>;
++	spacemit-dpu-bitclk = <614400000>;
+ 	lcd_2v8-supply = <&ldo_13>;
+ 	lcd_1v8-supply = <&ldo_15>;
+ 	dsi_1v2-supply = <&ldo_17>;
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+index 6428088e8c1c..21988de03012 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+@@ -26,7 +26,7 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
+ 		work-mode = <0>;
+ 		rgb-mode = <3>;
+ 		lane-number = <4>;
+-		phy-freq = <624000>;
++		phy-freq = <1000000>;
+ 		split-enable = <0>;
+ 		eotp-enable = <0>;
+ 		burst-mode = <2>;
+diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+index c5bd9bbdcc02..9d216889d242 100644
+--- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
++++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
+@@ -496,8 +496,6 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
+ 
+ 		set_clk_val = mode->clock * 1000;
+ 		DRM_INFO("pxclk set_clk_val %lld\n", set_clk_val);
+-		set_clk_val = DPU_PXCLK_DEFAULT;
+-		DRM_INFO("pxclk default %lld\n", set_clk_val);
+ 
+ 		if (set_clk_val) {
+ 			set_clk_val = clk_round_rate(clk_ctx->pxclk, set_clk_val);
+-- 
+2.47.0
+

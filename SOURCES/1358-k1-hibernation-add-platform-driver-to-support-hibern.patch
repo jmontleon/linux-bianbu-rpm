@@ -1,0 +1,224 @@
+From 82ca3fe832fded2056b2b049363e96de39ae1519 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 11 Dec 2024 08:25:42 +0800
+Subject: [PATCH 1358/1448] k1:hibernation: add platform driver to support
+ hibernation
+
+Change-Id: I163f55e5bdac6c65f38a288a6293bd0a86ae4f5e
+---
+ drivers/soc/spacemit/pm/Makefile              |  1 +
+ .../soc/spacemit/pm/platform_hibernation_pm.c | 86 +++++++++++++++++++
+ .../spacemit/pm/platform_hibernation_pm_ops.c | 72 ++++++++++++++++
+ include/linux/spacemit/platform_pm_ops.h      | 11 +++
+ 4 files changed, 170 insertions(+)
+ create mode 100644 drivers/soc/spacemit/pm/platform_hibernation_pm.c
+ create mode 100644 drivers/soc/spacemit/pm/platform_hibernation_pm_ops.c
+
+diff --git a/drivers/soc/spacemit/pm/Makefile b/drivers/soc/spacemit/pm/Makefile
+index 9aa8704282c0..6aaa4b861445 100644
+--- a/drivers/soc/spacemit/pm/Makefile
++++ b/drivers/soc/spacemit/pm/Makefile
+@@ -1,2 +1,3 @@
+ obj-y += platform_pm.o
+ obj-y += platform_pm_ops.o
++obj-$(CONFIG_HIBERNATION) += platform_hibernation_pm.o platform_hibernation_pm_ops.o
+diff --git a/drivers/soc/spacemit/pm/platform_hibernation_pm.c b/drivers/soc/spacemit/pm/platform_hibernation_pm.c
+new file mode 100644
+index 000000000000..c3b7638b51b2
+--- /dev/null
++++ b/drivers/soc/spacemit/pm/platform_hibernation_pm.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ * Copyright (c) 2022 Ventana Micro Systems Inc.
++ */
++
++#define pr_fmt(fmt) "suspend: " fmt
++
++#include <linux/ftrace.h>
++#include <linux/suspend.h>
++#include <asm/csr.h>
++#include <asm/sbi.h>
++#include <asm/suspend.h>
++#include <linux/spacemit/platform_pm_ops.h>
++
++static int system_hibernate_begin(pm_message_t stage)
++{
++	return 0;
++}
++
++static void system_hibernate_end(void)
++{
++}
++
++static int system_hibernate_pre_snapshot(void)
++{
++	platform_hibernate_pm_pre_snapshot();
++
++	return 0;
++}
++
++static void system_hibernate_finish(void)
++{
++	platform_hibernate_pm_finish();
++}
++
++static int system_hibernate_prepare(void)
++{
++	return 0;
++}
++
++static int system_hibernate_enter(void)
++{
++	return 0;
++}
++
++static void system_hibernate_leave(void)
++{
++}
++
++static int system_hibernate_pre_restore(void)
++{
++	platform_hibernate_pm_pre_snapshot();
++
++	return 0;
++}
++
++static void system_hibernate_restore_cleanup(void)
++{
++}
++
++static void system_hibernate_recover(void)
++{
++}
++
++static const struct platform_hibernation_ops spacemit_system_hibernation_ops ={
++	.begin = system_hibernate_begin,
++	.end = system_hibernate_end,
++	.pre_snapshot = system_hibernate_pre_snapshot,
++	.finish = system_hibernate_finish,
++	.prepare = system_hibernate_prepare,
++	.enter = system_hibernate_enter,
++	.leave = system_hibernate_leave,
++	.pre_restore = system_hibernate_pre_restore,
++	.restore_cleanup = system_hibernate_restore_cleanup,
++	.recover = system_hibernate_recover,
++};
++
++static int __init spacemit_system_hibernation_init(void)
++{
++	hibernation_set_ops(&spacemit_system_hibernation_ops);
++
++	return 0;
++}
++
++late_initcall(spacemit_system_hibernation_init);
+diff --git a/drivers/soc/spacemit/pm/platform_hibernation_pm_ops.c b/drivers/soc/spacemit/pm/platform_hibernation_pm_ops.c
+new file mode 100644
+index 000000000000..2f770aef737b
+--- /dev/null
++++ b/drivers/soc/spacemit/pm/platform_hibernation_pm_ops.c
+@@ -0,0 +1,72 @@
++#include <linux/mutex.h>
++#include <linux/module.h>
++#include <linux/suspend.h>
++#include <linux/spacemit/platform_pm_ops.h>
++
++static LIST_HEAD(platform_hibernate_pm_ops_list);
++static DEFINE_MUTEX(platform_hibernate_pm_ops_lock);
++
++void register_platform_hibernate_pm_ops(struct platfrom_pm_ops *ops)
++{
++	mutex_lock(&platform_hibernate_pm_ops_lock);
++	list_add_tail(&ops->node, &platform_hibernate_pm_ops_list);
++	mutex_unlock(&platform_hibernate_pm_ops_lock);
++}
++EXPORT_SYMBOL_GPL(register_platform_hibernate_pm_ops);
++
++void unregister_platform_hibernate_pm_ops(struct platfrom_pm_ops *ops)
++{
++	mutex_lock(&platform_hibernate_pm_ops_lock);
++	list_del(&ops->node);
++	mutex_unlock(&platform_hibernate_pm_ops_lock);
++}
++EXPORT_SYMBOL_GPL(unregister_platform_hibernate_pm_ops);
++
++#ifdef CONFIG_PM_SLEEP
++int platform_hibernate_pm_pre_snapshot(void)
++{
++	int ret;
++	struct platfrom_pm_ops *ops;
++
++	mutex_lock(&platform_hibernate_pm_ops_lock);
++
++	list_for_each_entry_reverse(ops, &platform_hibernate_pm_ops_list, node)
++		if (ops->pre_snapshot) {
++			pm_pr_dbg("Calling %pS\n", ops->pre_snapshot);
++			ret = ops->pre_snapshot();
++			if (ret)
++				goto err_out;
++		}
++
++	mutex_unlock(&platform_hibernate_pm_ops_lock);
++
++	return 0;
++
++ err_out:
++	mutex_unlock(&platform_hibernate_pm_ops_lock);
++	pr_err("PM: Platform late suspend callback %pS failed.\n", ops->pre_snapshot);
++
++	/* we just stall here now !!!!! */
++	while (1);
++
++	return ret;
++
++}
++EXPORT_SYMBOL_GPL(platform_hibernate_pm_pre_snapshot);
++
++void platform_hibernate_pm_finish(void)
++{
++	struct platfrom_pm_ops *ops;
++
++	mutex_lock(&platform_hibernate_pm_ops_lock);
++
++	list_for_each_entry(ops, &platform_hibernate_pm_ops_list, node)
++		if (ops->finish) {
++			pm_pr_dbg("Calling %pS\n", ops->finish);
++			ops->finish();
++		}
++
++	mutex_unlock(&platform_hibernate_pm_ops_lock);
++}
++EXPORT_SYMBOL_GPL(platform_hibernate_pm_finish);
++#endif /* CONFIG_PM_SLEEP */
+diff --git a/include/linux/spacemit/platform_pm_ops.h b/include/linux/spacemit/platform_pm_ops.h
+index 018f65e3d34d..8f62e20ae645 100644
+--- a/include/linux/spacemit/platform_pm_ops.h
++++ b/include/linux/spacemit/platform_pm_ops.h
+@@ -7,6 +7,10 @@ struct platfrom_pm_ops {
+ 	struct list_head node;
+ 	int (*prepare_late)(void);
+ 	void (*wake)(void);
++#ifdef CONFIG_HIBERNATION
++	int (*pre_snapshot)(void);
++	void (*finish)(void);
++#endif
+ };
+ 
+ extern void register_platform_pm_ops(struct platfrom_pm_ops *ops);
+@@ -16,4 +20,11 @@ extern int platform_pm_prepare_late_suspend(void);
+ extern void platform_pm_resume_wake(void);
+ #endif
+ 
++#ifdef CONFIG_HIBERNATION
++extern void register_platform_hibernate_pm_ops(struct platfrom_pm_ops *ops);
++extern void unregister_platform_hibernate_pm_ops(struct platfrom_pm_ops *ops);
++extern int platform_hibernate_pm_pre_snapshot(void);
++extern void platform_hibernate_pm_finish(void);
++#endif
++
+ #endif
+-- 
+2.47.0
+

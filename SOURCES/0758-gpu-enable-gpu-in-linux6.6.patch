@@ -1,0 +1,74 @@
+From 41884f405cf2be4252c3a79ca9e299dddca7a4b4 Mon Sep 17 00:00:00 2001
+From: dengbo <bo.deng@spacemit.com>
+Date: Tue, 18 Jun 2024 17:33:53 +0800
+Subject: [PATCH 0758/1448] gpu: enable gpu in linux6.6
+
+Change-Id: I73c1f7c0f518e757015bbc112e34e2ab6bf5c5fd
+---
+ arch/riscv/configs/k1_defconfig                 |  1 +
+ drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c     |  2 ++
+ drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c | 15 ++++++++++++---
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 117aab0972b1..bf4010ec2dce 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -552,6 +552,7 @@ CONFIG_SPACEMIT_K1X_SENSOR_V2=y
+ # CONFIG_DVB_CXD2099 is not set
+ # CONFIG_DVB_SP2 is not set
+ CONFIG_DRM=y
++CONFIG_POWERVR_ROGUE=y
+ CONFIG_FB=y
+ CONFIG_BACKLIGHT_CLASS_DEVICE=y
+ CONFIG_BACKLIGHT_PWM=y
+diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
+index 4017051a68ee..00b78d5fb625 100644
+--- a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
++++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
+@@ -2513,7 +2513,9 @@ static struct drm_driver nulldisp_drm_driver = {
+ #endif /* LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0) */
+ #endif /* LINUX_VERSION_CODE < KERNEL_VERSION(5, 9, 0) */
+ 	.gem_prime_import_sg_table	= nulldisp_gem_prime_import_sg_table,
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 6, 31))
+ 	.gem_prime_mmap			= nulldisp_gem_prime_mmap,
++#endif
+ 	.gem_prime_import		= drm_gem_prime_import,
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0))
+ 	.gem_prime_res_obj		= nulldisp_gem_prime_res_obj,
+diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
+index a5e8a742bcd1..02073914ac69 100644
+--- a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
++++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
+@@ -172,7 +172,12 @@ static struct nlpvrdpy *nlpvrdpy_lookup(u32 minor)
+ 	return nlpvrdpy;
+ }
+ 
+-static int nlpvrdpy_pre_cmd(const struct genl_ops *ops,
++static int nlpvrdpy_pre_cmd(
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 31))
++				const struct genl_split_ops *ops,
++#else
++				const struct genl_ops *ops,
++#endif
+ 				struct sk_buff *skb,
+ 				struct genl_info *info)
+ {
+@@ -219,8 +224,12 @@ static int nlpvrdpy_pre_cmd(const struct genl_ops *ops,
+ 	nlpvrdpy_unlock(nlpvrdpy);
+ 	return ret;
+ }
+-
+-static void nlpvrdpy_post_cmd(const struct genl_ops *ops,
++static void nlpvrdpy_post_cmd(
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 31))
++				const struct genl_split_ops *ops,
++#else
++				const struct genl_ops *ops,
++#endif
+ 				struct sk_buff *skb,
+ 				struct genl_info *info)
+ {
+-- 
+2.47.0
+

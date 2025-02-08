@@ -1,0 +1,38 @@
+From 527b4f949b76510b8f4ffa6fb5ed2d0722e89ec2 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Wed, 21 Aug 2024 17:56:40 +0800
+Subject: [PATCH 1098/1448] k1:serial:register freeze & restore callback for
+ hibernation
+
+Change-Id: I85ff45ec9f4b85453f7a64d31b2ad7525237dbda
+---
+ drivers/tty/serial/pxa_k1x.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 43fff0b25cd5..ca16dd56c231 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -45,6 +45,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/pm_wakeup.h>
+ #include <linux/timer.h>
++#include <linux/pm.h>
+ 
+ #define	DMA_BLOCK		UART_XMIT_SIZE
+ #define	DMA_BURST_SIZE		(8)
+@@ -2009,10 +2010,7 @@ static int serial_pxa_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static const struct dev_pm_ops serial_pxa_pm_ops = {
+-	.suspend = serial_pxa_suspend,
+-	.resume = serial_pxa_resume,
+-};
++static SIMPLE_DEV_PM_OPS(serial_pxa_pm_ops, serial_pxa_suspend, serial_pxa_resume);
+ #endif
+ 
+ #ifdef CONFIG_PM
+-- 
+2.47.0
+

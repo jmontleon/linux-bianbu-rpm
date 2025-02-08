@@ -1,0 +1,36 @@
+From 404057a8f7165fa18f6824c19986b621c2f401d3 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 29 Aug 2024 18:40:43 +0800
+Subject: [PATCH 1137/1448] k1x_udc_core: fix missing STATUS IN in control out
+ transfer
+
+ep0_state should not be modified outside of handle_setup_packet() and
+ep0_req_complete().
+The current code cause ep0_state changed to DATA_STATE_XMIT from
+DATA_STATE_RECV when a delayed status setup with DATA OUT stage occurs,
+thus ep0_req_complete() won't send STATUS IN out, fix it by remove
+modification of ep0_state in mv_ep_queue().
+
+Change-Id: Ic23b286507af4496e2d11ce8b139906feb32efc0
+---
+ drivers/usb/gadget/udc/k1x_udc_core.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
+index dae5be9edbc3..f05ef390979f 100644
+--- a/drivers/usb/gadget/udc/k1x_udc_core.c
++++ b/drivers/usb/gadget/udc/k1x_udc_core.c
+@@ -839,10 +839,6 @@ mv_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
+ 		goto err_unmap_dma;
+ 	}
+ 
+-	/* Update ep0 state */
+-	if (ep->ep_num == 0)
+-		udc->ep0_state = DATA_STATE_XMIT;
+-
+ 	/* irq handler advances the queue */
+ 	list_add_tail(&req->queue, &ep->queue);
+ 	spin_unlock_irqrestore(&udc->lock, flags);
+-- 
+2.47.0
+

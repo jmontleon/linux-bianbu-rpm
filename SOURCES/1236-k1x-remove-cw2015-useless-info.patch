@@ -1,0 +1,26 @@
+From 7d6ee7f70d9ca804e4a0b2e5b4eb8963e0572873 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Mon, 4 Nov 2024 17:32:04 +0800
+Subject: [PATCH 1236/1448] k1x:remove cw2015 useless info
+
+Change-Id: Ibcbf705f30dd6a2c219fc366884a64974265f901
+---
+ drivers/power/supply/cw2015_fuel_gauge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/cw2015_fuel_gauge.c b/drivers/power/supply/cw2015_fuel_gauge.c
+index 19d032c4f6b7..82203d02aa47 100644
+--- a/drivers/power/supply/cw2015_fuel_gauge.c
++++ b/drivers/power/supply/cw2015_fuel_gauge.c
+@@ -219,7 +219,7 @@ static int cw_init(struct cw_battery *cw_bat)
+ 			if (ret < 0)
+ 			return ret;
+ 
+-			printk(KERN_INFO "%X\n", reg_val);
++			cw_printk(KERN_INFO "%X\n", reg_val);
+ 			if (config_info[i] != reg_val)
+ 				break;
+ 		}
+-- 
+2.47.0
+

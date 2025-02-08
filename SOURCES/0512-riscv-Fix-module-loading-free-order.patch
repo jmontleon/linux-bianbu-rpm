@@ -1,0 +1,40 @@
+From 33c48f1024245e52941d7debaa67868a11db89fc Mon Sep 17 00:00:00 2001
+From: Charlie Jenkins <charlie@rivosinc.com>
+Date: Thu, 4 Jan 2024 11:42:47 -0800
+Subject: [PATCH 0512/1448] riscv: Fix module loading free order
+
+Reverse order of kfree calls to resolve use-after-free error.
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: d8792a5734b0 ("riscv: Safely remove entries from relocation list")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202312132019.iYGTwW0L-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Closes: https://lore.kernel.org/r/202312120044.wTI1Uyaa-lkp@intel.com/
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://lore.kernel.org/r/20240104-module_loading_fix-v3-1-a71f8de6ce0f@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I2f0c1a96be61abd47018e5f0e55ee6e7f5e2b141
+---
+ arch/riscv/kernel/module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+index 862834bb1d64..5cf3a693482d 100644
+--- a/arch/riscv/kernel/module.c
++++ b/arch/riscv/kernel/module.c
+@@ -723,8 +723,8 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 
+ 			if (!bucket) {
+ 				kfree(entry);
+-				kfree(rel_head);
+ 				kfree(rel_head->rel_entry);
++				kfree(rel_head);
+ 				return -ENOMEM;
+ 			}
+ 
+-- 
+2.47.0
+

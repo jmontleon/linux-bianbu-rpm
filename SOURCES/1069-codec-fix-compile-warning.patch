@@ -1,0 +1,63 @@
+From 1cd3fac0fce235fe7c9f2f4611b341dffb574dc0 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 12 Aug 2024 11:26:31 +0800
+Subject: [PATCH 1069/1448] codec: fix compile warning
+
+Change-Id: I91cfab9aa3b2d8f1ebf127313d58351338ee2b7c
+---
+ sound/soc/spacemit/spacemit-snd-i2s.c     | 3 ++-
+ sound/soc/spacemit/spacemit-snd-pcm-dma.c | 6 ++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
+index 631d579867b8..d0a19656fea0 100644
+--- a/sound/soc/spacemit/spacemit-snd-i2s.c
++++ b/sound/soc/spacemit/spacemit-snd-i2s.c
+@@ -255,13 +255,14 @@ static int i2s_sspa_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct sspa_priv *sspa_priv = snd_soc_dai_get_drvdata(dai);
+ 	struct ssp_device *sspa = sspa_priv->sspa;
+ 	int ret = 0;
++	unsigned int ssp_top_cfg;
+ 
+ 	pr_debug("%s cmd=%d, cnt=%d\n", __FUNCTION__, cmd, sspa_priv->running_cnt);
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		unsigned int ssp_top_cfg = i2s_sspa_read_reg(sspa, TOP_CTRL);
++		ssp_top_cfg = i2s_sspa_read_reg(sspa, TOP_CTRL);
+ 		pr_debug("TOP_CTRL:0x%x", ssp_top_cfg);
+ 		ssp_top_cfg |= TOP_SSE;
+ 		i2s_sspa_write_reg(sspa, TOP_CTRL, ssp_top_cfg);   //SSP_enable
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+index c860dcf003c4..50fee6701fd9 100644
+--- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
++++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+@@ -625,13 +625,14 @@ static int spacemit_snd_pcm_open(struct snd_soc_component *component, struct snd
+ 	if (!component) {
+ 		pr_err("%s!! coundn't find component %s\n", __FUNCTION__, DRV_NAME);
+ 		ret = -1;
+-		goto unlock;
++		goto out;
+ 	}
+ 
+ 	dev = snd_soc_component_get_drvdata(component);
+ 	if (!dev) {
+ 		pr_err("%s!! get dev error\n", __FUNCTION__);
+-		return -1;
++		ret = -1;
++		goto out;
+ 	}
+ 	spin_lock_irqsave(&dev->lock, flags);
+ 
+@@ -659,6 +660,7 @@ static int spacemit_snd_pcm_open(struct snd_soc_component *component, struct snd
+ 	}
+ unlock:
+ 	spin_unlock_irqrestore(&dev->lock, flags);
++out:
+ 	pr_debug("%s exit dma_id=%d\n", __FUNCTION__, dmadata->dma_id);
+ 
+ 	return ret;
+-- 
+2.47.0
+

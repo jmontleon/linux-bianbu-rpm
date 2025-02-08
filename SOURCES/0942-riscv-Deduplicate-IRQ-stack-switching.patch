@@ -1,0 +1,215 @@
+From b896b2aa284c5eaec04e464ca66594fb76bd203f Mon Sep 17 00:00:00 2001
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Wed, 27 Sep 2023 22:48:00 +0000
+Subject: [PATCH 0942/1448] riscv: Deduplicate IRQ stack switching
+
+With CONFIG_IRQ_STACKS, we switch to a separate per-CPU IRQ stack
+before calling handle_riscv_irq or __do_softirq. We currently
+have duplicate inline assembly snippets for stack switching in
+both code paths. Now that we can access per-CPU variables in
+assembly, implement call_on_irq_stack in assembly, and use that
+instead of redundant inline assembly.
+
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Guo Ren <guoren@kernel.org>
+Link: https://lore.kernel.org/r/20230927224757.1154247-10-samitolvanen@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: If56a585b7e3e7cc2ae9875dea084db3df52e8f1b
+---
+ arch/riscv/include/asm/asm.h       |  5 ++++
+ arch/riscv/include/asm/irq_stack.h |  3 +++
+ arch/riscv/kernel/asm-offsets.c    |  5 ++++
+ arch/riscv/kernel/entry.S          | 30 ++++++++++++++++++++++++
+ arch/riscv/kernel/irq.c            | 37 ++++++++----------------------
+ arch/riscv/kernel/traps.c          | 32 ++++----------------------
+ 6 files changed, 56 insertions(+), 56 deletions(-)
+
+diff --git a/arch/riscv/include/asm/asm.h b/arch/riscv/include/asm/asm.h
+index b5b84c6be01e..2e2ec10eb0e0 100644
+--- a/arch/riscv/include/asm/asm.h
++++ b/arch/riscv/include/asm/asm.h
+@@ -104,6 +104,11 @@
+ .endm
+ #endif /* CONFIG_SMP */
+ 
++.macro load_per_cpu dst ptr tmp
++	asm_per_cpu \dst \ptr \tmp
++	REG_L \dst, 0(\dst)
++.endm
++
+ 	/* save all GPs except x1 ~ x5 */
+ 	.macro save_from_x6_to_x31
+ 	REG_S x6,  PT_T1(sp)
+diff --git a/arch/riscv/include/asm/irq_stack.h b/arch/riscv/include/asm/irq_stack.h
+index e4042d297580..6441ded3b0cf 100644
+--- a/arch/riscv/include/asm/irq_stack.h
++++ b/arch/riscv/include/asm/irq_stack.h
+@@ -12,6 +12,9 @@
+ 
+ DECLARE_PER_CPU(ulong *, irq_stack_ptr);
+ 
++asmlinkage void call_on_irq_stack(struct pt_regs *regs,
++				  void (*func)(struct pt_regs *));
++
+ #ifdef CONFIG_VMAP_STACK
+ /*
+  * To ensure that VMAP'd stack overflow detection works correctly, all VMAP'd
+diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
+index 6a992cba2f28..e7bf7419a317 100644
+--- a/arch/riscv/kernel/asm-offsets.c
++++ b/arch/riscv/kernel/asm-offsets.c
+@@ -12,6 +12,7 @@
+ #include <asm/thread_info.h>
+ #include <asm/ptrace.h>
+ #include <asm/cpu_ops_sbi.h>
++#include <asm/stacktrace.h>
+ #include <asm/suspend.h>
+ 
+ void asm_offsets(void);
+@@ -478,4 +479,8 @@ void asm_offsets(void)
+ 	OFFSET(KERNEL_MAP_VIRT_ADDR, kernel_mapping, virt_addr);
+ 	OFFSET(SBI_HART_BOOT_TASK_PTR_OFFSET, sbi_hart_boot_data, task_ptr);
+ 	OFFSET(SBI_HART_BOOT_STACK_PTR_OFFSET, sbi_hart_boot_data, stack_ptr);
++
++	DEFINE(STACKFRAME_SIZE_ON_STACK, ALIGN(sizeof(struct stackframe), STACK_ALIGN));
++	OFFSET(STACKFRAME_FP, stackframe, fp);
++	OFFSET(STACKFRAME_RA, stackframe, ra);
+ }
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 1f90fee24a8b..5aa3005ddad5 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -223,6 +223,36 @@ SYM_CODE_START(ret_from_fork)
+ 	j ret_from_exception
+ SYM_CODE_END(ret_from_fork)
+ 
++#ifdef CONFIG_IRQ_STACKS
++/*
++ * void call_on_irq_stack(struct pt_regs *regs,
++ * 		          void (*func)(struct pt_regs *));
++ *
++ * Calls func(regs) using the per-CPU IRQ stack.
++ */
++SYM_FUNC_START(call_on_irq_stack)
++	/* Create a frame record to save ra and s0 (fp) */
++	addi	sp, sp, -STACKFRAME_SIZE_ON_STACK
++	REG_S	ra, STACKFRAME_RA(sp)
++	REG_S	s0, STACKFRAME_FP(sp)
++	addi	s0, sp, STACKFRAME_SIZE_ON_STACK
++
++	/* Switch to the per-CPU IRQ stack and call the handler */
++	load_per_cpu t0, irq_stack_ptr, t1
++	li	t1, IRQ_STACK_SIZE
++	add	sp, t0, t1
++	jalr	a1
++
++	/* Switch back to the thread stack and restore ra and s0 */
++	addi	sp, s0, -STACKFRAME_SIZE_ON_STACK
++	REG_L	ra, STACKFRAME_RA(sp)
++	REG_L	s0, STACKFRAME_FP(sp)
++	addi	sp, sp, STACKFRAME_SIZE_ON_STACK
++
++	ret
++SYM_FUNC_END(call_on_irq_stack)
++#endif /* CONFIG_IRQ_STACKS */
++
+ /*
+  * Integer register context switch
+  * The callee-saved registers must be saved and restored.
+diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
+index 9cc0a7669271..809b99b48bc0 100644
+--- a/arch/riscv/kernel/irq.c
++++ b/arch/riscv/kernel/irq.c
+@@ -60,36 +60,17 @@ static void init_irq_stacks(void)
+ }
+ #endif /* CONFIG_VMAP_STACK */
+ 
+-#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK
++#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
++static void ___do_softirq(struct pt_regs *regs)
++{
++	__do_softirq();
++}
++
+ void do_softirq_own_stack(void)
+ {
+-#ifdef CONFIG_IRQ_STACKS
+-	if (on_thread_stack()) {
+-		ulong *sp = per_cpu(irq_stack_ptr, smp_processor_id())
+-					+ IRQ_STACK_SIZE/sizeof(ulong);
+-		__asm__ __volatile(
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  ra, (sp)		\n"
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  s0, (sp)		\n"
+-		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
+-		"move	sp, %[sp]		\n"
+-		"call	__do_softirq		\n"
+-		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
+-		REG_L"  s0, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		REG_L"  ra, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		:
+-		: [sp] "r" (sp)
+-		: "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
+-		  "t0", "t1", "t2", "t3", "t4", "t5", "t6",
+-#ifndef CONFIG_FRAME_POINTER
+-		  "s0",
+-#endif
+-		  "memory");
+-	} else
+-#endif
++	if (on_thread_stack())
++		call_on_irq_stack(NULL, ___do_softirq);
++	else
+ 		__do_softirq();
+ }
+ #endif /* CONFIG_SOFTIRQ_ON_OWN_STACK */
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 8a5acdef1fbd..d3b29e15c161 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -369,34 +369,10 @@ static void noinstr handle_riscv_irq(struct pt_regs *regs)
+ asmlinkage void noinstr do_irq(struct pt_regs *regs)
+ {
+ 	irqentry_state_t state = irqentry_enter(regs);
+-#ifdef CONFIG_IRQ_STACKS
+-	if (on_thread_stack()) {
+-		ulong *sp = per_cpu(irq_stack_ptr, smp_processor_id())
+-					+ IRQ_STACK_SIZE/sizeof(ulong);
+-		__asm__ __volatile(
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  ra, (sp)		\n"
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  s0, (sp)		\n"
+-		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
+-		"move	sp, %[sp]		\n"
+-		"move	a0, %[regs]		\n"
+-		"call	handle_riscv_irq	\n"
+-		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
+-		REG_L"  s0, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		REG_L"  ra, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		:
+-		: [sp] "r" (sp), [regs] "r" (regs)
+-		: "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
+-		  "t0", "t1", "t2", "t3", "t4", "t5", "t6",
+-#ifndef CONFIG_FRAME_POINTER
+-		  "s0",
+-#endif
+-		  "memory");
+-	} else
+-#endif
++
++	if (IS_ENABLED(CONFIG_IRQ_STACKS) && on_thread_stack())
++		call_on_irq_stack(regs, handle_riscv_irq);
++	else
+ 		handle_riscv_irq(regs);
+ 
+ 	irqentry_exit(regs, state);
+-- 
+2.47.0
+

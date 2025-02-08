@@ -1,0 +1,40 @@
+From 2c4885b7836e4171b561192a48c754a50d3dd9d9 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Thu, 28 Nov 2024 20:03:43 +0800
+Subject: [PATCH 1317/1448] defconfig: update k1_defconfig
+
+Change-Id: Ibb47a473296efe9e35444fb1f33392e8223fc10b
+---
+ arch/riscv/configs/k1_defconfig | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 3804f1ade26d..17e9109bab80 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -687,6 +687,7 @@ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_UINPUT=y
+ CONFIG_INPUT_SPACEMIT_POWERKEY=y
+ CONFIG_HALL_SENSOR_AS1911=y
++# CONFIG_LEGACY_PTYS is not set
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_SERIAL_PXA=y
+ CONFIG_SERIAL_PXA_SPACEMIT_K1X=y
+@@ -1321,14 +1322,3 @@ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_RCU_TRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
+-CONFIG_TTY=y
+-CONFIG_VT=y
+-CONFIG_CONSOLE_TRANSLATIONS=y
+-CONFIG_VT_CONSOLE=y
+-CONFIG_VT_CONSOLE_SLEEP=y
+-CONFIG_HW_CONSOLE=y
+-CONFIG_VT_HW_CONSOLE_BINDING=y
+-CONFIG_UNIX98_PTYS=y
+-# CONFIG_LEGACY_PTYS is not set
+-CONFIG_LEGACY_TIOCSTI=y
+-CONFIG_LDISC_AUTOLOAD=y
+-- 
+2.47.0
+

@@ -1,0 +1,92 @@
+From 360e822cdff70dc9b96e12e91c6eb67567c7067d Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Fri, 6 Dec 2024 09:32:19 +0800
+Subject: [PATCH 1406/1448] i2c: fix i2c transfer timeout when irq thread
+
+The irq thread will set ONESHOT flag.
+1. When the interruption occurs, the corresponding interrupt will be masked,
+2. After the interrupt handler finishes, the corresponding interrupt will be unmasked.
+3. However, in the case of an exception, the corresponding interrupt will not be unmasked.
+eg:
+CPU0                                                CPU1
+    irq_finalize_oneshot() {                        spacemit_i2c_xfer() {
+	  ...                                              wait_for_completion_timeout()
+                                                           disable_irq(spacemit_i2c->irq);
+	  if (!desc->threads_oneshot &&                    ...
+	  !irqd_irq_disabled(&desc->irq_data) &&
+	  irqd_irq_masked(&desc->irq_data))
+		unmask_threaded_irq(desc);           }
+	  ...
+	}
+
+Change-Id: If6393fdfb781b535b8da2fc26b08bbffff984365
+---
+ drivers/i2c/busses/i2c-k1x.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
+index f1761704f182..006f396888b9 100644
+--- a/drivers/i2c/busses/i2c-k1x.c
++++ b/drivers/i2c/busses/i2c-k1x.c
+@@ -1337,12 +1337,11 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)
+ 	reinit_completion(&spacemit_i2c->complete);
+ 
+ 	spacemit_i2c_enable(spacemit_i2c);
+-	enable_irq(spacemit_i2c->irq);
+ 
+ 	/* i2c wait for bus busy */
+ 	ret = spacemit_i2c_recover_bus_busy(spacemit_i2c);
+ 	if (unlikely(ret))
+-		goto err_recover;
++		goto timeout_xfex;
+ 
+ 	/* i2c msg transmit */
+ 	if (likely(spacemit_i2c->xfer_mode == SPACEMIT_I2C_MODE_INTERRUPT))
+@@ -1367,8 +1366,6 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)
+ 							spacemit_i2c->timeout);
+ 		if (unlikely(time_left == 0)) {
+ 			dev_alert(spacemit_i2c->dev, "msg completion timeout\n");
+-			synchronize_irq(spacemit_i2c->irq);
+-			disable_irq(spacemit_i2c->irq);
+ 			spacemit_i2c_bus_reset(spacemit_i2c);
+ 			spacemit_i2c_reset(spacemit_i2c);
+ 			ret = -ETIMEDOUT;
+@@ -1380,9 +1377,6 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)
+ 	if (likely(!ret))
+ 		spacemit_i2c_check_bus_release(spacemit_i2c);
+ 
+-err_recover:
+-	disable_irq(spacemit_i2c->irq);
+-
+ timeout_xfex:
+ 	/* disable spacemit i2c */
+ 	spacemit_i2c_disable(spacemit_i2c);
+@@ -1728,7 +1722,6 @@ static int spacemit_i2c_reg_slave(struct i2c_client *slave)
+ 
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_SAR, slave->addr);
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_CR, SPACEMIT_I2C_SLAVE_CRINIT);
+-	enable_irq(spacemit_i2c->irq);
+ 
+ 	return 0;
+ }
+@@ -1739,8 +1732,6 @@ static int spacemit_i2c_unreg_slave(struct i2c_client *slave)
+ 
+ 	WARN_ON(!spacemit_i2c->slave);
+ 
+-	disable_irq(spacemit_i2c->irq);
+-
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_CR, 0);
+ 	/* clear slave address */
+ 	spacemit_i2c_write_reg(spacemit_i2c, REG_SAR, 0);
+@@ -1928,7 +1919,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
+ 		}
+ 
+ 		ret = devm_request_irq(spacemit_i2c->dev, spacemit_i2c->irq, spacemit_i2c_int_handler,
+-				IRQF_NO_SUSPEND | IRQF_NO_AUTOEN,
++				IRQF_NO_SUSPEND,
+ 				dev_name(spacemit_i2c->dev), spacemit_i2c);
+ 		if (ret) {
+ 			dev_err(spacemit_i2c->dev, "failed to request irq\n");
+-- 
+2.47.0
+

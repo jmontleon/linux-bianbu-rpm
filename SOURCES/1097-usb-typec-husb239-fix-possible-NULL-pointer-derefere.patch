@@ -1,0 +1,28 @@
+From 48c3ba1f292cebfa180e498017ef6971382abafe Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Fri, 23 Aug 2024 09:36:50 +0800
+Subject: [PATCH 1097/1448] usb: typec: husb239: fix possible NULL pointer
+ dereference when detecting orient
+
+Change-Id: I39dee89494b729db70c7e78d1b66cc10dcafed05
+---
+ drivers/usb/typec/husb239.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
+index ce26f53fa713..4c0b565c40d8 100644
+--- a/drivers/usb/typec/husb239.c
++++ b/drivers/usb/typec/husb239.c
+@@ -301,6 +301,9 @@ static int husb239_get_cc_orientation(struct husb239 *husb239)
+ 	enum typec_orientation orientation;
+ 	int ret, status;
+ 
++	if (IS_ERR_OR_NULL(sw_dev))
++		return 0;
++
+ 	ret = regmap_read(husb239->regmap, HUSB239_REG_STATUS, &status);
+ 	if (ret)
+ 		return ret;
+-- 
+2.47.0
+

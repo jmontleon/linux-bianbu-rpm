@@ -1,0 +1,63 @@
+From 6b31b4451bfa7dcef610f67a4ead638c04c3f878 Mon Sep 17 00:00:00 2001
+From: Tsukasa OI <research_trasio@irq.a4lg.com>
+Date: Wed, 26 Jul 2023 05:44:16 +0000
+Subject: [PATCH 0812/1448] RISC-V: clarify the QEMU workaround in ISA parser
+
+Extensions prefixed with "Su" won't corrupt the workaround in many
+cases.  The only exception is when the first multi-letter extension in the
+ISA string begins with "Su" and is not prefixed with an underscore.
+
+For instance, following ISA string can confuse this QEMU workaround.
+
+*   "rv64imacsuclic" (RV64I + M + A + C + "Suclic")
+
+However, this case is very unlikely because extensions prefixed by either
+"Z", "Sm" or "Ss" will most likely precede first.
+
+For instance, the "Suclic" extension (draft as of now) will be placed after
+related "Smclic" and "Ssclic" extensions.  It's also highly likely that
+other unprivileged extensions like "Zba" will precede.
+
+It's also possible to suppress the issue in the QEMU workaround with an
+underscore.  Following ISA string won't confuse the QEMU workaround.
+
+*   "rv64imac_suclic" (RV64I + M + A + C + delimited "Suclic")
+
+This fix is to tell kernel developers the nature of this workaround
+precisely.  There are some "Su*" extensions to be ratified but don't worry
+about this workaround too much.
+
+This commit comes with other minor editorial fixes (for minor wording and
+spacing issues, without changing the meaning).
+
+Signed-off-by: Tsukasa OI <research_trasio@irq.a4lg.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://lore.kernel.org/r/8a127608cf6194a6d288289f2520bd1744b81437.1690350252.git.research_trasio@irq.a4lg.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: I177da5feb1528c968d1f61c20a53a2237190a5d9
+---
+ arch/riscv/kernel/cpufeature.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 6e0ffafcb4b4..d215d8510fef 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -234,10 +234,11 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+ 		switch (*ext) {
+ 		case 's':
+ 			/*
+-			 * Workaround for invalid single-letter 's' & 'u'(QEMU).
++			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
+ 			 * No need to set the bit in riscv_isa as 's' & 'u' are
+-			 * not valid ISA extensions. It works until multi-letter
+-			 * extension starting with "Su" appears.
++			 * not valid ISA extensions. It works unless the first
++			 * multi-letter extension in the ISA string begins with
++			 * "Su" and is not prefixed with an underscore.
+ 			 */
+ 			if (ext[-1] != '_' && ext[1] == 'u') {
+ 				++isa;
+-- 
+2.47.0
+

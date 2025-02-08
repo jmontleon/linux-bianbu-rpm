@@ -1,0 +1,65 @@
+From fd50ddd23a257d3692c4d95fd92e6d798eb5918d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
+Date: Tue, 19 Mar 2024 09:46:36 +0800
+Subject: [PATCH 0505/1448] aud: limit i2s audio params
+
+Change-Id: I71b23b4847bd9ce06f2aa50f6fc005a5017b5674
+---
+ sound/soc/spacemit/spacemit-snd-card.c    | 6 ++----
+ sound/soc/spacemit/spacemit-snd-pcm-dma.c | 6 ++++++
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
+index 6496050fa99b..98b4ade6cc7c 100644
+--- a/sound/soc/spacemit/spacemit-snd-card.c
++++ b/sound/soc/spacemit/spacemit-snd-card.c
+@@ -78,7 +78,7 @@ static struct snd_soc_dai_link spacemit_snd_es8326_dai_links[] = {
+ };
+ 
+ static struct snd_soc_card spacemit_snd_card_es8326 = {
+-	.name = "spacemit-snd-es8326",
++	.name = "snd-es8326",
+ 	.owner = THIS_MODULE,
+ };
+ 
+@@ -93,7 +93,7 @@ static struct snd_soc_dai_link spacemit_snd_hdmi_dai_links[] = {
+ };
+ 
+ static struct snd_soc_card spacemit_snd_card_hdmi = {
+-	.name = "spacemit-snd-hdmi",
++	.name = "snd-hdmi",
+ 	.owner = THIS_MODULE,
+ };
+ 
+@@ -115,11 +115,9 @@ static int spacemit_snd_pdev_probe(struct platform_device *pdev)
+ 		return 0;
+ 	}
+ 	spacemit_snd_card->dev = &pdev->dev;
+-	printk("spacemit %s\n", __func__);
+ 	platform_set_drvdata(pdev, spacemit_snd_card);
+ 
+ 	ret =  devm_snd_soc_register_card(&pdev->dev, spacemit_snd_card);
+-	printk("spacemit %s, register card ret = %d\n", __func__,ret);
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+index b82908733c4d..a87c8d612a53 100755
+--- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
++++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
+@@ -114,6 +114,12 @@ static const struct snd_pcm_hardware spacemit_snd_pcm_hardware = {
+ 	.info		  = SNDRV_PCM_INFO_INTERLEAVED |
+ 			    SNDRV_PCM_INFO_BATCH |
+ 			    SNDRV_PCM_INFO_PAUSE,
++	.formats          = SNDRV_PCM_FMTBIT_S16_LE,
++	.rates            = SNDRV_PCM_RATE_48000,
++	.rate_min         = SNDRV_PCM_RATE_48000,
++	.rate_max         = SNDRV_PCM_RATE_48000,
++	.channels_min     = 2,
++	.channels_max     = 2,
+ 	.buffer_bytes_max = 64 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
+-- 
+2.47.0
+

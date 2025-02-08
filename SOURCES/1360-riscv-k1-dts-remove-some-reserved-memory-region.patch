@@ -1,0 +1,70 @@
+From 5833290d8c36361c7ee395af21bbaffbfa7f3b02 Mon Sep 17 00:00:00 2001
+From: zhangmeng <zhangmeng.kevin@spacemit.com>
+Date: Sat, 14 Dec 2024 17:03:09 +0800
+Subject: [PATCH 1360/1448] riscv: k1/dts: remove some reserved memory region
+
+if boot kernel with EFI stub, there will be an extra memory node:
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000000000-0x000000000007ffff]
+[    0.000000]   node   0: [mem 0x0000000000080000-0x000000002ff3ffff]
+[    0.000000]   node   0: [mem 0x000000002ff40000-0x000000003033ffff]
+[    0.000000]   node   0: [mem 0x0000000030340000-0x000000007dd89fff]
+[    0.000000]   node   0: [mem 0x000000007dd8a000-0x000000007dd8afff]
+[    0.000000]   node   0: [mem 0x000000007dd8b000-0x000000007dd8dfff]
+[    0.000000]   node   0: [mem 0x000000007dd8e000-0x000000007dd8efff]
+[    0.000000]   node   0: [mem 0x000000007dd8f000-0x000000007dd8ffff]
+[    0.000000]   node   0: [mem 0x000000007dd90000-0x000000007dd91fff]
+[    0.000000]   node   0: [mem 0x000000007dd92000-0x000000007dd92fff]
+[    0.000000]   node   0: [mem 0x000000007dd93000-0x000000007dd96fff]
+[    0.000000]   node   0: [mem 0x000000007dd97000-0x000000007eea9fff]
+[    0.000000]   node   0: [mem 0x000000007eeaa000-0x000000007eeaafff]
+[    0.000000]   node   0: [mem 0x000000007eeab000-0x000000007fffffff]
+[    0.000000]   node   0: [mem 0x0000000080000000-0x00000000ffffffff]
+[    0.000000]   node   0: [mem 0x0000000100000000-0x000000027fffffff]
+then, there will be a erron on pcie memory region request as:
+[    1.707902] k1x-dwc-pcie ca400000.pcie: host bridge /soc/pcie@ca400000 ranges:
+[    1.712906] k1x-dwc-pcie ca400000.pcie:       IO 0x009f002000..0x009f101fff -> 0x009f002000
+[    1.721222] k1x-dwc-pcie ca400000.pcie:      MEM 0x0090000000..0x009effffff -> 0x0090000000
+[    1.729552] k1x-dwc-pcie ca400000.pcie: resource collision: [mem 0x90000000-0x9effffff] conflicts with Reserved [mem 0x80000000-0xffffffff]
+[    1.742043] k1x-dwc-pcie ca400000.pcie: failed to initialize host
+[    1.748150] k1x-dwc-pcie: probe of ca400000.pcie failed with error -12
+
+Change-Id: Ie54d4dcc675ca9bb0a03ee82d7dee6d59ef602c1
+Signed-off-by: zhangmeng <zhangmeng.kevin@spacemit.com>
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 58302902dcb7..9c67ba71ccdf 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -422,12 +422,6 @@ reserved-memory {
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		area_reserved@80000000 {
+-			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */
+-			reg = <0x0 0x80000000 0x0 0x40800000>;
+-			no-map;
+-		};
+-
+ 		/* sram area, used for rcpu code & data & heap space */
+ 		rcpu_mem_0: mem@c0800000 {
+ 			reg = <0x0 0xc0800000 0x0 0x40000>;
+@@ -435,12 +429,6 @@ rcpu_mem_0: mem@c0800000 {
+ 			no-map;
+ 		};
+ 
+-		area_reserved@c0840000 {
+-			/* dram area is 0~2GB, and 4GB~, the 2GB~4GB is io area */
+-			reg = <0x0 0xc0840000 0x0 0x3f7c0000>;
+-			no-map;
+-		};
+-
+ 		/* rcpu's heap */
+ 		rcpu_mem_heap: rcpu_mem_heap@30000000 {
+ 			reg = <0x0 0x30000000 0x0 0x200000>;
+-- 
+2.47.0
+

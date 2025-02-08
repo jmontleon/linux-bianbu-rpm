@@ -1,0 +1,38 @@
+From ce8b8023dde37fc15bb97dd37de738587d8a9f0c Mon Sep 17 00:00:00 2001
+From: huzhen <george.hu@spacemit.com>
+Date: Tue, 26 Mar 2024 14:40:41 +0800
+Subject: [PATCH 0540/1448] eth: change the range of dma to range1
+
+  As the dma of gmac can access 32 bit range, so it can access
+  phy addr 4G~6G(dram 2G~4G).
+
+Change-Id: Ic0512ad05b87381abc7741a4faff40b7b8a348ad
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 2b9ec3841065..0d63d8a12afb 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1596,7 +1596,7 @@ eth0: ethernet@cac80000 {
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+-			interconnects = <&dram_range0>;
++			interconnects = <&dram_range1>;
+ 			interconnect-names = "dma-mem";
+ 			status = "disabled";
+ 		};
+@@ -1618,7 +1618,7 @@ eth1: ethernet@cac81000 {
+ 			ptp-support;
+ 			ptp-clk-rate = <10000000>;
+ 			lpm-qos = <7>;
+-			interconnects = <&dram_range0>;
++			interconnects = <&dram_range1>;
+ 			interconnect-names = "dma-mem";
+ 			status = "disabled";
+ 		};
+-- 
+2.47.0
+

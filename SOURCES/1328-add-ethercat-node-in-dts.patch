@@ -1,0 +1,35 @@
+From b61576e0cad79314ce1f395017bb8d4be724899a Mon Sep 17 00:00:00 2001
+From: zengyu <yu.zeng@spacemit.com>
+Date: Fri, 29 Nov 2024 18:56:30 +0800
+Subject: [PATCH 1328/1448] add ethercat node in dts
+
+Change-Id: Ibceb82d2cecfbfe076f57ebdc1ddb9a6495b7ea3
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 09240ec6032d..23ab4a75001b 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1901,6 +1901,17 @@ gcb3: gpio3 {
+ 			};
+ 		};
+ 
++		ec_master: ethercat_master {
++			compatible = "igh,k1x-ec-master";
++			run-on-cpu = <1>;
++			debug-level = <0>;
++			master-count = <2>;
++			ec-devices = <&eth0>,<&eth1>;
++			master-indexes = <0>,<0>;
++			modes = "ec_main","ec_backup";
++			status = "disable";
++		};
++
+ 		eth0: ethernet@cac80000 {
+ 			compatible = "spacemit,k1x-emac";
+ 			reg = <0x00000000 0xCAC80000 0x00000000 0x00000420>;
+-- 
+2.47.0
+

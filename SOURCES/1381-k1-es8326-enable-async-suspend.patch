@@ -1,0 +1,25 @@
+From 15512fe7567ce2f7664472b28f1d8a007e5be177 Mon Sep 17 00:00:00 2001
+From: Nell <xianbin.zhu@spacemit.com>
+Date: Fri, 20 Dec 2024 15:08:32 +0800
+Subject: [PATCH 1381/1448] k1:es8326: enable async suspend
+
+Change-Id: I09ed9b70bdb7b83e28120ff1d467eccbeaf272e3
+---
+ sound/soc/codecs/es8326.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 2c9ebd82d6d5..11887483e052 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -1647,6 +1647,7 @@ static int es8326_i2c_probe(struct i2c_client *i2c)
+ 		dev_err(&i2c->dev, "unable to enable mclk\n");
+ 		return ret;
+ 	}
++	device_enable_async_suspend(&i2c->dev);
+ 	return devm_snd_soc_register_component(&i2c->dev,
+ 					&soc_component_dev_es8326,
+ 					&es8326_dai, 1);
+-- 
+2.47.0
+

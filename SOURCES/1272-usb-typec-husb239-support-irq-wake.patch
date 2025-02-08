@@ -1,0 +1,198 @@
+From c76c36c6eb15a5f650016f72fac9e5b16c40491a Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Wed, 6 Nov 2024 13:54:16 +0800
+Subject: [PATCH 1272/1448] usb: typec: husb239: support irq wake
+
+Change-Id: Ia99ee11a04f8d4522ec5f064262b961da2fac9c5
+---
+ .../dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts  | 13 +++++--
+ .../boot/dts/spacemit/k1-x_MUSE-Paper.dts     | 37 ++++++++++++-------
+ drivers/usb/typec/husb239.c                   | 14 ++++++-
+ 3 files changed, 47 insertions(+), 17 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+index 9d1a954053c2..a695fcc66bf7 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
+@@ -358,7 +358,11 @@ husb239_u2: tcpc@42 {
+ 		compatible = "hynetek,husb239";
+ 		reg = <0x42>;
+ 		vbus-gpios = <&gpio 124 0>;
+-		int-gpio = <&gpio 78 0>;
++		interrupt-parent = <&pinctrl>;
++		interrupts = <316>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_husb239_u2>;
++		//wakeup-source;
+ 		status = "okay";
+ 
+ 		ports {
+@@ -692,7 +696,6 @@ &range PRI_TCK  1 (MUX_MODE1 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
+ 		&range PRI_TDO  1 (MUX_MODE1 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_74  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_76  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+-		&range GPIO_78  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range GPIO_80  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+ 		&range GPIO_81  3 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_89  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+@@ -724,6 +727,11 @@ K1X_PADCONF(MMC1_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))	/* mmc1_
+ 		>;
+ 	};
+ 
++	pinctrl_husb239_u2: husb239_u2_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_78, MUX_MODE0, (EDGE_FALL | PULL_UP | PAD_3V_DS2))
++		>;
++	};
+ };
+ 
+ &gpio{
+@@ -737,7 +745,6 @@ &pinctrl 63  GPIO_63  5
+ 		&pinctrl 70  PRI_TDI  4
+ 		&pinctrl 74  GPIO_74  1
+ 		&pinctrl 76  GPIO_76  1
+-		&pinctrl 78  GPIO_78  1
+ 		&pinctrl 80  GPIO_80  4
+ 		&pinctrl 89  GPIO_89  4
+ 		&pinctrl 96  DVL0     2
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+index f5319848a118..2a8c0a0f7585 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
+@@ -381,8 +381,12 @@ husb239_u2: tcpc@62 {
+ 		vbus-gpios = <&gpio 14 0>,
+ 				<&gpio 92 0>;
+ 		chg-gpio = <&gpio 13 0>;
+-		int-gpio = <&gpio 06 0>;
+-		status = "disabled";
++		interrupt-parent = <&pinctrl>;
++		interrupts = <28>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_husb239_u2>;
++		wakeup-source;
++		status = "okay";
+ 
+ 		ports {
+ 			#address-cells = <0x1>;
+@@ -403,12 +407,16 @@ husb239_u3: tcpc@42 {
+ 		vbus-gpios = <&gpio 89 0>,
+ 				<&gpio 124 0>;
+ 		chg-gpio = <&gpio 04 0>;
+-		int-gpio = <&gpio 01 0>;
+ 		aud-gpio = <&gpio 86 0>;
+ 		mic-gpio = <&gpio 79 0>;
+ 		orient-oe-gpio  = <&gpio 48 0>;
+ 		orient-sel-gpio = <&gpio 78 0>;
+ 		orientation;
++		interrupt-parent = <&pinctrl>;
++		interrupts = <8>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_husb239_u3>;
++		wakeup-source;
+ 		status = "okay";
+ 
+ 		ports {
+@@ -767,8 +775,7 @@ pri_sgm4154x: pri-sgm4154x@1a {
+ 
+ &pinctrl {
+ 	pinctrl-single,gpio-range = <
+-		&range GPIO_01  4 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+-		&range GPIO_06  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
++		&range GPIO_02  3 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_13  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
+ 		&range GPIO_48  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_3V_DS4)
+ 		&range GPIO_49  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
+@@ -820,12 +827,22 @@ K1X_PADCONF(MMC1_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))	/* mmc1_
+ 		>;
+ 	};
+ 
++	pinctrl_husb239_u2: husb239_u2_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_06, MUX_MODE0, (EDGE_FALL | PULL_UP | PAD_1V8_DS2))
++		>;
++	};
++
++	pinctrl_husb239_u3: husb239_u3_grp {
++		pinctrl-single,pins =<
++			K1X_PADCONF(GPIO_01, MUX_MODE0, (EDGE_FALL | PULL_UP | PAD_1V8_DS2))
++		>;
++	};
+ };
+ 
+ &gpio{
+ 	gpio-ranges = <
+-		&pinctrl 01  GPIO_01  4
+-		&pinctrl 06  GPIO_06  1
++		&pinctrl 02  GPIO_02  3
+ 		&pinctrl 13  GPIO_13  2
+ 		&pinctrl 48  GPIO_48  3
+ 		&pinctrl 58  GPIO_58  1
+@@ -945,12 +962,6 @@ &udc {
+ 	status = "okay";
+ };
+ 
+-&ehci {
+-	spacemit,reset-on-resume;
+-	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+-	status = "disabled";
+-};
+-
+ &otg {
+ 	spacemit,udc-mode = <MV_USB_MODE_OTG>;
+ 	usb-role-switch;
+diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
+index 340f50855b2c..a7cf95544bd9 100644
+--- a/drivers/usb/typec/husb239.c
++++ b/drivers/usb/typec/husb239.c
+@@ -18,6 +18,7 @@
+ #include <linux/usb/typec_mux.h>
+ #include <linux/delay.h>
+ #include <linux/power_supply.h>
++#include <linux/pm_wakeirq.h>
+ #include "mux.h"
+ #include <soc/spacemit/spacemit_panel.h>
+ 
+@@ -744,6 +745,7 @@ static irqreturn_t husb239_irq_handler(int irq, void *data)
+ 	struct husb239 *husb239 = (struct husb239 *)data;
+ 
+ 	disable_irq_nosync(husb239->gpio_irq);
++	pm_wakeup_event(husb239->dev, 0);
+ 	queue_work(husb239->workqueue, &husb239->work);
+ 
+ 	return IRQ_HANDLED;
+@@ -773,7 +775,7 @@ static int husb239_irq_init(struct husb239 *husb239)
+ 
+ 	ret = devm_request_threaded_irq(husb239->dev, husb239->gpio_irq, NULL,
+ 				husb239_irq_handler,
+-				IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_NO_SUSPEND,
+ 				"husb239", husb239);
+ 	if (ret){
+ 		dev_err(husb239->dev, "failed to request threaded irq\n");
+@@ -1157,6 +1159,11 @@ static int husb239_probe(struct i2c_client *client)
+ 		goto err_unreg_switch;
+ 	}
+ 
++	if (of_property_read_bool(husb239->dev->of_node, "wakeup-source")) {
++		device_init_wakeup(husb239->dev, true);
++		dev_pm_set_wake_irq(husb239->dev, husb239->gpio_irq);
++	}
++
+ 	return 0;
+ 
+ err_unreg_switch:
+@@ -1175,6 +1182,11 @@ static void husb239_remove(struct i2c_client *client)
+ 	if (husb239->workqueue)
+ 		destroy_workqueue(husb239->workqueue);
+ 
++	if (device_may_wakeup(husb239->dev)) {
++		dev_pm_clear_wake_irq(husb239->dev);
++		device_init_wakeup(husb239->dev, false);
++	}
++
+ 	typec_switch_unregister(info->sw);
+ 	typec_unregister_port(info->port);
+ 	usb_role_switch_put(info->role_sw);
+-- 
+2.47.0
+

@@ -1,0 +1,30 @@
+From 713a26a5bff83d2a6243c2ecde724e59f4900ea8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Mon, 20 May 2024 14:37:42 +0800
+Subject: [PATCH 0714/1448] usb: xhci-plat: read reset-on-resume from device
+ property
+
+Change-Id: If185d41fc0f52b2d32450a119e3e2d5a4238876f
+---
+ drivers/usb/host/xhci-plat.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index 3cabc92114ac..c6ceb48a8bef 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -253,6 +253,11 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
+ 		if (device_property_read_bool(tmpdev, "xhci-sg-trb-cache-size-quirk"))
+ 			xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
+ 
++		#if defined(CONFIG_SOC_SPACEMIT_K1X)
++		if (device_property_read_bool(tmpdev, "reset-on-resume"))
++			xhci->quirks |= XHCI_RESET_ON_RESUME;
++		#endif
++
+ 		device_property_read_u32(tmpdev, "imod-interval-ns",
+ 					 &xhci->imod_interval);
+ 	}
+-- 
+2.47.0
+

@@ -1,0 +1,27 @@
+From 549853b9b8a59617bb34e0bb44f97bfa64909e5a Mon Sep 17 00:00:00 2001
+From: wancong <wancong@spacemit.com>
+Date: Fri, 1 Mar 2024 11:22:21 +0800
+Subject: [PATCH 0462/1448] k1: open hid configs
+
+Change-Id: I9708d4f7325ddaa82b8ec88294fc8314405e3ab7
+---
+ arch/riscv/configs/k1_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index b895eaeaf2bf..de15c6b05316 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -553,7 +553,9 @@ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SOC_SPACEMIT=y
++CONFIG_HID_MULTITOUCH=y
+ CONFIG_USB_HIDDEV=y
++CONFIG_I2C_HID_OF=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+-- 
+2.47.0
+

@@ -1,0 +1,36 @@
+From fd03c4b54673aa9de333d9c81ba3d303bb615a16 Mon Sep 17 00:00:00 2001
+From: yanhaodong <haodong.yan@spacemit.com>
+Date: Thu, 21 Nov 2024 22:47:42 +0800
+Subject: [PATCH 1299/1448] k1x:ZT001H support focaltect device
+
+Change-Id: Ic2805a4ebbd23b3500b86ffb78c7513817dbd625
+---
+ arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts b/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
+index 246f6d712b4a..805b39e04098 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
++++ b/arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
+@@ -295,6 +295,18 @@ &i2c5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c5_0>;
+ 	status = "okay";
++
++	focaltech@38{
++                compatible = "focaltech,fts";
++                reg = <0x38>;
++                interrupt-parent = <&gpio>;
++                interrupts = <29 0x02>;
++                vdd-supply = <&ldo_11>;
++                focaltech,reset-gpio = <&gpio 32 0x01>;
++                focaltech,irq-gpio = <&gpio 29 0x02>;
++                focaltech,max-touch-number = <10>;
++                focaltech,display-coords =  <0 0 800 1280>;
++        };
+ };
+ 
+ 
+-- 
+2.47.0
+

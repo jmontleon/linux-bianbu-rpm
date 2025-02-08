@@ -1,0 +1,44 @@
+From a5fcc4f96474852869aa9c319d3cca51826ef6ad Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 6 Aug 2024 16:52:28 +0800
+Subject: [PATCH 1045/1448] k1_defconfig: enable otg support
+
+Change-Id: I63c74aad60a6d5bd290e6e059a7c0b15c8daa7f0
+---
+ arch/riscv/configs/k1_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
+index 5d3d023daaee..92c0584716bf 100644
+--- a/arch/riscv/configs/k1_defconfig
++++ b/arch/riscv/configs/k1_defconfig
+@@ -579,7 +579,9 @@ CONFIG_UHID=y
+ CONFIG_HID_MULTITOUCH=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_I2C_HID_OF=y
++CONFIG_USB_CONN_GPIO=y
+ CONFIG_USB=y
++CONFIG_USB_OTG=y
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_K1X=y
+@@ -649,6 +651,7 @@ CONFIG_USB_SERIAL_QT2=m
+ CONFIG_USB_SERIAL_UPD78F0730=m
+ CONFIG_USB_SERIAL_XR=m
+ CONFIG_USB_SERIAL_DEBUG=m
++CONFIG_USB_K1XCI_OTG=y
+ CONFIG_K1XCI_USB2_PHY=y
+ CONFIG_USB_GADGET=y
+ CONFIG_USB_K1X_UDC=y
+@@ -708,6 +711,8 @@ CONFIG_SPACEMI_SOCINFO=y
+ CONFIG_CHIP_MEDIA_JPU=y
+ CONFIG_SPACEMIT_V2D=y
+ CONFIG_SPACEMIT_RFKILL=y
++CONFIG_EXTCON_USB_K1XCI=y
++CONFIG_EXTCON_USB_GPIO=y
+ CONFIG_PWM=y
+ CONFIG_PWM_PXA=y
+ CONFIG_RESET_CONTROLLER=y
+-- 
+2.47.0
+

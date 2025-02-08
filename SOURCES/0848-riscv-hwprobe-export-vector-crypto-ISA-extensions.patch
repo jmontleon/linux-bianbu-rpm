@@ -1,0 +1,104 @@
+From 18ce8776de8bbd5f8b690b0c0aa4283fab42b21f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Date: Tue, 14 Nov 2023 09:12:43 -0500
+Subject: [PATCH 0848/1448] riscv: hwprobe: export vector crypto ISA extensions
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Export Zv* vector crypto ISA extensions that were added in "RISC-V
+Cryptography Extensions Volume II" specification[1] through hwprobe.
+This adds support for the following instructions:
+
+- Zvbb: Vector Basic Bit-manipulation
+- Zvbc: Vector Carryless Multiplication
+- Zvkb: Vector Cryptography Bit-manipulation
+- Zvkg: Vector GCM/GMAC.
+- Zvkned: NIST Suite: Vector AES Block Cipher
+- Zvknh[ab]: NIST Suite: Vector SHA-2 Secure Hash
+- Zvksed: ShangMi Suite: SM4 Block Cipher
+- Zvksh: ShangMi Suite: SM3 Secure Hash
+- Zvknc: NIST Algorithm Suite with carryless multiply
+- Zvkng: NIST Algorithm Suite with GCM.
+- Zvksc: ShangMi Algorithm Suite with carryless multiplication
+- Zvksg: ShangMi Algorithm Suite with GCM.
+- Zvkt: Vector Data-Independent Execution Latency.
+
+Zvkn and Zvks are ommited since they are a superset of other extensions.
+
+Link: https://drive.google.com/file/d/1gb9OLH-DhbCgWp7VwpPOVrrY6f3oSJLL/view [1]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Link: https://lore.kernel.org/r/20231114141256.126749-8-cleger@rivosinc.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Change-Id: Ib1c72bcc9c600829de7fa9e73ca76abef0db603a
+---
+ Documentation/arch/riscv/hwprobe.rst  | 30 +++++++++++++++++++++++++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 10 +++++++++
+ 2 files changed, 40 insertions(+)
+
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index cb6b409300d4..2a47d2e82ca0 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -121,6 +121,36 @@ The following keys are defined:
+   * :c:macro:`RISCV_HWPROBE_EXT_ZKT` The Zkt extension is supported, as defined
+        in version 1.0 of the Scalar Crypto ISA extensions.
+ 
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVBB`: The Zvbb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVBC`: The Zvbc extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKB`: The Zvkb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKG`: The Zvkg extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNED`: The Zvkned extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNHA`: The Zvknha extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNHB`: The Zvknhb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKSED`: The Zvksed extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKSH`: The Zvksh extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKT`: The Zvkt extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 5e0a2fdeb5f8..95ae7e7a6414 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -40,6 +40,16 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZKSED		(1 << 14)
+ #define		RISCV_HWPROBE_EXT_ZKSH		(1 << 15)
+ #define		RISCV_HWPROBE_EXT_ZKT		(1 << 16)
++#define		RISCV_HWPROBE_EXT_ZVBB		(1 << 17)
++#define		RISCV_HWPROBE_EXT_ZVBC		(1 << 18)
++#define		RISCV_HWPROBE_EXT_ZVKB		(1 << 19)
++#define		RISCV_HWPROBE_EXT_ZVKG		(1 << 20)
++#define		RISCV_HWPROBE_EXT_ZVKNED	(1 << 21)
++#define		RISCV_HWPROBE_EXT_ZVKNHA	(1 << 22)
++#define		RISCV_HWPROBE_EXT_ZVKNHB	(1 << 23)
++#define		RISCV_HWPROBE_EXT_ZVKSED	(1 << 24)
++#define		RISCV_HWPROBE_EXT_ZVKSH		(1 << 25)
++#define		RISCV_HWPROBE_EXT_ZVKT		(1 << 26)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+-- 
+2.47.0
+

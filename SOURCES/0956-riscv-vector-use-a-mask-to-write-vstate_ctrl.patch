@@ -1,0 +1,39 @@
+From 666107edbfbf3427fd9a628b5ef3bc2175c27ac1 Mon Sep 17 00:00:00 2001
+From: Andy Chiu <andy.chiu@sifive.com>
+Date: Mon, 15 Jan 2024 05:59:27 +0000
+Subject: [PATCH 0956/1448] riscv: vector: use a mask to write vstate_ctrl
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+riscv_v_ctrl_set() should only touch bits within
+PR_RISCV_V_VSTATE_CTRL_MASK. So, use the mask when we really set task's
+vstate_ctrl.
+
+Change-Id: Id6066425af3525e83c95ade90f2a7462a343a2bc
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Link: https://lore.kernel.org/r/20240115055929.4736-9-andy.chiu@sifive.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/kernel/vector.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+index d72732730dd1..ff20d881554c 100644
+--- a/arch/riscv/kernel/vector.c
++++ b/arch/riscv/kernel/vector.c
+@@ -122,7 +122,8 @@ static inline void riscv_v_ctrl_set(struct task_struct *tsk, int cur, int nxt,
+ 	ctrl |= VSTATE_CTRL_MAKE_NEXT(nxt);
+ 	if (inherit)
+ 		ctrl |= PR_RISCV_V_VSTATE_CTRL_INHERIT;
+-	tsk->thread.vstate_ctrl = ctrl;
++	tsk->thread.vstate_ctrl &= ~PR_RISCV_V_VSTATE_CTRL_MASK;
++	tsk->thread.vstate_ctrl |= ctrl;
+ }
+ 
+ bool riscv_v_vstate_ctrl_user_allowed(void)
+-- 
+2.47.0
+

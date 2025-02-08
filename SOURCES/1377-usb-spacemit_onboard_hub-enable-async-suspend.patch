@@ -1,0 +1,25 @@
+From cc5f1fb4c7de5809b99fe488f0ae0bf41d9ad6d8 Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 28 Nov 2024 21:50:19 +0800
+Subject: [PATCH 1377/1448] usb: spacemit_onboard_hub: enable async suspend
+
+Change-Id: I10812c75010c743776248d5d616cbb4f53891e67
+---
+ drivers/usb/misc/spacemit_onboard_hub.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
+index 66ce825e1076..8f7c63f900bd 100644
+--- a/drivers/usb/misc/spacemit_onboard_hub.c
++++ b/drivers/usb/misc/spacemit_onboard_hub.c
+@@ -136,6 +136,7 @@ static int spacemit_hub_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(dev);
+ 	pm_runtime_get_noresume(dev);
+ 	pm_runtime_get_sync(dev);
++	device_enable_async_suspend(dev);
+ 
+ 	spacemit->hub_gpios = devm_gpiod_get_array_optional(
+ 		&pdev->dev, "hub",
+-- 
+2.47.0
+

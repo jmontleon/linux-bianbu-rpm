@@ -1,0 +1,38 @@
+From a41505b5a3ef4af37019406299f66f02a50ca9b5 Mon Sep 17 00:00:00 2001
+From: zhenglilang <lilang.zheng@spacemit.com>
+Date: Mon, 30 Dec 2024 14:19:17 +0800
+Subject: [PATCH 1418/1448] k1:display: adjust gx09inx101 resolution to 60Hz
+
+Change-Id: I2ddc3f5359b5efc2148679c4c9b7ae34f8ee15df
+---
+ arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+index 5fac6d4a9af1..8986af53da88 100644
+--- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
++++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
+@@ -12,7 +12,7 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
+ 		/*mipi info*/
+ 		height = <1920>;
+ 		width = <1200>;
+-		hfp = <80>;
++		hfp = <50>;
+ 		hbp = <40>;
+ 		hsync = <10>;
+ 		vfp = <20>;
+@@ -140,9 +140,9 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
+ 
+ 		display-timings {
+ 			timing0 {
+-				clock-frequency = <143000000>;
++				clock-frequency = <153000000>;
+ 				hactive = <1200>;
+-				hfront-porch = <80>;
++				hfront-porch = <50>;
+ 				hback-porch = <40>;
+ 				hsync-len = <10>;
+ 				vactive = <1920>;
+-- 
+2.47.0
+

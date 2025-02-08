@@ -1,0 +1,1518 @@
+From 7b3992ed771d36a55561d3fd5f7fcacdb5365f97 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Sat, 22 Jun 2024 14:49:44 +0800
+Subject: [PATCH 0806/1448] wireless: rtl8852bs: fix compile warning
+
+Change-Id: Ia53a003d4d71f5a0f077050c99f305c7aa3a97a6
+---
+ .../wireless/realtek/rtl8852bs/core/rtw_ap.c  |  8 ++--
+ .../realtek/rtl8852bs/core/rtw_chplan.c       |  6 +--
+ .../rtl8852bs/phl/hal_g6/hal_api_mac.c        |  8 ++--
+ .../phl/hal_g6/mac/mac_ax/addr_cam.c          |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/beacon.c  |  4 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/cmac_tx.c |  8 ++--
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/cpuio.c   |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/dbgpkg.c  |  4 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/dle.c     |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/efuse.c   |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/flash.c   | 12 +++---
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/fwcmd.c   | 12 +++---
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/fwdl.c    |  4 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/fwofld.c  | 42 +++++++++----------
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/gpio.c    |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/h2c_agg.c |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/hw.c      |  4 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/mcc.c     | 18 ++++----
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/mport.c   |  6 +--
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/nan.c     | 14 +++----
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/p2p.c     |  4 +-
+ .../phl/hal_g6/mac/mac_ax/phy_misc.c          |  2 +-
+ .../phl/hal_g6/mac/mac_ax/power_saving.c      | 16 +++----
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/role.c    |  4 +-
+ .../phl/hal_g6/mac/mac_ax/security_cam.c      |  2 +-
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/tblupd.c  | 30 ++++++-------
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/twt.c     |  6 +--
+ .../rtl8852bs/phl/hal_g6/mac/mac_ax/wowlan.c  | 40 +++++++++---------
+ .../phl/hal_g6/phy/bb/halbb_env_mntr.c        | 10 ++---
+ .../phl/hal_g6/phy/bb/halbb_path_div.c        |  2 +-
+ .../rtl8852bs/phl/hal_g6/phy/bb/halbb_psd.c   |  4 +-
+ .../phl/hal_g6/phy/bb/halbb_pwr_ctrl.c        |  2 +-
+ .../rtl8852bs/phl/hal_g6/phy/bb/halbb_ra.c    |  2 +-
+ .../rtl8852bs/phl/hal_g6/phy/rf/halrf_dbg.c   |  2 +-
+ .../wireless/realtek/rtl8852bs/phl/phl_ps.c   |  4 +-
+ .../wireless/realtek/rtl8852bs/phl/phl_sta.c  |  2 +-
+ .../wireless/realtek/rtl8852bs/phl/phl_tx.c   |  2 +-
+ .../realtek/rtl8852bs/phl/test/phl_dbg_cmd.c  |  2 +-
+ 38 files changed, 149 insertions(+), 149 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/rtw_ap.c b/drivers/net/wireless/realtek/rtl8852bs/core/rtw_ap.c
+index fc6d1ae9b566..4ec046461b7f 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/core/rtw_ap.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/core/rtw_ap.c
+@@ -7296,13 +7296,13 @@ static enum phl_mdl_ret_code _ap_add_del_sta_req_acquired(void *dispr, void *pri
+ 	if (!add_del_sta_obj) {
+ 		RTW_ERR(FUNC_ADPT_FMT": add_del_sta_obj is null\n",
+ 			FUNC_ADPT_ARG(padapter));
+-			return status;
++			return (enum phl_mdl_ret_code)status;
+ 	}
+ 
+ 	psta = add_del_sta_obj->sta;
+ 	if (!psta) {
+ 		RTW_ERR(FUNC_ADPT_FMT": psta is null\n", FUNC_ADPT_ARG(padapter));
+-		return status;
++		return (enum phl_mdl_ret_code)status;
+ 	}
+ 
+ 	RTW_INFO(FUNC_ADPT_FMT ": %s STA\n",
+@@ -7319,7 +7319,7 @@ static enum phl_mdl_ret_code _ap_add_del_sta_req_acquired(void *dispr, void *pri
+ 
+ 	RTW_DBG(FUNC_ADPT_FMT ": -\n", FUNC_ADPT_ARG(padapter));
+ 
+-	return status;
++	return (enum phl_mdl_ret_code)status;
+ 
+ }
+ 
+@@ -7522,7 +7522,7 @@ static enum phl_mdl_ret_code _ap_add_del_sta_req_ev_hdlr(void *dispr, void *priv
+ 
+ 	_ap_add_del_sta_cmd_done(padapter); /* free token */
+ 	_rtw_spinunlock_bh(&padapter->ap_add_del_sta_lock);
+-	return status;
++	return (enum phl_mdl_ret_code)status;
+ }
+ 
+ static enum phl_mdl_ret_code _ap_add_del_sta_req_set_info(void *dispr, void *priv, struct phl_module_op_info* info)
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/rtw_chplan.c b/drivers/net/wireless/realtek/rtl8852bs/core/rtw_chplan.c
+index 9424a9f7bedf..55229d6eabb8 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/core/rtw_chplan.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/core/rtw_chplan.c
+@@ -611,10 +611,10 @@ char *rtw_get_edcca_mode_of_bands_str(char *buf, u8 mode_of_band[])
+ static enum rtw_edcca_mode rtw_edcca_mode_get_strictest(enum rtw_edcca_mode_t a, enum rtw_edcca_mode_t b)
+ {
+ 	if (a >= RTW_EDCCA_MODE_NUM)
+-		return b < RTW_EDCCA_MODE_NUM ? b : RTW_EDCCA_MODE_NUM;
++		return (enum rtw_edcca_mode)(b < RTW_EDCCA_MODE_NUM ? b : RTW_EDCCA_MODE_NUM);
+ 	if (b >= RTW_EDCCA_MODE_NUM)
+-		return a < RTW_EDCCA_MODE_NUM ? a : RTW_EDCCA_MODE_NUM;
+-	return rtw_max(a,b);
++		return (enum rtw_edcca_mode)(a < RTW_EDCCA_MODE_NUM ? a : RTW_EDCCA_MODE_NUM);
++	return (enum rtw_edcca_mode)rtw_max(a,b);
+ }
+ 
+ static void rtw_edcca_mode_update_by_regd_reqs(struct dvobj_priv *dvobj, bool req_lock)
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/hal_api_mac.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/hal_api_mac.c
+index 3d258e40fdaa..7f10c72f609b 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/hal_api_mac.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/hal_api_mac.c
+@@ -573,7 +573,7 @@ rtw_hal_mac_dbcc_hci_ctrl(struct hal_info_t *hal_info, enum phl_band_idx band_id
+ 	struct mac_ax_dbcc_hci_ctrl info = {0};
+ 	u32 ret = 0;
+ 
+-	info.band = band_idx;
++	info.band = (enum mac_ax_band)band_idx;
+ 	info.pause = pause;
+ 	//info.u.sdio_ctrl.rsvd;
+ 
+@@ -3139,7 +3139,7 @@ rtw_hal_mac_lv1_rcvy(struct hal_info_t *hal_info, enum rtw_phl_ser_lv1_recv_step
+ 	u32 mac_err = 0;
+ 	struct mac_ax_adapter *mac = hal_to_mac(hal_info);
+ 
+-	mac_err = mac->ops->lv1_rcvy(mac, step);
++	mac_err = mac->ops->lv1_rcvy(mac, (enum mac_ax_lv1_rcvy_step)step);
+ 	if (mac_err != MACSUCCESS) {
+ 		PHL_ERR("%s : mac status %d.\n", __func__, mac_err);
+ 		return RTW_HAL_STATUS_FAILURE;
+@@ -7005,9 +7005,9 @@ rtw_hal_mac_lps_cfg(struct hal_info_t *hal_info,
+ 		ax_ps_mode = MAC_AX_PS_MODE_ACTIVE;
+ 	}
+ 
+-	ax_lps_info.listen_bcn_mode = lps_info->listen_bcn_mode;
++	ax_lps_info.listen_bcn_mode = (enum mac_ax_listern_bcn_mode)lps_info->listen_bcn_mode;
+ 	ax_lps_info.awake_interval = lps_info->awake_interval;
+-	ax_lps_info.smart_ps_mode = lps_info->smart_ps_mode;
++	ax_lps_info.smart_ps_mode = (enum mac_ax_smart_ps_mode)lps_info->smart_ps_mode;
+ 	ax_lps_info.bcnnohit_en = lps_info->bcnnohit_en;
+ 
+ 	if (mac->ops->cfg_lps(mac, (u8)lps_info->macid, ax_ps_mode,
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/addr_cam.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/addr_cam.c
+index eb597a8f3e72..5c74264c742e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/addr_cam.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/addr_cam.c
+@@ -308,7 +308,7 @@ u32 mac_upd_addr_cam(struct mac_ax_adapter *adapter,
+ 	u8 ctlinfo_aidx_off;
+ 
+ 	if (adapter->sm.fwdl == MAC_AX_FWDL_INIT_RDY) {
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 		if (!h2cb)
+ 			return MACNPTR;
+ 		buf = h2cb_put(h2cb, sizeof(struct fwcmd_addrcam_info));
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/beacon.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/beacon.c
+index b5119a9a56ca..37f6e9b8b009 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/beacon.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/beacon.c
+@@ -68,7 +68,7 @@ u32 mac_bcn_ofld_ctrl(struct mac_ax_adapter *adapter, struct mac_bcn_ofld_info *
+ 	u8 *buf, *iecam_buf;
+ 	u8 rst = 0, num = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -183,7 +183,7 @@ u32 mac_set_bcn_ignore_edcca(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ALWAYS("%s: h2cb_alloc fail.\n", __func__);
+ 		return MACNPTR;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cmac_tx.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cmac_tx.c
+index 6e5f39934dba..80326d0bbd7c 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cmac_tx.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cmac_tx.c
+@@ -652,7 +652,7 @@ u32 hw_sch_tx_en_h2c_pkt(struct mac_ax_adapter *adapter, u8 band,
+ 
+ 	adapter->sm.sch_tx_en_ofld = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1432,7 +1432,7 @@ static u32 h2c_usr_edca(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1508,7 +1508,7 @@ static u32 h2c_usr_tx_rpt(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1840,7 +1840,7 @@ u32 tx_duty_h2c(struct mac_ax_adapter *adapter,
+ 
+ 	size = sizeof(struct fwcmd_tx_duty);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cpuio.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cpuio.c
+index a341b5299011..bf6f729b61dd 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cpuio.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/cpuio.c
+@@ -683,7 +683,7 @@ static u32 h2c_pkt_drop(struct mac_ax_adapter *adapter,
+ #endif
+ 	struct fwcmd_pkt_drop *drop;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dbgpkg.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dbgpkg.c
+index d72095f23140..67c6df637dc3 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dbgpkg.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dbgpkg.c
+@@ -87,7 +87,7 @@ u32 mac_fwcmd_lb(struct mac_ax_adapter *adapter, u32 len, u8 burst)
+ 	else
+ 		buf_class = H2CB_CLASS_LONG_DATA;
+ 
+-	h2cb = h2cb_alloc(adapter, buf_class);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)buf_class);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3501,7 +3501,7 @@ u32 mac_fw_dbg_dle_cfg(struct mac_ax_adapter *adapter, bool lock)
+ 	if (adapter->sm.fwdl != MAC_AX_FWDL_INIT_RDY)
+ 		return MACNOFW;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dle.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dle.c
+index cd252a77415d..9b22a783ff54 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dle.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/dle.c
+@@ -3482,7 +3482,7 @@ static u32 h2c_dle_qta_change(struct mac_ax_adapter *adapter)
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/efuse.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/efuse.c
+index 7ca61e87124c..de608ee5244d 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/efuse.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/efuse.c
+@@ -2386,7 +2386,7 @@ u32 mac_disable_rf_ofld_by_info(struct mac_ax_adapter *adapter,
+ 
+ 	adapter->sm.disable_rf = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/flash.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/flash.c
+index 1eb0f49adf43..7c89e01a5dd2 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/flash.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/flash.c
+@@ -41,7 +41,7 @@ u32 mac_flash_erase(struct mac_ax_adapter *adapter,
+ 	adapter->flash_info.erase_addr = addr;
+ 	PLTFM_MUTEX_UNLOCK(&adapter->flash_info.lock);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MUTEX_LOCK(&adapter->flash_info.lock);
+ 		adapter->flash_info.erasing = 0;
+@@ -174,7 +174,7 @@ u32 mac_flash_read(struct mac_ax_adapter *adapter,
+ 	adapter->flash_info.read_addr = addr;
+ 	PLTFM_MUTEX_UNLOCK(&adapter->flash_info.lock);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR; // Maybe set a timeout counter
+ 	pkt_len = LEN_FLASH_H2C_HDR;
+@@ -316,7 +316,7 @@ u32 mac_flash_write(struct mac_ax_adapter *adapter,
+ 		else
+ 			pkt_len = residue_len;
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 		if (!h2cb) {
+ 			PLTFM_MUTEX_LOCK(&adapter->flash_info.lock);
+ 			adapter->flash_info.writing = 0;
+@@ -456,7 +456,7 @@ u32 mac_flash_erase(struct mac_ax_adapter *adapter,
+ 	adapter->flash_info.erase_addr = addr;
+ 	PLTFM_MUTEX_UNLOCK(&adapter->flash_info.lock);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MUTEX_LOCK(&adapter->flash_info.lock);
+ 		adapter->flash_info.erasing = 0;
+@@ -589,7 +589,7 @@ u32 mac_flash_read(struct mac_ax_adapter *adapter,
+ 	adapter->flash_info.read_addr = addr;
+ 	PLTFM_MUTEX_UNLOCK(&adapter->flash_info.lock);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR; // Maybe set a timeout counter
+ 	pkt_len = LEN_FLASH_H2C_HDR;
+@@ -731,7 +731,7 @@ u32 mac_flash_write(struct mac_ax_adapter *adapter,
+ 		else
+ 			pkt_len = residue_len;
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 		if (!h2cb) {
+ 			PLTFM_MUTEX_LOCK(&adapter->flash_info.lock);
+ 			adapter->flash_info.writing = 0;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwcmd.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwcmd.c
+index ce64181507c7..080135b8decd 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwcmd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwcmd.c
+@@ -433,7 +433,7 @@ struct rtw_h2c_pkt *h2cb_alloc(struct mac_ax_adapter *adapter,
+ 	}
+ #endif
+ 
+-	h2cb = PLTFM_QUERY_H2C(buf_class);
++	h2cb = PLTFM_QUERY_H2C((enum h2c_buf_class)buf_class);
+ 
+ 	return h2cb;
+ }
+@@ -2918,7 +2918,7 @@ u32 mac_outsrc_h2c_common(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, (enum h2c_buf_class)hdr->type);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)hdr->type);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2981,7 +2981,7 @@ u32 mac_fw_log_cfg(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_log_cfg *log;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3047,7 +3047,7 @@ u32 mac_send_bcn_h2c(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_bcn_upd_v1 *hdr;
+ 	u32 ret = MACSUCCESS;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3257,7 +3257,7 @@ u32 mac_ie_cam_upd(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	u32 ret;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3449,7 +3449,7 @@ u32 mac_notify_fw_dbcc(struct mac_ax_adapter *adapter, u8 en)
+ 	u32 ret;
+ 	struct fwcmd_notify_dbcc *dbcc;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwdl.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwdl.c
+index 938ce244e0ca..53eefb3157d2 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwdl.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwdl.c
+@@ -406,7 +406,7 @@ static u32 __fwhdr_download(struct mac_ax_adapter *adapter,
+ 	struct h2c_buf *h2cb;
+ 	#endif
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: h2cb_alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -554,7 +554,7 @@ static u32 __sections_download(struct mac_ax_adapter *adapter,
+ 		else
+ 			pkt_len = residue_len;
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 		if (!h2cb) {
+ 			PLTFM_MSG_ERR("[ERR]%s: ", __func__);
+ 			PLTFM_MSG_ERR("h2cb_alloc fail\n");
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwofld.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwofld.c
+index 6e9d98ba5d7d..fc025d956e96 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwofld.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/fwofld.c
+@@ -401,7 +401,7 @@ u32 mac_write_ofld(struct mac_ax_adapter *adapter)
+ 
+ 	adapter->sm.write_h2c = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -598,7 +598,7 @@ u32 mac_conf_ofld(struct mac_ax_adapter *adapter)
+ 
+ 	adapter->sm.conf_h2c = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -685,7 +685,7 @@ u32 mac_read_pkt_ofld(struct mac_ax_adapter *adapter, u8 id)
+ 
+ 	adapter->sm.pkt_ofld = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -766,7 +766,7 @@ u32 mac_del_pkt_ofld(struct mac_ax_adapter *adapter, u8 id)
+ 
+ 	adapter->sm.pkt_ofld = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -868,7 +868,7 @@ u32 mac_add_pkt_ofld(struct mac_ax_adapter *adapter, u8 *pkt, u16 len, u8 *id)
+ 		PLTFM_MSG_ERR("pkt ofld size %d, exceed LDATA Q size, abort\n", len);
+ 		return MACBUFSZ;
+ 	}
+-	h2cb = h2cb_alloc(adapter, h2cb_type);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)h2cb_type);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -980,7 +980,7 @@ u32 mac_dump_efuse_ofld(struct mac_ax_adapter *adapter, u32 efuse_size,
+ 			return MACBUFALLOC;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1186,7 +1186,7 @@ u32 mac_read_ofld(struct mac_ax_adapter *adapter)
+ 
+ 	adapter->sm.read_h2c = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1271,7 +1271,7 @@ u32 mac_general_pkt_ids(struct mac_ax_adapter *adapter,
+ 	if (adapter->sm.fwdl != MAC_AX_FWDL_INIT_RDY)
+ 		return MACNOFW;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1800,7 +1800,7 @@ static u32 proc_cmd_ofld(struct mac_ax_adapter *adapter, u8 func)
+ 
+ 	PLTFM_MSG_TRACE("%s===>\n", __func__);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2430,7 +2430,7 @@ u32 mac_add_scanofld_ch(struct mac_ax_adapter *adapter, struct mac_ax_scanofld_c
+ 		return MACNOITEM;
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cbuf) {
+ 		PLTFM_MUTEX_LOCK(&scanofld_info->drv_chlist_state_lock);
+ 		scanofld_info->drv_chlist_busy[band] = 0;
+@@ -2644,7 +2644,7 @@ u32 mac_scanofld(struct mac_ax_adapter *adapter, struct mac_ax_scanofld_param *s
+ 		return MACBUFSZ;
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, h2cb_type);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)h2cb_type);
+ 	if (!h2cbuf) {
+ 		PLTFM_MUTEX_LOCK(&scanofld_info->fw_chlist_state_lock);
+ 		scanofld_info->fw_chlist_busy[band] = scanofld_info->last_fw_chlist_busy[band];
+@@ -2785,7 +2785,7 @@ u32 mac_scanofld_hst_ctrl(struct mac_ax_adapter *adapter, u8 pri_ch, u8 ch_band,
+ 
+ 	ret = MACSUCCESS;
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cbuf)
+ 		return MACNPTR;
+ 
+@@ -2952,7 +2952,7 @@ u32 mac_ch_switch_ofld(struct mac_ax_adapter *adapter, struct mac_ax_ch_switch_p
+ 	    adapter->sm.ch_switch != MAC_AX_CH_SWITCH_GET_RPT)
+ 		return MACPROCBUSY;
+ 	adapter->sm.ch_switch = MAC_AX_OFLD_H2C_SENDING;
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf) {
+ 		adapter->sm.ch_switch = MAC_AX_OFLD_H2C_IDLE;
+ 		return MACNOBUF;
+@@ -3016,7 +3016,7 @@ u32 mac_cfg_bcn_filter(struct mac_ax_adapter *adapter, struct mac_ax_bcn_fltr cf
+ 	u8 *buffer;
+ 	struct fwcmd_cfg_bcnfltr *write_ptr;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3086,7 +3086,7 @@ u32 mac_bcn_filter_rssi(struct mac_ax_adapter *adapter, u8 macid, u8 size, u8 *r
+ 
+ 	append_size = (size + 3) & (~0x3);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3145,7 +3145,7 @@ u32 mac_bcn_filter_tp(struct mac_ax_adapter *adapter, u8 macid, u16 tx, u16 rx)
+ 	u8 *buffer;
+ 	struct fwcmd_ofld_tp *write_ptr;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3199,7 +3199,7 @@ u32 mac_host_efuse_rec(struct mac_ax_adapter *adapter, u32 host_id, u32 efuse_va
+ 	struct fwcmd_host_efuse_rec *hdr;
+ 	u32 ret = MACSUCCESS;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3298,7 +3298,7 @@ u32 mac_cfg_sensing_csi(struct mac_ax_adapter *adapter, struct rtw_hal_mac_sensi
+ 		PLTFM_MEMCPY(id_array, para->pkt_id, id_size);
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf) {
+ 		PLTFM_MSG_ERR("[ERR][csi] h2cbuf malloc fail!\n");
+ 		PLTFM_FREE(id_array, id_size);
+@@ -3437,7 +3437,7 @@ u32 mac_fwcpumgenq_test(struct mac_ax_adapter *adapter, u8 macid, u16 len, u8 *p
+ 	if (adapter->sm.fwdl != MAC_AX_FWDL_INIT_RDY)
+ 		return MACNOFW;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -3498,7 +3498,7 @@ u32 mac_cfg_bcn_early_rpt(struct mac_ax_adapter *adapter, u8 band, u8 port, u8 e
+ 	#else
+ 	struct h2c_buf *h2cbuf;
+ 	#endif
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf)
+ 		return MACNOBUF;
+ 	buf = h2cb_put(h2cbuf, sizeof(struct fwcmd_bcnerlyrpt));
+@@ -3593,7 +3593,7 @@ u32 mac_cfg_sta_csa(struct mac_ax_adapter *adapter,
+ 		return MACBUFSZ;
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, h2cb_type);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)h2cb_type);
+ 	if (!h2cbuf) {
+ 		*sm_state = MAC_AX_STA_CSA_IDLE;
+ 		PLTFM_MSG_ERR("[STACSA] alloc h2cb fail\n");
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/gpio.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/gpio.c
+index 34e10536bd15..6e38b83963ec 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/gpio.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/gpio.c
+@@ -618,7 +618,7 @@ u32 mac_cfg_wps(struct mac_ax_adapter *adapter,
+ 		return MACGPIONUM;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/h2c_agg.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/h2c_agg.c
+index 8bbad04d4513..e7dc740f56b3 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/h2c_agg.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/h2c_agg.c
+@@ -148,7 +148,7 @@ u32 mac_h2c_agg_tx(struct mac_ax_adapter *adapter)
+ 				continue;
+ 			}
+ 
+-			agg_h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++			agg_h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 			if (!agg_h2cb) {
+ 				PLTFM_MSG_ERR("allocate agg_h2c fail\n");
+ 				ret = MACNOBUF;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/hw.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/hw.c
+index 581afb241e4e..15fd09666465 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/hw.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/hw.c
+@@ -1115,7 +1115,7 @@ u32 macid_pause(struct mac_ax_adapter *adapter,
+ 	if (adapter->sm.fwdl != MAC_AX_FWDL_INIT_RDY)
+ 		return MACNOFW;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1235,7 +1235,7 @@ u32 macid_pause_sleep(struct mac_ax_adapter *adapter,
+ 
+ 	adapter->sm.macid_pause_sleep = MAC_AX_OFLD_H2C_SENDING;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mcc.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mcc.c
+index 126bff95632e..ef8687b8d965 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mcc.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mcc.c
+@@ -34,7 +34,7 @@ u32 mac_reset_mcc_group(struct mac_ax_adapter *adapter, u8 group)
+ 	adapter->sm.mcc_group[group] = MAC_AX_MCC_EMPTY;
+ 	adapter->sm.mcc_request[group] = MAC_AX_MCC_REQ_IDLE;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -122,7 +122,7 @@ u32 mac_add_mcc(struct mac_ax_adapter *adapter, struct mac_ax_mcc_role *info)
+ 
+ 	adapter->sm.mcc_group[info->group] = MAC_AX_MCC_STATE_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -231,7 +231,7 @@ u32 mac_start_mcc(struct mac_ax_adapter *adapter,
+ 
+ 	adapter->sm.mcc_group[info->group] = MAC_AX_MCC_STATE_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -320,7 +320,7 @@ u32 mac_stop_mcc(struct mac_ax_adapter *adapter, u8 group, u8 macid,
+ 
+ 	adapter->sm.mcc_group[group] = MAC_AX_MCC_STATE_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -400,7 +400,7 @@ u32 mac_del_mcc_group(struct mac_ax_adapter *adapter, u8 group,
+ 
+ 	adapter->sm.mcc_group[group] = MAC_AX_MCC_STATE_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -472,7 +472,7 @@ u32 mac_mcc_request_tsf(struct mac_ax_adapter *adapter, u8 group,
+ 
+ 	adapter->sm.mcc_request[group] = MAC_AX_MCC_REQ_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -545,7 +545,7 @@ u32 mac_mcc_macid_bitmap(struct mac_ax_adapter *adapter, u8 group,
+ 
+ 	adapter->sm.mcc_request[group] = MAC_AX_MCC_REQ_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -620,7 +620,7 @@ u32 mac_mcc_sync_enable(struct mac_ax_adapter *adapter, u8 group,
+ 
+ 	adapter->sm.mcc_request[group] = MAC_AX_MCC_REQ_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+@@ -689,7 +689,7 @@ u32 mac_mcc_set_duration(struct mac_ax_adapter *adapter,
+ 
+ 	adapter->sm.mcc_request[info->group] = MAC_AX_MCC_REQ_H2C_SENT;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]%s: H2C alloc fail\n", __func__);
+ 		return MACNPTR;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mport.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mport.c
+index 66cb1f5851e0..f3296fd6e811 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mport.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/mport.c
+@@ -1439,7 +1439,7 @@ u32 mac_port_cfg(struct mac_ax_adapter *adapter,
+ 			return MACPROCERR;
+ 		}
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 		if (!h2cb)
+ 			return MACNPTR;
+ 
+@@ -2091,7 +2091,7 @@ u32 mac_port_init(struct mac_ax_adapter *adapter,
+ 			PLTFM_DELAY_US(PORT_H2C_DLY_US);
+ 		}
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 		if (!h2cb)
+ 			return MACNPTR;
+ 
+@@ -2652,7 +2652,7 @@ u32 mac_tsf32_togl_h2c(struct mac_ax_adapter *adapter,
+ 		return MACPORTERR;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/nan.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/nan.c
+index f3ef7ae24696..0ee32f37a1f7 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/nan.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/nan.c
+@@ -52,7 +52,7 @@ u32 mac_nan_act_schedule_req(struct mac_ax_adapter *adapter, struct mac_ax_nan_s
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -134,7 +134,7 @@ u32 mac_nan_bcn_req(struct mac_ax_adapter *adapter, struct mac_ax_nan_bcn *info)
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -215,7 +215,7 @@ u32 mac_nan_func_ctrl(struct mac_ax_adapter *adapter, struct mac_ax_nan_func_inf
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -304,7 +304,7 @@ u32 mac_nan_de_info(struct mac_ax_adapter *adapter, u8 status, u8 loc_bcast_sdf)
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -368,7 +368,7 @@ u32 mac_nan_join_cluster(struct mac_ax_adapter *adapter, u8 is_allow)
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -432,7 +432,7 @@ u32 mac_nan_pause_faw_tx(struct mac_ax_adapter *adapter, u32 id_map)
+ 	}
+ 
+     /*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -496,7 +496,7 @@ u32 mac_nan_get_cluster_info(struct mac_ax_adapter *adapter,
+ 	}
+ 
+ 	/*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/p2p.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/p2p.c
+index 762f9638370b..55827624c7bb 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/p2p.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/p2p.c
+@@ -155,7 +155,7 @@ u32 mac_p2p_act_h2c(struct mac_ax_adapter *adapter,
+ 	}
+ 	adapter->sm.p2p_stat = MAC_AX_P2P_ACT_BUSY;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -292,7 +292,7 @@ u32 mac_p2p_macid_ctrl_h2c(struct mac_ax_adapter *adapter,
+ 	}
+ 	adapter->sm.p2p_stat = MAC_AX_P2P_ACT_BUSY;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/phy_misc.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/phy_misc.c
+index 92550cb5915a..46e5a5f50f4a 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/phy_misc.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/phy_misc.c
+@@ -26,7 +26,7 @@ u32 mac_fast_ch_sw(struct mac_ax_adapter *adapter, struct mac_ax_fast_ch_sw_para
+ 	struct h2c_buf *h2cbuf;
+ 	#endif
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/power_saving.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/power_saving.c
+index 9ebfe44119a3..f4dfa4e98157 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/power_saving.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/power_saving.c
+@@ -72,7 +72,7 @@ static u32 send_h2c_lps_parm(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_lps_parm *fwcmd_lps;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -706,7 +706,7 @@ static u32 send_h2c_ips_cfg(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_ips_cfg *fwcmd_ips;
+ 	u32 ret;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -922,7 +922,7 @@ u32 mac_cfg_ps_advance_parm(struct mac_ax_adapter *adapter,
+ 			 __func__, parm->macid, parm->trxtimeouttimeset, parm->trxtimeouttimeval);
+ 	PLTFM_MSG_ALWAYS("%s: EnSmartPsDtimRx(%d)!\n", __func__, parm->ensmartpsdtimrx);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -987,7 +987,7 @@ static u32 send_h2c_pw_cfg(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_periodic_wake *fwcmd_pw;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1084,7 +1084,7 @@ u32 send_h2c_req_pwr_state(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1283,7 +1283,7 @@ u32 send_h2c_req_pwr_lvl(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1379,7 +1379,7 @@ u32 send_h2c_lps_option_cfg(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1458,7 +1458,7 @@ u32 send_h2c_tbtt_tuning(struct mac_ax_adapter *adapter,
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/role.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/role.c
+index acf9b14db9cf..2077876ffc82 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/role.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/role.c
+@@ -1244,7 +1244,7 @@ static u32 mac_h2c_join_info(struct mac_ax_adapter *adapter,
+ 	sta.wifi_role = info->wifi_role;
+ 	sta.self_role = info->self_role;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1333,7 +1333,7 @@ static u32 mac_fw_role_maintain(struct mac_ax_adapter *adapter,
+ 	fwrole_main.band = info->band;
+ 	fwrole_main.port = info->port;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/security_cam.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/security_cam.c
+index 64ef493d3677..c2fe4728437e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/security_cam.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/security_cam.c
+@@ -222,7 +222,7 @@ u32 mac_upd_sec_infotbl(struct mac_ax_adapter *adapter,
+ 	struct mac_ax_sec_cam_info *s_info;
+ 
+ 	/*h2c access*/
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/tblupd.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/tblupd.c
+index 6c02b1682f8e..0347938ef04e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/tblupd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/tblupd.c
+@@ -27,7 +27,7 @@ u32 mac_upd_mudecision_para(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_mude_para_tblud *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -110,7 +110,7 @@ u32 mac_upd_ul_fixinfo(struct mac_ax_adapter *adapter,
+ 	struct rtw_phl_ul_macid_info *sta_info_2;
+ 	struct rtw_phl_ax_ulru_out_sta_ent *sta_ent;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -321,7 +321,7 @@ u32 mac_f2p_test_cmd(struct mac_ax_adapter *adapter,
+ 	struct mac_ax_tf_user_para *user;
+ 	struct mac_ax_tf_depend_user_para *dep_user;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -666,7 +666,7 @@ u32 mac_upd_dctl_info(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_dctlinfo_ud *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -792,7 +792,7 @@ u32 mac_upd_shcut_mhdr(struct mac_ax_adapter *adapter,
+ 	      is_chip_id(adapter, MAC_AX_CHIP_ID_8851B)))
+ 		return MACNOTSUP;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1122,7 +1122,7 @@ u32 mac_upd_cctl_info(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_cctlinfo_ud *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1439,7 +1439,7 @@ u32 mac_set_fixmode_mib(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_fixmode_para_tblud *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1769,7 +1769,7 @@ u32 mac_bacam_info(struct mac_ax_adapter *adapter,
+ 	struct mac_ax_avl_std_bacam_info idx_info = {0x0};
+ 	struct mac_ax_ops *mops = adapter_to_mac_ops(adapter);
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb) {
+ 		PLTFM_MSG_ERR("[ERR]h2cb_alloc\n");
+ 		return MACNPTR;
+@@ -1893,7 +1893,7 @@ u32 mac_ss_dl_grp_upd(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_dl_grp_upd *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1986,7 +1986,7 @@ u32 mac_ss_ul_grp_upd(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_ul_grp_upd *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2046,7 +2046,7 @@ u32 mac_ss_ul_sta_upd(struct mac_ax_adapter *adapter,
+ #endif
+ 	struct fwcmd_ss_ulsta_upd *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2115,7 +2115,7 @@ u32 mac_mu_sta_upd(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_mu_sta_upd *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2191,7 +2191,7 @@ u32 mac_wlaninfo_get(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	struct fwcmd_wlaninfo_get *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2429,7 +2429,7 @@ u32 mac_fw_status_cmd(struct mac_ax_adapter *adapter,
+ #endif
+ 	struct mac_ax_fwstatus_payload *tbl;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2570,7 +2570,7 @@ u32 mac_fw_ofdma_sts_en(struct mac_ax_adapter *adapter,
+ 	#endif
+ 	u32 *para;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/twt.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/twt.c
+index 233fde5a589e..b7e4eedd99d3 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/twt.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/twt.c
+@@ -45,7 +45,7 @@ u32 mac_twt_info_upd_h2c(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_twtinfo_upd *hdr;
+ 	u32 ret = MACSUCCESS;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -142,7 +142,7 @@ u32 mac_twt_act_h2c(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_twt_stansp_upd *hdr;
+ 	u32 ret = MACSUCCESS;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -205,7 +205,7 @@ u32 mac_twt_staanno_h2c(struct mac_ax_adapter *adapter,
+ 		struct fwcmd_twt_announce_upd *hdr;
+ 		u32 ret = MACSUCCESS;
+ 
+-		h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++		h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 		if (!h2cb)
+ 			return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/wowlan.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/wowlan.c
+index 4a77ecc5d322..7187fcc7183b 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/wowlan.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/mac/mac_ax/wowlan.c
+@@ -39,7 +39,7 @@ static u32 send_h2c_keep_alive(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_keep_alive *fwcmd_kalive;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -101,7 +101,7 @@ static u32 send_h2c_disconnect_detect(struct mac_ax_adapter *adapter,
+ 	u32 ret = 0;
+ 	u32 tmp;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -170,7 +170,7 @@ static u32 send_h2c_wow_global(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_wow_global *fwcmd_wow_glo;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -241,7 +241,7 @@ static u32 send_h2c_gtk_ofld(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_gtk_ofld *fwcmd_gtk_ofl;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -315,7 +315,7 @@ static u32 send_h2c_arp_ofld(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_arp_ofld *fwcmd_arp_ofl;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -378,7 +378,7 @@ static u32 send_h2c_ndp_ofld(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_ndp_ofld *fwcmd_ndp_ofl;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -441,7 +441,7 @@ static u32 send_h2c_realwow(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_realwow *fwcmd_realw;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -513,7 +513,7 @@ static u32 send_h2c_nlo(struct mac_ax_adapter *adapter,
+ 	u32 ret = 0;
+ 	u8 sh;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -582,7 +582,7 @@ static u32 send_h2c_wakeup_ctrl(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_wakeup_ctrl *fwcmd_wakeup_ctr;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -648,7 +648,7 @@ static u32 send_h2c_negative_pattern(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_negative_pattern *fwcmd_negative_patter;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -757,7 +757,7 @@ u32 mac_cfg_dev2hst_gpio(struct mac_ax_adapter *adapter,
+ 		return MACBUFSZ;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, h2cb_type);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)h2cb_type);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -866,7 +866,7 @@ static u32 send_h2c_hst2dev_ctrl(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_hst2dev_ctrl *fwcmd_hst2dev_ctr;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -936,7 +936,7 @@ static u32 send_h2c_wowcam_upd(struct mac_ax_adapter *adapter,
+ 	struct fwcmd_wow_cam_upd *fwcmd_wowcam_upd;
+ 	u32 ret = 0;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_CMD);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_CMD);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -1624,7 +1624,7 @@ u32 _mac_request_aoac_report_rx_rdy(struct mac_ax_adapter *adapter)
+ 	struct mac_ax_intf_ops *ops = adapter_to_intf_ops(adapter);
+ 	u32 val32;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 
+ 	if (!h2cb)
+ 		return MACNPTR;
+@@ -1946,7 +1946,7 @@ u32 mac_cfg_wow_auto_test(struct mac_ax_adapter *adapter, u8 rxtest)
+ 		return MACFWNONRDY;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 
+ 	if (!h2cb)
+ 		return MACNPTR;
+@@ -2168,7 +2168,7 @@ u32 mac_proxyofld(struct mac_ax_adapter *adapter, struct rtw_hal_mac_proxyofld *
+ 	if (adapter->sm.proxy_st != MAC_AX_PROXY_IDLE)
+ 		return MACPROCERR;
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2272,7 +2272,7 @@ u32 mac_proxy_mdns(struct mac_ax_adapter *adapter, struct rtw_hal_mac_proxy_mdns
+ 
+ 	// dump_bytes(adapter, (u8 *)&mdns, sizeof(struct rtw_hal_mac_proxy_mdns));
+ 
+-	h2cb = h2cb_alloc(adapter, H2CB_CLASS_LONG_DATA);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_LONG_DATA);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2453,7 +2453,7 @@ u32 mac_proxy_ptcl_pattern(struct mac_ax_adapter *adapter,
+ 		return MACBUFSZ;
+ 	}
+ 
+-	h2cb = h2cb_alloc(adapter, h2cb_type);
++	h2cb = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)h2cb_type);
+ 	if (!h2cb)
+ 		return MACNPTR;
+ 
+@@ -2545,7 +2545,7 @@ u32 mac_magic_waker_filter(struct mac_ax_adapter *adapter,
+ 				parm->waker_addr_arr[i][4], parm->waker_addr_arr[i][5]);
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf)
+ 		return MACNPTR;
+ 
+@@ -2627,7 +2627,7 @@ u32 mac_tcp_keepalive(struct mac_ax_adapter *adapter,
+ 		return MACFUNCINPUT;
+ 	}
+ 
+-	h2cbuf = h2cb_alloc(adapter, H2CB_CLASS_DATA);
++	h2cbuf = h2cb_alloc(adapter, (enum rtw_h2c_pkt_type)H2CB_CLASS_DATA);
+ 	if (!h2cbuf)
+ 		return MACNPTR;
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_env_mntr.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_env_mntr.c
+index 278be1953f2d..c377a04d9145 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_env_mntr.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_env_mntr.c
+@@ -1459,7 +1459,7 @@ void halbb_clm_init(struct bb_info *bb)
+ 	if (bb->ic_type & BB_IC_AX_SERIES)
+ 		env->clm_input_opt = CLM_CCA_INIT;
+ 	else
+-		env->clm_input_opt = BE_CLM_CCA_INIT;
++		env->clm_input_opt = (enum clm_opt_input)BE_CLM_CCA_INIT;
+ 
+ 	if ((bb->ic_type != BB_RTL8852A) && (bb->ic_type != BB_RTL8852B) &&
+ 	    (bb->ic_type != BB_RTL8851B)) {
+@@ -1556,7 +1556,7 @@ void halbb_clm_dbg(struct bb_info *bb, char input[][16], u32 *_used,
+ 			if (bb->ic_type & BB_IC_AX_SERIES)
+ 				para.clm_input_opt = CLM_CCA_S80_S40_S20;
+ 			else
+-				para.clm_input_opt = BE_CLM_CCA_S160_S80_S40_S20;
++				para.clm_input_opt = (enum clm_opt_input)BE_CLM_CCA_S160_S80_S40_S20;
+ 
+ 			if ((bb->ic_type != BB_RTL8852A) &&
+ 			    (bb->ic_type != BB_RTL8852B) &&
+@@ -1569,7 +1569,7 @@ void halbb_clm_dbg(struct bb_info *bb, char input[][16], u32 *_used,
+ 			if (bb->ic_type & BB_IC_AX_SERIES)
+ 				para.clm_input_opt = (enum clm_opt_input)var[2];
+ 			else
+-				para.clm_input_opt = (enum be_clm_opt_input)var[2];
++				para.clm_input_opt = (enum clm_opt_input)var[2];
+ 
+ 			if ((bb->ic_type != BB_RTL8852A) &&
+ 			    (bb->ic_type != BB_RTL8852B) &&
+@@ -3795,7 +3795,7 @@ void halbb_env_mntr(struct bb_info *bb)
+ 		if (bb->ic_type & BB_IC_AX_SERIES)
+ 			para.clm_input_opt = CLM_CCA_S80_S40_S20;
+ 		else
+-			para.clm_input_opt = BE_CLM_CCA_S160_S80_S40_S20;
++			para.clm_input_opt = (enum clm_opt_input)BE_CLM_CCA_S160_S80_S40_S20;
+ 
+ 		para.nhm_app = NHM_BACKGROUND;
+ 		para.nhm_incld_cca = NHM_EXCLUDE_CCA;
+@@ -4198,7 +4198,7 @@ void halbb_env_mntr_dbg_trigger(struct bb_info *bb, u32 *_used, char *output,
+ 	if (bb->ic_type & BB_IC_AX_SERIES)
+ 		para.clm_input_opt = CLM_CCA_S80_S40_S20;
+ 	else
+-		para.clm_input_opt = BE_CLM_CCA_S160_S80_S40_S20;
++		para.clm_input_opt = (enum clm_opt_input)BE_CLM_CCA_S160_S80_S40_S20;
+ 
+ 	/*nhm para*/
+ 	para.nhm_app = NHM_DBG_11K;
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_path_div.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_path_div.c
+index 3d5adfa0bbf5..1be2c7b1ec1d 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_path_div.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_path_div.c
+@@ -143,7 +143,7 @@ void halbb_set_tx_path_by_cmac_tbl(struct bb_info *bb, u8 macid, enum bb_path tx
+ 	BB_DBG(bb, DBG_PATH_DIV, "STA[%d] : path_sel= [%s]\n", macid,
+ 	       (tx_path_sel == BB_PATH_A) ? "A" : "B");
+ 	/*BB_PATH != RF_PATH*/
+-	tx_path_sel = (tx_path_sel == BB_PATH_A) ? RF_PATH_A : RF_PATH_B;
++	tx_path_sel = (enum bb_path)((tx_path_sel == BB_PATH_A) ? RF_PATH_A : RF_PATH_B);
+ 	cfg = halbb_cfg_cmac_tx_ant(bb, (enum rf_path)tx_path_sel);
+ 
+ 	halbb_set_cctrl_tbl(bb, macid, cfg);
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_psd.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_psd.c
+index 3d0dd7ca5b91..3c7bd5c62620 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_psd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_psd.c
+@@ -297,11 +297,11 @@ u8 halbb_psd(struct bb_info *bb, enum igi_lv_sel igi_lv, u16 start_point,
+ 		BB_DBG(bb, DBG_DBG_API, "rtw_hal_rf_set_ch_bw PHY01 fail!\n");
+ 		return HALBB_SET_FAIL;
+ 	}
+-	if(rtw_hal_rf_chl_rfk_trigger(hal_com, HW_PHY_0, true) != RTW_HAL_STATUS_SUCCESS) {
++	if(rtw_hal_rf_chl_rfk_trigger(hal_com, HW_PHY_0, RFK_TYPE_FORCE_DO) != RTW_HAL_STATUS_SUCCESS) {
+ 		BB_DBG(bb, DBG_DBG_API, "rtw_hal_rf_chl_rfk_trigger PHY0 fail!\n");
+ 		return HALBB_SET_FAIL;
+ 	}
+-	if(rtw_hal_rf_chl_rfk_trigger(hal_com, HW_PHY_1, true) != RTW_HAL_STATUS_SUCCESS) {
++	if(rtw_hal_rf_chl_rfk_trigger(hal_com, HW_PHY_1, RFK_TYPE_FORCE_DO) != RTW_HAL_STATUS_SUCCESS) {
+ 		BB_DBG(bb, DBG_DBG_API, "rtw_hal_rf_chl_rfk_trigger PHY1 fail!\n");
+ 		return HALBB_SET_FAIL;
+ 	}
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_pwr_ctrl.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_pwr_ctrl.c
+index ce40905645ae..6f8d6affaaa0 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_pwr_ctrl.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_pwr_ctrl.c
+@@ -174,7 +174,7 @@ void halbb_set_pwr_macid_idx(struct bb_info *bb, u16 macid, s8 pwr, bool pwr_en,
+ 	}
+ 	
+ 	/* phy idx is one to one mapping to mac hw band idx */
+-	hw_band = bb->bb_phy_idx;
++	hw_band = (enum phl_band_idx)bb->bb_phy_idx;
+ 	/* pwr : S(8,1)*/
+ 	ret_v |= rtw_hal_mac_write_msk_pwr_reg(bb->hal_com, hw_band, reg_ofst, mask_pwr, pwr);
+ 	ret_v |= rtw_hal_mac_write_msk_pwr_reg(bb->hal_com, hw_band, reg_ofst, mask_en, pwr_en);
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_ra.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_ra.c
+index f66ec89a6f78..61775b92f96c 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_ra.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/bb/halbb_ra.c
+@@ -568,7 +568,7 @@ bool halbb_set_csi_rate(struct bb_info *bb, struct rtw_phl_stainfo_t *phl_sta_i)
+ 	ra_cfg->cr_tbl_sel = bb->hal_com->csi_para_ctrl_sel;
+ 	ra_cfg->band_num = phl_sta_i->rlink->hw_band;
+ 	ra_cfg->fixed_csi_rate_l = halbb_ss_mcs_2_mcs_ss_idx(bb,
+-							     ra_sta_i->csi_rate.mode,
++							     (enum bb_mode_type)ra_sta_i->csi_rate.mode,
+ 							     ra_sta_i->csi_rate.ss,
+ 							     ra_sta_i->csi_rate.mcs_idx);
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/rf/halrf_dbg.c b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/rf/halrf_dbg.c
+index c3416dba13eb..0fd8becab673 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/rf/halrf_dbg.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/phy/rf/halrf_dbg.c
+@@ -2601,7 +2601,7 @@ void halrf_rfk_dbg_cmd(struct rf_info *rf, char input[][16], u32 *_used,
+ 		_os_sscanf(input[2], "%d", &val);
+ 		if (val >= HW_PHY_MAX)
+ 			val = HW_PHY_0;
+-		halrf_chl_rfk_trigger(rf, val, true);
++		halrf_chl_rfk_trigger(rf, val, RFK_TYPE_FORCE_DO);
+ 		RF_DBG_CNSL(*_out_len, *_used, output + *_used, *_out_len - *_used,
+ 			 "RFK Trigger End !!!\n");
+ 	} else
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_ps.c b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_ps.c
+index d624b5dfd56f..176b1189622d 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_ps.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_ps.c
+@@ -309,7 +309,7 @@ phl_ps_cfg_pwr_lvl(struct phl_info_t *phl_info, u8 ps_mode, u8 cur_pwr_lvl, u8 r
+ 
+ 	if (cur_pwr_lvl == req_pwr_lvl) {
+ 		PHL_TRACE(COMP_PHL_PS, _PHL_WARNING_, "[PS], %s(): pwr lvl is not change!\n", __func__);
+-		return RTW_HAL_STATUS_SUCCESS;
++		return RTW_PHL_STATUS_SUCCESS;
+ 	}
+ 
+ 	_ps_ntfy_before_pwr_cfg(phl_info, ps_mode, cur_pwr_lvl, req_pwr_lvl);
+@@ -432,7 +432,7 @@ phl_ps_ips_cfg(struct phl_info_t *phl_info, struct ps_cfg *cfg, u8 en)
+ 	ips_info.en = en;
+ 	ips_info.macid = cfg->macid;
+ 
+-	return rtw_hal_ps_ips_cfg(phl_info->hal, &ips_info);
++	return (enum rtw_phl_status)rtw_hal_ps_ips_cfg(phl_info->hal, &ips_info);
+ }
+ 
+ enum rtw_phl_status
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_sta.c b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_sta.c
+index a12fd50ac846..661655ed14ac 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_sta.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_sta.c
+@@ -4870,7 +4870,7 @@ enum rtw_phl_status
+ phl_cmd_set_seciv_hdl(struct phl_info_t *phl_info, u8 *param)
+ {
+ 	struct rtw_phl_stainfo_t *sta = (struct rtw_phl_stainfo_t *)param;
+-	return rtw_hal_set_dctrl_tbl_seciv((void *)phl_info->hal, sta, sta->sec_iv);
++	return (enum rtw_phl_status)rtw_hal_set_dctrl_tbl_seciv((void *)phl_info->hal, sta, sta->sec_iv);
+ }
+ #endif
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_tx.c b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_tx.c
+index b8fc3296fe61..c9758db8718e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl_tx.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl_tx.c
+@@ -2993,7 +2993,7 @@ phl_cmd_cfg_hw_seq_hdl(struct phl_info_t *phl_info, u8 *param)
+ 
+ 	PHL_INFO(" %s(), sta = %p !\n", __func__, sta);
+ 
+-	return rtw_hal_set_dctrl_tbl_seq((void *)phl_info->hal, sta, sta->hw_seq);
++	return (enum rtw_phl_status)rtw_hal_set_dctrl_tbl_seq((void *)phl_info->hal, sta, sta->hw_seq);
+ }
+ #endif
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/test/phl_dbg_cmd.c b/drivers/net/wireless/realtek/rtl8852bs/phl/test/phl_dbg_cmd.c
+index 576d0f75056b..d3841bc24b1e 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/phl/test/phl_dbg_cmd.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/phl/test/phl_dbg_cmd.c
+@@ -296,7 +296,7 @@ _phl_dbg_cmd_switch_chbw(struct phl_info_t *phl_info, char input[][MAX_ARGV],
+ 		chdef.bw = (enum channel_width)bw;
+ 		chdef.offset = (enum chan_offset)offset;
+ 
+-		rtw_hal_set_ch_bw(phl_info->hal, (u8)band_idx, &chdef, false, false, false);
++		rtw_hal_set_ch_bw(phl_info->hal, (u8)band_idx, &chdef, RFK_TYPE_FORCE_NOT_DO, false, false);
+ 
+ 	} while (0);
+ }
+-- 
+2.47.0
+

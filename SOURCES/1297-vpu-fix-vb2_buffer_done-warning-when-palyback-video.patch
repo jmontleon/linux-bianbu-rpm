@@ -1,0 +1,58 @@
+From 22700e3f204ee2cbe7968f9935da92f26a8a3d2c Mon Sep 17 00:00:00 2001
+From: mengbinghan <binghan.meng@spacemit.com>
+Date: Thu, 21 Nov 2024 20:01:34 +0800
+Subject: [PATCH 1297/1448] vpu: fix vb2_buffer_done warning when palyback
+ video
+
+there is a warning when playback video:
+
+WARNING: CPU: 2 PID: 2614 at drivers/media/common/videobuf2/videobuf2-core.c:1049 vb2_buffer_done+0x1f8/0x242
+Modules linked in: algif_hash algif_skcipher af_alg 8852bs binfmt_misc ip_tables autofs4
+CPU: 2 PID: 2614 Comm: kworker/u16:1 Tainted: G        W          6.6.36 #20241118190508
+Hardware name: spacemit k1-x deb1 board (DT)
+Workqueue: c0500000.linlon-v5 irq_bottom
+epc : vb2_buffer_done+0x1f8/0x242
+ ra : handle_event+0x274/0x288
+epc : ffffffff80a98e3a ra : ffffffff80ab1f78 sp : ffffffc80dc43910
+ gp : ffffffff82344988 tp : ffffffd9518f99c0 t0 : 7365746d6d404040
+ t1 : 0000000000000001 t2 : 747365746d6d4040 s0 : ffffffc80dc43960
+ s1 : ffffffd951e5c800 a0 : ffffffd951e5c800 a1 : 0000000000000005
+ a2 : ffffffda753fe7a8 a3 : 0000000000000000 a4 : 0000000000000004
+ a5 : 0000000000000005 a6 : 0000000005e4bcec a7 : 0000000000080022
+ s2 : ffffffd9413bc238 s3 : ffffffd9413bdea8 s4 : 0000000000000005
+ s5 : ffffffd9413bd190 s6 : ffffffd9413bd4f8 s7 : ffffffd9413bc248
+ s8 : 0000000000000003 s9 : ffffffff8200da80 s10: ffffffff81c0f3a8
+ s11: ffffffd92d8d2840 t3 : ffffffda75231908 t4 : ffffffff827926cf
+ t5 : 0000000000000001 t6 : ffffffff8234a3f0
+status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff80a98e3a>] vb2_buffer_done+0x1f8/0x242
+[<ffffffff80ab1f78>] handle_event+0x274/0x288
+[<ffffffff80aae144>] handle_fw_message+0x3a8/0x816
+[<ffffffff80aaf76a>] mvx_session_irq+0x8c/0x1c0
+[<ffffffff80ab99b8>] mvx_sched_handle_irq+0x94/0x13e
+[<ffffffff80ab6a12>] irq_bottom+0x5a/0x70
+[<ffffffff800397c2>] process_one_work+0x1b0/0x45e
+[<ffffffff80039c0e>] worker_thread+0x19e/0x350
+[<ffffffff800411a8>] kthread+0xda/0xf6
+
+Change-Id: Ie68cbffa765fe13173275019648d1ffae692c5d3
+---
+ .../media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
+index b48ab0177f76..a19d94d8b6a3 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
+@@ -303,7 +303,7 @@ static void handle_event(struct mvx_session *session,
+ 		 * If the FW later returns a buffer to us, we could silently
+ 		 * skip it.
+ 		 */
+-		if (vb->state != VB2_BUF_STATE_DEQUEUED) {
++		if (vb->state != VB2_BUF_STATE_DEQUEUED && vb->state != VB2_BUF_STATE_DONE) {
+ 			enum vb2_buffer_state state =
+ 				mvx_v4l2_buffer_update(vbuf);
+ 
+-- 
+2.47.0
+

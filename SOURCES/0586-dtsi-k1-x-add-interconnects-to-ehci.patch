@@ -1,0 +1,26 @@
+From d7f95335b1ea6c4483a6b0309cd2696a49db5bcc Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Tue, 9 Apr 2024 09:49:51 +0800
+Subject: [PATCH 0586/1448] dtsi: k1-x: add interconnects to ehci
+
+Change-Id: I2a12f2965b63a32da7ef42bbf78831cd482d3eac
+---
+ arch/riscv/boot/dts/spacemit/k1-x.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+index 8d82bbe0cd4c..8bea41dd2f05 100644
+--- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
++++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
+@@ -1707,6 +1707,8 @@ ehci: ehci@c0900100 {
+ 			clocks = <&ccu CLK_USB_AXI>;
+ 			usb-phy = <&usbphy>;
+ 			usb-otg = <&otg>;
++			interconnects = <&dram_range0>;
++			interconnect-names = "dma-mem";
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.47.0
+
