@@ -1,4 +1,4 @@
-From f949307900fd13b034a23a242812bda377daac7b Mon Sep 17 00:00:00 2001
+From 8a9709f4580217a43cc4a7147b93dfba3142f84a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 31 Oct 2023 15:54:06 +0800
 Subject: [PATCH 0139/1204] k1x: support cpufreq driver
@@ -151,7 +151,7 @@ index bb9a1660c5c5..48089048c245 100644
  
  	reserved-memory {
 diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 2a3e8bd317c9..f9e67f819583 100644
+index 9c198bd4f7e9..adf9676492bf 100644
 --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
 @@ -95,6 +95,8 @@ static const struct of_device_id allowlist[] __initconst = {

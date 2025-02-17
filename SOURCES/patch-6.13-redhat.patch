@@ -58,17 +58,16 @@
  include/linux/efi.h                                |   22 +-
  include/linux/hid-over-i2c.h                       |  117 ++
  include/linux/hid-over-spi.h                       |  155 ++
- include/linux/lsm_hook_defs.h                      |    2 +
+ include/linux/lsm_hook_defs.h                      |    1 +
  include/linux/rh_kabi.h                            |  541 +++++++
  include/linux/rmi.h                                |    1 +
- include/linux/security.h                           |    5 +
+ include/linux/security.h                           |    9 +
  kernel/module/signing.c                            |    9 +-
  scripts/tags.sh                                    |    2 +
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
- security/lockdown/lockdown.c                       |    1 +
- security/security.c                                |   12 +
- 70 files changed, 9162 insertions(+), 276 deletions(-)
+ security/lockdown/lockdown.c                       |   11 +
+ 69 files changed, 9163 insertions(+), 276 deletions(-)
 
 diff --git a/Documentation/hid/index.rst b/Documentation/hid/index.rst
 index af02cf7cfa82..baf156b44b58 100644
@@ -672,7 +671,7 @@ index 0fa7c5728f1e..e404279c8610 100644
  M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
  L:	platform-driver-x86@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 9de0dc460a83..1355ab12aeb6 100644
+index 423d087afad2..4a43caee1965 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -9299,7 +9298,7 @@ index b9682264e2f5..c2a399e3bb41 100644
  	.probe = ov08x40_probe,
  	.remove = ov08x40_remove,
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 12e7ae1f99e2..354d116a8b6f 100644
+index 46e04b30f642..063ffbe57ba9 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
 @@ -276,6 +276,9 @@ void nvme_delete_ctrl_sync(struct nvme_ctrl *ctrl)
@@ -9884,18 +9883,17 @@ index 000000000000..da5a14b5e89b
 +
 +#endif /* _HID_OVER_SPI_H_ */
 diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index eb2937599cb0..7860721ef2f6 100644
+index eb2937599cb0..1368e5927ccc 100644
 --- a/include/linux/lsm_hook_defs.h
 +++ b/include/linux/lsm_hook_defs.h
-@@ -444,6 +444,8 @@ LSM_HOOK(int, 0, bpf_token_capable, const struct bpf_token *token, int cap)
- #endif /* CONFIG_BPF_SYSCALL */
+@@ -445,6 +445,7 @@ LSM_HOOK(int, 0, bpf_token_capable, const struct bpf_token *token, int cap)
  
  LSM_HOOK(int, 0, locked_down, enum lockdown_reason what)
-+LSM_HOOK(int, 0, lock_kernel_down, const char *where, enum lockdown_reason level)
-+
  
++
  #ifdef CONFIG_PERF_EVENTS
  LSM_HOOK(int, 0, perf_event_open, struct perf_event_attr *attr, int type)
+ LSM_HOOK(int, 0, perf_event_alloc, struct perf_event *event)
 diff --git a/include/linux/rh_kabi.h b/include/linux/rh_kabi.h
 new file mode 100644
 index 000000000000..5139cb2cabdc
@@ -10456,28 +10454,23 @@ index ab7eea01ab42..fff7c5f737fc 100644
  
  int rmi_register_transport_device(struct rmi_transport_dev *xport);
 diff --git a/include/linux/security.h b/include/linux/security.h
-index cbdba435b798..c5c300c4f90b 100644
+index cbdba435b798..75bb1ac940ec 100644
 --- a/include/linux/security.h
 +++ b/include/linux/security.h
-@@ -562,6 +562,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
- int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
- int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
- int security_locked_down(enum lockdown_reason what);
-+int security_lock_kernel_down(const char *where, enum lockdown_reason level);
- int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
- 		      void *val, size_t val_len, u64 id, u64 flags);
- int security_bdev_alloc(struct block_device *bdev);
-@@ -1569,6 +1570,10 @@ static inline int security_locked_down(enum lockdown_reason what)
- {
- 	return 0;
+@@ -2375,4 +2375,13 @@ static inline void security_initramfs_populated(void)
  }
+ #endif /* CONFIG_SECURITY */
+ 
++#ifdef CONFIG_SECURITY_LOCKDOWN_LSM
++extern int security_lock_kernel_down(const char *where, enum lockdown_reason level);
++#else
 +static inline int security_lock_kernel_down(const char *where, enum lockdown_reason level)
 +{
 +	return 0;
 +}
- static inline int lsm_fill_user_ctx(struct lsm_ctx __user *uctx,
- 				    u32 *uctx_len, void *val, size_t val_len,
- 				    u64 id, u64 flags)
++#endif /* CONFIG_SECURITY_LOCKDOWN_LSM */
++
+ #endif /* ! __LINUX_SECURITY_H */
 diff --git a/kernel/module/signing.c b/kernel/module/signing.c
 index a2ff4242e623..f0d2be1ee4f1 100644
 --- a/kernel/module/signing.c
@@ -10563,24 +10556,12 @@ index e84ddf484010..d0501353a4b9 100644
  	prompt "Kernel default lockdown mode"
  	default LOCK_DOWN_KERNEL_FORCE_NONE
 diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
-index f2bdbd55aa2b..ddf496f7fca5 100644
+index f2bdbd55aa2b..b37a79c4a6af 100644
 --- a/security/lockdown/lockdown.c
 +++ b/security/lockdown/lockdown.c
-@@ -74,6 +74,7 @@ static int lockdown_is_locked_down(enum lockdown_reason what)
- 
- static struct security_hook_list lockdown_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
-+	LSM_HOOK_INIT(lock_kernel_down, lock_kernel_down),
- };
- 
- static const struct lsm_id lockdown_lsmid = {
-diff --git a/security/security.c b/security/security.c
-index 09664e09fec9..a2bbb9b3ad2e 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -5798,6 +5798,18 @@ int security_locked_down(enum lockdown_reason what)
+@@ -72,6 +72,17 @@ static int lockdown_is_locked_down(enum lockdown_reason what)
+ 	return 0;
  }
- EXPORT_SYMBOL(security_locked_down);
  
 +/**
 + * security_lock_kernel_down() - Put the kernel into lock-down mode.
@@ -10590,10 +10571,9 @@ index 09664e09fec9..a2bbb9b3ad2e 100644
 + */
 +int security_lock_kernel_down(const char *where, enum lockdown_reason level)
 +{
-+	return call_int_hook(lock_kernel_down, where, level);
++	return lock_kernel_down(where, level);
 +}
-+EXPORT_SYMBOL(security_lock_kernel_down);
 +
- /**
-  * security_bdev_alloc() - Allocate a block device LSM blob
-  * @bdev: block device
+ static struct security_hook_list lockdown_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
+ };

@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.2
-%define specversion 6.13.2
+%define specrpmversion 6.13.3
+%define specversion 6.13.3
 %define patchversion 6.13
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13.2
+%define tarfile_release 6.13.3
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.2
+%define kabiversion 6.13.3
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -3090,7 +3090,7 @@ ApplyOptionalPatch()
 {
   local patch=$1
   shift
-  %{log_msg "ApplyOptionalPatch $1"}
+  %{log_msg "ApplyOptionalPatch: $1"}
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
@@ -6594,8 +6594,14 @@ fi\
 #
 #
 %changelog
-* Sat Feb 08 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.2-200]
+* Mon Feb 17 2025 Jason Montleon <jmontleo@redhat.com> [6.13.3-200]
+- Fix up mismatch of CONFIG_CPUFREQ_DT_PLATDEV for automotive (Justin M. Forbes)
+
+* Mon Feb 17 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.3-0]
+- CONFIG_CPUFREQ_DT_PLATDEV is bool now (Justin M. Forbes)
+- efi,lockdown: fix kernel lockdown on Secure Boot (Ondrej Mosnacek) {CVE-2025-1272}
 - Config update for 6.13.2 (Justin M. Forbes)
+- Linux v6.13.3
 
 * Sat Feb 08 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.2-0]
 - Fix up configs for CONFIG_USB_ONBOARD_DEV_USB5744 (Justin M. Forbes)

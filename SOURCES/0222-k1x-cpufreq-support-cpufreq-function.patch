@@ -1,4 +1,4 @@
-From fee549b8189cb6d4fd9b2d13eb63abc959c3da68 Mon Sep 17 00:00:00 2001
+From 94044154f86483b684bb95541d0890d20355be68 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 21 Dec 2023 20:39:40 +0800
 Subject: [PATCH 0222/1204] k1x:cpufreq: support cpufreq function
@@ -242,7 +242,7 @@ index 20b3bd511f97..f4921d020f1d 100644
  CONFIG_MODULE_UNLOAD=y
  # CONFIG_BLK_DEBUG_FS is not set
 diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index 26e98fea991a..4e29af62ff38 100644
+index d64b07ec48e5..806378cf7211 100644
 --- a/drivers/cpufreq/Kconfig
 +++ b/drivers/cpufreq/Kconfig
 @@ -325,6 +325,15 @@ config QORIQ_CPUFREQ

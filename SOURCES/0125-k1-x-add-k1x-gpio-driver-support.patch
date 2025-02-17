@@ -1,4 +1,4 @@
-From cea5b13da3f3eb06b51682edf3fa9b81354ef16a Mon Sep 17 00:00:00 2001
+From b0b3eceda34e341ac21380f1267972b5cd1576cb Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 7 Oct 2023 17:35:13 +0800
 Subject: [PATCH 0125/1204] k1-x:add k1x gpio driver support
@@ -65,10 +65,10 @@ index 5354ac132849..6b0d32537096 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 93ee3aa092f8..bb744ae06a97 100644
+index 1a66ca075ade..01d5675b571e 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
-@@ -884,6 +884,15 @@ config GPIO_IDT3243X
+@@ -885,6 +885,15 @@ config GPIO_IDT3243X
  	  To compile this driver as a module, choose M here: the module will
  	  be called gpio-idt3243x.
  
