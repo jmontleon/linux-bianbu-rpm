@@ -48,6 +48,7 @@
  drivers/input/rmi4/rmi_driver.c                    |  124 +-
  drivers/iommu/iommu.c                              |   22 +
  drivers/media/i2c/ov08x40.c                        |  167 ++-
+ drivers/misc/mei/vsc-tp.c                          |    2 +-
  drivers/nvme/host/core.c                           |   22 +-
  drivers/nvme/host/multipath.c                      |   19 +-
  drivers/nvme/host/nvme.h                           |    4 +
@@ -67,7 +68,7 @@
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
  security/lockdown/lockdown.c                       |   11 +
- 69 files changed, 9163 insertions(+), 276 deletions(-)
+ 70 files changed, 9164 insertions(+), 277 deletions(-)
 
 diff --git a/Documentation/hid/index.rst b/Documentation/hid/index.rst
 index af02cf7cfa82..baf156b44b58 100644
@@ -671,7 +672,7 @@ index 0fa7c5728f1e..e404279c8610 100644
  M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
  L:	platform-driver-x86@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 423d087afad2..4a43caee1965 100644
+index c436a6e64971..1056b6318e7c 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -711,7 +712,7 @@ index 423d087afad2..4a43caee1965 100644
  ifdef mixed-build
  # ===========================================================================
  # We're called with mixed targets (*config and build targets).
-@@ -1910,6 +1933,23 @@ endif
+@@ -1905,6 +1928,23 @@ endif
  
  ifdef CONFIG_MODULES
  
@@ -1181,7 +1182,7 @@ index a2d0009560d0..4f3486e6a84b 100644
  obj-$(CONFIG_EFI_RCI2_TABLE)		+= rci2-table.o
  obj-$(CONFIG_EFI_EMBEDDED_FIRMWARE)	+= embedded-firmware.o
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 60c64b81d2c3..19cb19cf67d4 100644
+index 1992d1176c7e..666e6845bd92 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -33,6 +33,7 @@
@@ -1192,7 +1193,7 @@ index 60c64b81d2c3..19cb19cf67d4 100644
  
  #include <asm/early_ioremap.h>
  
-@@ -1008,40 +1009,101 @@ int efi_mem_type(unsigned long phys_addr)
+@@ -1010,40 +1011,101 @@ int efi_mem_type(unsigned long phys_addr)
  	return -EINVAL;
  }
  
@@ -9297,6 +9298,19 @@ index b9682264e2f5..c2a399e3bb41 100644
  	},
  	.probe = ov08x40_probe,
  	.remove = ov08x40_remove,
+diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
+index 35d349fee769..7be1649b1972 100644
+--- a/drivers/misc/mei/vsc-tp.c
++++ b/drivers/misc/mei/vsc-tp.c
+@@ -502,7 +502,7 @@ static int vsc_tp_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
+-	tp->wakeuphost = devm_gpiod_get(dev, "wakeuphost", GPIOD_IN);
++	tp->wakeuphost = devm_gpiod_get(dev, "wakeuphostint", GPIOD_IN);
+ 	if (IS_ERR(tp->wakeuphost))
+ 		return PTR_ERR(tp->wakeuphost);
+ 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
 index 46e04b30f642..063ffbe57ba9 100644
 --- a/drivers/nvme/host/core.c
@@ -9437,7 +9451,7 @@ index c4bb8dfe1a45..a17435a61ed3 100644
  {
  }
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 76f4df75b08a..d7af71f1825b 100644
+index 0a1f668999ce..8aba731f9ce3 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
 @@ -4451,6 +4451,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
@@ -9500,10 +9514,10 @@ index af62a8ed8620..bf275aac44e1 100644
  	if (err)
  		goto err_out_driver;
 diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 21ac9b464696..24a92295bd8d 100644
+index 906daf423cb0..5e69805e1016 100644
 --- a/drivers/usb/core/hub.c
 +++ b/drivers/usb/core/hub.c
-@@ -5846,6 +5846,13 @@ static void hub_event(struct work_struct *work)
+@@ -5856,6 +5856,13 @@ static void hub_event(struct work_struct *work)
  			(u16) hub->change_bits[0],
  			(u16) hub->event_bits[0]);
  
@@ -9531,7 +9545,7 @@ index b164da5e129e..72bfb79b491d 100644
   * Miscellaneous stuff.
   */
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index e5815867aba9..b17440aaf863 100644
+index 8bcd629ee250..a7f3e750f2fc 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -45,6 +45,8 @@ struct screen_info;
@@ -9543,7 +9557,7 @@ index e5815867aba9..b17440aaf863 100644
  typedef unsigned long efi_status_t;
  typedef u8 efi_bool_t;
  typedef u16 efi_char16_t;		/* UNICODE character */
-@@ -864,6 +866,14 @@ static inline int efi_range_is_wc(unsigned long start, unsigned long len)
+@@ -865,6 +867,14 @@ static inline int efi_range_is_wc(unsigned long start, unsigned long len)
  #define EFI_MEM_ATTR		9	/* Did firmware publish an EFI_MEMORY_ATTRIBUTES table? */
  #define EFI_MEM_NO_SOFT_RESERVE	10	/* Is the kernel configured to ignore soft reservations? */
  #define EFI_PRESERVE_BS_REGIONS	11	/* Are EFI boot-services memory segments available? */
@@ -9558,7 +9572,7 @@ index e5815867aba9..b17440aaf863 100644
  
  #ifdef CONFIG_EFI
  /*
-@@ -875,6 +885,8 @@ static inline bool efi_enabled(int feature)
+@@ -876,6 +886,8 @@ static inline bool efi_enabled(int feature)
  }
  extern void efi_reboot(enum reboot_mode reboot_mode, const char *__unused);
  
@@ -9567,7 +9581,7 @@ index e5815867aba9..b17440aaf863 100644
  bool __pure __efi_soft_reserve_enabled(void);
  
  static inline bool __pure efi_soft_reserve_enabled(void)
-@@ -896,6 +908,8 @@ static inline bool efi_enabled(int feature)
+@@ -897,6 +909,8 @@ static inline bool efi_enabled(int feature)
  static inline void
  efi_reboot(enum reboot_mode reboot_mode, const char *__unused) {}
  
@@ -9576,7 +9590,7 @@ index e5815867aba9..b17440aaf863 100644
  static inline bool efi_soft_reserve_enabled(void)
  {
  	return false;
-@@ -910,6 +924,7 @@ static inline void efi_find_mirror(void) {}
+@@ -911,6 +925,7 @@ static inline void efi_find_mirror(void) {}
  #endif
  
  extern int efi_status_to_err(efi_status_t status);
@@ -9584,7 +9598,7 @@ index e5815867aba9..b17440aaf863 100644
  
  /*
   * Variable Attributes
-@@ -1125,13 +1140,6 @@ static inline bool efi_runtime_disabled(void) { return true; }
+@@ -1126,13 +1141,6 @@ static inline bool efi_runtime_disabled(void) { return true; }
  extern void efi_call_virt_check_flags(unsigned long flags, const void *caller);
  extern unsigned long efi_call_virt_save_flags(void);
  
