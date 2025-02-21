@@ -1,4 +1,4 @@
-From 1b8b055fc35b977e3ab64264214b9fb142e18a42 Mon Sep 17 00:00:00 2001
+From 74e17e2c5c573a8b27fbdc081a91fef0e10217aa Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 12 Dec 2024 20:46:36 +0800
 Subject: [PATCH 1391/1448] k1: usb: dwc3: gadget: notify disconnect from
@@ -64,10 +64,10 @@ index 57ddd2e43022..b5fcc9978698 100644
  	case DWC3_GCTL_PRTCAP_OTG:
  		role = dwc->current_otg_role;
 diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 9b8099cba414..3246f9b2b9d7 100644
+index f6d9a9c67db4..ac06a3811bcc 100644
 --- a/drivers/usb/dwc3/gadget.c
 +++ b/drivers/usb/dwc3/gadget.c
-@@ -2750,6 +2750,34 @@ static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+@@ -2784,6 +2784,34 @@ static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
  	return dwc3_gadget_run_stop(dwc, true);
  }
  
@@ -102,7 +102,7 @@ index 9b8099cba414..3246f9b2b9d7 100644
  static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
  {
  	struct dwc3		*dwc = gadget_to_dwc(g);
-@@ -3162,6 +3190,9 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
+@@ -3196,6 +3224,9 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
  	.func_wakeup		= dwc3_gadget_func_wakeup,
  	.set_remote_wakeup	= dwc3_gadget_set_remote_wakeup,
  	.set_selfpowered	= dwc3_gadget_set_selfpowered,
@@ -112,7 +112,7 @@ index 9b8099cba414..3246f9b2b9d7 100644
  	.pullup			= dwc3_gadget_pullup,
  	.udc_start		= dwc3_gadget_start,
  	.udc_stop		= dwc3_gadget_stop,
-@@ -4649,7 +4680,12 @@ int dwc3_gadget_init(struct dwc3 *dwc)
+@@ -4683,7 +4714,12 @@ int dwc3_gadget_init(struct dwc3 *dwc)
  	dwc->gadget->name		= "dwc3-gadget";
  	dwc->gadget->lpm_capable	= !dwc->usb2_gadget_lpm_disable;
  	dwc->gadget->wakeup_capable	= true;
