@@ -1,4 +1,4 @@
-From 710d2c2d26b7a6baf0adcf1839e5588df414809d Mon Sep 17 00:00:00 2001
+From a0173b60631320d49754a270e152c1d1b4c6c5ee Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 29 Apr 2024 11:45:24 +0800
 Subject: [PATCH 0638/1448] wirless: don't show error when load regulatory.db
@@ -23,5 +23,5 @@ index 0317cf9da307..b8526bc0cb9c 100644
  	} else if (!valid_regdb(fw->data, fw->size)) {
  		pr_info("loaded regulatory.db is malformed or signature is missing/invalid\n");
 -- 
-2.47.0
+2.48.1
 

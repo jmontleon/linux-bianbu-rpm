@@ -1,4 +1,4 @@
-From ea886b87711ed342c2fa2de304e17379eed926af Mon Sep 17 00:00:00 2001
+From fc098756bcef58ab3f745d0f6f8de1608b39720a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:35:40 +0800
 Subject: [PATCH 0252/1448] clean compile warning in timer-riscv.c
@@ -26,5 +26,5 @@ index 29628bf7fe49..5ab129fb4779 100644
  #if defined(CONFIG_32BIT)
  		csr_write(CSR_STIMECMP, next_tval & 0xFFFFFFFF);
 -- 
-2.47.0
+2.48.1
 

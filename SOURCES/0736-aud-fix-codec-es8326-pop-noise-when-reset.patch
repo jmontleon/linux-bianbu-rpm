@@ -1,4 +1,4 @@
-From 5ddaedbf4afe519c6c0ec193635aed1e5d18e108 Mon Sep 17 00:00:00 2001
+From ae205ed8bda83847f010b73221d2de67c0f384c0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 26 Mar 2024 15:28:56 +0800
 Subject: [PATCH 0736/1448] aud: fix codec es8326 pop noise when reset
@@ -54,5 +54,5 @@ index 7c55a4e667ad..13615d677ea6 100755
  #endif
  	es8326->mclk = devm_clk_get_optional(&i2c->dev, "mclk");
 -- 
-2.47.0
+2.48.1
 

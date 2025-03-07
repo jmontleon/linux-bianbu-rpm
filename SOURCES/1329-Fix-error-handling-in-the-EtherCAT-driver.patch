@@ -1,4 +1,4 @@
-From 7f271f8382720ea90356c282e265c7f352cc3c4c Mon Sep 17 00:00:00 2001
+From 91a999abe51119d1d20dda3878d71672b89611f1 Mon Sep 17 00:00:00 2001
 From: zengyu <yu.zeng@spacemit.com>
 Date: Tue, 3 Dec 2024 09:43:35 +0800
 Subject: [PATCH 1329/1448] Fix error handling in the EtherCAT driver
@@ -77,5 +77,5 @@ index 38bfc1f78ae6..beb54ac2be53 100644
      if (master_count) {
          if (alloc_chrdev_region(&device_number,
 -- 
-2.47.0
+2.48.1
 

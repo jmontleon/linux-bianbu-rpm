@@ -1,4 +1,4 @@
-From 3d73a8dba1b43707e8d2cbf4476424160349110f Mon Sep 17 00:00:00 2001
+From d215c1a1a502244d9981c2a83f1ff138d1ee65c7 Mon Sep 17 00:00:00 2001
 From: Greentime Hu <greentime.hu@sifive.com>
 Date: Mon, 15 Jan 2024 05:59:20 +0000
 Subject: [PATCH 0950/1448] riscv: Add support for kernel mode vector
@@ -279,5 +279,5 @@ index 64bae2904b81..81fe5822b497 100644
  	p->thread.sp = (unsigned long)childregs; /* kernel sp */
  	return 0;
 -- 
-2.47.0
+2.48.1
 

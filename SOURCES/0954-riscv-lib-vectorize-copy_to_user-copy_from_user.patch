@@ -1,4 +1,4 @@
-From 950172c02e1f75177e2c1df848143005d3a1ad35 Mon Sep 17 00:00:00 2001
+From baa635d009263ee75a5872a83a8f029600fa2493 Mon Sep 17 00:00:00 2001
 From: Andy Chiu <andy.chiu@sifive.com>
 Date: Mon, 15 Jan 2024 05:59:24 +0000
 Subject: [PATCH 0954/1448] riscv: lib: vectorize copy_to_user/copy_from_user
@@ -249,5 +249,5 @@ index 000000000000..51ab5588e9ff
 +	j	10b
 +SYM_FUNC_END(__asm_vector_usercopy)
 -- 
-2.47.0
+2.48.1
 

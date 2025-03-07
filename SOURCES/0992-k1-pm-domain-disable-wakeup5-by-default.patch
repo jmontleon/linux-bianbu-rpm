@@ -1,4 +1,4 @@
-From 18769ff6f219afb33f9298369daea38ad7594e48 Mon Sep 17 00:00:00 2001
+From f56ab165caaa694d6dd021c56de577a2eafce357 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 19:53:06 +0800
 Subject: [PATCH 0992/1448] k1:pm-domain: disable wakeup5 by default
@@ -47,5 +47,5 @@ index cd741e311313..ccf4e5e0317d 100644
  	err = of_property_read_u32(np, "domains", &pmu->number_domains);
  	if (err) {
 -- 
-2.47.0
+2.48.1
 

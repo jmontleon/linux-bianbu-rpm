@@ -1,4 +1,4 @@
-From 33fd0192ac69593f275828d9df0121d4030206ab Mon Sep 17 00:00:00 2001
+From 81b9a3c258343deabb9ba2834d77a455809d5265 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 Date: Wed, 4 Oct 2023 17:13:59 +0200
 Subject: [PATCH 0836/1448] riscv: add support for misaligned trap handling in
@@ -298,5 +298,5 @@ index edae2735ebe3..a67ee454b5af 100644
  	regs->epc = epc + INSN_LEN(insn);
  
 -- 
-2.47.0
+2.48.1
 

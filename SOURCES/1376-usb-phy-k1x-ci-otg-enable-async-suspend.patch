@@ -1,4 +1,4 @@
-From 4750537b7d2417f4b660c8be0498a4bae0ec0481 Mon Sep 17 00:00:00 2001
+From 6910293e3c6bf49e5c9abe42afaa0e9f4c076171 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 28 Nov 2024 21:50:46 +0800
 Subject: [PATCH 1376/1448] usb: phy-k1x-ci-otg: enable async suspend
@@ -21,5 +21,5 @@ index 7bf8995347cb..629bc214898c 100644
  	mvotg->vbus_gpio =
  		devm_gpiod_get_optional(&pdev->dev, "vbus", GPIOD_OUT_LOW);
 -- 
-2.47.0
+2.48.1
 

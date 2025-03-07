@@ -1,4 +1,4 @@
-From 4068688fd71521081676ec4d366746d5ddbb2056 Mon Sep 17 00:00:00 2001
+From 64358637a99484ad775828fe742cf9075bdac9f5 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 28 Nov 2024 21:49:37 +0800
 Subject: [PATCH 1379/1448] usb: dwc3-spacemit: enable async suspend
@@ -21,5 +21,5 @@ index 6dc59930683d..d936452815d9 100644
  	spacemit->irq = platform_get_irq(pdev, 0);
  	if (spacemit->irq < 0) {
 -- 
-2.47.0
+2.48.1
 

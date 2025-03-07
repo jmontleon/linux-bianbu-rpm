@@ -1,4 +1,4 @@
-From b8bea9f4a6c3797523c8a7a4cabc0e38c02fbd3a Mon Sep 17 00:00:00 2001
+From f0cd77abbd51a9c175e67342add53313cd625dca Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Fri, 14 Jun 2024 16:18:09 +0800
 Subject: [PATCH 0755/1448] camera: fix call_get_fmt -EINVAL return to support
@@ -49,5 +49,5 @@ index 3efead97383b..403691dca506 100755
  			fmt.format.width, fmt.format.height, fmt.format.code,
  			media_entity_name(remote_me), fmt.pad);
 -- 
-2.47.0
+2.48.1
 

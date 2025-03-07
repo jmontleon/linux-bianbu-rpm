@@ -1,4 +1,4 @@
-From dc64532bb4badd877fbc133c05989ea3815db4a0 Mon Sep 17 00:00:00 2001
+From 072b5efb5ac492342d4850b7b3866cf479902774 Mon Sep 17 00:00:00 2001
 From: Andy Chiu <andy.chiu@sifive.com>
 Date: Mon, 15 Jan 2024 05:59:26 +0000
 Subject: [PATCH 0955/1448] riscv: vector: do not pass task_struct into
@@ -118,7 +118,7 @@ index 7b93bcbdf9fa..e8515aa9d80b 100644
  	}
  
 diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index aca4a12c8416..5d69f4db9e8f 100644
+index 65a973f386e3..733b46039546 100644
 --- a/arch/riscv/kernel/signal.c
 +++ b/arch/riscv/kernel/signal.c
 @@ -87,7 +87,7 @@ static long save_v_state(struct pt_regs *regs, void __user **sc_vec)
@@ -131,5 +131,5 @@ index aca4a12c8416..5d69f4db9e8f 100644
  
  	/* Copy everything of vstate but datap. */
 -- 
-2.47.0
+2.48.1
 

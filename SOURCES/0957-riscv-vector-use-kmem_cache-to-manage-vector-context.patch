@@ -1,4 +1,4 @@
-From cda11366d0de5e82ce4317803db39b8378757b2e Mon Sep 17 00:00:00 2001
+From c737308076ef95f9a6eead0eabb28c2fd0a54b6c Mon Sep 17 00:00:00 2001
 From: Andy Chiu <andy.chiu@sifive.com>
 Date: Mon, 15 Jan 2024 05:59:28 +0000
 Subject: [PATCH 0957/1448] riscv: vector: use kmem_cache to manage vector
@@ -121,5 +121,5 @@ index ff20d881554c..c9e6029b238e 100644
  #define VSTATE_CTRL_GET_NEXT(x) (((x) & PR_RISCV_V_VSTATE_CTRL_NEXT_MASK) >> 2)
  #define VSTATE_CTRL_MAKE_NEXT(x) (((x) << 2) & PR_RISCV_V_VSTATE_CTRL_NEXT_MASK)
 -- 
-2.47.0
+2.48.1
 

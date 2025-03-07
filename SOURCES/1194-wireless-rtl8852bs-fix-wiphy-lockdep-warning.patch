@@ -1,4 +1,4 @@
-From 5debdb0f39b491a1e782f07ec47d4ff8103aa593 Mon Sep 17 00:00:00 2001
+From ad319db72489f1d8a355ecf9b9f7c335e7e89c70 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 23 Oct 2024 16:44:35 +0800
 Subject: [PATCH 1194/1448] wireless: rtl8852bs: fix wiphy lockdep warning
@@ -69,5 +69,5 @@ index 95eeca0f1cf8..ab358e130372 100644
  	ret = regulatory_set_wiphy_regd_sync_rtnl(wiphy, regd);
  	#endif
 -- 
-2.47.0
+2.48.1
 

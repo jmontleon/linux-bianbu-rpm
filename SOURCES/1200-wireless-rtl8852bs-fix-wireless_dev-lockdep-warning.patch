@@ -1,4 +1,4 @@
-From 9e36f365696afa3e8f34e51f5e208f1019cce410 Mon Sep 17 00:00:00 2001
+From d61edba26abe6615c89dfd8853618bd2e19bd2a4 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 25 Oct 2024 11:10:00 +0800
 Subject: [PATCH 1200/1448] wireless: rtl8852bs: fix wireless_dev lockdep
@@ -93,5 +93,5 @@ index 707cd12a97f0..a50bf29733d1 100644
  #else
  	int freq = rtw_bch2freq(rtw_chdef->band, rtw_chdef->chan);
 -- 
-2.47.0
+2.48.1
 

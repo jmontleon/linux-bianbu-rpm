@@ -1,4 +1,4 @@
-From 98dcb913e75b8663009db4348a2e9a5723922c14 Mon Sep 17 00:00:00 2001
+From 6fd3d61e91caaa98ce4505373b04cb3c836eb563 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Aug 2024 10:10:47 +0800
 Subject: [PATCH 1111/1448] phy-k1x-ci-otg: fix shared reset assert warning
@@ -37,5 +37,5 @@ index 4bd7ebfd093c..522135bef288 100644
  	retval = usb_phy_init(mvotg->outer_phy);
  	if (retval) {
 -- 
-2.47.0
+2.48.1
 

@@ -1,4 +1,4 @@
-From da2e467a62f0bc00aca027cc1d19e5ea66a58169 Mon Sep 17 00:00:00 2001
+From da2786dba8fbba3f4c2a2e70e8c6eeff97b592a6 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Tue, 24 Dec 2024 19:11:18 +0800
 Subject: [PATCH 1384/1448] tcm: fix slab-use-after-free in tcm_vma_close
@@ -129,5 +129,5 @@ index ebc0b2ab2bae..4ae539da4b5a 100644
  
  	list_for_each_entry(node, head, list) {
 -- 
-2.47.0
+2.48.1
 

@@ -1,4 +1,4 @@
-From 1b768825b482791ba57b346952544684c372943b Mon Sep 17 00:00:00 2001
+From 05ce5f635bbb0bd20c9aea0e4b20287708f81619 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:49:50 +0800
 Subject: [PATCH 1044/1448] ehci-k1x-ci: fix otg suspend resume and pm_runtime
@@ -155,5 +155,5 @@ index ab26783d76df..16803b344d7b 100644
  	ehci_resume(hcd, ehci_mv->reset_on_resume);
  	return 0;
 -- 
-2.47.0
+2.48.1
 

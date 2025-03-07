@@ -1,4 +1,4 @@
-From 46b1804efb4076642e9637d02ee92f1066eeffaa Mon Sep 17 00:00:00 2001
+From db005de5d7667c56f5237ae62785b7d1dcc9f4b9 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 4 Dec 2024 12:40:39 +0800
 Subject: [PATCH 1363/1448] k1:rproc:load the dtb file for rcpu before startup
@@ -51,5 +51,5 @@ index 034557790292..ccfd3bef6b41 100644
  	writel(0xff, priv->base[BOOTC_MEM_BASE_OFFSET] + ESOS_AON_PER_CLK_RST_CTL_REG);
  
 -- 
-2.47.0
+2.48.1
 

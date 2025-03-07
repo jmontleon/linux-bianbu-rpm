@@ -1,4 +1,4 @@
-From c703877fb17a7bede20d1761ab2a4ba121d392ab Mon Sep 17 00:00:00 2001
+From fb0c7cf2d5d5097ec623bc22e56b954f4ab3604a Mon Sep 17 00:00:00 2001
 From: Andy Chiu <andy.chiu@sifive.com>
 Date: Mon, 15 Jan 2024 05:59:23 +0000
 Subject: [PATCH 0953/1448] riscv: sched: defer restoring Vector context for
@@ -170,7 +170,7 @@ index 2afe460de16a..7b93bcbdf9fa 100644
  	ptrace_vstate.vstart = vstate->vstart;
  	ptrace_vstate.vl = vstate->vl;
 diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 88b6220b2608..aca4a12c8416 100644
+index 048b9b23d754..65a973f386e3 100644
 --- a/arch/riscv/kernel/signal.c
 +++ b/arch/riscv/kernel/signal.c
 @@ -86,7 +86,10 @@ static long save_v_state(struct pt_regs *regs, void __user **sc_vec)
@@ -207,5 +207,5 @@ index cdac5560a64e..d72732730dd1 100644
  }
  
 -- 
-2.47.0
+2.48.1
 

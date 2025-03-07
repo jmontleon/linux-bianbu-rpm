@@ -1,4 +1,4 @@
-From ba50811bf7ae40d59976f162b2fb7db8302a08bf Mon Sep 17 00:00:00 2001
+From fd16b58697bf9e890bb0510c181447dc8ec609e1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 7 Mar 2024 10:57:30 +0800
 Subject: [PATCH 0734/1448] es8326: add PA ctrl and config sysclk
@@ -150,5 +150,5 @@ index c8ce39b0d276..da428f08330b
  	if (IS_ERR(es8326->mclk)) {
  		dev_err(&i2c->dev, "unable to get mclk\n");
 -- 
-2.47.0
+2.48.1
 

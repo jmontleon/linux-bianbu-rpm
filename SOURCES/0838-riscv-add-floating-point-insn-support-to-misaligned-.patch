@@ -1,4 +1,4 @@
-From f34309eb885d96a7fead2f0822bd36341bea9782 Mon Sep 17 00:00:00 2001
+From 666d02ac22e9f6496b5861bcb1cb3ef4a872c58b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 Date: Wed, 4 Oct 2023 17:14:01 +0200
 Subject: [PATCH 0838/1448] riscv: add floating point insn support to
@@ -379,5 +379,5 @@ index 1423136ee6d5..041fd2dbd955 100644
  		if (store_u8(regs, (void *)(addr + i), val.data_bytes[i]))
  			return -1;
 -- 
-2.47.0
+2.48.1
 

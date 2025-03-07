@@ -1,4 +1,4 @@
-From a7d54209210988abbb4a07709da968485de6e8ed Mon Sep 17 00:00:00 2001
+From 7c155ae15a640aa4b22ce6b23fab55a1fc0d9ae2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Wed, 3 Apr 2024 09:26:38 +0200
 Subject: [PATCH 1333/1448] riscv: Fix vector state restore in rt_sigreturn()
@@ -67,7 +67,7 @@ Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
  1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 5d69f4db9e8f..e81871ca4eac 100644
+index 733b46039546..0e3bdd520617 100644
 --- a/arch/riscv/kernel/signal.c
 +++ b/arch/riscv/kernel/signal.c
 @@ -119,6 +119,13 @@ static long __restore_v_state(struct pt_regs *regs, void __user *sc_vec)
@@ -100,5 +100,5 @@ index 5d69f4db9e8f..e81871ca4eac 100644
  #else
  #define save_v_state(task, regs) (0)
 -- 
-2.47.0
+2.48.1
 
