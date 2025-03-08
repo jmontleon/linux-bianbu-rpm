@@ -1,4 +1,4 @@
-From c74cd1274a3d9e07dbee04864d17fc2110bded76 Mon Sep 17 00:00:00 2001
+From faabe3e4bf707fd24aaa47b10b008179af4f3158 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 22 Jan 2024 14:40:49 +0800
 Subject: [PATCH 0391/1204] clock/reset: fix pwm0 clk/reset reg bit
@@ -36,5 +36,5 @@ index 91004f711e3e..58780258dc41 100644
  	[RESET_PWM2]    = { APBC_PWM2_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
  	[RESET_PWM3]    = { APBC_PWM3_CLK_RST, BIT(2)|BIT(0), BIT(0), BIT(2), RST_BASE_TYPE_APBC },
 -- 
-2.47.0
+2.48.1
 

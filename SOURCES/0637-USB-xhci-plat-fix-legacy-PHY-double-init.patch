@@ -1,4 +1,4 @@
-From 54f83c71e5090012e94a82e3618c080a1de2a05e Mon Sep 17 00:00:00 2001
+From b0f9448188f599a683b0a5d35ed25605f60a00bb Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 20:20:57 +0800
 Subject: [PATCH 0637/1204] USB: xhci-plat: fix legacy PHY double init
@@ -35,5 +35,5 @@ index db109b570c5c..552343f4a9ee 100644
  	 */
  	of_match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
 -- 
-2.47.0
+2.48.1
 

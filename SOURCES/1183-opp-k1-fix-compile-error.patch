@@ -1,4 +1,4 @@
-From 7a962d68783062672a25f394286cd5eba9e125d9 Mon Sep 17 00:00:00 2001
+From b38abba2df1c56e24104a57b82f3aa520253e382 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 6 Dec 2024 13:43:13 +0800
 Subject: [PATCH 1183/1204] opp: k1: fix compile error
@@ -34,5 +34,5 @@ index b9227a6694d0..d276e99741d0 100644
  
  	ret = xa_alloc(&opp_configs, &id, data, XA_LIMIT(1, INT_MAX),
 -- 
-2.47.0
+2.48.1
 

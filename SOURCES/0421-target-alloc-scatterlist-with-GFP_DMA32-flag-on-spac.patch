@@ -1,4 +1,4 @@
-From 96e17379c61f9987959e734fcf24717edb012067 Mon Sep 17 00:00:00 2001
+From dfc8e16773e73e286e75f5d836533108a2124292 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Feb 2024 11:59:21 +0800
 Subject: [PATCH 0421/1204] target: alloc scatterlist with GFP_DMA32 flag on
@@ -24,5 +24,5 @@ index 2e7ea227b77a..3c618a9be37a 100644
  	return *sgl ? 0 : -ENOMEM;
  }
 -- 
-2.47.0
+2.48.1
 

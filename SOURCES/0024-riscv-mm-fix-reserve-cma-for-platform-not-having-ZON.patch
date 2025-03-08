@@ -1,4 +1,4 @@
-From 82d987aa9c9586133bd9e703e413844ff8c39ecf Mon Sep 17 00:00:00 2001
+From 997338b3b64be5e55a61ec669028bc2f8335db03 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
 Subject: [PATCH 0024/1204] riscv: mm: fix reserve cma for platform not having
@@ -45,5 +45,5 @@ index 8d167e09f1fe..088f9779ec3d 100644
  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
  }
 -- 
-2.47.0
+2.48.1
 

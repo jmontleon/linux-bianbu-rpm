@@ -1,4 +1,4 @@
-From bd08719463f52418e199b7f225c336b4460dab83 Mon Sep 17 00:00:00 2001
+From ac020a0531b8b1961882b4d63198e46643437be9 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Wed, 6 Mar 2024 17:44:35 +0800
 Subject: [PATCH 0462/1204] udma open failed when (dma_dev == NULL)
@@ -22,5 +22,5 @@ index 07e7b49554d5..e3d6b3f22d67 100644
  
  static int dma_release(struct inode *inode, struct file *filp)
 -- 
-2.47.0
+2.48.1
 

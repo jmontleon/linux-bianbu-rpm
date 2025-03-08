@@ -1,4 +1,4 @@
-From 1c3f782e806f8cd1833d5eb2bfc98585f885fa48 Mon Sep 17 00:00:00 2001
+From e1c5b97c00ed7125dded6372f27779b497c71f76 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sun, 7 Apr 2024 20:16:50 +0800
 Subject: [PATCH 0560/1204] hdmiaudio: add pm-runtime and reset
@@ -135,5 +135,5 @@ index 4f51c1ba9bab..6d6064d8c989 100644
  	platform_set_drvdata(pdev, priv);
  	ret = devm_snd_soc_register_component(&pdev->dev, &spacemit_snd_sspa_component,
 -- 
-2.47.0
+2.48.1
 

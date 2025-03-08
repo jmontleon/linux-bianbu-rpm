@@ -1,4 +1,4 @@
-From dc232b1b0c18c7bb1c5b18c0ecad3fd5456df871 Mon Sep 17 00:00:00 2001
+From 31d8cee3ebb3aa883d2c87d4b50b95f1b50ea530 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jan 2024 04:55:16 +0800
 Subject: [PATCH 0309/1204] fix dead-lock bug between reset and clk
@@ -100,5 +100,5 @@ index 636aeea6cae4..efdf290e4589 100644
  	if(assert == true) {
  		value &= ~ reset->signals[id].mask;
 -- 
-2.47.0
+2.48.1
 

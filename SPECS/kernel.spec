@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.5
-%define specversion 6.13.5
+%define specrpmversion 6.13.6
+%define specversion 6.13.6
 %define patchversion 6.13
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13.5
+%define tarfile_release 6.13.6
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.5
+%define kabiversion 6.13.6
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6594,6 +6594,10 @@ fi\
 #
 #
 %changelog
+* Fri Mar 07 2025 Augusto Caringi <acaringi@redhat.com> [6.13.6-0]
+- Fix up some debug module loading issues due to BTF mismatch (Justin M. Forbes)
+- Linux v6.13.6
+
 * Thu Feb 27 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.5-0]
 - fuse: revert back to __readahead_folio() for readahead (Joanne Koong)
 - Linux v6.13.5

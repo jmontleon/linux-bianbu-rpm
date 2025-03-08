@@ -1,4 +1,4 @@
-From 26810cfe0a35b254fc6c58b0348024ce3c065cd5 Mon Sep 17 00:00:00 2001
+From 81c20ba92082b7814cdd07a329e708c5f2b8185a Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Thu, 18 Apr 2024 15:10:14 +0800
 Subject: [PATCH 0602/1204] support 2lane camera to draw when okay frontsensor
@@ -113,5 +113,5 @@ index 343737d19b3f..8635db4d48e8 100755
  	sensor->pwdn = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_HIGH);
  	if (IS_ERR(sensor->pwdn)) {
 -- 
-2.47.0
+2.48.1
 
