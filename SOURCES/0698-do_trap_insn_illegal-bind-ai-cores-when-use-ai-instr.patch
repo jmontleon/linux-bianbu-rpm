@@ -1,7 +1,7 @@
-From 663ec3cc8153491d961beb871f0c762abc37dd59 Mon Sep 17 00:00:00 2001
+From 1711fe9f6e3a51a387e6b8f4ea5719214bbea86c Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Tue, 18 Apr 2023 11:18:33 +0800
-Subject: [PATCH 0698/1448] do_trap_insn_illegal: bind ai cores when use ai
+Subject: [PATCH 0698/1446] do_trap_insn_illegal: bind ai cores when use ai
  instruction
 
 Change-Id: Ib551054242131f58699015f28fa30ee976fcbc0f
@@ -43,7 +43,7 @@ index 4f6af8c6cfa0..3ece36b13db2 100644
  extern unsigned long signal_minsigstksz __ro_after_init;
  
 diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index bb5fb2b820a2..1a6b0ef09e36 100644
+index 3f0ad09e1650..55b9c8a5e6a5 100644
 --- a/arch/riscv/kernel/cpufeature.c
 +++ b/arch/riscv/kernel/cpufeature.c
 @@ -80,6 +80,33 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, int bit)

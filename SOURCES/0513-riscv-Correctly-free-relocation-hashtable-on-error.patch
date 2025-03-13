@@ -1,7 +1,7 @@
-From 2aa05a4e51d5dd8996b495a3357549ad724f47c1 Mon Sep 17 00:00:00 2001
+From 4ea888f120892c871f9cfe1ca93a16671fe50d25 Mon Sep 17 00:00:00 2001
 From: Charlie Jenkins <charlie@rivosinc.com>
 Date: Thu, 4 Jan 2024 11:42:48 -0800
-Subject: [PATCH 0513/1448] riscv: Correctly free relocation hashtable on error
+Subject: [PATCH 0513/1446] riscv: Correctly free relocation hashtable on error
 
 When there is not enough allocatable memory for the relocation
 hashtable, module loading should exit gracefully. Previously, this was

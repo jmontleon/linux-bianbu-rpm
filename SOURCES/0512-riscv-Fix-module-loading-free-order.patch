@@ -1,7 +1,7 @@
-From f503e43bedbb26054672054a83abbfb35f3961c9 Mon Sep 17 00:00:00 2001
+From 8b820592b2392c6589877484240db22f96945921 Mon Sep 17 00:00:00 2001
 From: Charlie Jenkins <charlie@rivosinc.com>
 Date: Thu, 4 Jan 2024 11:42:47 -0800
-Subject: [PATCH 0512/1448] riscv: Fix module loading free order
+Subject: [PATCH 0512/1446] riscv: Fix module loading free order
 
 Reverse order of kfree calls to resolve use-after-free error.
 

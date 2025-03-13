@@ -1,7 +1,7 @@
-From ca58fcab8394b5e08a077db8b19ed325464ff42d Mon Sep 17 00:00:00 2001
+From 8925ce339d92db0848f651dcf30f7b3dad8ca5d3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E7=8E=8B=E6=A5=9A?= <chu.wang@spacemit.com>
 Date: Wed, 27 Sep 2023 19:25:54 +0800
-Subject: [PATCH 0149/1448] add tcm_cfg_save/restore
+Subject: [PATCH 0149/1446] add tcm_cfg_save/restore
 
 Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
 ---
@@ -9,10 +9,10 @@ Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 777cb8299551..e48e9b667929 100644
+index 4b61a033fd33..d65b185d786d 100644
 --- a/arch/riscv/include/asm/csr.h
 +++ b/arch/riscv/include/asm/csr.h
-@@ -393,6 +393,11 @@
+@@ -394,6 +394,11 @@
  #define CSR_VTYPE		0xc21
  #define CSR_VLENB		0xc22
  
@@ -24,7 +24,7 @@ index 777cb8299551..e48e9b667929 100644
  #ifdef CONFIG_RISCV_M_MODE
  # define CSR_STATUS	CSR_MSTATUS
  # define CSR_IE		CSR_MIE
-@@ -513,6 +518,11 @@
+@@ -516,6 +521,11 @@
  			      : "memory");			\
  })
  

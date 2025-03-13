@@ -1,7 +1,7 @@
-From c32ebe657438a2fdb22d4115ded3f2c95518f594 Mon Sep 17 00:00:00 2001
+From a98e9519f91e4e867e4f65e749dbcdb5db4760e0 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 20:56:29 +0800
-Subject: [PATCH 0262/1448] add tcm_override_readl/writel for access tcm
+Subject: [PATCH 0262/1446] add tcm_override_readl/writel for access tcm
  override i/o
 
 on the spacemit k1x platform, there is some i/o area
@@ -15,10 +15,10 @@ Change-Id: I99790e18f637aa1b3bc2a177e7c51964ecb6ed44
  2 files changed, 39 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index e48e9b667929..fee6fc66c8a7 100644
+index d65b185d786d..5680b373b3af 100644
 --- a/arch/riscv/include/asm/csr.h
 +++ b/arch/riscv/include/asm/csr.h
-@@ -396,6 +396,7 @@
+@@ -397,6 +397,7 @@
  #ifdef CONFIG_SOC_SPACEMIT_K1X
  /* TCM enable register */
  #define CSR_TCMCFG		0x5db
@@ -26,7 +26,7 @@ index e48e9b667929..fee6fc66c8a7 100644
  #endif
  
  #ifdef CONFIG_RISCV_M_MODE
-@@ -518,11 +519,6 @@
+@@ -521,11 +522,6 @@
  			      : "memory");			\
  })
  

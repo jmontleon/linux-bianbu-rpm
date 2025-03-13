@@ -1,7 +1,7 @@
-From f759a7b3aed319bf073a58617b5609d10b977296 Mon Sep 17 00:00:00 2001
+From 4db4592480c43ff4f08a0aa045082ca6280e26b4 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 6 Apr 2024 13:35:59 +0800
-Subject: [PATCH 0568/1448] plic: clear irq pending when init plic
+Subject: [PATCH 0568/1446] plic: clear irq pending when init plic
 
 there maybe some irq pending triggered by uboot driver,
 the pending will not be cleared even when irq source is

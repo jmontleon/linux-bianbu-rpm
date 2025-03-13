@@ -1,7 +1,7 @@
-From 589428f39ffd6e52a2bc61b1a10126aebcc94399 Mon Sep 17 00:00:00 2001
+From 6e2314f281b8df4650f69b757e978734e3433b7b Mon Sep 17 00:00:00 2001
 From: Anup Patel <apatel@ventanamicro.com>
 Date: Fri, 15 Sep 2023 14:09:44 +0530
-Subject: [PATCH 0809/1448] RISC-V: Detect Zicond from ISA string
+Subject: [PATCH 0809/1446] RISC-V: Detect Zicond from ISA string
 
 The RISC-V integer conditional (Zicond) operation extension defines
 standard conditional arithmetic and conditional-select/move operations
@@ -23,7 +23,7 @@ Change-Id: Ib1af6c5d3650792b58fff1697a2d73695886a5c2
  2 files changed, 2 insertions(+)
 
 diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-index 5e8a89b38091..fad292ef7791 100644
+index 5b1a979638b3..1606b98ec0ce 100644
 --- a/arch/riscv/include/asm/hwcap.h
 +++ b/arch/riscv/include/asm/hwcap.h
 @@ -59,6 +59,7 @@
@@ -35,7 +35,7 @@ index 5e8a89b38091..fad292ef7791 100644
  #define RISCV_ISA_EXT_MAX		64
  
 diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index e54244ef4698..e44b393e521e 100644
+index a7741343ed47..9245ae738549 100644
 --- a/arch/riscv/kernel/cpufeature.c
 +++ b/arch/riscv/kernel/cpufeature.c
 @@ -195,6 +195,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {

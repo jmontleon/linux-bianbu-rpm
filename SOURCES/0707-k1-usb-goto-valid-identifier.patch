@@ -1,7 +1,7 @@
-From 34cccfcdbbc03776146fe9b3ea1d7c3ad9d129d5 Mon Sep 17 00:00:00 2001
+From 3274a2c89413ec649b08323ff96af750246eec61 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:41:50 +0800
-Subject: [PATCH 0707/1448] k1: usb: goto valid identifier
+Subject: [PATCH 0707/1446] k1: usb: goto valid identifier
 
 Signed-off-by: lijuan <juan.li@spacemit.com>
 Change-Id: I528ec7db161cdef545cb1910874cb945fb23c6ed
@@ -10,10 +10,10 @@ Change-Id: I528ec7db161cdef545cb1910874cb945fb23c6ed
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 58c66a1fcd13..6bcc8513b831 100644
+index 135cf0203c24..cccfd9b34540 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -1988,13 +1988,13 @@ static int dwc3_probe(struct platform_device *pdev)
+@@ -1999,13 +1999,13 @@ static int dwc3_probe(struct platform_device *pdev)
  		IS_ENABLED(CONFIG_SOC_SPACEMIT_K1PRO)) {
  		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(40));
  		if (ret)
