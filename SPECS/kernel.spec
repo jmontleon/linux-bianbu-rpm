@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.6
-%define specversion 6.13.6
+%define specrpmversion 6.13.7
+%define specversion 6.13.7
 %define patchversion 6.13
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13.6
+%define tarfile_release 6.13.7
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.6
+%define kabiversion 6.13.7
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -2275,6 +2275,7 @@ Patch11201: 1201-remove-unused-var.patch
 Patch11202: 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 Patch11203: 1203-fix-includes-for-timestamp.patch
 Patch11204: 1204-remove-debug-rdinit-from-m1-bpi.patch
+Patch11205: 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
 
 
 
@@ -4320,6 +4321,7 @@ ApplyOptionalPatch 1201-remove-unused-var.patch
 ApplyOptionalPatch 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 ApplyOptionalPatch 1203-fix-includes-for-timestamp.patch
 ApplyOptionalPatch 1204-remove-debug-rdinit-from-m1-bpi.patch
+ApplyOptionalPatch 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
 
 
 
@@ -6594,6 +6596,14 @@ fi\
 #
 #
 %changelog
+* Thu Mar 13 2025 Augusto Caringi <acaringi@redhat.com> [6.13.7-0]
+- Set CONFIG_FW_CACHE=y for rhel to avoid config mismatch issues (Augusto Caringi)
+- media: ov08x40: Extend sleep after reset to 5 ms (Hans de Goede)
+- media: ov08x40: Log chip ID when identifying the chip (Hans de Goede)
+- media: ov08x40: Fix value of reset GPIO when requesting it (Hans de Goede)
+- ASoC: rt712-sdca: Add FU05 playback switch control (Shuming Fan) [2350689]
+- Linux v6.13.7
+
 * Fri Mar 07 2025 Augusto Caringi <acaringi@redhat.com> [6.13.6-0]
 - Fix up some debug module loading issues due to BTF mismatch (Justin M. Forbes)
 - Linux v6.13.6

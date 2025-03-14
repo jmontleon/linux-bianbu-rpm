@@ -1,7 +1,7 @@
-From e26a277ca905e273b20383a7c0beaeed7b74ed88 Mon Sep 17 00:00:00 2001
+From 77765ce7f8a64b3e91b7dbafcadd6acaf9de5ba2 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 22 May 2024 11:13:33 +0800
-Subject: [PATCH 0713/1204] usb: xhci: add clear disconnect for spacemit k1x
+Subject: [PATCH 0713/1205] usb: xhci: add clear disconnect for spacemit k1x
  phy
 
 Commit e7c4bdd11bae clear disconnect bit by calling notify_connect
@@ -17,10 +17,10 @@ Change-Id: I0b4a7447681691ec9faf7c1d05ac3bcc0a8e7fe7
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index cc8bbc7921fa..ce3489c6de82 100644
+index 9bf22027c4f2..1921bac0b48c 100644
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
-@@ -577,6 +577,10 @@ static void xhci_disable_port(struct xhci_hcd *xhci, struct xhci_port *port)
+@@ -578,6 +578,10 @@ static void xhci_disable_port(struct xhci_hcd *xhci, struct xhci_port *port)
  		 hcd->self.busnum, port->hcd_portnum + 1, portsc);
  }
  
@@ -31,7 +31,7 @@ index cc8bbc7921fa..ce3489c6de82 100644
  static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
  		u16 wIndex, __le32 __iomem *addr, u32 port_status)
  {
-@@ -595,8 +599,8 @@ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
+@@ -596,8 +600,8 @@ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
  	case USB_PORT_FEAT_C_CONNECTION:
  		status = PORT_CSC;
  #if defined(CONFIG_SOC_SPACEMIT_K1X)

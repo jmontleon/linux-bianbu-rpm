@@ -1,7 +1,7 @@
-From 32824de64d26f01d526f31bbec36069f2e2a4aa2 Mon Sep 17 00:00:00 2001
+From 4a3ffa0bcab7210f97dc839f6b1295242548b0f1 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
-Subject: [PATCH 0344/1204] usb: add spacemit k1x dma mask setting
+Subject: [PATCH 0344/1205] usb: add spacemit k1x dma mask setting
 
 Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
 ---
@@ -10,10 +10,10 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 3ad10f6f3ac5..e34313c6dcbb 100644
+index 1fa65a26e90e..b7160c7618de 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -2230,6 +2230,12 @@ static int dwc3_probe(struct platform_device *pdev)
+@@ -2241,6 +2241,12 @@ static int dwc3_probe(struct platform_device *pdev)
  		dwc->num_usb3_ports = 1;
  	}
  
@@ -27,10 +27,10 @@ index 3ad10f6f3ac5..e34313c6dcbb 100644
  	mutex_init(&dwc->mutex);
  
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 9e4b9a6d647a..6279762f1fbd 100644
+index 8afb3e29272b..aa7ee187ca78 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
-@@ -5366,6 +5366,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+@@ -5370,6 +5370,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
  		dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
  	}
  

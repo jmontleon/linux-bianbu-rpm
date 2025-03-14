@@ -1,7 +1,7 @@
-From ee7f3ff855dcb024547424199c95cff19e57fb0c Mon Sep 17 00:00:00 2001
+From cf355dae8f141b583962f7cae2561668abf08ab2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 21 Jun 2024 15:42:47 +0800
-Subject: [PATCH 0760/1204] fix-regulator:do not load the driver asynchronously
+Subject: [PATCH 0760/1205] fix-regulator:do not load the driver asynchronously
  for platform spacemit
 
 if this driver load asynchronously, the drivers that rely on it to

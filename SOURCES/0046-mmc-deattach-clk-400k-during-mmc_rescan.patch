@@ -1,7 +1,7 @@
-From 82f1d59cb6dc80b4fea8a787cb202b70fbff2086 Mon Sep 17 00:00:00 2001
+From 797b41eaa0ecc784b5aeef570aef8717e0072ee5 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 13 Jun 2023 15:10:18 +0800
-Subject: [PATCH 0046/1204] mmc: deattach clk 400k during mmc_rescan()
+Subject: [PATCH 0046/1205] mmc: deattach clk 400k during mmc_rescan()
 
 use 10bit divided clock mode instead of switch clock source,
 so can deattach 400k clksource from sdhci controller
