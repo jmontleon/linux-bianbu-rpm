@@ -1,4 +1,4 @@
-From 0f8f35461513f06f111834b840aec35d3a09e3e7 Mon Sep 17 00:00:00 2001
+From 1a36d1343a25f35293fefe7fe7e753e5ea2dd9cf Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 14:16:48 +0800
 Subject: [PATCH 1058/1446] camera: fix compile warning
@@ -30,5 +30,5 @@ index affac933649a..606f8977f55a 100644
  		if (pipe_dev->isp_reg_mem[user_regs->mem_index].config) {
  			if (pipe_dev->isp_reg_mem[user_regs->mem_index].mem.fd != user_regs->mem.fd) {
 -- 
-2.48.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From 86aff8f115e312ec48e578f1178ba1d1002db805 Mon Sep 17 00:00:00 2001
+From dd83283d976d38064a37fb8fa5779645d1e59a80 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Tue, 23 Jul 2024 10:20:31 +0800
 Subject: [PATCH 0936/1446] k1x:adjust crypto alloc buffer and set mask turns
@@ -26,5 +26,5 @@ index 89f97994a819..0016813dab0a 100644
  	out_buffer = dma_alloc_noncoherent(dev, SPACEMIT_AES_BUFFER_LEN, &dma_addr_out, DMA_FROM_DEVICE, GFP_KERNEL);
  	ctrl = kmalloc(sizeof(struct aes_clk_reset_ctrl), GFP_KERNEL);
 -- 
-2.48.1
+2.49.0
 

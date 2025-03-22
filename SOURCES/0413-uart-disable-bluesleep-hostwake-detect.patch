@@ -1,4 +1,4 @@
-From add8b8d3a527b75c24547de7fd410ef24765bfaa Mon Sep 17 00:00:00 2001
+From c6b370d67235545e68f0755f840870a2a3f080bd Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 2 Feb 2024 10:49:59 +0800
 Subject: [PATCH 0413/1446] uart: disable bluesleep hostwake detect
@@ -31,5 +31,5 @@ index 06cd340f43d5..cbfd854be05b 100644
  		#endif
  		if ((hostwake || up->in_resume) && (mctrl & TIOCM_RTS))
 -- 
-2.48.1
+2.49.0
 

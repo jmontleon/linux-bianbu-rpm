@@ -1,4 +1,4 @@
-From 14af925c65573b718768e7700a8b72a9e48d2e21 Mon Sep 17 00:00:00 2001
+From b4285cd1e90e448444768770f13d0b18378180b4 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 14 May 2024 17:59:31 +0800
 Subject: [PATCH 0674/1446] rtc:fix read rtc error when the registers of pmic
@@ -63,5 +63,5 @@ index bc8f0a234407..64f3781cc920 100644
  		dev_err(rtc->dev, "failed to update alarm day: %d\n", ret);
  		return -EINVAL;
 -- 
-2.48.1
+2.49.0
 

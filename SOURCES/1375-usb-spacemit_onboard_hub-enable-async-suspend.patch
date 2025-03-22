@@ -1,4 +1,4 @@
-From b3313cc2231a9eb683ed4921247cce2919e9c4b8 Mon Sep 17 00:00:00 2001
+From 108e31c81f42283e79b62a5d0f1a86edc42584eb Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 28 Nov 2024 21:50:19 +0800
 Subject: [PATCH 1375/1446] usb: spacemit_onboard_hub: enable async suspend
@@ -21,5 +21,5 @@ index 66ce825e1076..8f7c63f900bd 100644
  	spacemit->hub_gpios = devm_gpiod_get_array_optional(
  		&pdev->dev, "hub",
 -- 
-2.48.1
+2.49.0
 

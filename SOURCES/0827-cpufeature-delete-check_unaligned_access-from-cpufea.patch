@@ -1,4 +1,4 @@
-From 277f90e1c542b36d67fe002f83f254eb03140722 Mon Sep 17 00:00:00 2001
+From 221484c3db9821982275ee12cf97b6f2a8b1e90f Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 20 Jun 2024 18:39:14 +0800
 Subject: [PATCH 0827/1446] cpufeature: delete check_unaligned_access from
@@ -198,5 +198,5 @@ index 2eee7f9fbebb..0d30002144d0 100644
  {
  	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_ZICBOZ))
 -- 
-2.48.1
+2.49.0
 

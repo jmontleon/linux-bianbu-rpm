@@ -1,4 +1,4 @@
-From c0c63b946fb89e5ade79f55dc03d3c568c5c19db Mon Sep 17 00:00:00 2001
+From 7f2b2d4150bd544c32e130049653fcba7968964c Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 11 Jun 2024 17:37:55 +0800
 Subject: [PATCH 0723/1446] k1:jpu: fix compile error on 6.6
@@ -49,5 +49,5 @@ index 93dc44d82449..8594854857ff 100644
  	/* Create a device node. */
  	jdev->jpu_device = device_create(jdev->jpu_class, NULL, jdev->s_jpu_major, NULL, cdev_name);
 -- 
-2.48.1
+2.49.0
 

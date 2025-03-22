@@ -1,4 +1,4 @@
-From 9a4a2873447751f6a55287f6436aa2f33e4a6780 Mon Sep 17 00:00:00 2001
+From 3039da81fa79e1669573bbffa15b6fddc01b19af Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Wed, 13 Nov 2024 10:15:42 +0800
 Subject: [PATCH 1269/1446] Linux:To speed up the startup process by setting
@@ -191,7 +191,7 @@ index af1d2d0cad70..f84b39260216 100644
  };
  
 diff --git a/init/Kconfig b/init/Kconfig
-index 60ed7713b5ee..241e43e813fa 100644
+index 1105cb53f391..a7c6324075c7 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -1478,6 +1478,13 @@ menuconfig EXPERT
@@ -299,5 +299,5 @@ index b3be4a60842f..61c7a8d7ae3b 100644
  	.probe = spacemit_snd_dma_pdev_probe,
  	.remove = spacemit_snd_dma_pdev_remove,
 -- 
-2.48.1
+2.49.0
 

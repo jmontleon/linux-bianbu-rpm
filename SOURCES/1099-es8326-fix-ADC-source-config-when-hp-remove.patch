@@ -1,4 +1,4 @@
-From 4ab521528fc23cba9396d49a27c85b9553d4c34f Mon Sep 17 00:00:00 2001
+From d5c362329eed8da11bfeef605b855babc328fb5b Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 22 Aug 2024 14:11:11 +0800
 Subject: [PATCH 1099/1446] es8326: fix ADC source config when hp remove
@@ -27,5 +27,5 @@ index ec2775acc144..8827194e9efe 100644
  		es8326->hp = 0;
  		regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x01);
 -- 
-2.48.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From f140d47d92be6684538fef054d42e042dce75ed6 Mon Sep 17 00:00:00 2001
+From ea930318af5425b57b451569b23e40af99b46fc1 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Wed, 5 Jun 2024 17:52:32 +0800
 Subject: [PATCH 0739/1446] es8326: add separate hp/mic detect func
@@ -161,5 +161,5 @@ index a99407737dd3..ffe6beecead1 100755
  	es8326->mclk = devm_clk_get_optional(&i2c->dev, "mclk");
  	if (IS_ERR(es8326->mclk)) {
 -- 
-2.48.1
+2.49.0
 

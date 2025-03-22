@@ -1,4 +1,4 @@
-From 81db878aff23e5954c713c1d71a8e8fb296ef372 Mon Sep 17 00:00:00 2001
+From e35a90ae75b3709c55d75ba0567c3352fb27abac Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 22 Mar 2024 17:30:21 +0800
 Subject: [PATCH 0526/1446] mmc: sdhci-of-k1x: improve the tuning window select
@@ -58,5 +58,5 @@ index f6789060bb98..762577c63db9 100644
  		min = max + SDHC_RX_TUNE_DELAY_STEP;
  	} while (min < SDHC_RX_TUNE_DELAY_MAX);
 -- 
-2.48.1
+2.49.0
 

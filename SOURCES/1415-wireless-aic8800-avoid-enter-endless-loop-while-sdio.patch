@@ -1,4 +1,4 @@
-From c6eafa45c3f57b74fc4d121e103daea30bfb9a1d Mon Sep 17 00:00:00 2001
+From 856295529bbf7b013b832d46101bfe874303bd37 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 27 Dec 2024 15:55:03 +0800
 Subject: [PATCH 1415/1446] wireless: aic8800: avoid enter endless loop while
@@ -146,5 +146,5 @@ index 7098745cc7c7..2aea62f1e3ae 100644
  #if 1 // SDIO CLOCK SETTING
  	if ((feature.sdio_clock > 0) && (host->ios.timing != MMC_TIMING_UHS_DDR50)) {
 -- 
-2.48.1
+2.49.0
 

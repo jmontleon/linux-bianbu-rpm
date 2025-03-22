@@ -1,4 +1,4 @@
-From e10764a3028846c1bc34449bd3829a6470654bc2 Mon Sep 17 00:00:00 2001
+From d645b1966f53ef928d2f3b65362cf6398e66e3bf Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 23 Oct 2024 10:26:47 +0800
 Subject: [PATCH 1188/1446] rtl8852be: fix the warning of wireless phy mutex
@@ -54,5 +54,5 @@ index 861be1f45895..295689e78602 100644
  	ret = regulatory_set_wiphy_regd_sync_rtnl(wiphy, regd);
  	#endif
 -- 
-2.48.1
+2.49.0
 

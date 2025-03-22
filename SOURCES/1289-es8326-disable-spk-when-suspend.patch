@@ -1,4 +1,4 @@
-From 02066d86c12f72a79bb49720c3ef293075a044e4 Mon Sep 17 00:00:00 2001
+From 7f7930b08738c1dff80bfcc6eb13c25907628af5 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Wed, 20 Nov 2024 11:03:01 +0800
 Subject: [PATCH 1289/1446] es8326: disable spk when suspend
@@ -21,5 +21,5 @@ index a072a60ca6f2..8c64a4b574fd 100644
  	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
  	regcache_cache_only(es8326->regmap, true);
 -- 
-2.48.1
+2.49.0
 

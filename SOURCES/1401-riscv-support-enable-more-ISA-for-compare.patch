@@ -1,4 +1,4 @@
-From 25d90c98a991f0af6c8bd6543af9a3ca2156970e Mon Sep 17 00:00:00 2001
+From 4ffad2ba8177509bae9909992b8211ff17e4894b Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Thu, 28 Nov 2024 22:31:53 +0800
 Subject: [PATCH 1401/1446] riscv: support enable more ISA for compare
@@ -116,5 +116,5 @@ index feaf0a8a924b..3a0f4f564490 100644
  ifdef CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC
  KBUILD_CFLAGS += -Wa,-misa-spec=2.2
 -- 
-2.48.1
+2.49.0
 

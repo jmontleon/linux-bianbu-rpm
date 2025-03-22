@@ -1,4 +1,4 @@
-From b14de08ee600f2315fbc93ccde640b4df8396450 Mon Sep 17 00:00:00 2001
+From fc9b8c01e6c55e51cb15722b053ff9e69f567368 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 12 Apr 2024 09:51:30 +0800
 Subject: [PATCH 0601/1446] usb: spacemit_onboard_hub: use
@@ -76,5 +76,5 @@ index 8ccde42e2393..e63fcd90840f 100644
  		spacemit->vbus_gpio_active_low ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW);
  	if (IS_ERR(spacemit->vbus_gpios)) {
 -- 
-2.48.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From 106155b00ad9a47917d1ceadd2d80cd3e86cf9d2 Mon Sep 17 00:00:00 2001
+From 58614e4559c2bb105f5d3d535c9a8bcfa7f3932d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 7 Aug 2023 10:53:20 +0800
 Subject: [PATCH 0078/1446] usb: dwc2: modify gadget DMA capability
@@ -22,5 +22,5 @@ index 833b31d3c958..5cfd04b793f9 100644
  		dev_err(&dev->dev, "can't set coherent DMA mask: %d\n", retval);
  		return retval;
 -- 
-2.48.1
+2.49.0
 

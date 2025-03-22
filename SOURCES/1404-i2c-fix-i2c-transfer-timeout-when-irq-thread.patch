@@ -1,4 +1,4 @@
-From 671982dee96787542f665c5a329e03a5684d9cd7 Mon Sep 17 00:00:00 2001
+From d15568511f8a2c450f2d08a476540e2c45f6c4b9 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 6 Dec 2024 09:32:19 +0800
 Subject: [PATCH 1404/1446] i2c: fix i2c transfer timeout when irq thread
@@ -88,5 +88,5 @@ index f1761704f182..006f396888b9 100644
  		if (ret) {
  			dev_err(spacemit_i2c->dev, "failed to request irq\n");
 -- 
-2.48.1
+2.49.0
 

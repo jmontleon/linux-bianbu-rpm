@@ -1,4 +1,4 @@
-From f6d42fc1af6fd8ae4ae9dbffa04f37458a865493 Mon Sep 17 00:00:00 2001
+From 932e2bd42de1b26ddf2d5caaf1221717babf6211 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 10 Sep 2024 20:23:16 +0800
 Subject: [PATCH 1145/1446] wireless: rtl8852bs: avoid out of bounds access in
@@ -30,5 +30,5 @@ index aac77a4b2f3e..9f9d1162cf83 100644
  		" %-5u %-5u %s %-7u %-3u %s "KEY_FMT"\n", macid\
  		, nettype_to_string[nettype], MAC_ARG(SMA), MAC_ARG(TMA)\
 -- 
-2.48.1
+2.49.0
 

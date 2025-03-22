@@ -1,4 +1,4 @@
-From 674665d1e15211a0adfd24f838a980d627f837e3 Mon Sep 17 00:00:00 2001
+From e466ccc954f95cb9afde6d91aa6ff2299f5a0902 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 12 Dec 2024 12:40:18 +0800
 Subject: [PATCH 1359/1446] usb: typec: husb239: fix bug of missing interrupt
@@ -227,5 +227,5 @@ index 0df0efbc991e..e37145c2c5ea 100644
  	if (IS_ERR(husb239->regmap)) {
  		dev_err(husb239->dev, "fail to init i2c regmap.\n");
 -- 
-2.48.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From c90b6026dad4e83eb7bc914f30f4ebb8fd4e551f Mon Sep 17 00:00:00 2001
+From 6ca937cef56ab6793fe9f47a67e582c84227f335 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
 Subject: [PATCH 0637/1446] nvme: change the segment size of io request queue
@@ -13,10 +13,10 @@ Change-Id: I7b02572742dd5b9ff26de6e469dce71c20741aae
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 8a200931bc29..a53b0ca7d78c 100644
+index f00665ad0c11..3742a88a4839 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
-@@ -1915,6 +1915,9 @@ static void nvme_update_disk_info(struct gendisk *disk,
+@@ -1913,6 +1913,9 @@ static void nvme_update_disk_info(struct gendisk *disk,
  	 * value of the Atomic Write Unit Power Fail parameter.
  	 */
  	blk_queue_physical_block_size(disk->queue, min(phys_bs, atomic_bs));
@@ -27,5 +27,5 @@ index 8a200931bc29..a53b0ca7d78c 100644
  	blk_queue_io_opt(disk->queue, io_opt);
  
 -- 
-2.48.1
+2.49.0
 

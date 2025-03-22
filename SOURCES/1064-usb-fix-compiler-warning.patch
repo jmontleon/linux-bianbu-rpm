@@ -1,4 +1,4 @@
-From 44a6e3c7ca87a17c5ca97e82769af09b45080f5d Mon Sep 17 00:00:00 2001
+From acda75ee042130ecc2384cb54e28e6f3e6f5afec Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 11:24:01 +0800
 Subject: [PATCH 1064/1446] usb: fix compiler warning
@@ -22,5 +22,5 @@ index 514f12e2baec..dae5be9edbc3 100644
  			while (readl(&udc->op_regs->epstatus) & bit_pos)
  				udelay(1);
 -- 
-2.48.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From be92a5d65d0debef8a1ccbc25979a28c544c3654 Mon Sep 17 00:00:00 2001
+From f788e292a9a0953e6168723406873b4989b507d8 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Wed, 3 Apr 2024 09:26:38 +0200
 Subject: [PATCH 1331/1446] riscv: Fix vector state restore in rt_sigreturn()
@@ -100,5 +100,5 @@ index 733b46039546..0e3bdd520617 100644
  #else
  #define save_v_state(task, regs) (0)
 -- 
-2.48.1
+2.49.0
 
