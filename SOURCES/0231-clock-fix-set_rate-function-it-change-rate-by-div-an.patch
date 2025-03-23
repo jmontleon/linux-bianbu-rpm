@@ -1,4 +1,4 @@
-From af8da17c7dfca5574de6f1dc085bf428b8811c11 Mon Sep 17 00:00:00 2001
+From 2dc3e52c9bd6b2b85e2e2441d790477b97166fd8 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 22 Dec 2023 20:39:59 +0800
 Subject: [PATCH 0231/1205] clock: fix set_rate function, it change rate by div
@@ -606,5 +606,5 @@ index 920f3509d8a2..6e417f4f56f4 100755
  	}
  static inline struct ccu_mix *hw_to_ccu_mix(struct clk_hw *hw)
 -- 
-2.48.1
+2.49.0
 

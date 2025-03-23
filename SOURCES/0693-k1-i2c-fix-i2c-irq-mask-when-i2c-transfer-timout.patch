@@ -1,4 +1,4 @@
-From 2ac7e537357f0eb8b577e54f7c537a9d74c90d68 Mon Sep 17 00:00:00 2001
+From ee0f86fd2e3765a1f1bc93d0924d0fdbdf43a6fb Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 29 May 2024 19:43:55 +0800
 Subject: [PATCH 0693/1205] k1: i2c: fix i2c irq mask when i2c transfer timout
@@ -46,5 +46,5 @@ index 88c302cb584d..eda79cfb2422 100644
  	ret = spacemit_i2c_prepare_dma(spacemit_i2c);
  	if (ret) {
 -- 
-2.48.1
+2.49.0
 

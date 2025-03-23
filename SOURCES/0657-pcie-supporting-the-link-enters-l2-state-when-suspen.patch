@@ -1,4 +1,4 @@
-From cacd9f55108b7f952267d3dc14048a98a57fc395 Mon Sep 17 00:00:00 2001
+From f76a9514c11377d842912f20a5fc347e13d1ced6 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 15 May 2024 15:48:25 +0800
 Subject: [PATCH 0657/1205] pcie: supporting the link enters l2 state when
@@ -116,5 +116,5 @@ index 3b79e4c4624c..ed76a2f44c61 100755
  	/* set Perst# (fundamental reset) gpio low state*/
  	reg = k1x_pcie_readl(k1x, PCIECTRL_K1X_CONF_DEVICE_CMD);
 -- 
-2.48.1
+2.49.0
 

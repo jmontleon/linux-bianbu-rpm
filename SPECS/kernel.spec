@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.7
-%define specversion 6.13.7
+%define specrpmversion 6.13.8
+%define specversion 6.13.8
 %define patchversion 6.13
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13.7
+%define tarfile_release 6.13.8
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.7
+%define kabiversion 6.13.8
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6596,6 +6596,11 @@ fi\
 #
 #
 %changelog
+* Sat Mar 22 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.8-0]
+- Add to BugsFixed (Justin M. Forbes)
+- EDAC/igen6: Fix the flood of invalid error reports (Qiuxu Zhuo)
+- Linux v6.13.8
+
 * Thu Mar 13 2025 Augusto Caringi <acaringi@redhat.com> [6.13.7-0]
 - Set CONFIG_FW_CACHE=y for rhel to avoid config mismatch issues (Augusto Caringi)
 - media: ov08x40: Extend sleep after reset to 5 ms (Hans de Goede)

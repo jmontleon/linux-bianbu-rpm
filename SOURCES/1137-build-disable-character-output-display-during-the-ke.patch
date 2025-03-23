@@ -1,4 +1,4 @@
-From 5689a498279538ffc9f04f6542aca27997720a84 Mon Sep 17 00:00:00 2001
+From dd7b883183837d9c2a499c0d45f99502d2f1a532 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 21 Nov 2024 20:15:13 +0800
 Subject: [PATCH 1137/1205] build: disable character output display during the
@@ -34,5 +34,5 @@ index f6fa4d8d75e0..6d70e323eb8c 100644
  $(obj)/signing_key.pem: $(obj)/x509.genkey FORCE
  	$(call if_changed,gen_key)
 -- 
-2.48.1
+2.49.0
 

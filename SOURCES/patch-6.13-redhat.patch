@@ -19,6 +19,7 @@
  drivers/ata/libahci.c                              |   18 +
  drivers/char/ipmi/ipmi_dmi.c                       |   15 +
  drivers/char/ipmi/ipmi_msghandler.c                |   16 +-
+ drivers/edac/igen6_edac.c                          |   21 +-
  drivers/firmware/efi/Makefile                      |    1 +
  drivers/firmware/efi/efi.c                         |  124 +-
  drivers/firmware/efi/secureboot.c                  |   38 +
@@ -69,7 +70,7 @@
  security/lockdown/lockdown.c                       |   11 +
  sound/soc/codecs/rt712-sdca.c                      |   80 +-
  sound/soc/codecs/rt712-sdca.h                      |    3 +
- 71 files changed, 9231 insertions(+), 294 deletions(-)
+ 72 files changed, 9246 insertions(+), 300 deletions(-)
 
 diff --git a/Documentation/hid/index.rst b/Documentation/hid/index.rst
 index af02cf7cfa82..baf156b44b58 100644
@@ -673,7 +674,7 @@ index 0fa7c5728f1e..e404279c8610 100644
  M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
  L:	platform-driver-x86@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 3363645fa624..ba71e36c832b 100644
+index 44d99cd682ba..4cf289f331e4 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -1170,6 +1171,39 @@ index e12b531f5c2f..082707f8dff8 100644
  	mutex_lock(&ipmi_interfaces_mutex);
  	rv = ipmi_register_driver();
  	mutex_unlock(&ipmi_interfaces_mutex);
+diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
+index fdf3a84fe698..595908af9e5c 100644
+--- a/drivers/edac/igen6_edac.c
++++ b/drivers/edac/igen6_edac.c
+@@ -785,13 +785,22 @@ static u64 ecclog_read_and_clear(struct igen6_imc *imc)
+ {
+ 	u64 ecclog = readq(imc->window + ECC_ERROR_LOG_OFFSET);
+ 
+-	if (ecclog & (ECC_ERROR_LOG_CE | ECC_ERROR_LOG_UE)) {
+-		/* Clear CE/UE bits by writing 1s */
+-		writeq(ecclog, imc->window + ECC_ERROR_LOG_OFFSET);
+-		return ecclog;
+-	}
++	/*
++	 * Quirk: The ECC_ERROR_LOG register of certain SoCs may contain
++	 *        the invalid value ~0. This will result in a flood of invalid
++	 *        error reports in polling mode. Skip it.
++	 */
++	if (ecclog == ~0)
++		return 0;
+ 
+-	return 0;
++	/* Neither a CE nor a UE. Skip it.*/
++	if (!(ecclog & (ECC_ERROR_LOG_CE | ECC_ERROR_LOG_UE)))
++		return 0;
++
++	/* Clear CE/UE bits by writing 1s */
++	writeq(ecclog, imc->window + ECC_ERROR_LOG_OFFSET);
++
++	return ecclog;
+ }
+ 
+ static void errsts_clear(struct igen6_imc *imc)
 diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
 index a2d0009560d0..4f3486e6a84b 100644
 --- a/drivers/firmware/efi/Makefile
@@ -1372,10 +1406,10 @@ index 000000000000..de0a3714a5d4
 +	}
 +}
 diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index 4d2a89d65b65..c57927529f8a 100644
+index 363c860835d3..b7e010c384ba 100644
 --- a/drivers/hid/Kconfig
 +++ b/drivers/hid/Kconfig
-@@ -1386,4 +1386,6 @@ source "drivers/hid/amd-sfh-hid/Kconfig"
+@@ -1387,4 +1387,6 @@ source "drivers/hid/amd-sfh-hid/Kconfig"
  
  source "drivers/hid/surface-hid/Kconfig"
  
@@ -9310,7 +9344,7 @@ index b9682264e2f5..54575eea3c49 100644
  	.probe = ov08x40_probe,
  	.remove = ov08x40_remove,
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 46e04b30f642..063ffbe57ba9 100644
+index e4034cec5923..828a2fc01d7b 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
 @@ -276,6 +276,9 @@ void nvme_delete_ctrl_sync(struct nvme_ctrl *ctrl)

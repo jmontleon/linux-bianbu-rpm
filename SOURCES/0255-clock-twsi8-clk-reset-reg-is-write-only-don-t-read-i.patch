@@ -1,4 +1,4 @@
-From a96ecf91bd50efa06f45cd6284c567bd0540dc86 Mon Sep 17 00:00:00 2001
+From 7e564de2feb9820b973b2504657efe96ab3a6dca Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 26 Dec 2023 21:08:40 +0800
 Subject: [PATCH 0255/1205] clock: twsi8 clk/reset reg is write-only, don't
@@ -277,5 +277,5 @@ index f05e7d851cdf..a4d9ab3848ee 100644
  	if(assert == true){
  		spacemit_reset_set(rcdev, id, assert);
 -- 
-2.48.1
+2.49.0
 

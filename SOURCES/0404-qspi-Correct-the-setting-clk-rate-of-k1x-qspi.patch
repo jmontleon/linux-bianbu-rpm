@@ -1,4 +1,4 @@
-From c22895f6749083ce6170ae4609ad390419a11652 Mon Sep 17 00:00:00 2001
+From 2ad8275318ab834f2fe6642399d60c0834488713 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 30 Jan 2024 21:17:18 +0800
 Subject: [PATCH 0404/1205] qspi: Correct the setting clk rate of k1x qspi
@@ -44,5 +44,5 @@ index 1076d6cdb6a0..38024eca3c5e 100755
  	else
  		qspi_writel(qspi, QSPI_SMPR_FSPHS_MASK, base + QSPI_SMPR);
 -- 
-2.48.1
+2.49.0
 
