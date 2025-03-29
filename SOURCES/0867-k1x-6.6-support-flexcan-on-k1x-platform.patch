@@ -1,4 +1,4 @@
-From dfbfee84b0eeb2e5013064e4ab0314793d3da19e Mon Sep 17 00:00:00 2001
+From 859f023d68b352f83d1f0d3d74355b37c82ac25b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 25 Jun 2024 17:42:12 +0800
 Subject: [PATCH 0867/1446] k1x-6.6:support flexcan on k1x platform
@@ -9,7 +9,7 @@ Change-Id: I796836b60825783d70214b52231697c74bf87590
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 227a2018893f..40fac5c6dcb0 100644
+index b9c7a21567ce..f8d668d8f15a 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -394,6 +394,17 @@ static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {

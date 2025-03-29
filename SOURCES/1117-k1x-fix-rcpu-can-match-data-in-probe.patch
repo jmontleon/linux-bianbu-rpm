@@ -1,4 +1,4 @@
-From a0cdb2fbceb2acc8705e5d1f835fec4127c9391f Mon Sep 17 00:00:00 2001
+From 599d3e2a7a6a2527c68fd0ed1a0c1fbc6ea60198 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 28 Aug 2024 15:09:01 +0800
 Subject: [PATCH 1117/1446] k1x:fix rcpu-can match data in probe
@@ -9,7 +9,7 @@ Change-Id: If9a4dc69fc2ef3f78180b80f5688f437aa2f0813
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 549b4092b733..d5c0e0cc7e42 100644
+index dbc5b60269a6..ecca1daba11e 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -2254,6 +2254,10 @@ static int flexcan_probe(struct platform_device *pdev)
