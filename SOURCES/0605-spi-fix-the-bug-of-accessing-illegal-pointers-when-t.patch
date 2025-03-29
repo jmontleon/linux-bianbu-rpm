@@ -1,7 +1,7 @@
-From d64f37948303295649c0e9c225d76320310d4a4f Mon Sep 17 00:00:00 2001
+From 5e8dd3b66deff7cd143917e0926c7c0827a66b79 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 23 Apr 2024 17:51:33 +0800
-Subject: [PATCH 0605/1205] spi: fix the bug of accessing illegal pointers when
+Subject: [PATCH 0605/1206] spi: fix the bug of accessing illegal pointers when
  transmitting messages
 
   Because the spi driver uses a work queue to process messages, the spi framework

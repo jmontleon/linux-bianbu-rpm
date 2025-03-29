@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.13.8
-%define specversion 6.13.8
+%define specrpmversion 6.13.9
+%define specversion 6.13.9
 %define patchversion 6.13
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.13.8
+%define tarfile_release 6.13.9
 # This is needed to do merge window version magic
 %define patchlevel 13
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.13.8
+%define kabiversion 6.13.9
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -2276,6 +2276,7 @@ Patch11202: 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 Patch11203: 1203-fix-includes-for-timestamp.patch
 Patch11204: 1204-remove-debug-rdinit-from-m1-bpi.patch
 Patch11205: 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
+Patch11206: 1206-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 
 
 
@@ -4322,6 +4323,7 @@ ApplyOptionalPatch 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
 ApplyOptionalPatch 1203-fix-includes-for-timestamp.patch
 ApplyOptionalPatch 1204-remove-debug-rdinit-from-m1-bpi.patch
 ApplyOptionalPatch 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
+ApplyOptionalPatch 1206-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 
 
 
@@ -6596,6 +6598,10 @@ fi\
 #
 #
 %changelog
+* Fri Mar 28 2025 Augusto Caringi <acaringi@redhat.com> [6.13.9-0]
+- powerpc64/ftrace: fix module loading without patchable function entries (Anthony Iliopoulos)
+- Linux v6.13.9
+
 * Sat Mar 22 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.13.8-0]
 - Add to BugsFixed (Justin M. Forbes)
 - EDAC/igen6: Fix the flood of invalid error reports (Qiuxu Zhuo)

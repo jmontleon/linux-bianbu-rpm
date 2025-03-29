@@ -1,7 +1,7 @@
-From f1eda9595121537a656611c6fef9799c2bf7d0f8 Mon Sep 17 00:00:00 2001
+From 59f2b6955946f1d67d76547bcb872de58c1631b6 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 6 Dec 2024 13:43:57 +0800
-Subject: [PATCH 1184/1205] can: k1/flexcan: fix error on driver.remove
+Subject: [PATCH 1184/1206] can: k1/flexcan: fix error on driver.remove
 
 Change-Id: If2f96a05bb769b0baeeaec6cf1868a01cb6d0f64
 ---
@@ -9,10 +9,10 @@ Change-Id: If2f96a05bb769b0baeeaec6cf1868a01cb6d0f64
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index faf0577ad494..e28c559fb7ce 100644
+index 531bc64634dd..ee6752fa8dac 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -2555,7 +2555,7 @@ static struct platform_driver r_flexcan_driver = {
+@@ -2567,7 +2567,7 @@ static struct platform_driver r_flexcan_driver = {
  		.of_match_table = r_flexcan_of_match,
  	},
  	.probe = flexcan_probe,

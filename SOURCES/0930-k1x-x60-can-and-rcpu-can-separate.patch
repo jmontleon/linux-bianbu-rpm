@@ -1,7 +1,7 @@
-From 7aabbc8959e8fae89d45ed8f3a1e9f607c723397 Mon Sep 17 00:00:00 2001
+From a1acf984d517948cfe6707add3ea039b1332de9a Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 16 Aug 2024 11:49:15 +0800
-Subject: [PATCH 0930/1205] k1x:x60-can and rcpu can separate
+Subject: [PATCH 0930/1206] k1x:x60-can and rcpu can separate
 
 Change-Id: Ic425e342cdc383d36ae21bb8ee2059fe86322a20
 ---
@@ -54,7 +54,7 @@ index c1a007b281ae..33c2a75e00a8 100644
  		pinctrl-single,pins = <
  			K1X_PADCONF(GPIO_86, MUX_MODE1, (EDGE_NONE | PULL_UP   | PAD_1V8_DS2))	/* hdmi_tx_hscl */
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 2634995e5182..33fd0f024b06 100644
+index ec4aac672c51..4e2e448deed3 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -37,13 +37,12 @@
@@ -104,7 +104,7 @@ index 2634995e5182..33fd0f024b06 100644
  #else
   	irq = platform_get_irq(pdev, 0);
   	if (irq <= 0)
-@@ -2522,8 +2535,20 @@ static struct platform_driver flexcan_driver = {
+@@ -2534,8 +2547,20 @@ static struct platform_driver flexcan_driver = {
  	.remove = flexcan_remove,
  	.id_table = flexcan_id_table,
  };
@@ -125,7 +125,7 @@ index 2634995e5182..33fd0f024b06 100644
  static struct rpmsg_device_id rpmsg_driver_rcan_id_table[] = {
  	{ .name	= "can-service", .driver_data = 0 },
  	{ },
-@@ -2547,7 +2572,6 @@ static int rpmsg_rcan_client_cb(struct rpmsg_device *rpdev, void *data,
+@@ -2559,7 +2584,6 @@ static int rpmsg_rcan_client_cb(struct rpmsg_device *rpdev, void *data,
  	return 0;
  }
  
@@ -133,7 +133,7 @@ index 2634995e5182..33fd0f024b06 100644
  static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
  {
  	struct instance_data *idata;
-@@ -2564,7 +2588,7 @@ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
+@@ -2576,7 +2600,7 @@ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
  
  	private_data[0] = (unsigned long long)idata;
  
@@ -142,7 +142,7 @@ index 2634995e5182..33fd0f024b06 100644
  
  	return 0;
  }
-@@ -2583,8 +2607,6 @@ static struct rpmsg_driver rpmsg_rcan_client = {
+@@ -2595,8 +2619,6 @@ static struct rpmsg_driver rpmsg_rcan_client = {
  	.remove		= rpmsg_rcan_client_remove,
  };
  module_rpmsg_driver(rpmsg_rcan_client);

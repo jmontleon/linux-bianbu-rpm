@@ -3,6 +3,7 @@
  MAINTAINERS                                        |    6 +
  Makefile                                           |   40 +
  arch/arm/Kconfig                                   |    4 +-
+ arch/powerpc/kernel/module_64.c                    |    4 -
  arch/s390/include/asm/ipl.h                        |    1 +
  arch/s390/kernel/ipl.c                             |    5 +
  arch/s390/kernel/setup.c                           |    4 +
@@ -70,7 +71,7 @@
  security/lockdown/lockdown.c                       |   11 +
  sound/soc/codecs/rt712-sdca.c                      |   80 +-
  sound/soc/codecs/rt712-sdca.h                      |    3 +
- 72 files changed, 9246 insertions(+), 300 deletions(-)
+ 73 files changed, 9246 insertions(+), 304 deletions(-)
 
 diff --git a/Documentation/hid/index.rst b/Documentation/hid/index.rst
 index af02cf7cfa82..baf156b44b58 100644
@@ -674,7 +675,7 @@ index 0fa7c5728f1e..e404279c8610 100644
  M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
  L:	platform-driver-x86@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 44d99cd682ba..4cf289f331e4 100644
+index 21a34e8991ac..b62c835a76ff 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -754,6 +755,21 @@ index 202397be76d8..3d4ba33d4305 100644
  	help
  	  The VM uses one page of physical memory for each page table.
  	  For systems with a lot of processes, this can use a lot of
+diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+index 45dac7b46aa3..ff61f88461a7 100644
+--- a/arch/powerpc/kernel/module_64.c
++++ b/arch/powerpc/kernel/module_64.c
+@@ -258,10 +258,6 @@ static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
+ 			break;
+ 		}
+ 	}
+-	if (i == hdr->e_shnum) {
+-		pr_err("%s: doesn't contain __patchable_function_entries.\n", me->name);
+-		return -ENOEXEC;
+-	}
+ #endif
+ 
+ 	pr_debug("Looks like a total of %lu stubs, max\n", relocs);
 diff --git a/arch/s390/include/asm/ipl.h b/arch/s390/include/asm/ipl.h
 index b0d00032479d..afb9544fb007 100644
 --- a/arch/s390/include/asm/ipl.h
