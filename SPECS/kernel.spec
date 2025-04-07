@@ -2294,6 +2294,7 @@ Patch11202: 1202-remove-debug-rdinit-from-m1-bpi.patch
 Patch11203: 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 Patch11204: 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 Patch11205: 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+Patch11206: 1206-6.15-fixes.patch
 
 
 
@@ -4340,6 +4341,7 @@ ApplyOptionalPatch 1202-remove-debug-rdinit-from-m1-bpi.patch
 ApplyOptionalPatch 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 ApplyOptionalPatch 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 ApplyOptionalPatch 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+ApplyOptionalPatch 1206-6.15-fixes.patch
 
 
 
