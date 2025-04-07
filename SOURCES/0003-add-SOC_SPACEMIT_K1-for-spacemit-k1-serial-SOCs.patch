@@ -1,7 +1,7 @@
-From 57b86aa84d68c28ce4f512ad74f1ebdeefde8f2c Mon Sep 17 00:00:00 2001
+From 27d9bc08b1668cce95f52610ae3266ad91a9efb0 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Tue, 14 Mar 2023 13:47:50 +0800
-Subject: [PATCH 0003/1206] add SOC_SPACEMIT_K1 for spacemit k1 serial SOCs
+Subject: [PATCH 0003/1205] add SOC_SPACEMIT_K1 for spacemit k1 serial SOCs
 
 Change-Id: I720a1bc1e1bc88c8af3cfdc80ca3370ba544db1e
 ---
@@ -9,10 +9,10 @@ Change-Id: I720a1bc1e1bc88c8af3cfdc80ca3370ba544db1e
  1 file changed, 21 insertions(+)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 92e7a7328895..afbddd38d9e1 100644
+index 67b189bbca5b..bc6488b87696 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
-@@ -88,6 +88,27 @@ config SOC_SPACEMIT
+@@ -94,6 +94,27 @@ config SOC_SPACEMIT
  
  if SOC_SPACEMIT
  

@@ -1,7 +1,7 @@
-From 817384346751ab22774cce4232ebdf9d59c97238 Mon Sep 17 00:00:00 2001
+From e8060ae3dd84fa7b6a53c53c8c691d5d176ac0f4 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 29 Aug 2023 21:17:51 +0800
-Subject: [PATCH 0094/1206] ethernet: adding gmac driver for k1-x
+Subject: [PATCH 0094/1205] ethernet: adding gmac driver for k1-x
 
 Change-Id: I7b607342ae09ef36413ee404bafcd0b5aad55f1e
 ---
@@ -137,7 +137,7 @@ index 06857d9204c9..2f151bd94112 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index 9a542e3c9b05..42ee556cfae6 100644
+index 977b42bc1e8c..23bc428dc297 100644
 --- a/drivers/net/ethernet/Kconfig
 +++ b/drivers/net/ethernet/Kconfig
 @@ -187,6 +187,7 @@ source "drivers/net/ethernet/sis/Kconfig"

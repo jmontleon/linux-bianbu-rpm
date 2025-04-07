@@ -1,7 +1,7 @@
-From f9e5a81eb5da512de592fd6778f242affeb5acfd Mon Sep 17 00:00:00 2001
+From 60b21dde1bffa92336dca4c09c4112348bf97258 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 May 2023 14:56:16 +0800
-Subject: [PATCH 0030/1206] usb: dwc3: modify DMA capability
+Subject: [PATCH 0030/1205] usb: dwc3: modify DMA capability
 
 Change-Id: Ibea2f1e19752884356d1dd8dff1d2813225ecf8d
 ---
@@ -9,10 +9,10 @@ Change-Id: Ibea2f1e19752884356d1dd8dff1d2813225ecf8d
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index b751904f09f3..1fa65a26e90e 100644
+index 66a08b527165..318b3553ff12 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -2220,6 +2220,11 @@ static int dwc3_probe(struct platform_device *pdev)
+@@ -2240,6 +2240,11 @@ static int dwc3_probe(struct platform_device *pdev)
  		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
  		if (ret)
  			goto err_disable_clks;
