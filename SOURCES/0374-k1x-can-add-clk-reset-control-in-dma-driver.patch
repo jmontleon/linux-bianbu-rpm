@@ -1,4 +1,4 @@
-From 6dea67d05f50d8cf5e571fd26695b985b66754e0 Mon Sep 17 00:00:00 2001
+From 324203d7c4930b9d1c7a621fd6cfcca9e489173a Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 15 Jan 2024 19:59:17 +0800
 Subject: [PATCH 0374/1205] k1x-can:add clk&reset control in dma driver
@@ -10,7 +10,7 @@ Change-Id: Id971bbff39cda9a56a1a248ef6d228ba1d8cdb58
  2 files changed, 19 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index b080740bcb10..26bc6de9225f 100644
+index 6d80c341b26f..f76109afcdcf 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -19,6 +19,7 @@
@@ -21,7 +21,7 @@ index b080740bcb10..26bc6de9225f 100644
  #include <linux/mfd/syscon.h>
  #include <linux/module.h>
  #include <linux/netdevice.h>
-@@ -623,11 +624,20 @@ static int flexcan_clks_enable(const struct flexcan_priv *priv)
+@@ -634,11 +635,20 @@ static int flexcan_clks_enable(const struct flexcan_priv *priv)
  			clk_disable_unprepare(priv->clk_ipg);
  	}
  
@@ -42,15 +42,15 @@ index b080740bcb10..26bc6de9225f 100644
  	clk_disable_unprepare(priv->clk_per);
  	clk_disable_unprepare(priv->clk_ipg);
  }
-@@ -2062,6 +2072,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	struct flexcan_priv *priv;
+@@ -2093,6 +2103,7 @@ static int flexcan_probe(struct platform_device *pdev)
  	struct regulator *reg_xceiver;
+ 	struct phy *transceiver;
  	struct clk *clk_ipg = NULL, *clk_per = NULL;
 +	struct reset_control *reset;
  	struct flexcan_regs __iomem *regs;
  	struct flexcan_platform_data *pdata;
  	int err, irq;
-@@ -2104,6 +2115,12 @@ static int flexcan_probe(struct platform_device *pdev)
+@@ -2140,6 +2151,12 @@ static int flexcan_probe(struct platform_device *pdev)
  		clock_freq = clk_get_rate(clk_per);
  	}
  
@@ -63,26 +63,26 @@ index b080740bcb10..26bc6de9225f 100644
  	irq = platform_get_irq(pdev, 0);
  	if (irq < 0)
  		return irq;
-@@ -2172,6 +2189,7 @@ static int flexcan_probe(struct platform_device *pdev)
+@@ -2208,6 +2225,7 @@ static int flexcan_probe(struct platform_device *pdev)
  	priv->clk_ipg = clk_ipg;
  	priv->clk_per = clk_per;
  	priv->clk_src = clk_src;
 +	priv->reset = reset;
  	priv->reg_xceiver = reg_xceiver;
+ 	priv->transceiver = transceiver;
  
- 	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
 diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
-index 4933d8c7439e..b439c8806108 100644
+index 16692a2502eb..1165b6558376 100644
 --- a/drivers/net/can/flexcan/flexcan.h
 +++ b/drivers/net/can/flexcan/flexcan.h
-@@ -101,6 +101,7 @@ struct flexcan_priv {
+@@ -105,6 +105,7 @@ struct flexcan_priv {
  
  	struct clk *clk_ipg;
  	struct clk *clk_per;
 +	struct reset_control *reset;
  	struct flexcan_devtype_data devtype_data;
  	struct regulator *reg_xceiver;
- 	struct flexcan_stop_mode stm;
+ 	struct phy *transceiver;
 -- 
 2.49.0
 

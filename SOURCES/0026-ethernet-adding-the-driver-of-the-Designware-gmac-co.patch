@@ -1,4 +1,4 @@
-From c44124d9d4144da10a104dcb6fe68c910cdbd84f Mon Sep 17 00:00:00 2001
+From 8da0143a940915d00e656dd715e26459a3d84f59 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 22 May 2023 19:59:48 +0800
 Subject: [PATCH 0026/1205] ethernet: adding the driver of the Designware gmac
@@ -116,10 +116,10 @@ index 1dd9b6a758a6..607b3100ad1a 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 4cc85a36a1ab..10b0691d61d6 100644
+index 3c820ef56775..0764079f1975 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
 +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -300,6 +300,15 @@ config DWMAC_VISCONTI
+@@ -311,6 +311,15 @@ config DWMAC_VISCONTI
  	help
  	  Support for ethernet controller on Visconti SoCs.
  
@@ -136,10 +136,10 @@ index 4cc85a36a1ab..10b0691d61d6 100644
  
  config DWMAC_INTEL
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index b26f0e79c2b3..d5f9f46dc699 100644
+index 594883fb4164..d27c7eceef24 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
 +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
+@@ -30,6 +30,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
  obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
  obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o

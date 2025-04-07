@@ -1,4 +1,4 @@
-From 48401f0b16c7ee88739ed9ef64b4f7d3d1207d31 Mon Sep 17 00:00:00 2001
+From d9b3c84db54acb0136c85ffd762cbfadd841d953 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 5 Nov 2024 16:27:41 +0800
 Subject: [PATCH 1061/1205] k1x:add ZT001H dts support
@@ -11,10 +11,10 @@ Change-Id: Ie7144de15bd092dce731aca0d8d8e35a0f5d76d0
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_ZT001H.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 03216e7d2abf..9dad32cc5e9f 100644
+index 7d263a89acc9..48113b91122a 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -7,5 +7,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -8,5 +8,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_MUSE-Pi.dtb k1-x_milkv-jupiter.dtb m1-x_milkv-jupiter.dtb \
  				  k1-x_MUSE-Book.dtb k1-x_lpi3a.dtb k1-x_MUSE-Card.dtb \
  				  k1-x_MUSE-Paper.dtb k1-x_MUSE-Paper-mini-4g.dtb \

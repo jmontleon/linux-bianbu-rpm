@@ -1,4 +1,4 @@
-From 5e9cedb212f5e298b777db198c8dbbbf26e583b5 Mon Sep 17 00:00:00 2001
+From 8efcc3919c9a45f213f8cbca03cd51658242f4bc Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 18 Aug 2023 11:58:11 +0800
 Subject: [PATCH 0086/1205] add pxa_k1x driver for k1x platform
@@ -12,10 +12,10 @@ Change-Id: I4b9cddc3478b0fc180f142452de47cec0f560950
  create mode 100644 drivers/tty/serial/pxa_k1x.c
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 976dae3bb1bb..0860331f62bd 100644
+index 79a8186d3361..6d0f8ea290df 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
-@@ -414,7 +414,6 @@ config SERIAL_PXA
+@@ -418,7 +418,6 @@ config SERIAL_PXA
  	depends on ARCH_PXA || ARCH_MMP
  	select SERIAL_CORE
  	select SERIAL_8250_PXA if SERIAL_8250=y
@@ -23,7 +23,7 @@ index 976dae3bb1bb..0860331f62bd 100644
  	help
  	  If you have a machine based on an Intel XScale PXA2xx CPU you
  	  can enable its onboard serial ports by enabling this option.
-@@ -422,9 +421,26 @@ config SERIAL_PXA
+@@ -426,9 +425,26 @@ config SERIAL_PXA
  	  Unless you have a specific need, you should use SERIAL_8250_PXA
  	  instead of this.
  
@@ -52,7 +52,7 @@ index 976dae3bb1bb..0860331f62bd 100644
  config SERIAL_PXA_CONSOLE
  	bool "Console on PXA serial port (DEPRECATED)"
 diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index 6ff74f0a9530..833d0fc8358f 100644
+index d58d9f719889..40a48abf5d1e 100644
 --- a/drivers/tty/serial/Makefile
 +++ b/drivers/tty/serial/Makefile
 @@ -66,6 +66,7 @@ obj-$(CONFIG_SERIAL_OWL)		+= owl-uart.o

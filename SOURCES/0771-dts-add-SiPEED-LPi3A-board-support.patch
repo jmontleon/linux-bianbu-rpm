@@ -1,4 +1,4 @@
-From 97cb642a8bded8f1755f78c90608f87c39de9a03 Mon Sep 17 00:00:00 2001
+From 557daab7902bba85ebaf69f5503bc80e53735580 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Mon, 24 Jun 2024 22:17:48 +0800
 Subject: [PATCH 0771/1205] dts: add SiPEED LPi3A board support
@@ -14,10 +14,10 @@ Change-Id: I88588a8eb03151988a3060d1d74a1459ed60b6a9
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 70680e3607de..71c2a741192e 100644
+index 259c27eb5e72..a438abed2105 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -4,5 +4,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
+@@ -5,5 +5,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
  dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb \
  				  k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb \
  				  k1-x_MINI-PC.dtb k1-x_MUSE-N1.dtb k1-x_mingo.dtb \

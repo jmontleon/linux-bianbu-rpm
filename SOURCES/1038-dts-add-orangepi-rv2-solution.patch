@@ -1,4 +1,4 @@
-From 3ca3b31a5c5674dd83bfb914a83ba3880f905806 Mon Sep 17 00:00:00 2001
+From f4a306c906f69d457f85d4c02a7b1874d0802c2e Mon Sep 17 00:00:00 2001
 From: maguoqun <guoqun.ma@spacemit.com>
 Date: Mon, 28 Oct 2024 11:06:35 +0800
 Subject: [PATCH 1038/1205] dts: add orangepi-rv2 solution
@@ -12,10 +12,10 @@ Change-Id: I2392d624e918b8a7dcabbbdb23b9b1992c17e3bb
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 49c92e3ccb2f..03216e7d2abf 100644
+index 5e270caab92d..7d263a89acc9 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -7,5 +7,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -8,5 +8,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_MUSE-Pi.dtb k1-x_milkv-jupiter.dtb m1-x_milkv-jupiter.dtb \
  				  k1-x_MUSE-Book.dtb k1-x_lpi3a.dtb k1-x_MUSE-Card.dtb \
  				  k1-x_MUSE-Paper.dtb k1-x_MUSE-Paper-mini-4g.dtb \

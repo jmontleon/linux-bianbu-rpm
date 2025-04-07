@@ -1,4 +1,4 @@
-From e3759ad6c6e4aa738ffc38722266d49678402f89 Mon Sep 17 00:00:00 2001
+From d0a1b1a4d53435f04dd3cc28ad81640bc76a1a5a Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 18 Apr 2024 10:30:08 +0800
 Subject: [PATCH 0592/1205] dtb: adding the dts of linux for MUSE-N1 board
@@ -11,12 +11,12 @@ Change-Id: Ifaac6514fd06c099a70ffb9c6539f0f7eccabd94
  create mode 100755 arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 1e7fd9249227..29ee4b702543 100644
+index 41f9d549f202..410a1afa9ea7 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -1,5 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,5 +2,7 @@
  dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1x4.dtb k1-pro_fpga_2x2.dtb k1-pro_qemu.dtb k1-pro_verify.dtb
 -dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb k1-x_MINI-PC.dtb k1-x_mingo.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb \

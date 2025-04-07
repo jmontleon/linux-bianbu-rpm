@@ -1,4 +1,4 @@
-From 27a9c99e703c3764a5096bae8579feff94773583 Mon Sep 17 00:00:00 2001
+From 7f1b6b544e7030cf079befa7ec9f50997258b83b Mon Sep 17 00:00:00 2001
 From: Yanko Kaneti <yaneti@declera.com>
 Date: Thu, 13 Mar 2025 16:44:57 +0200
 Subject: [PATCH 1204/1205] Add bit-brick k1 devicetree from bianbu
@@ -12,10 +12,10 @@ Subject: [PATCH 1204/1205] Add bit-brick k1 devicetree from bianbu
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365aainx101_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index ea8060702631..c5e289d01ecb 100644
+index d5cb5d41ad0e..5c515f4fda24 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -8,5 +8,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -9,5 +9,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_MUSE-Book.dtb k1-x_lpi3a.dtb k1-x_MUSE-Card.dtb \
  				  k1-x_MUSE-Paper.dtb k1-x_MUSE-Paper-mini-4g.dtb \
  				  k1-x_baton-camera.dtb k1-x_FusionOne.dtb k1-x_orangepi-rv2.dtb \

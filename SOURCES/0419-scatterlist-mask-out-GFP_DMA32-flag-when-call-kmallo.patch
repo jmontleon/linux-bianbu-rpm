@@ -1,4 +1,4 @@
-From ca5c879575b0306f89aff48b6d1c5b6610fb962c Mon Sep 17 00:00:00 2001
+From 3812300ab6a81551703aaaded6373a2eb29fbd29 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Feb 2024 11:53:23 +0800
 Subject: [PATCH 0419/1205] scatterlist: mask out GFP_DMA32 flag when call
@@ -10,7 +10,7 @@ Change-Id: I33222f2906558d36593d26f22c488ac42d34ec56
  1 file changed, 4 insertions(+)
 
 diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 5bb6b8aff232..f7095f9d0443 100644
+index b58d5ef1a34b..f4812ef2b711 100644
 --- a/lib/scatterlist.c
 +++ b/lib/scatterlist.c
 @@ -630,7 +630,11 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,

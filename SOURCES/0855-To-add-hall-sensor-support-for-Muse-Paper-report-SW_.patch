@@ -1,4 +1,4 @@
-From 9352302a595ee24206c85295b3d44a40b35623cb Mon Sep 17 00:00:00 2001
+From 94d039f8ecda93c0e8e927abaa604d811c005343 Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Tue, 30 Jul 2024 15:40:04 +0800
 Subject: [PATCH 0855/1205] To add hall sensor support for Muse-Paper, report
@@ -49,7 +49,7 @@ index a9927f1de318..e59775825179 100644
  CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
  CONFIG_SERIAL_PXA=y
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 58825c8a055c..760832b50ced 100644
+index 4b636d6e3a70..c236939586bd 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
 @@ -938,6 +938,13 @@ config INPUT_SPACEMIT_POWERKEY

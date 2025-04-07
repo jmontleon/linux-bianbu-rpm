@@ -1,4 +1,4 @@
-From 9266eb8b16e267d51c4b49a7b3d009135f4a29a3 Mon Sep 17 00:00:00 2001
+From a3177206b8b667e9de07810285e582669c78053c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 26 Jun 2024 13:43:33 +0800
 Subject: [PATCH 0772/1205] at24: clean compile warning
@@ -9,10 +9,10 @@ Change-Id: Ib0d8bda66bc11c42ab5547c18b41456bca17c777
  1 file changed, 4 deletions(-)
 
 diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 7f04beddbfbf..74ad6f5caab4 100644
+index 79f518d7083e..61d82c8d07b0 100644
 --- a/drivers/misc/eeprom/at24.c
 +++ b/drivers/misc/eeprom/at24.c
-@@ -609,10 +609,8 @@ static int at24_probe(struct i2c_client *client)
+@@ -607,10 +607,8 @@ static int at24_probe(struct i2c_client *client)
  	bool i2c_fn_i2c, i2c_fn_block;
  	unsigned int i, num_addresses;
  	struct at24_data *at24;
@@ -23,7 +23,7 @@ index 7f04beddbfbf..74ad6f5caab4 100644
  	int err;
  
  	i2c_fn_i2c = i2c_check_functionality(client->adapter, I2C_FUNC_I2C);
-@@ -791,8 +789,6 @@ static int at24_probe(struct i2c_client *client)
+@@ -789,8 +787,6 @@ static int at24_probe(struct i2c_client *client)
  
  static void at24_remove(struct i2c_client *client)
  {

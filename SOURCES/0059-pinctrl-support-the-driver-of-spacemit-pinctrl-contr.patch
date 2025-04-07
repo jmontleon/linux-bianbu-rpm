@@ -1,4 +1,4 @@
-From 10b7c6173f2bac7e23c85c39fe06fd66a516c3ee Mon Sep 17 00:00:00 2001
+From 76f1040d3703578922de0e8e108d659317fbf8a9 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 28 Jun 2023 19:17:22 +0800
 Subject: [PATCH 0059/1205] pinctrl: support the driver of spacemit pinctrl
@@ -84,10 +84,10 @@ index 4a2eb68d581e..212eb4aba5c0 100644
  # CONFIG_MEDIA_CEC_SUPPORT is not set
  CONFIG_MEDIA_SUPPORT=y
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 95a8e2b9a614..bee08f262388 100644
+index 464cc9aca157..505e41b3febe 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
-@@ -643,5 +643,6 @@ source "drivers/pinctrl/ti/Kconfig"
+@@ -657,5 +657,6 @@ source "drivers/pinctrl/ti/Kconfig"
  source "drivers/pinctrl/uniphier/Kconfig"
  source "drivers/pinctrl/visconti/Kconfig"
  source "drivers/pinctrl/vt8500/Kconfig"
@@ -95,10 +95,10 @@ index 95a8e2b9a614..bee08f262388 100644
  
  endif
 diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index fba1c56624c0..be2cb20f1ce9 100644
+index ac27e88677d1..f8f0fbe693e2 100644
 --- a/drivers/pinctrl/Makefile
 +++ b/drivers/pinctrl/Makefile
-@@ -81,6 +81,7 @@ obj-y				+= sophgo/
+@@ -82,6 +82,7 @@ obj-y				+= sophgo/
  obj-y				+= spacemit/
  obj-$(CONFIG_PINCTRL_SPEAR)	+= spear/
  obj-y				+= sprd/

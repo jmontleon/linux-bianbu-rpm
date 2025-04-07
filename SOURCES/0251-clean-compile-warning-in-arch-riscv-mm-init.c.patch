@@ -1,4 +1,4 @@
-From 79614fad58d29656485f66dba5192e46de4aefff Mon Sep 17 00:00:00 2001
+From 72288b856bbea78a8d8d7360da1caf80e6be0983 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:34:46 +0800
 Subject: [PATCH 0251/1205] clean compile warning in arch/riscv/mm/init.c
@@ -9,10 +9,10 @@ Change-Id: I6465e56523ffb3ede59a3cafc7994aed3226843d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 3df7eb7e1e04..67bbd0add75f 100644
+index d02f216ae768..0c0ee7c55b47 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -321,7 +321,7 @@ static void __init setup_bootmem(void)
+@@ -316,7 +316,7 @@ static void __init setup_bootmem(void)
  #ifdef CONFIG_ZONE_DMA32
  	#ifdef CONFIG_SOC_SPACEMIT_K1X
  	/* 2GB~4GB is IO area on spacemit-k1x, will be reserved when early_init_fdt_scan_reserved_mem */

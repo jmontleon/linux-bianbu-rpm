@@ -1,4 +1,4 @@
-From 14f3860794fa2d9e171bee2d449fb143e8937d2c Mon Sep 17 00:00:00 2001
+From 0c9a0c33ba0ccc711fe95f430f76d6452ca7ac30 Mon Sep 17 00:00:00 2001
 From: Dengbo <bo.deng@spacemit.com>
 Date: Tue, 21 Nov 2023 13:58:40 +0800
 Subject: [PATCH 0157/1205] gpu: Add spacemit gpu driver
@@ -8,7 +8,7 @@ Change-Id: I566fbdc75139307da0d0dd16746e313fec031f5f
  arch/riscv/boot/dts/spacemit/k1-x.dtsi        |   12 +
  arch/riscv/configs/k1-x_fpga_defconfig        |    1 +
  drivers/gpu/drm/Kconfig                       |    4 +
- drivers/gpu/drm/Makefile                      |    4 +-
+ drivers/gpu/drm/Makefile                      |    2 +
  drivers/gpu/drm/img-rogue/Kconfig             |   10 +
  drivers/gpu/drm/img-rogue/Makefile            |  151 +
  drivers/gpu/drm/img-rogue/allocmem.c          |  436 +
@@ -516,7 +516,7 @@ Change-Id: I566fbdc75139307da0d0dd16746e313fec031f5f
  drivers/gpu/drm/nulldisp/netlink.h            |  147 +
  drivers/gpu/drm/nulldisp/nulldisp_drm.h       |  105 +
  drivers/gpu/drm/nulldisp/pdp_drm.h            |  105 +
- 511 files changed, 284440 insertions(+), 1 deletion(-)
+ 511 files changed, 284439 insertions(+)
  create mode 100644 drivers/gpu/drm/img-rogue/Kconfig
  create mode 100644 drivers/gpu/drm/img-rogue/Makefile
  create mode 100644 drivers/gpu/drm/img-rogue/allocmem.c
@@ -1061,10 +1061,10 @@ index 07cd6ac76650..ce9ecbe0c650 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 24e652b87ccb..985b5fa9048c 100644
+index c4fddee6feaa..2da86c35b32d 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
-@@ -453,6 +453,10 @@ source "drivers/gpu/drm/imagination/Kconfig"
+@@ -462,6 +462,10 @@ source "drivers/gpu/drm/imagination/Kconfig"
  
  source "drivers/gpu/drm/spacemit/Kconfig"
  
@@ -1076,19 +1076,18 @@ index 24e652b87ccb..985b5fa9048c 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && MMU && HYPERV
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 7ea5b9eb9884..a289208e9ea5 100644
+index bfa330850be4..1b9bedf8a05b 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
-@@ -223,4 +223,6 @@ obj-y			+= solomon/
- obj-$(CONFIG_DRM_SPRD) += sprd/
+@@ -224,6 +224,8 @@ obj-$(CONFIG_DRM_SPRD) += sprd/
  obj-$(CONFIG_DRM_LOONGSON) += loongson/
  obj-$(CONFIG_DRM_POWERVR) += imagination/
--obj-$(CONFIG_DRM_SPACEMIT) += spacemit/
-\ No newline at end of file
-+obj-$(CONFIG_DRM_SPACEMIT) += spacemit/
+ obj-$(CONFIG_DRM_SPACEMIT) += spacemit/
 +obj-$(CONFIG_POWERVR_ROGUE_NULLDRMDISP) += nulldisp/
 +obj-$(CONFIG_POWERVR_ROGUE) += img-rogue/
-\ No newline at end of file
+ 
+ # Ensure drm headers are self-contained and pass kernel-doc
+ hdrtest-files := \
 diff --git a/drivers/gpu/drm/img-rogue/Kconfig b/drivers/gpu/drm/img-rogue/Kconfig
 new file mode 100644
 index 000000000000..3b875605e725

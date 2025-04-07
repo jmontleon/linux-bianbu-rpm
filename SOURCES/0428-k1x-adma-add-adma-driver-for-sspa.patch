@@ -1,4 +1,4 @@
-From 422a4b170e7c76ba3d7bf871183d668c2082c4f3 Mon Sep 17 00:00:00 2001
+From aa1e552090bc74ac08a6e04fb1d0509f90f8334e Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 22 Feb 2024 22:07:20 +0800
 Subject: [PATCH 0428/1205] k1x-adma:add adma driver for sspa
@@ -48,7 +48,7 @@ index 79f573807f58..537c57a08ef0 100644
  # CONFIG_SH_DMAE_BASE is not set
  # CONFIG_TI_EDMA is not set
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index f3e8b74ac836..462df4164eb6 100644
+index ec0156126eeb..8d5e6aca91ee 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -468,6 +468,13 @@ config SPACEMIT_PDMA_SUPPORT_64BIT

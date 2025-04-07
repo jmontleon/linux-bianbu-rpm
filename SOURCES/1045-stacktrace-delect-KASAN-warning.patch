@@ -1,4 +1,4 @@
-From 5a436bd4261bfa3f433e01802295c456092ff8c8 Mon Sep 17 00:00:00 2001
+From df6f800bb366ab5b507485d058c0da4063316d6c Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 30 Oct 2024 15:01:25 +0800
 Subject: [PATCH 1045/1205] stacktrace: delect KASAN warning
@@ -58,7 +58,7 @@ Signed-off-by: lijuan <juan.li@spacemit.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index d4355c770c36..2a71d4e54c44 100644
+index 3fe9e6edef8f..784dc47f373c 100644
 --- a/arch/riscv/kernel/stacktrace.c
 +++ b/arch/riscv/kernel/stacktrace.c
 @@ -29,7 +29,7 @@ static inline int fp_is_valid(unsigned long fp, unsigned long sp)

@@ -1,4 +1,4 @@
-From 23c8b61d54fc39804c55cc30a7e06267a8619500 Mon Sep 17 00:00:00 2001
+From f5d803e2555b4d8713d8fb78c2bf4b2bbf3cacc4 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Sat, 12 Aug 2023 10:34:02 +0800
 Subject: [PATCH 0082/1205] update vpu driver
@@ -430,10 +430,10 @@ index 06fcd43258e5..d4e1ba7d8bcc 100755
  	if (ret != 0)
  		goto delete_dmesg_drain;
 diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-index 477c773394fb..bdbb7e542321 100644
+index 5e6eb90b2091..c6ec87e88dfe 100644
 --- a/include/media/v4l2-ioctl.h
 +++ b/include/media/v4l2-ioctl.h
-@@ -305,14 +305,10 @@ struct v4l2_ioctl_ops {
+@@ -299,14 +299,10 @@ struct v4l2_ioctl_ops {
  	/* VIDIOC_ENUM_FMT handlers */
  	int (*vidioc_enum_fmt_vid_cap)(struct file *file, void *fh,
  				       struct v4l2_fmtdesc *f);
@@ -448,7 +448,7 @@ index 477c773394fb..bdbb7e542321 100644
  	int (*vidioc_enum_fmt_sdr_cap)(struct file *file, void *fh,
  				       struct v4l2_fmtdesc *f);
  	int (*vidioc_enum_fmt_sdr_out)(struct file *file, void *fh,
-@@ -335,8 +331,6 @@ struct v4l2_ioctl_ops {
+@@ -329,8 +325,6 @@ struct v4l2_ioctl_ops {
  				    struct v4l2_format *f);
  	int (*vidioc_g_fmt_vbi_out)(struct file *file, void *fh,
  				    struct v4l2_format *f);
@@ -457,7 +457,7 @@ index 477c773394fb..bdbb7e542321 100644
  	int (*vidioc_g_fmt_sliced_vbi_cap)(struct file *file, void *fh,
  					   struct v4l2_format *f);
  	int (*vidioc_g_fmt_sliced_vbi_out)(struct file *file, void *fh,
-@@ -592,8 +586,6 @@ struct v4l2_ioctl_ops {
+@@ -580,8 +574,6 @@ struct v4l2_ioctl_ops {
  	int (*vidioc_unsubscribe_event)(struct v4l2_fh *fh,
  					const struct v4l2_event_subscription *sub);
  

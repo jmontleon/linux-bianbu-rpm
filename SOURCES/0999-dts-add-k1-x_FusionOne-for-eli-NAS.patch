@@ -1,4 +1,4 @@
-From c055fe877b7b8d4d2b44de5c002314e1214504a3 Mon Sep 17 00:00:00 2001
+From d471a70933f03db336d75edec20d2bb01ee49640 Mon Sep 17 00:00:00 2001
 From: maguoqun <guoqun.ma@spacemit.com>
 Date: Fri, 27 Sep 2024 18:11:27 +0800
 Subject: [PATCH 0999/1205] dts: add k1-x_FusionOne for eli NAS
@@ -11,10 +11,10 @@ Change-Id: If50cdff23e1d91a0d45c1b14f934fa2c22c58b99
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index bdb619e93093..49c92e3ccb2f 100644
+index 39a2fb81051f..5e270caab92d 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -5,6 +5,7 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -6,6 +6,7 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb \
  				  k1-x_MINI-PC.dtb k1-x_MUSE-N1.dtb k1-x_mingo.dtb \
  				  k1-x_MUSE-Pi.dtb k1-x_milkv-jupiter.dtb m1-x_milkv-jupiter.dtb \

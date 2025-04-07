@@ -1,4 +1,4 @@
-From 3fc31299091b01cfcf83346bed435eab5d56f151 Mon Sep 17 00:00:00 2001
+From 73c28a88a8b1f1a04ae8bd1d48e1b8ef49aecbaf Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 26 May 2023 17:26:33 +0800
 Subject: [PATCH 0102/1205] add udma driver for userspace
@@ -12,7 +12,7 @@ Change-Id: Ie84319fc6da89696b664cbf0b6c937187ffcb794
  create mode 100644 drivers/dma/udma.c
 
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index b1003517d2bd..8320439513cc 100644
+index 875eb7187a84..f05ba23bc0dc 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -752,6 +752,12 @@ config XILINX_ZYNQMP_DPDMA

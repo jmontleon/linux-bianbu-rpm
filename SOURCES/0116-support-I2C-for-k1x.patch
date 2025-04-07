@@ -1,4 +1,4 @@
-From a4753f522f9daa22f878ab29a4d7f1a9086457ab Mon Sep 17 00:00:00 2001
+From a4c06b416a502593868b4505f50843a39d039c06 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Fri, 15 Sep 2023 16:02:47 +0800
 Subject: [PATCH 0116/1205] support I2C for k1x
@@ -125,7 +125,7 @@ index 96f3c976a4c2..a64b22186990 100644
  			compatible = "spacemit,k1x-pwm";
  			reg = <0x0 0xd401a000 0x0 0x10>;
 diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index fc438f445771..7d4cdfdb8b1e 100644
+index 83c88c79afe2..efec972d8036 100644
 --- a/drivers/i2c/busses/Kconfig
 +++ b/drivers/i2c/busses/Kconfig
 @@ -303,6 +303,14 @@ config I2C_SIS96X
@@ -144,17 +144,17 @@ index fc438f445771..7d4cdfdb8b1e 100644
  	tristate "VIA VT82C586B"
  	depends on PCI && HAS_IOPORT
 diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index 1c2a4510abe4..8bad9750ed6e 100644
+index c1252e2b779e..9b47fd1dd988 100644
 --- a/drivers/i2c/busses/Makefile
 +++ b/drivers/i2c/busses/Makefile
 @@ -74,6 +74,7 @@ obj-$(CONFIG_I2C_IMX)		+= i2c-imx.o
  obj-$(CONFIG_I2C_IMX_LPI2C)	+= i2c-imx-lpi2c.o
  obj-$(CONFIG_I2C_IOP3XX)	+= i2c-iop3xx.o
  obj-$(CONFIG_I2C_JZ4780)	+= i2c-jz4780.o
-+obj-$(CONFIG_I2C_SPACEMIT_K1X)	+= i2c-k1x.o
++obj-$(CONFIG_I2C_SPACEMIT_K1X) += i2c-k1x.o
+ obj-$(CONFIG_I2C_K1)		+= i2c-k1.o
  obj-$(CONFIG_I2C_KEBA)		+= i2c-keba.o
  obj-$(CONFIG_I2C_KEMPLD)	+= i2c-kempld.o
- obj-$(CONFIG_I2C_LPC2K)		+= i2c-lpc2k.o
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
 new file mode 100644
 index 000000000000..4bc3599b8928

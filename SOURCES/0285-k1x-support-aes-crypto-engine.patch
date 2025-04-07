@@ -1,4 +1,4 @@
-From 2ad48181deb1e11d0a3709455a1bd0f0977ede69 Mon Sep 17 00:00:00 2001
+From 880afb90686b6735e52c396656fca35ae6bfd2e0 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 30 Dec 2023 22:44:04 +0800
 Subject: [PATCH 0285/1205] k1x:support aes-crypto engine
@@ -61,18 +61,19 @@ index 3ebf54036f06..15b9b5f183c3 100644
  CONFIG_DMA_CMA=y
  CONFIG_PRINTK_TIME=y
 diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 19ab145f912e..2b7660223b96 100644
+index 47082782008a..cbe866749d1a 100644
 --- a/drivers/crypto/Kconfig
 +++ b/drivers/crypto/Kconfig
-@@ -855,5 +855,6 @@ config CRYPTO_DEV_SA2UL
+@@ -855,6 +855,7 @@ config CRYPTO_DEV_SA2UL
  
  source "drivers/crypto/aspeed/Kconfig"
  source "drivers/crypto/starfive/Kconfig"
 +source "drivers/crypto/spacemit/Kconfig"
+ source "drivers/crypto/inside-secure/eip93/Kconfig"
  
  endif # CRYPTO_HW
 diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index fef18ffdb128..941c7c46ab58 100644
+index c97f0ebc55ec..e61ea04d0706 100644
 --- a/drivers/crypto/Makefile
 +++ b/drivers/crypto/Makefile
 @@ -50,3 +50,4 @@ obj-y += hisilicon/

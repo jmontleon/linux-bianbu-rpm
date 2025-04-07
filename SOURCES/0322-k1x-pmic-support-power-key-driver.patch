@@ -1,4 +1,4 @@
-From aec0913edfe19c8d37e482ec10e0cb0587a3cf23 Mon Sep 17 00:00:00 2001
+From 36dca91e401a02f145c956c2a4aafba98c5e394d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 6 Jan 2024 16:19:44 +0800
 Subject: [PATCH 0322/1205] k1x:pmic:support power-key driver
@@ -14,7 +14,7 @@ Change-Id: Ifd49f342de92762bc71e1a6cf72dfb150667fb18
  create mode 100644 drivers/input/misc/spacemit-pwrkey.c
 
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 13d135257e06..58825c8a055c 100644
+index f5496ca0c0d2..4b636d6e3a70 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
 @@ -929,6 +929,15 @@ config INPUT_QNAP_MCU

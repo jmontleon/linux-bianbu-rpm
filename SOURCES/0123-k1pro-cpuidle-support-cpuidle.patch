@@ -1,4 +1,4 @@
-From d5532825d99479dfc904493dd0de35a9e96ab4f0 Mon Sep 17 00:00:00 2001
+From acdc25d6b3516548be8171e527699e83e1969961 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 23 Sep 2023 12:38:00 +0800
 Subject: [PATCH 0123/1205] k1pro:cpuidle: support cpuidle
@@ -11,10 +11,10 @@ Change-Id: I586ebcec8e3b03cec44a1845b1bee36b79c14d0e
  3 files changed, 63 insertions(+), 50 deletions(-)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 6e5b00085195..6e71e4ea57e4 100644
+index 76e6f5526d21..d358e5be3c4e 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
-@@ -120,6 +120,7 @@ choice
+@@ -118,6 +118,7 @@ choice
  
  	config SOC_SPACEMIT_K1PRO
  		bool "k1-pro"

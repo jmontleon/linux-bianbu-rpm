@@ -1,4 +1,4 @@
-From 3b047ca1cbdc2d57e6bc1b069829ad2e0cc996e6 Mon Sep 17 00:00:00 2001
+From fecc5c43b1ea8b538d90f60ba29b5e4322a10911 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 29 Aug 2023 17:43:33 +0800
 Subject: [PATCH 0092/1205] k1x: add k1-x_fpga 1x4 & 2x2 proj
@@ -23,12 +23,12 @@ Change-Id: I457de37335f0bb58f4f7d3ac6b17b17017b2274d
  create mode 100644 arch/riscv/configs/k1-x_fpga_2x2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 6992ce490379..6b646a3ab33f 100644
+index 023d2a96de4a..b0c33708d515 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,5 +2,5 @@
  dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb
 -dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb

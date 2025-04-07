@@ -1,4 +1,4 @@
-From b835b437e611e6fc133f1bd8261e7be4c64968b0 Mon Sep 17 00:00:00 2001
+From 75b724a3813c919cdfcc1cf96e208b1b141c4276 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:58:37 +0800
 Subject: [PATCH 1136/1205] riscv: restore vmlinux target building command
@@ -9,10 +9,10 @@ Change-Id: I70b33d83c5061cad7ba80fed6ecd0604413f4c1d
  1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 25a30c2ff37d..13fbc0f94238 100644
+index db1609259028..539d2aef5cab 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
-@@ -150,7 +150,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
+@@ -149,7 +149,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
  KBUILD_IMAGE := $(boot)/loader.bin
  else
  ifeq ($(CONFIG_EFI_ZBOOT),)
@@ -21,7 +21,7 @@ index 25a30c2ff37d..13fbc0f94238 100644
  else
  KBUILD_IMAGE := $(boot)/vmlinuz.efi
  endif
-@@ -192,19 +192,13 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
+@@ -191,19 +191,13 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
  
  BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst Image.xz loader loader.bin xipImage vmlinuz.efi
  

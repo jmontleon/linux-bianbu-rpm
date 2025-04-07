@@ -1,4 +1,4 @@
-From d0fdacca942a5ba1efd2e8fa497ea6e2865191a1 Mon Sep 17 00:00:00 2001
+From 085e2140652c9b452d696bc9594fa5742fb24961 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 9 Jan 2024 11:38:49 +0800
 Subject: [PATCH 0323/1205] k1x:pmic:rtc: support spm8821 rtc driver
@@ -27,7 +27,7 @@ index 4a82233b262b..3599d7602cfb 100644
  
  PM853_MFD_CELL;
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index a00be2b7104c..244563256553 100644
+index be183d2e7d84..a10eea618089 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
 @@ -774,6 +774,13 @@ config RTC_DRV_SD3078
@@ -45,10 +45,10 @@ index a00be2b7104c..244563256553 100644
  
  comment "SPI RTC drivers"
 diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 489b4ab07068..2491c9f9564d 100644
+index 31473b3276d9..94ead2302c99 100644
 --- a/drivers/rtc/Makefile
 +++ b/drivers/rtc/Makefile
-@@ -194,3 +194,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
+@@ -193,3 +193,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
  obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
  obj-$(CONFIG_RTC_DRV_XGENE)	+= rtc-xgene.o
  obj-$(CONFIG_RTC_DRV_ZYNQMP)	+= rtc-zynqmp.o

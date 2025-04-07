@@ -1,4 +1,4 @@
-From d8b96da9a66f1b2588f338877f0ff1eec81284f7 Mon Sep 17 00:00:00 2001
+From d4e00f83d3b525441e5dc7bc27abe89dd10dac03 Mon Sep 17 00:00:00 2001
 From: zengyu <yu.zeng@spacemit.com>
 Date: Mon, 5 Aug 2024 17:50:38 +0800
 Subject: [PATCH 0848/1205] Add support for ICM42607 sensor
@@ -42,7 +42,7 @@ index 695e9cce457f..0492d40ddbd3 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_i2c8>;
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index a0d679eec71e..09295dc022c6 100644
+index 73ba2e92135f..d369fa08e18c 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -639,6 +639,12 @@ config SPACEMIT_TCM
@@ -59,10 +59,10 @@ index a0d679eec71e..09295dc022c6 100644
  source "drivers/misc/eeprom/Kconfig"
  source "drivers/misc/cb710/Kconfig"
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 56fabababfa6..cabd8a3b3820 100644
+index e7e0d321806f..f6eeca0f3d6f 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
-@@ -76,3 +76,4 @@ lan966x-pci-objs		+= lan966x_pci.dtbo.o
+@@ -75,3 +75,4 @@ lan966x-pci-objs		+= lan966x_pci.dtbo.o
  obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
  obj-y				+= keba/
  obj-$(CONFIG_SPACEMIT_TCM)	+= tcm.o

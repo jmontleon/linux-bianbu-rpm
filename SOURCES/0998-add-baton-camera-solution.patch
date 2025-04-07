@@ -1,4 +1,4 @@
-From ab4a2d5f74e31c322ff3956536741122e44d5918 Mon Sep 17 00:00:00 2001
+From d75928294e76367e0e6bdf4eeb94b8062be73181 Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Sun, 29 Sep 2024 09:38:42 +0800
 Subject: [PATCH 0998/1205] add baton-camera solution
@@ -11,10 +11,10 @@ Change-Id: Ib9317122ab0b647ea41d5a12cbfb4e05648c8964
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 0a2470a47055..bdb619e93093 100644
+index 1062f7d4ac3a..39a2fb81051f 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -5,6 +5,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -6,6 +6,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb \
  				  k1-x_MINI-PC.dtb k1-x_MUSE-N1.dtb k1-x_mingo.dtb \
  				  k1-x_MUSE-Pi.dtb k1-x_milkv-jupiter.dtb m1-x_milkv-jupiter.dtb \

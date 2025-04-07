@@ -1,4 +1,4 @@
-From ba10b455e40b9a0b41a64feb0d6cb4381308ceb5 Mon Sep 17 00:00:00 2001
+From 12b223f1fd2d61a5be51dfa9fe0b2dcb2bbca160 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 19 Apr 2024 14:51:25 +0800
 Subject: [PATCH 0602/1205] k1: add kernel dts config for MUSE-Pi
@@ -11,10 +11,10 @@ Change-Id: Ib4a5404f01604d08ae4605dae2bac9fbeb967e46
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 29ee4b702543..4b5921ed8dfe 100644
+index 410a1afa9ea7..51205d075248 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -3,5 +3,6 @@ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
+@@ -4,5 +4,6 @@ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1x4.dtb k1-pro_fpga_2x2.dtb k1-pro_qemu.dtb k1-pro_verify.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb k1-x_evb.dtb \
  				  k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb \

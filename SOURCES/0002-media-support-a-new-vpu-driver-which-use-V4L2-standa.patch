@@ -1,4 +1,4 @@
-From 46e898f13ff41cafb5e2d079837c31e16b3df797 Mon Sep 17 00:00:00 2001
+From f94b670d10027cb620d199d0a52b323be9c52934 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@space-t.cn>
 Date: Tue, 31 Jan 2023 19:59:20 +0800
 Subject: [PATCH 0002/1205] media: support a new vpu driver which use V4L2
@@ -29503,10 +29503,10 @@ index 000000000000..3a1f19ccc1a9
 +# Install user space header files
 +env.Install(env['INCLUDE_DIR'], ['if/v4l2/mvx-v4l2-controls.h'])
 diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-index bdbb7e542321..477c773394fb 100644
+index c6ec87e88dfe..5e6eb90b2091 100644
 --- a/include/media/v4l2-ioctl.h
 +++ b/include/media/v4l2-ioctl.h
-@@ -305,10 +305,14 @@ struct v4l2_ioctl_ops {
+@@ -299,10 +299,14 @@ struct v4l2_ioctl_ops {
  	/* VIDIOC_ENUM_FMT handlers */
  	int (*vidioc_enum_fmt_vid_cap)(struct file *file, void *fh,
  				       struct v4l2_fmtdesc *f);
@@ -29521,7 +29521,7 @@ index bdbb7e542321..477c773394fb 100644
  	int (*vidioc_enum_fmt_sdr_cap)(struct file *file, void *fh,
  				       struct v4l2_fmtdesc *f);
  	int (*vidioc_enum_fmt_sdr_out)(struct file *file, void *fh,
-@@ -331,6 +335,8 @@ struct v4l2_ioctl_ops {
+@@ -325,6 +329,8 @@ struct v4l2_ioctl_ops {
  				    struct v4l2_format *f);
  	int (*vidioc_g_fmt_vbi_out)(struct file *file, void *fh,
  				    struct v4l2_format *f);
@@ -29530,7 +29530,7 @@ index bdbb7e542321..477c773394fb 100644
  	int (*vidioc_g_fmt_sliced_vbi_cap)(struct file *file, void *fh,
  					   struct v4l2_format *f);
  	int (*vidioc_g_fmt_sliced_vbi_out)(struct file *file, void *fh,
-@@ -586,6 +592,8 @@ struct v4l2_ioctl_ops {
+@@ -574,6 +580,8 @@ struct v4l2_ioctl_ops {
  	int (*vidioc_unsubscribe_event)(struct v4l2_fh *fh,
  					const struct v4l2_event_subscription *sub);
  

@@ -1,4 +1,4 @@
-From f3bf64a8d1c129702af14a230aebba0a0120eaad Mon Sep 17 00:00:00 2001
+From d114107f5cf78118adaa678a884f868ce4df23a3 Mon Sep 17 00:00:00 2001
 From: Chen Linfei <linfei.chen@spacemit.com>
 Date: Thu, 21 Sep 2023 14:56:51 +0800
 Subject: [PATCH 0121/1205] fix config PCIE_SPACEMIT, depends on
@@ -10,10 +10,10 @@ Change-Id: Ide091355f622a1cb3ec2dde720752c2c5a25c05b
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 4006de816fd9..d8d4425a0dfb 100644
+index 2429cb9ca23a..906b9ca23045 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
-@@ -461,7 +461,7 @@ config PCIE_VISCONTI_HOST
+@@ -482,7 +482,7 @@ config PCIE_VISCONTI_HOST
  
  config PCIE_SPACEMIT
  	bool "Spacemit PCIe controller"

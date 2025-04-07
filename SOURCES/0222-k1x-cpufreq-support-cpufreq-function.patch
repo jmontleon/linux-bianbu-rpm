@@ -1,4 +1,4 @@
-From 5366cc0ade48f9a52a747202979d3e7a91ea02d5 Mon Sep 17 00:00:00 2001
+From 3b3bf229e8a373dc1d79083df2d05a616a7d8c0c Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 21 Dec 2023 20:39:40 +0800
 Subject: [PATCH 0222/1205] k1x:cpufreq: support cpufreq function
@@ -262,10 +262,10 @@ index d64b07ec48e5..806378cf7211 100644
  	tristate "CPUFreq driver based on the ACPI CPPC spec"
  	depends on ACPI_PROCESSOR
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index 890fff99f37d..32f7acf80549 100644
+index 22ab45209f9b..e1d208476795 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
-@@ -108,3 +108,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
+@@ -105,3 +105,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
  obj-$(CONFIG_SH_CPU_FREQ)		+= sh-cpufreq.o
  obj-$(CONFIG_SPARC_US2E_CPUFREQ)	+= sparc-us2e-cpufreq.o
  obj-$(CONFIG_SPARC_US3_CPUFREQ)		+= sparc-us3-cpufreq.o

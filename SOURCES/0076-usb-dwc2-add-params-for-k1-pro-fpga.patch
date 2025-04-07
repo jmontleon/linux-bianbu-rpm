@@ -1,4 +1,4 @@
-From 2797bd0fc8ff5777968a79eb14a18160e3b3011d Mon Sep 17 00:00:00 2001
+From e78e390fbe0cdcf168cbf7ef7aa654fd5b0a486b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 27 Jul 2023 11:43:56 +0800
 Subject: [PATCH 0076/1205] usb: dwc2: add params for k1-pro fpga
@@ -11,7 +11,7 @@ Change-Id: Iedbfca6f694c798f1e35c345460ce41727cd32f0
  3 files changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 8c3941ecaaf5..c183ee1bec04 100644
+index 60ef8092259a..bfa698ae398d 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
 @@ -5143,9 +5143,9 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
@@ -73,7 +73,7 @@ index 4d73fae80b12..153a265ca1fc 100644
  			valid = 1;
  		break;
 diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 91c80a92d9b8..5b2941073eca 100644
+index 12b4dc07d08a..11c50c75358d 100644
 --- a/drivers/usb/dwc2/platform.c
 +++ b/drivers/usb/dwc2/platform.c
 @@ -450,7 +450,7 @@ static int dwc2_driver_probe(struct platform_device *dev)

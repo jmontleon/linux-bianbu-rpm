@@ -1,4 +1,4 @@
-From 5df2dd0b0bdd54fe6993fbd5fcd53e5133914e94 Mon Sep 17 00:00:00 2001
+From a205c53bec87556cc824b1f77678a375b7e59a28 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 9 Aug 2024 11:16:04 +0800
 Subject: [PATCH 0910/1205] k1x:support cw2015 driver
@@ -55,7 +55,7 @@ index 8f9ded27d032..92922bf6adda 100644
  CONFIG_CHARGER_SBS_VIRTUAL=y
  CONFIG_SENSORS_PWM_FAN=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 81acf58b25bc..68c0a1a8fc45 100644
+index 7abd2ad7e60d..3d594ed9237a 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -126,6 +126,18 @@ config BATTERY_CW2015
@@ -78,7 +78,7 @@ index 81acf58b25bc..68c0a1a8fc45 100644
  	tristate "DS2760 battery driver (HP iPAQ & others)"
  	depends on W1
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index 19c2a557d952..19fdbedf7a1a 100644
+index fcb63868739d..ef6228b8cc17 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -25,6 +25,7 @@ obj-$(CONFIG_BATTERY_AXP20X)	+= axp20x_battery.o

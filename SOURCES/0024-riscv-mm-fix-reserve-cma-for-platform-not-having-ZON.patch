@@ -1,4 +1,4 @@
-From ec641a22816804b70f08b3f3931266b62f00e637 Mon Sep 17 00:00:00 2001
+From 333a753f6202057553d3cde5515043bfd2055884 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
 Subject: [PATCH 0024/1205] riscv: mm: fix reserve cma for platform not having
@@ -15,10 +15,10 @@ Change-Id: I5504523c5b54a4e9d5582fcdbeb2665efb5292f3
  2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7612c52e9b1e..4e393a071e3f 100644
+index bbec87b79309..07edc66e2907 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -214,6 +214,7 @@ config RISCV
+@@ -220,6 +220,7 @@ config RISCV
  	select UACCESS_MEMCPY if !MMU
  	select USER_STACKTRACE_SUPPORT
  	select ZONE_DMA32 if 64BIT
@@ -27,10 +27,10 @@ index 7612c52e9b1e..4e393a071e3f 100644
  config RUSTC_SUPPORTS_RISCV
  	def_bool y
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 15b2eda4c364..d8c5016905af 100644
+index ab475ec6ca42..5549df9d901a 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -318,7 +318,12 @@ static void __init setup_bootmem(void)
+@@ -313,7 +313,12 @@ static void __init setup_bootmem(void)
  	if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
  		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
  

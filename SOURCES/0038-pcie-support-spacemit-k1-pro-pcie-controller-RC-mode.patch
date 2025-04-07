@@ -1,4 +1,4 @@
-From a48ba1ff12aac7ec01a7c24af3d6f248ac9774a6 Mon Sep 17 00:00:00 2001
+From 274d21d25c095ac2d0054c7608fb1905b88dd32a Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sat, 3 Jun 2023 11:21:18 +0800
 Subject: [PATCH 0038/1205] pcie: support spacemit k1-pro pcie controller RC
@@ -81,10 +81,10 @@ index 0c83d64e11f4..661867dbee0d 100644
  CONFIG_BLK_DEV_SD=y
  # CONFIG_BLK_DEV_BSG is not set
 diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index b6d6778b0698..153acd86608c 100644
+index d9f0386396ed..2759256ee8b0 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
-@@ -459,4 +459,13 @@ config PCIE_VISCONTI_HOST
+@@ -480,4 +480,13 @@ config PCIE_VISCONTI_HOST
  	  Say Y here if you want PCIe controller support on Toshiba Visconti SoC.
  	  This driver supports TMPV7708 SoC.
  
@@ -99,10 +99,10 @@ index b6d6778b0698..153acd86608c 100644
 +
  endmenu
 diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index a8308d9ea986..5e8408757226 100644
+index 908cb7f345db..43c10f3eb2c8 100644
 --- a/drivers/pci/controller/dwc/Makefile
 +++ b/drivers/pci/controller/dwc/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
+@@ -30,6 +30,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
  obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
  obj-$(CONFIG_PCIE_RCAR_GEN4) += pcie-rcar-gen4.o
@@ -111,7 +111,7 @@ index a8308d9ea986..5e8408757226 100644
  # The following drivers are for devices that use the generic ACPI
  # pci_root.c driver but don't support standard ECAM config access.
 diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index ffaded8f2df7..cb707b1c4909 100644
+index ecc33f6789e3..2d0e42221b6b 100644
 --- a/drivers/pci/controller/dwc/pcie-designware-host.c
 +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
 @@ -372,7 +372,11 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)

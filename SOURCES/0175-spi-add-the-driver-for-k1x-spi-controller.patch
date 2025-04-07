@@ -1,4 +1,4 @@
-From d824105f6477d79c80769d308b630e996aafb0dc Mon Sep 17 00:00:00 2001
+From 2178ea625b1d05e82baeeba8b2a745ce1db93542 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 6 Dec 2023 14:12:06 +0800
 Subject: [PATCH 0175/1205] spi: add the driver for k1x spi controller
@@ -105,10 +105,10 @@ index ce9ecbe0c650..5831f056bf07 100644
  CONFIG_UDMABUF=y
  CONFIG_DMABUF_HEAPS=y
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 94ff0c20340a..f91e4a0b7a54 100644
+index 2d5da5d12fb6..a55b795e8afc 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
-@@ -329,6 +329,12 @@ config SPI_DESIGNWARE_EXT
+@@ -333,6 +333,12 @@ config SPI_DESIGNWARE_EXT
  	help
  	  general driver for enhanced SPI controller core from  DesignWare
  
@@ -122,10 +122,10 @@ index 94ff0c20340a..f91e4a0b7a54 100644
  	tristate "K1X QuadSPI Controller"
  	depends on SPI_MEM
 diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index ca550d9662fc..5709ccff2607 100644
+index f93a6b8fb0f2..794bb14a9bd5 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
+@@ -48,6 +48,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
  obj-$(CONFIG_SPI_DAVINCI)		+= spi-davinci.o
  obj-$(CONFIG_SPI_DLN2)			+= spi-dln2.o
  obj-$(CONFIG_SPI_DESIGNWARE_EXT)	+= spi-dw-mmio-ext.o spi-dw-espi.o

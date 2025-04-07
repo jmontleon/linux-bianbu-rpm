@@ -1,4 +1,4 @@
-From 68db88dd9c90bd9d2e68b769ff4671dd74f3ee85 Mon Sep 17 00:00:00 2001
+From 223ea704fc28a877825fcb7c809ebd9f029e8448 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 22 Jul 2024 11:08:15 +0800
 Subject: [PATCH 0818/1205] k1x:add MUSE-Card dts support
@@ -11,10 +11,10 @@ Change-Id: I93967873f0f38c4e6a0c8fe4c57395780e2d6e74
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 71c2a741192e..400113e3c540 100644
+index a438abed2105..68f39e370270 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -5,5 +5,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
+@@ -6,5 +6,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
  				  k1-x_deb2.dtb k1-x_deb1.dtb k1-x_hs450.dtb k1-x_kx312.dtb \
  				  k1-x_MINI-PC.dtb k1-x_MUSE-N1.dtb k1-x_mingo.dtb \
  				  k1-x_MUSE-Pi.dtb k1-x_milkv-jupiter.dtb m1-x_milkv-jupiter.dtb k1-x_MUSE-Book.dtb \

@@ -1,4 +1,4 @@
-From fa07e42ec7f7332420e65717074507e7127bf8a5 Mon Sep 17 00:00:00 2001
+From 2f99de85066619f6e114c48db8c5b5e8a26ddfec Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Tue, 14 Mar 2023 15:25:15 +0800
 Subject: [PATCH 0005/1205] kernel config: add SOC_SPACEMIT_K1_FPGA option for
@@ -10,10 +10,10 @@ Change-Id: I2194508ae350e7e216d88b128e394b46de2ec018
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index bc6488b87696..ecb754d8c328 100644
+index bb0919364bc8..575f1d8a5bf4 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
-@@ -111,9 +111,7 @@ choice
+@@ -109,9 +109,7 @@ choice
  
  endchoice
  
@@ -24,7 +24,7 @@ index bc6488b87696..ecb754d8c328 100644
  
  choice
  	prompt "Spacemit K1 serial SOCs"
-@@ -136,6 +134,13 @@ choice
+@@ -134,6 +132,13 @@ choice
  		  This enables support for Spacemit k1-max Platform Hardware.
  endchoice
  

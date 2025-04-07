@@ -1,4 +1,4 @@
-From 38fed93e75b65ad8535d9f082344af83da3830ff Mon Sep 17 00:00:00 2001
+From bf943d05d37cde99545d2aa0d6269e4f5db1e9e1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 8 Aug 2023 09:08:05 +0800
 Subject: [PATCH 0081/1205] add k1-x device support
@@ -16,10 +16,10 @@ Change-Id: I8bc2ee3c35195eb0f6967281629f7db75372b0da
  create mode 100644 arch/riscv/configs/k1-x_fpga_defconfig
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index ecb754d8c328..6e5b00085195 100644
+index 575f1d8a5bf4..76e6f5526d21 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
-@@ -123,15 +123,10 @@ choice
+@@ -121,15 +121,10 @@ choice
  		help
  		  This enables support for Spacemit k1-pro Platform Hardware.
  
@@ -39,12 +39,12 @@ index ecb754d8c328..6e5b00085195 100644
  
  config SOC_SPACEMIT_K1_FPGA
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 73cba7cfa3f1..6992ce490379 100644
+index 5fc695236578..023d2a96de4a 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,4 +2,5 @@
  dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
  dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_qemu.dtb
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))

@@ -1,4 +1,4 @@
-From 5a3b89ec51bcab89ba036c145d911923cb627323 Mon Sep 17 00:00:00 2001
+From e4c5ce8005c775563f266e7573b6ca105fd2c26e Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Tue, 6 Aug 2024 21:02:57 +0800
 Subject: [PATCH 0902/1205] Linux:Add a virtual charger driver.This resolves
@@ -44,7 +44,7 @@ index 92c0584716bf..8f9ded27d032 100644
  CONFIG_THERMAL=y
  CONFIG_CPU_THERMAL=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 7b18358f194a..81acf58b25bc 100644
+index 8dbd39afa43c..7abd2ad7e60d 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -249,6 +249,15 @@ config CHARGER_SBS
@@ -64,7 +64,7 @@ index 7b18358f194a..81acf58b25bc 100644
  	tristate "Smart Battery System Manager"
  	depends on I2C && I2C_MUX && GPIOLIB
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index b55cc48a4c86..19c2a557d952 100644
+index 61677be328b0..fcb63868739d 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -43,6 +43,7 @@ obj-$(CONFIG_BATTERY_IPAQ_MICRO) += ipaq_micro_battery.o

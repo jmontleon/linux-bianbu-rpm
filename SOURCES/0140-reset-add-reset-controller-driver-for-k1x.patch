@@ -1,4 +1,4 @@
-From 8647471ee740ec5753c84426d7451f865dd8bdfd Mon Sep 17 00:00:00 2001
+From a4f4dff7d84ba7e455b252ea82bf86391cc1c894 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 23 Oct 2023 18:06:31 +0800
 Subject: [PATCH 0140/1205] reset: add reset controller driver for k1x
@@ -63,10 +63,10 @@ index a6eec5b6c8a3..3b4f1e2e08a5 100644
  # CONFIG_PHY_MVEBU_A3700_UTMI is not set
  # CONFIG_NVMEM is not set
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 4008f888afc2..8bc0c1c79043 100644
+index 3c44fa12c552..bc4b655dd97e 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
-@@ -349,6 +349,12 @@ config RESET_K1_PRO_SPACEMIT
+@@ -356,6 +356,12 @@ config RESET_K1_PRO_SPACEMIT
  	help
  	  Support for reset controllers on Spacemit SoCs.
  
@@ -80,10 +80,10 @@ index 4008f888afc2..8bc0c1c79043 100644
  source "drivers/reset/starfive/Kconfig"
  source "drivers/reset/sti/Kconfig"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 3b55b68e1992..63040ee247c1 100644
+index c2ed4f73225b..19c96990f96c 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
-@@ -43,4 +43,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+@@ -44,4 +44,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
  obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
  obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
  obj-$(CONFIG_RESET_ZYNQMP) += reset-zynqmp.o

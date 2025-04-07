@@ -1,4 +1,4 @@
-From a94f33c728454d815b543a90eb38e6c40ce56b6f Mon Sep 17 00:00:00 2001
+From fb4b2c4323fa0f536ec003fe6edaa4344dbde0ed Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 24 Jun 2024 09:22:29 +0800
 Subject: [PATCH 0760/1205] riscv: show reason of unaligned access speed are
@@ -22,12 +22,12 @@ Change-Id: I8890cb2657e26bcc692fb689801d870ceb402a9c
  1 file changed, 9 insertions(+)
 
 diff --git a/arch/riscv/kernel/unaligned_access_speed.c b/arch/riscv/kernel/unaligned_access_speed.c
-index 91f189cf1611..b21a69539aa1 100644
+index 585d2dcf2dab..9f14dc206953 100644
 --- a/arch/riscv/kernel/unaligned_access_speed.c
 +++ b/arch/riscv/kernel/unaligned_access_speed.c
-@@ -247,6 +247,15 @@ static int check_unaligned_access_speed_all_cpus(void)
- 	/* Check core 0. */
- 	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
+@@ -311,6 +311,15 @@ static void check_vector_unaligned_access(struct work_struct *work __always_unus
+ 	while ((now = jiffies) == start_jiffies)
+ 		cpu_relax();
  
 +	/*
 +	 * show the reason why cpu0 unaligned access is more efficient
@@ -39,8 +39,8 @@ index 91f189cf1611..b21a69539aa1 100644
 +	pr_info("Nonboot cpus' unaligned access ratio measured simultaneously, but cpu0's measure is separately\n");
 +
  	/*
- 	 * Setup hotplug callbacks for any new CPUs that come online or go
- 	 * offline.
+ 	 * For a fixed amount of time, repeatedly try the function, and take
+ 	 * the best time in cycles as the measurement.
 -- 
 2.49.0
 

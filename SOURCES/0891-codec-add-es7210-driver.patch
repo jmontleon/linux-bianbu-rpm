@@ -1,4 +1,4 @@
-From f73222d0439ff551f9393f6b3add9d9fdd0f0f7b Mon Sep 17 00:00:00 2001
+From c21dd7fffa3211f7ec07b82f9067e2dccda16481 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:20:46 +0800
 Subject: [PATCH 0891/1205] codec: add es7210 driver
@@ -33,10 +33,10 @@ index ee698943e166..315e95b8f78f 100644
  CONFIG_UHID=y
  CONFIG_HID_MULTITOUCH=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index ee35f3aa5521..8e36a5d062f8 100644
+index 40bb7a1d44bc..0c57ff91a7a3 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -119,6 +119,7 @@ config SND_SOC_ALL_CODECS
+@@ -120,6 +120,7 @@ config SND_SOC_ALL_CODECS
  	imply SND_SOC_ES8328_SPI
  	imply SND_SOC_ES8328_I2C
  	imply SND_SOC_ES7134
@@ -44,7 +44,7 @@ index ee35f3aa5521..8e36a5d062f8 100644
  	imply SND_SOC_ES7241
  	imply SND_SOC_FRAMER
  	imply SND_SOC_GTM601
-@@ -1151,6 +1152,9 @@ config SND_SOC_HDMI_CODEC
+@@ -1164,6 +1165,9 @@ config SND_SOC_HDMI_CODEC
  config SND_SOC_ES7134
  	tristate "Everest Semi ES7134 CODEC"
  
@@ -55,10 +55,10 @@ index ee35f3aa5521..8e36a5d062f8 100644
  	tristate "Everest Semi ES7241 CODEC"
  
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index d7ad795603c1..810c0b5ad54a 100644
+index 10f726066b6c..79602e27eb72 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
-@@ -123,6 +123,7 @@ snd-soc-da732x-y := da732x.o
+@@ -124,6 +124,7 @@ snd-soc-da732x-y := da732x.o
  snd-soc-da9055-y := da9055.o
  snd-soc-dmic-y := dmic.o
  snd-soc-es7134-y := es7134.o
@@ -66,7 +66,7 @@ index d7ad795603c1..810c0b5ad54a 100644
  snd-soc-es7241-y := es7241.o
  snd-soc-es83xx-dsm-common-y := es83xx-dsm-common.o
  snd-soc-es8311-y := es8311.o
-@@ -540,6 +541,7 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
+@@ -542,6 +543,7 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
  obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
  obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
  obj-$(CONFIG_SND_SOC_ES7134)	+= snd-soc-es7134.o

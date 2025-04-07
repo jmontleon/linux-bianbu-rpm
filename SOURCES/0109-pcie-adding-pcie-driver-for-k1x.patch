@@ -1,4 +1,4 @@
-From c56ecad21f754d17784ba0acb3ecd24afbbf35d6 Mon Sep 17 00:00:00 2001
+From 5e8c47b5b216410f3629c10b4149674823d56421 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 14 Sep 2023 10:43:56 +0800
 Subject: [PATCH 0109/1205] pcie: adding pcie driver for k1x
@@ -169,10 +169,10 @@ index fef99e1907c0..4706eecbc9b3 100644
  CONFIG_SCSI=y
  CONFIG_BLK_DEV_SD=y
 diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 153acd86608c..4006de816fd9 100644
+index 2759256ee8b0..2429cb9ca23a 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
-@@ -468,4 +468,30 @@ config PCIE_SPACEMIT
+@@ -489,4 +489,30 @@ config PCIE_SPACEMIT
  	  Say Y here to enable PCIe controller support on Spacemit SoCs. The
  	  PCIe controller uses the DesignWare core plus Spacemit hardware wrappers.
  
@@ -204,10 +204,10 @@ index 153acd86608c..4006de816fd9 100644
 +
  endmenu
 diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index 5e8408757226..4b8627e92074 100644
+index 43c10f3eb2c8..f81035bc1438 100644
 --- a/drivers/pci/controller/dwc/Makefile
 +++ b/drivers/pci/controller/dwc/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
+@@ -31,6 +31,7 @@ obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
  obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
  obj-$(CONFIG_PCIE_RCAR_GEN4) += pcie-rcar-gen4.o
  obj-$(CONFIG_PCIE_SPACEMIT) += pcie-spacemit.o

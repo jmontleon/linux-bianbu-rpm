@@ -1,4 +1,4 @@
-From cd69304ecdb5c48d844b78e302887f857a76e208 Mon Sep 17 00:00:00 2001
+From 3f3064ca0aa8166754bce78ca0c41a1e7638e30c Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 20:20:57 +0800
 Subject: [PATCH 0636/1205] USB: xhci-plat: fix legacy PHY double init
@@ -22,7 +22,7 @@ Change-Id: Id4472175fb72b3da2cb4ee108ec1afe6a4e87da0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index d85ffa9ffaa7..d9a5137fcbe4 100644
+index 3155e3a842da..2ed5b2e41309 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
 @@ -270,7 +270,7 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s

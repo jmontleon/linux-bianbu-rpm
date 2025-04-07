@@ -1,4 +1,4 @@
-From f1c43047c7096677501e38f8e7285adde9a58e91 Mon Sep 17 00:00:00 2001
+From 1e08497f31a585aaad9041572316801b8742e73b Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 12 Jul 2023 14:20:57 +0800
 Subject: [PATCH 0067/1205] ethernet: support ethernet qos
@@ -58,10 +58,10 @@ index 86ada597ebd8..4a94067d3eb9 100644
  # CONFIG_NET_VENDOR_VERTEXCOM is not set
  # CONFIG_NET_VENDOR_VIA is not set
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 10b0691d61d6..ad3d3fd73df5 100644
+index 0764079f1975..00642aca04b7 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
 +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -309,6 +309,16 @@ config DWMAC_SPACEMIT
+@@ -320,6 +320,16 @@ config DWMAC_SPACEMIT
  	  device driver. This driver is used for the Spacemit series
  	  SOCs GMAC ethernet controller.
  
@@ -79,10 +79,10 @@ index 10b0691d61d6..ad3d3fd73df5 100644
  
  config DWMAC_INTEL
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index d5f9f46dc699..e514e5ebca72 100644
+index d27c7eceef24..bdf4d4544031 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
 +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -30,6 +30,7 @@ obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
+@@ -31,6 +31,7 @@ obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
  obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
  obj-$(CONFIG_DWMAC_SPACEMIT)	+= dwmac-spacemit.o

@@ -1,4 +1,4 @@
-From be14dfebf8a35aa9044a7499ed4d126aaee183e6 Mon Sep 17 00:00:00 2001
+From 5ab5ee3a5d3481e25c0b33bf6c0f0ab1eb3d74b8 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 25 Dec 2023 10:12:08 +0800
 Subject: [PATCH 0241/1205] k1x:add watchdog driver support
@@ -26,10 +26,10 @@ index a0ca9cdade3d..7fd8d6687de6 100644
  CONFIG_MFD_SPACEMIT_PMIC=y
  CONFIG_REGULATOR=y
 diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index f81705f8539a..ee85aeaa17fb 100644
+index 0d8d37f712e8..14687f24f257 100644
 --- a/drivers/watchdog/Kconfig
 +++ b/drivers/watchdog/Kconfig
-@@ -2309,4 +2309,18 @@ config KEEMBAY_WATCHDOG
+@@ -2323,4 +2323,18 @@ config KEEMBAY_WATCHDOG
  	  To compile this driver as a module, choose M here: the
  	  module will be called keembay_wdt.
  
@@ -49,7 +49,7 @@ index f81705f8539a..ee85aeaa17fb 100644
 +
  endif # WATCHDOG
 diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 8411626fa162..dfe48c8fdaf4 100644
+index c9482904bf87..e8f3b487265b 100644
 --- a/drivers/watchdog/Makefile
 +++ b/drivers/watchdog/Makefile
 @@ -37,6 +37,7 @@ obj-$(CONFIG_USBPCWATCHDOG) += pcwd_usb.o

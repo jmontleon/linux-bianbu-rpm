@@ -1,4 +1,4 @@
-From 965618ae046531cb882099c890ff6e2ef523d055 Mon Sep 17 00:00:00 2001
+From 95b7dbce3991b2563a33bb2ded526c4d1c45dd9c Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Wed, 24 Jul 2024 17:19:38 +0800
 Subject: [PATCH 0854/1205] To ensure a better user experience, set the battery
@@ -10,7 +10,7 @@ Change-Id: I0f9f122bb1f14bf956fcf7d3c7e53ad27bb6ee5e
  1 file changed, 50 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-index 6f3d0413b1c1..52ef19fc1ce4 100644
+index 943c82ee978f..0ad3c6f09c31 100644
 --- a/drivers/power/supply/sbs-battery.c
 +++ b/drivers/power/supply/sbs-battery.c
 @@ -608,6 +608,21 @@ static int sbs_get_battery_presence_and_health(

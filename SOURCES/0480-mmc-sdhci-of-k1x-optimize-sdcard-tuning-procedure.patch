@@ -1,4 +1,4 @@
-From fd5fc5549bb58c5d6363d5fca7f69ff7f2099b70 Mon Sep 17 00:00:00 2001
+From 22e801f30258ee83894f966d8509a704c08c7dd8 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:12:48 +0800
 Subject: [PATCH 0480/1205] mmc: sdhci-of-k1x: optimize sdcard tuning procedure
@@ -14,7 +14,7 @@ Change-Id: I1464f06fb285254d5addc43fb413b696b1690ed1
  6 files changed, 347 insertions(+), 207 deletions(-)
 
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 64a31bb20270..4202e6466112 100644
+index 86001edc6ee1..eba51bba225a 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
 @@ -1202,11 +1202,6 @@ int mmc_host_set_uhs_voltage(struct mmc_host *host)
@@ -42,10 +42,10 @@ index 64a31bb20270..4202e6466112 100644
  	if (err) {
  		pr_debug("%s: Signal voltage switch failed, "
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index c54609922a86..ddfb0c49fbd4 100644
+index 8ba6cfb834ca..acd3158bcbec 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
-@@ -1169,11 +1169,6 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1173,11 +1173,6 @@ static int mmc_select_hs400(struct mmc_card *card)
  	      host->ios.bus_width == MMC_BUS_WIDTH_8))
  		return 0;
  
@@ -57,7 +57,7 @@ index c54609922a86..ddfb0c49fbd4 100644
  	/* Switch card to HS mode */
  	val = EXT_CSD_TIMING_HS;
  	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-@@ -1243,11 +1238,6 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1247,11 +1242,6 @@ static int mmc_select_hs400(struct mmc_card *card)
  	if (host->ops->hs400_complete)
  		host->ops->hs400_complete(host);
  
@@ -69,7 +69,7 @@ index c54609922a86..ddfb0c49fbd4 100644
  	err = mmc_switch_status(card, true);
  	if (err)
  		goto out_err;
-@@ -1306,10 +1296,6 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
+@@ -1310,10 +1300,6 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
  	if (err)
  		goto out_err;
  
@@ -80,7 +80,7 @@ index c54609922a86..ddfb0c49fbd4 100644
  	/* Switch HS to HS200 */
  	val = EXT_CSD_TIMING_HS200 |
  	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
-@@ -1441,9 +1427,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
+@@ -1445,9 +1431,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
  
  	/* Set host controller to HS400 timing and frequency */
  	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
@@ -770,7 +770,7 @@ index 1968ec44de57..4abbb4e89b68 100644
  #ifdef CONFIG_SYSFS
  		for (i = 0; i < ARRAY_SIZE(sdhci_sysfs_files); i++) {
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 42a8c281e200..907bc3bdd917 100644
+index 0266f3a7f8b8..692dbaa0c446 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,15 +1733,6 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -789,7 +789,7 @@ index 42a8c281e200..907bc3bdd917 100644
  	if (host->use_external_dma)
  		sdhci_external_dma_pre_transfer(host, cmd);
  
-@@ -2088,43 +2079,13 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
+@@ -2093,43 +2084,13 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
  				unsigned short vdd)
  {
  	struct mmc_host *mmc = host->mmc;
@@ -833,7 +833,7 @@ index 42a8c281e200..907bc3bdd917 100644
  }
  
  unsigned short sdhci_get_vdd_value(unsigned short vdd)
-@@ -2695,13 +2656,6 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
+@@ -2700,13 +2661,6 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
  		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
  		ctrl &= ~SDHCI_CTRL_VDD_180;
  		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
@@ -847,7 +847,7 @@ index 42a8c281e200..907bc3bdd917 100644
  		if (!IS_ERR(mmc->supply.vqmmc)) {
  			ret = mmc_regulator_set_vqmmc(mmc, ios);
  			if (ret < 0) {
-@@ -2785,46 +2739,6 @@ static int sdhci_card_busy(struct mmc_host *mmc)
+@@ -2790,46 +2744,6 @@ static int sdhci_card_busy(struct mmc_host *mmc)
  }
  
  #ifdef CONFIG_SOC_SPACEMIT_K1X
@@ -894,7 +894,7 @@ index 42a8c281e200..907bc3bdd917 100644
  static void sdhci_encrypt_config(struct mmc_host *mmc, unsigned int enc_flag)
  {
  	struct sdhci_host *host = mmc_priv(mmc);
-@@ -3187,11 +3101,6 @@ static const struct mmc_host_ops sdhci_ops = {
+@@ -3192,11 +3106,6 @@ static const struct mmc_host_ops sdhci_ops = {
  	.card_event			= sdhci_card_event,
  	.card_busy	= sdhci_card_busy,
  #ifdef CONFIG_SOC_SPACEMIT_K1X
@@ -906,7 +906,7 @@ index 42a8c281e200..907bc3bdd917 100644
  	.encrypt_config = sdhci_encrypt_config,
  #endif
  };
-@@ -3680,10 +3589,6 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+@@ -3685,10 +3594,6 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
  
  	do {
  		DBG("IRQ status 0x%08x\n", intmask);
@@ -917,7 +917,7 @@ index 42a8c281e200..907bc3bdd917 100644
  
  		if (host->ops->irq) {
  			intmask = host->ops->irq(host, intmask);
-@@ -4739,11 +4644,6 @@ int sdhci_setup_host(struct sdhci_host *host)
+@@ -4744,11 +4649,6 @@ int sdhci_setup_host(struct sdhci_host *host)
  	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
  

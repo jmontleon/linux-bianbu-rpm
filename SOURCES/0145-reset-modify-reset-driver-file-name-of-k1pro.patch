@@ -1,4 +1,4 @@
-From f7076046dc491047ba4eb96993720e9e878d06bd Mon Sep 17 00:00:00 2001
+From 5b9dad14ee377e5e170148914fabed8d31cf6f85 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 7 Nov 2023 17:23:28 +0800
 Subject: [PATCH 0145/1205] reset: modify reset driver file name of k1pro
@@ -28,10 +28,10 @@ index 30538df03356..4c9e7fbcc690 100644
  
  / {
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 8bc0c1c79043..8f82eae86542 100644
+index bc4b655dd97e..ad3d71c72ef7 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
-@@ -343,11 +343,12 @@ config RESET_ZYNQMP
+@@ -350,11 +350,12 @@ config RESET_ZYNQMP
  	help
  	  This enables the reset controller driver for Xilinx ZynqMP SoCs.
  
@@ -48,10 +48,10 @@ index 8bc0c1c79043..8f82eae86542 100644
  config RESET_K1X_SPACEMIT
          tristate "Reset controller driver for Spacemit K1X SoCs"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 63040ee247c1..232b86e89035 100644
+index 19c96990f96c..c718c255338c 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
-@@ -43,5 +43,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+@@ -44,5 +44,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
  obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
  obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
  obj-$(CONFIG_RESET_ZYNQMP) += reset-zynqmp.o

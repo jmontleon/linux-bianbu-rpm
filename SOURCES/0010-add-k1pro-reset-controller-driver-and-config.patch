@@ -1,4 +1,4 @@
-From de4c9826f47a22e99733fdd968ee0698f611a66d Mon Sep 17 00:00:00 2001
+From fd0c3931292ea1dbcb18e3d0541473d857e9bb44 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 30 Mar 2023 17:16:23 +0800
 Subject: [PATCH 0010/1205] add k1pro reset-controller driver and config
@@ -43,10 +43,10 @@ index e0d63ef9c7f7..b933c8d446c0 100644
  			compatible = "riscv,clint0";
  			interrupts-extended = <
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 5b3abb6db248..4008f888afc2 100644
+index 99f6f9784e68..3c44fa12c552 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
-@@ -343,6 +343,12 @@ config RESET_ZYNQMP
+@@ -350,6 +350,12 @@ config RESET_ZYNQMP
  	help
  	  This enables the reset controller driver for Xilinx ZynqMP SoCs.
  
@@ -60,10 +60,10 @@ index 5b3abb6db248..4008f888afc2 100644
  source "drivers/reset/starfive/Kconfig"
  source "drivers/reset/sti/Kconfig"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 677c4d1e2632..3b55b68e1992 100644
+index 31f9904d13f9..c2ed4f73225b 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
-@@ -43,3 +43,4 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+@@ -44,3 +44,4 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
  obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
  obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
  obj-$(CONFIG_RESET_ZYNQMP) += reset-zynqmp.o

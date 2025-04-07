@@ -1,4 +1,4 @@
-From d473071b465307ebf6d1d878c0622bc788ef6714 Mon Sep 17 00:00:00 2001
+From 84963db23b2074deb6b99efd53337bf120c912f5 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 26 Dec 2024 15:25:47 -0500
 Subject: [PATCH 1200/1205] Remove depends so SERIAL_8250_PXA can be enabled
@@ -8,7 +8,7 @@ Subject: [PATCH 1200/1205] Remove depends so SERIAL_8250_PXA can be enabled
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index 55d26d16df9b..2c4b8bae813b 100644
+index bd3d636ff962..2be8e27f386c 100644
 --- a/drivers/tty/serial/8250/Kconfig
 +++ b/drivers/tty/serial/8250/Kconfig
 @@ -543,7 +543,6 @@ config SERIAL_8250_PERICOM

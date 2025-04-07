@@ -1,4 +1,4 @@
-From 8035378d04bb382eb9384595207f4dc382db3051 Mon Sep 17 00:00:00 2001
+From 96b801859f2db2a141e144231ca706f0358782e8 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 20 Sep 2024 10:10:13 +0800
 Subject: [PATCH 0996/1205] k1x:adc:p1: supprt adc driver for k1x
@@ -220,10 +220,10 @@ index 559e39fda6c8..f90e68fcc9d0 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 849c90203071..8b1406d7e0d1 100644
+index 6529df1a498c..9dfe564c93c7 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
-@@ -1686,4 +1686,10 @@ config XILINX_AMS
+@@ -1740,4 +1740,10 @@ config XILINX_AMS
  	  The driver can also be built as a module. If so, the module will be called
  	  xilinx-ams.
  
@@ -235,10 +235,10 @@ index 849c90203071..8b1406d7e0d1 100644
 +
  endmenu
 diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-index ee19afba62b7..7ad3b89d1c80 100644
+index 3e918c3eec69..d64c47d5bc8e 100644
 --- a/drivers/iio/adc/Makefile
 +++ b/drivers/iio/adc/Makefile
-@@ -148,3 +148,4 @@ obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
+@@ -152,3 +152,4 @@ obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
  obj-$(CONFIG_XILINX_AMS) += xilinx-ams.o
  xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
  obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o

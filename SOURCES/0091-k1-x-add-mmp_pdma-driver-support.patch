@@ -1,4 +1,4 @@
-From a29a052c151b5aef40cf91b6550f0c92807843b9 Mon Sep 17 00:00:00 2001
+From 5d7246ad1977cf83d33befb3609bcdc2ad4cba91 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 29 Aug 2023 10:51:49 +0800
 Subject: [PATCH 0091/1205] k1-x add mmp_pdma driver support
@@ -51,7 +51,7 @@ index 6fbf072654d3..61fd48715a14 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 8afea2e23360..b1003517d2bd 100644
+index df2d2dc00a05..875eb7187a84 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -441,6 +441,11 @@ config MILBEAUT_XDMAC

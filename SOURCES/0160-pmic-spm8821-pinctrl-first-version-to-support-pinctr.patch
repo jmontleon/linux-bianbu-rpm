@@ -1,4 +1,4 @@
-From 56e522cdeb83379af41a37744a91ff02d0b714df Mon Sep 17 00:00:00 2001
+From aa6cba659e76905e150de14919c2e295b5d3b172 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 22 Nov 2023 17:33:39 +0800
 Subject: [PATCH 0160/1205] pmic:spm8821:pinctrl: first version to support
@@ -16,10 +16,10 @@ Change-Id: I0b0bc49acd314b0a1c8919605326b503272bbc44
  create mode 100644 drivers/pinctrl/spacemit-pmic-pinctrl.c
 
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index bee08f262388..e99a0ab67607 100644
+index 505e41b3febe..3a559183c592 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
-@@ -469,6 +469,17 @@ config PINCTRL_RK805
+@@ -483,6 +483,17 @@ config PINCTRL_RK805
  	help
  	  This selects the pinctrl driver for RK805.
  
@@ -38,10 +38,10 @@ index bee08f262388..e99a0ab67607 100644
  	tristate "Rockchip gpio and pinctrl driver"
  	depends on ARCH_ROCKCHIP || COMPILE_TEST
 diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index be2cb20f1ce9..89da63708c0b 100644
+index f8f0fbe693e2..68b8225b77ac 100644
 --- a/drivers/pinctrl/Makefile
 +++ b/drivers/pinctrl/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_PINCTRL_TPS6594)	+= pinctrl-tps6594.o
+@@ -59,6 +59,7 @@ obj-$(CONFIG_PINCTRL_TPS6594)	+= pinctrl-tps6594.o
  obj-$(CONFIG_PINCTRL_TH1520)	+= pinctrl-th1520.o
  obj-$(CONFIG_PINCTRL_ZYNQMP)	+= pinctrl-zynqmp.o
  obj-$(CONFIG_PINCTRL_ZYNQ)	+= pinctrl-zynq.o

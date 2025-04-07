@@ -1,4 +1,4 @@
-From c3ed308f0b78fa219e83d7601480bf58088f322c Mon Sep 17 00:00:00 2001
+From e356e7093db3f75f443c62769bb0a377e9d753a2 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 7 Oct 2023 17:35:13 +0800
 Subject: [PATCH 0125/1205] k1-x:add k1x gpio driver support
@@ -65,10 +65,10 @@ index 5354ac132849..6b0d32537096 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 98b4d1633b25..394e0640db1a 100644
+index f2c39bbff83a..28b04cda3cf8 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
-@@ -885,6 +885,15 @@ config GPIO_IDT3243X
+@@ -886,6 +886,15 @@ config GPIO_IDT3243X
  	  To compile this driver as a module, choose M here: the module will
  	  be called gpio-idt3243x.
  
@@ -85,10 +85,10 @@ index 98b4d1633b25..394e0640db1a 100644
  
  menu "Port-mapped I/O GPIO drivers"
 diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index af3ba4d81b58..0cd5810053f8 100644
+index af130882ffee..27408b97d264 100644
 --- a/drivers/gpio/Makefile
 +++ b/drivers/gpio/Makefile
-@@ -206,3 +206,4 @@ obj-$(CONFIG_GPIO_XTENSA)		+= gpio-xtensa.o
+@@ -209,3 +209,4 @@ obj-$(CONFIG_GPIO_XTENSA)		+= gpio-xtensa.o
  obj-$(CONFIG_GPIO_ZEVIO)		+= gpio-zevio.o
  obj-$(CONFIG_GPIO_ZYNQ)			+= gpio-zynq.o
  obj-$(CONFIG_GPIO_ZYNQMP_MODEPIN)	+= gpio-zynqmp-modepin.o

@@ -1,4 +1,4 @@
-From aeeb462ea032ed473cffd93653e3173f877d1e94 Mon Sep 17 00:00:00 2001
+From 40549f4e5494c255dadc51771cfd9f821786fb68 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 26 Dec 2023 11:01:22 +0800
 Subject: [PATCH 0249/1205] k1x:add k1x-soc rtc driver and clk&reset interface
@@ -25,10 +25,10 @@ index 772b6af95d4d..5a3c0747d9ac 100644
  CONFIG_MMP_PDMA_DRIVER=y
  CONFIG_MMP_PDMA_SPACEMIT_K1X=y
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 0bbbf778ecfa..a00be2b7104c 100644
+index 838bdc138ffe..be183d2e7d84 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
-@@ -1488,7 +1488,7 @@ config RTC_DRV_EP93XX
+@@ -1481,7 +1481,7 @@ config RTC_DRV_EP93XX
  
  config RTC_DRV_SA1100
  	tristate "SA11x0/PXA2xx/PXA910"

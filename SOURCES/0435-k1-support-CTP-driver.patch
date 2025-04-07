@@ -1,4 +1,4 @@
-From f50095e057453b7ce94fd05723703b3c8ec61037 Mon Sep 17 00:00:00 2001
+From 0a04f6b5c6e34ed8250abd66a1aca4c0db6d3628 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Thu, 22 Feb 2024 21:42:21 +0800
 Subject: [PATCH 0435/1205] k1: support CTP driver
@@ -89,7 +89,7 @@ index 2df9cece8996..a60b76fad9ed 100644
  CONFIG_INPUT_SPACEMIT_POWERKEY=y
  CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
 diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index 1a03de7fcfa6..4757d3cbe2cb 100644
+index 91a2b584dab1..873395d2a9a8 100644
 --- a/drivers/input/touchscreen/Kconfig
 +++ b/drivers/input/touchscreen/Kconfig
 @@ -24,6 +24,16 @@ config TOUCHSCREEN_88PM860X
@@ -110,7 +110,7 @@ index 1a03de7fcfa6..4757d3cbe2cb 100644
  	tristate "ADS7846/TSC2046/AD7873 and AD(S)7843 based touchscreens"
  	depends on SPI_MASTER
 diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 82bc837ca01e..846a9b0caab8 100644
+index 97a025c6a377..f283bbbd97fe 100644
 --- a/drivers/input/touchscreen/Makefile
 +++ b/drivers/input/touchscreen/Makefile
 @@ -8,6 +8,8 @@

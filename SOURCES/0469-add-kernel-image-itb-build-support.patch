@@ -1,4 +1,4 @@
-From f1192af996f1154a982613153711fe61e42e7953 Mon Sep 17 00:00:00 2001
+From edd12740a95649b03d703771f8e4fd48e13d8589 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Mon, 11 Mar 2024 17:40:22 +0800
 Subject: [PATCH 0469/1205] add kernel image itb build support
@@ -14,10 +14,10 @@ Change-Id: I69c1807dd292e8702d175806dfff4ee4fcf00ab0
  create mode 100644 arch/riscv/generic/Platform
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 13fbc0f94238..2213954589e0 100644
+index 539d2aef5cab..4629a832291d 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
-@@ -192,13 +192,19 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
+@@ -191,13 +191,19 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
  
  BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst Image.xz loader loader.bin xipImage vmlinuz.efi
  
@@ -40,10 +40,10 @@ index 13fbc0f94238..2213954589e0 100644
  
  # the install target always installs KBUILD_IMAGE (which may be compressed)
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index b25d524ce5eb..8887d0643680 100644
+index bfc3d0b75b9b..96e3de6d44a7 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
-@@ -70,6 +70,34 @@ $(obj)/Image.xz: $(obj)/Image FORCE
+@@ -67,6 +67,34 @@ $(obj)/Image.xz: $(obj)/Image FORCE
  $(obj)/loader.bin: $(obj)/loader FORCE
  	$(call if_changed,objcopy)
  

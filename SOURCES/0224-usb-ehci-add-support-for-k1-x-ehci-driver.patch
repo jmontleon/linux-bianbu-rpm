@@ -1,4 +1,4 @@
-From 7c03fcaf6f57aa5d6aff5eb965ebd2a55eaaa0a1 Mon Sep 17 00:00:00 2001
+From f541dcb0660dfc35235808efe523441c48b24a3c Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 21 Dec 2023 20:49:05 +0800
 Subject: [PATCH 0224/1205] usb: ehci: add support for k1-x ehci driver
@@ -29,10 +29,10 @@ index d011d6c753ed..7d572373bf91 100644
  	tristate "Cavium Networks Octeon USB support"
  	depends on CAVIUM_OCTEON_SOC && USB
 diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-index 6de79ac5e6a4..a733ef752480 100644
+index 6d1d190c914d..5f83f989fbf9 100644
 --- a/drivers/usb/host/ehci-hcd.c
 +++ b/drivers/usb/host/ehci-hcd.c
-@@ -1333,6 +1333,10 @@ MODULE_LICENSE ("GPL");
+@@ -1332,6 +1332,10 @@ MODULE_LICENSE ("GPL");
  #include "ehci-grlib.c"
  #endif
  
@@ -43,7 +43,7 @@ index 6de79ac5e6a4..a733ef752480 100644
  static struct platform_driver * const platform_drivers[] = {
  #ifdef CONFIG_USB_EHCI_SH
  	&ehci_hcd_sh_driver,
-@@ -1346,6 +1350,9 @@ static struct platform_driver * const platform_drivers[] = {
+@@ -1345,6 +1349,9 @@ static struct platform_driver * const platform_drivers[] = {
  #ifdef CONFIG_SPARC_LEON
  	&ehci_grlib_driver,
  #endif

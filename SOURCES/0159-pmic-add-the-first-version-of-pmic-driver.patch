@@ -1,4 +1,4 @@
-From b7966c13f7fee07f01e8ccfff236d9891cd54f78 Mon Sep 17 00:00:00 2001
+From 935b30e037c3945fe71e8cfec619ac09677e7661 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 10 Nov 2023 14:39:01 +0800
 Subject: [PATCH 0159/1205] pmic: add the first version of pmic driver
@@ -20,10 +20,10 @@ Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
  create mode 100644 include/linux/mfd/spacemit/spm8821.h
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 6b0682af6e32..ea98e56424c7 100644
+index 22b936310039..a2847fedf514 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
-@@ -2269,6 +2269,16 @@ config MFD_QCOM_PM8008
+@@ -2252,6 +2252,16 @@ config MFD_QCOM_PM8008
  	  under it in the device tree. Additional drivers must be enabled in
  	  order to use the functionality of the device.
  
@@ -41,10 +41,10 @@ index 6b0682af6e32..ea98e56424c7 100644
  	depends on ARCH_SA1100
  
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 9220eaf7cf12..bbb5314f1e46 100644
+index 948cbdf42a18..03f1ed22c919 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
-@@ -294,3 +294,4 @@ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
+@@ -290,3 +290,4 @@ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
  obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu_spi.o rsmu_core.o
  
  obj-$(CONFIG_MFD_UPBOARD_FPGA)	+= upboard-fpga.o
@@ -196,7 +196,7 @@ index 000000000000..ea8ab1c92adf
 +
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 39297f7d8177..df0ce7f902c0 100644
+index 05e32d764028..b1214e6d785a 100644
 --- a/drivers/regulator/Kconfig
 +++ b/drivers/regulator/Kconfig
 @@ -1720,4 +1720,12 @@ config REGULATOR_QCOM_LABIBB
@@ -213,7 +213,7 @@ index 39297f7d8177..df0ce7f902c0 100644
 +	
  endif
 diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 3d5a803dce8a..33243249aef5 100644
+index 524e026c0273..1276ea0a20b6 100644
 --- a/drivers/regulator/Makefile
 +++ b/drivers/regulator/Makefile
 @@ -201,5 +201,6 @@ obj-$(CONFIG_REGULATOR_WM831X) += wm831x-ldo.o

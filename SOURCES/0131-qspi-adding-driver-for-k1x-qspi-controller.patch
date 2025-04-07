@@ -1,4 +1,4 @@
-From 9a82d67487b714bb31fd7a01269ffc40714cf58b Mon Sep 17 00:00:00 2001
+From b1928cfd38f6318a6c99ddbae0b01f6ad0b7f0e1 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 12 Oct 2023 19:24:26 +0800
 Subject: [PATCH 0131/1205] qspi: adding driver for k1x qspi controller
@@ -58,10 +58,10 @@ index d55106762211..cade7cecf55c 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 9eacd255a2f7..94ff0c20340a 100644
+index b4798c9cc248..2d5da5d12fb6 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
-@@ -329,6 +329,14 @@ config SPI_DESIGNWARE_EXT
+@@ -333,6 +333,14 @@ config SPI_DESIGNWARE_EXT
  	help
  	  general driver for enhanced SPI controller core from  DesignWare
  
@@ -77,10 +77,10 @@ index 9eacd255a2f7..94ff0c20340a 100644
  	tristate "DesignWare SPI controller core support"
  	imply SPI_MEM
 diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index f0056cd25d31..ca550d9662fc 100644
+index f01119466e6e..f93a6b8fb0f2 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
+@@ -48,6 +48,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
  obj-$(CONFIG_SPI_DAVINCI)		+= spi-davinci.o
  obj-$(CONFIG_SPI_DLN2)			+= spi-dln2.o
  obj-$(CONFIG_SPI_DESIGNWARE_EXT)	+= spi-dw-mmio-ext.o spi-dw-espi.o

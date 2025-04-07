@@ -1,4 +1,4 @@
-From 9240db6b68752cb1ed6ecaa5931bd4713e032906 Mon Sep 17 00:00:00 2001
+From a08fe2f6134c88e345538f7f7f02eded64b944aa Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 14 Sep 2023 09:58:37 +0800
 Subject: [PATCH 0112/1205] update vpu driver
@@ -214,10 +214,10 @@ index 9ccd860d3733..20fac24e4f0f 100644
  obj-$(CONFIG_VIDEO_DEV) += radio/
  
 diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index 85d2627776b6..a18ceedd6dca 100644
+index 9287faafdce5..23e229c36459 100644
 --- a/drivers/media/platform/Kconfig
 +++ b/drivers/media/platform/Kconfig
-@@ -89,5 +89,6 @@ source "drivers/media/platform/ti/Kconfig"
+@@ -90,5 +90,6 @@ source "drivers/media/platform/ti/Kconfig"
  source "drivers/media/platform/verisilicon/Kconfig"
  source "drivers/media/platform/via/Kconfig"
  source "drivers/media/platform/xilinx/Kconfig"
@@ -225,10 +225,10 @@ index 85d2627776b6..a18ceedd6dca 100644
  
  endif # MEDIA_PLATFORM_DRIVERS
 diff --git a/drivers/media/platform/Makefile b/drivers/media/platform/Makefile
-index ace4e34483dd..02769df809bb 100644
+index 6fd7db0541c7..415663535f48 100644
 --- a/drivers/media/platform/Makefile
 +++ b/drivers/media/platform/Makefile
-@@ -32,6 +32,7 @@ obj-y += ti/
+@@ -33,6 +33,7 @@ obj-y += ti/
  obj-y += verisilicon/
  obj-y += via/
  obj-y += xilinx/

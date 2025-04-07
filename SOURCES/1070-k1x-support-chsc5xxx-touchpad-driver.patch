@@ -1,4 +1,4 @@
-From a1036f1eafc4393e41ce66368fc552ef6cd40512 Mon Sep 17 00:00:00 2001
+From a2d9ef7143b4e28aba281e8d0c3a7e1050d25c80 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 7 Nov 2024 11:13:17 +0800
 Subject: [PATCH 1070/1205] k1x:support chsc5xxx touchpad driver
@@ -76,10 +76,10 @@ index 43c6b827ba21..d856cbe9d651 100644
  CONFIG_INPUT_UINPUT=y
  CONFIG_INPUT_SPACEMIT_POWERKEY=y
 diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index 52bf3f36c820..336b59cf958c 100644
+index 8582b168b59c..ee721185a718 100644
 --- a/drivers/input/touchscreen/Kconfig
 +++ b/drivers/input/touchscreen/Kconfig
-@@ -1408,4 +1408,11 @@ config TOUCHSCREEN_CHIPONE_TDDI
+@@ -1421,4 +1421,11 @@ config TOUCHSCREEN_CHIPONE_TDDI
  
  	  If unsure, say N.
  
@@ -92,10 +92,10 @@ index 52bf3f36c820..336b59cf958c 100644
 +source "drivers/input/touchscreen/chsc5xxx/Kconfig"
  endif
 diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 6ef21971e402..9cfb5a6119fb 100644
+index a66057abc029..f654d76eac5d 100644
 --- a/drivers/input/touchscreen/Makefile
 +++ b/drivers/input/touchscreen/Makefile
-@@ -121,3 +121,4 @@ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
+@@ -122,3 +122,4 @@ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
  obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX83112B)	+= himax_hx83112b.o
  
  obj-$(CONFIG_TOUCHSCREEN_CHIPONE_TDDI)	+= chipone-tddi/
