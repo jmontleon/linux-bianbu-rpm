@@ -2277,6 +2277,7 @@ Patch11203: 1203-fix-includes-for-timestamp.patch
 Patch11204: 1204-remove-debug-rdinit-from-m1-bpi.patch
 Patch11205: 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
 Patch11206: 1206-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+Patch11207: 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
 
 
 
@@ -4324,6 +4325,7 @@ ApplyOptionalPatch 1203-fix-includes-for-timestamp.patch
 ApplyOptionalPatch 1204-remove-debug-rdinit-from-m1-bpi.patch
 ApplyOptionalPatch 1205-Add-bit-brick-k1-devicetree-from-bianbu.patch
 ApplyOptionalPatch 1206-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+ApplyOptionalPatch 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
 
 
 
