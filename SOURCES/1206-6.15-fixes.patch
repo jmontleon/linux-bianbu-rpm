@@ -1,9 +1,10 @@
-From da784d6d86b1f3c0ef4afafd99660f5e1b849196 Mon Sep 17 00:00:00 2001
+From d1686ea0c7454f73856af850230a94f63b77ba0f Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Mon, 7 Apr 2025 19:34:18 -0400
 Subject: [PATCH 1206/1206] 6.15 fixes
 
 ---
+ drivers/cpufreq/cpufreq.c                                   | 4 ++++
  drivers/crypto/spacemit/spacemit_ce_engine.c                | 4 ----
  drivers/gpu/drm/img-rogue/apollo/tc_apollo.c                | 2 +-
  drivers/gpu/drm/img-rogue/apollo/tc_odin.c                  | 2 +-
@@ -23,8 +24,27 @@ Subject: [PATCH 1206/1206] 6.15 fixes
  sound/soc/codecs/es8156.c                                   | 4 ++--
  sound/soc/spacemit/spacemit-snd-card.c                      | 4 ++--
  sound/soc/spacemit/spacemit-snd-i2s.c                       | 6 +++---
- 19 files changed, 25 insertions(+), 32 deletions(-)
+ 20 files changed, 29 insertions(+), 32 deletions(-)
 
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 7f73eafb8fd1..8f1f42cb2419 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2923,10 +2923,14 @@ void remove_boost_sysfs_file(void)
+ 
+ void remove_policy_boost_sysfs_file(struct cpufreq_policy *policy)
+ {
++  /*
++   * FIX ME: Does anything need to happen here anymore?
++   *
+ 	if (cpufreq_driver->attr[CPUFREQ_BOOST_FREQ]) {
+ 		sysfs_remove_file(&policy->kobj,
+ 				&((cpufreq_driver->attr[CPUFREQ_BOOST_FREQ])->attr));
+ 	}
++  */
+ 
+ 	if (cpufreq_boost_supported()) {
+ 		sysfs_remove_file(&policy->kobj, &local_boost.attr);
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
 index ac1e7385b81b..7baaa5f5a8e8 100644
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
