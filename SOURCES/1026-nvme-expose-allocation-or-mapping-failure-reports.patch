@@ -1,7 +1,7 @@
-From 65e2a6e345356ba95ffac9485f2b39cfa0333f3c Mon Sep 17 00:00:00 2001
+From d4b26f3c32871ff311dc11fa5143d7ebc9fc33a2 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 10:30:37 +0800
-Subject: [PATCH 1026/1206] nvme: expose allocation or mapping failure reports
+Subject: [PATCH 1026/1207] nvme: expose allocation or mapping failure reports
 
 Change-Id: Id61d1a9caaea249c41fce1174c068d417d77e6f4
 ---
@@ -9,7 +9,7 @@ Change-Id: Id61d1a9caaea249c41fce1174c068d417d77e6f4
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 0b4ca8e8f9b4..40f4416894d7 100644
+index e6c27175880b..eaad806ddb85 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
 @@ -818,7 +818,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
@@ -21,7 +21,7 @@ index 0b4ca8e8f9b4..40f4416894d7 100644
  	if (rc) {
  		if (rc == -EREMOTEIO)
  			ret = BLK_STS_TARGET;
-@@ -2054,7 +2054,7 @@ static void nvme_free_host_mem_multi(struct nvme_dev *dev)
+@@ -2073,7 +2073,7 @@ static void nvme_free_host_mem_multi(struct nvme_dev *dev)
  
  		dma_free_attrs(dev->dev, size, dev->host_mem_desc_bufs[i],
  			       le64_to_cpu(desc->addr),
@@ -30,7 +30,7 @@ index 0b4ca8e8f9b4..40f4416894d7 100644
  	}
  
  	kfree(dev->host_mem_desc_bufs);
-@@ -2134,7 +2134,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
+@@ -2153,7 +2153,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
  
  		len = min_t(u64, chunk_size, preferred - size);
  		bufs[i] = dma_alloc_attrs(dev->dev, len, &dma_addr, GFP_KERNEL,
@@ -39,7 +39,7 @@ index 0b4ca8e8f9b4..40f4416894d7 100644
  		if (!bufs[i])
  			break;
  
-@@ -2160,7 +2160,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
+@@ -2179,7 +2179,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
  
  		dma_free_attrs(dev->dev, size, bufs[i],
  			       le64_to_cpu(descs[i].addr),

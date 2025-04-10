@@ -1,7 +1,7 @@
-From 303e77c3a944ddecefc6face8ce0d78bf377f396 Mon Sep 17 00:00:00 2001
+From a7d530593efac81c9d6c85b010608284c6fa2366 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 24 Jun 2024 09:22:29 +0800
-Subject: [PATCH 0762/1206] riscv: show reason of unaligned access speed are
+Subject: [PATCH 0762/1207] riscv: show reason of unaligned access speed are
  different among cores
 
 the debug info is:
@@ -22,10 +22,10 @@ Change-Id: I8890cb2657e26bcc692fb689801d870ceb402a9c
  1 file changed, 9 insertions(+)
 
 diff --git a/arch/riscv/kernel/unaligned_access_speed.c b/arch/riscv/kernel/unaligned_access_speed.c
-index 91f189cf1611..b21a69539aa1 100644
+index 78ab4cb2ab05..e1c0ec473a6f 100644
 --- a/arch/riscv/kernel/unaligned_access_speed.c
 +++ b/arch/riscv/kernel/unaligned_access_speed.c
-@@ -247,6 +247,15 @@ static int check_unaligned_access_speed_all_cpus(void)
+@@ -247,6 +247,15 @@ static int __init check_unaligned_access_speed_all_cpus(void)
  	/* Check core 0. */
  	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
  
