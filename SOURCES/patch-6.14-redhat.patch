@@ -93,7 +93,7 @@ index 7e37aadd1f772..7e266e749cd53 100644
  -----------------------
  
 diff --git a/Makefile b/Makefile
-index 3ede59c1146cb..3e407caf92e54 100644
+index 907a4565f06ab..1740755b90736 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -158,7 +158,7 @@ index 3ede59c1146cb..3e407caf92e54 100644
  	@:
  
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 835b5f100e926..179ad4af54a7a 100644
+index f3f6b7a33b793..803bd258f1b72 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -1231,9 +1231,9 @@ config HIGHMEM
@@ -990,7 +990,7 @@ index d4af17fdba467..154f0403cbf4c 100644
  	data->xport.ops = &hid_rmi_ops;
  
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 2c1a60577728e..06b06d0e7b4ae 100644
+index 5bda265d02340..25fd94e40bb6a 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
 @@ -11,6 +11,7 @@
@@ -1001,7 +1001,7 @@ index 2c1a60577728e..06b06d0e7b4ae 100644
  #include <linux/io.h>
  #include <linux/err.h>
  #include <linux/fs.h>
-@@ -2380,6 +2381,16 @@ static const struct amba_id etm4_ids[] = {
+@@ -2418,6 +2419,16 @@ static const struct amba_id etm4_ids[] = {
  	{},
  };
  
@@ -1018,7 +1018,7 @@ index 2c1a60577728e..06b06d0e7b4ae 100644
  MODULE_DEVICE_TABLE(amba, etm4_ids);
  
  static struct amba_driver etm4x_amba_driver = {
-@@ -2448,6 +2459,11 @@ static int __init etm4x_init(void)
+@@ -2486,6 +2497,11 @@ static int __init etm4x_init(void)
  {
  	int ret;
  
@@ -1030,7 +1030,7 @@ index 2c1a60577728e..06b06d0e7b4ae 100644
  	ret = etm4_pm_setup();
  
  	/* etm4_pm_setup() does its own cleanup - exit on error */
-@@ -2474,6 +2490,9 @@ static int __init etm4x_init(void)
+@@ -2512,6 +2528,9 @@ static int __init etm4x_init(void)
  
  static void __exit etm4x_exit(void)
  {
@@ -1233,7 +1233,7 @@ index 2168b6cd71673..5d7cda175a0ce 100644
  	if (data->f01_container->dev.driver) {
  		/* Driver already bound, so enable ATTN now. */
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 60aed01e54f27..64758cca794b2 100644
+index e3df1f06afbeb..7499cb16693ac 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
 @@ -8,6 +8,7 @@

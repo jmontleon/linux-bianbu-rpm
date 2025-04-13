@@ -1,7 +1,7 @@
-From ec641a22816804b70f08b3f3931266b62f00e637 Mon Sep 17 00:00:00 2001
+From 02ee4a4da34ff51d7a45d284d335caf8c9e64d4c Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
-Subject: [PATCH 0024/1205] riscv: mm: fix reserve cma for platform not having
+Subject: [PATCH 0024/1206] riscv: mm: fix reserve cma for platform not having
  ZONE_DMA32
 
 In case the phys_ram_base is exceeding SZ_4G, zone dma32 is empty,
@@ -15,7 +15,7 @@ Change-Id: I5504523c5b54a4e9d5582fcdbeb2665efb5292f3
  2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7612c52e9b1e..4e393a071e3f 100644
+index 5d63abc499ce..4f054b962826 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
 @@ -214,6 +214,7 @@ config RISCV

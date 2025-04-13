@@ -1,7 +1,7 @@
-From bbaafebf5e285a01a63868d750030aa34f64bc5b Mon Sep 17 00:00:00 2001
+From 213f5499d10e19e9c9ae6f719fdd23f563bef338 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
-Subject: [PATCH 0615/1205] nvme: change the segment size of io request queue
+Subject: [PATCH 0615/1206] nvme: change the segment size of io request queue
  for nvme on k1
 
   Because the swiotlb buffer size is 512k, for nvme ssd devices,

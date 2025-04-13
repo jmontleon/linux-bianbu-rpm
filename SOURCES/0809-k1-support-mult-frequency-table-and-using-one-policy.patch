@@ -1,7 +1,7 @@
-From b2f3b096d1a1cd92c750b29e40af17ef96b192fb Mon Sep 17 00:00:00 2001
+From e6e4561b5023dac4335353ab17dd7db94ca1a9ba Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 8 Jul 2024 13:53:08 +0800
-Subject: [PATCH 0809/1205] k1: support mult frequency table and using one
+Subject: [PATCH 0809/1206] k1: support mult frequency table and using one
  policy for all cpus
 
 Change-Id: I84f68f445afe6e72b30f0dd4b2d744d64efa1f7d
@@ -1122,7 +1122,7 @@ index 000000000000..af2458381b89
 +	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
 +};
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 3a7c3372bda7..19c4e7702584 100644
+index f3913eea5e55..60193bb46a15 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -42,6 +42,7 @@ static struct freq_attr *cpufreq_dt_attr[] = {

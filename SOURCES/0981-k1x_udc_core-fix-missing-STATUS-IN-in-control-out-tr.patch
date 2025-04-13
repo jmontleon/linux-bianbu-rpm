@@ -1,7 +1,7 @@
-From 3930bed8319e815dadda3691cf4e69b4b72ed653 Mon Sep 17 00:00:00 2001
+From 1fa0c56080ea3105325eed4697f3073c1531bdf5 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 29 Aug 2024 18:40:43 +0800
-Subject: [PATCH 0981/1205] k1x_udc_core: fix missing STATUS IN in control out
+Subject: [PATCH 0981/1206] k1x_udc_core: fix missing STATUS IN in control out
  transfer
 
 ep0_state should not be modified outside of handle_setup_packet() and

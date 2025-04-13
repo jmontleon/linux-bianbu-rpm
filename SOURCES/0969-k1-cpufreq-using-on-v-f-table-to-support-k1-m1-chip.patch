@@ -1,7 +1,7 @@
-From 166134c8c890a333f14f08692ada908ecaa349e6 Mon Sep 17 00:00:00 2001
+From 36219f471d911f95779a4b69cd737cf0b56667e1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 30 Aug 2024 21:57:56 +0800
-Subject: [PATCH 0969/1205] k1: cpufreq: using on v-f table to support k1 & m1
+Subject: [PATCH 0969/1206] k1: cpufreq: using on v-f table to support k1 & m1
  chip
 
 m1 can overclock to 1.8G through the turbo mode, but k1 cannot
@@ -582,7 +582,7 @@ index fa02fda0ad36..000000000000
 -	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
 -};
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 19c4e7702584..945dc9bf5c64 100644
+index 60193bb46a15..b03285e62618 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -176,10 +176,18 @@ static void cpufreq_exit(struct cpufreq_policy *policy)
