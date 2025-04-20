@@ -1,4 +1,4 @@
-From 93cb07a2f8653e68ea46f607026ab18664646140 Mon Sep 17 00:00:00 2001
+From 1293357bc2d1b649e563f7e812bfd84d0ef80353 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:42:18 +0800
 Subject: [PATCH 1127/1206] flexcan: fix error in flexcan-core probe function
@@ -9,10 +9,10 @@ Change-Id: I67dd402e04561b2baf3c7ec3b5bcd0d0d89d47b4
  1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 6837f94399e7..531bc64634dd 100644
+index f091f6b8c40c..b8bf62d99838 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -2253,15 +2253,10 @@ static int flexcan_probe(struct platform_device *pdev)
+@@ -2278,15 +2278,10 @@ static int flexcan_probe(struct platform_device *pdev)
  #ifdef CONFIG_SOC_SPACEMIT_K1X
  	if (!of_get_property(pdev->dev.of_node, "rcpu-can", NULL)) {
  		irq = platform_get_irq(pdev, 0);

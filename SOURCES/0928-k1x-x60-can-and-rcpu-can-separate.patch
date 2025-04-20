@@ -1,4 +1,4 @@
-From 8d9019af171bd7bf69733080f81347a58cea6735 Mon Sep 17 00:00:00 2001
+From 8f9008ab4405ff3ef5390ffdf29adbc4591242cd Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 16 Aug 2024 11:49:15 +0800
 Subject: [PATCH 0928/1206] k1x:x60-can and rcpu can separate
@@ -54,7 +54,7 @@ index c1a007b281ae..33c2a75e00a8 100644
  		pinctrl-single,pins = <
  			K1X_PADCONF(GPIO_86, MUX_MODE1, (EDGE_NONE | PULL_UP   | PAD_1V8_DS2))	/* hdmi_tx_hscl */
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index ec4aac672c51..4e2e448deed3 100644
+index 08707e855ec1..a16a19537064 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -37,13 +37,12 @@
@@ -73,7 +73,7 @@ index ec4aac672c51..4e2e448deed3 100644
  /* 8 for RX fifo and 2 error handling */
  #define FLEXCAN_NAPI_WEIGHT		(8 + 2)
  
-@@ -2162,6 +2161,14 @@ static const struct of_device_id flexcan_of_match[] = {
+@@ -2187,6 +2186,14 @@ static const struct of_device_id flexcan_of_match[] = {
  };
  MODULE_DEVICE_TABLE(of, flexcan_of_match);
  
@@ -88,7 +88,7 @@ index ec4aac672c51..4e2e448deed3 100644
  static const struct platform_device_id flexcan_id_table[] = {
  	{
  		.name = "flexcan-mcf5441x",
-@@ -2233,8 +2240,14 @@ static int flexcan_probe(struct platform_device *pdev)
+@@ -2258,8 +2265,14 @@ static int flexcan_probe(struct platform_device *pdev)
  		irq = platform_get_irq(pdev, 0);
  		if (irq <= 0)
  			return -ENODEV;
@@ -104,7 +104,7 @@ index ec4aac672c51..4e2e448deed3 100644
  #else
   	irq = platform_get_irq(pdev, 0);
   	if (irq <= 0)
-@@ -2534,8 +2547,20 @@ static struct platform_driver flexcan_driver = {
+@@ -2567,8 +2580,20 @@ static struct platform_driver flexcan_driver = {
  	.remove = flexcan_remove,
  	.id_table = flexcan_id_table,
  };
@@ -125,7 +125,7 @@ index ec4aac672c51..4e2e448deed3 100644
  static struct rpmsg_device_id rpmsg_driver_rcan_id_table[] = {
  	{ .name	= "can-service", .driver_data = 0 },
  	{ },
-@@ -2559,7 +2584,6 @@ static int rpmsg_rcan_client_cb(struct rpmsg_device *rpdev, void *data,
+@@ -2592,7 +2617,6 @@ static int rpmsg_rcan_client_cb(struct rpmsg_device *rpdev, void *data,
  	return 0;
  }
  
@@ -133,7 +133,7 @@ index ec4aac672c51..4e2e448deed3 100644
  static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
  {
  	struct instance_data *idata;
-@@ -2576,7 +2600,7 @@ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
+@@ -2609,7 +2633,7 @@ static int rpmsg_rcan_client_probe(struct rpmsg_device *rpdev)
  
  	private_data[0] = (unsigned long long)idata;
  
@@ -142,7 +142,7 @@ index ec4aac672c51..4e2e448deed3 100644
  
  	return 0;
  }
-@@ -2595,8 +2619,6 @@ static struct rpmsg_driver rpmsg_rcan_client = {
+@@ -2628,8 +2652,6 @@ static struct rpmsg_driver rpmsg_rcan_client = {
  	.remove		= rpmsg_rcan_client_remove,
  };
  module_rpmsg_driver(rpmsg_rcan_client);

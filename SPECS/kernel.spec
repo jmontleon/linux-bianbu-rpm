@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.14.2
-%define specversion 6.14.2
+%define specrpmversion 6.14.3
+%define specversion 6.14.3
 %define patchversion 6.14
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.14.2
+%define tarfile_release 6.14.3
 # This is needed to do merge window version magic
 %define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.14.2
+%define kabiversion 6.14.3
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6637,6 +6637,12 @@ fi\
 #
 #
 %changelog
+* Sun Apr 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.3-0]
+- New configs for stable update (Justin M. Forbes)
+- Enable FunctionFS on aarch64 + x86 (Sam Day)
+- Turn on USB Gadget for Fedora x86 (Justin M. Forbes)
+- Linux v6.14.3
+
 * Thu Apr 10 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.2-0]
 - Config update for 6.14.2 (Justin M. Forbes)
 - Linux v6.14.2

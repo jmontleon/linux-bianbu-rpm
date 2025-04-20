@@ -1,4 +1,4 @@
-From b27b9b9b448ee0df6831d77e40c20eb95a582848 Mon Sep 17 00:00:00 2001
+From 4398ef3afe7448cc777083ba72af3b1a2860eb03 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 13 Aug 2024 10:06:32 +0800
 Subject: [PATCH 0907/1206] k1x:flexcan do ram init by iowrite32 instead of
@@ -10,7 +10,7 @@ Change-Id: I5384d5564246be1412154005a22e6b2905c2ece6
  1 file changed, 46 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index fcf2f1b68265..ec4aac672c51 100644
+index 3690d8359bc2..08707e855ec1 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -306,7 +306,9 @@ struct instance_data {
@@ -23,7 +23,7 @@ index fcf2f1b68265..ec4aac672c51 100644
  
  static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
  	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-@@ -1375,6 +1377,49 @@ static void flexcan_set_bittiming(struct net_device *dev)
+@@ -1385,6 +1387,49 @@ static void flexcan_set_bittiming(struct net_device *dev)
  		return flexcan_set_bittiming_ctrl(dev);
  }
  
@@ -73,7 +73,7 @@ index fcf2f1b68265..ec4aac672c51 100644
  static void flexcan_ram_init(struct net_device *dev)
  {
  	struct flexcan_priv *priv = netdev_priv(dev);
-@@ -1401,6 +1446,7 @@ static void flexcan_ram_init(struct net_device *dev)
+@@ -1411,6 +1456,7 @@ static void flexcan_ram_init(struct net_device *dev)
  	reg_ctrl2 &= ~FLEXCAN_CTRL2_WRMFRZ;
  	priv->write(reg_ctrl2, &regs->ctrl2);
  }
