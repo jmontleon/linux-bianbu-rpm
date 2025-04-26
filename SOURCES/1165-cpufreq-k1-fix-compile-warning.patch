@@ -1,7 +1,7 @@
-From cba11a849b853070bf05857ce5fb6335ea0fa11e Mon Sep 17 00:00:00 2001
+From 6896db9653b8806998cd7bba96a9123805eb256c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:21:50 +0800
-Subject: [PATCH 1165/1206] cpufreq: k1: fix compile warning
+Subject: [PATCH 1165/1207] cpufreq: k1: fix compile warning
 
 Change-Id: I826fa15b040720aee1c2f972808fe56cb143fc78
 ---
@@ -37,7 +37,7 @@ index 6b9a97424a9e..a0fbf8e1de7b 100644
  	.flags = CPUFREQ_NEED_INITIAL_FREQ_CHECK |
  		 CPUFREQ_IS_COOLING_DEV,
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 119f2d5b552a..caccdeab3290 100644
+index 7edc54a80a80..721efa098849 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
 @@ -31,6 +31,9 @@

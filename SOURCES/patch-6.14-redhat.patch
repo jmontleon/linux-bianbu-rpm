@@ -93,7 +93,7 @@ index 7e37aadd1f77..7e266e749cd5 100644
  -----------------------
  
 diff --git a/Makefile b/Makefile
-index 93870f58505f..c8d1fbb1b2a0 100644
+index 0c1b99da2c1f..ffe600e452a7 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -133,7 +133,7 @@ index 93870f58505f..c8d1fbb1b2a0 100644
  ifdef mixed-build
  # ===========================================================================
  # We're called with mixed targets (*config and build targets).
-@@ -1918,6 +1941,23 @@ endif
+@@ -1917,6 +1940,23 @@ endif
  
  ifdef CONFIG_MODULES
  

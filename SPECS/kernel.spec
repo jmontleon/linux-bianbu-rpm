@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.14.3
-%define specversion 6.14.3
+%define specrpmversion 6.14.4
+%define specversion 6.14.4
 %define patchversion 6.14
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.14.3
+%define tarfile_release 6.14.4
 # This is needed to do merge window version magic
 %define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.14.3
+%define kabiversion 6.14.4
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -2292,6 +2292,7 @@ Patch11203: 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 Patch11204: 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 Patch11205: 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 Patch11206: 1206-Add-distinct-compatibles-for-boards-currently-used-f.patch
+Patch11207: 1207-drm-xe-rtp-Drop-sentinels-from-arg-to-xe_rtp_process.patch
 
 
 
@@ -4339,6 +4340,7 @@ ApplyOptionalPatch 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 ApplyOptionalPatch 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 ApplyOptionalPatch 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 ApplyOptionalPatch 1206-Add-distinct-compatibles-for-boards-currently-used-f.patch
+ApplyOptionalPatch 1207-drm-xe-rtp-Drop-sentinels-from-arg-to-xe_rtp_process.patch
 
 
 
@@ -6637,6 +6639,10 @@ fi\
 #
 #
 %changelog
+* Fri Apr 25 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.4-0]
+- Add F41 and F40 to release targets (Justin M. Forbes)
+- Linux v6.14.4
+
 * Sun Apr 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.3-0]
 - New configs for stable update (Justin M. Forbes)
 - Enable FunctionFS on aarch64 + x86 (Sam Day)
