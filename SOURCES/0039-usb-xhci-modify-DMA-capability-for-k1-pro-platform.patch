@@ -1,7 +1,7 @@
-From 61b5744aeb40c791f9dfb52cf6a73d446ad5827e Mon Sep 17 00:00:00 2001
+From 9f937cb98d54934115ea4af94af32b5263a74cb7 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 6 Jun 2023 10:51:18 +0800
-Subject: [PATCH 0039/1207] usb: xhci: modify DMA capability for k1-pro
+Subject: [PATCH 0039/1206] usb: xhci: modify DMA capability for k1-pro
  platform
 
 Change-Id: If5c5c0c66ef1619f8fd6f374e282701d44ab4e48
@@ -10,7 +10,7 @@ Change-Id: If5c5c0c66ef1619f8fd6f374e282701d44ab4e48
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 1a90ebc8a30e..2b3740281858 100644
+index 72070f7e6a76..84c87bb9016e 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
 @@ -5355,6 +5355,10 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)

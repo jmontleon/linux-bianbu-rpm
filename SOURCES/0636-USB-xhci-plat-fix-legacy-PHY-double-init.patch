@@ -1,7 +1,7 @@
-From ed6b2dcd4bfbc9246a0c1bb835bc52806ddd3e40 Mon Sep 17 00:00:00 2001
+From 9a15e52edfc36128905222128e7e354c2bad5cad Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 20:20:57 +0800
-Subject: [PATCH 0636/1207] USB: xhci-plat: fix legacy PHY double init
+Subject: [PATCH 0636/1206] USB: xhci-plat: fix legacy PHY double init
 
 Divers such as dwc3 which manages PHYs themself as the PHYs would
 be initialised twice, something which specifically can lead to
@@ -22,7 +22,7 @@ Change-Id: Id4472175fb72b3da2cb4ee108ec1afe6a4e87da0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index d85ffa9ffaa7..d9a5137fcbe4 100644
+index ff813dca2d1d..102bb433c0a9 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
 @@ -270,7 +270,7 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s

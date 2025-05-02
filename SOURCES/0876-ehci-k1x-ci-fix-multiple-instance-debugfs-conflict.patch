@@ -1,7 +1,7 @@
-From 30198cf3af59fbcceaea1e85c6fb52e1c9888ecb Mon Sep 17 00:00:00 2001
+From ced426af3fc2e4ce16818ba2d524b2bd7f9f2c9e Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 14 Jun 2024 21:42:23 +0800
-Subject: [PATCH 0876/1207] ehci-k1x-ci: fix multiple instance debugfs conflict
+Subject: [PATCH 0876/1206] ehci-k1x-ci: fix multiple instance debugfs conflict
 
 When we have two ehci instances, kernel will print err log:
 [    2.623279] debugfs: Directory 'mv ehci' with parent 'ehci' already present!
