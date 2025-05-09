@@ -1,4 +1,4 @@
-From 350f5964a252318711de6ed3192a9e0b57a6e062 Mon Sep 17 00:00:00 2001
+From 01c44aaf092c7aa260b6f0f11b5ffc134a4d6d7f Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:20:46 +0800
 Subject: [PATCH 0891/1206] codec: add es7210 driver
@@ -33,7 +33,7 @@ index ee698943e166..315e95b8f78f 100644
  CONFIG_UHID=y
  CONFIG_HID_MULTITOUCH=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index ee35f3aa5521..8e36a5d062f8 100644
+index 0138cfabbb03..0095d95ccc03 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -119,6 +119,7 @@ config SND_SOC_ALL_CODECS
@@ -44,7 +44,7 @@ index ee35f3aa5521..8e36a5d062f8 100644
  	imply SND_SOC_ES7241
  	imply SND_SOC_FRAMER
  	imply SND_SOC_GTM601
-@@ -1151,6 +1152,9 @@ config SND_SOC_HDMI_CODEC
+@@ -1150,6 +1151,9 @@ config SND_SOC_HDMI_CODEC
  config SND_SOC_ES7134
  	tristate "Everest Semi ES7134 CODEC"
  

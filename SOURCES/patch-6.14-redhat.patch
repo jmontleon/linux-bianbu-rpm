@@ -1,51 +1,70 @@
- Documentation/ABI/testing/sysfs-kernel-fadump      |   3 +-
- .../arch/powerpc/firmware-assisted-dump.rst        |  22 ++++
- Makefile                                           |  40 +++++++
- arch/arm/Kconfig                                   |   4 +-
- arch/arm64/Kconfig                                 |   2 +-
- arch/powerpc/include/asm/prom.h                    |   2 +
- arch/powerpc/kernel/fadump.c                       |  21 ++--
- arch/powerpc/kernel/module_64.c                    |   4 -
- arch/powerpc/kernel/prom_init.c                    |   2 +-
- arch/s390/include/asm/ipl.h                        |   1 +
- arch/s390/kernel/ipl.c                             |   5 +
- arch/s390/kernel/setup.c                           |   4 +
- arch/x86/kernel/setup.c                            |  22 ++--
- arch/x86/tools/insn_decoder_test.c                 |   2 +-
- crypto/akcipher.c                                  |   3 +-
- crypto/dh.c                                        |  25 +++++
- crypto/seqiv.c                                     |  15 ++-
- crypto/sig.c                                       |   3 +-
- crypto/testmgr.c                                   |   6 +-
- drivers/acpi/apei/hest.c                           |   8 ++
- drivers/acpi/irq.c                                 |  17 ++-
- drivers/acpi/scan.c                                |   9 ++
- drivers/ata/libahci.c                              |  18 +++
- drivers/char/ipmi/ipmi_dmi.c                       |  15 +++
- drivers/char/ipmi/ipmi_msghandler.c                |  16 ++-
- drivers/firmware/efi/Makefile                      |   1 +
- drivers/firmware/efi/efi.c                         | 124 +++++++++++++++------
- drivers/firmware/efi/secureboot.c                  |  38 +++++++
- drivers/hid/hid-rmi.c                              |  66 -----------
- drivers/hwtracing/coresight/coresight-etm4x-core.c |  19 ++++
- drivers/input/rmi4/rmi_driver.c                    | 124 ++++++++++++---------
- drivers/iommu/iommu.c                              |  22 ++++
- drivers/media/i2c/ov08x40.c                        | 108 +++++++++---------
- drivers/pci/quirks.c                               |  24 ++++
- drivers/scsi/sd.c                                  |  10 ++
- drivers/usb/core/hub.c                             |   7 ++
- include/linux/crypto.h                             |   2 +
- include/linux/efi.h                                |  22 ++--
- include/linux/lsm_hook_defs.h                      |   1 +
- include/linux/rmi.h                                |   1 +
- include/linux/security.h                           |   9 ++
- kernel/module/signing.c                            |   9 +-
- scripts/Makefile.extrawarn                         |   4 +
- scripts/tags.sh                                    |   2 +
- security/integrity/platform_certs/load_uefi.c      |   6 +-
- security/lockdown/Kconfig                          |  13 +++
- security/lockdown/lockdown.c                       |  11 ++
- 47 files changed, 635 insertions(+), 257 deletions(-)
+ Documentation/ABI/testing/sysfs-kernel-fadump      |    3 +-
+ .../arch/powerpc/firmware-assisted-dump.rst        |   22 +
+ MAINTAINERS                                        |   17 +
+ Makefile                                           |   40 +
+ arch/arm/Kconfig                                   |    4 +-
+ arch/arm64/Kconfig                                 |    2 +-
+ arch/powerpc/include/asm/prom.h                    |    2 +
+ arch/powerpc/kernel/fadump.c                       |   21 +-
+ arch/powerpc/kernel/prom_init.c                    |    2 +-
+ arch/s390/include/asm/ipl.h                        |    1 +
+ arch/s390/kernel/ipl.c                             |    5 +
+ arch/s390/kernel/setup.c                           |    4 +
+ arch/x86/kernel/setup.c                            |   22 +-
+ arch/x86/tools/insn_decoder_test.c                 |    2 +-
+ crypto/akcipher.c                                  |    3 +-
+ crypto/dh.c                                        |   25 +
+ crypto/seqiv.c                                     |   15 +-
+ crypto/sig.c                                       |    3 +-
+ crypto/testmgr.c                                   |    6 +-
+ drivers/acpi/apei/hest.c                           |    8 +
+ drivers/acpi/irq.c                                 |   17 +-
+ drivers/acpi/scan.c                                |    9 +
+ drivers/ata/libahci.c                              |   18 +
+ drivers/char/ipmi/ipmi_dmi.c                       |   15 +
+ drivers/char/ipmi/ipmi_msghandler.c                |   16 +-
+ drivers/firmware/efi/Makefile                      |    1 +
+ drivers/firmware/efi/efi.c                         |  124 ++-
+ drivers/firmware/efi/secureboot.c                  |   38 +
+ drivers/hid/hid-rmi.c                              |   66 --
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |   19 +
+ drivers/input/rmi4/rmi_driver.c                    |  124 ++-
+ drivers/iommu/iommu.c                              |   22 +
+ drivers/media/i2c/Kconfig                          |   20 +
+ drivers/media/i2c/Makefile                         |    2 +
+ drivers/media/i2c/ov02c10.c                        | 1013 ++++++++++++++++++++
+ drivers/media/i2c/ov02e10.c                        |  969 +++++++++++++++++++
+ drivers/media/i2c/ov08x40.c                        |  108 +--
+ drivers/pci/quirks.c                               |   24 +
+ drivers/platform/x86/intel/int3472/Makefile        |    3 +-
+ .../platform/x86/intel/int3472/clk_and_regulator.c |  166 ++--
+ drivers/platform/x86/intel/int3472/common.h        |   57 +-
+ drivers/platform/x86/intel/int3472/discrete.c      |   83 +-
+ .../platform/x86/intel/int3472/discrete_quirks.c   |   22 +
+ drivers/platform/x86/intel/pmc/adl.c               |   22 +-
+ drivers/platform/x86/intel/pmc/arl.c               |   79 +-
+ drivers/platform/x86/intel/pmc/cnp.c               |   21 +-
+ drivers/platform/x86/intel/pmc/core.c              |  114 ++-
+ drivers/platform/x86/intel/pmc/core.h              |   46 +-
+ drivers/platform/x86/intel/pmc/icl.c               |   18 +-
+ drivers/platform/x86/intel/pmc/lnl.c               |   25 +-
+ drivers/platform/x86/intel/pmc/mtl.c               |   45 +-
+ drivers/platform/x86/intel/pmc/spt.c               |   33 +-
+ drivers/platform/x86/intel/pmc/tgl.c               |   39 +-
+ drivers/scsi/sd.c                                  |   10 +
+ drivers/usb/core/hub.c                             |    7 +
+ include/linux/crypto.h                             |    2 +
+ include/linux/efi.h                                |   22 +-
+ include/linux/lsm_hook_defs.h                      |    1 +
+ include/linux/rmi.h                                |    1 +
+ include/linux/security.h                           |    9 +
+ kernel/module/signing.c                            |    9 +-
+ scripts/Makefile.extrawarn                         |    4 +
+ scripts/tags.sh                                    |    2 +
+ security/integrity/platform_certs/load_uefi.c      |    6 +-
+ security/lockdown/Kconfig                          |   13 +
+ security/lockdown/lockdown.c                       |   11 +
+ 66 files changed, 3062 insertions(+), 620 deletions(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-kernel-fadump b/Documentation/ABI/testing/sysfs-kernel-fadump
 index 2f9daa7ca55b..b64b7622e6fc 100644
@@ -91,8 +110,36 @@ index 7e37aadd1f77..7e266e749cd5 100644
  Implementation details:
  -----------------------
  
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 00e94bec401e..292b51652cca 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17461,6 +17461,23 @@ T:	git git://linuxtv.org/media.git
+ F:	Documentation/devicetree/bindings/media/i2c/ovti,ov02a10.yaml
+ F:	drivers/media/i2c/ov02a10.c
+ 
++OMNIVISION OV02C10 SENSOR DRIVER
++M:	Hans de Goede <hansg@kernel.org>
++R:	Bryan O'Donoghue <bod@kernel.org>
++L:	linux-media@vger.kernel.org
++S:	Maintained
++T:	git git://linuxtv.org/media.git
++F:	drivers/media/i2c/ov02c10.c
++
++OMNIVISION OV02E10 SENSOR DRIVER
++M:	Bryan O'Donoghue <bod@kernel.org>
++M:	Hans de Goede <hansg@kernel.org>
++L:	linux-media@vger.kernel.org
++S:	Maintained
++T:	git git://linuxtv.org/media.git
++F:	Documentation/devicetree/bindings/media/i2c/ovti,ov02e10.yaml
++F:	drivers/media/i2c/ov02e10.c
++
+ OMNIVISION OV08D10 SENSOR DRIVER
+ M:	Jimmy Su <jimmy.su@intel.com>
+ L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 87835d7abbce..58f40cfa39cc 100644
+index 6c3233a21380..1fc0f912e778 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -240,21 +287,6 @@ index 4b371c738213..26e3d151e048 100644
  	}
  
  	fw_dump.param_area = memblock_phys_alloc_range(COMMAND_LINE_SIZE,
-diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
-index 34a5aec4908f..126bf3b06ab7 100644
---- a/arch/powerpc/kernel/module_64.c
-+++ b/arch/powerpc/kernel/module_64.c
-@@ -258,10 +258,6 @@ static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
- 			break;
- 		}
- 	}
--	if (i == hdr->e_shnum) {
--		pr_err("%s: doesn't contain __patchable_function_entries.\n", me->name);
--		return -ENOEXEC;
--	}
- #endif
- 
- 	pr_debug("Looks like a total of %lu stubs, max\n", relocs);
 diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
 index 57082fac4668..fce32b162ef3 100644
 --- a/arch/powerpc/kernel/prom_init.c
@@ -1271,6 +1303,2044 @@ index 1efe7cddb4fe..e5cb44fab8dc 100644
  /**
   * iommu_setup_default_domain - Set the default_domain for the group
   * @group: Group to change
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 85ecb2aeefdb..d34910feaed7 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -356,6 +356,26 @@ config VIDEO_OV02A10
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ov02a10.
+ 
++config VIDEO_OV02E10
++	tristate "OmniVision OV02E10 sensor support"
++	select V4L2_CCI_I2C
++	help
++	  This is a Video4Linux2 sensor driver for the OmniVision
++	  OV02E10 camera.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ov02e10.
++
++config VIDEO_OV02C10
++	tristate "OmniVision OV02C10 sensor support"
++	select V4L2_CCI_I2C
++	help
++	  This is a Video4Linux2 sensor driver for the OmniVision
++	  OV02C10 camera.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ov02c10.
++
+ config VIDEO_OV08D10
+         tristate "OmniVision OV08D10 sensor support"
+         help
+diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+index fbb988bd067a..bf35fd1707b7 100644
+--- a/drivers/media/i2c/Makefile
++++ b/drivers/media/i2c/Makefile
+@@ -82,6 +82,8 @@ obj-$(CONFIG_VIDEO_MT9V111) += mt9v111.o
+ obj-$(CONFIG_VIDEO_OG01A1B) += og01a1b.o
+ obj-$(CONFIG_VIDEO_OV01A10) += ov01a10.o
+ obj-$(CONFIG_VIDEO_OV02A10) += ov02a10.o
++obj-$(CONFIG_VIDEO_OV02C10) += ov02c10.o
++obj-$(CONFIG_VIDEO_OV02E10) += ov02e10.o
+ obj-$(CONFIG_VIDEO_OV08D10) += ov08d10.o
+ obj-$(CONFIG_VIDEO_OV08X40) += ov08x40.o
+ obj-$(CONFIG_VIDEO_OV13858) += ov13858.o
+diff --git a/drivers/media/i2c/ov02c10.c b/drivers/media/i2c/ov02c10.c
+new file mode 100644
+index 000000000000..9e3d4a4e12ce
+--- /dev/null
++++ b/drivers/media/i2c/ov02c10.c
+@@ -0,0 +1,1013 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2022 Intel Corporation.
++
++#include <linux/acpi.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/version.h>
++#include <media/v4l2-cci.h>
++#include <media/v4l2-ctrls.h>
++#include <media/v4l2-device.h>
++#include <media/v4l2-fwnode.h>
++
++#define OV02C10_LINK_FREQ_400MHZ	400000000ULL
++#define OV02C10_MCLK			19200000
++#define OV02C10_RGB_DEPTH		10
++
++#define OV02C10_REG_CHIP_ID		CCI_REG16(0x300a)
++#define OV02C10_CHIP_ID			0x5602
++
++#define OV02C10_REG_STREAM_CONTROL	CCI_REG8(0x0100)
++
++#define OV02C10_REG_HTS			CCI_REG16(0x380c)
++
++/* vertical-timings from sensor */
++#define OV02C10_REG_VTS			CCI_REG16(0x380e)
++#define OV02C10_VTS_MAX			0xffff
++
++/* Exposure controls from sensor */
++#define OV02C10_REG_EXPOSURE		CCI_REG16(0x3501)
++#define OV02C10_EXPOSURE_MIN		4
++#define OV02C10_EXPOSURE_MAX_MARGIN	8
++#define OV02C10_EXPOSURE_STEP		1
++
++/* Analog gain controls from sensor */
++#define OV02C10_REG_ANALOG_GAIN		CCI_REG16(0x3508)
++#define OV02C10_ANAL_GAIN_MIN		0x10
++#define OV02C10_ANAL_GAIN_MAX		0xf8
++#define OV02C10_ANAL_GAIN_STEP		1
++#define OV02C10_ANAL_GAIN_DEFAULT	0x10
++
++/* Digital gain controls from sensor */
++#define OV02C10_REG_DIGITAL_GAIN	CCI_REG24(0x350a)
++#define OV02C10_DGTL_GAIN_MIN		0x0400
++#define OV02C10_DGTL_GAIN_MAX		0x3fff
++#define OV02C10_DGTL_GAIN_STEP		1
++#define OV02C10_DGTL_GAIN_DEFAULT	0x0400
++
++/* Rotate */
++#define OV02C10_ROTATE_CONTROL		CCI_REG8(0x3820)
++#define OV02C10_ISP_X_WIN_CONTROL	CCI_REG16(0x3810)
++#define OV02C10_ISP_Y_WIN_CONTROL	CCI_REG16(0x3812)
++#define OV02C10_CONFIG_ROTATE		0x18
++
++/* Test Pattern Control */
++#define OV02C10_REG_TEST_PATTERN		CCI_REG8(0x4503)
++#define OV02C10_TEST_PATTERN_ENABLE		BIT(7)
++
++struct ov02c10_mode {
++	/* Frame width in pixels */
++	u32 width;
++
++	/* Frame height in pixels */
++	u32 height;
++
++	/* Horizontal timining size */
++	u32 hts;
++
++	/* Min vertical timining size */
++	u32 vts_min;
++
++	/* Sensor register settings for this resolution */
++	const struct reg_sequence *reg_sequence;
++	const int sequence_length;
++	/* Sensor register settings for 1 or 2 lane config */
++	const struct reg_sequence *lane_settings[2];
++	const int lane_settings_length[2];
++};
++
++static const struct reg_sequence sensor_1928x1092_30fps_setting[] = {
++	{0x0301, 0x08},
++	{0x0303, 0x06},
++	{0x0304, 0x01},
++	{0x0305, 0xe0},
++	{0x0313, 0x40},
++	{0x031c, 0x4f},
++	{0x3020, 0x97},
++	{0x3022, 0x01},
++	{0x3026, 0xb4},
++	{0x303b, 0x00},
++	{0x303c, 0x4f},
++	{0x303d, 0xe6},
++	{0x303e, 0x00},
++	{0x303f, 0x03},
++	{0x3021, 0x23},
++	{0x3501, 0x04},
++	{0x3502, 0x6c},
++	{0x3504, 0x0c},
++	{0x3507, 0x00},
++	{0x3508, 0x08},
++	{0x3509, 0x00},
++	{0x350a, 0x01},
++	{0x350b, 0x00},
++	{0x350c, 0x41},
++	{0x3600, 0x84},
++	{0x3603, 0x08},
++	{0x3610, 0x57},
++	{0x3611, 0x1b},
++	{0x3613, 0x78},
++	{0x3623, 0x00},
++	{0x3632, 0xa0},
++	{0x3642, 0xe8},
++	{0x364c, 0x70},
++	{0x365f, 0x0f},
++	{0x3708, 0x30},
++	{0x3714, 0x24},
++	{0x3725, 0x02},
++	{0x3737, 0x08},
++	{0x3739, 0x28},
++	{0x3749, 0x32},
++	{0x374a, 0x32},
++	{0x374b, 0x32},
++	{0x374c, 0x32},
++	{0x374d, 0x81},
++	{0x374e, 0x81},
++	{0x374f, 0x81},
++	{0x3752, 0x36},
++	{0x3753, 0x36},
++	{0x3754, 0x36},
++	{0x3761, 0x00},
++	{0x376c, 0x81},
++	{0x3774, 0x18},
++	{0x3776, 0x08},
++	{0x377c, 0x81},
++	{0x377d, 0x81},
++	{0x377e, 0x81},
++	{0x37a0, 0x44},
++	{0x37a6, 0x44},
++	{0x37aa, 0x0d},
++	{0x37ae, 0x00},
++	{0x37cb, 0x03},
++	{0x37cc, 0x01},
++	{0x37d8, 0x02},
++	{0x37d9, 0x10},
++	{0x37e1, 0x10},
++	{0x37e2, 0x18},
++	{0x37e3, 0x08},
++	{0x37e4, 0x08},
++	{0x37e5, 0x02},
++	{0x37e6, 0x08},
++
++	/* 1928x1092 */
++	{0x3800, 0x00},
++	{0x3801, 0x00},
++	{0x3802, 0x00},
++	{0x3803, 0x00},
++	{0x3804, 0x07},
++	{0x3805, 0x8f},
++	{0x3806, 0x04},
++	{0x3807, 0x47},
++	{0x3808, 0x07},
++	{0x3809, 0x88},
++	{0x380a, 0x04},
++	{0x380b, 0x44},
++	{0x3810, 0x00},
++	{0x3811, 0x02},
++	{0x3812, 0x00},
++	{0x3813, 0x02},
++	{0x3814, 0x01},
++	{0x3815, 0x01},
++	{0x3816, 0x01},
++	{0x3817, 0x01},
++
++	{0x3820, 0xb0},
++	{0x3821, 0x00},
++	{0x3822, 0x80},
++	{0x3823, 0x08},
++	{0x3824, 0x00},
++	{0x3825, 0x20},
++	{0x3826, 0x00},
++	{0x3827, 0x08},
++	{0x382a, 0x00},
++	{0x382b, 0x08},
++	{0x382d, 0x00},
++	{0x382e, 0x00},
++	{0x382f, 0x23},
++	{0x3834, 0x00},
++	{0x3839, 0x00},
++	{0x383a, 0xd1},
++	{0x383e, 0x03},
++	{0x393d, 0x29},
++	{0x393f, 0x6e},
++	{0x394b, 0x06},
++	{0x394c, 0x06},
++	{0x394d, 0x08},
++	{0x394f, 0x01},
++	{0x3950, 0x01},
++	{0x3951, 0x01},
++	{0x3952, 0x01},
++	{0x3953, 0x01},
++	{0x3954, 0x01},
++	{0x3955, 0x01},
++	{0x3956, 0x01},
++	{0x3957, 0x0e},
++	{0x3958, 0x08},
++	{0x3959, 0x08},
++	{0x395a, 0x08},
++	{0x395b, 0x13},
++	{0x395c, 0x09},
++	{0x395d, 0x05},
++	{0x395e, 0x02},
++	{0x395f, 0x00},
++	{0x395f, 0x00},
++	{0x3960, 0x00},
++	{0x3961, 0x00},
++	{0x3962, 0x00},
++	{0x3963, 0x00},
++	{0x3964, 0x00},
++	{0x3965, 0x00},
++	{0x3966, 0x00},
++	{0x3967, 0x00},
++	{0x3968, 0x01},
++	{0x3969, 0x01},
++	{0x396a, 0x01},
++	{0x396b, 0x01},
++	{0x396c, 0x10},
++	{0x396d, 0xf0},
++	{0x396e, 0x11},
++	{0x396f, 0x00},
++	{0x3970, 0x37},
++	{0x3971, 0x37},
++	{0x3972, 0x37},
++	{0x3973, 0x37},
++	{0x3974, 0x00},
++	{0x3975, 0x3c},
++	{0x3976, 0x3c},
++	{0x3977, 0x3c},
++	{0x3978, 0x3c},
++	{0x3c00, 0x0f},
++	{0x3c20, 0x01},
++	{0x3c21, 0x08},
++	{0x3f00, 0x8b},
++	{0x3f02, 0x0f},
++	{0x4000, 0xc3},
++	{0x4001, 0xe0},
++	{0x4002, 0x00},
++	{0x4003, 0x40},
++	{0x4008, 0x04},
++	{0x4009, 0x23},
++	{0x400a, 0x04},
++	{0x400b, 0x01},
++	{0x4077, 0x06},
++	{0x4078, 0x00},
++	{0x4079, 0x1a},
++	{0x407a, 0x7f},
++	{0x407b, 0x01},
++	{0x4080, 0x03},
++	{0x4081, 0x84},
++	{0x4308, 0x03},
++	{0x4309, 0xff},
++	{0x430d, 0x00},
++	{0x4806, 0x00},
++	{0x4813, 0x00},
++	{0x4837, 0x10},
++	{0x4857, 0x05},
++	{0x4500, 0x07},
++	{0x4501, 0x00},
++	{0x4503, 0x00},
++	{0x450a, 0x04},
++	{0x450e, 0x00},
++	{0x450f, 0x00},
++	{0x4900, 0x00},
++	{0x4901, 0x00},
++	{0x4902, 0x01},
++	{0x5001, 0x50},
++	{0x5006, 0x00},
++	{0x5080, 0x40},
++	{0x5181, 0x2b},
++	{0x5202, 0xa3},
++	{0x5206, 0x01},
++	{0x5207, 0x00},
++	{0x520a, 0x01},
++	{0x520b, 0x00},
++	{0x365d, 0x00},
++	{0x4815, 0x40},
++	{0x4816, 0x12},
++	{0x4f00, 0x01},
++};
++
++static const struct reg_sequence sensor_1928x1092_30fps_1lane_setting[] = {
++	{0x301b, 0xd2},
++	{0x3027, 0xe1},
++	{0x380c, 0x08},
++	{0x380d, 0xe8},
++	{0x380e, 0x04},
++	{0x380f, 0x8c},
++	{0x394e, 0x0b},
++	{0x4800, 0x24},
++	{0x5000, 0xf5},
++	/* plls */
++	{0x0303, 0x05},
++	{0x0305, 0x90},
++	{0x0316, 0x90},
++	{0x3016, 0x12},
++};
++
++static const struct reg_sequence sensor_1928x1092_30fps_2lane_setting[] = {
++	{0x301b, 0xf0},
++	{0x3027, 0xf1},
++	{0x380c, 0x04},
++	{0x380d, 0x74},
++	{0x380e, 0x09},
++	{0x380f, 0x18},
++	{0x394e, 0x0a},
++	{0x4041, 0x20},
++	{0x4884, 0x04},
++	{0x4800, 0x64},
++	{0x4d00, 0x03},
++	{0x4d01, 0xd8},
++	{0x4d02, 0xba},
++	{0x4d03, 0xa0},
++	{0x4d04, 0xb7},
++	{0x4d05, 0x34},
++	{0x4d0d, 0x00},
++	{0x5000, 0xfd},
++	{0x481f, 0x30},
++	/* plls */
++	{0x0303, 0x05},
++	{0x0305, 0x90},
++	{0x0316, 0x90},
++	{0x3016, 0x32},
++};
++
++static const char * const ov02c10_test_pattern_menu[] = {
++	"Disabled",
++	"Color Bar",
++	"Top-Bottom Darker Color Bar",
++	"Right-Left Darker Color Bar",
++	"Color Bar type 4",
++};
++
++static const s64 link_freq_menu_items[] = {
++	OV02C10_LINK_FREQ_400MHZ,
++};
++
++static const struct ov02c10_mode supported_modes[] = {
++	{
++		.width = 1928,
++		.height = 1092,
++		.hts = 2280,
++		.vts_min = 1164,
++		.reg_sequence = sensor_1928x1092_30fps_setting,
++		.sequence_length = ARRAY_SIZE(sensor_1928x1092_30fps_setting),
++		.lane_settings = {
++			sensor_1928x1092_30fps_1lane_setting,
++			sensor_1928x1092_30fps_2lane_setting
++		},
++		.lane_settings_length = {
++			ARRAY_SIZE(sensor_1928x1092_30fps_1lane_setting),
++			ARRAY_SIZE(sensor_1928x1092_30fps_2lane_setting),
++		},
++	},
++};
++
++static const char * const ov02c10_supply_names[] = {
++	"dovdd",	/* Digital I/O power */
++	"avdd",		/* Analog power */
++	"dvdd",		/* Digital core power */
++};
++
++struct ov02c10 {
++	struct v4l2_subdev sd;
++	struct media_pad pad;
++	struct v4l2_ctrl_handler ctrl_handler;
++	struct regmap *regmap;
++
++	/* V4L2 Controls */
++	struct v4l2_ctrl *link_freq;
++	struct v4l2_ctrl *pixel_rate;
++	struct v4l2_ctrl *vblank;
++	struct v4l2_ctrl *hblank;
++	struct v4l2_ctrl *exposure;
++
++	struct clk *img_clk;
++	struct gpio_desc *reset;
++	struct regulator_bulk_data supplies[ARRAY_SIZE(ov02c10_supply_names)];
++
++	/* MIPI lane info */
++	u32 link_freq_index;
++	u8 mipi_lanes;
++};
++
++static inline struct ov02c10 *to_ov02c10(struct v4l2_subdev *subdev)
++{
++	return container_of(subdev, struct ov02c10, sd);
++}
++
++static int ov02c10_test_pattern(struct ov02c10 *ov02c10, int pattern)
++{
++	int ret = 0;
++
++	if (!pattern)
++		return cci_update_bits(ov02c10->regmap, OV02C10_REG_TEST_PATTERN,
++				       BIT(7), 0, NULL);
++
++	cci_update_bits(ov02c10->regmap, OV02C10_REG_TEST_PATTERN,
++			0x03, pattern - 1, &ret);
++	cci_update_bits(ov02c10->regmap, OV02C10_REG_TEST_PATTERN,
++			BIT(7), OV02C10_TEST_PATTERN_ENABLE, &ret);
++	return ret;
++}
++
++static int ov02c10_set_ctrl(struct v4l2_ctrl *ctrl)
++{
++	struct ov02c10 *ov02c10 = container_of(ctrl->handler,
++					     struct ov02c10, ctrl_handler);
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02c10->sd);
++	const u32 height = supported_modes[0].height;
++	s64 exposure_max;
++	int ret = 0;
++
++	/* Propagate change of current control to all related controls */
++	if (ctrl->id == V4L2_CID_VBLANK) {
++		/* Update max exposure while meeting expected vblanking */
++		exposure_max = height + ctrl->val - OV02C10_EXPOSURE_MAX_MARGIN;
++		__v4l2_ctrl_modify_range(ov02c10->exposure,
++					 ov02c10->exposure->minimum,
++					 exposure_max, ov02c10->exposure->step,
++					 exposure_max);
++	}
++
++	/* V4L2 controls values will be applied only when power is already up */
++	if (!pm_runtime_get_if_in_use(&client->dev))
++		return 0;
++
++	switch (ctrl->id) {
++	case V4L2_CID_ANALOGUE_GAIN:
++		cci_write(ov02c10->regmap, OV02C10_REG_ANALOG_GAIN,
++			  ctrl->val << 4, &ret);
++		break;
++
++	case V4L2_CID_DIGITAL_GAIN:
++		cci_write(ov02c10->regmap, OV02C10_REG_DIGITAL_GAIN,
++			  ctrl->val << 6, &ret);
++		break;
++
++	case V4L2_CID_EXPOSURE:
++		cci_write(ov02c10->regmap, OV02C10_REG_EXPOSURE,
++			  ctrl->val, &ret);
++		break;
++
++	case V4L2_CID_VBLANK:
++		cci_write(ov02c10->regmap, OV02C10_REG_VTS, height + ctrl->val,
++			  &ret);
++		break;
++
++	case V4L2_CID_TEST_PATTERN:
++		ret = ov02c10_test_pattern(ov02c10, ctrl->val);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	pm_runtime_put(&client->dev);
++
++	return ret;
++}
++
++static const struct v4l2_ctrl_ops ov02c10_ctrl_ops = {
++	.s_ctrl = ov02c10_set_ctrl,
++};
++
++static int ov02c10_init_controls(struct ov02c10 *ov02c10)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02c10->sd);
++	struct v4l2_ctrl_handler *ctrl_hdlr = &ov02c10->ctrl_handler;
++	const struct ov02c10_mode *mode = &supported_modes[0];
++	u32 vblank_min, vblank_max, vblank_default, vts_def;
++	struct v4l2_fwnode_device_properties props;
++	s64 exposure_max, h_blank, pixel_rate;
++	int ret;
++
++	v4l2_ctrl_handler_init(ctrl_hdlr, 10);
++
++	ov02c10->link_freq = v4l2_ctrl_new_int_menu(ctrl_hdlr,
++						    &ov02c10_ctrl_ops,
++						    V4L2_CID_LINK_FREQ,
++						    ov02c10->link_freq_index, 0,
++						    link_freq_menu_items);
++	if (ov02c10->link_freq)
++		ov02c10->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
++
++	/* MIPI lanes are DDR -> use link-freq * 2 */
++	pixel_rate = link_freq_menu_items[ov02c10->link_freq_index] * 2 *
++		     ov02c10->mipi_lanes / OV02C10_RGB_DEPTH;
++
++	ov02c10->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops,
++						V4L2_CID_PIXEL_RATE, 0,
++						pixel_rate, 1, pixel_rate);
++
++	/*
++	 * For default multiple min by number of lanes to keep the default
++	 * FPS the same indepenedent of the lane count.
++	 */
++	vts_def = mode->vts_min * ov02c10->mipi_lanes;
++
++	vblank_min = mode->vts_min - mode->height;
++	vblank_max = OV02C10_VTS_MAX - mode->height;
++	vblank_default = vts_def - mode->height;
++	ov02c10->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops,
++					    V4L2_CID_VBLANK, vblank_min,
++					    vblank_max, 1, vblank_default);
++
++	h_blank = mode->hts - mode->width;
++	ov02c10->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops,
++					    V4L2_CID_HBLANK, h_blank, h_blank,
++					    1, h_blank);
++	if (ov02c10->hblank)
++		ov02c10->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
++
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops, V4L2_CID_ANALOGUE_GAIN,
++			  OV02C10_ANAL_GAIN_MIN, OV02C10_ANAL_GAIN_MAX,
++			  OV02C10_ANAL_GAIN_STEP, OV02C10_ANAL_GAIN_DEFAULT);
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
++			  OV02C10_DGTL_GAIN_MIN, OV02C10_DGTL_GAIN_MAX,
++			  OV02C10_DGTL_GAIN_STEP, OV02C10_DGTL_GAIN_DEFAULT);
++	exposure_max = vts_def - OV02C10_EXPOSURE_MAX_MARGIN;
++	ov02c10->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops,
++					      V4L2_CID_EXPOSURE,
++					      OV02C10_EXPOSURE_MIN,
++					      exposure_max,
++					      OV02C10_EXPOSURE_STEP,
++					      exposure_max);
++	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &ov02c10_ctrl_ops,
++				     V4L2_CID_TEST_PATTERN,
++				     ARRAY_SIZE(ov02c10_test_pattern_menu) - 1,
++				     0, 0, ov02c10_test_pattern_menu);
++
++	ret = v4l2_fwnode_device_parse(&client->dev, &props);
++	if (ret)
++		return ret;
++
++	v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &ov02c10_ctrl_ops, &props);
++
++	if (ctrl_hdlr->error)
++		return ctrl_hdlr->error;
++
++	ov02c10->sd.ctrl_handler = ctrl_hdlr;
++
++	return 0;
++}
++
++static void ov02c10_update_pad_format(const struct ov02c10_mode *mode,
++				      struct v4l2_mbus_framefmt *fmt)
++{
++	fmt->width = mode->width;
++	fmt->height = mode->height;
++	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	fmt->field = V4L2_FIELD_NONE;
++}
++
++static int ov02c10_enable_streams(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_state *state,
++				  u32 pad, u64 streams_mask)
++{
++	const struct ov02c10_mode *mode = &supported_modes[0];
++	struct i2c_client *client = v4l2_get_subdevdata(sd);
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++	const struct reg_sequence *reg_sequence;
++	int ret, sequence_length;
++
++	ret = pm_runtime_resume_and_get(&client->dev);
++	if (ret)
++		return ret;
++
++	reg_sequence = mode->reg_sequence;
++	sequence_length = mode->sequence_length;
++	ret = regmap_multi_reg_write(ov02c10->regmap,
++				     reg_sequence, sequence_length);
++	if (ret) {
++		dev_err(&client->dev, "failed to set mode\n");
++		goto out;
++	}
++
++	reg_sequence = mode->lane_settings[ov02c10->mipi_lanes - 1];
++	sequence_length = mode->lane_settings_length[ov02c10->mipi_lanes - 1];
++	ret = regmap_multi_reg_write(ov02c10->regmap,
++				     reg_sequence, sequence_length);
++	if (ret) {
++		dev_err(&client->dev, "failed to write lane settings\n");
++		goto out;
++	}
++
++	ret = __v4l2_ctrl_handler_setup(ov02c10->sd.ctrl_handler);
++	if (ret)
++		goto out;
++
++	ret = cci_write(ov02c10->regmap, OV02C10_REG_STREAM_CONTROL, 1, NULL);
++out:
++	if (ret)
++		pm_runtime_put(&client->dev);
++
++	return ret;
++}
++
++static int ov02c10_disable_streams(struct v4l2_subdev *sd,
++				   struct v4l2_subdev_state *state,
++				   u32 pad, u64 streams_mask)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(sd);
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++
++	cci_write(ov02c10->regmap, OV02C10_REG_STREAM_CONTROL, 0, NULL);
++	pm_runtime_put(&client->dev);
++
++	return 0;
++}
++
++/* This function tries to get power control resources */
++static int ov02c10_get_pm_resources(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++	int i;
++
++	ov02c10->reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(ov02c10->reset))
++		return dev_err_probe(dev, PTR_ERR(ov02c10->reset),
++				     "failed to get reset gpio\n");
++
++	for (i = 0; i < ARRAY_SIZE(ov02c10_supply_names); i++)
++		ov02c10->supplies[i].supply = ov02c10_supply_names[i];
++
++	return devm_regulator_bulk_get(dev, ARRAY_SIZE(ov02c10_supply_names),
++				       ov02c10->supplies);
++}
++
++static int ov02c10_power_off(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++
++	gpiod_set_value_cansleep(ov02c10->reset, 1);
++
++	regulator_bulk_disable(ARRAY_SIZE(ov02c10_supply_names),
++			       ov02c10->supplies);
++
++	clk_disable_unprepare(ov02c10->img_clk);
++
++	return 0;
++}
++
++static int ov02c10_power_on(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++	int ret;
++
++	ret = clk_prepare_enable(ov02c10->img_clk);
++	if (ret < 0) {
++		dev_err(dev, "failed to enable imaging clock: %d", ret);
++		return ret;
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(ov02c10_supply_names),
++				    ov02c10->supplies);
++	if (ret < 0) {
++		dev_err(dev, "failed to enable regulators: %d", ret);
++		clk_disable_unprepare(ov02c10->img_clk);
++		return ret;
++	}
++
++	if (ov02c10->reset) {
++		/* Assert reset for at least 2ms on back to back off-on */
++		usleep_range(2000, 2200);
++		gpiod_set_value_cansleep(ov02c10->reset, 0);
++		usleep_range(5000, 5100);
++	}
++
++	return 0;
++}
++
++static int ov02c10_set_format(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *sd_state,
++			      struct v4l2_subdev_format *fmt)
++{
++	const struct ov02c10_mode *mode = &supported_modes[0];
++	struct ov02c10 *ov02c10 = to_ov02c10(sd);
++	s32 vblank_def, h_blank;
++
++	ov02c10_update_pad_format(mode, &fmt->format);
++	*v4l2_subdev_state_get_format(sd_state, fmt->pad) = fmt->format;
++
++	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
++		return 0;
++
++	/* Update limits and set FPS to default */
++	vblank_def = mode->vts_min * ov02c10->mipi_lanes - mode->height;
++	__v4l2_ctrl_modify_range(ov02c10->vblank, mode->vts_min - mode->height,
++				 OV02C10_VTS_MAX - mode->height, 1, vblank_def);
++	__v4l2_ctrl_s_ctrl(ov02c10->vblank, vblank_def);
++	h_blank = mode->hts - mode->width;
++	__v4l2_ctrl_modify_range(ov02c10->hblank, h_blank, h_blank, 1, h_blank);
++
++	return 0;
++}
++
++static int ov02c10_enum_mbus_code(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_state *sd_state,
++				  struct v4l2_subdev_mbus_code_enum *code)
++{
++	if (code->index > 0)
++		return -EINVAL;
++
++	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++
++	return 0;
++}
++
++static int ov02c10_enum_frame_size(struct v4l2_subdev *sd,
++				   struct v4l2_subdev_state *sd_state,
++				   struct v4l2_subdev_frame_size_enum *fse)
++{
++	if (fse->index >= ARRAY_SIZE(supported_modes))
++		return -EINVAL;
++
++	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
++		return -EINVAL;
++
++	fse->min_width = supported_modes[fse->index].width;
++	fse->max_width = fse->min_width;
++	fse->min_height = supported_modes[fse->index].height;
++	fse->max_height = fse->min_height;
++
++	return 0;
++}
++
++static int ov02c10_init_state(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *sd_state)
++{
++	ov02c10_update_pad_format(&supported_modes[0],
++				  v4l2_subdev_state_get_format(sd_state, 0));
++
++	return 0;
++}
++
++static const struct v4l2_subdev_video_ops ov02c10_video_ops = {
++	.s_stream = v4l2_subdev_s_stream_helper,
++};
++
++static const struct v4l2_subdev_pad_ops ov02c10_pad_ops = {
++	.set_fmt = ov02c10_set_format,
++	.get_fmt = v4l2_subdev_get_fmt,
++	.enum_mbus_code = ov02c10_enum_mbus_code,
++	.enum_frame_size = ov02c10_enum_frame_size,
++	.enable_streams = ov02c10_enable_streams,
++	.disable_streams = ov02c10_disable_streams,
++};
++
++static const struct v4l2_subdev_ops ov02c10_subdev_ops = {
++	.video = &ov02c10_video_ops,
++	.pad = &ov02c10_pad_ops,
++};
++
++static const struct media_entity_operations ov02c10_subdev_entity_ops = {
++	.link_validate = v4l2_subdev_link_validate,
++};
++
++static const struct v4l2_subdev_internal_ops ov02c10_internal_ops = {
++	.init_state = ov02c10_init_state,
++};
++
++static int ov02c10_identify_module(struct ov02c10 *ov02c10)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02c10->sd);
++	u64 chip_id;
++	int ret;
++
++	ret = cci_read(ov02c10->regmap, OV02C10_REG_CHIP_ID, &chip_id, NULL);
++	if (ret)
++		return ret;
++
++	if (chip_id != OV02C10_CHIP_ID) {
++		dev_err(&client->dev, "chip id mismatch: %x!=%llx",
++			OV02C10_CHIP_ID, chip_id);
++		return -ENXIO;
++	}
++
++	return 0;
++}
++
++static int ov02c10_check_hwcfg(struct device *dev, struct ov02c10 *ov02c10)
++{
++	struct v4l2_fwnode_endpoint bus_cfg = {
++		.bus_type = V4L2_MBUS_CSI2_DPHY
++	};
++	struct fwnode_handle *ep, *fwnode = dev_fwnode(dev);
++	unsigned long link_freq_bitmap;
++	u32 mclk;
++	int ret;
++
++	/*
++	 * Sometimes the fwnode graph is initialized by the bridge driver,
++	 * wait for this.
++	 */
++	ep = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
++	if (!ep)
++		return dev_err_probe(dev, -EPROBE_DEFER,
++				     "waiting for fwnode graph endpoint\n");
++
++	ov02c10->img_clk = devm_clk_get_optional(dev, NULL);
++	if (IS_ERR(ov02c10->img_clk)) {
++		fwnode_handle_put(ep);
++		return dev_err_probe(dev, PTR_ERR(ov02c10->img_clk),
++				     "failed to get imaging clock\n");
++	}
++
++	if (ov02c10->img_clk) {
++		mclk = clk_get_rate(ov02c10->img_clk);
++	} else {
++		ret = fwnode_property_read_u32(fwnode, "clock-frequency", &mclk);
++		if (ret) {
++			fwnode_handle_put(ep);
++			return dev_err_probe(dev, ret,
++					     "reading clock-frequency property\n");
++		}
++	}
++
++	if (mclk != OV02C10_MCLK) {
++		fwnode_handle_put(ep);
++		return dev_err_probe(dev, -EINVAL,
++				     "external clock %u is not supported\n",
++				     mclk);
++	}
++
++	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
++	fwnode_handle_put(ep);
++	if (ret)
++		return dev_err_probe(dev, ret, "parsing endpoint failed\n");
++
++	ret = v4l2_link_freq_to_bitmap(dev, bus_cfg.link_frequencies,
++				       bus_cfg.nr_of_link_frequencies,
++				       link_freq_menu_items,
++				       ARRAY_SIZE(link_freq_menu_items),
++				       &link_freq_bitmap);
++	if (ret)
++		goto check_hwcfg_error;
++
++	/* v4l2_link_freq_to_bitmap() guarantees at least 1 bit is set */
++	ov02c10->link_freq_index = ffs(link_freq_bitmap) - 1;
++
++	if (bus_cfg.bus.mipi_csi2.num_data_lanes != 1 &&
++	    bus_cfg.bus.mipi_csi2.num_data_lanes != 2) {
++		ret = dev_err_probe(dev, -EINVAL,
++				    "number of CSI2 data lanes %u is not supported\n",
++				    bus_cfg.bus.mipi_csi2.num_data_lanes);
++		goto check_hwcfg_error;
++	}
++
++	ov02c10->mipi_lanes = bus_cfg.bus.mipi_csi2.num_data_lanes;
++
++check_hwcfg_error:
++	v4l2_fwnode_endpoint_free(&bus_cfg);
++	return ret;
++}
++
++static void ov02c10_remove(struct i2c_client *client)
++{
++	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++
++	v4l2_async_unregister_subdev(sd);
++	v4l2_subdev_cleanup(sd);
++	media_entity_cleanup(&sd->entity);
++	v4l2_ctrl_handler_free(sd->ctrl_handler);
++	pm_runtime_disable(&client->dev);
++	if (!pm_runtime_status_suspended(&client->dev)) {
++		ov02c10_power_off(&client->dev);
++		pm_runtime_set_suspended(&client->dev);
++	}
++}
++
++static int ov02c10_probe(struct i2c_client *client)
++{
++	struct ov02c10 *ov02c10;
++	int ret;
++
++	ov02c10 = devm_kzalloc(&client->dev, sizeof(*ov02c10), GFP_KERNEL);
++	if (!ov02c10)
++		return -ENOMEM;
++
++	v4l2_i2c_subdev_init(&ov02c10->sd, client, &ov02c10_subdev_ops);
++
++	/* Check HW config */
++	ret = ov02c10_check_hwcfg(&client->dev, ov02c10);
++	if (ret)
++		return ret;
++
++	ret = ov02c10_get_pm_resources(&client->dev);
++	if (ret)
++		return ret;
++
++	ov02c10->regmap = devm_cci_regmap_init_i2c(client, 16);
++	if (IS_ERR(ov02c10->regmap))
++		return PTR_ERR(ov02c10->regmap);
++
++	ret = ov02c10_power_on(&client->dev);
++	if (ret) {
++		dev_err_probe(&client->dev, ret, "failed to power on\n");
++		return ret;
++	}
++
++	ret = ov02c10_identify_module(ov02c10);
++	if (ret) {
++		dev_err(&client->dev, "failed to find sensor: %d", ret);
++		goto probe_error_power_off;
++	}
++
++	ret = ov02c10_init_controls(ov02c10);
++	if (ret) {
++		dev_err(&client->dev, "failed to init controls: %d", ret);
++		goto probe_error_v4l2_ctrl_handler_free;
++	}
++
++	ov02c10->sd.internal_ops = &ov02c10_internal_ops;
++	ov02c10->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++	ov02c10->sd.entity.ops = &ov02c10_subdev_entity_ops;
++	ov02c10->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
++	ov02c10->pad.flags = MEDIA_PAD_FL_SOURCE;
++	ret = media_entity_pads_init(&ov02c10->sd.entity, 1, &ov02c10->pad);
++	if (ret) {
++		dev_err(&client->dev, "failed to init entity pads: %d", ret);
++		goto probe_error_v4l2_ctrl_handler_free;
++	}
++
++	ov02c10->sd.state_lock = ov02c10->ctrl_handler.lock;
++	ret = v4l2_subdev_init_finalize(&ov02c10->sd);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to init subdev: %d", ret);
++		goto probe_error_media_entity_cleanup;
++	}
++
++	pm_runtime_set_active(&client->dev);
++	pm_runtime_enable(&client->dev);
++
++	ret = v4l2_async_register_subdev_sensor(&ov02c10->sd);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to register V4L2 subdev: %d",
++			ret);
++		goto probe_error_v4l2_subdev_cleanup;
++	}
++
++	pm_runtime_idle(&client->dev);
++	return 0;
++
++probe_error_v4l2_subdev_cleanup:
++	pm_runtime_disable(&client->dev);
++	pm_runtime_set_suspended(&client->dev);
++	v4l2_subdev_cleanup(&ov02c10->sd);
++
++probe_error_media_entity_cleanup:
++	media_entity_cleanup(&ov02c10->sd.entity);
++
++probe_error_v4l2_ctrl_handler_free:
++	v4l2_ctrl_handler_free(ov02c10->sd.ctrl_handler);
++
++probe_error_power_off:
++	ov02c10_power_off(&client->dev);
++
++	return ret;
++}
++
++static DEFINE_RUNTIME_DEV_PM_OPS(ov02c10_pm_ops, ov02c10_power_off,
++				 ov02c10_power_on, NULL);
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id ov02c10_acpi_ids[] = {
++	{ "OVTI02C1" },
++	{ /* sentinel */ }
++};
++
++MODULE_DEVICE_TABLE(acpi, ov02c10_acpi_ids);
++#endif
++
++static const struct of_device_id ov02c10_of_match[] = {
++	{ .compatible = "ovti,ov02c10" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ov02c10_of_match);
++
++static struct i2c_driver ov02c10_i2c_driver = {
++	.driver = {
++		.name = "ov02c10",
++		.pm = pm_sleep_ptr(&ov02c10_pm_ops),
++		.acpi_match_table = ACPI_PTR(ov02c10_acpi_ids),
++		.of_match_table = ov02c10_of_match,
++	},
++	.probe = ov02c10_probe,
++	.remove = ov02c10_remove,
++};
++
++module_i2c_driver(ov02c10_i2c_driver);
++
++MODULE_AUTHOR("Hao Yao <hao.yao@intel.com>");
++MODULE_AUTHOR("Heimir Thor Sverrisson <heimir.sverrisson@gmail.com>");
++MODULE_AUTHOR("Hans de Goede <hansg@kernel.org>");
++MODULE_DESCRIPTION("OmniVision OV02C10 sensor driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/i2c/ov02e10.c b/drivers/media/i2c/ov02e10.c
+new file mode 100644
+index 000000000000..d74dc62e189d
+--- /dev/null
++++ b/drivers/media/i2c/ov02e10.c
+@@ -0,0 +1,969 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2023 Intel Corporation.
++
++#include <linux/acpi.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <media/v4l2-cci.h>
++#include <media/v4l2-ctrls.h>
++#include <media/v4l2-device.h>
++#include <media/v4l2-fwnode.h>
++
++#define OV02E10_LINK_FREQ_360MHZ	360000000ULL
++#define OV02E10_SCLK			36000000LL
++#define OV02E10_MCLK			19200000
++#define OV02E10_DATA_LANES		2
++#define OV02E10_RGB_DEPTH		10
++
++#define OV02E10_REG_PAGE_FLAG		CCI_REG8(0xfd)
++#define OV02E10_PAGE_0			0x0
++#define OV02E10_PAGE_1			0x1
++#define OV02E10_PAGE_2			0x2
++#define OV02E10_PAGE_3			0x3
++#define OV02E10_PAGE_5			0x4
++#define OV02E10_PAGE_7			0x5
++#define OV02E10_PAGE_8			0x6
++#define OV02E10_PAGE_9			0xF
++#define OV02E10_PAGE_D			0x8
++#define OV02E10_PAGE_E			0x9
++#define OV02E10_PAGE_F			0xA
++
++#define OV02E10_REG_CHIP_ID		CCI_REG32(0x00)
++#define OV02E10_CHIP_ID			0x45025610
++
++/* Horizontal and vertical flip */
++#define OV02E10_REG_ORIENTATION		CCI_REG8(0x32)
++
++/* vertical-timings from sensor */
++#define OV02E10_REG_VTS			CCI_REG16(0x35)
++#define OV02E10_VTS_DEF			2244
++#define OV02E10_VTS_MIN			2244
++#define OV02E10_VTS_MAX			0x7fff
++
++/* horizontal-timings from sensor */
++#define OV02E10_REG_HTS			CCI_REG16(0x37)
++
++/* Exposure controls from sensor */
++#define OV02E10_REG_EXPOSURE		CCI_REG16(0x03)
++#define OV02E10_EXPOSURE_MIN		1
++#define OV02E10_EXPOSURE_MAX_MARGIN	2
++#define OV02E10_EXPOSURE_STEP		1
++
++/* Analog gain controls from sensor */
++#define OV02E10_REG_ANALOG_GAIN		CCI_REG8(0x24)
++#define OV02E10_ANAL_GAIN_MIN		0x10
++#define OV02E10_ANAL_GAIN_MAX		0xf8
++#define OV02E10_ANAL_GAIN_STEP		1
++
++/* Digital gain controls from sensor */
++#define OV02E10_REG_DIGITAL_GAIN	CCI_REG16(0x21)
++#define OV02E10_DGTL_GAIN_MIN		256
++#define OV02E10_DGTL_GAIN_MAX		1020
++#define OV02E10_DGTL_GAIN_STEP		1
++#define OV02E10_DGTL_GAIN_DEFAULT	256
++
++/* Register update control */
++#define OV02E10_REG_COMMAND_UPDATE	CCI_REG8(0xE7)
++#define OV02E10_COMMAND_UPDATE		0x00
++#define OV02E10_COMMAND_HOLD		0x01
++
++/* Test Pattern Control */
++#define OV02E10_REG_TEST_PATTERN	CCI_REG8(0x12)
++#define OV02E10_TEST_PATTERN_ENABLE	BIT(0)
++#define OV02E10_TEST_PATTERN_BAR_SHIFT	1
++
++struct reg_sequence_list {
++	u32 num_regs;
++	const struct reg_sequence *regs;
++};
++
++struct ov02e10_mode {
++	/* Frame width in pixels */
++	u32 width;
++
++	/* Frame height in pixels */
++	u32 height;
++
++	/* Horizontal timining size */
++	u32 hts;
++
++	/* Default vertical timing */
++	u32 vts_def;
++
++	/* Min vertical timining size */
++	u32 vts_min;
++
++	/* Sensor register settings for this resolution */
++	const struct reg_sequence_list reg_list;
++};
++
++static const struct reg_sequence mode_1928x1088_30fps_2lane[] = {
++	{ 0xfd, 0x00 },
++	{ 0x20, 0x00 },
++	{ 0x20, 0x0b },
++	{ 0x21, 0x02 },
++	{ 0x10, 0x23 },
++	{ 0xc5, 0x04 },
++	{ 0x21, 0x00 },
++	{ 0x14, 0x96 },
++	{ 0x17, 0x01 },
++	{ 0xfd, 0x01 },
++	{ 0x03, 0x00 },
++	{ 0x04, 0x04 },
++	{ 0x05, 0x04 },
++	{ 0x06, 0x62 },
++	{ 0x07, 0x01 },
++	{ 0x22, 0x80 },
++	{ 0x24, 0xff },
++	{ 0x40, 0xc6 },
++	{ 0x41, 0x18 },
++	{ 0x45, 0x3f },
++	{ 0x48, 0x0c },
++	{ 0x4c, 0x08 },
++	{ 0x51, 0x12 },
++	{ 0x52, 0x10 },
++	{ 0x57, 0x98 },
++	{ 0x59, 0x06 },
++	{ 0x5a, 0x04 },
++	{ 0x5c, 0x38 },
++	{ 0x5e, 0x10 },
++	{ 0x67, 0x11 },
++	{ 0x7b, 0x04 },
++	{ 0x81, 0x12 },
++	{ 0x90, 0x51 },
++	{ 0x91, 0x09 },
++	{ 0x92, 0x21 },
++	{ 0x93, 0x28 },
++	{ 0x95, 0x54 },
++	{ 0x9d, 0x20 },
++	{ 0x9e, 0x04 },
++	{ 0xb1, 0x9a },
++	{ 0xb2, 0x86 },
++	{ 0xb6, 0x3f },
++	{ 0xb9, 0x30 },
++	{ 0xc1, 0x01 },
++	{ 0xc5, 0xa0 },
++	{ 0xc6, 0x73 },
++	{ 0xc7, 0x04 },
++	{ 0xc8, 0x25 },
++	{ 0xc9, 0x05 },
++	{ 0xca, 0x28 },
++	{ 0xcb, 0x00 },
++	{ 0xcf, 0x16 },
++	{ 0xd2, 0xd0 },
++	{ 0xd7, 0x3f },
++	{ 0xd8, 0x40 },
++	{ 0xd9, 0x40 },
++	{ 0xda, 0x44 },
++	{ 0xdb, 0x3d },
++	{ 0xdc, 0x3d },
++	{ 0xdd, 0x3d },
++	{ 0xde, 0x3d },
++	{ 0xdf, 0xf0 },
++	{ 0xea, 0x0f },
++	{ 0xeb, 0x04 },
++	{ 0xec, 0x29 },
++	{ 0xee, 0x47 },
++	{ 0xfd, 0x01 },
++	{ 0x31, 0x01 },
++	{ 0x27, 0x00 },
++	{ 0x2f, 0x41 },
++	{ 0xfd, 0x02 },
++	{ 0xa1, 0x01 },
++	{ 0xfd, 0x02 },
++	{ 0x9a, 0x03 },
++	{ 0xfd, 0x03 },
++	{ 0x9d, 0x0f },
++	{ 0xfd, 0x07 },
++	{ 0x42, 0x00 },
++	{ 0x43, 0xad },
++	{ 0x44, 0x00 },
++	{ 0x45, 0xa8 },
++	{ 0x46, 0x00 },
++	{ 0x47, 0xa8 },
++	{ 0x48, 0x00 },
++	{ 0x49, 0xad },
++	{ 0xfd, 0x00 },
++	{ 0xc4, 0x01 },
++	{ 0xfd, 0x01 },
++	{ 0x33, 0x03 },
++	{ 0xfd, 0x00 },
++	{ 0x20, 0x1f },
++};
++
++static const char *const ov02e10_test_pattern_menu[] = {
++	"Disabled",
++	"Color Bar",
++};
++
++static const s64 link_freq_menu_items[] = {
++	OV02E10_LINK_FREQ_360MHZ,
++};
++
++static const struct ov02e10_mode supported_modes[] = {
++	{
++		.width = 1928,
++		.height = 1088,
++		.hts = 534,
++		.vts_def = 2244,
++		.vts_min = 2244,
++		.reg_list = {
++			.num_regs = ARRAY_SIZE(mode_1928x1088_30fps_2lane),
++			.regs = mode_1928x1088_30fps_2lane,
++		},
++	},
++};
++
++static const char * const ov02e10_supply_names[] = {
++	"dovdd",	/* Digital I/O power */
++	"avdd",		/* Analog power */
++	"dvdd",		/* Digital core power */
++};
++
++struct ov02e10 {
++	struct regmap *regmap;
++	struct v4l2_subdev sd;
++	struct media_pad pad;
++	struct v4l2_ctrl_handler ctrl_handler;
++
++	/* V4L2 Controls */
++	struct v4l2_ctrl *link_freq;
++	struct v4l2_ctrl *pixel_rate;
++	struct v4l2_ctrl *vblank;
++	struct v4l2_ctrl *hblank;
++	struct v4l2_ctrl *exposure;
++	struct v4l2_ctrl *vflip;
++	struct v4l2_ctrl *hflip;
++
++	struct clk *img_clk;
++	struct regulator_bulk_data supplies[ARRAY_SIZE(ov02e10_supply_names)];
++	struct gpio_desc *reset;
++
++	/* Current mode */
++	const struct ov02e10_mode *cur_mode;
++
++	/* MIPI lanes info */
++	u32 link_freq_index;
++	u8 mipi_lanes;
++};
++
++static inline struct ov02e10 *to_ov02e10(struct v4l2_subdev *subdev)
++{
++	return container_of(subdev, struct ov02e10, sd);
++}
++
++static u64 to_pixel_rate(u32 f_index)
++{
++	u64 pixel_rate = link_freq_menu_items[f_index] * 2 * OV02E10_DATA_LANES;
++
++	do_div(pixel_rate, OV02E10_RGB_DEPTH);
++
++	return pixel_rate;
++}
++
++static u64 to_pixels_per_line(u32 hts, u32 f_index)
++{
++	u64 ppl = hts * to_pixel_rate(f_index);
++
++	do_div(ppl, OV02E10_SCLK);
++
++	return ppl;
++}
++
++static void ov02e10_test_pattern(struct ov02e10 *ov02e10, u32 pattern, int *pret)
++{
++	if (pattern)
++		pattern = pattern << OV02E10_TEST_PATTERN_BAR_SHIFT |
++			  OV02E10_TEST_PATTERN_ENABLE;
++
++	cci_write(ov02e10->regmap, OV02E10_REG_TEST_PATTERN, pattern, pret);
++}
++
++static int ov02e10_set_ctrl(struct v4l2_ctrl *ctrl)
++{
++	struct ov02e10 *ov02e10 = container_of(ctrl->handler,
++					       struct ov02e10, ctrl_handler);
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02e10->sd);
++	s64 exposure_max;
++	int ret;
++
++	/* Propagate change of current control to all related controls */
++	if (ctrl->id == V4L2_CID_VBLANK) {
++		/* Update max exposure while meeting expected vblanking */
++		exposure_max = ov02e10->cur_mode->height + ctrl->val -
++			       OV02E10_EXPOSURE_MAX_MARGIN;
++		ret = __v4l2_ctrl_modify_range(ov02e10->exposure,
++					       ov02e10->exposure->minimum,
++					       exposure_max,
++					       ov02e10->exposure->step,
++					       exposure_max);
++		if (ret)
++			return ret;
++	}
++
++	/* V4L2 controls values will be applied only when power is already up */
++	if (!pm_runtime_get_if_in_use(&client->dev))
++		return 0;
++
++	ret = cci_write(ov02e10->regmap, OV02E10_REG_COMMAND_UPDATE,
++			OV02E10_COMMAND_HOLD, NULL);
++
++	switch (ctrl->id) {
++	case V4L2_CID_ANALOGUE_GAIN:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		cci_write(ov02e10->regmap, OV02E10_REG_ANALOG_GAIN,
++			  ctrl->val, &ret);
++		break;
++
++	case V4L2_CID_DIGITAL_GAIN:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		cci_write(ov02e10->regmap, OV02E10_REG_DIGITAL_GAIN,
++			  ctrl->val, &ret);
++		break;
++
++	case V4L2_CID_EXPOSURE:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		cci_write(ov02e10->regmap, OV02E10_REG_EXPOSURE,
++			  ctrl->val, &ret);
++		break;
++
++	case V4L2_CID_HFLIP:
++	case V4L2_CID_VFLIP:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		cci_write(ov02e10->regmap, OV02E10_REG_ORIENTATION,
++			  ov02e10->hflip->val | ov02e10->vflip->val << 1, &ret);
++		break;
++	case V4L2_CID_VBLANK:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		cci_write(ov02e10->regmap, OV02E10_REG_VTS,
++			  ov02e10->cur_mode->height + ctrl->val, &ret);
++		break;
++
++	case V4L2_CID_TEST_PATTERN:
++		cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			  OV02E10_PAGE_1, &ret);
++		ov02e10_test_pattern(ov02e10, ctrl->val, &ret);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	cci_write(ov02e10->regmap, OV02E10_REG_COMMAND_UPDATE,
++		  OV02E10_COMMAND_UPDATE, &ret);
++
++	pm_runtime_put(&client->dev);
++
++	return ret;
++}
++
++static const struct v4l2_ctrl_ops ov02e10_ctrl_ops = {
++	.s_ctrl = ov02e10_set_ctrl,
++};
++
++static int ov02e10_init_controls(struct ov02e10 *ov02e10)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02e10->sd);
++	struct v4l2_ctrl_handler *ctrl_hdlr = &ov02e10->ctrl_handler;
++	const struct ov02e10_mode *mode = ov02e10->cur_mode;
++	u32 vblank_min, vblank_max, vblank_def;
++	struct v4l2_fwnode_device_properties props;
++	s64 exposure_max, h_blank, pixel_rate;
++	int ret;
++
++	v4l2_ctrl_handler_init(ctrl_hdlr, 12);
++
++	ov02e10->link_freq = v4l2_ctrl_new_int_menu(ctrl_hdlr,
++						    &ov02e10_ctrl_ops,
++						    V4L2_CID_LINK_FREQ,
++						    ov02e10->link_freq_index,
++						    0, link_freq_menu_items);
++	if (ov02e10->link_freq)
++		ov02e10->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
++
++	pixel_rate = to_pixel_rate(ov02e10->link_freq_index);
++	ov02e10->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++						V4L2_CID_PIXEL_RATE, 0,
++						pixel_rate, 1, pixel_rate);
++
++	vblank_min = mode->vts_min - mode->height;
++	vblank_max = OV02E10_VTS_MAX - mode->height;
++	vblank_def = mode->vts_def - mode->height;
++	ov02e10->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++					    V4L2_CID_VBLANK, vblank_min,
++					    vblank_max, 1, vblank_def);
++
++	h_blank = mode->hts - mode->width;
++	ov02e10->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++					    V4L2_CID_HBLANK, h_blank, h_blank,
++					    1, h_blank);
++	if (ov02e10->hblank)
++		ov02e10->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
++
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops, V4L2_CID_ANALOGUE_GAIN,
++			  OV02E10_ANAL_GAIN_MIN, OV02E10_ANAL_GAIN_MAX,
++			  OV02E10_ANAL_GAIN_STEP, OV02E10_ANAL_GAIN_MIN);
++
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
++			  OV02E10_DGTL_GAIN_MIN, OV02E10_DGTL_GAIN_MAX,
++			  OV02E10_DGTL_GAIN_STEP, OV02E10_DGTL_GAIN_DEFAULT);
++
++	exposure_max = mode->vts_def - OV02E10_EXPOSURE_MAX_MARGIN;
++	ov02e10->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++					      V4L2_CID_EXPOSURE,
++					      OV02E10_EXPOSURE_MIN,
++					      exposure_max,
++					      OV02E10_EXPOSURE_STEP,
++					      exposure_max);
++
++	ov02e10->hflip = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++					   V4L2_CID_HFLIP, 0, 1, 1, 0);
++	if (ov02e10->hflip)
++		ov02e10->hflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
++
++	ov02e10->vflip = v4l2_ctrl_new_std(ctrl_hdlr, &ov02e10_ctrl_ops,
++					   V4L2_CID_VFLIP, 0, 1, 1, 0);
++	if (ov02e10->vflip)
++		ov02e10->vflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
++
++	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &ov02e10_ctrl_ops,
++				     V4L2_CID_TEST_PATTERN,
++				     ARRAY_SIZE(ov02e10_test_pattern_menu) - 1,
++				     0, 0, ov02e10_test_pattern_menu);
++
++	ret = v4l2_fwnode_device_parse(&client->dev, &props);
++	if (ret)
++		return ret;
++
++	v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &ov02e10_ctrl_ops, &props);
++
++	if (ctrl_hdlr->error)
++		return ctrl_hdlr->error;
++
++	ov02e10->sd.ctrl_handler = ctrl_hdlr;
++
++	return 0;
++}
++
++static void ov02e10_update_pad_format(const struct ov02e10_mode *mode,
++				      struct v4l2_mbus_framefmt *fmt)
++{
++	fmt->width = mode->width;
++	fmt->height = mode->height;
++	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	fmt->field = V4L2_FIELD_NONE;
++}
++
++static int ov02e10_set_stream_mode(struct ov02e10 *ov02e10, u8 val)
++{
++	int ret = 0;
++
++	cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG, OV02E10_PAGE_0, &ret);
++	cci_write(ov02e10->regmap, CCI_REG8(0xa0), val, &ret);
++	cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG, OV02E10_PAGE_1, &ret);
++	cci_write(ov02e10->regmap, CCI_REG8(0x01), 0x02, &ret);
++
++	return ret;
++}
++
++static int ov02e10_enable_streams(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_state *state,
++				  u32 pad, u64 streams_mask)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(sd);
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++	const struct reg_sequence_list *reg_list;
++	int ret;
++
++	ret = pm_runtime_resume_and_get(&client->dev);
++	if (ret)
++		return ret;
++
++	reg_list = &ov02e10->cur_mode->reg_list;
++	ret = regmap_multi_reg_write(ov02e10->regmap, reg_list->regs,
++				     reg_list->num_regs);
++	if (ret) {
++		dev_err(&client->dev, "failed to set mode\n");
++		goto out;
++	}
++
++	ret = __v4l2_ctrl_handler_setup(ov02e10->sd.ctrl_handler);
++	if (ret)
++		goto out;
++
++	ret = ov02e10_set_stream_mode(ov02e10, 1);
++
++out:
++	if (ret)
++		pm_runtime_put(&client->dev);
++
++	return ret;
++}
++
++static int ov02e10_disable_streams(struct v4l2_subdev *sd,
++				   struct v4l2_subdev_state *state,
++				   u32 pad, u64 streams_mask)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(sd);
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++
++	ov02e10_set_stream_mode(ov02e10, 0);
++	pm_runtime_put(&client->dev);
++
++	return 0;
++}
++
++static int ov02e10_get_pm_resources(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++	int i;
++
++	ov02e10->reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(ov02e10->reset))
++		return dev_err_probe(dev, PTR_ERR(ov02e10->reset),
++				     "failed to get reset gpio\n");
++
++	for (i = 0; i < ARRAY_SIZE(ov02e10_supply_names); i++)
++		ov02e10->supplies[i].supply = ov02e10_supply_names[i];
++
++	return devm_regulator_bulk_get(dev, ARRAY_SIZE(ov02e10_supply_names),
++				       ov02e10->supplies);
++}
++
++static int ov02e10_power_off(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++
++	if (ov02e10->reset)
++		gpiod_set_value_cansleep(ov02e10->reset, 1);
++
++	regulator_bulk_disable(ARRAY_SIZE(ov02e10_supply_names),
++			       ov02e10->supplies);
++
++	clk_disable_unprepare(ov02e10->img_clk);
++
++	return 0;
++}
++
++static int ov02e10_power_on(struct device *dev)
++{
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++	int ret;
++
++	ret = clk_prepare_enable(ov02e10->img_clk);
++	if (ret < 0) {
++		dev_err(dev, "failed to enable imaging clock: %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(ov02e10_supply_names),
++				    ov02e10->supplies);
++	if (ret < 0) {
++		dev_err(dev, "failed to enable regulators\n");
++		goto disable_clk;
++	}
++
++	if (ov02e10->reset) {
++		usleep_range(5000, 5100);
++		gpiod_set_value_cansleep(ov02e10->reset, 0);
++		usleep_range(8000, 8100);
++	}
++
++	return 0;
++
++disable_clk:
++	clk_disable_unprepare(ov02e10->img_clk);
++
++	return ret;
++}
++
++static int ov02e10_set_format(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *sd_state,
++			      struct v4l2_subdev_format *fmt)
++{
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++	const struct ov02e10_mode *mode;
++	s32 vblank_def, h_blank;
++	int ret = 0;
++
++	mode = v4l2_find_nearest_size(supported_modes,
++				      ARRAY_SIZE(supported_modes),
++				      width, height, fmt->format.width,
++				      fmt->format.height);
++
++	ov02e10_update_pad_format(mode, &fmt->format);
++
++	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
++		*v4l2_subdev_state_get_format(sd_state, fmt->pad) = fmt->format;
++	} else {
++		ov02e10->cur_mode = mode;
++		ret = __v4l2_ctrl_s_ctrl(ov02e10->link_freq,
++					 ov02e10->link_freq_index);
++		if (ret)
++			return ret;
++
++		ret = __v4l2_ctrl_s_ctrl_int64(ov02e10->pixel_rate,
++					       to_pixel_rate(ov02e10->link_freq_index));
++		if (ret)
++			return ret;
++
++		/* Update limits and set FPS to default */
++		vblank_def = mode->vts_def - mode->height;
++		ret = __v4l2_ctrl_modify_range(ov02e10->vblank,
++					       mode->vts_min - mode->height,
++					       OV02E10_VTS_MAX - mode->height,
++					       1, vblank_def);
++		if (ret)
++			return ret;
++
++		ret = __v4l2_ctrl_s_ctrl(ov02e10->vblank, vblank_def);
++		if (ret)
++			return ret;
++
++		h_blank = to_pixels_per_line(mode->hts, ov02e10->link_freq_index);
++		h_blank -= mode->width;
++		ret = __v4l2_ctrl_modify_range(ov02e10->hblank, h_blank,
++					       h_blank, 1, h_blank);
++	}
++
++	return ret;
++}
++
++static int ov02e10_get_format(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *sd_state,
++			      struct v4l2_subdev_format *fmt)
++{
++	struct ov02e10 *ov02e10 = to_ov02e10(sd);
++
++	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
++		fmt->format = *v4l2_subdev_state_get_format(sd_state, fmt->pad);
++	else
++		ov02e10_update_pad_format(ov02e10->cur_mode, &fmt->format);
++
++	return 0;
++}
++
++static int ov02e10_enum_mbus_code(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_state *sd_state,
++				  struct v4l2_subdev_mbus_code_enum *code)
++{
++	if (code->index > 0)
++		return -EINVAL;
++
++	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++
++	return 0;
++}
++
++static int ov02e10_enum_frame_size(struct v4l2_subdev *sd,
++				   struct v4l2_subdev_state *sd_state,
++				   struct v4l2_subdev_frame_size_enum *fse)
++{
++	if (fse->index >= ARRAY_SIZE(supported_modes))
++		return -EINVAL;
++
++	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
++		return -EINVAL;
++
++	fse->min_width = supported_modes[fse->index].width;
++	fse->max_width = fse->min_width;
++	fse->min_height = supported_modes[fse->index].height;
++	fse->max_height = fse->min_height;
++
++	return 0;
++}
++
++static int ov02e10_init_state(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *sd_state)
++{
++	ov02e10_update_pad_format(&supported_modes[0],
++				  v4l2_subdev_state_get_format(sd_state, 0));
++
++	return 0;
++}
++
++static const struct v4l2_subdev_video_ops ov02e10_video_ops = {
++	.s_stream = v4l2_subdev_s_stream_helper,
++};
++
++static const struct v4l2_subdev_pad_ops ov02e10_pad_ops = {
++	.set_fmt = ov02e10_set_format,
++	.get_fmt = ov02e10_get_format,
++	.enum_mbus_code = ov02e10_enum_mbus_code,
++	.enum_frame_size = ov02e10_enum_frame_size,
++	.enable_streams = ov02e10_enable_streams,
++	.disable_streams = ov02e10_disable_streams,
++};
++
++static const struct v4l2_subdev_ops ov02e10_subdev_ops = {
++	.video = &ov02e10_video_ops,
++	.pad = &ov02e10_pad_ops,
++};
++
++static const struct media_entity_operations ov02e10_subdev_entity_ops = {
++	.link_validate = v4l2_subdev_link_validate,
++};
++
++static const struct v4l2_subdev_internal_ops ov02e10_internal_ops = {
++	.init_state = ov02e10_init_state,
++};
++
++static int ov02e10_identify_module(struct ov02e10 *ov02e10)
++{
++	struct i2c_client *client = v4l2_get_subdevdata(&ov02e10->sd);
++	int ret;
++	u64 val;
++
++	ret = cci_write(ov02e10->regmap, OV02E10_REG_PAGE_FLAG,
++			OV02E10_PAGE_0, NULL);
++	cci_read(ov02e10->regmap, OV02E10_REG_CHIP_ID, &val, &ret);
++	if (ret)
++		return ret;
++
++	if (val != OV02E10_CHIP_ID) {
++		dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
++			OV02E10_CHIP_ID, (u32)val);
++		return -ENXIO;
++	}
++
++	return 0;
++}
++
++static int ov02e10_check_hwcfg(struct device *dev, struct ov02e10 *ov02e10)
++{
++	struct v4l2_fwnode_endpoint bus_cfg = {
++		.bus_type = V4L2_MBUS_CSI2_DPHY
++	};
++	struct fwnode_handle *ep;
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
++	unsigned long link_freq_bitmap;
++	u32 ext_clk;
++	int ret;
++
++	ep = fwnode_graph_get_next_endpoint(fwnode, NULL);
++	if (!ep)
++		return dev_err_probe(dev, -EPROBE_DEFER,
++				     "waiting for fwnode graph endpoint\n");
++
++	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
++	fwnode_handle_put(ep);
++	if (ret)
++		return dev_err_probe(dev, ret, "parsing endpoint failed\n");
++
++	ov02e10->img_clk = devm_clk_get_optional(dev, NULL);
++	if (IS_ERR(ov02e10->img_clk)) {
++		ret = dev_err_probe(dev, PTR_ERR(ov02e10->img_clk),
++				    "failed to get imaging clock\n");
++		goto out_err;
++	}
++
++	if (ov02e10->img_clk) {
++		ext_clk = clk_get_rate(ov02e10->img_clk);
++	} else {
++		ret = fwnode_property_read_u32(dev_fwnode(dev), "clock-frequency",
++					       &ext_clk);
++		if (ret) {
++			dev_err(dev, "can't get clock frequency\n");
++			goto out_err;
++		}
++	}
++
++	if (ext_clk != OV02E10_MCLK) {
++		dev_err(dev, "external clock %d is not supported\n",
++			ext_clk);
++		ret = -EINVAL;
++		goto out_err;
++	}
++
++	if (bus_cfg.bus.mipi_csi2.num_data_lanes != OV02E10_DATA_LANES) {
++		dev_err(dev, "number of CSI2 data lanes %d is not supported\n",
++			bus_cfg.bus.mipi_csi2.num_data_lanes);
++		ret = -EINVAL;
++		goto out_err;
++	}
++
++	if (!bus_cfg.nr_of_link_frequencies) {
++		dev_err(dev, "no link frequencies defined\n");
++		ret = -EINVAL;
++		goto out_err;
++	}
++
++	ret = v4l2_link_freq_to_bitmap(dev, bus_cfg.link_frequencies,
++				       bus_cfg.nr_of_link_frequencies,
++				       link_freq_menu_items,
++				       ARRAY_SIZE(link_freq_menu_items),
++				       &link_freq_bitmap);
++	if (ret)
++		goto out_err;
++
++	/* v4l2_link_freq_to_bitmap() guarantees at least 1 bit is set */
++	ov02e10->link_freq_index = ffs(link_freq_bitmap) - 1;
++	ov02e10->mipi_lanes = bus_cfg.bus.mipi_csi2.num_data_lanes;
++
++out_err:
++	v4l2_fwnode_endpoint_free(&bus_cfg);
++
++	return ret;
++}
++
++static void ov02e10_remove(struct i2c_client *client)
++{
++	struct v4l2_subdev *sd = i2c_get_clientdata(client);
++
++	v4l2_async_unregister_subdev(sd);
++	v4l2_subdev_cleanup(sd);
++	media_entity_cleanup(&sd->entity);
++	v4l2_ctrl_handler_free(sd->ctrl_handler);
++	pm_runtime_disable(&client->dev);
++
++	if (!pm_runtime_status_suspended(&client->dev)) {
++		ov02e10_power_off(&client->dev);
++		pm_runtime_set_suspended(&client->dev);
++	}
++}
++
++static int ov02e10_probe(struct i2c_client *client)
++{
++	struct ov02e10 *ov02e10;
++	int ret;
++
++	ov02e10 = devm_kzalloc(&client->dev, sizeof(*ov02e10), GFP_KERNEL);
++	if (!ov02e10)
++		return -ENOMEM;
++
++	v4l2_i2c_subdev_init(&ov02e10->sd, client, &ov02e10_subdev_ops);
++
++	/* Check HW config */
++	ret = ov02e10_check_hwcfg(&client->dev, ov02e10);
++	if (ret)
++		return ret;
++
++	/* Initialize subdev */
++	ov02e10->regmap = devm_cci_regmap_init_i2c(client, 8);
++	if (IS_ERR(ov02e10->regmap))
++		return PTR_ERR(ov02e10->regmap);
++
++	ret = ov02e10_get_pm_resources(&client->dev);
++	if (ret)
++		return ret;
++
++	ret = ov02e10_power_on(&client->dev);
++	if (ret) {
++		dev_err_probe(&client->dev, ret, "failed to power on\n");
++		return ret;
++	}
++
++	/* Check module identity */
++	ret = ov02e10_identify_module(ov02e10);
++	if (ret) {
++		dev_err(&client->dev, "failed to find sensor: %d\n", ret);
++		goto probe_error_power_off;
++	}
++
++	ov02e10->cur_mode = &supported_modes[0];
++	ret = ov02e10_init_controls(ov02e10);
++	if (ret) {
++		dev_err(&client->dev, "failed to init controls: %d\n", ret);
++		goto probe_error_v4l2_ctrl_handler_free;
++	}
++
++	/* Initialize subdev */
++	ov02e10->sd.internal_ops = &ov02e10_internal_ops;
++	ov02e10->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++	ov02e10->sd.entity.ops = &ov02e10_subdev_entity_ops;
++	ov02e10->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
++
++	/* Initialize source pad */
++	ov02e10->pad.flags = MEDIA_PAD_FL_SOURCE;
++	ret = media_entity_pads_init(&ov02e10->sd.entity, 1, &ov02e10->pad);
++	if (ret) {
++		dev_err(&client->dev, "failed to init entity pads: %d", ret);
++		goto probe_error_v4l2_ctrl_handler_free;
++	}
++
++	ov02e10->sd.state_lock = ov02e10->ctrl_handler.lock;
++	ret = v4l2_subdev_init_finalize(&ov02e10->sd);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to init subdev: %d", ret);
++		goto probe_error_media_entity_cleanup;
++	}
++
++	pm_runtime_set_active(&client->dev);
++	pm_runtime_enable(&client->dev);
++
++	ret = v4l2_async_register_subdev_sensor(&ov02e10->sd);
++	if (ret < 0) {
++		dev_err(&client->dev, "failed to register V4L2 subdev: %d",
++			ret);
++		goto probe_error_v4l2_subdev_cleanup;
++	}
++
++	pm_runtime_idle(&client->dev);
++	return 0;
++
++probe_error_v4l2_subdev_cleanup:
++	pm_runtime_disable(&client->dev);
++	pm_runtime_set_suspended(&client->dev);
++	v4l2_subdev_cleanup(&ov02e10->sd);
++
++probe_error_media_entity_cleanup:
++	media_entity_cleanup(&ov02e10->sd.entity);
++
++probe_error_v4l2_ctrl_handler_free:
++	v4l2_ctrl_handler_free(ov02e10->sd.ctrl_handler);
++
++probe_error_power_off:
++	ov02e10_power_off(&client->dev);
++
++	return ret;
++}
++
++static DEFINE_RUNTIME_DEV_PM_OPS(ov02e10_pm_ops, ov02e10_power_off,
++				 ov02e10_power_on, NULL);
++
++static const struct acpi_device_id ov02e10_acpi_ids[] = {
++	{ "OVTI02E1" },
++	{ /* sentinel */ }
++};
++
++MODULE_DEVICE_TABLE(acpi, ov02e10_acpi_ids);
++
++static const struct of_device_id ov02e10_of_match[] = {
++	{ .compatible = "ovti,ov02e10" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ov02e10_of_match);
++
++static struct i2c_driver ov02e10_i2c_driver = {
++	.driver = {
++		.name = "ov02e10",
++		.pm = pm_sleep_ptr(&ov02e10_pm_ops),
++		.acpi_match_table = ov02e10_acpi_ids,
++		.of_match_table = ov02e10_of_match,
++	},
++	.probe = ov02e10_probe,
++	.remove = ov02e10_remove,
++};
++
++module_i2c_driver(ov02e10_i2c_driver);
++
++MODULE_AUTHOR("Jingjing Xiong <jingjing.xiong@intel.com>");
++MODULE_AUTHOR("Hans de Goede <hdegoede@redhat.com>");
++MODULE_AUTHOR("Alan Stern <stern@rowland.harvard.edu>");
++MODULE_AUTHOR("Bryan O'Donoghue <bryan.odonoghue@linaro.org>");
++MODULE_DESCRIPTION("OmniVision OV02E10 sensor driver");
++MODULE_LICENSE("GPL");
 diff --git a/drivers/media/i2c/ov08x40.c b/drivers/media/i2c/ov08x40.c
 index 625fbcd39068..54575eea3c49 100644
 --- a/drivers/media/i2c/ov08x40.c
@@ -1528,6 +3598,1297 @@ index 82b21e34c545..0cf24ba613a2 100644
  /*
   * Intersil/Techwell TW686[4589]-based video capture cards have an empty (zero)
   * class code.  Fix it.
+diff --git a/drivers/platform/x86/intel/int3472/Makefile b/drivers/platform/x86/intel/int3472/Makefile
+index a8aba07bf1dc..103661e6685d 100644
+--- a/drivers/platform/x86/intel/int3472/Makefile
++++ b/drivers/platform/x86/intel/int3472/Makefile
+@@ -1,7 +1,8 @@
+ obj-$(CONFIG_INTEL_SKL_INT3472)		+= intel_skl_int3472_discrete.o \
+ 					   intel_skl_int3472_tps68470.o \
+ 					   intel_skl_int3472_common.o
+-intel_skl_int3472_discrete-y		:= discrete.o clk_and_regulator.o led.o
++intel_skl_int3472_discrete-y		:= discrete.o discrete_quirks.o \
++					   clk_and_regulator.o led.o
+ intel_skl_int3472_tps68470-y		:= tps68470.o tps68470_board_data.o
+ 
+ intel_skl_int3472_common-y		+= common.o
+diff --git a/drivers/platform/x86/intel/int3472/clk_and_regulator.c b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+index 16e36ac0a7b4..c85cbfbc16c1 100644
+--- a/drivers/platform/x86/intel/int3472/clk_and_regulator.c
++++ b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+@@ -5,7 +5,6 @@
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
+ #include <linux/device.h>
+-#include <linux/dmi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/slab.h>
+@@ -118,7 +117,7 @@ static const struct clk_ops skl_int3472_clock_ops = {
+ 	.recalc_rate = skl_int3472_clk_recalc_rate,
+ };
+ 
+-int skl_int3472_register_dsm_clock(struct int3472_discrete_device *int3472)
++static int skl_int3472_register_clock(struct int3472_discrete_device *int3472)
+ {
+ 	struct acpi_device *adev = int3472->adev;
+ 	struct clk_init_data init = {
+@@ -127,12 +126,6 @@ int skl_int3472_register_dsm_clock(struct int3472_discrete_device *int3472)
+ 	};
+ 	int ret;
+ 
+-	if (int3472->clock.cl)
+-		return 0; /* A GPIO controlled clk has already been registered */
+-
+-	if (!acpi_check_dsm(adev->handle, &img_clk_guid, 0, BIT(1)))
+-		return 0; /* DSM clock control is not available */
+-
+ 	init.name = kasprintf(GFP_KERNEL, "%s-clk", acpi_dev_name(adev));
+ 	if (!init.name)
+ 		return -ENOMEM;
+@@ -161,51 +154,26 @@ int skl_int3472_register_dsm_clock(struct int3472_discrete_device *int3472)
+ 	return ret;
+ }
+ 
++int skl_int3472_register_dsm_clock(struct int3472_discrete_device *int3472)
++{
++	if (int3472->clock.cl)
++		return 0; /* A GPIO controlled clk has already been registered */
++
++	if (!acpi_check_dsm(int3472->adev->handle, &img_clk_guid, 0, BIT(1)))
++		return 0; /* DSM clock control is not available */
++
++	return skl_int3472_register_clock(int3472);
++}
++
+ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
+ 				    struct gpio_desc *gpio)
+ {
+-	struct clk_init_data init = {
+-		.ops = &skl_int3472_clock_ops,
+-		.flags = CLK_GET_RATE_NOCACHE,
+-	};
+-	int ret;
+-
+ 	if (int3472->clock.cl)
+ 		return -EBUSY;
+ 
+ 	int3472->clock.ena_gpio = gpio;
+ 
+-	init.name = kasprintf(GFP_KERNEL, "%s-clk",
+-			      acpi_dev_name(int3472->adev));
+-	if (!init.name)
+-		return -ENOMEM;
+-
+-	int3472->clock.frequency = skl_int3472_get_clk_frequency(int3472);
+-
+-	int3472->clock.clk_hw.init = &init;
+-	int3472->clock.clk = clk_register(&int3472->adev->dev,
+-					  &int3472->clock.clk_hw);
+-	if (IS_ERR(int3472->clock.clk)) {
+-		ret = PTR_ERR(int3472->clock.clk);
+-		goto out_free_init_name;
+-	}
+-
+-	int3472->clock.cl = clkdev_create(int3472->clock.clk, NULL,
+-					  int3472->sensor_name);
+-	if (!int3472->clock.cl) {
+-		ret = -ENOMEM;
+-		goto err_unregister_clk;
+-	}
+-
+-	kfree(init.name);
+-	return 0;
+-
+-err_unregister_clk:
+-	clk_unregister(int3472->clock.clk);
+-out_free_init_name:
+-	kfree(init.name);
+-
+-	return ret;
++	return skl_int3472_register_clock(int3472);
+ }
+ 
+ void skl_int3472_unregister_clock(struct int3472_discrete_device *int3472)
+@@ -217,98 +185,72 @@ void skl_int3472_unregister_clock(struct int3472_discrete_device *int3472)
+ 	clk_unregister(int3472->clock.clk);
+ }
+ 
+-/*
+- * The INT3472 device is going to be the only supplier of a regulator for
+- * the sensor device. But unlike the clk framework the regulator framework
+- * does not allow matching by consumer-device-name only.
+- *
+- * Ideally all sensor drivers would use "avdd" as supply-id. But for drivers
+- * where this cannot be changed because another supply-id is already used in
+- * e.g. DeviceTree files an alias for the other supply-id can be added here.
+- *
+- * Do not forget to update GPIO_REGULATOR_SUPPLY_MAP_COUNT when changing this.
+- */
+-static const char * const skl_int3472_regulator_map_supplies[] = {
+-	"avdd",
+-	"AVDD",
+-};
+-
+-static_assert(ARRAY_SIZE(skl_int3472_regulator_map_supplies) ==
+-	      GPIO_REGULATOR_SUPPLY_MAP_COUNT);
+-
+-/*
+- * On some models there is a single GPIO regulator which is shared between
+- * sensors and only listed in the ACPI resources of one sensor.
+- * This DMI table contains the name of the second sensor. This is used to add
+- * entries for the second sensor to the supply_map.
+- */
+-static const struct dmi_system_id skl_int3472_regulator_second_sensor[] = {
+-	{
+-		/* Lenovo Miix 510-12IKB */
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_PRODUCT_VERSION, "MIIX 510-12IKB"),
+-		},
+-		.driver_data = "i2c-OVTI2680:00",
+-	},
+-	{ }
+-};
+-
+ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
+-				   struct gpio_desc *gpio)
++				   struct gpio_desc *gpio,
++				   unsigned int enable_time,
++				   const char *supply_name,
++				   const char *second_sensor)
+ {
+ 	struct regulator_init_data init_data = { };
++	struct int3472_gpio_regulator *regulator;
+ 	struct regulator_config cfg = { };
+-	const char *second_sensor = NULL;
+-	const struct dmi_system_id *id;
+ 	int i, j;
+ 
+-	id = dmi_first_match(skl_int3472_regulator_second_sensor);
+-	if (id)
+-		second_sensor = id->driver_data;
++	if (int3472->n_regulator_gpios >= INT3472_MAX_REGULATORS) {
++		dev_err(int3472->dev, "Too many regulators mapped\n");
++		return -EINVAL;
++	}
+ 
+-	for (i = 0, j = 0; i < ARRAY_SIZE(skl_int3472_regulator_map_supplies); i++) {
+-		int3472->regulator.supply_map[j].supply = skl_int3472_regulator_map_supplies[i];
+-		int3472->regulator.supply_map[j].dev_name = int3472->sensor_name;
++	if (strlen(supply_name) >= GPIO_SUPPLY_NAME_LENGTH) {
++		dev_err(int3472->dev, "supply-name '%s' length too long\n", supply_name);
++		return -E2BIG;
++	}
++
++	regulator = &int3472->regulators[int3472->n_regulator_gpios];
++	string_upper(regulator->supply_name_upper, supply_name);
++
++	/* The below code assume that map-count is 2 (upper- and lower-case) */
++	static_assert(GPIO_REGULATOR_SUPPLY_MAP_COUNT == 2);
++
++	for (i = 0, j = 0; i < GPIO_REGULATOR_SUPPLY_MAP_COUNT; i++) {
++		const char *supply = i ? regulator->supply_name_upper : supply_name;
++
++		regulator->supply_map[j].supply = supply;
++		regulator->supply_map[j].dev_name = int3472->sensor_name;
+ 		j++;
+ 
+ 		if (second_sensor) {
+-			int3472->regulator.supply_map[j].supply =
+-				skl_int3472_regulator_map_supplies[i];
+-			int3472->regulator.supply_map[j].dev_name = second_sensor;
++			regulator->supply_map[j].supply = supply;
++			regulator->supply_map[j].dev_name = second_sensor;
+ 			j++;
+ 		}
+ 	}
+ 
+ 	init_data.constraints.valid_ops_mask = REGULATOR_CHANGE_STATUS;
+-	init_data.consumer_supplies = int3472->regulator.supply_map;
++	init_data.consumer_supplies = regulator->supply_map;
+ 	init_data.num_consumer_supplies = j;
+ 
+-	snprintf(int3472->regulator.regulator_name,
+-		 sizeof(int3472->regulator.regulator_name), "%s-regulator",
+-		 acpi_dev_name(int3472->adev));
+-	snprintf(int3472->regulator.supply_name,
+-		 GPIO_REGULATOR_SUPPLY_NAME_LENGTH, "supply-0");
+-
+-	int3472->regulator.rdesc = INT3472_REGULATOR(
+-						int3472->regulator.regulator_name,
+-						int3472->regulator.supply_name,
+-						&int3472_gpio_regulator_ops);
++	snprintf(regulator->regulator_name, sizeof(regulator->regulator_name), "%s-%s",
++		 acpi_dev_name(int3472->adev), supply_name);
+ 
+-	int3472->regulator.gpio = gpio;
++	regulator->rdesc = INT3472_REGULATOR(regulator->regulator_name,
++					     &int3472_gpio_regulator_ops,
++					     enable_time, GPIO_REGULATOR_OFF_ON_DELAY);
+ 
+ 	cfg.dev = &int3472->adev->dev;
+ 	cfg.init_data = &init_data;
+-	cfg.ena_gpiod = int3472->regulator.gpio;
++	cfg.ena_gpiod = gpio;
+ 
+-	int3472->regulator.rdev = regulator_register(int3472->dev,
+-						     &int3472->regulator.rdesc,
+-						     &cfg);
++	regulator->rdev = regulator_register(int3472->dev, &regulator->rdesc, &cfg);
++	if (IS_ERR(regulator->rdev))
++		return PTR_ERR(regulator->rdev);
+ 
+-	return PTR_ERR_OR_ZERO(int3472->regulator.rdev);
++	int3472->n_regulator_gpios++;
++	return 0;
+ }
+ 
+ void skl_int3472_unregister_regulator(struct int3472_discrete_device *int3472)
+ {
+-	regulator_unregister(int3472->regulator.rdev);
++	for (int i = 0; i < int3472->n_regulator_gpios; i++)
++		regulator_unregister(int3472->regulators[i].rdev);
+ }
+diff --git a/drivers/platform/x86/intel/int3472/common.h b/drivers/platform/x86/intel/int3472/common.h
+index 145dec66df64..51b818e62a25 100644
+--- a/drivers/platform/x86/intel/int3472/common.h
++++ b/drivers/platform/x86/intel/int3472/common.h
+@@ -22,25 +22,39 @@
+ #define INT3472_GPIO_TYPE_POWER_ENABLE				0x0b
+ #define INT3472_GPIO_TYPE_CLK_ENABLE				0x0c
+ #define INT3472_GPIO_TYPE_PRIVACY_LED				0x0d
++#define INT3472_GPIO_TYPE_HANDSHAKE				0x12
+ 
+ #define INT3472_PDEV_MAX_NAME_LEN				23
+ #define INT3472_MAX_SENSOR_GPIOS				3
++#define INT3472_MAX_REGULATORS					3
+ 
+-#define GPIO_REGULATOR_NAME_LENGTH				21
+-#define GPIO_REGULATOR_SUPPLY_NAME_LENGTH			9
++/* E.g. "avdd\0" */
++#define GPIO_SUPPLY_NAME_LENGTH				5
++/* 12 chars for acpi_dev_name() + "-", e.g. "ABCD1234:00-" */
++#define GPIO_REGULATOR_NAME_LENGTH				(12 + GPIO_SUPPLY_NAME_LENGTH)
++/* lower- and upper-case mapping */
+ #define GPIO_REGULATOR_SUPPLY_MAP_COUNT				2
++/*
++ * Ensure the GPIO is driven low/high for at least 2 ms before changing.
++ *
++ * 2 ms has been chosen because it is the minimum time ovXXXX sensors need to
++ * have their reset line driven logical high to properly register a reset.
++ */
++#define GPIO_REGULATOR_ENABLE_TIME				(2 * USEC_PER_MSEC)
++#define GPIO_REGULATOR_OFF_ON_DELAY				(2 * USEC_PER_MSEC)
+ 
+ #define INT3472_LED_MAX_NAME_LEN				32
+ 
+ #define CIO2_SENSOR_SSDB_MCLKSPEED_OFFSET			86
+ 
+-#define INT3472_REGULATOR(_name, _supply, _ops)			\
++#define INT3472_REGULATOR(_name, _ops, _enable_time, _off_on_delay) \
+ 	(const struct regulator_desc) {				\
+ 		.name = _name,					\
+-		.supply_name = _supply,				\
+ 		.type = REGULATOR_VOLTAGE,			\
+ 		.ops = _ops,					\
+ 		.owner = THIS_MODULE,				\
++		.enable_time = _enable_time,			\
++		.off_on_delay = _off_on_delay,			\
+ 	}
+ 
+ #define to_int3472_clk(hw)					\
+@@ -50,6 +64,7 @@
+ 	container_of(clk, struct int3472_discrete_device, clock)
+ 
+ struct acpi_device;
++struct dmi_system_id;
+ struct i2c_client;
+ struct platform_device;
+ 
+@@ -70,6 +85,20 @@ struct int3472_cldb {
+ 	u8 reserved2[17];
+ };
+ 
++struct int3472_discrete_quirks {
++	/* For models where AVDD GPIO is shared between sensors */
++	const char *avdd_second_sensor;
++};
++
++struct int3472_gpio_regulator {
++	/* SUPPLY_MAP_COUNT * 2 to make room for second sensor mappings */
++	struct regulator_consumer_supply supply_map[GPIO_REGULATOR_SUPPLY_MAP_COUNT * 2];
++	char supply_name_upper[GPIO_SUPPLY_NAME_LENGTH];
++	char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
++	struct regulator_dev *rdev;
++	struct regulator_desc rdesc;
++};
++
+ struct int3472_discrete_device {
+ 	struct acpi_device *adev;
+ 	struct device *dev;
+@@ -78,15 +107,7 @@ struct int3472_discrete_device {
+ 
+ 	const struct int3472_sensor_config *sensor_config;
+ 
+-	struct int3472_gpio_regulator {
+-		/* SUPPLY_MAP_COUNT * 2 to make room for second sensor mappings */
+-		struct regulator_consumer_supply supply_map[GPIO_REGULATOR_SUPPLY_MAP_COUNT * 2];
+-		char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
+-		char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
+-		struct gpio_desc *gpio;
+-		struct regulator_dev *rdev;
+-		struct regulator_desc rdesc;
+-	} regulator;
++	struct int3472_gpio_regulator regulators[INT3472_MAX_REGULATORS];
+ 
+ 	struct int3472_clock {
+ 		struct clk *clk;
+@@ -104,11 +125,16 @@ struct int3472_discrete_device {
+ 		struct gpio_desc *gpio;
+ 	} pled;
+ 
++	struct int3472_discrete_quirks quirks;
++
+ 	unsigned int ngpios; /* how many GPIOs have we seen */
+ 	unsigned int n_sensor_gpios; /* how many have we mapped to sensor */
++	unsigned int n_regulator_gpios; /* how many have we mapped to a regulator */
+ 	struct gpiod_lookup_table gpios;
+ };
+ 
++extern const struct dmi_system_id skl_int3472_discrete_quirks[];
++
+ union acpi_object *skl_int3472_get_acpi_buffer(struct acpi_device *adev,
+ 					       char *id);
+ int skl_int3472_fill_cldb(struct acpi_device *adev, struct int3472_cldb *cldb);
+@@ -122,7 +148,10 @@ int skl_int3472_register_dsm_clock(struct int3472_discrete_device *int3472);
+ void skl_int3472_unregister_clock(struct int3472_discrete_device *int3472);
+ 
+ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
+-				   struct gpio_desc *gpio);
++				   struct gpio_desc *gpio,
++				   unsigned int enable_time,
++				   const char *supply_name,
++				   const char *second_sensor);
+ void skl_int3472_unregister_regulator(struct int3472_discrete_device *int3472);
+ 
+ int skl_int3472_register_pled(struct int3472_discrete_device *int3472, struct gpio_desc *gpio);
+diff --git a/drivers/platform/x86/intel/int3472/discrete.c b/drivers/platform/x86/intel/int3472/discrete.c
+index 092252eb95a8..394975f55d64 100644
+--- a/drivers/platform/x86/intel/int3472/discrete.c
++++ b/drivers/platform/x86/intel/int3472/discrete.c
+@@ -5,6 +5,7 @@
+ #include <linux/array_size.h>
+ #include <linux/bitfield.h>
+ #include <linux/device.h>
++#include <linux/dmi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/gpio/machine.h>
+ #include <linux/i2c.h>
+@@ -56,7 +57,7 @@ static void skl_int3472_log_sensor_module_name(struct int3472_discrete_device *i
+ 
+ static int skl_int3472_fill_gpiod_lookup(struct gpiod_lookup *table_entry,
+ 					 struct acpi_resource_gpio *agpio,
+-					 const char *func, unsigned long gpio_flags)
++					 const char *con_id, unsigned long gpio_flags)
+ {
+ 	char *path = agpio->resource_source.string_ptr;
+ 	struct acpi_device *adev;
+@@ -71,14 +72,14 @@ static int skl_int3472_fill_gpiod_lookup(struct gpiod_lookup *table_entry,
+ 	if (!adev)
+ 		return -ENODEV;
+ 
+-	*table_entry = GPIO_LOOKUP(acpi_dev_name(adev), agpio->pin_table[0], func, gpio_flags);
++	*table_entry = GPIO_LOOKUP(acpi_dev_name(adev), agpio->pin_table[0], con_id, gpio_flags);
+ 
+ 	return 0;
+ }
+ 
+ static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int3472,
+ 					  struct acpi_resource_gpio *agpio,
+-					  const char *func, unsigned long gpio_flags)
++					  const char *con_id, unsigned long gpio_flags)
+ {
+ 	int ret;
+ 
+@@ -88,7 +89,7 @@ static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int347
+ 	}
+ 
+ 	ret = skl_int3472_fill_gpiod_lookup(&int3472->gpios.table[int3472->n_sensor_gpios],
+-					    agpio, func, gpio_flags);
++					    agpio, con_id, gpio_flags);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -101,7 +102,7 @@ static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int347
+ static struct gpio_desc *
+ skl_int3472_gpiod_get_from_temp_lookup(struct int3472_discrete_device *int3472,
+ 				       struct acpi_resource_gpio *agpio,
+-				       const char *func, unsigned long gpio_flags)
++				       const char *con_id, unsigned long gpio_flags)
+ {
+ 	struct gpio_desc *desc;
+ 	int ret;
+@@ -112,12 +113,12 @@ skl_int3472_gpiod_get_from_temp_lookup(struct int3472_discrete_device *int3472,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	lookup->dev_id = dev_name(int3472->dev);
+-	ret = skl_int3472_fill_gpiod_lookup(&lookup->table[0], agpio, func, gpio_flags);
++	ret = skl_int3472_fill_gpiod_lookup(&lookup->table[0], agpio, con_id, gpio_flags);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+ 	gpiod_add_lookup_table(lookup);
+-	desc = devm_gpiod_get(int3472->dev, func, GPIOD_OUT_LOW);
++	desc = devm_gpiod_get(int3472->dev, con_id, GPIOD_OUT_LOW);
+ 	gpiod_remove_lookup_table(lookup);
+ 
+ 	return desc;
+@@ -129,7 +130,7 @@ skl_int3472_gpiod_get_from_temp_lookup(struct int3472_discrete_device *int3472,
+  * @hid: The ACPI HID of the device without the instance number e.g. INT347E
+  * @type_from: The GPIO type from ACPI ?SDT
+  * @type_to: The assigned GPIO type, typically same as @type_from
+- * @func: The function, e.g. "enable"
++ * @con_id: The name of the GPIO for the device
+  * @polarity_low: GPIO_ACTIVE_LOW true if the @polarity_low is true,
+  * GPIO_ACTIVE_HIGH otherwise
+  */
+@@ -138,16 +139,17 @@ struct int3472_gpio_map {
+ 	u8 type_from;
+ 	u8 type_to;
+ 	bool polarity_low;
+-	const char *func;
++	const char *con_id;
+ };
+ 
+ static const struct int3472_gpio_map int3472_gpio_map[] = {
+ 	{ "INT347E", INT3472_GPIO_TYPE_RESET, INT3472_GPIO_TYPE_RESET, false, "enable" },
+ };
+ 
+-static void int3472_get_func_and_polarity(struct acpi_device *adev, u8 *type,
+-					  const char **func, unsigned long *gpio_flags)
++static void int3472_get_con_id_and_polarity(struct int3472_discrete_device *int3472, u8 *type,
++					    const char **con_id, unsigned long *gpio_flags)
+ {
++	struct acpi_device *adev = int3472->sensor;
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(int3472_gpio_map); i++) {
+@@ -162,36 +164,43 @@ static void int3472_get_func_and_polarity(struct acpi_device *adev, u8 *type,
+ 		if (!acpi_dev_hid_uid_match(adev, int3472_gpio_map[i].hid, NULL))
+ 			continue;
+ 
++		dev_dbg(int3472->dev, "mapping type 0x%02x pin to 0x%02x %s\n",
++			*type, int3472_gpio_map[i].type_to, int3472_gpio_map[i].con_id);
++
+ 		*type = int3472_gpio_map[i].type_to;
+ 		*gpio_flags = int3472_gpio_map[i].polarity_low ?
+ 			      GPIO_ACTIVE_LOW : GPIO_ACTIVE_HIGH;
+-		*func = int3472_gpio_map[i].func;
++		*con_id = int3472_gpio_map[i].con_id;
+ 		return;
+ 	}
+ 
+ 	switch (*type) {
+ 	case INT3472_GPIO_TYPE_RESET:
+-		*func = "reset";
++		*con_id = "reset";
+ 		*gpio_flags = GPIO_ACTIVE_LOW;
+ 		break;
+ 	case INT3472_GPIO_TYPE_POWERDOWN:
+-		*func = "powerdown";
++		*con_id = "powerdown";
+ 		*gpio_flags = GPIO_ACTIVE_LOW;
+ 		break;
+ 	case INT3472_GPIO_TYPE_CLK_ENABLE:
+-		*func = "clk-enable";
++		*con_id = "clk-enable";
+ 		*gpio_flags = GPIO_ACTIVE_HIGH;
+ 		break;
+ 	case INT3472_GPIO_TYPE_PRIVACY_LED:
+-		*func = "privacy-led";
++		*con_id = "privacy-led";
+ 		*gpio_flags = GPIO_ACTIVE_HIGH;
+ 		break;
+ 	case INT3472_GPIO_TYPE_POWER_ENABLE:
+-		*func = "power-enable";
++		*con_id = "avdd";
++		*gpio_flags = GPIO_ACTIVE_HIGH;
++		break;
++	case INT3472_GPIO_TYPE_HANDSHAKE:
++		*con_id = "dvdd";
+ 		*gpio_flags = GPIO_ACTIVE_HIGH;
+ 		break;
+ 	default:
+-		*func = "unknown";
++		*con_id = "unknown";
+ 		*gpio_flags = GPIO_ACTIVE_HIGH;
+ 		break;
+ 	}
+@@ -238,7 +247,7 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
+ 	union acpi_object *obj;
+ 	struct gpio_desc *gpio;
+ 	const char *err_msg;
+-	const char *func;
++	const char *con_id;
+ 	unsigned long gpio_flags;
+ 	int ret;
+ 
+@@ -262,26 +271,26 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
+ 
+ 	type = FIELD_GET(INT3472_GPIO_DSM_TYPE, obj->integer.value);
+ 
+-	int3472_get_func_and_polarity(int3472->sensor, &type, &func, &gpio_flags);
++	int3472_get_con_id_and_polarity(int3472, &type, &con_id, &gpio_flags);
+ 
+ 	pin = FIELD_GET(INT3472_GPIO_DSM_PIN, obj->integer.value);
+ 	/* Pin field is not really used under Windows and wraps around at 8 bits */
+ 	if (pin != (agpio->pin_table[0] & 0xff))
+ 		dev_dbg(int3472->dev, FW_BUG "%s %s pin number mismatch _DSM %d resource %d\n",
+-			func, agpio->resource_source.string_ptr, pin, agpio->pin_table[0]);
++			con_id, agpio->resource_source.string_ptr, pin, agpio->pin_table[0]);
+ 
+ 	active_value = FIELD_GET(INT3472_GPIO_DSM_SENSOR_ON_VAL, obj->integer.value);
+ 	if (!active_value)
+ 		gpio_flags ^= GPIO_ACTIVE_LOW;
+ 
+-	dev_dbg(int3472->dev, "%s %s pin %d active-%s\n", func,
++	dev_dbg(int3472->dev, "%s %s pin %d active-%s\n", con_id,
+ 		agpio->resource_source.string_ptr, agpio->pin_table[0],
+ 		str_high_low(gpio_flags == GPIO_ACTIVE_HIGH));
+ 
+ 	switch (type) {
+ 	case INT3472_GPIO_TYPE_RESET:
+ 	case INT3472_GPIO_TYPE_POWERDOWN:
+-		ret = skl_int3472_map_gpio_to_sensor(int3472, agpio, func, gpio_flags);
++		ret = skl_int3472_map_gpio_to_sensor(int3472, agpio, con_id, gpio_flags);
+ 		if (ret)
+ 			err_msg = "Failed to map GPIO pin to sensor\n";
+ 
+@@ -289,7 +298,8 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
+ 	case INT3472_GPIO_TYPE_CLK_ENABLE:
+ 	case INT3472_GPIO_TYPE_PRIVACY_LED:
+ 	case INT3472_GPIO_TYPE_POWER_ENABLE:
+-		gpio = skl_int3472_gpiod_get_from_temp_lookup(int3472, agpio, func, gpio_flags);
++	case INT3472_GPIO_TYPE_HANDSHAKE:
++		gpio = skl_int3472_gpiod_get_from_temp_lookup(int3472, agpio, con_id, gpio_flags);
+ 		if (IS_ERR(gpio)) {
+ 			ret = PTR_ERR(gpio);
+ 			err_msg = "Failed to get GPIO\n";
+@@ -310,9 +320,21 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
+ 
+ 			break;
+ 		case INT3472_GPIO_TYPE_POWER_ENABLE:
+-			ret = skl_int3472_register_regulator(int3472, gpio);
++			ret = skl_int3472_register_regulator(int3472, gpio,
++							     GPIO_REGULATOR_ENABLE_TIME,
++							     con_id,
++							     int3472->quirks.avdd_second_sensor);
++			if (ret)
++				err_msg = "Failed to map power-enable to sensor\n";
++
++			break;
++		case INT3472_GPIO_TYPE_HANDSHAKE:
++			/* Setups using a handshake pin need 25 ms enable delay */
++			ret = skl_int3472_register_regulator(int3472, gpio,
++							     25 * USEC_PER_MSEC,
++							     con_id, NULL);
+ 			if (ret)
+-				err_msg = "Failed to map regulator to sensor\n";
++				err_msg = "Failed to map handshake to sensor\n";
+ 
+ 			break;
+ 		default: /* Never reached */
+@@ -378,13 +400,19 @@ static void skl_int3472_discrete_remove(struct platform_device *pdev)
+ static int skl_int3472_discrete_probe(struct platform_device *pdev)
+ {
+ 	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
++	const struct int3472_discrete_quirks *quirks = NULL;
+ 	struct int3472_discrete_device *int3472;
++	const struct dmi_system_id *id;
+ 	struct int3472_cldb cldb;
+ 	int ret;
+ 
+ 	if (!adev)
+ 		return -ENODEV;
+ 
++	id = dmi_first_match(skl_int3472_discrete_quirks);
++	if (id)
++		quirks = id->driver_data;
++
+ 	ret = skl_int3472_fill_cldb(adev, &cldb);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Couldn't fill CLDB structure\n");
+@@ -408,6 +436,9 @@ static int skl_int3472_discrete_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, int3472);
+ 	int3472->clock.imgclk_index = cldb.clock_source;
+ 
++	if (quirks)
++		int3472->quirks = *quirks;
++
+ 	ret = skl_int3472_get_sensor_adev_and_name(&pdev->dev, &int3472->sensor,
+ 						   &int3472->sensor_name);
+ 	if (ret)
+diff --git a/drivers/platform/x86/intel/int3472/discrete_quirks.c b/drivers/platform/x86/intel/int3472/discrete_quirks.c
+new file mode 100644
+index 000000000000..bf88863803b2
+--- /dev/null
++++ b/drivers/platform/x86/intel/int3472/discrete_quirks.c
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Author: Hans de Goede <hansg@kernel.org> */
++
++#include <linux/dmi.h>
++
++#include "common.h"
++
++static const struct int3472_discrete_quirks lenovo_miix_510_quirks = {
++	.avdd_second_sensor = "i2c-OVTI2680:00",
++};
++
++const struct dmi_system_id skl_int3472_discrete_quirks[] = {
++	{
++		/* Lenovo Miix 510-12IKB */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "MIIX 510-12IKB"),
++		},
++		.driver_data = (void *)&lenovo_miix_510_quirks,
++	},
++	{ }
++};
+diff --git a/drivers/platform/x86/intel/pmc/adl.c b/drivers/platform/x86/intel/pmc/adl.c
+index e7878558fd90..de361a316d51 100644
+--- a/drivers/platform/x86/intel/pmc/adl.c
++++ b/drivers/platform/x86/intel/pmc/adl.c
+@@ -311,20 +311,8 @@ const struct pmc_reg_map adl_reg_map = {
+ 	.pson_residency_counter_step = TGL_PSON_RES_COUNTER_STEP,
+ };
+ 
+-int adl_core_init(struct pmc_dev *pmcdev)
+-{
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+-	int ret;
+-
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = cnl_resume;
+-
+-	pmc->map = &adl_reg_map;
+-	ret = get_primary_reg_base(pmc);
+-	if (ret)
+-		return ret;
+-
+-	pmc_core_get_low_power_modes(pmcdev);
+-
+-	return 0;
+-}
++struct pmc_dev_info adl_pmc_dev = {
++	.map = &adl_reg_map,
++	.suspend = cnl_suspend,
++	.resume = cnl_resume,
++};
+diff --git a/drivers/platform/x86/intel/pmc/arl.c b/drivers/platform/x86/intel/pmc/arl.c
+index 05dec4f5019f..54b0e8e56de9 100644
+--- a/drivers/platform/x86/intel/pmc/arl.c
++++ b/drivers/platform/x86/intel/pmc/arl.c
+@@ -16,6 +16,7 @@
+ #define IOEP_LPM_REQ_GUID	0x5077612
+ #define SOCS_LPM_REQ_GUID	0x8478657
+ #define PCHS_LPM_REQ_GUID	0x9684572
++#define SOCM_LPM_REQ_GUID	0x2625030
+ 
+ static const u8 ARL_LPM_REG_INDEX[] = {0, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20};
+ 
+@@ -650,6 +651,7 @@ const struct pmc_reg_map arl_pchs_reg_map = {
+ 	.etr3_offset = ETR3_OFFSET,
+ };
+ 
++#define PMC_DEVID_SOCM 0x777f
+ #define PMC_DEVID_SOCS 0xae7f
+ #define PMC_DEVID_IOEP 0x7ecf
+ #define PMC_DEVID_PCHS 0x7f27
+@@ -669,11 +671,17 @@ static struct pmc_info arl_pmc_info_list[] = {
+ 		.devid	= PMC_DEVID_PCHS,
+ 		.map	= &arl_pchs_reg_map,
+ 	},
++	{
++		.guid	= SOCM_LPM_REQ_GUID,
++		.devid	= PMC_DEVID_SOCM,
++		.map	= &mtl_socm_reg_map,
++	},
+ 	{}
+ };
+ 
+ #define ARL_NPU_PCI_DEV			0xad1d
+ #define ARL_GNA_PCI_DEV			0xae4c
++#define ARL_H_GNA_PCI_DEV		0x774c
+ /*
+  * Set power state of select devices that do not have drivers to D3
+  * so that they do not block Package C entry.
+@@ -684,6 +692,12 @@ static void arl_d3_fixup(void)
+ 	pmc_core_set_device_d3(ARL_GNA_PCI_DEV);
+ }
+ 
++static void arl_h_d3_fixup(void)
++{
++	pmc_core_set_device_d3(ARL_NPU_PCI_DEV);
++	pmc_core_set_device_d3(ARL_H_GNA_PCI_DEV);
++}
++
+ static int arl_resume(struct pmc_dev *pmcdev)
+ {
+ 	arl_d3_fixup();
+@@ -691,40 +705,41 @@ static int arl_resume(struct pmc_dev *pmcdev)
+ 	return cnl_resume(pmcdev);
+ }
+ 
+-int arl_core_init(struct pmc_dev *pmcdev)
++static int arl_h_resume(struct pmc_dev *pmcdev)
+ {
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_SOC];
+-	int ret;
+-	int func = 0;
+-	bool ssram_init = true;
++	arl_h_d3_fixup();
++
++	return cnl_resume(pmcdev);
++}
+ 
++static int arl_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
++{
+ 	arl_d3_fixup();
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = arl_resume;
+-	pmcdev->regmap_list = arl_pmc_info_list;
++	return generic_core_init(pmcdev, pmc_dev_info);
++}
+ 
+-	/*
+-	 * If ssram init fails use legacy method to at least get the
+-	 * primary PMC
+-	 */
+-	ret = pmc_core_ssram_init(pmcdev, func);
+-	if (ret) {
+-		ssram_init = false;
+-		pmc->map = &arl_socs_reg_map;
+-
+-		ret = get_primary_reg_base(pmc);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	pmc_core_get_low_power_modes(pmcdev);
+-	pmc_core_punit_pmt_init(pmcdev, ARL_PMT_DMU_GUID);
+-
+-	if (ssram_init)	{
+-		ret = pmc_core_ssram_get_lpm_reqs(pmcdev);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return 0;
++static int arl_h_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
++{
++	arl_h_d3_fixup();
++	return generic_core_init(pmcdev, pmc_dev_info);
+ }
++
++struct pmc_dev_info arl_pmc_dev = {
++	.pci_func = 0,
++	.dmu_guid = ARL_PMT_DMU_GUID,
++	.regmap_list = arl_pmc_info_list,
++	.map = &arl_socs_reg_map,
++	.suspend = cnl_suspend,
++	.resume = arl_resume,
++	.init = arl_core_init,
++};
++
++struct pmc_dev_info arl_h_pmc_dev = {
++	.pci_func = 2,
++	.dmu_guid = ARL_PMT_DMU_GUID,
++	.regmap_list = arl_pmc_info_list,
++	.map = &mtl_socm_reg_map,
++	.suspend = cnl_suspend,
++	.resume = arl_h_resume,
++	.init = arl_h_core_init,
++};
+diff --git a/drivers/platform/x86/intel/pmc/cnp.c b/drivers/platform/x86/intel/pmc/cnp.c
+index fc5193fdf8a8..f147ec51c7fd 100644
+--- a/drivers/platform/x86/intel/pmc/cnp.c
++++ b/drivers/platform/x86/intel/pmc/cnp.c
+@@ -274,20 +274,9 @@ int cnl_resume(struct pmc_dev *pmcdev)
+ 	return pmc_core_resume_common(pmcdev);
+ }
+ 
+-int cnp_core_init(struct pmc_dev *pmcdev)
+-{
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+-	int ret;
+-
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = cnl_resume;
+-
+-	pmc->map = &cnp_reg_map;
+-	ret = get_primary_reg_base(pmc);
+-	if (ret)
+-		return ret;
+-
+-	pmc_core_get_low_power_modes(pmcdev);
++struct pmc_dev_info cnp_pmc_dev = {
++	.map = &cnp_reg_map,
++	.suspend = cnl_suspend,
++	.resume = cnl_resume,
++};
+ 
+-	return 0;
+-}
+diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
+index 1ee0fb5f8250..28e0c09dd599 100644
+--- a/drivers/platform/x86/intel/pmc/core.c
++++ b/drivers/platform/x86/intel/pmc/core.c
+@@ -1345,40 +1345,79 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
+ 	}
+ }
+ 
++/*
++ * When supported, ssram init is used to achieve all available PMCs.
++ * If ssram init fails, this function uses legacy method to at least get the
++ * primary PMC.
++ */
++int generic_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
++{
++	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
++	bool ssram;
++	int ret;
++
++	pmcdev->suspend = pmc_dev_info->suspend;
++	pmcdev->resume = pmc_dev_info->resume;
++
++	ssram = pmc_dev_info->regmap_list != NULL;
++	if (ssram) {
++		pmcdev->regmap_list = pmc_dev_info->regmap_list;
++		ret = pmc_core_ssram_init(pmcdev, pmc_dev_info->pci_func);
++		if (ret) {
++			dev_warn(&pmcdev->pdev->dev,
++				 "ssram init failed, %d, using legacy init\n", ret);
++			ssram = false;
++		}
++	}
++
++	if (!ssram) {
++		pmc->map = pmc_dev_info->map;
++		ret = get_primary_reg_base(pmc);
++		if (ret)
++			return ret;
++	}
++
++	pmc_core_get_low_power_modes(pmcdev);
++	if (pmc_dev_info->dmu_guid)
++		pmc_core_punit_pmt_init(pmcdev, pmc_dev_info->dmu_guid);
++
++	if (ssram)
++		return pmc_core_ssram_get_lpm_reqs(pmcdev);
++
++	return 0;
++}
++
+ static const struct x86_cpu_id intel_pmc_core_ids[] = {
+-	X86_MATCH_VFM(INTEL_SKYLAKE_L,		spt_core_init),
+-	X86_MATCH_VFM(INTEL_SKYLAKE,		spt_core_init),
+-	X86_MATCH_VFM(INTEL_KABYLAKE_L,		spt_core_init),
+-	X86_MATCH_VFM(INTEL_KABYLAKE,		spt_core_init),
+-	X86_MATCH_VFM(INTEL_CANNONLAKE_L,	cnp_core_init),
+-	X86_MATCH_VFM(INTEL_ICELAKE_L,		icl_core_init),
+-	X86_MATCH_VFM(INTEL_ICELAKE_NNPI,	icl_core_init),
+-	X86_MATCH_VFM(INTEL_COMETLAKE,		cnp_core_init),
+-	X86_MATCH_VFM(INTEL_COMETLAKE_L,	cnp_core_init),
+-	X86_MATCH_VFM(INTEL_TIGERLAKE_L,	tgl_l_core_init),
+-	X86_MATCH_VFM(INTEL_TIGERLAKE,		tgl_core_init),
+-	X86_MATCH_VFM(INTEL_ATOM_TREMONT,	tgl_l_core_init),
+-	X86_MATCH_VFM(INTEL_ATOM_TREMONT_L,	icl_core_init),
+-	X86_MATCH_VFM(INTEL_ROCKETLAKE,		tgl_core_init),
+-	X86_MATCH_VFM(INTEL_ALDERLAKE_L,	tgl_l_core_init),
+-	X86_MATCH_VFM(INTEL_ATOM_GRACEMONT,	tgl_l_core_init),
+-	X86_MATCH_VFM(INTEL_ALDERLAKE,		adl_core_init),
+-	X86_MATCH_VFM(INTEL_RAPTORLAKE_P,	tgl_l_core_init),
+-	X86_MATCH_VFM(INTEL_RAPTORLAKE,		adl_core_init),
+-	X86_MATCH_VFM(INTEL_RAPTORLAKE_S,	adl_core_init),
+-	X86_MATCH_VFM(INTEL_METEORLAKE_L,	mtl_core_init),
+-	X86_MATCH_VFM(INTEL_ARROWLAKE,		arl_core_init),
+-	X86_MATCH_VFM(INTEL_LUNARLAKE_M,	lnl_core_init),
++	X86_MATCH_VFM(INTEL_SKYLAKE_L,		&spt_pmc_dev),
++	X86_MATCH_VFM(INTEL_SKYLAKE,		&spt_pmc_dev),
++	X86_MATCH_VFM(INTEL_KABYLAKE_L,		&spt_pmc_dev),
++	X86_MATCH_VFM(INTEL_KABYLAKE,		&spt_pmc_dev),
++	X86_MATCH_VFM(INTEL_CANNONLAKE_L,	&cnp_pmc_dev),
++	X86_MATCH_VFM(INTEL_ICELAKE_L,		&icl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ICELAKE_NNPI,	&icl_pmc_dev),
++	X86_MATCH_VFM(INTEL_COMETLAKE,		&cnp_pmc_dev),
++	X86_MATCH_VFM(INTEL_COMETLAKE_L,	&cnp_pmc_dev),
++	X86_MATCH_VFM(INTEL_TIGERLAKE_L,	&tgl_l_pmc_dev),
++	X86_MATCH_VFM(INTEL_TIGERLAKE,		&tgl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ATOM_TREMONT,	&tgl_l_pmc_dev),
++	X86_MATCH_VFM(INTEL_ATOM_TREMONT_L,	&icl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ROCKETLAKE,		&tgl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ALDERLAKE_L,	&tgl_l_pmc_dev),
++	X86_MATCH_VFM(INTEL_ATOM_GRACEMONT,	&tgl_l_pmc_dev),
++	X86_MATCH_VFM(INTEL_ALDERLAKE,		&adl_pmc_dev),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE_P,	&tgl_l_pmc_dev),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE,		&adl_pmc_dev),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE_S,	&adl_pmc_dev),
++	X86_MATCH_VFM(INTEL_METEORLAKE_L,	&mtl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ARROWLAKE,		&arl_pmc_dev),
++	X86_MATCH_VFM(INTEL_ARROWLAKE_H,	&arl_h_pmc_dev),
++	X86_MATCH_VFM(INTEL_ARROWLAKE_U,	&arl_h_pmc_dev),
++	X86_MATCH_VFM(INTEL_LUNARLAKE_M,	&lnl_pmc_dev),
+ 	{}
+ };
+ 
+ MODULE_DEVICE_TABLE(x86cpu, intel_pmc_core_ids);
+ 
+-static const struct pci_device_id pmc_pci_ids[] = {
+-	{ PCI_VDEVICE(INTEL, SPT_PMC_PCI_DEVICE_ID) },
+-	{ }
+-};
+-
+ /*
+  * This quirk can be used on those platforms where
+  * the platform BIOS enforces 24Mhz crystal to shutdown
+@@ -1452,7 +1491,7 @@ static int pmc_core_probe(struct platform_device *pdev)
+ 	static bool device_initialized;
+ 	struct pmc_dev *pmcdev;
+ 	const struct x86_cpu_id *cpu_id;
+-	int (*core_init)(struct pmc_dev *pmcdev);
++	struct pmc_dev_info *pmc_dev_info;
+ 	struct pmc *primary_pmc;
+ 	int ret;
+ 
+@@ -1472,7 +1511,7 @@ static int pmc_core_probe(struct platform_device *pdev)
+ 	if (!cpu_id)
+ 		return -ENODEV;
+ 
+-	core_init = (int (*)(struct pmc_dev *))cpu_id->driver_data;
++	pmc_dev_info = (struct pmc_dev_info *)cpu_id->driver_data;
+ 
+ 	/* Primary PMC */
+ 	primary_pmc = devm_kzalloc(&pdev->dev, sizeof(*primary_pmc), GFP_KERNEL);
+@@ -1489,16 +1528,13 @@ static int pmc_core_probe(struct platform_device *pdev)
+ 	if (!pmcdev->pkgc_res_cnt)
+ 		return -ENOMEM;
+ 
+-	/*
+-	 * Coffee Lake has CPU ID of Kaby Lake and Cannon Lake PCH. So here
+-	 * Sunrisepoint PCH regmap can't be used. Use Cannon Lake PCH regmap
+-	 * in this case.
+-	 */
+-	if (core_init == spt_core_init && !pci_dev_present(pmc_pci_ids))
+-		core_init = cnp_core_init;
+-
+ 	mutex_init(&pmcdev->lock);
+-	ret = core_init(pmcdev);
++
++	if (pmc_dev_info->init)
++		ret = pmc_dev_info->init(pmcdev, pmc_dev_info);
++	else
++		ret = generic_core_init(pmcdev, pmc_dev_info);
++
+ 	if (ret) {
+ 		pmc_core_clean_structure(pdev);
+ 		return ret;
+diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+index b9d3291d0bf2..987fde3ffc1c 100644
+--- a/drivers/platform/x86/intel/pmc/core.h
++++ b/drivers/platform/x86/intel/pmc/core.h
+@@ -430,12 +430,34 @@ struct pmc_dev {
+ 
+ enum pmc_index {
+ 	PMC_IDX_MAIN,
+-	PMC_IDX_SOC = PMC_IDX_MAIN,
+ 	PMC_IDX_IOE,
+ 	PMC_IDX_PCH,
+ 	PMC_IDX_MAX
+ };
+ 
++/**
++ * struct pmc_dev_info - Structure to keep PMC device info
++ * @pci_func:		Function number of the primary PMC
++ * @dmu_guid:		Die Management Unit GUID
++ * @regmap_list:	Pointer to a list of pmc_info structure that could be
++ *			available for the platform. When set, this field implies
++ *			SSRAM support.
++ * @map:		Pointer to a pmc_reg_map struct that contains platform
++ *			specific attributes of the primary PMC
++ * @suspend:		Function to perform platform specific suspend
++ * @resume:		Function to perform platform specific resume
++ * @init:		Function to perform platform specific init action
++ */
++struct pmc_dev_info {
++	u8 pci_func;
++	u32 dmu_guid;
++	struct pmc_info *regmap_list;
++	const struct pmc_reg_map *map;
++	void (*suspend)(struct pmc_dev *pmcdev);
++	int (*resume)(struct pmc_dev *pmcdev);
++	int (*init)(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info);
++};
++
+ extern const struct pmc_bit_map msr_map[];
+ extern const struct pmc_bit_map spt_pll_map[];
+ extern const struct pmc_bit_map spt_mphy_map[];
+@@ -592,16 +614,18 @@ extern void pmc_core_set_device_d3(unsigned int device);
+ 
+ extern int pmc_core_ssram_init(struct pmc_dev *pmcdev, int func);
+ 
+-int spt_core_init(struct pmc_dev *pmcdev);
+-int cnp_core_init(struct pmc_dev *pmcdev);
+-int icl_core_init(struct pmc_dev *pmcdev);
+-int tgl_core_init(struct pmc_dev *pmcdev);
+-int tgl_l_core_init(struct pmc_dev *pmcdev);
+-int tgl_core_generic_init(struct pmc_dev *pmcdev, int pch_tp);
+-int adl_core_init(struct pmc_dev *pmcdev);
+-int mtl_core_init(struct pmc_dev *pmcdev);
+-int arl_core_init(struct pmc_dev *pmcdev);
+-int lnl_core_init(struct pmc_dev *pmcdev);
++int generic_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info);
++
++extern struct pmc_dev_info spt_pmc_dev;
++extern struct pmc_dev_info cnp_pmc_dev;
++extern struct pmc_dev_info icl_pmc_dev;
++extern struct pmc_dev_info tgl_l_pmc_dev;
++extern struct pmc_dev_info tgl_pmc_dev;
++extern struct pmc_dev_info adl_pmc_dev;
++extern struct pmc_dev_info mtl_pmc_dev;
++extern struct pmc_dev_info arl_pmc_dev;
++extern struct pmc_dev_info arl_h_pmc_dev;
++extern struct pmc_dev_info lnl_pmc_dev;
+ 
+ void cnl_suspend(struct pmc_dev *pmcdev);
+ int cnl_resume(struct pmc_dev *pmcdev);
+diff --git a/drivers/platform/x86/intel/pmc/icl.c b/drivers/platform/x86/intel/pmc/icl.c
+index 71b0fd6cb7d8..6952c8ef58a0 100644
+--- a/drivers/platform/x86/intel/pmc/icl.c
++++ b/drivers/platform/x86/intel/pmc/icl.c
+@@ -50,18 +50,6 @@ const struct pmc_reg_map icl_reg_map = {
+ 	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+-int icl_core_init(struct pmc_dev *pmcdev)
+-{
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+-	int ret;
+-
+-	pmc->map = &icl_reg_map;
+-
+-	ret = get_primary_reg_base(pmc);
+-	if (ret)
+-		return ret;
+-
+-	pmc_core_get_low_power_modes(pmcdev);
+-
+-	return ret;
+-}
++struct pmc_dev_info icl_pmc_dev = {
++	.map = &icl_reg_map,
++};
+diff --git a/drivers/platform/x86/intel/pmc/lnl.c b/drivers/platform/x86/intel/pmc/lnl.c
+index be029f12cdf4..5a78807b9bc2 100644
+--- a/drivers/platform/x86/intel/pmc/lnl.c
++++ b/drivers/platform/x86/intel/pmc/lnl.c
+@@ -550,22 +550,15 @@ static int lnl_resume(struct pmc_dev *pmcdev)
+ 	return cnl_resume(pmcdev);
+ }
+ 
+-int lnl_core_init(struct pmc_dev *pmcdev)
++static int lnl_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
+ {
+-	int ret;
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_SOC];
+-
+ 	lnl_d3_fixup();
+-
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = lnl_resume;
+-
+-	pmc->map = &lnl_socm_reg_map;
+-	ret = get_primary_reg_base(pmc);
+-	if (ret)
+-		return ret;
+-
+-	pmc_core_get_low_power_modes(pmcdev);
+-
+-	return 0;
++	return generic_core_init(pmcdev, pmc_dev_info);
+ }
++
++struct pmc_dev_info lnl_pmc_dev = {
++	.map = &lnl_socm_reg_map,
++	.suspend = cnl_suspend,
++	.resume = lnl_resume,
++	.init = lnl_core_init,
++};
+diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+index 02949fed76e9..705b7e1b0b86 100644
+--- a/drivers/platform/x86/intel/pmc/mtl.c
++++ b/drivers/platform/x86/intel/pmc/mtl.c
+@@ -990,39 +990,18 @@ static int mtl_resume(struct pmc_dev *pmcdev)
+ 	return cnl_resume(pmcdev);
+ }
+ 
+-int mtl_core_init(struct pmc_dev *pmcdev)
++static int mtl_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
+ {
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_SOC];
+-	int ret;
+-	int func = 2;
+-	bool ssram_init = true;
+-
+ 	mtl_d3_fixup();
+-
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = mtl_resume;
+-	pmcdev->regmap_list = mtl_pmc_info_list;
+-
+-	/*
+-	 * If ssram init fails use legacy method to at least get the
+-	 * primary PMC
+-	 */
+-	ret = pmc_core_ssram_init(pmcdev, func);
+-	if (ret) {
+-		ssram_init = false;
+-		dev_warn(&pmcdev->pdev->dev,
+-			 "ssram init failed, %d, using legacy init\n", ret);
+-		pmc->map = &mtl_socm_reg_map;
+-		ret = get_primary_reg_base(pmc);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	pmc_core_get_low_power_modes(pmcdev);
+-	pmc_core_punit_pmt_init(pmcdev, MTL_PMT_DMU_GUID);
+-
+-	if (ssram_init)
+-		return pmc_core_ssram_get_lpm_reqs(pmcdev);
+-
+-	return 0;
++	return generic_core_init(pmcdev, pmc_dev_info);
+ }
++
++struct pmc_dev_info mtl_pmc_dev = {
++	.pci_func = 2,
++	.dmu_guid = MTL_PMT_DMU_GUID,
++	.regmap_list = mtl_pmc_info_list,
++	.map = &mtl_socm_reg_map,
++	.suspend = cnl_suspend,
++	.resume = mtl_resume,
++	.init = mtl_core_init,
++};
+diff --git a/drivers/platform/x86/intel/pmc/spt.c b/drivers/platform/x86/intel/pmc/spt.c
+index ab993a69e33e..9289cd76b014 100644
+--- a/drivers/platform/x86/intel/pmc/spt.c
++++ b/drivers/platform/x86/intel/pmc/spt.c
+@@ -8,6 +8,8 @@
+  *
+  */
+ 
++#include <linux/pci.h>
++
+ #include "core.h"
+ 
+ const struct pmc_bit_map spt_pll_map[] = {
+@@ -134,18 +136,25 @@ const struct pmc_reg_map spt_reg_map = {
+ 	.pm_vric1_offset = SPT_PMC_VRIC1_OFFSET,
+ };
+ 
+-int spt_core_init(struct pmc_dev *pmcdev)
+-{
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+-	int ret;
+-
+-	pmc->map = &spt_reg_map;
+-
+-	ret = get_primary_reg_base(pmc);
+-	if (ret)
+-		return ret;
++static const struct pci_device_id pmc_pci_ids[] = {
++	{ PCI_VDEVICE(INTEL, SPT_PMC_PCI_DEVICE_ID) },
++	{ }
++};
+ 
+-	pmc_core_get_low_power_modes(pmcdev);
++static int spt_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
++{
++	/*
++	 * Coffee Lake has CPU ID of Kaby Lake and Cannon Lake PCH. So here
++	 * Sunrisepoint PCH regmap can't be used. Use Cannon Lake PCH regmap
++	 * in this case.
++	 */
++	if (!pci_dev_present(pmc_pci_ids))
++		return generic_core_init(pmcdev, &cnp_pmc_dev);
+ 
+-	return ret;
++	return generic_core_init(pmcdev, pmc_dev_info);
+ }
++
++struct pmc_dev_info spt_pmc_dev = {
++	.map = &spt_reg_map,
++	.init = spt_core_init,
++};
+diff --git a/drivers/platform/x86/intel/pmc/tgl.c b/drivers/platform/x86/intel/pmc/tgl.c
+index e0580de18077..758bd8d162e5 100644
+--- a/drivers/platform/x86/intel/pmc/tgl.c
++++ b/drivers/platform/x86/intel/pmc/tgl.c
+@@ -285,35 +285,28 @@ void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev)
+ 	ACPI_FREE(out_obj);
+ }
+ 
+-int tgl_l_core_init(struct pmc_dev *pmcdev)
++static int tgl_core_init(struct pmc_dev *pmcdev, struct pmc_dev_info *pmc_dev_info)
+ {
+-	return tgl_core_generic_init(pmcdev, PCH_LP);
+-}
+-
+-int tgl_core_init(struct pmc_dev *pmcdev)
+-{
+-	return tgl_core_generic_init(pmcdev, PCH_H);
+-}
+-
+-int tgl_core_generic_init(struct pmc_dev *pmcdev, int pch_tp)
+-{
+-	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+ 	int ret;
+ 
+-	if (pch_tp == PCH_H)
+-		pmc->map = &tgl_h_reg_map;
+-	else
+-		pmc->map = &tgl_reg_map;
+-
+-	pmcdev->suspend = cnl_suspend;
+-	pmcdev->resume = cnl_resume;
+-
+-	ret = get_primary_reg_base(pmc);
++	ret = generic_core_init(pmcdev, pmc_dev_info);
+ 	if (ret)
+ 		return ret;
+ 
+-	pmc_core_get_low_power_modes(pmcdev);
+ 	pmc_core_get_tgl_lpm_reqs(pmcdev->pdev);
+-
+ 	return 0;
+ }
++
++struct pmc_dev_info tgl_l_pmc_dev = {
++	.map = &tgl_reg_map,
++	.suspend = cnl_suspend,
++	.resume = cnl_resume,
++	.init = tgl_core_init,
++};
++
++struct pmc_dev_info tgl_pmc_dev = {
++	.map = &tgl_h_reg_map,
++	.suspend = cnl_suspend,
++	.resume = cnl_resume,
++	.init = tgl_core_init,
++};
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
 index 950d8c9fb884..77ac6f8c1805 100644
 --- a/drivers/scsi/sd.c

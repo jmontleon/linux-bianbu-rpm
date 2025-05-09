@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.14.5
-%define specversion 6.14.5
+%define specrpmversion 6.14.6
+%define specversion 6.14.6
 %define patchversion 6.14
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.14.5
+%define tarfile_release 6.14.6
 # This is needed to do merge window version magic
 %define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.14.5
+%define kabiversion 6.14.6
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6637,8 +6637,28 @@ fi\
 #
 #
 %changelog
-* Fri May 02 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.5-300]
+* Fri May 09 2025 Augusto Caringi <acaringi@redhat.com> [6.14.6-0]
+- platform/x86/intel/pmc: Add Arrow Lake U/H support to intel_pmc_core driver (Xi Pardee)
+- platform/x86:intel/pmc: Move arch specific action to init function (Xi Pardee)
+- platform/x86/intel/pmc: Remove simple init functions (Xi Pardee)
+- platform/x86:intel/pmc: Create generic_core_init() for all platforms (Xi Pardee)
+- platform/x86/intel/pmc: Remove duplicate enum (Xi Pardee)
+- platform/x86:intel/pmc: Make tgl_core_generic_init() static (Xi Pardee)
+- redhat/configs: Add configs for new ov02c10 and ov02e10 drivers (Hans de Goede)
+- media: i2c: Add Omnivision OV02C10 sensor driver (Heimir Thor Sverrisson)
+- media: i2c: ov02e10: add OV02E10 image sensor driver (Jingjing Xiong)
+- platform/x86: int3472: Debug log when remapping pins (Hans de Goede)
+- platform/x86: int3472: Add handshake pin support (Hans de Goede)
+- platform/x86: int3472: Prepare for registering more than 1 GPIO regulator (Hans de Goede)
+- platform/x86: int3472: Avoid GPIO regulator spikes (Hans de Goede)
+- platform/x86: int3472: Make regulator supply name configurable (Hans de Goede)
+- platform/x86: int3472: Rework AVDD second sensor quirk handling (Hans de Goede)
+- platform/x86: int3472: Drop unused gpio field from struct int3472_gpio_regulator (Hans de Goede)
+- platform/x86: int3472: Stop setting a supply-name for GPIO regulators (Hans de Goede)
+- platform/x86: int3472: Add skl_int3472_register_clock() helper (Hans de Goede)
+- platform/x86: int3472: Call "func" "con_id" instead (Sakari Ailus)
 - Turn on ACPI_DEBUG for Fedora (Justin M. Forbes)
+- Linux v6.14.6
 
 * Fri May 02 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.5-0]
 - Fix up configs for 6.14.5 merge (Justin M. Forbes)
