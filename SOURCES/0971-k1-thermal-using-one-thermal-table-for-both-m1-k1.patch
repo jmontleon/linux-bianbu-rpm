@@ -1,4 +1,4 @@
-From 41a3c5be8f16a50a86adff2968e0ebb38e70d737 Mon Sep 17 00:00:00 2001
+From 2a25062ece7c2cf25630ec0ed6add646182c133d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 31 Aug 2024 15:54:24 +0800
 Subject: [PATCH 0971/1206] k1:thermal:using one thermal table for both m1 & k1
@@ -16,7 +16,7 @@ Change-Id: Ide2be87dd6d175818c8d86f142a46d2997b067f7
  delete mode 100644 arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 383d26f60e53..4f5cbdb670e4 100644
+index 383d26f60e531..4f5cbdb670e49 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -10,7 +10,7 @@
@@ -29,7 +29,7 @@ index 383d26f60e53..4f5cbdb670e4 100644
  / {
  	model = "spacemit k1-x MINI-PC board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index dbc9ecd40d08..eed13a50e1ef 100644
+index dbc9ecd40d087..eed13a50e1ef4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -10,7 +10,7 @@
@@ -42,7 +42,7 @@ index dbc9ecd40d08..eed13a50e1ef 100644
  / {
  	model = "M1-MUSE-BOOK";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
-index 899cec78d01d..24a15834d1a4 100644
+index 899cec78d01d9..24a15834d1a41 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -11,7 +11,7 @@
@@ -55,7 +55,7 @@ index 899cec78d01d..24a15834d1a4 100644
  / {
  	model = "spacemit k1-x MUSE-Card board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 98f74f8881f7..6d8e6f3c510d 100644
+index 98f74f8881f70..6d8e6f3c510d8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -11,7 +11,7 @@
@@ -68,7 +68,7 @@ index 98f74f8881f7..6d8e6f3c510d 100644
  / {
  	model = "spacemit k1-x MUSE-Pi board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
-index 51b190378ba2..e2d73dd2f6c3 100644
+index 51b190378ba2f..e2d73dd2f6c3c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 @@ -9,18 +9,24 @@ cluster0_thermal {
@@ -172,7 +172,7 @@ index 51b190378ba2..e2d73dd2f6c3 100644
  				hysteresis = <5000>;
  				type = "critical";
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index 65d92dacaa01..ea686d02d08f 100644
+index 65d92dacaa019..ea686d02d08fa 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -11,7 +11,7 @@
@@ -186,7 +186,7 @@ index 65d92dacaa01..ea686d02d08f 100644
  	model = "Milk-V(M1) Jupiter";
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 deleted file mode 100644
-index 3a0252791dcb..000000000000
+index 3a0252791dcb9..0000000000000
 --- a/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 +++ /dev/null
 @@ -1,106 +0,0 @@

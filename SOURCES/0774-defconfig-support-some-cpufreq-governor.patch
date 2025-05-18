@@ -1,4 +1,4 @@
-From 446a55d40a2c63e1f9e8776151219674e9e44e1c Mon Sep 17 00:00:00 2001
+From baa84e6d59c71f15fc1810dc6ac2987b217bf3b3 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 26 Jun 2024 17:47:07 +0800
 Subject: [PATCH 0774/1206] defconfig: support some cpufreq governor
@@ -9,7 +9,7 @@ Change-Id: I774b241d46a27b9d8ae269e1f61471169299d091
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 29b3a3240081..fc76d81561a5 100644
+index 29b3a32400816..fc76d81561a53 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -48,7 +48,11 @@ CONFIG_RISCV_SBI_V01=y

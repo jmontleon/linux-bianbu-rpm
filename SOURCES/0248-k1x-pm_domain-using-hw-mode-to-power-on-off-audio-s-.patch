@@ -1,4 +1,4 @@
-From 8a1365a88c702f2965427300e2cd5c9a43444c17 Mon Sep 17 00:00:00 2001
+From 95604d161414e5df5490f99851f38cd7a53152ea Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 26 Dec 2023 13:41:05 +0800
 Subject: [PATCH 0248/1206] k1x:pm_domain: using hw mode to power-on/off
@@ -10,7 +10,7 @@ Change-Id: I463bce2d6b4c98ba68686e870486ecf201827a40
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 5532c0a65e3e..28dbb93020cf 100644
+index 5532c0a65e3ee..28dbb93020cf6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -613,6 +613,7 @@ power-domain@SPT_PD_AUDIO {

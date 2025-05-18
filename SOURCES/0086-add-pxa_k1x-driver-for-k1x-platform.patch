@@ -1,4 +1,4 @@
-From 5b613e12a7c6147ef5045704026436a65d6d645b Mon Sep 17 00:00:00 2001
+From c3217592e83dbe0b9222cef797e51c2371cac67e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 18 Aug 2023 11:58:11 +0800
 Subject: [PATCH 0086/1206] add pxa_k1x driver for k1x platform
@@ -12,7 +12,7 @@ Change-Id: I4b9cddc3478b0fc180f142452de47cec0f560950
  create mode 100644 drivers/tty/serial/pxa_k1x.c
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 976dae3bb1bb..0860331f62bd 100644
+index 976dae3bb1bb0..0860331f62bda 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -414,7 +414,6 @@ config SERIAL_PXA
@@ -52,7 +52,7 @@ index 976dae3bb1bb..0860331f62bd 100644
  config SERIAL_PXA_CONSOLE
  	bool "Console on PXA serial port (DEPRECATED)"
 diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index 6ff74f0a9530..833d0fc8358f 100644
+index 6ff74f0a9530c..833d0fc8358fa 100644
 --- a/drivers/tty/serial/Makefile
 +++ b/drivers/tty/serial/Makefile
 @@ -66,6 +66,7 @@ obj-$(CONFIG_SERIAL_OWL)		+= owl-uart.o
@@ -65,7 +65,7 @@ index 6ff74f0a9530..833d0fc8358f 100644
  obj-$(CONFIG_SERIAL_QE)			+= ucc_uart.o
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
 new file mode 100644
-index 000000000000..be8ea8b1430e
+index 0000000000000..be8ea8b1430e3
 --- /dev/null
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -0,0 +1,2354 @@

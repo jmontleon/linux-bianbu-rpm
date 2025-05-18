@@ -1,4 +1,4 @@
-From 77634f22c542acc6bae2d2fbf8a516a5b12ba556 Mon Sep 17 00:00:00 2001
+From 6f081f86f461328208595db1dfeaa9957c65b8f9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Wed, 24 May 2023 11:51:47 +0800
 Subject: [PATCH 0027/1206] reset: reset driver handle all global soft reset
@@ -11,7 +11,7 @@ Change-Id: Ibbac335677e8eba281a0757f641844933d814385
  2 files changed, 348 insertions(+), 233 deletions(-)
 
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index baa7fc0362fd..38957c64a168 100755
+index baa7fc0362fd0..38957c64a1683 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -13,6 +13,7 @@
@@ -438,7 +438,7 @@ index baa7fc0362fd..38957c64a168 100755
      reset->rcdev.nr_resets = k1pro_reset_data.signals_num;
      reset->rcdev.ops       = &k1pro_reset_data.ops;
 diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
-index b95a069e1c68..aa7129489028 100755
+index b95a069e1c682..aa71294890286 100755
 --- a/include/dt-bindings/reset/k1-pro-reset.h
 +++ b/include/dt-bindings/reset/k1-pro-reset.h
 @@ -3,11 +3,12 @@

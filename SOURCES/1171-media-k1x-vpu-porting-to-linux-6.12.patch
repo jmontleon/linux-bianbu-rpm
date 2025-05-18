@@ -1,4 +1,4 @@
-From 4bf85a990fbce855e20c4d4532b50fcc60d27496 Mon Sep 17 00:00:00 2001
+From 6c8be98c6b2587cb723f45a4a5451158bc067c20 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:26:22 +0800
 Subject: [PATCH 1171/1206] media: k1x/vpu: porting to linux-6.12
@@ -19,7 +19,7 @@ Change-Id: I9ba483823557a919e3dc4108077f0a91b246b369
  11 files changed, 44 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
-index 3bb9c3434c03..f02519e4679f 100644
+index 3bb9c3434c035..f02519e4679f5 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
 @@ -319,7 +319,7 @@ static int lsid_regs_debugfs_init(struct mvx_lsid_hwreg *lsid_hwreg,
@@ -32,7 +32,7 @@ index 3bb9c3434c03..f02519e4679f 100644
  {
  	int ret;
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
-index 534c7ff41f51..5491dd4f1ba4 100644
+index 534c7ff41f511..5491dd4f1ba44 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
 @@ -416,7 +416,7 @@ static const struct file_operations sched_fops = {
@@ -45,7 +45,7 @@ index 534c7ff41f51..5491dd4f1ba4 100644
  {
  	struct dentry *dentry;
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
-index 2de4852395c4..1f860a845f05 100644
+index 2de4852395c41..1f860a845f059 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 @@ -35,6 +35,7 @@
@@ -66,7 +66,7 @@ index 2de4852395c4..1f860a845f05 100644
  			    sizeof(fw_msg.error.message)));
  
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index 28c08fe617f9..99a50944bbdb 100644
+index 28c08fe617f9f..99a50944bbdb4 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -37,6 +37,7 @@
@@ -78,7 +78,7 @@ index 28c08fe617f9..99a50944bbdb 100644
  #include <linux/list.h>
  #include <linux/sched.h>
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
-index 752413fad81c..1c50d1b7d795 100644
+index 752413fad81ca..1c50d1b7d7951 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 @@ -37,6 +37,7 @@
@@ -99,7 +99,7 @@ index 752413fad81c..1c50d1b7d795 100644
  			uint8_t qtbl[MVX_FW_QUANT_LEN])
  {
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
-index b48ab0177f76..4707ec53669e 100644
+index b48ab0177f760..4707ec53669e4 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
 @@ -77,10 +77,10 @@ static void v4l2_port_show(struct mvx_v4l2_port *port,
@@ -117,7 +117,7 @@ index b48ab0177f76..4707ec53669e 100644
  		       port->vb2_queue.queued_count);
  	mvx_seq_printf(s, "streaming", 2, "%u\n",
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
-index 625d3e738b0c..344c389ee9b9 100644
+index 625d3e738b0c7..344c389ee9b90 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
 @@ -600,8 +600,8 @@ static int start_streaming(struct vb2_queue *q,
@@ -165,7 +165,7 @@ index 625d3e738b0c..344c389ee9b9 100644
  				break;
  			}
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
-index 0d76ddfef427..986bb520d232 100644
+index 0d76ddfef4277..986bb520d2328 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 @@ -572,8 +572,9 @@ static ssize_t sysfs_print_enabled(struct device *dev,
@@ -275,7 +275,7 @@ index 0d76ddfef427..986bb520d232 100644
      int failed;
      unsigned int wait_pending_timeout;
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
-index b4b31728caa3..1f7706a8332d 100644
+index b4b31728caa32..1f7706a8332d3 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
 @@ -141,7 +141,9 @@ static struct dentry *lookup(struct dentry *parent,
@@ -290,7 +290,7 @@ index b4b31728caa3..1f7706a8332d 100644
  #else
  	list_for_each_entry(child, &parent->d_subdirs, d_u.d_child)
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c
-index d4e1ba7d8bcc..80bd9b63d472 100644
+index d4e1ba7d8bccc..80bd9b63d4722 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_log_group.c
 @@ -34,6 +34,7 @@
@@ -302,7 +302,7 @@ index d4e1ba7d8bcc..80bd9b63d472 100644
  /******************************************************************************
   * Private variables
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
-index 1083c7f91fbb..8052e4443ef4 100644
+index 1083c7f91fbbb..8052e4443ef40 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
 @@ -34,6 +34,8 @@

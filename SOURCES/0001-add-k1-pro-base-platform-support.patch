@@ -1,4 +1,4 @@
-From 8abcafbb4bdc7a01f77c4525606c2ab57b3484b6 Mon Sep 17 00:00:00 2001
+From 953743c6aeed3de759d0c071b4dc44383eee3f7d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Mon, 21 Nov 2022 02:15:04 +0000
 Subject: [PATCH 0001/1206] add k1-pro base platform support
@@ -25,7 +25,7 @@ Change-Id: I293e2a4b69742275917d3dc73d5d8eeed449691a
  create mode 100644 arch/riscv/configs/k1-pro_sim_defconfig
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 17606940bb52..67b189bbca5b 100644
+index 17606940bb523..67b189bbca5b4 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -86,4 +86,35 @@ config SOC_CANAAN_K210
@@ -65,7 +65,7 @@ index 17606940bb52..67b189bbca5b 100644
 +
  endmenu # "SoC selection"
 diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index bff887d38abe..f11e132081d1 100644
+index bff887d38abe4..f11e132081d1b 100644
 --- a/arch/riscv/boot/dts/Makefile
 +++ b/arch/riscv/boot/dts/Makefile
 @@ -8,5 +8,6 @@ subdir-y += sophgo
@@ -76,7 +76,7 @@ index bff887d38abe..f11e132081d1 100644
  
  obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index ac617319a574..73cba7cfa3f1 100644
+index ac617319a5742..73cba7cfa3f1c 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,2 +1,4 @@
@@ -86,7 +86,7 @@ index ac617319a574..73cba7cfa3f1 100644
 +obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 new file mode 100644
-index 000000000000..8e42efb752a9
+index 0000000000000..8e42efb752a97
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -0,0 +1,153 @@
@@ -245,7 +245,7 @@ index 000000000000..8e42efb752a9
 +
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
 new file mode 100644
-index 000000000000..11b46bdd63ce
+index 0000000000000..11b46bdd63ceb
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
 @@ -0,0 +1,23 @@
@@ -274,7 +274,7 @@ index 000000000000..11b46bdd63ce
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_qemu.dts b/arch/riscv/boot/dts/spacemit/k1-pro_qemu.dts
 new file mode 100644
-index 000000000000..b2a04f9388b0
+index 0000000000000..b2a04f9388b03
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_qemu.dts
 @@ -0,0 +1,128 @@
@@ -408,7 +408,7 @@ index 000000000000..b2a04f9388b0
 +
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_sim.dts b/arch/riscv/boot/dts/spacemit/k1-pro_sim.dts
 new file mode 100644
-index 000000000000..bdfdaf1f8627
+index 0000000000000..bdfdaf1f86278
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_sim.dts
 @@ -0,0 +1,23 @@
@@ -437,7 +437,7 @@ index 000000000000..bdfdaf1f8627
 +};
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
 new file mode 100644
-index 000000000000..320e6c0ca7c2
+index 0000000000000..320e6c0ca7c20
 --- /dev/null
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -0,0 +1,125 @@
@@ -568,7 +568,7 @@ index 000000000000..320e6c0ca7c2
 +# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-pro_qemu_defconfig b/arch/riscv/configs/k1-pro_qemu_defconfig
 new file mode 100644
-index 000000000000..d6012878841a
+index 0000000000000..d6012878841a2
 --- /dev/null
 +++ b/arch/riscv/configs/k1-pro_qemu_defconfig
 @@ -0,0 +1,126 @@
@@ -700,7 +700,7 @@ index 000000000000..d6012878841a
 +# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-pro_sim_defconfig b/arch/riscv/configs/k1-pro_sim_defconfig
 new file mode 100644
-index 000000000000..320e6c0ca7c2
+index 0000000000000..320e6c0ca7c20
 --- /dev/null
 +++ b/arch/riscv/configs/k1-pro_sim_defconfig
 @@ -0,0 +1,125 @@

@@ -1,4 +1,4 @@
-From 3919d65c25818fa2d5694432b2ad06a1fe9346c9 Mon Sep 17 00:00:00 2001
+From 6c4861b7b8321869f9c35836ca0f71ad9e068314 Mon Sep 17 00:00:00 2001
 From: yangchen <chen.yang@spacemit.com>
 Date: Mon, 25 Dec 2023 12:38:05 +0800
 Subject: [PATCH 0257/1206] add pwm control backlight
@@ -10,7 +10,7 @@ Change-Id: I6837840db086ab0c6e2a126a5c004c08f836a918
  2 files changed, 33 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index ec8c75268e30..5c66017a82f2 100644
+index ec8c75268e304..5c66017a82f22 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -71,6 +71,32 @@ core3 {
@@ -68,7 +68,7 @@ index ec8c75268e30..5c66017a82f2 100644
  		gpios-dc = <21 22>;
  		id = <2>;
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 5a3c0747d9ac..6188bf070a77 100644
+index 5a3c0747d9ace..6188bf070a771 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -322,6 +322,7 @@ CONFIG_DRM_SPACEMIT=y

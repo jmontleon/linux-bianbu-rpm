@@ -1,4 +1,4 @@
-From 1db8ed465884ee270711e8a666c5656eda58a574 Mon Sep 17 00:00:00 2001
+From 2a3987841df2ef5a74124fa724dd3faf283351c3 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 30 Apr 2024 12:19:37 +0800
 Subject: [PATCH 0623/1206] k1x-deb1:support rpwm2 for fan
@@ -12,7 +12,7 @@ Change-Id: I67f9d77a4e6080e3bacbe88ebfb7ffab326e08ee
  4 files changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index fcc63f3e0f5c..b8477559d693 100644
+index fcc63f3e0f5c0..b8477559d6939 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1571,6 +1571,16 @@ pwm19: pwm@d4022c00 {
@@ -33,7 +33,7 @@ index fcc63f3e0f5c..b8477559d693 100644
  			compatible = "spacemit,soc-timer";
  			reg = <0x0 0xd4014000 0x0 0xc8>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 3d0e4029cff4..cc5ed2f173ef 100644
+index 3d0e4029cff41..cc5ed2f173ef5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -989,3 +989,9 @@ simple-audio-card,codec {
@@ -47,7 +47,7 @@ index 3d0e4029cff4..cc5ed2f173ef 100644
 +	status = "okay";
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index f736975f963a..f6ed1d715877 100644
+index f736975f963a3..f6ed1d715877e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -658,6 +658,12 @@ K1X_PADCONF(GPIO_63,    MUX_MODE4, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))    /*
@@ -64,7 +64,7 @@ index f736975f963a..f6ed1d715877 100644
          pinctrl-single,pins =<
              K1X_PADCONF(GPIO_118,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))   /* sspa0_clk */
 diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-index 93490bbd89ab..a392b3c5e9b8 100644
+index 93490bbd89abc..a392b3c5e9b8d 100644
 --- a/drivers/pwm/pwm-pxa.c
 +++ b/drivers/pwm/pwm-pxa.c
 @@ -258,7 +258,11 @@ static struct platform_driver pwm_driver = {

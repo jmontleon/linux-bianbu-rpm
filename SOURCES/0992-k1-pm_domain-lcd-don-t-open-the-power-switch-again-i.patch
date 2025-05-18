@@ -1,4 +1,4 @@
-From 2f7c9a9ca1e59aab3dfdd292f28b43958501738a Mon Sep 17 00:00:00 2001
+From 17480655041e06436e10a264a50d84098ff3f201 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 12 Sep 2024 19:03:49 +0800
 Subject: [PATCH 0992/1206] k1:pm_domain:lcd: don't open the power-switch again
@@ -10,7 +10,7 @@ Change-Id: Iced956e183b3558a0f8296969cbb59a42e8e2be0
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 49f4f6dd8345..3bb94f430bc6 100644
+index 49f4f6dd8345c..3bb94f430bc67 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -262,6 +262,9 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)

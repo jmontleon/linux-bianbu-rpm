@@ -1,4 +1,4 @@
-From e42c48941a6ae4b74661b30ac7c10615b8ffe92b Mon Sep 17 00:00:00 2001
+From 2b4457dddde626b4a644adf8ec3d9ed75cdfbc76 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Wed, 17 Jan 2024 16:42:36 +0800
 Subject: [PATCH 0384/1206] fix: disable CONFIG_INITRAMFS_SOURCE which may
@@ -10,7 +10,7 @@ Change-Id: I7e0ce0abbb0ec606a7c8e18b0df356057dcfff0e
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 2f9ff03b60e8..5888595c87ce 100644
+index 2f9ff03b60e87..5888595c87ce1 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -13,7 +13,7 @@ CONFIG_NAMESPACES=y

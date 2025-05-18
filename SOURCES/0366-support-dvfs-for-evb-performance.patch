@@ -1,4 +1,4 @@
-From 2d1e834f5089a55d9c0773ac763e763650927725 Mon Sep 17 00:00:00 2001
+From 700586d578b88d06ee17d86230d5317ce97e7e49 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Sat, 13 Jan 2024 00:08:08 +0800
 Subject: [PATCH 0366/1206] support dvfs for evb performance
@@ -9,7 +9,7 @@ Change-Id: I677b5c26f930ba4548dbb1a513ac2ece8e4a4de2
  1 file changed, 33 insertions(+), 25 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index ef893aeebe76..222303b7ee2f 100644
+index ef893aeebe769..222303b7ee2fb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -441,25 +441,23 @@ sw_1: SWITCH_REG1 {

@@ -1,4 +1,4 @@
-From 99bf658bca796845d24ebe77839279b34dc6b039 Mon Sep 17 00:00:00 2001
+From 6378175b60296004377b4e995ab93ff68906df6b Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Fri, 29 Mar 2024 19:39:10 +0800
 Subject: [PATCH 0532/1206] pcie: change the dma ranges of pcie to drma_range2
@@ -13,7 +13,7 @@ Change-Id: Ib579708b0b9cdc6fef853e0e50ffdac02367ab1c
  2 files changed, 21 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index fe7cb8562aef..e2ad8556c0c0 100644
+index fe7cb8562aefd..e2ad8556c0c01 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -549,6 +549,16 @@ dram_range1: dram_range@1 {
@@ -61,7 +61,7 @@ index fe7cb8562aef..e2ad8556c0c0 100644
  
  			interrupts = <143>, <147>;
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index f5948d1a1706..d773e5c26358 100755
+index f5948d1a17062..d773e5c263582 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -142,8 +142,8 @@ struct k1x_pcie {

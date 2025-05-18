@@ -1,4 +1,4 @@
-From e50b5934213ab87d2b578f0b3cdca63a1a9f0549 Mon Sep 17 00:00:00 2001
+From 60f52a49fef00115cea2a92f77fb631b4fee12b2 Mon Sep 17 00:00:00 2001
 From: yangchen <chen.yang@spacemit.com>
 Date: Sat, 13 Jan 2024 01:46:16 +0800
 Subject: [PATCH 0369/1206] display: Support kernel logo
@@ -13,7 +13,7 @@ Change-Id: I5af49e6820421f040e11df24ffd35e9503615922
  5 files changed, 11025 insertions(+), 1604 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 3ab10ddfd052..a0fc0ddb38d4 100644
+index 3ab10ddfd0528..a0fc0ddb38d46 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -199,7 +199,7 @@ CONFIG_AIC_LOADFW_SUPPORT=m
@@ -35,7 +35,7 @@ index 3ab10ddfd052..a0fc0ddb38d4 100644
  CONFIG_USB=y
  CONFIG_USB_XHCI_HCD=y
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 6a80cceaf470..677383cb895d 100644
+index 6a80cceaf470f..677383cb895da 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -182,7 +182,6 @@ CONFIG_AIC_LOADFW_SUPPORT=m
@@ -56,7 +56,7 @@ index 6a80cceaf470..677383cb895d 100644
  CONFIG_SND=y
  CONFIG_SND_SOC=y
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index b290476a23d1..e9941fb95ce7 100644
+index b290476a23d1a..e9941fb95ce7b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -6,6 +6,8 @@
@@ -90,7 +90,7 @@ index b290476a23d1..e9941fb95ce7 100644
  	return 0;
  
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index e8b4e8c119b5..6e13e8626a37 100644
+index e8b4e8c119b5c..6e13e8626a371 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
 @@ -1142,6 +1142,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
@@ -110,7 +110,7 @@ index e8b4e8c119b5..6e13e8626a37 100644
  
  		logo_shown = fg_console;
 diff --git a/drivers/video/logo/logo_linux_clut224.ppm b/drivers/video/logo/logo_linux_clut224.ppm
-index 3c14e43b82fe..eb389b715f00 100644
+index 3c14e43b82fef..eb389b715f008 100644
 --- a/drivers/video/logo/logo_linux_clut224.ppm
 +++ b/drivers/video/logo/logo_linux_clut224.ppm
 @@ -1,1604 +1,11011 @@

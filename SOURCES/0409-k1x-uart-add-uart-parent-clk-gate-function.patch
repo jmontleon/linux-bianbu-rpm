@@ -1,4 +1,4 @@
-From 09572b61a45999f4b0d2fe13a98929ffdcb2d348 Mon Sep 17 00:00:00 2001
+From b2bf952d2c558840fff006f78fefc05a2b944507 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 2 Feb 2024 11:28:26 +0800
 Subject: [PATCH 0409/1206] k1x-uart:add uart parent clk gate function
@@ -10,7 +10,7 @@ Change-Id: I2d597678c53d70fbe9841d646fb4c35c1a0957a9
  2 files changed, 58 insertions(+), 30 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c92a1ef36f57..86abba08b019 100644
+index c92a1ef36f574..86abba08b0195 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -777,7 +777,8 @@ uart0: serial@d4017000 {
@@ -94,7 +94,7 @@ index c92a1ef36f57..86abba08b019 100644
  			resets = <&reset RESET_UART8>;
  			power-domains = <&power K1X_PMU_BUS_PWR_DOMAIN>;
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index cbfd854be05b..1737ea7e8d35 100644
+index cbfd854be05b4..1737ea7e8d35a 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -57,7 +57,7 @@

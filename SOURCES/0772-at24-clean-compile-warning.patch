@@ -1,4 +1,4 @@
-From 7f4ec4af120a58b526338e21a4a55cc296513c28 Mon Sep 17 00:00:00 2001
+From 739b2d2521312ace01588b32e15fd8a4a89d20db Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 26 Jun 2024 13:43:33 +0800
 Subject: [PATCH 0772/1206] at24: clean compile warning
@@ -9,7 +9,7 @@ Change-Id: Ib0d8bda66bc11c42ab5547c18b41456bca17c777
  1 file changed, 4 deletions(-)
 
 diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 7f04beddbfbf..74ad6f5caab4 100644
+index 7f04beddbfbfc..74ad6f5caab4b 100644
 --- a/drivers/misc/eeprom/at24.c
 +++ b/drivers/misc/eeprom/at24.c
 @@ -609,10 +609,8 @@ static int at24_probe(struct i2c_client *client)

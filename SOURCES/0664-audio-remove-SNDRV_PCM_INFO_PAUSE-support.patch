@@ -1,4 +1,4 @@
-From d4cabc059dc26c61b1236cb2d457ed43f95d5f5c Mon Sep 17 00:00:00 2001
+From 94e2f76e8bd13af2ecf92ccc9df282d8b18ef898 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Fri, 17 May 2024 19:15:55 +0800
 Subject: [PATCH 0664/1206] audio: remove SNDRV_PCM_INFO_PAUSE support
@@ -9,7 +9,7 @@ Change-Id: I91efefc26b6b06cdb6193693ebe73b03e4d33907
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index d18028902f44..5832f8bb54d7 100755
+index d18028902f44a..5832f8bb54d76 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -118,8 +118,7 @@ static int spacemit_snd_dma_init(struct device *paraent, struct spacemit_snd_soc

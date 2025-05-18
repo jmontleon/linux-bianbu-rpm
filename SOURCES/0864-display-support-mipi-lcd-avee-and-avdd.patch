@@ -1,4 +1,4 @@
-From 377bc6f35a01ff7a0d8c95c0c48817de52f972fe Mon Sep 17 00:00:00 2001
+From 3b59e779ecb7f30ff193cb91f7f1c6477a5a8ced Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 25 Jul 2024 21:44:18 +0800
 Subject: [PATCH 0864/1206] display: support mipi lcd avee and avdd
@@ -11,7 +11,7 @@ Change-Id: I4713305c7bc5b712330c9aa069fc2d4f34a2dce9
  3 files changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 94dbcb68bdf4..e7fcb127fed1 100644
+index 94dbcb68bdf4a..e7fcb127fed1a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -191,9 +191,8 @@ &dpu_online2_dsi {
@@ -34,7 +34,7 @@ index 94dbcb68bdf4..e7fcb127fed1 100644
  		id = <2>;
  		delay-after-reset = <10>;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index ada29969a404..680f391d384a 100644
+index ada29969a404b..680f391d384ad 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -118,9 +118,17 @@ static int spacemit_panel_unprepare(struct drm_panel *p)
@@ -91,7 +91,7 @@ index ada29969a404..680f391d384a 100644
  		panel->reset_toggle_cnt = LCD_PANEL_RESET_CNT;
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
-index c46105a5bae2..2de013c4baac 100644
+index c46105a5bae24..2de013c4baacc 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 @@ -77,6 +77,7 @@ struct spacemit_panel {

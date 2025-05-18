@@ -1,4 +1,4 @@
-From 15b7ffd3d487439328fffe5e006ad68fb79063d9 Mon Sep 17 00:00:00 2001
+From 784465ad7c8d18d00917bc43ad60645f5d016215 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 27 Jun 2023 20:05:53 +0800
 Subject: [PATCH 0051/1206] vpu: fix vpu compile error for linux6.1
@@ -10,7 +10,7 @@ Change-Id: I7d9f4843138f39f90bb6dfc1e998d87c110b0a65
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/vpu/if/mvx_firmware_cache.c b/drivers/media/vpu/if/mvx_firmware_cache.c
-index 63510658c16a..d8e5eced7dab 100755
+index 63510658c16a4..d8e5eced7dabb 100755
 --- a/drivers/media/vpu/if/mvx_firmware_cache.c
 +++ b/drivers/media/vpu/if/mvx_firmware_cache.c
 @@ -423,7 +423,7 @@ static struct attribute *fw_bin_attrs[] = {
@@ -32,7 +32,7 @@ index 63510658c16a..d8e5eced7dab 100755
  
  static void cache_update(struct mvx_fw_cache *cache)
 diff --git a/drivers/media/vpu/if/mvx_secure.c b/drivers/media/vpu/if/mvx_secure.c
-index a5fa5d8de598..c9abc98f7e23 100755
+index a5fa5d8de5987..c9abc98f7e23a 100755
 --- a/drivers/media/vpu/if/mvx_secure.c
 +++ b/drivers/media/vpu/if/mvx_secure.c
 @@ -207,7 +207,7 @@ static struct mvx_secure_firmware_priv *secure_firmware_create(

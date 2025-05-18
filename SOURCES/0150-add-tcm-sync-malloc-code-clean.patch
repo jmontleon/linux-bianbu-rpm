@@ -1,4 +1,4 @@
-From 69e12420a692621e76de53fe4da0ee412346ec28 Mon Sep 17 00:00:00 2001
+From bd6435d8d6b957fff88a1f88ddc4cfb45aff4866 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Mon, 30 Oct 2023 16:21:32 +0800
 Subject: [PATCH 0150/1206] add tcm sync malloc & code clean
@@ -9,7 +9,7 @@ Change-Id: I52d86de7043ab5e9f4a16c87695c59fce159e69c
  1 file changed, 101 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
-index 40c401b06e2f..0f953719d84a 100644
+index 40c401b06e2fe..0f953719d84a2 100644
 --- a/drivers/misc/tcm.c
 +++ b/drivers/misc/tcm.c
 @@ -11,15 +11,17 @@

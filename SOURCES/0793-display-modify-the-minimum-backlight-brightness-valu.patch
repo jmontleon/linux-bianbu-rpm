@@ -1,4 +1,4 @@
-From 2c3bd8be88644568b176d00bd21b5078d1bdf091 Mon Sep 17 00:00:00 2001
+From 5fc8a56cec501b64dd8c3c68b0426e8c603a2c2b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 25 Jun 2024 10:28:58 +0800
 Subject: [PATCH 0793/1206] display: modify the minimum backlight brightness
@@ -11,7 +11,7 @@ Change-Id: Id984a88875406e196432cb4d355a1823a7c910ae
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 522ca5c2dbd2..1f5e9ea1546b 100644
+index 522ca5c2dbd2b..1f5e9ea1546b5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -742,8 +742,8 @@ flash@0 {
@@ -26,7 +26,7 @@ index 522ca5c2dbd2..1f5e9ea1546b 100644
  		89  90  91  92  92  93  94  95  96  96  97  98  99  100 100 101
  		102 103 104 104 105 106 107 108 108 109 110 111 112 112 113 114
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 6bf5ba66b38b..30e5eb99a3c5 100644
+index 6bf5ba66b38b5..30e5eb99a3c5f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -695,8 +695,8 @@ flash@0 {

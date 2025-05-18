@@ -1,4 +1,4 @@
-From d273cfba63b4270a56d3e215cc58abbf6bb1201f Mon Sep 17 00:00:00 2001
+From e441dc7a4e33f2104a83ee565d0438f11b6c2175 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 21 Dec 2023 20:49:05 +0800
 Subject: [PATCH 0224/1206] usb: ehci: add support for k1-x ehci driver
@@ -12,7 +12,7 @@ Change-Id: I8d2a46ff6b5de2a7f5af8314d2eb7160bfd69321
  create mode 100755 drivers/usb/host/ehci-k1x-ci.c
 
 diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-index d011d6c753ed..7d572373bf91 100644
+index d011d6c753edf..7d572373bf911 100644
 --- a/drivers/usb/host/Kconfig
 +++ b/drivers/usb/host/Kconfig
 @@ -315,6 +315,12 @@ config USB_EHCI_MV
@@ -29,7 +29,7 @@ index d011d6c753ed..7d572373bf91 100644
  	tristate "Cavium Networks Octeon USB support"
  	depends on CAVIUM_OCTEON_SOC && USB
 diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-index 6de79ac5e6a4..a733ef752480 100644
+index 6de79ac5e6a44..a733ef7524801 100644
 --- a/drivers/usb/host/ehci-hcd.c
 +++ b/drivers/usb/host/ehci-hcd.c
 @@ -1333,6 +1333,10 @@ MODULE_LICENSE ("GPL");
@@ -55,7 +55,7 @@ index 6de79ac5e6a4..a733ef752480 100644
  static int __init ehci_hcd_init(void)
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
 new file mode 100755
-index 000000000000..206a919e9072
+index 0000000000000..206a919e90727
 --- /dev/null
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -0,0 +1,416 @@

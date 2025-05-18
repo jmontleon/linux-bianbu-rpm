@@ -1,4 +1,4 @@
-From 43c4c74ed3be66c55a320cdccd3318a3f59fdbae Mon Sep 17 00:00:00 2001
+From b2ed35da507aefd526df34f309cdfe8ec324be87 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 09:58:09 +0800
 Subject: [PATCH 0677/1206] k1: cpu: fix compilation errs
@@ -14,7 +14,7 @@ Change-Id: I28bb2e68a9cd2f5227fa71bc489de27bb4b03463
  2 files changed, 5 insertions(+)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index e159910956e7..4db90a6bb174 100644
+index e159910956e78..4db90a6bb174f 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
 @@ -453,6 +453,10 @@ void sbi_shutdown(void);
@@ -29,7 +29,7 @@ index e159910956e7..4db90a6bb174 100644
  				unsigned long start,
  				unsigned long size,
 diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
-index 864e68faee73..a0d5a3169d07 100644
+index 864e68faee73b..a0d5a3169d070 100644
 --- a/arch/riscv/kernel/cpu-hotplug.c
 +++ b/arch/riscv/kernel/cpu-hotplug.c
 @@ -15,6 +15,7 @@

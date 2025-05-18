@@ -1,4 +1,4 @@
-From e640b7869433fa94fc630ecd2416baa8782f1c50 Mon Sep 17 00:00:00 2001
+From b5d309856576dc545436d01f5c0d639efcc5b2d1 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:20:01 +0800
 Subject: [PATCH 0342/1206] usb: misc: add spacemit onboard hub driver
@@ -12,7 +12,7 @@ Change-Id: I5f648277a88ef3e7dd8296a519ead726a9b3b0c4
  create mode 100644 drivers/usb/misc/spacemit_onboard_hub.c
 
 diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 6497c4e81e95..631e286aca9c 100644
+index 6497c4e81e951..631e286aca9ce 100644
 --- a/drivers/usb/misc/Kconfig
 +++ b/drivers/usb/misc/Kconfig
 @@ -343,3 +343,11 @@ config USB_ONBOARD_DEV_USB5744
@@ -29,7 +29,7 @@ index 6497c4e81e95..631e286aca9c 100644
 +	  platform. If unsure, say Y when compile for Spacemit platform.
 \ No newline at end of file
 diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
-index 0cd5bc8f52fe..1e796fae0143 100644
+index 0cd5bc8f52fe0..1e796fae01436 100644
 --- a/drivers/usb/misc/Makefile
 +++ b/drivers/usb/misc/Makefile
 @@ -34,3 +34,4 @@ obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
@@ -39,7 +39,7 @@ index 0cd5bc8f52fe..1e796fae0143 100644
 +obj-$(CONFIG_SPACEMIT_ONBOARD_USB_HUB)	+= spacemit_onboard_hub.o
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
 new file mode 100644
-index 000000000000..8f0150a53112
+index 0000000000000..8f0150a531128
 --- /dev/null
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -0,0 +1,92 @@

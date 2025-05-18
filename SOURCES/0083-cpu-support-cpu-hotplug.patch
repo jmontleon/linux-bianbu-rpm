@@ -1,4 +1,4 @@
-From d2787b8e82bb01ba7c48f4c9b8ae51360e908fe6 Mon Sep 17 00:00:00 2001
+From 0dc8f7acc8a75f5517361934144495ca2518e135 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 16 Aug 2023 09:33:21 +0800
 Subject: [PATCH 0083/1206] cpu: support cpu hotplug
@@ -18,7 +18,7 @@ Change-Id: Ie0707e434ee5806db7fbbe1ca47175b31b61ef24
  4 files changed, 51 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 553967ddd92d..4bb0b3559421 100644
+index 553967ddd92d0..4bb0b3559421b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -110,6 +110,24 @@ cpu3_intc: interrupt-controller {
@@ -47,7 +47,7 @@ index 553967ddd92d..4bb0b3559421 100644
  
  	clocks {
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
-index efb6ced14777..5f33e7f6a0f6 100644
+index efb6ced14777d..5f33e7f6a0f62 100644
 --- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -2,10 +2,10 @@ / {
@@ -64,7 +64,7 @@ index efb6ced14777..5f33e7f6a0f6 100644
  		/* channel 0*/
  		cpu_scp_lpri0: scp-sram@2f900000 {
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 21e81c0e5093..f7980ccb8e13 100644
+index 21e81c0e5093c..f7980ccb8e13e 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -26,6 +26,7 @@ CONFIG_SOC_SPACEMIT=y
@@ -94,7 +94,7 @@ index 21e81c0e5093..f7980ccb8e13 100644
  CONFIG_XZ_DEC=y
  CONFIG_DMA_CMA=y
 diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-index e6fbaaf54956..bb69c108c2ef 100644
+index e6fbaaf549562..bb69c108c2ef1 100644
 --- a/arch/riscv/kernel/cpu_ops_sbi.c
 +++ b/arch/riscv/kernel/cpu_ops_sbi.c
 @@ -12,6 +12,8 @@

@@ -1,4 +1,4 @@
-From 0273366d97afb630a88b4c9a275fedaf5a418a63 Mon Sep 17 00:00:00 2001
+From 5dfbc1e92cc1767e394cd64fc1c1ff55ae6c8898 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 15 Sep 2023 10:06:27 +0800
 Subject: [PATCH 0113/1206] k1pro:adjust pwm-driver/config name
@@ -13,7 +13,7 @@ Change-Id: I900da4a0302c8b41eaa8c79fe275676707fdadc1
  rename drivers/pwm/{pwm-dwc-k1x.c => pwm-dwc-k1pro.c} (100%)
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index c338b36470e2..32c4c664adf5 100644
+index c338b36470e25..32c4c664adf5d 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -224,6 +224,8 @@ CONFIG_SPACEMIT_MAILBOX=y
@@ -26,7 +26,7 @@ index c338b36470e2..32c4c664adf5 100644
  # CONFIG_NVMEM is not set
  CONFIG_EXT4_FS=y
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index a32722b3c823..f0e1eb4a2c8d 100644
+index a32722b3c8235..f0e1eb4a2c8d5 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
 @@ -221,13 +221,13 @@ config PWM_DWC
@@ -47,7 +47,7 @@ index a32722b3c823..f0e1eb4a2c8d 100644
  config PWM_EP93XX
  	tristate "Cirrus Logic EP93xx PWM support"
 diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index ca1cf6c0d851..6e9822a97a78 100644
+index ca1cf6c0d851f..6e9822a97a781 100644
 --- a/drivers/pwm/Makefile
 +++ b/drivers/pwm/Makefile
 @@ -18,7 +18,7 @@ obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o

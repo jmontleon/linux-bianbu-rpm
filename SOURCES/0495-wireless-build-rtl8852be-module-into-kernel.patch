@@ -1,4 +1,4 @@
-From 624e77ba8cdea27fa2342430c11c03c461097560 Mon Sep 17 00:00:00 2001
+From 545f7a7e9de05e09c3105dfbf06ac30f338e7b12 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sat, 16 Mar 2024 14:33:48 +0800
 Subject: [PATCH 0495/1206] wireless: build rtl8852be module into kernel
@@ -10,7 +10,7 @@ Change-Id: I0c9d001a3e4ff6bc63a5d2c07fb8a72c6b455f11
  2 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 39b0d39f9dfc..170703493576 100644
+index 39b0d39f9dfc5..1707034935762 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -44,11 +44,9 @@ CONFIG_SOC_SPACEMIT=y
@@ -50,7 +50,7 @@ index 39b0d39f9dfc..170703493576 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/net/wireless/realtek/Makefile b/drivers/net/wireless/realtek/Makefile
-index 8d39e42b533a..85a6c1616594 100644
+index 8d39e42b533a9..85a6c16165947 100644
 --- a/drivers/net/wireless/realtek/Makefile
 +++ b/drivers/net/wireless/realtek/Makefile
 @@ -10,4 +10,4 @@ obj-$(CONFIG_RTL8XXXU)		+= rtl8xxxu/

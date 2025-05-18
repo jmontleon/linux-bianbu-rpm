@@ -1,4 +1,4 @@
-From 867f68027b01d935f43466455f6ed0e9b1807049 Mon Sep 17 00:00:00 2001
+From c5b5cb58e7590839614517ae3788a56f0b27fa8d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 10 Oct 2024 16:20:37 +0800
 Subject: [PATCH 1011/1206] usb: typec: husb239: add vdd-supply and usb2 switch
@@ -9,7 +9,7 @@ Change-Id: Ib9beba59042c5b3750f9fad51058ea80d793cc04
  1 file changed, 41 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index e40a6d082714..8badc635b179 100644
+index e40a6d082714e..8badc635b1790 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -185,6 +185,7 @@ struct typec_info {

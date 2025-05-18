@@ -1,4 +1,4 @@
-From 5c13e3ebda370e61dd74dbdbe17924b5b3e90c54 Mon Sep 17 00:00:00 2001
+From c4f6671d6845855cef588a37fd13bae1977205b2 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Wed, 3 Jan 2024 19:38:04 +0800
 Subject: [PATCH 0301/1206] display: Support spacemit hdmi driver
@@ -26,7 +26,7 @@ Change-Id: I7d57a06d8ae35ed803a09a08ee9be7489770cffa
  create mode 100644 drivers/gpu/drm/spacemit/spacemit_hdmi.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 6d8703051f97..41645a0e588c 100644
+index 6d8703051f978..41645a0e588c3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1959,6 +1959,8 @@ jpu@c02f8000 {
@@ -100,7 +100,7 @@ index 6d8703051f97..41645a0e588c 100644
  			ports {
  				#address-cells = <1>;
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
-index 0b52fda724b2..dc15353d311d 100644
+index 0b52fda724b2d..dc15353d311da 100644
 --- a/drivers/gpu/drm/spacemit/Makefile
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -4,6 +4,7 @@ spacemit-drm-y := 	spacemit_drm.o \
@@ -112,7 +112,7 @@ index 0b52fda724b2..dc15353d311d 100644
  				spacemit_wb.o \
  				spacemit_dphy.o \
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 3c01527a98d8..29adf0800eb1 100644
+index 3c01527a98d80..29adf0800eb1f 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -181,20 +181,21 @@ void dpu_mclk_exclusive_put(void)
@@ -436,7 +436,7 @@ index 3c01527a98d8..29adf0800eb1 100644
  		/* cfg ready clear */
  		if (irq_raw & DPU_INT_CFG_RDY_CLR) {
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h
-index c04bd525fe30..e43a7ded9720 100644
+index c04bd525fe308..e43a7ded97209 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h
 @@ -24,7 +24,7 @@
@@ -449,7 +449,7 @@ index c04bd525fe30..e43a7ded9720 100644
  	/* keep the next entry last */
  	DP_MAX_DEVICES
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.c b/drivers/gpu/drm/spacemit/spacemit_dphy.c
-index adecacaee824..2295d3b59031 100644
+index adecacaee824c..2295d3b590313 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dphy.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dphy.c
 @@ -108,6 +108,8 @@ static int spacemit_dphy_probe(struct platform_device *pdev)
@@ -462,7 +462,7 @@ index adecacaee824..2295d3b59031 100644
  	if (!dphy)
  		return -ENOMEM;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 1fda1a52f861..d971d41a923c 100644
+index 1fda1a52f8618..d971d41a923cc 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -849,25 +849,31 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,
@@ -575,7 +575,7 @@ index 1fda1a52f861..d971d41a923c 100644
  	}
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index 0fa8b56e4624..c1772f0c494b 100644
+index 0fa8b56e46249..c1772f0c494b7 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -110,6 +110,7 @@ struct dpu_clk_context {
@@ -595,7 +595,7 @@ index 0fa8b56e4624..c1772f0c494b 100644
  	bool (*is_dpu_running)(struct spacemit_dpu* dpu);
  	struct notifier_block nb;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index c7974fc1fdd7..d040e6c7e5a4 100644
+index c7974fc1fdd72..d040e6c7e5a47 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -140,18 +140,13 @@ static int spacemit_drm_dump_show(struct seq_file *s, void *data)
@@ -648,7 +648,7 @@ index c7974fc1fdd7..d040e6c7e5a4 100644
  	{
  		.compatible = "spacemit,saturn-le",
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.h b/drivers/gpu/drm/spacemit/spacemit_drm.h
-index a5eb35faa05d..c4d899b5bc9a 100644
+index a5eb35faa05dc..c4d899b5bc9ab 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.h
 @@ -29,6 +29,7 @@ struct spacemit_hw_device {
@@ -660,7 +660,7 @@ index a5eb35faa05d..c4d899b5bc9a 100644
  
  struct spacemit_drm_private {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index f12cc6cb9573..0a0e4911fb7b 100644
+index f12cc6cb95730..0a0e4911fb7be 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -684,6 +684,8 @@ static int spacemit_dsi_probe(struct platform_device *pdev)
@@ -674,7 +674,7 @@ index f12cc6cb9573..0a0e4911fb7b 100644
  		DRM_ERROR("failed to allocate dsi data.\n");
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 new file mode 100644
-index 000000000000..aa5987fe4a97
+index 0000000000000..aa5987fe4a972
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -0,0 +1,378 @@
@@ -1058,7 +1058,7 @@ index 000000000000..aa5987fe4a97
 +module_platform_driver(spacemit_hdmi_driver);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.h b/drivers/gpu/drm/spacemit/spacemit_hdmi.h
 new file mode 100644
-index 000000000000..21009e49a6ff
+index 0000000000000..21009e49a6ff2
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.h
 @@ -0,0 +1,50 @@
@@ -1113,7 +1113,7 @@ index 000000000000..21009e49a6ff
 +	unsigned short reserved;
 +};
 diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.c b/drivers/gpu/drm/spacemit/spacemit_lib.c
-index 43e08d9baab0..60aa57b691c7 100644
+index 43e08d9baab08..60aa57b691c78 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_lib.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_lib.c
 @@ -13,9 +13,6 @@
@@ -1127,7 +1127,7 @@ index 43e08d9baab0..60aa57b691c7 100644
  	u16 magic;
  	u32 size;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 387d27187b14..b98dc9e34565 100644
+index 387d27187b147..b98dc9e345651 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -536,6 +536,8 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
@@ -1140,7 +1140,7 @@ index 387d27187b14..b98dc9e34565 100644
  	if (!panel)
  		return -ENOMEM;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
-index eeaf794411c3..f47bbcc474c8 100644
+index eeaf794411c30..f47bbcc474c8d 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_planes.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -22,6 +22,13 @@
@@ -1167,7 +1167,7 @@ index eeaf794411c3..f47bbcc474c8 100644
  		if (err) {
  			DRM_ERROR("fail to init %s plane%d\n", (i < priv->num_pipes) ? "primary" : "overlay", i);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
-index 60a29dd63176..e208969fb23f 100644
+index 60a29dd631768..e208969fb23fc 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -219,6 +219,8 @@ static int spacemit_wb_probe(struct platform_device *pdev)

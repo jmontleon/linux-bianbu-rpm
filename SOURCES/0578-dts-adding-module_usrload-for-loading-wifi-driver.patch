@@ -1,4 +1,4 @@
-From 286cd2922c76bb3760f9e47d0e85b4d144efa064 Mon Sep 17 00:00:00 2001
+From 5f936588b33337cd09e3304636474a1ce084acb6 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 11 Apr 2024 19:22:29 +0800
 Subject: [PATCH 0578/1206] dts: adding module_usrload for loading wifi driver
@@ -12,7 +12,7 @@ Change-Id: I7a81574388eed9bff8d9d4e103819839affb2c62
  4 files changed, 4 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index e2218171af95..555f316c4578 100644
+index e2218171af95d..555f316c45788 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -9,6 +9,7 @@
@@ -24,7 +24,7 @@ index e2218171af95..555f316c4578 100644
  	cpus: cpus {
  		#address-cells = <1>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index c1fe2113d1e1..98079097051c 100644
+index c1fe2113d1e17..98079097051c5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -12,6 +12,7 @@
@@ -36,7 +36,7 @@ index c1fe2113d1e1..98079097051c 100644
  	cpus: cpus {
  		#address-cells = <1>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 99c4b6d969d6..fab7932fdd58 100644
+index 99c4b6d969d6b..fab7932fdd585 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -12,6 +12,7 @@
@@ -48,7 +48,7 @@ index 99c4b6d969d6..fab7932fdd58 100644
  	cpus: cpus {
  		#address-cells = <1>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 5373e4310d6a..d221ba4da041 100644
+index 5373e4310d6a5..d221ba4da0417 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -11,6 +11,7 @@

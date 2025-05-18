@@ -1,4 +1,4 @@
-From 2541b59a5377390fea4d2f40b14443a2ec0eb839 Mon Sep 17 00:00:00 2001
+From fafc6e7b717a0a9059471f205b15061181ce35d3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 19 Aug 2024 21:32:58 +0800
 Subject: [PATCH 0947/1206] k1:power-key: don't report the event of power-key
@@ -10,7 +10,7 @@ Change-Id: Icd2c0c1a6e73ffa803ab693823549e6fdc49992e
  1 file changed, 60 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
-index d76b0a8e913b..3ee621a3e66c 100644
+index d76b0a8e913bf..3ee621a3e66cf 100644
 --- a/drivers/input/misc/spacemit-pwrkey.c
 +++ b/drivers/input/misc/spacemit-pwrkey.c
 @@ -9,24 +9,44 @@

@@ -1,4 +1,4 @@
-From 536faa359b830f0d246e212e61ae82d92e673300 Mon Sep 17 00:00:00 2001
+From 504dc39adaea818d5673032247250c8d7b5112a9 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Sat, 23 Dec 2023 17:07:22 +0800
 Subject: [PATCH 0234/1206] display: Support lcd icnl9911c mipi
@@ -19,7 +19,7 @@ Change-Id: I06bc4a982580edc2c56cf984d4039db9325a0d84
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 8765cca607aa..dd0132078c4b 100644
+index 8765cca607aa1..dd0132078c4b6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1735,13 +1735,28 @@ dpu_online2: port@c0340000 {
@@ -59,7 +59,7 @@ index 8765cca607aa..dd0132078c4b 100644
  			ip = "spacemit-saturn";
  			spacemit-dpu-min-mclk = <40960000>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 5c00290281c4..f8c0f0460333 100644
+index 5c00290281c47..f8c0f04603336 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -5,6 +5,7 @@
@@ -130,7 +130,7 @@ index 5c00290281c4..f8c0f0460333 100644
  	#size-cells = <0>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 new file mode 100644
-index 000000000000..78207f36e6eb
+index 0000000000000..78207f36e6ebe
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 @@ -0,0 +1,100 @@
@@ -235,7 +235,7 @@ index 000000000000..78207f36e6eb
 +	};
 +};};
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index ee2ca88f1555..3c01527a98d8 100644
+index ee2ca88f1555e..3c01527a98d80 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -164,6 +164,22 @@ const u32 saturn_le_rdma_fixed_fbcmem_sizes[] = {
@@ -565,7 +565,7 @@ index ee2ca88f1555..3c01527a98d8 100644
  	saturn_init_regs(dpu);
  	saturn_setup_dma_top(dpu);
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
-index 9cc4d49856b5..527e6c135900 100644
+index 9cc4d49856b50..527e6c1359003 100644
 --- a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
 @@ -7,7 +7,10 @@
@@ -580,7 +580,7 @@ index 9cc4d49856b5..527e6c135900 100644
  typedef enum
  {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 810b1d4ded71..224e8c52d10f 100644
+index 810b1d4ded71c..224e8c52d10f4 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -37,22 +37,6 @@ LIST_HEAD(dpu_core_head);
@@ -682,7 +682,7 @@ index 810b1d4ded71..224e8c52d10f 100644
  }
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index a32ecd1a08e4..0fa8b56e4624 100644
+index a32ecd1a08e4d..0fa8b56e46249 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -15,7 +15,7 @@
@@ -730,7 +730,7 @@ index a32ecd1a08e4..0fa8b56e4624 100644
  	bool (*is_dpu_running)(struct spacemit_dpu* dpu);
  	struct notifier_block nb;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
-index e2696925709e..f9fdc4d30090 100644
+index e2696925709ed..f9fdc4d300904 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
 @@ -43,7 +43,7 @@
@@ -743,7 +743,7 @@ index e2696925709e..f9fdc4d30090 100644
  
  enum spacemit_mipi_burst_mode{
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 3c84b5b9dee2..387d27187b14 100644
+index 3c84b5b9dee2d..387d27187b147 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -120,7 +120,8 @@ static int spacemit_panel_unprepare(struct drm_panel *p)
@@ -815,7 +815,7 @@ index 3c84b5b9dee2..387d27187b14 100644
  	}
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
-index 842ef1a70a55..76050d2b4f02 100644
+index 842ef1a70a559..76050d2b4f025 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 @@ -20,8 +20,8 @@

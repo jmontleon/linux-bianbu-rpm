@@ -1,4 +1,4 @@
-From 93086aa6dedc19f085ca55a859e21ff5dc66d645 Mon Sep 17 00:00:00 2001
+From 19138ff9bcf665cc650503189ec2a5022bed499b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:52:15 +0800
 Subject: [PATCH 1095/1206] sound: adapt linux kernel new vision
@@ -16,7 +16,7 @@ Change-Id: I2ff835e1dfa5b506b39571ff8e998611c3db46ab
  5 files changed, 28 insertions(+), 36 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-dummy-codec.c b/sound/soc/spacemit/spacemit-dummy-codec.c
-index 1eef016fe249..02e336c7e5e0 100644
+index 1eef016fe249c..02e336c7e5e00 100644
 --- a/sound/soc/spacemit/spacemit-dummy-codec.c
 +++ b/sound/soc/spacemit/spacemit-dummy-codec.c
 @@ -45,11 +45,9 @@ static int dummy_codec_probe(struct platform_device *pdev)
@@ -33,7 +33,7 @@ index 1eef016fe249..02e336c7e5e0 100644
  
  static const struct of_device_id dummy_codec_of_match[] = {
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 70b9a64d30fd..af99665d2379 100644
+index 70b9a64d30fdb..af99665d23795 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -22,12 +22,12 @@
@@ -188,7 +188,7 @@ index 70b9a64d30fd..af99665d2379 100644
  
  static const struct of_device_id asoc_simple_of_match[] = {
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index 7e07cad86244..61f3c1b95c48 100644
+index 7e07cad86244f..61f3c1b95c486 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -213,7 +213,7 @@ static int i2s_sspa_hw_params(struct snd_pcm_substream *substream,
@@ -218,7 +218,7 @@ index 7e07cad86244..61f3c1b95c48 100644
  
  #ifdef CONFIG_OF
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index b3be4a60842f..bbfc33e91290 100644
+index b3be4a60842f6..bbfc33e912903 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -866,8 +866,7 @@ static int spacemit_snd_pcm_trigger(struct snd_soc_component *component, struct
@@ -244,7 +244,7 @@ index b3be4a60842f..bbfc33e91290 100644
  
  #ifdef CONFIG_OF
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 17d81e22dcfa..bc209da66c84 100644
+index 17d81e22dcfa7..bc209da66c841 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -214,7 +214,7 @@ static int spacemit_sspa_get_hdmi_status(void)

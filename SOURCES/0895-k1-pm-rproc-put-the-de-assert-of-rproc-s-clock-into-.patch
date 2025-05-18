@@ -1,4 +1,4 @@
-From 96eebc874e8d8174d22c1bf5f8222b3e451f4576 Mon Sep 17 00:00:00 2001
+From d69aa653b99937e11b9b3cec996e8d18716c4034 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 7 Aug 2024 20:51:15 +0800
 Subject: [PATCH 0895/1206] k1:pm:rproc: put the de-assert of rproc's clock
@@ -14,7 +14,7 @@ Change-Id: I9a23ac3a741409270b4f95df38845708c56856ca
  1 file changed, 5 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 6512bace3fbc..c878912c3f56 100644
+index 6512bace3fbc2..c878912c3f564 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -52,7 +52,6 @@

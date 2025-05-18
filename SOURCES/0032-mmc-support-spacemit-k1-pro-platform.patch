@@ -1,4 +1,4 @@
-From ee1d39af007d7f0c32b29ab55eed73ca1d8f2589 Mon Sep 17 00:00:00 2001
+From c2ec267e7eb70d05dc9182a3ac65063416b368c0 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 19 May 2023 16:26:14 +0800
 Subject: [PATCH 0032/1206] mmc: support spacemit k1-pro platform
@@ -13,7 +13,7 @@ Change-Id: I86991ea287f50044bc05934b73f16e4f0aa3eab3
  create mode 100644 drivers/mmc/host/sdhci-of-spacemit.c
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 607b3100ad1a..0c83d64e11f4 100644
+index 607b3100ad1a8..0c83d64e11f49 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -130,6 +130,12 @@ CONFIG_USB_GADGET=y
@@ -30,7 +30,7 @@ index 607b3100ad1a..0c83d64e11f4 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 6824131b69b1..e8003c9f81f5 100644
+index 6824131b69b18..e8003c9f81f5f 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -274,6 +274,19 @@ config MMC_SDHCI_OF_MA35D1
@@ -54,7 +54,7 @@ index 6824131b69b1..e8003c9f81f5 100644
  	tristate "SDHCI support for the Cadence SD/SDIO/eMMC controller"
  	depends on MMC_SDHCI_PLTFM
 diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 5147467ec825..66842ce6ef56 100644
+index 5147467ec825f..66842ce6ef568 100644
 --- a/drivers/mmc/host/Makefile
 +++ b/drivers/mmc/host/Makefile
 @@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
@@ -67,7 +67,7 @@ index 5147467ec825..66842ce6ef56 100644
  obj-$(CONFIG_MMC_SDHCI_NPCM)		+= sdhci-npcm.o
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
 new file mode 100644
-index 000000000000..f334efd373c4
+index 0000000000000..f334efd373c42
 --- /dev/null
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -0,0 +1,418 @@

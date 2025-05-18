@@ -1,4 +1,4 @@
-From 63bf3cd0de4cde778ea26d049e5711227183d767 Mon Sep 17 00:00:00 2001
+From a09a3051bec5d0dadbd6ff9638826429ccf4293d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 19 Aug 2023 13:41:22 +0800
 Subject: [PATCH 0087/1206] k1pro: enable first can-use version of cpuidle
@@ -13,7 +13,7 @@ Change-Id: I153f747f56da2d0794234839f09b2e5813243906
  2 files changed, 86 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 4bb0b3559421..5ef550877bdb 100644
+index 4bb0b3559421b..5ef550877bdb3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -37,6 +37,8 @@ cpu_0: cpu@0 {
@@ -143,7 +143,7 @@ index 4bb0b3559421..5ef550877bdb 100644
  
  	clocks {
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index f7980ccb8e13..e40d4da086b6 100644
+index f7980ccb8e13e..e40d4da086b61 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -31,6 +31,8 @@ CONFIG_HZ_100=y

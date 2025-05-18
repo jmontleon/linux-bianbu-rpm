@@ -1,4 +1,4 @@
-From 98a825cc47e2f177de460b19a15ad4cbfef0293b Mon Sep 17 00:00:00 2001
+From cce4a3151422f2db45c8f8ccfdc4e96e2a2703a1 Mon Sep 17 00:00:00 2001
 From: xuhaodong <haodong.xu@spacemit.com>
 Date: Fri, 30 Aug 2024 17:09:16 +0800
 Subject: [PATCH 0973/1206] k1:alsa:alsa driver adds audio data dump
@@ -10,7 +10,7 @@ Change-Id: I93fb88c1deef50f6cfa49c07666a579e487c9f03
  2 files changed, 623 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/spacemit/Kconfig b/sound/soc/spacemit/Kconfig
-index 8c1b74cb3dfb..6e0a73fd2577 100644
+index 8c1b74cb3dfb3..6e0a73fd25773 100644
 --- a/sound/soc/spacemit/Kconfig
 +++ b/sound/soc/spacemit/Kconfig
 @@ -5,3 +5,27 @@ config SND_SOC_SPACEMIT
@@ -42,7 +42,7 @@ index 8c1b74cb3dfb..6e0a73fd2577 100644
 +          Say Y or N here if you want to add wave header to dump file
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 50fee6701fd9..c844276f8ed1 100644
+index 50fee6701fd9a..c844276f8ed17 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -17,6 +17,53 @@

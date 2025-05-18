@@ -1,4 +1,4 @@
-From 70e2925d971f4417fb317f32b6b4cf1643d2a343 Mon Sep 17 00:00:00 2001
+From 3d8aed68c177ddd508be4e1cceceefa3ead04446 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 19:53:06 +0800
 Subject: [PATCH 0850/1206] k1:pm-domain: disable wakeup5 by default
@@ -9,7 +9,7 @@ Change-Id: I69f106b67ac0d1f726a73a938aaa49c3be0a7869
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index cd741e311313..ccf4e5e0317d 100644
+index cd741e3113135..ccf4e5e0317d7 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -44,6 +44,10 @@

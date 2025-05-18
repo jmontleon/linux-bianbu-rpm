@@ -1,4 +1,4 @@
-From 2bdd0048aab8ef9532e8f5dae3dc01197200e3ac Mon Sep 17 00:00:00 2001
+From 6b4db1821fda3066ec744930eec9388fcbaa2c67 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 6 Sep 2023 10:05:05 +0800
 Subject: [PATCH 0100/1206] config: support gmac driver for k1-x 1x4 and 2x2
@@ -10,7 +10,7 @@ Change-Id: Ia8acee10aa64e0a702b75e7291c6169ae7a53b5b
  2 files changed, 96 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
-index 2a78b43c72a9..0f8cc810c1e4 100644
+index 2a78b43c72a9e..0f8cc810c1e4e 100644
 --- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 @@ -64,8 +64,53 @@ CONFIG_BLK_DEV_SD=y
@@ -78,7 +78,7 @@ index 2a78b43c72a9..0f8cc810c1e4 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
-index 2a78b43c72a9..0f8cc810c1e4 100644
+index 2a78b43c72a9e..0f8cc810c1e4e 100644
 --- a/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 @@ -64,8 +64,53 @@ CONFIG_BLK_DEV_SD=y

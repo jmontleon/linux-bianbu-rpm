@@ -1,4 +1,4 @@
-From 18758c0f3d9a05b50c3863363eb758ac4e0c1629 Mon Sep 17 00:00:00 2001
+From be4dec5d15003cc0f27c3fa23a3c83bafeb85d12 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:22:51 +0800
 Subject: [PATCH 1166/1206] crypto: k1: fix compile warning
@@ -11,7 +11,7 @@ Change-Id: Ie9c8e683323d58b1e18719ba6c8ed0257b0e0848
  3 files changed, 22 insertions(+), 76 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index b3388788256f..3afac122daac 100644
+index b3388788256f8..3afac122daac6 100644
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -18,27 +18,12 @@
@@ -45,7 +45,7 @@ index b3388788256f..3afac122daac 100644
  	return spacemit_crypto_aes_set_key(0, &tfm->base, key, keylen);
  }
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 2b6719194ddd..ac1e7385b81b 100644
+index 2b6719194dddf..ac1e7385b81b5 100644
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -86,7 +86,7 @@ static uint32_t crypto_read32(int index, size_t offset)
@@ -162,7 +162,7 @@ index 2b6719194ddd..ac1e7385b81b 100644
  
  
 diff --git a/drivers/crypto/spacemit/spacemit_engine.h b/drivers/crypto/spacemit/spacemit_engine.h
-index c0d796eb7c7b..e46c4a8ce729 100644
+index c0d796eb7c7b3..e46c4a8ce729a 100644
 --- a/drivers/crypto/spacemit/spacemit_engine.h
 +++ b/drivers/crypto/spacemit/spacemit_engine.h
 @@ -318,4 +318,19 @@ struct aes_clk_reset_ctrl {

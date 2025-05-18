@@ -1,4 +1,4 @@
-From afb4f73f59a88b5cc2e5ff8bc52ccacd765f741d Mon Sep 17 00:00:00 2001
+From dacf7b0e9158b0b61adf674abbdc1066d41c83e0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 15 Jan 2024 18:12:43 +0800
 Subject: [PATCH 0375/1206] clock: fix can func clk incorrect issue
@@ -10,7 +10,7 @@ Change-Id: Ieba27d99fa2ae278440cf980989b3343cae0b909
  2 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 3ba4c8c7b648..22c42e63ba94 100755
+index 3ba4c8c7b648c..22c42e63ba940 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -312,6 +312,14 @@ static SPACEMIT_CCU_GATE_FACTOR(pll3_d8, "pll3_d8", "pll3",
@@ -48,7 +48,7 @@ index 3ba4c8c7b648..22c42e63ba94 100755
  		[CLK_PLL1_76P8]		= &pll1_d32_76p8.common.hw,
  		[CLK_PLL1_61P44]	= &pll1_d40_61p44.common.hw,
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index d5a5d48e2c56..8be995999fcf 100755
+index d5a5d48e2c56d..8be995999fcf4 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -183,5 +183,9 @@

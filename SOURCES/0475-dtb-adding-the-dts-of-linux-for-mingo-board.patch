@@ -1,4 +1,4 @@
-From aed1d606719201f1e6599de6bd1d62dcaefa38d0 Mon Sep 17 00:00:00 2001
+From 51623dec54c2145cb3ae4dadaaca3437ec1c980c Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 13 Mar 2024 17:21:14 +0800
 Subject: [PATCH 0475/1206] dtb: adding the dts of linux for mingo board
@@ -11,7 +11,7 @@ Change-Id: Iac7765c0143f63c96afd20de7901cd0ec0bc05e8
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 4e80d42fafec..1e7fd9249227 100644
+index 4e80d42fafec1..1e7fd92492272 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,5 +1,5 @@
@@ -23,7 +23,7 @@ index 4e80d42fafec..1e7fd9249227 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 new file mode 100644
-index 000000000000..d883d797fde9
+index 0000000000000..d883d797fde91
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -0,0 +1,618 @@

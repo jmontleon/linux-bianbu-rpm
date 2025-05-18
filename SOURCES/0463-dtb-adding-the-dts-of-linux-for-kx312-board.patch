@@ -1,4 +1,4 @@
-From 99f9c71e08be59d6e4baa19544a29e9827e886b7 Mon Sep 17 00:00:00 2001
+From 0ccd67fd6ea93d7863eaea4e0a1e7ba9f073770e Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sat, 9 Mar 2024 17:04:03 +0800
 Subject: [PATCH 0463/1206] dtb: adding the dts of linux for kx312 board
@@ -11,7 +11,7 @@ Change-Id: Id5fbbe1ea252a9a56d691d6ce8961b1b5a7121d8
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 8894439bd857..da5760ec5952 100644
+index 8894439bd8574..da5760ec5952d 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,5 +1,5 @@
@@ -23,7 +23,7 @@ index 8894439bd857..da5760ec5952 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 new file mode 100644
-index 000000000000..acdc4ea570ee
+index 0000000000000..acdc4ea570ee7
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -0,0 +1,578 @@

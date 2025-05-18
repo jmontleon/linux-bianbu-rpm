@@ -1,4 +1,4 @@
-From 8d38d201286a3c719b7c104840603c1963f31048 Mon Sep 17 00:00:00 2001
+From 3608ee50462082fc0f495226b913285605118053 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:26:38 +0800
 Subject: [PATCH 0330/1206] clean usb driver debug info
@@ -11,7 +11,7 @@ Change-Id: I5c0c040a11aea25a2e7c55c5d058bccb52d423ae
  3 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index ce4fdd7dcbf7..0903113c10fd 100755
+index ce4fdd7dcbf74..0903113c10fde 100755
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -527,7 +527,7 @@ static int mv_ep_enable(struct usb_ep *_ep,
@@ -51,7 +51,7 @@ index ce4fdd7dcbf7..0903113c10fd 100755
  		dev_dbg(&udc->dev->dev, "disable udc\n");
  		usb_phy_shutdown(udc->phy);
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index 206a919e9072..ec615c4d3488 100755
+index 206a919e90727..ec615c4d3488c 100755
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -185,7 +185,7 @@ static int mv_ehci_probe(struct platform_device *pdev)
@@ -73,7 +73,7 @@ index 206a919e9072..ec615c4d3488 100755
  		 " working in %s mode\n", hcd->regs, hcd->irq,
  		 ehci_mv->mode == MV_USB_MODE_OTG ? "OTG" : "Host");
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index 4ef932dc80e3..5f3bf6b6ee94 100755
+index 4ef932dc80e3d..5f3bf6b6ee94e 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -110,7 +110,7 @@ static int mv_usb2_get_phydata(struct platform_device *pdev,

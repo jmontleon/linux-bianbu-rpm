@@ -1,4 +1,4 @@
-From 28b0ae66c43ff43df06fbc9539540a86e4e22d80 Mon Sep 17 00:00:00 2001
+From 1eacae0beb64980c5587c7ed0d7775f1ab0d2566 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 18 Apr 2024 10:30:08 +0800
 Subject: [PATCH 0592/1206] dtb: adding the dts of linux for MUSE-N1 board
@@ -11,7 +11,7 @@ Change-Id: Ifaac6514fd06c099a70ffb9c6539f0f7eccabd94
  create mode 100755 arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 1e7fd9249227..29ee4b702543 100644
+index 1e7fd92492272..29ee4b7025434 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,5 +1,7 @@
@@ -25,7 +25,7 @@ index 1e7fd9249227..29ee4b702543 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 new file mode 100755
-index 000000000000..c3d05c983a48
+index 0000000000000..c3d05c983a48a
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -0,0 +1,731 @@

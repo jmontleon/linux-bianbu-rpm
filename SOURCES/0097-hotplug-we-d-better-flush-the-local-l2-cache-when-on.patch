@@ -1,4 +1,4 @@
-From 8bd675aa2be93c9b9eb37db6691e269765477d41 Mon Sep 17 00:00:00 2001
+From a5646d89c0fbb707f9d1bb1210a59f46c37fbdbe Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
 Subject: [PATCH 0097/1206] hotplug: we'd better flush the local & l2 cache
@@ -13,7 +13,7 @@ Change-Id: I64e4158a8669af577abf1ab5018a7bdb424941aa
  4 files changed, 29 insertions(+)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 3d250824178b..e159910956e7 100644
+index 3d250824178bd..e159910956e78 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
 @@ -53,6 +53,9 @@ enum sbi_ext_base_fid {
@@ -27,7 +27,7 @@ index 3d250824178b..e159910956e7 100644
  
  enum sbi_ext_time_fid {
 diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
-index a1e38ecfc8be..864e68faee73 100644
+index a1e38ecfc8be2..864e68faee73b 100644
 --- a/arch/riscv/kernel/cpu-hotplug.c
 +++ b/arch/riscv/kernel/cpu-hotplug.c
 @@ -68,8 +68,16 @@ void __noreturn arch_cpu_idle_dead(void)
@@ -48,7 +48,7 @@ index a1e38ecfc8be..864e68faee73 100644
  	/* It should never reach here */
  	BUG();
 diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 1989b8cade1b..d122546c6910 100644
+index 1989b8cade1b9..d122546c69105 100644
 --- a/arch/riscv/kernel/sbi.c
 +++ b/arch/riscv/kernel/sbi.c
 @@ -416,6 +416,15 @@ int sbi_remote_hfence_vvma(const struct cpumask *cpu_mask,
@@ -68,7 +68,7 @@ index 1989b8cade1b..d122546c6910 100644
   * sbi_remote_hfence_vvma_asid() - Execute HFENCE.VVMA instructions on given
   * remote harts for current guest virtual address range belonging to a specific
 diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index 48ce50c5f5e6..96c122fbe43a 100644
+index 48ce50c5f5e68..96c122fbe43af 100644
 --- a/drivers/clocksource/timer-riscv.c
 +++ b/drivers/clocksource/timer-riscv.c
 @@ -167,6 +167,13 @@ static int __init riscv_timer_init_common(void)

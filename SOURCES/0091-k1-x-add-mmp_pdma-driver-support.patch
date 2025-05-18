@@ -1,4 +1,4 @@
-From 0093734396337e4134402d23cd239fa8aef3ca76 Mon Sep 17 00:00:00 2001
+From 613b3153d0e14dc320843b4d588d75dcba854a51 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 29 Aug 2023 10:51:49 +0800
 Subject: [PATCH 0091/1206] k1-x add mmp_pdma driver support
@@ -14,7 +14,7 @@ Change-Id: I10a015121ee8e394700fc0de75660887834d23fa
  create mode 100644 drivers/dma/mmp_pdma_k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 483e0c5f5324..3113c08222e1 100644
+index 483e0c5f5324c..3113c08222e13 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -248,6 +248,19 @@ uart3: uart@d4024000 {
@@ -38,7 +38,7 @@ index 483e0c5f5324..3113c08222e1 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 6fbf072654d3..61fd48715a14 100644
+index 6fbf072654d3f..61fd48715a144 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -86,6 +86,8 @@ CONFIG_MFD_SYSCON=y
@@ -51,7 +51,7 @@ index 6fbf072654d3..61fd48715a14 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 8afea2e23360..b1003517d2bd 100644
+index 8afea2e233602..b1003517d2bd4 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -441,6 +441,11 @@ config MILBEAUT_XDMAC
@@ -97,7 +97,7 @@ index 8afea2e23360..b1003517d2bd 100644
  
  config MPC512X_DMA
 diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 19ba465011a6..15d0e632ef9d 100644
+index 19ba465011a6d..15d0e632ef9d8 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
 @@ -55,6 +55,7 @@ obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
@@ -110,7 +110,7 @@ index 19ba465011a6..15d0e632ef9d 100644
  obj-$(CONFIG_MPC512X_DMA) += mpc512x_dma.o
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
 new file mode 100644
-index 000000000000..91dbc85f4f5a
+index 0000000000000..91dbc85f4f5af
 --- /dev/null
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -0,0 +1,1671 @@

@@ -1,4 +1,4 @@
-From 365d740a07a104c8feaf14cc6b528d7f58c33d3f Mon Sep 17 00:00:00 2001
+From cc4bba1d362721b40ff4dbbc48d144dfb227622c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:58:37 +0800
 Subject: [PATCH 1136/1206] riscv: restore vmlinux target building command
@@ -9,7 +9,7 @@ Change-Id: I70b33d83c5061cad7ba80fed6ecd0604413f4c1d
  1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 25a30c2ff37d..13fbc0f94238 100644
+index 25a30c2ff37d0..13fbc0f942387 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -150,7 +150,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)

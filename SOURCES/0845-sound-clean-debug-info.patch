@@ -1,4 +1,4 @@
-From 4a244abbc929bf003c786c593126ea30281144cf Mon Sep 17 00:00:00 2001
+From fe3ad7753e774942f3101b99bf8a01deb9f6d5a2 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 7 Jun 2024 17:17:38 +0800
 Subject: [PATCH 0845/1206] sound: clean debug info
@@ -11,7 +11,7 @@ Change-Id: I9a072536c07b16f937c3c61a605235163c575555
  3 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index c1ba61c1dbef..631d579867b8 100644
+index c1ba61c1dbefe..631d579867b8d 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -400,7 +400,7 @@ static int asoc_i2s_sspa_probe(struct platform_device *pdev)
@@ -33,7 +33,7 @@ index c1ba61c1dbef..631d579867b8 100644
  }
  
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index b6bc02edcb85..c860dcf003c4 100644
+index b6bc02edcb851..c860dcf003c44 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -707,7 +707,7 @@ static int spacemit_snd_pcm_new(struct snd_soc_component *component, struct snd_
@@ -88,7 +88,7 @@ index b6bc02edcb85..c860dcf003c4 100644
  }
  EXPORT_SYMBOL(spacemit_snd_register_dmaclient_pdrv);
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index e022e080334f..971457c638c9 100644
+index e022e080334f0..971457c638c91 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -100,7 +100,7 @@ static int mmp_sspa_hw_params(struct snd_pcm_substream *substream,

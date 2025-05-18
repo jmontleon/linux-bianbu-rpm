@@ -1,4 +1,4 @@
-From 9ff648d4773f0025e85ba1b137e6ed4755ac9dc4 Mon Sep 17 00:00:00 2001
+From 9c5869a66320579bc8c0fa9d38ae928672f6ad67 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Thu, 6 Jun 2024 16:29:37 +0800
 Subject: [PATCH 0693/1206] k1: udma: add pte_unmap() to avoid sleeping
@@ -36,7 +36,7 @@ Change-Id: I785fcc077046a099a0dd8ecc9e65e399f6269cda
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
-index 53845e66ae02..bfa55be74d93 100644
+index 53845e66ae02f..bfa55be74d935 100644
 --- a/drivers/dma/udma.c
 +++ b/drivers/dma/udma.c
 @@ -267,7 +267,7 @@ static int va2pa(void *va, size_t size, va2pa_t **va2pa)

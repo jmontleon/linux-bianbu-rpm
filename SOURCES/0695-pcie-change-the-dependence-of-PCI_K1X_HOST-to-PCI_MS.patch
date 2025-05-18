@@ -1,4 +1,4 @@
-From 52165e2fa38fcf946e4358105983c81031c799de Mon Sep 17 00:00:00 2001
+From 0bbfcfbd42b26b64f7b81e156215eea0ae670fc2 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 11 Jun 2024 10:55:32 +0800
 Subject: [PATCH 0695/1206] pcie: change the dependence of PCI_K1X_HOST to
@@ -10,7 +10,7 @@ Change-Id: Ibd9c0c1eb08b91bc9ed5446274626507f5c57263
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index d8d4425a0dfb..7f6bef1ce530 100644
+index d8d4425a0dfbd..7f6bef1ce5300 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
 @@ -474,7 +474,7 @@ config PCI_K1X

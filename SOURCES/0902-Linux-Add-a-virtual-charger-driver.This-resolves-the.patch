@@ -1,4 +1,4 @@
-From 5fee191c7cd00cb828b6a8633d51d904c7af92dd Mon Sep 17 00:00:00 2001
+From cb6ea9bd65e3aecb8d4d3d1b00bd56b9271c9fb7 Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Tue, 6 Aug 2024 21:02:57 +0800
 Subject: [PATCH 0902/1206] Linux:Add a virtual charger driver.This resolves
@@ -15,7 +15,7 @@ Change-Id: I2110f8479af7352c4fa26e56c5a20dfe39897f62
  create mode 100755 drivers/power/supply/sbs-charger-virtual.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 7459b66771cf..a5e295049122 100644
+index 7459b66771cfc..a5e295049122e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -158,6 +158,12 @@ bt_pwrseq: bt-pwrseq {
@@ -32,7 +32,7 @@ index 7459b66771cf..a5e295049122 100644
  
  &pinctrl {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 92c0584716bf..8f9ded27d032 100644
+index 92c0584716bf9..8f9ded27d0324 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -391,6 +391,7 @@ CONFIG_GPIO_PCA953X=y
@@ -44,7 +44,7 @@ index 92c0584716bf..8f9ded27d032 100644
  CONFIG_THERMAL=y
  CONFIG_CPU_THERMAL=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 7b18358f194a..81acf58b25bc 100644
+index 7b18358f194a7..81acf58b25bc5 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -249,6 +249,15 @@ config CHARGER_SBS
@@ -64,7 +64,7 @@ index 7b18358f194a..81acf58b25bc 100644
  	tristate "Smart Battery System Manager"
  	depends on I2C && I2C_MUX && GPIOLIB
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index b55cc48a4c86..19c2a557d952 100644
+index b55cc48a4c86f..19c2a557d9526 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -43,6 +43,7 @@ obj-$(CONFIG_BATTERY_IPAQ_MICRO) += ipaq_micro_battery.o
@@ -77,7 +77,7 @@ index b55cc48a4c86..19c2a557d952 100644
  obj-$(CONFIG_BATTERY_BQ27XXX_I2C) += bq27xxx_battery_i2c.o
 diff --git a/drivers/power/supply/sbs-charger-virtual.c b/drivers/power/supply/sbs-charger-virtual.c
 new file mode 100755
-index 000000000000..9fbd4da36608
+index 0000000000000..9fbd4da366086
 --- /dev/null
 +++ b/drivers/power/supply/sbs-charger-virtual.c
 @@ -0,0 +1,238 @@

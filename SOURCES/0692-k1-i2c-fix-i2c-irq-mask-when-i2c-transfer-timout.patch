@@ -1,4 +1,4 @@
-From 00016566bb86e5eec71ede293257fec3af2045bd Mon Sep 17 00:00:00 2001
+From 28f084d0f7488d0ee3fb41a689d85186d69b70f4 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 29 May 2024 19:43:55 +0800
 Subject: [PATCH 0692/1206] k1: i2c: fix i2c irq mask when i2c transfer timout
@@ -27,7 +27,7 @@ Change-Id: Ibb31c00af31367e92e865c5fc2b495298fb3493c
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index 88c302cb584d..eda79cfb2422 100644
+index 88c302cb584d4..eda79cfb2422e 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1879,13 +1879,12 @@ static int spacemit_i2c_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From ddf5748f51109adca9bf0e83fc72ed5653dee3c0 Mon Sep 17 00:00:00 2001
+From bbc92e8b15b1fee8968e70c6efb362143dca942e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 28 Feb 2024 14:50:28 +0800
 Subject: [PATCH 0444/1206] gt9xx: fix compile warning
@@ -12,7 +12,7 @@ Change-Id: I7d03cf16e52cc1f41efccce5f7f77fc07adda166
 diff --git a/drivers/input/touchscreen/gt9xx_update.c b/drivers/input/touchscreen/gt9xx_update.c
 old mode 100755
 new mode 100644
-index 27205dfc7214..816a697315dc
+index 27205dfc72141..816a697315dcd
 --- a/drivers/input/touchscreen/gt9xx_update.c
 +++ b/drivers/input/touchscreen/gt9xx_update.c
 @@ -196,9 +196,11 @@ static u8 gup_get_ic_fw_msg(struct i2c_client *client)

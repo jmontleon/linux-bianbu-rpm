@@ -1,4 +1,4 @@
-From 7a982eafdc59cd6d8279f02fb8c25340bf9eec7e Mon Sep 17 00:00:00 2001
+From c6bfb7d818cff7be3cf97ee4cc8b935fac63beb2 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 16 May 2024 09:09:26 +0800
 Subject: [PATCH 0660/1206] k1x-dma:fix dma tasklet-schedule bug
@@ -9,7 +9,7 @@ Change-Id: Ic3b3c561d0a84f58399d5919576ee5373aac9934
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index c8fd6668ac09..b086ed3d70c5 100644
+index c8fd6668ac094..b086ed3d70c5c 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -299,7 +299,6 @@ static irqreturn_t mmp_pdma_chan_handler(int irq, void *dev_id)

@@ -1,4 +1,4 @@
-From 62cc8c8bed49c96bcffc282ddc7e0e7e46e5232a Mon Sep 17 00:00:00 2001
+From ddea9b9bf2a4e13fb66a6456c6b8567da02d9717 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
 Subject: [PATCH 0344/1206] usb: add spacemit k1x dma mask setting
@@ -10,7 +10,7 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 318b3553ff12..d73fa0536d92 100644
+index 318b3553ff123..d73fa0536d926 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
 @@ -2261,6 +2261,12 @@ static int dwc3_probe(struct platform_device *pdev)
@@ -27,7 +27,7 @@ index 318b3553ff12..d73fa0536d92 100644
  	mutex_init(&dwc->mutex);
  
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 84c87bb9016e..e1ee28bd509a 100644
+index 84c87bb9016ea..e1ee28bd509a2 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
 @@ -5371,6 +5371,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)

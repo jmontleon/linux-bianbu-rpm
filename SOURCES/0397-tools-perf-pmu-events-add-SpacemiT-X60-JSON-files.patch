@@ -1,4 +1,4 @@
-From f47a7b9f513f4064c175a13fef8c4b1038905b3a Mon Sep 17 00:00:00 2001
+From b020d5b6e4d86027209b327ee920ec7865d7fe06 Mon Sep 17 00:00:00 2001
 From: linjunyan <junyan.lin@spacemit.com>
 Date: Wed, 24 Jan 2024 10:29:27 +0800
 Subject: [PATCH 0397/1206] tools/perf: pmu-events: add SpacemiT X60 JSON files
@@ -18,7 +18,7 @@ Change-Id: I53a10d548cac8dcc49f6b8db6acb32c7e66b300c
  create mode 100644 tools/perf/pmu-events/arch/riscv/spacemit/x60/microarch.json
 
 diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv b/tools/perf/pmu-events/arch/riscv/mapfile.csv
-index 3d3a809a5446..3094073eab43 100644
+index 3d3a809a5446e..3094073eab43f 100644
 --- a/tools/perf/pmu-events/arch/riscv/mapfile.csv
 +++ b/tools/perf/pmu-events/arch/riscv/mapfile.csv
 @@ -18,3 +18,4 @@
@@ -28,7 +28,7 @@ index 3d3a809a5446..3094073eab43 100644
 +0x710-0x8000000058000001-0x[[:xdigit:]]+,v1,spacemit/x60,core
 diff --git a/tools/perf/pmu-events/arch/riscv/spacemit/x60/branch.json b/tools/perf/pmu-events/arch/riscv/spacemit/x60/branch.json
 new file mode 100644
-index 000000000000..db3633fd8e76
+index 0000000000000..db3633fd8e763
 --- /dev/null
 +++ b/tools/perf/pmu-events/arch/riscv/spacemit/x60/branch.json
 @@ -0,0 +1,62 @@
@@ -96,7 +96,7 @@ index 000000000000..db3633fd8e76
 +]
 diff --git a/tools/perf/pmu-events/arch/riscv/spacemit/x60/cache.json b/tools/perf/pmu-events/arch/riscv/spacemit/x60/cache.json
 new file mode 100644
-index 000000000000..8299bfae49b0
+index 0000000000000..8299bfae49b0b
 --- /dev/null
 +++ b/tools/perf/pmu-events/arch/riscv/spacemit/x60/cache.json
 @@ -0,0 +1,122 @@
@@ -224,7 +224,7 @@ index 000000000000..8299bfae49b0
 +]
 diff --git a/tools/perf/pmu-events/arch/riscv/spacemit/x60/instruction.json b/tools/perf/pmu-events/arch/riscv/spacemit/x60/instruction.json
 new file mode 100644
-index 000000000000..2181fc31e7b0
+index 0000000000000..2181fc31e7b06
 --- /dev/null
 +++ b/tools/perf/pmu-events/arch/riscv/spacemit/x60/instruction.json
 @@ -0,0 +1,122 @@
@@ -352,7 +352,7 @@ index 000000000000..2181fc31e7b0
 +]
 diff --git a/tools/perf/pmu-events/arch/riscv/spacemit/x60/microarch.json b/tools/perf/pmu-events/arch/riscv/spacemit/x60/microarch.json
 new file mode 100644
-index 000000000000..694371b237f4
+index 0000000000000..694371b237f41
 --- /dev/null
 +++ b/tools/perf/pmu-events/arch/riscv/spacemit/x60/microarch.json
 @@ -0,0 +1,522 @@

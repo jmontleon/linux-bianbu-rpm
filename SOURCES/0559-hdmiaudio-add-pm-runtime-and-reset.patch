@@ -1,4 +1,4 @@
-From 794d79b74233f5857653c11c180c14e02e8aad92 Mon Sep 17 00:00:00 2001
+From da65f2724663f83ee3b7b843cb8cbb27e4c4acbf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sun, 7 Apr 2024 20:16:50 +0800
 Subject: [PATCH 0559/1206] hdmiaudio: add pm-runtime and reset
@@ -10,7 +10,7 @@ Change-Id: I3fa38d3a4b0c67d641c9ba8848416180e7e84303
  2 files changed, 24 insertions(+), 37 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e62889b9c063..22462529401c 100644
+index e62889b9c063d..22462529401ce 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2347,6 +2347,11 @@ spacemit_snd_sspa {
@@ -26,7 +26,7 @@ index e62889b9c063..22462529401c 100644
  	};
  
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 4f51c1ba9bab..6d6064d8c989 100644
+index 4f51c1ba9bab2..6d6064d8c9896 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -8,6 +8,9 @@

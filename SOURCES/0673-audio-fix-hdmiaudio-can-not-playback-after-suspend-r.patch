@@ -1,4 +1,4 @@
-From a432e481e15a6d101e8694623a3861e6b952c5b5 Mon Sep 17 00:00:00 2001
+From 663a0dcbc376393b511418cd7e7fad2a9056c9e4 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Mon, 20 May 2024 19:33:07 +0800
 Subject: [PATCH 0673/1206] audio: fix hdmiaudio can not playback after
@@ -10,7 +10,7 @@ Change-Id: I1e3c8a1d46e8b615c0b9457cceb2aa847853aeca
  1 file changed, 15 insertions(+)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 3730be5fddf1..c840508cd321 100644
+index 3730be5fddf1b..c840508cd3211 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -178,8 +178,23 @@ static void spacemit_dma_params_init(struct resource *res, struct snd_dmaengine_

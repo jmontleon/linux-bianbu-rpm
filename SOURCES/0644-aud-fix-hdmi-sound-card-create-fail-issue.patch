@@ -1,4 +1,4 @@
-From cde532ee98213aecd4006f1769d5a07df24f023f Mon Sep 17 00:00:00 2001
+From 965194e76df6918fff04f210941b6a9bd408399a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 10 May 2024 16:40:41 +0800
 Subject: [PATCH 0644/1206] aud: fix hdmi sound card create fail issue
@@ -11,7 +11,7 @@ Change-Id: I2c2b9d4b8f521de3a427b0a34c7b160ce177c09e
  3 files changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 046862749993..7538d229c43f 100755
+index 046862749993a..7538d229c43fe 100755
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -367,7 +367,11 @@ static struct platform_driver asoc_simple_card = {
@@ -28,7 +28,7 @@ index 046862749993..7538d229c43f 100755
  MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
  MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 779ea0a14c66..1b1f663bf1a1 100755
+index 779ea0a14c661..1b1f663bf1a12 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -940,7 +940,7 @@ static const struct snd_soc_component_driver spacemit_snd_dma_component = {
@@ -63,7 +63,7 @@ index 779ea0a14c66..1b1f663bf1a1 100755
  
  MODULE_DESCRIPTION("SPACEMIT ASoC PCM Platform Driver");
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 6d6064d8c989..3730be5fddf1 100644
+index 6d6064d8c9896..3730be5fddf1b 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -270,7 +270,11 @@ void spacemit_snd_unregister_sspa_pdrv(void)

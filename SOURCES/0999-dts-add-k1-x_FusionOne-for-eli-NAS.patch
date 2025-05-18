@@ -1,4 +1,4 @@
-From 384d7522f03131eb8b7101c62795186b46115106 Mon Sep 17 00:00:00 2001
+From a9ce46177f095c8b15a597d9f4823cf945d847d9 Mon Sep 17 00:00:00 2001
 From: maguoqun <guoqun.ma@spacemit.com>
 Date: Fri, 27 Sep 2024 18:11:27 +0800
 Subject: [PATCH 0999/1206] dts: add k1-x_FusionOne for eli NAS
@@ -11,7 +11,7 @@ Change-Id: If50cdff23e1d91a0d45c1b14f934fa2c22c58b99
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index bdb619e93093..49c92e3ccb2f 100644
+index bdb619e930932..49c92e3ccb2f3 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,6 +5,7 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -26,7 +26,7 @@ index bdb619e93093..49c92e3ccb2f 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 new file mode 100644
-index 000000000000..e077ddc2b7f2
+index 0000000000000..e077ddc2b7f20
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 @@ -0,0 +1,870 @@

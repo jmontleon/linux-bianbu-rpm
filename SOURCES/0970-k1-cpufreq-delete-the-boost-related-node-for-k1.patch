@@ -1,4 +1,4 @@
-From e5794681e4d1e3f61b6771eb5cde2f3ff26b9fb9 Mon Sep 17 00:00:00 2001
+From e16f9176df02aad8d96676c6c93ad4348c67b03d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 31 Aug 2024 12:46:41 +0800
 Subject: [PATCH 0970/1206] k1:cpufreq: delete the boost related node for k1
@@ -12,7 +12,7 @@ Change-Id: I4ed3d9517d8769f57c49c02187f5a8632775fc3c
  4 files changed, 41 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index b03285e62618..6b9a97424a9e 100644
+index b03285e62618e..6b9a97424a9e8 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -178,6 +178,7 @@ static void cpufreq_exit(struct cpufreq_policy *policy)
@@ -32,7 +32,7 @@ index b03285e62618..6b9a97424a9e 100644
  	.target_index = set_target,
  	.get = cpufreq_generic_get,
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 61cbfb56bf4e..7da3a22fd6bc 100644
+index 61cbfb56bf4ed..7da3a22fd6bcd 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
 @@ -2880,11 +2880,31 @@ static int create_boost_sysfs_file(void)
@@ -68,7 +68,7 @@ index 61cbfb56bf4e..7da3a22fd6bc 100644
  int cpufreq_enable_boost_support(void)
  {
 diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
-index 9db21ffc1197..f41d59703c58 100644
+index 9db21ffc11979..f41d59703c58f 100644
 --- a/drivers/cpufreq/freq_table.c
 +++ b/drivers/cpufreq/freq_table.c
 @@ -57,7 +57,9 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
@@ -82,7 +82,7 @@ index 9db21ffc1197..f41d59703c58 100644
  
  	if (policy->min == ~0)
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index c51303193e41..745844e9d2b2 100644
+index c51303193e41a..745844e9d2b2a 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -426,12 +426,12 @@ int spacmeit_cpufreq_veritfy(struct cpufreq_policy_data *policy)

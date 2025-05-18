@@ -1,4 +1,4 @@
-From a14e3c928d39285ebb2870ccaf14f0a0f158e0be Mon Sep 17 00:00:00 2001
+From c7c588b53e4dc639853838f6b1ecc47532497c9e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sat, 13 Jan 2024 01:39:59 +0800
 Subject: [PATCH 0368/1206] audio: change pcm hw_params
@@ -9,7 +9,7 @@ Change-Id: Idd85e10e843a64fbf4c7eb06c14633389178ff06
  1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm.c b/sound/soc/spacemit/spacemit-snd-pcm.c
-index 844f9cf8c0d6..961535f9901a 100644
+index 844f9cf8c0d69..961535f9901ad 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm.c
 @@ -75,11 +75,10 @@ static struct snd_pcm_hardware spacemit_snd_pcm_hardware_playback = {

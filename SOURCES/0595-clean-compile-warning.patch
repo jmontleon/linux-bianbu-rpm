@@ -1,4 +1,4 @@
-From 53a38221ef7de9fe4a6ab6624f5eb81da38134c2 Mon Sep 17 00:00:00 2001
+From 8f0e1379da401995d638ddc8518e4d889d8c652d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:40:25 +0800
 Subject: [PATCH 0595/1206] clean compile warning:
@@ -17,7 +17,7 @@ Change-Id: Iebd6746118d5670754ea80c39136b4dfc8a139c4
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
-index 220f15d4b1a5..4a7d53e367b1 100644
+index 220f15d4b1a59..4a7d53e367b15 100644
 --- a/drivers/mailbox/spacemit/k1x-mailbox.c
 +++ b/drivers/mailbox/spacemit/k1x-mailbox.c
 @@ -226,20 +226,24 @@ MODULE_DEVICE_TABLE(of, spacemit_mailbox_of_match);

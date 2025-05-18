@@ -1,4 +1,4 @@
-From ec65a40150c1170086c0c84c8d4e8a3e0c088ee6 Mon Sep 17 00:00:00 2001
+From bbc89630ec5bc6ba5744bf483fbd1f2ce179d5e1 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:00:56 +0800
 Subject: [PATCH 0275/1206] add f2fs support
@@ -9,7 +9,7 @@ Change-Id: Ic48ae0784cf9a03c5e5fab95dd45e5f8e658ece6
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 9595f091528d..dd9fc84861ac 100644
+index 9595f091528d7..dd9fc84861acf 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -391,6 +391,7 @@ CONFIG_XFS_QUOTA=y

@@ -1,4 +1,4 @@
-From 530d0b22709bebc4d98337718ef712d88594c315 Mon Sep 17 00:00:00 2001
+From 2ad4aadb96c740d0a77d5114635182ec5ae7534e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 27 Jun 2023 16:31:00 +0800
 Subject: [PATCH 0050/1206] media: support usb media, enable uvc and f_uvc
@@ -9,7 +9,7 @@ Change-Id: Ibcf4b9a8632d7de246dfab3a959fdbb28456af4a
  1 file changed, 9 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 31382a963683..f503bb3d056d 100644
+index 31382a9636834..f503bb3d056df 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -125,6 +125,14 @@ CONFIG_SPI=y

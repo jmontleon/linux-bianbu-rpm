@@ -1,4 +1,4 @@
-From e300e6d6bee143c71bdb0323ca99d0aa8d004bdb Mon Sep 17 00:00:00 2001
+From dc8154d900f7cb14a5f6c12b911646889f67da4f Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 12 Apr 2024 17:06:55 +0800
 Subject: [PATCH 0584/1206] display: Fix card order for mipi dsi and hdmi
@@ -16,7 +16,7 @@ Change-Id: Id2d4d2116501102cd78c2ce6c86c71c1840c5248
  8 files changed, 38 insertions(+), 25 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
-index 024ac5bf43ed..6c955c0440af 100644
+index 024ac5bf43ede..6c955c0440aff 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 @@ -35,7 +35,7 @@ dpu_online2_dsi_out: endpoint@0 {
@@ -51,7 +51,7 @@ index 024ac5bf43ed..6c955c0440af 100644
 +	};
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index dc6fcde7b0ed..8e369aac1a0f 100644
+index dc6fcde7b0edf..8e369aac1a0f8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2231,24 +2231,6 @@ jpu@c02f8000 {
@@ -80,7 +80,7 @@ index dc6fcde7b0ed..8e369aac1a0f 100644
  			compatible = "pwm-backlight";
  			status = "disabled";
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 85c471bf8a41..5213dc3a3fc0 100644
+index 85c471bf8a416..5213dc3a3fc02 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -409,7 +409,7 @@ static void spacemit_crtc_atomic_flush(struct drm_crtc *crtc,
@@ -93,7 +93,7 @@ index 85c471bf8a41..5213dc3a3fc0 100644
  	spacemit_crtc_atomic_update_mclk(crtc, old_state);
  	spacemit_dpu_run(crtc, old_state);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 6888bd64c4e0..108cf40902b8 100644
+index 6888bd64c4e03..108cf40902b80 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -40,7 +40,7 @@ void spacemit_drm_atomic_commit_tail(struct drm_atomic_state *old_state)
@@ -114,7 +114,7 @@ index 6888bd64c4e0..108cf40902b8 100644
  };
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.h b/drivers/gpu/drm/spacemit/spacemit_drm.h
-index f0796bde3030..9e7316077907 100644
+index f0796bde30301..9e7316077907a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.h
 @@ -46,7 +46,6 @@ struct spacemit_drm_private {
@@ -126,7 +126,7 @@ index f0796bde3030..9e7316077907 100644
  
  int spacemit_wb_init(struct drm_device *drm, struct drm_crtc *crtc);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 5bf9a7a7592a..c0aa17eec84e 100644
+index 5bf9a7a7592a6..c0aa17eec84e0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -908,4 +908,13 @@ struct platform_driver spacemit_hdmi_driver = {
@@ -145,7 +145,7 @@ index 5bf9a7a7592a..c0aa17eec84e 100644
 +MODULE_DESCRIPTION("Spacemit HDMI Driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 0cabad35d25a..39acde5f6f57 100644
+index 0cabad35d25aa..39acde5f6f578 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -546,7 +546,7 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
@@ -158,7 +158,7 @@ index 0cabad35d25a..39acde5f6f57 100644
  	if (count <= 0 || count != 3) {
  		panel->vdd_2v8 = NULL;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
-index a7b15fa4a1ee..3bcadfdf3cae 100644
+index a7b15fa4a1eef..3bcadfdf3caee 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -261,6 +261,13 @@ struct platform_driver spacemit_wb_driver = {

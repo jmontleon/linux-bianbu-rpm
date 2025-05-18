@@ -1,4 +1,4 @@
-From 5711e566f12194f9d10b0ac1e45254795a603d72 Mon Sep 17 00:00:00 2001
+From 82d726c7d0583a02386f9bf15f2bbf226a84024b Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 15 Mar 2024 21:57:13 +0800
 Subject: [PATCH 0490/1206] display: Fix dpu irqs error
@@ -9,7 +9,7 @@ Change-Id: I8cf7013685dc7805ade8120050d50ed6febe30bd
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index bf3e362feb02..4eab2c9aeb02 100644
+index bf3e362feb029..4eab2c9aeb029 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -1499,7 +1499,7 @@ static uint32_t dpu_isr(struct spacemit_dpu *dpu)

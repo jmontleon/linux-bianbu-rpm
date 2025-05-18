@@ -1,4 +1,4 @@
-From 3411110dc7d3c23722e1fb44cf58d5a6608b11cc Mon Sep 17 00:00:00 2001
+From ebb8ad475a9612e1bc927bd27ce20dfc507e2fc3 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 4 Sep 2024 17:36:28 +0800
 Subject: [PATCH 0984/1206] k1x_udc_core: cleanup info print
@@ -9,7 +9,7 @@ Change-Id: I5831b0250306d327b80540b83d1e46d991b1799b
  1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 551f6d4bc19f..157a0d90dac2 100644
+index 551f6d4bc19f2..157a0d90dac21 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -190,7 +190,7 @@ static int process_ep_req(struct mv_udc *udc, int index,

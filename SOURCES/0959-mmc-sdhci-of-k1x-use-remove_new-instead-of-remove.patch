@@ -1,4 +1,4 @@
-From ea4f894b91a8ff80a5ee34f4d058c851cb558812 Mon Sep 17 00:00:00 2001
+From 543681416df950c7f0b44f63b96eb218d3bdbd9f Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 27 Aug 2024 11:52:55 +0800
 Subject: [PATCH 0959/1206] mmc: sdhci-of-k1x: use remove_new() instead of
@@ -10,7 +10,7 @@ Change-Id: Ia6acc84696d3b797623c69352ff8ede29fd3415f
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index fc9d388d637b..66a183817205 100644
+index fc9d388d637b2..66a183817205e 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1754,7 +1754,7 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)

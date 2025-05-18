@@ -1,4 +1,4 @@
-From 28eb58b54ac4ac9a427616183dca9451a6916eba Mon Sep 17 00:00:00 2001
+From 7ac837d21487b70f8ad81e813acf6ba69e01e657 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 11:01:54 +0800
 Subject: [PATCH 0247/1206] reserved 2GB~4GB area from memory space, it should
@@ -11,7 +11,7 @@ Change-Id: Ifbb89436208a2508690e7c16ec630ca0acf488c9
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 8b1dcf6e6a4a..5532c0a65e3e 100644
+index 8b1dcf6e6a4a6..5532c0a65e3ee 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -424,6 +424,11 @@ reserved-memory {
@@ -27,7 +27,7 @@ index 8b1dcf6e6a4a..5532c0a65e3e 100644
  
  	soc {
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index d8c5016905af..3df7eb7e1e04 100644
+index d8c5016905af4..3df7eb7e1e04f 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -319,7 +319,12 @@ static void __init setup_bootmem(void)

@@ -1,4 +1,4 @@
-From f281744c31909b31a871b44d8a81ca41cea0a39b Mon Sep 17 00:00:00 2001
+From 078f4754d1795118310df3c109d39e8d2ccedef4 Mon Sep 17 00:00:00 2001
 From: mengbinghan <binghan.meng@spacemit.com>
 Date: Fri, 8 Nov 2024 11:40:35 +0800
 Subject: [PATCH 1079/1206] camera: Fix isp and cpp build error when building
@@ -12,7 +12,7 @@ Change-Id: Ice7ed974e58d78598900333e5170a8944cd81a3e
  3 files changed, 4 insertions(+)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
-index 73566e36d2ec..66e3cb64f64a 100644
+index 73566e36d2ec2..66e3cb64f64a0 100644
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 @@ -830,4 +830,5 @@ void cpp_iommu_unregister(struct cpp_device *cpp_dev)
@@ -22,7 +22,7 @@ index 73566e36d2ec..66e3cb64f64a 100644
 +MODULE_IMPORT_NS(DMA_BUF);
  EXPORT_SYMBOL(cpp_iommu_unregister);
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
-index a4b199b42942..f8e3374b798d 100644
+index a4b199b42942d..f8e3374b798d1 100644
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 @@ -789,6 +789,7 @@ struct platform_driver k1xisp_dev_driver = {
@@ -34,7 +34,7 @@ index a4b199b42942..f8e3374b798d 100644
  MODULE_DESCRIPTION("SPACEMIT K1X ISP device driver");
  MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
-index 89ff5c3c8a1d..7ee841a1c1d1 100644
+index 89ff5c3c8a1d3..7ee841a1c1d12 100644
 --- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 @@ -43,6 +43,8 @@ unsigned long phys_cpu2cam(unsigned long phys_addr)

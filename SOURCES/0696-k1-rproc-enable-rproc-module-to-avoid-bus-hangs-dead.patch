@@ -1,4 +1,4 @@
-From 533f4d8c5354ffed4f1ce6bb361baf637d958811 Mon Sep 17 00:00:00 2001
+From 79794fb621c142e807bb4ae3041276d68d98e235 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 7 Jun 2024 14:14:31 +0800
 Subject: [PATCH 0696/1206] k1: rproc: enable rproc module to avoid bus hangs
@@ -45,7 +45,7 @@ Change-Id: I20a7696f1d53a08a0e234a9593edef856ae31ff4
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index c92bdb462efa..89a66efa97b3 100644
+index c92bdb462efa8..89a66efa97b36 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -420,8 +420,10 @@ static int spacemit_rproc_probe(struct platform_device *pdev)

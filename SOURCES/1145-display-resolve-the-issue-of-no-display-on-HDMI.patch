@@ -1,4 +1,4 @@
-From 4db54d54069f054974695783cf84d4caa29a48c7 Mon Sep 17 00:00:00 2001
+From 250eee55f76f4037d1be34969a0dcfbb8b016b98 Mon Sep 17 00:00:00 2001
 From: zhenglilang <lilang.zheng@spacemit.com>
 Date: Mon, 2 Dec 2024 17:42:00 +0800
 Subject: [PATCH 1145/1206] display: resolve the issue of no display on HDMI
@@ -14,7 +14,7 @@ Change-Id: I685f79509d9d39c877ee9c2e00dce36ef8b1e15c
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 4c7b372a2d3e..1e2b74024f40 100644
+index 4c7b372a2d3eb..1e2b74024f409 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -187,6 +187,7 @@ static const struct file_operations spacemit_drm_fops = {

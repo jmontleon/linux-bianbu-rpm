@@ -1,4 +1,4 @@
-From 6b1e7a3ccc2999f03d97c7cc126a8814bd5b7bf1 Mon Sep 17 00:00:00 2001
+From 2ea84c9f1ecaab5fdfd79192244ac4a64c7f98d7 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 8 May 2024 13:45:47 +0800
 Subject: [PATCH 0630/1206] pcie: modify suspend_noirq and resume_noirq of k1
@@ -14,7 +14,7 @@ Change-Id: I916dcd62a8cec86db5e6755459f779f3dc1acb5d
  1 file changed, 53 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 1f9a7d47827f..1d7853f2ceea 100755
+index 1f9a7d47827fc..1d7853f2ceeaf 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -139,6 +139,7 @@ struct k1x_pcie {

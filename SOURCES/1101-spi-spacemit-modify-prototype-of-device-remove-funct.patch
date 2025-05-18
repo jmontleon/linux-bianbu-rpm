@@ -1,4 +1,4 @@
-From 8c924d1cef3c06ea1bb3ff673fd2f61dab8e5232 Mon Sep 17 00:00:00 2001
+From db2b5e2f23a6827f416706df3de69facafb13ae2 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:59:01 +0800
 Subject: [PATCH 1101/1206] spi: spacemit: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I7d3f5f3da33eb03d1716ff11d14b368e6d282cc5
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
-index 152c04cfa6bb..67a28851bb1b 100644
+index 152c04cfa6bbd..67a28851bb1b6 100644
 --- a/drivers/spi/spi-k1x.c
 +++ b/drivers/spi/spi-k1x.c
 @@ -1049,12 +1049,12 @@ static int k1x_spi_probe(struct platform_device *pdev)

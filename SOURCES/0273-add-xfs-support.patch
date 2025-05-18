@@ -1,4 +1,4 @@
-From f8388cd62cd80fc01e137a24d5f12d0eefc4066b Mon Sep 17 00:00:00 2001
+From 947dbccfab79cb292b1d6d1b46518c20d5fc0577 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 19:59:29 +0800
 Subject: [PATCH 0273/1206] add xfs support
@@ -9,7 +9,7 @@ Change-Id: Ib2041015bc346eee1518127f52a78384aa5d9dd9
  1 file changed, 3 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index e75f3a89930e..a488042d919a 100644
+index e75f3a89930e2..a488042d919ad 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -386,6 +386,9 @@ CONFIG_GENERIC_PHY=y

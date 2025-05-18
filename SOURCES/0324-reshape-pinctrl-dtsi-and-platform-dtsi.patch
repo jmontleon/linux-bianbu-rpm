@@ -1,4 +1,4 @@
-From 9c720bef74ca6f9c31c64ce7d39277cc048df775 Mon Sep 17 00:00:00 2001
+From dc40ee4f2e3f3e3c7ba92048d8ce0939ed05b721 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 8 Jan 2024 21:52:33 +0800
 Subject: [PATCH 0324/1206] reshape pinctrl dtsi and platform dtsi
@@ -10,7 +10,7 @@ Change-Id: I319a1783a4abcb2769e2cc57bf491d8c22ba97b3
  2 files changed, 607 insertions(+), 548 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ce7e8a725e8d..20aa418ad81b 100644
+index ce7e8a725e8db..20aa418ad81b0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1061,7 +1061,6 @@ i2c3: i2c@f0614000 {
@@ -70,7 +70,7 @@ index ce7e8a725e8d..20aa418ad81b 100644
  			compatible = "img,rgx";
  			interrupt-names = "rgxirq";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index a868772b580a..43a18611c37d 100644
+index a868772b580a5..43a18611c37d1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -5,148 +5,160 @@

@@ -1,4 +1,4 @@
-From 103c6be151653b442c58ffe30fabd0c6e4aeff7f Mon Sep 17 00:00:00 2001
+From 5541381e9fadd840846b15440568dd09bd9decea Mon Sep 17 00:00:00 2001
 From: liangbaihui <baihui.liang@spacemit.com>
 Date: Mon, 2 Dec 2024 20:15:22 +0800
 Subject: [PATCH 1154/1206] gpu: img-rogue: update to linux-6.12 & fix
@@ -15,7 +15,7 @@ Change-Id: I357a5aa232b505d9452cc94656d38a03a88e8593
  6 files changed, 6 insertions(+), 69 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
-index 6586209b3aea..9b2fb88a09dd 100644
+index 6586209b3aea2..9b2fb88a09dd0 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 @@ -260,7 +260,9 @@ pdp_fb_create(struct drm_device *dev,
@@ -29,7 +29,7 @@ index 6586209b3aea..9b2fb88a09dd 100644
  	.atomic_check = drm_atomic_helper_check,
  	.atomic_commit = drm_atomic_helper_commit,
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint.c b/drivers/gpu/drm/img-rogue/km_apphint.c
-index 03687c4a8f3a..f080da1ae489 100644
+index 03687c4a8f3a4..f080da1ae489f 100644
 --- a/drivers/gpu/drm/img-rogue/km_apphint.c
 +++ b/drivers/gpu/drm/img-rogue/km_apphint.c
 @@ -1594,15 +1594,12 @@ int pvr_apphint_set_string(PVRSRV_DEVICE_NODE *device, APPHINT_ID ue, IMG_CHAR *
@@ -49,7 +49,7 @@ index 03687c4a8f3a..f080da1ae489 100644
  		apphint.val[ue].device = device;
  	}
 diff --git a/drivers/gpu/drm/img-rogue/mem_utils.c b/drivers/gpu/drm/img-rogue/mem_utils.c
-index c3cb6de61a52..8d1051f27d71 100644
+index c3cb6de61a523..8d1051f27d713 100644
 --- a/drivers/gpu/drm/img-rogue/mem_utils.c
 +++ b/drivers/gpu/drm/img-rogue/mem_utils.c
 @@ -381,8 +381,6 @@ void DeviceMemSetBytes(void *pvDst, unsigned char ui8Value, size_t uSize)
@@ -62,7 +62,7 @@ index c3cb6de61a52..8d1051f27d71 100644
  /*
   * In case of Linux kernel-mode in a debug build, choose the variant
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
-index 7458ccb6a885..d2d732c09911 100644
+index 7458ccb6a8854..d2d732c099112 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_drm.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
 @@ -519,6 +519,9 @@ const struct file_operations pvr_drm_fops = {
@@ -76,7 +76,7 @@ index 7458ccb6a885..d2d732c09911 100644
  
  const struct drm_driver pvr_drm_generic_driver = {
 diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
-index b59efea125ac..6b875a03e4d9 100644
+index b59efea125ac9..6b875a03e4d90 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 @@ -218,7 +218,7 @@ static void pvr_remove(struct platform_device *pdev)
@@ -89,7 +89,7 @@ index b59efea125ac..6b875a03e4d9 100644
  
  static void pvr_shutdown(struct platform_device *pdev)
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv.c b/drivers/gpu/drm/img-rogue/pvrsrv.c
-index 3a8c451f7f92..3b0e480eecee 100644
+index 3a8c451f7f92a..3b0e480eecee5 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv.c
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv.c
 @@ -222,69 +222,6 @@ const IMG_UINT32 gui32RGXBridges =

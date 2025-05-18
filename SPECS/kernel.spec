@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.14.6
-%define specversion 6.14.6
+%define specrpmversion 6.14.7
+%define specversion 6.14.7
 %define patchversion 6.14
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.14.6
+%define tarfile_release 6.14.7
 # This is needed to do merge window version magic
 %define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.14.6
+%define kabiversion 6.14.7
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6637,6 +6637,14 @@ fi\
 #
 #
 %changelog
+* Sun May 18 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.7-0]
+- Turn on MITIGATION_ITS for RHEL configs (Justin M. Forbes)
+- Add bug to Bugsfixed for 6.14.7 (Justin M. Forbes)
+- powerpc/bpf: fix JIT code size calculation of bpf trampoline (Hari Bathini)
+- Set MITIGATION_ITS for Fedora (Justin M. Forbes)
+- Fedora 40 is EOL (Justin M. Forbes)
+- Linux v6.14.7
+
 * Fri May 09 2025 Augusto Caringi <acaringi@redhat.com> [6.14.6-0]
 - platform/x86/intel/pmc: Add Arrow Lake U/H support to intel_pmc_core driver (Xi Pardee)
 - platform/x86:intel/pmc: Move arch specific action to init function (Xi Pardee)

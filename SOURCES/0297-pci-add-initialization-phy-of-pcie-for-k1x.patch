@@ -1,4 +1,4 @@
-From f0143048362a91941d8c88c78c2700194112674c Mon Sep 17 00:00:00 2001
+From b3229760579865a450ca4ad47c03607a53f86b35 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 3 Jan 2024 08:57:33 +0800
 Subject: [PATCH 0297/1206] pci: add initialization phy of pcie for k1x
@@ -10,7 +10,7 @@ Change-Id: I7ae828acec4eae6de9b18c8a5788eadacd3e0fbd
  2 files changed, 387 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 4a19f37f8f06..8dfdf215cdbb 100644
+index 4a19f37f8f061..8dfdf215cdbbd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1607,9 +1607,13 @@ pcie0_rc: pcie@ca000000 {
@@ -78,7 +78,7 @@ index 4a19f37f8f06..8dfdf215cdbb 100644
  			clock-names = "pcie-clk";
  			resets = <&reset RESET_PCIE2>;
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index a29772252ba8..160e1b2099f7 100755
+index a29772252ba87..160e1b2099f79 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -130,9 +130,13 @@ struct k1x_pcie {

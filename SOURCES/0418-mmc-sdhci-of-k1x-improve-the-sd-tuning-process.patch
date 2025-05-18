@@ -1,4 +1,4 @@
-From a8a316f8b598a77647c2c53d5e72596c50967165 Mon Sep 17 00:00:00 2001
+From 98bbf10d81a8b7eaac492d673ecbf0039a7a2075 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 22 Feb 2024 09:42:53 +0800
 Subject: [PATCH 0418/1206] mmc: sdhci-of-k1x: improve the sd tuning process
@@ -9,7 +9,7 @@ Change-Id: I9185214105854ba34bd733834bfb9fa0206b999b
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 1291b714679f..14185718c147 100644
+index 1291b714679f3..14185718c1479 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -761,7 +761,7 @@ static int spacemit_send_tuning_cmd(struct sdhci_host *host, u32 opcode,

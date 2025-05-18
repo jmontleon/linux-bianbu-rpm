@@ -1,4 +1,4 @@
-From 38c8af610b2a5fcab2c441fc2a60d4aa9f64fa32 Mon Sep 17 00:00:00 2001
+From 7ec37417c1ed580a76416502e42451b530268fc3 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Wed, 13 Mar 2024 16:02:03 +0800
 Subject: [PATCH 0474/1206] k1: delete undefined pm function
@@ -9,7 +9,7 @@ Change-Id: I087c10d1fb5a454c71b071bd25aaf73989ce2357
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index 041ef8ae7578..6c522fdb3b2b 100644
+index 041ef8ae75787..6c522fdb3b2ba 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1628,7 +1628,6 @@ static int spacemit_i2c_suspend(struct device *dev)

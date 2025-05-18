@@ -1,4 +1,4 @@
-From 08badf36457537fb8a0665d4df9c46f8f41cae92 Mon Sep 17 00:00:00 2001
+From 819a4358782e4415616637d929941a609e07ffbc Mon Sep 17 00:00:00 2001
 From: chris <chris.huang@spacemit.com>
 Date: Fri, 17 May 2024 17:32:43 +0800
 Subject: [PATCH 0663/1206] 1.change kernel entry addr to 0x20_0000.
@@ -9,7 +9,7 @@ Change-Id: I8738a1873feca0d9db747acf622d64911d97fdda
  1 file changed, 1 deletion(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 28b58931887f..c7fc6b3b89e2 100644
+index 28b58931887f9..c7fc6b3b89e25 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -46,7 +46,6 @@ CONFIG_SMP=y

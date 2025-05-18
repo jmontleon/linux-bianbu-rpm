@@ -1,4 +1,4 @@
-From e366f8d542af72198cdaa190b1a0d46869ae4bd1 Mon Sep 17 00:00:00 2001
+From 31d40d35cc029b2171514abee04eb5a38a211f34 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 24 Jan 2024 22:06:57 +0800
 Subject: [PATCH 0394/1206] k1x:deb1: support power-off system
@@ -12,7 +12,7 @@ Change-Id: Ied6688ae6a18d5c6024b272838183b12df423e30
  4 files changed, 71 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index dd89fef7d7d6..041ef8ae7578 100644
+index dd89fef7d7d6b..041ef8ae75787 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1988,11 +1988,17 @@ static int spacemit_i2c_remove(struct platform_device *pdev)
@@ -39,7 +39,7 @@ index dd89fef7d7d6..041ef8ae7578 100644
  
  static const struct of_device_id spacemit_i2c_dt_match[] = {
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index cb697b6befa6..f2779cfae373 100644
+index cb697b6befa67..f2779cfae3737 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -34,6 +34,37 @@ static const struct of_device_id spacemit_pmic_of_match[] = {
@@ -113,7 +113,7 @@ index cb697b6befa6..f2779cfae373 100644
  }
  
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 2976ce88bb2e..c42bf3760ba3 100644
+index 2976ce88bb2e8..c42bf3760ba31 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -174,6 +174,18 @@ struct mfd_match_data {
@@ -136,7 +136,7 @@ index 2976ce88bb2e..c42bf3760ba3 100644
  
  /* regulator: match data */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 172d11c29569..2b680f04ce8b 100644
+index 172d11c295695..2b680f04ce8b0 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -76,6 +76,9 @@ enum SPM8821_reg {

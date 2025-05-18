@@ -1,4 +1,4 @@
-From 9b61e2a3437dbc8c6c2083e7d4a9f45bb70ef207 Mon Sep 17 00:00:00 2001
+From b802bed99f20c6dc8f2cbce542794ac4d22f3862 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 14 Jun 2024 21:42:23 +0800
 Subject: [PATCH 0876/1206] ehci-k1x-ci: fix multiple instance debugfs conflict
@@ -12,7 +12,7 @@ Change-Id: Id3d06e47b02825e60ab11723972c745c52cd5ed4
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index e457d1684649..ab26783d76df 100644
+index e457d16846496..ab26783d76dfc 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -285,7 +285,7 @@ static int mv_ehci_probe(struct platform_device *pdev)

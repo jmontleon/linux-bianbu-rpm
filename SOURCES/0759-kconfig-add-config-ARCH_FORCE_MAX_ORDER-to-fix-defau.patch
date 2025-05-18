@@ -1,4 +1,4 @@
-From ddc90aaf01172d37eb31090113b532549b929e02 Mon Sep 17 00:00:00 2001
+From 17d47c52e175b6c17636d518d156e294625fc790 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Sat, 22 Jun 2024 10:44:47 +0800
 Subject: [PATCH 0759/1206] kconfig: add config ARCH_FORCE_MAX_ORDER to fix
@@ -17,7 +17,7 @@ Change-Id: If786a566b4ed14415a98614b9eb97c773a6d7e3c
  1 file changed, 13 insertions(+)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 29a8f7757970..61cad79093fd 100644
+index 29a8f77579702..61cad79093fda 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
 @@ -302,6 +302,19 @@ config KASAN_SHADOW_OFFSET

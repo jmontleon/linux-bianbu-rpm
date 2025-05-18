@@ -1,4 +1,4 @@
-From 8609b110897c1d19f7d793793975f9fee37bf664 Mon Sep 17 00:00:00 2001
+From 69490000241705a27a141c99c5eba449678967b4 Mon Sep 17 00:00:00 2001
 From: maguoqun <guoqun.ma@spacemit.com>
 Date: Mon, 28 Oct 2024 11:06:35 +0800
 Subject: [PATCH 1038/1206] dts: add orangepi-rv2 solution
@@ -12,7 +12,7 @@ Change-Id: I2392d624e918b8a7dcabbbdb23b9b1992c17e3bb
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 49c92e3ccb2f..03216e7d2abf 100644
+index 49c92e3ccb2f3..03216e7d2abfa 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -7,5 +7,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -23,7 +23,7 @@ index 49c92e3ccb2f..03216e7d2abf 100644
 +				  k1-x_baton-camera.dtb k1-x_FusionOne.dtb k1-x_orangepi-rv2.dtb
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 13393ae8d670..d256dd44a590 100644
+index 13393ae8d670a..d256dd44a590f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -663,6 +663,7 @@ &sdhci0 {
@@ -36,7 +36,7 @@ index 13393ae8d670..d256dd44a590 100644
  	no-mmc;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 new file mode 100644
-index 000000000000..91dc01c67dda
+index 0000000000000..91dc01c67dda4
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 @@ -0,0 +1,1097 @@

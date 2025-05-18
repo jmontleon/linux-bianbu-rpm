@@ -7,6 +7,10 @@
  arch/powerpc/include/asm/prom.h                    |    2 +
  arch/powerpc/kernel/fadump.c                       |   21 +-
  arch/powerpc/kernel/prom_init.c                    |    2 +-
+ arch/powerpc/net/bpf_jit.h                         |   20 +-
+ arch/powerpc/net/bpf_jit_comp.c                    |   33 +-
+ arch/powerpc/net/bpf_jit_comp32.c                  |    6 -
+ arch/powerpc/net/bpf_jit_comp64.c                  |   15 +-
  arch/s390/include/asm/ipl.h                        |    1 +
  arch/s390/kernel/ipl.c                             |    5 +
  arch/s390/kernel/setup.c                           |    4 +
@@ -64,7 +68,7 @@
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
  security/lockdown/lockdown.c                       |   11 +
- 66 files changed, 3062 insertions(+), 620 deletions(-)
+ 70 files changed, 3097 insertions(+), 659 deletions(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-kernel-fadump b/Documentation/ABI/testing/sysfs-kernel-fadump
 index 2f9daa7ca55b..b64b7622e6fc 100644
@@ -139,7 +143,7 @@ index 00e94bec401e..292b51652cca 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 6c3233a21380..1fc0f912e778 100644
+index 70bd8847c867..870ed6a45aa8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -300,6 +304,189 @@ index 57082fac4668..fce32b162ef3 100644
  		.min_load = cpu_to_be32(0xffffffff),	/* full client load */
  		.min_rma_percent = 0,	/* min RMA percentage of total RAM */
  		.max_pft_size = 48,	/* max log_2(hash table size) */
+diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+index 6beacaec63d3..4c26912c2e3c 100644
+--- a/arch/powerpc/net/bpf_jit.h
++++ b/arch/powerpc/net/bpf_jit.h
+@@ -51,8 +51,16 @@
+ 		EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | (offset & 0xfffc));					\
+ 	} while (0)
+ 
+-/* Sign-extended 32-bit immediate load */
++/*
++ * Sign-extended 32-bit immediate load
++ *
++ * If this is a dummy pass (!image), account for
++ * maximum possible instructions.
++ */
+ #define PPC_LI32(d, i)		do {					      \
++	if (!image)							      \
++		ctx->idx += 2;						      \
++	else {								      \
+ 		if ((int)(uintptr_t)(i) >= -32768 &&			      \
+ 				(int)(uintptr_t)(i) < 32768)		      \
+ 			EMIT(PPC_RAW_LI(d, i));				      \
+@@ -60,10 +68,15 @@
+ 			EMIT(PPC_RAW_LIS(d, IMM_H(i)));			      \
+ 			if (IMM_L(i))					      \
+ 				EMIT(PPC_RAW_ORI(d, d, IMM_L(i)));	      \
+-		} } while(0)
++		}							      \
++	} } while (0)
+ 
+ #ifdef CONFIG_PPC64
++/* If dummy pass (!image), account for maximum possible instructions */
+ #define PPC_LI64(d, i)		do {					      \
++	if (!image)							      \
++		ctx->idx += 5;						      \
++	else {								      \
+ 		if ((long)(i) >= -2147483648 &&				      \
+ 				(long)(i) < 2147483648)			      \
+ 			PPC_LI32(d, i);					      \
+@@ -84,7 +97,8 @@
+ 			if ((uintptr_t)(i) & 0x000000000000ffffULL)	      \
+ 				EMIT(PPC_RAW_ORI(d, d, (uintptr_t)(i) &       \
+ 							0xffff));             \
+-		} } while (0)
++		}							      \
++	} } while (0)
+ #define PPC_LI_ADDR	PPC_LI64
+ 
+ #ifndef CONFIG_PPC_KERNEL_PCREL
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index 2991bb171a9b..c0684733e9d6 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -504,10 +504,11 @@ static int invoke_bpf_prog(u32 *image, u32 *ro_image, struct codegen_context *ct
+ 	EMIT(PPC_RAW_ADDI(_R3, _R1, regs_off));
+ 	if (!p->jited)
+ 		PPC_LI_ADDR(_R4, (unsigned long)p->insnsi);
+-	if (!create_branch(&branch_insn, (u32 *)&ro_image[ctx->idx], (unsigned long)p->bpf_func,
+-			   BRANCH_SET_LINK)) {
+-		if (image)
+-			image[ctx->idx] = ppc_inst_val(branch_insn);
++	/* Account for max possible instructions during dummy pass for size calculation */
++	if (image && !create_branch(&branch_insn, (u32 *)&ro_image[ctx->idx],
++				    (unsigned long)p->bpf_func,
++				    BRANCH_SET_LINK)) {
++		image[ctx->idx] = ppc_inst_val(branch_insn);
+ 		ctx->idx++;
+ 	} else {
+ 		EMIT(PPC_RAW_LL(_R12, _R25, offsetof(struct bpf_prog, bpf_func)));
+@@ -889,7 +890,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 			bpf_trampoline_restore_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
+ 
+ 		/* Reserve space to patch branch instruction to skip fexit progs */
+-		im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
++		if (ro_image) /* image is NULL for dummy pass */
++			im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
+ 		EMIT(PPC_RAW_NOP());
+ 	}
+ 
+@@ -912,7 +914,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 		}
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+-		im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
++		if (ro_image) /* image is NULL for dummy pass */
++			im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
+ 		PPC_LI_ADDR(_R3, im);
+ 		ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
+ 						 (unsigned long)__bpf_tramp_exit);
+@@ -973,25 +976,9 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+ 			     struct bpf_tramp_links *tlinks, void *func_addr)
+ {
+ 	struct bpf_tramp_image im;
+-	void *image;
+ 	int ret;
+ 
+-	/*
+-	 * Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
+-	 * This will NOT cause fragmentation in direct map, as we do not
+-	 * call set_memory_*() on this buffer.
+-	 *
+-	 * We cannot use kvmalloc here, because we need image to be in
+-	 * module memory range.
+-	 */
+-	image = bpf_jit_alloc_exec(PAGE_SIZE);
+-	if (!image)
+-		return -ENOMEM;
+-
+-	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, image,
+-					    m, flags, tlinks, func_addr);
+-	bpf_jit_free_exec(image);
+-
++	ret = __arch_prepare_bpf_trampoline(&im, NULL, NULL, NULL, m, flags, tlinks, func_addr);
+ 	return ret;
+ }
+ 
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index c4db278dae36..0aace304dfe1 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -313,7 +313,6 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 		u64 func_addr;
+ 		u32 true_cond;
+ 		u32 tmp_idx;
+-		int j;
+ 
+ 		if (i && (BPF_CLASS(code) == BPF_ALU64 || BPF_CLASS(code) == BPF_ALU) &&
+ 		    (BPF_CLASS(prevcode) == BPF_ALU64 || BPF_CLASS(prevcode) == BPF_ALU) &&
+@@ -1099,13 +1098,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 		 * 16 byte instruction that uses two 'struct bpf_insn'
+ 		 */
+ 		case BPF_LD | BPF_IMM | BPF_DW: /* dst = (u64) imm */
+-			tmp_idx = ctx->idx;
+ 			PPC_LI32(dst_reg_h, (u32)insn[i + 1].imm);
+ 			PPC_LI32(dst_reg, (u32)insn[i].imm);
+-			/* padding to allow full 4 instructions for later patching */
+-			if (!image)
+-				for (j = ctx->idx - tmp_idx; j < 4; j++)
+-					EMIT(PPC_RAW_NOP());
+ 			/* Adjust for two bpf instructions */
+ 			addrs[++i] = ctx->idx * 4;
+ 			break;
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index 233703b06d7c..5daa77aee7f7 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -227,7 +227,14 @@ int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *
+ #ifdef CONFIG_PPC_KERNEL_PCREL
+ 	reladdr = func_addr - local_paca->kernelbase;
+ 
+-	if (reladdr < (long)SZ_8G && reladdr >= -(long)SZ_8G) {
++	/*
++	 * If fimage is NULL (the initial pass to find image size),
++	 * account for the maximum no. of instructions possible.
++	 */
++	if (!fimage) {
++		ctx->idx += 7;
++		return 0;
++	} else if (reladdr < (long)SZ_8G && reladdr >= -(long)SZ_8G) {
+ 		EMIT(PPC_RAW_LD(_R12, _R13, offsetof(struct paca_struct, kernelbase)));
+ 		/* Align for subsequent prefix instruction */
+ 		if (!IS_ALIGNED((unsigned long)fimage + CTX_NIA(ctx), 8))
+@@ -412,7 +419,6 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 		u64 imm64;
+ 		u32 true_cond;
+ 		u32 tmp_idx;
+-		int j;
+ 
+ 		/*
+ 		 * addrs[] maps a BPF bytecode address into a real offset from
+@@ -1046,12 +1052,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 		case BPF_LD | BPF_IMM | BPF_DW: /* dst = (u64) imm */
+ 			imm64 = ((u64)(u32) insn[i].imm) |
+ 				    (((u64)(u32) insn[i+1].imm) << 32);
+-			tmp_idx = ctx->idx;
+ 			PPC_LI64(dst_reg, imm64);
+-			/* padding to allow full 5 instructions for later patching */
+-			if (!image)
+-				for (j = ctx->idx - tmp_idx; j < 5; j++)
+-					EMIT(PPC_RAW_NOP());
+ 			/* Adjust for two bpf instructions */
+ 			addrs[++i] = ctx->idx * 4;
+ 			break;
 diff --git a/arch/s390/include/asm/ipl.h b/arch/s390/include/asm/ipl.h
 index b0d00032479d..afb9544fb007 100644
 --- a/arch/s390/include/asm/ipl.h

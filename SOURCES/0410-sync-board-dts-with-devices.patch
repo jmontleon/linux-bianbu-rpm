@@ -1,4 +1,4 @@
-From 5dd6ec45a25bc1a0929264a8447b4157fc9f1cc1 Mon Sep 17 00:00:00 2001
+From 5df3866a17847cceebce232d9c026546981f000b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 2 Feb 2024 12:34:28 +0800
 Subject: [PATCH 0410/1206] sync board dts with devices
@@ -10,7 +10,7 @@ Change-Id: I1232bb8c0fec5c0e7922ddc942a08ee40251cdb2
  2 files changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 9ce0e21faa79..d4d938fa2aa7 100644
+index 9ce0e21faa797..d4d938fa2aa72 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -151,7 +151,7 @@ wlan_pwrseq: wlan-pwrseq {
@@ -45,7 +45,7 @@ index 9ce0e21faa79..d4d938fa2aa7 100644
  		&range GPIO_66  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
  		&range PRI_TDI  2 (MUX_MODE1 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 00e89208ddbb..c85feab7a44d 100644
+index 00e89208ddbbf..c85feab7a44da 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -151,7 +151,7 @@ wlan_pwrseq: wlan-pwrseq {

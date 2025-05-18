@@ -1,4 +1,4 @@
-From db93eef129debf73b63c120e8675022cae2185b2 Mon Sep 17 00:00:00 2001
+From d748a114e090d2b319dbb1376a635aabc03bde23 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 22 Mar 2024 17:35:43 +0800
 Subject: [PATCH 0508/1206] k1x: adjust i2s driver strength
@@ -9,7 +9,7 @@ Change-Id: I5c69301c2f1af7ea572679f8294dadd8e22dece3
  1 file changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 878e4693f40c..b4d551ee80ae 100644
+index 878e4693f40c2..b4d551ee80ae4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -660,31 +660,31 @@ K1X_PADCONF(GPIO_63,    MUX_MODE4, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))    /*

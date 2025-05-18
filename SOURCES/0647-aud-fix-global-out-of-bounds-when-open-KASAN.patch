@@ -1,4 +1,4 @@
-From c334ea2884131a66c6fcabcbfbfdf3028ab4a411 Mon Sep 17 00:00:00 2001
+From 48432657d93c2511d0fef26b7c3a4d7b557a243a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sat, 11 May 2024 14:15:02 +0800
 Subject: [PATCH 0647/1206] aud: fix global-out-of-bounds when open KASAN
@@ -9,7 +9,7 @@ Change-Id: Id0a8b7b246c20f199fe534b7f40841d90c5e7557
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 1b1f663bf1a1..d18028902f44 100755
+index 1b1f663bf1a12..d18028902f44a 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -1012,6 +1012,7 @@ static const struct of_device_id spacemit_snd_dma_ids[] = {

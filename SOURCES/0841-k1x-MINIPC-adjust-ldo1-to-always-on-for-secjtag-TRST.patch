@@ -1,4 +1,4 @@
-From d1679787f52c448e45285eab937601ab51a9a134 Mon Sep 17 00:00:00 2001
+From d16b280f9fd065a73db6e66f3c85f5b7642d7ec1 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 6 Jun 2024 16:48:56 +0800
 Subject: [PATCH 0841/1206] k1x-MINIPC:adjust ldo1 to always on for secjtag
@@ -10,7 +10,7 @@ Change-Id: Ida3a0a8981e7d7b8e072de504b13ee17eb4206f6
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index e9d9fb41a96d..b1bdeed21a82 100644
+index e9d9fb41a96d4..b1bdeed21a828 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -538,7 +538,7 @@ ldo_5: LDO_REG5 {

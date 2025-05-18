@@ -1,4 +1,4 @@
-From 7bf4625a5ecead9d5be64b3e118ae6e7705cb7f8 Mon Sep 17 00:00:00 2001
+From 85a4d08ff592658188d908466f269ff130d28e24 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 21 Dec 2023 20:09:49 +0800
 Subject: [PATCH 0218/1206] mmc: k1x: add host capability MMC_CAP_NEED_RSP_BUSY
@@ -9,7 +9,7 @@ Change-Id: Ide12c1bb3afefbaaffd47d2f816a6f3b24213491
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 7b5a919498fb..bb4b8027bbcb 100644
+index 7b5a919498fb8..bb4b8027bbcbb 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1340,6 +1340,8 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)

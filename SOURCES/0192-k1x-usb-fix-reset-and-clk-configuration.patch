@@ -1,4 +1,4 @@
-From b6225db6aae13c56b950ab89a49e7c73a0416e36 Mon Sep 17 00:00:00 2001
+From 05aa9fcbd3447d9eb94e47d89a066660e66d5a60 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 18 Dec 2023 16:10:48 +0800
 Subject: [PATCH 0192/1206] k1x: usb: fix reset and clk configuration
@@ -9,7 +9,7 @@ Change-Id: Ifa39469bb29425a9144b8904b12e600c6432a5f8
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 687941d10c52..dbb94923050b 100644
+index 687941d10c52c..dbb94923050ba 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1352,7 +1352,7 @@ usbphy: usbphy@c0940000 {

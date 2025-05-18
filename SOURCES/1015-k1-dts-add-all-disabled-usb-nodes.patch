@@ -1,4 +1,4 @@
-From 163dfca03d7ea0a44e6c2a93bff24421b124f32d Mon Sep 17 00:00:00 2001
+From d0cc570828ec2f4d5f9808af1a2db614f7ed17b8 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 10 Oct 2024 17:11:20 +0800
 Subject: [PATCH 1015/1206] k1: dts: add all disabled usb nodes
@@ -24,7 +24,7 @@ Change-Id: I85348b6e206aaf83bce971d145de1d71aa90ace0
  16 files changed, 435 insertions(+), 37 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index beebf2e03bf4..94a36d30e641 100644
+index beebf2e03bf49..94a36d30e6418 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -734,21 +734,51 @@ &usbphy {
@@ -80,7 +80,7 @@ index beebf2e03bf4..94a36d30e641 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index e5db5f39daac..ef53ebcbf8ae 100644
+index e5db5f39daac6..ef53ebcbf8ae5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -698,32 +698,46 @@ &usbphy {
@@ -139,7 +139,7 @@ index e5db5f39daac..ef53ebcbf8ae 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
-index 47158b5da12b..359e4c8c1a7d 100644
+index 47158b5da12be..359e4c8c1a7dd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -678,21 +678,50 @@ &usbphy {
@@ -196,7 +196,7 @@ index 47158b5da12b..359e4c8c1a7d 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index d371a92c9501..7709daad504c 100644
+index d371a92c95017..7709daad504cf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -641,21 +641,50 @@ &usbphy {
@@ -253,7 +253,7 @@ index d371a92c9501..7709daad504c 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
-index 11ee3fdd6d58..a9aabeee7e89 100644
+index 11ee3fdd6d58c..a9aabeee7e895 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 @@ -817,13 +817,13 @@ &usbphy {
@@ -301,7 +301,7 @@ index 11ee3fdd6d58..a9aabeee7e89 100644
  	status = "disabled";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index c66225d09bbd..584c0f718450 100644
+index c66225d09bbda..584c0f7184509 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -931,6 +931,12 @@ &udc {
@@ -345,7 +345,7 @@ index c66225d09bbd..584c0f718450 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 116deeedf474..b4389881c9f5 100644
+index 116deeedf4741..b4389881c9f5f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -832,16 +832,22 @@ &udc {
@@ -392,7 +392,7 @@ index 116deeedf474..b4389881c9f5 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 9d60d242cb58..c7fff33f7e40 100644
+index 9d60d242cb588..c7fff33f7e407 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -817,21 +817,51 @@ &usbphy {
@@ -450,7 +450,7 @@ index 9d60d242cb58..c7fff33f7e40 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 2803d3002ef7..a6be013b82f4 100644
+index 2803d3002ef7a..a6be013b82f41 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -735,22 +735,52 @@ &usbphy {
@@ -511,7 +511,7 @@ index 2803d3002ef7..a6be013b82f4 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index a91f2bfb7e85..faa2fb213b1f 100644
+index a91f2bfb7e85d..faa2fb213b1f4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -707,6 +707,12 @@ &usbphy1 {
@@ -544,7 +544,7 @@ index a91f2bfb7e85..faa2fb213b1f 100644
  	status = "disabled";
  	reset-on-resume;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 0e103a247aba..8e4728e02b56 100644
+index 0e103a247aba1..8e4728e02b56d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -648,25 +648,54 @@ &usbphy {
@@ -607,7 +607,7 @@ index 0e103a247aba..8e4728e02b56 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 3b51cafcbff0..1f64648a82f0 100644
+index 3b51cafcbff0c..1f64648a82f0f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -698,21 +698,50 @@ &usbphy {
@@ -664,7 +664,7 @@ index 3b51cafcbff0..1f64648a82f0 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index 9a911076d5f5..7b41a12ed2ad 100644
+index 9a911076d5f5e..7b41a12ed2adf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -924,20 +924,44 @@ &udc {
@@ -715,7 +715,7 @@ index 9a911076d5f5..7b41a12ed2ad 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index 4e62ddc0ee51..59f2e6872bdd 100644
+index 4e62ddc0ee518..59f2e6872bddb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -839,12 +839,32 @@ &usbphy {
@@ -770,7 +770,7 @@ index 4e62ddc0ee51..59f2e6872bdd 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 1b420eaf864a..f59adb3e379c 100644
+index 1b420eaf864a2..f59adb3e379c9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -517,21 +517,50 @@ &usbphy {
@@ -827,7 +827,7 @@ index 1b420eaf864a..f59adb3e379c 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index ea686d02d08f..499aa6eb4bf1 100644
+index ea686d02d08fa..499aa6eb4bf11 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -842,6 +842,27 @@ &udc {

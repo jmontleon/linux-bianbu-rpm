@@ -1,4 +1,4 @@
-From 226135c77fb6f9a5296e2e786a5589238174b285 Mon Sep 17 00:00:00 2001
+From e570521262389c7c9a3b6df6e1e4f94aeb886d1c Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 17 Nov 2023 12:25:44 +0800
 Subject: [PATCH 0152/1206] mmc: sdhci-of-k1x: support configure reset and clk
@@ -11,7 +11,7 @@ Change-Id: I0abb879fa4c92ac888a51c1fce16583ddc9b1361
  2 files changed, 31 insertions(+), 34 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ade29c08d18e..30ac61cb020f 100644
+index ade29c08d18e4..30ac61cb020f2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -296,34 +296,6 @@ pll_clk_emac_ptp: clock-pll_clk_emac_ptp {
@@ -92,7 +92,7 @@ index ade29c08d18e..30ac61cb020f 100644
  			status = "disabled";
  		};
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 030bc3845fed..7b5a919498fb 100644
+index 030bc3845fedc..7b5a919498fb8 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -27,6 +27,7 @@

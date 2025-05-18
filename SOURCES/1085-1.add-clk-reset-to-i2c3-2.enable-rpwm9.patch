@@ -1,4 +1,4 @@
-From d1f94bb3216d8b0a3b9dba5c46771148f52d46cc Mon Sep 17 00:00:00 2001
+From ef0f01fc4c484bea43f018251e987fa624ddc6ee Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Sat, 9 Nov 2024 16:12:29 +0800
 Subject: [PATCH 1085/1206] 1.add clk/reset to i2c3;2.enable rpwm9
@@ -10,7 +10,7 @@ Change-Id: I10f4b025435547c6a45d9b0d999632cd1f83c7bd
  2 files changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 30976f24dd80..42c85cb09483 100644
+index 30976f24dd806..42c85cb094836 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1207,6 +1207,8 @@ i2c3: i2c@f0614000 {
@@ -23,7 +23,7 @@ index 30976f24dd80..42c85cb09483 100644
  			/* spacemit,i2c-fast-mode; */
  			/* spacemit,i2c-high-mode; */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
-index ba7901464c35..004fb8e8f07a 100644
+index ba7901464c35d..004fb8e8f07a6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 @@ -194,6 +194,12 @@ &pwm14 {

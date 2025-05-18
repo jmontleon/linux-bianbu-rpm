@@ -1,4 +1,4 @@
-From 22fb74617032da1ff752508321f09558b4490b15 Mon Sep 17 00:00:00 2001
+From ae7b80ba0bcdb6fb2fed2ce230b2f70e5654c74f Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Mon, 29 May 2023 14:34:37 +0800
 Subject: [PATCH 0106/1206] add mutex&va2pa;fix tcm_discontinuous_malloc
@@ -9,7 +9,7 @@ Change-Id: I6abf40a879cb0a7dddf8b4ebb41137c5cc8c38d9
  1 file changed, 68 insertions(+), 62 deletions(-)
 
 diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
-index 0d02e6d8972b..fa0cb2aabee0 100644
+index 0d02e6d8972be..fa0cb2aabee07 100644
 --- a/drivers/misc/tcm.c
 +++ b/drivers/misc/tcm.c
 @@ -9,6 +9,8 @@

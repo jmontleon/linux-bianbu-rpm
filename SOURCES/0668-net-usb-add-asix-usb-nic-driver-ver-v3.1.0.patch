@@ -1,4 +1,4 @@
-From bb0ee4a05796f2b8655b6466bef6eeda715f6541 Mon Sep 17 00:00:00 2001
+From dc376f75413ef888e918f16b03692070a4fdcfd9 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 Apr 2024 18:32:22 +0800
 Subject: [PATCH 0668/1206] net: usb: add asix usb nic driver, ver: v3.1.0
@@ -44,7 +44,7 @@ Change-Id: I8d62eea450b69c7569eb1eebdc4be6269b6f7319
  create mode 100755 drivers/net/usb/asix_usb/axcmd.c
 
 diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index 3c360d4f0635..8779ef3a73a2 100644
+index 3c360d4f06352..8779ef3a73a20 100644
 --- a/drivers/net/usb/Kconfig
 +++ b/drivers/net/usb/Kconfig
 @@ -644,4 +644,5 @@ config USB_RTL8153_ECM
@@ -54,7 +54,7 @@ index 3c360d4f0635..8779ef3a73a2 100644
 +source "drivers/net/usb/asix_usb/Kconfig"
  endif # USB_NET_DRIVERS
 diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
-index 4964f7b326fb..9470c7d3e46c 100644
+index 4964f7b326fbc..9470c7d3e46c3 100644
 --- a/drivers/net/usb/Makefile
 +++ b/drivers/net/usb/Makefile
 @@ -42,3 +42,4 @@ obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
@@ -64,7 +64,7 @@ index 4964f7b326fb..9470c7d3e46c 100644
 +obj-$(CONFIG_USB_NET_ASIX)	+= asix_usb/
 diff --git a/drivers/net/usb/asix_usb/Kconfig b/drivers/net/usb/asix_usb/Kconfig
 new file mode 100755
-index 000000000000..9ddc3c404c55
+index 0000000000000..9ddc3c404c558
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/Kconfig
 @@ -0,0 +1,6 @@
@@ -76,7 +76,7 @@ index 000000000000..9ddc3c404c55
 +	  Adapter Driver Compilation & Configuration on Linux
 diff --git a/drivers/net/usb/asix_usb/Makefile b/drivers/net/usb/asix_usb/Makefile
 new file mode 100755
-index 000000000000..bc07ac9c5936
+index 0000000000000..bc07ac9c59366
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/Makefile
 @@ -0,0 +1,103 @@
@@ -185,7 +185,7 @@ index 000000000000..bc07ac9c5936
 +	rm -rf *_programmer *_ieee axcmd .tmp_versions
 diff --git a/drivers/net/usb/asix_usb/Readme b/drivers/net/usb/asix_usb/Readme
 new file mode 100755
-index 000000000000..d3bda757b0da
+index 0000000000000..d3bda757b0da0
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/Readme
 @@ -0,0 +1,255 @@
@@ -447,7 +447,7 @@ index 000000000000..d3bda757b0da
 \ No newline at end of file
 diff --git a/drivers/net/usb/asix_usb/ax88179_178a.c b/drivers/net/usb/asix_usb/ax88179_178a.c
 new file mode 100755
-index 000000000000..fb5485184756
+index 0000000000000..fb5485184756d
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179_178a.c
 @@ -0,0 +1,1238 @@
@@ -1691,7 +1691,7 @@ index 000000000000..fb5485184756
 +};
 diff --git a/drivers/net/usb/asix_usb/ax88179_178a.h b/drivers/net/usb/asix_usb/ax88179_178a.h
 new file mode 100755
-index 000000000000..ecbdf532fd2d
+index 0000000000000..ecbdf532fd2d0
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179_178a.h
 @@ -0,0 +1,35 @@
@@ -1732,7 +1732,7 @@ index 000000000000..ecbdf532fd2d
 +#endif
 diff --git a/drivers/net/usb/asix_usb/ax88179_programmer.c b/drivers/net/usb/asix_usb/ax88179_programmer.c
 new file mode 100755
-index 000000000000..4990918ef64b
+index 0000000000000..4990918ef64b0
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179_programmer.c
 @@ -0,0 +1,629 @@
@@ -2367,7 +2367,7 @@ index 000000000000..4990918ef64b
 +}
 diff --git a/drivers/net/usb/asix_usb/ax88179a_772d.c b/drivers/net/usb/asix_usb/ax88179a_772d.c
 new file mode 100755
-index 000000000000..064fc45b46a5
+index 0000000000000..064fc45b46a50
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179a_772d.c
 @@ -0,0 +1,2627 @@
@@ -5000,7 +5000,7 @@ index 000000000000..064fc45b46a5
 +};
 diff --git a/drivers/net/usb/asix_usb/ax88179a_772d.h b/drivers/net/usb/asix_usb/ax88179a_772d.h
 new file mode 100755
-index 000000000000..992a04493b85
+index 0000000000000..992a04493b851
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179a_772d.h
 @@ -0,0 +1,246 @@
@@ -5252,7 +5252,7 @@ index 000000000000..992a04493b85
 +#endif /* End of __ASIX_AX88179A_772D_H */
 diff --git a/drivers/net/usb/asix_usb/ax88179a_ieee.c b/drivers/net/usb/asix_usb/ax88179a_ieee.c
 new file mode 100755
-index 000000000000..8d0464b7f0bc
+index 0000000000000..8d0464b7f0bcf
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179a_ieee.c
 @@ -0,0 +1,369 @@
@@ -5627,7 +5627,7 @@ index 000000000000..8d0464b7f0bc
 +}
 diff --git a/drivers/net/usb/asix_usb/ax88179a_programmer.c b/drivers/net/usb/asix_usb/ax88179a_programmer.c
 new file mode 100755
-index 000000000000..368224ac28fb
+index 0000000000000..368224ac28fb8
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88179a_programmer.c
 @@ -0,0 +1,1532 @@
@@ -7165,7 +7165,7 @@ index 000000000000..368224ac28fb
 +}
 diff --git a/drivers/net/usb/asix_usb/ax88279_programmer.c b/drivers/net/usb/asix_usb/ax88279_programmer.c
 new file mode 100755
-index 000000000000..875298361c5c
+index 0000000000000..875298361c5c7
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax88279_programmer.c
 @@ -0,0 +1,1813 @@
@@ -8984,7 +8984,7 @@ index 000000000000..875298361c5c
 +}
 diff --git a/drivers/net/usb/asix_usb/ax_ioctl.h b/drivers/net/usb/asix_usb/ax_ioctl.h
 new file mode 100755
-index 000000000000..f8321ddaf5a6
+index 0000000000000..f8321ddaf5a6d
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax_ioctl.h
 @@ -0,0 +1,212 @@
@@ -9202,7 +9202,7 @@ index 000000000000..f8321ddaf5a6
 +#endif /* __ASIX_IOCTL_H */
 diff --git a/drivers/net/usb/asix_usb/ax_main.c b/drivers/net/usb/asix_usb/ax_main.c
 new file mode 100755
-index 000000000000..ab8d1a9b0d9e
+index 0000000000000..ab8d1a9b0d9e7
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax_main.c
 @@ -0,0 +1,2620 @@
@@ -11828,7 +11828,7 @@ index 000000000000..ab8d1a9b0d9e
 +MODULE_VERSION(DRIVER_VERSION);
 diff --git a/drivers/net/usb/asix_usb/ax_main.h b/drivers/net/usb/asix_usb/ax_main.h
 new file mode 100755
-index 000000000000..016ac446d4d2
+index 0000000000000..016ac446d4d20
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax_main.h
 @@ -0,0 +1,674 @@
@@ -12508,7 +12508,7 @@ index 000000000000..016ac446d4d2
 +#endif /* __ASIX_MAIN_H */
 diff --git a/drivers/net/usb/asix_usb/ax_ptp.c b/drivers/net/usb/asix_usb/ax_ptp.c
 new file mode 100755
-index 000000000000..e46373493a08
+index 0000000000000..e46373493a083
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax_ptp.c
 @@ -0,0 +1,1167 @@
@@ -13681,7 +13681,7 @@ index 000000000000..e46373493a08
 +}
 diff --git a/drivers/net/usb/asix_usb/ax_ptp.h b/drivers/net/usb/asix_usb/ax_ptp.h
 new file mode 100755
-index 000000000000..719344f4bfe0
+index 0000000000000..719344f4bfe07
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/ax_ptp.h
 @@ -0,0 +1,242 @@
@@ -13929,7 +13929,7 @@ index 000000000000..719344f4bfe0
 +#endif /* End of __ASIX_PTP_H */
 diff --git a/drivers/net/usb/asix_usb/axcmd.c b/drivers/net/usb/asix_usb/axcmd.c
 new file mode 100755
-index 000000000000..c40c1901efcd
+index 0000000000000..c40c1901efcda
 --- /dev/null
 +++ b/drivers/net/usb/asix_usb/axcmd.c
 @@ -0,0 +1,295 @@

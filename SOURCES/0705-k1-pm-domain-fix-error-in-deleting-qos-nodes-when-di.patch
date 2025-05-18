@@ -1,4 +1,4 @@
-From 4bf81ad138acc315db01c236f2fb4e313403254b Mon Sep 17 00:00:00 2001
+From 7a552f869259f48c4bef9a0ad32021531a989dbe Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 13 Jun 2024 16:01:08 +0800
 Subject: [PATCH 0705/1206] k1:pm-domain:fix error in deleting qos nodes when
@@ -10,7 +10,7 @@ Change-Id: I100d82dfcea05f692430f3cdaa8e1f5ab373faca
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 35d4e03d058c..4a2dd1b2e553 100644
+index 35d4e03d058c7..4a2dd1b2e553f 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -473,8 +473,9 @@ static void spacemit_pd_detach_dev(struct generic_pm_domain *genpd, struct devic

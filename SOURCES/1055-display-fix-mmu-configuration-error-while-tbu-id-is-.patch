@@ -1,4 +1,4 @@
-From f0b18ace5d2063a9eaef5155f93cb4f9aedba50c Mon Sep 17 00:00:00 2001
+From 25169afac5a208b67f7fbf7c90daef81d6576bc2 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 1 Nov 2024 14:30:09 +0800
 Subject: [PATCH 1055/1206] display: fix mmu configuration error while tbu id
@@ -10,7 +10,7 @@ Change-Id: I1aebfab93e1e7c01a94579b99baf109be3fd1b83
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
-index 220eb8fc726f..04e87abdaf67 100644
+index 220eb8fc726fd..04e87abdaf67d 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 @@ -54,7 +54,7 @@ int spacemit_dmmu_map(struct drm_plane *plane, struct dpu_mmu_tbl *mmu_tbl, u8 t

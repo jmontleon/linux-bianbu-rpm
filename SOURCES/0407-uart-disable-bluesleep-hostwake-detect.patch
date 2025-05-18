@@ -1,4 +1,4 @@
-From 128e9b0c537a7c62f85c5807cb6811bd8e2ce6eb Mon Sep 17 00:00:00 2001
+From 2df8eeff523f744eb7c758f511a31b4086ce6caa Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 2 Feb 2024 10:49:59 +0800
 Subject: [PATCH 0407/1206] uart: disable bluesleep hostwake detect
@@ -9,7 +9,7 @@ Change-Id: Idc4b3e230e39a526a8e4eb571115c9044603c1ab
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 06cd340f43d5..cbfd854be05b 100644
+index 06cd340f43d5d..cbfd854be05b4 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -622,7 +622,7 @@ static unsigned int serial_pxa_get_mctrl(struct uart_port *port)

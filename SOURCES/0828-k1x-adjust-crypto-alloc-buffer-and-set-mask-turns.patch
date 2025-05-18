@@ -1,4 +1,4 @@
-From 4c46425615efd74ee8776938378618c6b1e06698 Mon Sep 17 00:00:00 2001
+From 7101954fcb8712b75b99423a9a6aca2adcdee3f0 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Tue, 23 Jul 2024 10:20:31 +0800
 Subject: [PATCH 0828/1206] k1x:adjust crypto alloc buffer and set mask turns
@@ -9,7 +9,7 @@ Change-Id: I74af70fbf141609db59c263ab4f54d4ea44fc20d
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 89f97994a819..0016813dab0a 100644
+index 89f97994a819f..0016813dab0a7 100644
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -1734,6 +1734,12 @@ static int crypto_engine_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From 1cfaf07ae84ec197a479c58c4090d2e3c2b49971 Mon Sep 17 00:00:00 2001
+From 46e343b2ee32ad29292ecb2f7a9a904752f59b1a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:18:30 +0800
 Subject: [PATCH 0326/1206] clean clk driver debug info
@@ -9,7 +9,7 @@ Change-Id: I65b928f54020c3428d0ffbe9bfaa2cbb49894ea5
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 85b18f08919c..3ba4c8c7b648 100755
+index 85b18f08919cb..3ba4c8c7b648c 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1382,7 +1382,8 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)

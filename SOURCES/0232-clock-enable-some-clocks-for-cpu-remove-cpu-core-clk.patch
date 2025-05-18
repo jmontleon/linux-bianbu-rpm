@@ -1,4 +1,4 @@
-From 7ee52d0710afdced5a31a968f8acfe3c230f22cf Mon Sep 17 00:00:00 2001
+From 6a13ca76aaeb3e6e8e7e19733df3300d93596653 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sat, 23 Dec 2023 15:20:24 +0800
 Subject: [PATCH 0232/1206] clock: enable some clocks for cpu, remove cpu core
@@ -11,7 +11,7 @@ Change-Id: Ic066995557d81171a6c674c8910968d721d1ace3
  2 files changed, 27 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 17b7e653d34e..57f068a2a533 100755
+index 17b7e653d34e0..57f068a2a533a 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -945,9 +945,9 @@ static SPACEMIT_CCU_MUX(cpu_c0_hi_clk, "cpu_c0_hi_clk", cpu_c0_hi_parent_names,
@@ -50,7 +50,7 @@ index 17b7e653d34e..57f068a2a533 100755
  
  void spacemit_clocks_enable(struct clk_hw_table *tbl, int tbl_size)
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index 6e417f4f56f4..d75862e838f4 100755
+index 6e417f4f56f4d..d75862e838f41 100755
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -307,6 +307,25 @@ struct ccu_mix {

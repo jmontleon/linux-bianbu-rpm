@@ -1,4 +1,4 @@
-From c033d1ea65bd2706abd901cda43a5d58d5fa6e51 Mon Sep 17 00:00:00 2001
+From 7ebee9a62f661f29df36814bbd8bc9dcce525609 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 26 Feb 2024 14:09:04 +0800
 Subject: [PATCH 0437/1206] dtb: adding the dts of linux for hs450 board
@@ -11,7 +11,7 @@ Change-Id: I092a513809edfae811472253aca04e1cb2f9851a
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index b325b939083d..8894439bd857 100644
+index b325b939083dd..8894439bd8574 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,5 +1,5 @@
@@ -23,7 +23,7 @@ index b325b939083d..8894439bd857 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 new file mode 100644
-index 000000000000..edbcc8e414d8
+index 0000000000000..edbcc8e414d8c
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -0,0 +1,645 @@

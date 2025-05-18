@@ -1,4 +1,4 @@
-From 80597ecb5161c939dbd7634517d207adc2f4b402 Mon Sep 17 00:00:00 2001
+From 211a35f5387113c258156f8ec61c0199a50200bd Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 11 Jul 2024 19:16:03 +0800
 Subject: [PATCH 0811/1206] pinctrl: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: Ia3a807bafd526423bcea47d72edf1929f8c05a72
  1 file changed, 4 deletions(-)
 
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index bdbcd3975379..553b2d627b00 100644
+index bdbcd3975379c..553b2d627b003 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -1822,10 +1822,6 @@ static int pcs_probe(struct platform_device *pdev)

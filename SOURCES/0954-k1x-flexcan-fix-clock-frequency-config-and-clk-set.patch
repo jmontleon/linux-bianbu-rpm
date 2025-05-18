@@ -1,4 +1,4 @@
-From 5f577054cb165a5cc35cebd5ec54da68efde2455 Mon Sep 17 00:00:00 2001
+From 575088ce8d4fb3ff684be2db38b458b88f0eed49 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 23 Aug 2024 10:25:12 +0800
 Subject: [PATCH 0954/1206] k1x:flexcan fix clock-frequency config and clk set
@@ -9,7 +9,7 @@ Change-Id: I544a6eb43a600fabe74c9d8c55206d813b669713
  1 file changed, 15 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index a16a19537064..f091f6b8c40c 100644
+index a16a195370645..f091f6b8c40c1 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -2252,6 +2252,21 @@ static int flexcan_probe(struct platform_device *pdev)

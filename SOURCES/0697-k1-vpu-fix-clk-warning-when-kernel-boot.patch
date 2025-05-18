@@ -1,4 +1,4 @@
-From 5572ad58182c196d3239540546aa87b0bafab656 Mon Sep 17 00:00:00 2001
+From 36276c66518e7b10db9e2d42f9a01dd6de35acf5 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 11 Jun 2024 17:14:47 +0800
 Subject: [PATCH 0697/1206] k1: vpu: fix clk warning when kernel boot
@@ -14,7 +14,7 @@ Signed-off-by: fuqiang <qiang.fu@spacemit.com>
  2 files changed, 45 insertions(+), 46 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 9240bec8cc63..50fc9bc18e81 100644
+index 9240bec8cc632..50fc9bc18e81d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2276,13 +2276,11 @@ linlon-v5@c0500000 {
@@ -33,7 +33,7 @@ index 9240bec8cc63..50fc9bc18e81 100644
  		};
  
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-index ec949dfd3803..689607f97c51 100644
+index ec949dfd38036..689607f97c51a 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
 @@ -301,6 +301,35 @@ static irqreturn_t irq_top(int irq,

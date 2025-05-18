@@ -1,4 +1,4 @@
-From 18e9232f665feec102195a41d8b833212041bb5b Mon Sep 17 00:00:00 2001
+From d2892b784210970b439d8c9240f831418394fd7a Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Sat, 12 Oct 2024 10:13:33 +0800
 Subject: [PATCH 1013/1206] enable typec for FusionOne
@@ -9,7 +9,7 @@ Change-Id: I0859083d594afe98f566078f1ceee5d0754a0e53
  1 file changed, 87 insertions(+), 14 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
-index 931058685efd..0a2960f67d0a 100644
+index 931058685efd4..0a2960f67d0af 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 @@ -12,6 +12,7 @@

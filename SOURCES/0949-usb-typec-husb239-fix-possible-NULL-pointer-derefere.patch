@@ -1,4 +1,4 @@
-From f38f1ff5dfe111936b61d0bd5d1607240d9a369a Mon Sep 17 00:00:00 2001
+From 15b5a7635b7a68e056283ff03d264507a8866c44 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 23 Aug 2024 09:36:50 +0800
 Subject: [PATCH 0949/1206] usb: typec: husb239: fix possible NULL pointer
@@ -10,7 +10,7 @@ Change-Id: I39dee89494b729db70c7e78d1b66cc10dcafed05
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index ce26f53fa713..4c0b565c40d8 100644
+index ce26f53fa713d..4c0b565c40d84 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -301,6 +301,9 @@ static int husb239_get_cc_orientation(struct husb239 *husb239)

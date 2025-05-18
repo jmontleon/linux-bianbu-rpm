@@ -1,4 +1,4 @@
-From 38286957e539f437c08cc8a90ca7446aa9a0097e Mon Sep 17 00:00:00 2001
+From 765056b61e1ba3470c6217f7ce904318386b0970 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:25:20 +0800
 Subject: [PATCH 1116/1206] camera: spacemit: modify prototype of device remove
@@ -16,7 +16,7 @@ Change-Id: I22351863dc77f1ed453b36b2a9e036c86e922afd
  7 files changed, 7 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
-index 2bcaa1a9f834..b029e248b11e 100644
+index 2bcaa1a9f834d..b029e248b11e6 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 @@ -1234,7 +1234,7 @@ static int k1x_ccic_probe(struct platform_device *pdev)
@@ -38,7 +38,7 @@ index 2bcaa1a9f834..b029e248b11e 100644
  
  static const struct of_device_id k1x_ccic_dt_match[] = {
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
-index e43623b27f49..7a9ad7dad050 100644
+index e43623b27f493..7a9ad7dad0508 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 @@ -316,7 +316,7 @@ static int k1x_csiphy_probe(struct platform_device *pdev)
@@ -60,7 +60,7 @@ index e43623b27f49..7a9ad7dad050 100644
  
  static const struct of_device_id k1x_csiphy_dt_match[] = {
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
-index 024644514d2c..baceb07e0b6d 100644
+index 024644514d2c3..baceb07e0b6dc 100644
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 @@ -1381,7 +1381,7 @@ static int cpp_probe(struct platform_device *pdev)
@@ -82,7 +82,7 @@ index 024644514d2c..baceb07e0b6d 100644
  
  #ifdef CONFIG_PM_SLEEP
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
-index f8e3374b798d..8faa5bb954bb 100644
+index f8e3374b798d1..8faa5bb954bb4 100644
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 @@ -726,7 +726,7 @@ int k1xisp_dev_context_destroy(struct platform_device *pdev)
@@ -103,7 +103,7 @@ index f8e3374b798d..8faa5bb954bb 100644
  
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
-index 7ee841a1c1d1..cfab6f543e53 100644
+index 7ee841a1c1d12..cfab6f543e531 100644
 --- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 @@ -217,7 +217,7 @@ static int plat_cam_probe(struct platform_device *pdev)
@@ -125,7 +125,7 @@ index 7ee841a1c1d1..cfab6f543e53 100644
  
  static const struct of_device_id plat_cam_dt_match[] = {
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index 8504c7a4eeaf..bbe56134d529 100644
+index 8504c7a4eeaf1..bbe56134d5297 100644
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -1444,7 +1444,7 @@ static int camsnr_of_parse(struct cam_sensor_device *sensor)
@@ -147,7 +147,7 @@ index 8504c7a4eeaf..bbe56134d529 100644
  
  static int cam_sensor_probe(struct platform_device *pdev)
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
-index b96e4ef3ee70..00bd316d00e1 100644
+index b96e4ef3ee704..00bd316d00e17 100644
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 @@ -499,7 +499,7 @@ static int k1xvi_probe(struct platform_device *pdev)

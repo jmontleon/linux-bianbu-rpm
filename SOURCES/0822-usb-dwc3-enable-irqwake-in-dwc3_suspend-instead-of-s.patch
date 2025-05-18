@@ -1,4 +1,4 @@
-From 1ff130a33b45e2e7b032c8f25c35f47e82b20e68 Mon Sep 17 00:00:00 2001
+From 6cfc19b04e2c073d6bdf72080fa51cfc18806f38 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 5 Jul 2024 15:49:48 +0800
 Subject: [PATCH 0822/1206] usb: dwc3: enable irqwake in dwc3_suspend instead
@@ -10,7 +10,7 @@ Change-Id: I0bdd8830861e9154d32521cf8eb78ac360e054cc
  1 file changed, 3 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 0ea19d6ea8a0..eb9107e58ac8 100644
+index 0ea19d6ea8a04..eb9107e58ac85 100644
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -18,7 +18,6 @@

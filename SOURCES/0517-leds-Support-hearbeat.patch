@@ -1,4 +1,4 @@
-From da1b0ddb417069679f5ec2ce50c1d868a51bcf38 Mon Sep 17 00:00:00 2001
+From 7a7cbed847b311e41eb3e0d54c427dfec75e1313 Mon Sep 17 00:00:00 2001
 From: James Deng <james.deng@spacemit.com>
 Date: Tue, 26 Mar 2024 11:15:35 +0800
 Subject: [PATCH 0517/1206] leds: Support hearbeat
@@ -10,7 +10,7 @@ Change-Id: I2aff0cb1d2b5b569de3160fa15bf57e6b10c8d81
  2 files changed, 23 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 6d4b6fc693fa..1014b9943d90 100644
+index 6d4b6fc693fa6..1014b9943d906 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -156,6 +156,18 @@ bt_pwrseq: bt-pwrseq {
@@ -33,7 +33,7 @@ index 6d4b6fc693fa..1014b9943d90 100644
  
  &uart0 {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index e73d678f5211..cbc333212990 100644
+index e73d678f52117..cbc333212990f 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -593,6 +593,17 @@ CONFIG_MMC=y

@@ -1,4 +1,4 @@
-From 294e6c640c0e9f0c3bb03d6634b8ff3b19816eb0 Mon Sep 17 00:00:00 2001
+From 181728db14bf3b46a4f753ccf395049649b76a74 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 5 Sep 2024 16:21:34 +0800
 Subject: [PATCH 0980/1206] MUSE-Paper-mini support some sensor
@@ -11,7 +11,7 @@ Change-Id: Ibe4bc3d31fbafa141548a70b31fed965cde64da0
  3 files changed, 30 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index f344687ddad7..e57c358743bb 100644
+index f344687ddad7e..e57c358743bb5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -399,10 +399,26 @@ &i2c5 {
@@ -42,7 +42,7 @@ index f344687ddad7..e57c358743bb 100644
  
  &i2c6 {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 3bec2b75bbc0..559e39fda6c8 100644
+index 3bec2b75bbc08..559e39fda6c86 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -1034,6 +1034,9 @@ CONFIG_SPACEMIT_V2D=y
@@ -56,7 +56,7 @@ index 3bec2b75bbc0..559e39fda6c8 100644
  CONFIG_PWM_PXA=y
  CONFIG_RESET_CONTROLLER=y
 diff --git a/drivers/iio/light/stk3310.c b/drivers/iio/light/stk3310.c
-index b81cc44db43c..f52b22d25c8c 100644
+index b81cc44db43c3..f52b22d25c8c5 100644
 --- a/drivers/iio/light/stk3310.c
 +++ b/drivers/iio/light/stk3310.c
 @@ -16,6 +16,7 @@

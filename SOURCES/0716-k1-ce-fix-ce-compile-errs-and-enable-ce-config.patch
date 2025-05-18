@@ -1,4 +1,4 @@
-From 043a4e934fe72c04479bc6b962ac257f62bb66ed Mon Sep 17 00:00:00 2001
+From 28afb8d45d98db7691ecb8bbedf42e61ce4d2e4f Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 14 Jun 2024 14:28:00 +0800
 Subject: [PATCH 0716/1206] k1: ce: fix ce compile errs and enable ce config
@@ -11,7 +11,7 @@ Change-Id: I849cd24008ce18e0c0b9ea24deba41093003613f
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index a3ae0af87899..117aab0972b1 100644
+index a3ae0af878997..117aab0972b1a 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -756,7 +756,7 @@ CONFIG_CRYPTO_LZO=y
@@ -24,7 +24,7 @@ index a3ae0af87899..117aab0972b1 100644
  CONFIG_DMA_CMA=y
  CONFIG_PRINTK_TIME=y
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 0c3f78cf4b0d..170157219152 100755
+index 0c3f78cf4b0dc..1701572191525 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -736,7 +736,7 @@ static struct crypto_alg *spacemit_crypto_larval_wait(struct crypto_alg *alg)

@@ -1,4 +1,4 @@
-From 844f431fdbac99724c472d033bd81701cff21f1b Mon Sep 17 00:00:00 2001
+From 3a91f1767a052f4f4fb0ccb367871d6149adafdf Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 28 Jun 2023 17:22:44 +0800
 Subject: [PATCH 0053/1206] can:update kernel defconfig(IPMS_CAN:y)
@@ -10,7 +10,7 @@ Change-Id: I81a069ab7c0576c36da6811395a2336272e1a5d0
  2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 190dc5ea02e8..036776e05c69 100644
+index 190dc5ea02e89..036776e05c69d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -309,7 +309,7 @@ can0: can@2cfd0000 {
@@ -23,7 +23,7 @@ index 190dc5ea02e8..036776e05c69 100644
  			resets = <&reset RESET_CAN>;
  			reset-names = "rst_core";
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index f503bb3d056d..a209ded8df1e 100644
+index f503bb3d056df..a209ded8df1ea 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -41,6 +41,7 @@ CONFIG_IP_MULTICAST=y

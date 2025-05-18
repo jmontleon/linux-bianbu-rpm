@@ -1,4 +1,4 @@
-From 9d13adfab2c6cbf5eae1e25c21264617f42405ac Mon Sep 17 00:00:00 2001
+From 0a53e0f301e60a2d5f39229ced271223e86245bf Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 15 Dec 2023 23:16:00 +0800
 Subject: [PATCH 0183/1206] fix uart board configuration for asic
@@ -9,7 +9,7 @@ Change-Id: Idfdde8b6afd94868a4d70abfd3aff276c8a1fe80
  1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 44bd8aa1a353..70cff4a88748 100644
+index 44bd8aa1a3531..70cff4a88748a 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -1444,11 +1444,11 @@ serial_pxa_set_termios(struct uart_port *port, struct ktermios *termios,

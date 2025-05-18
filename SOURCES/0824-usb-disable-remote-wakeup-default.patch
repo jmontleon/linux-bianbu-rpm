@@ -1,4 +1,4 @@
-From 9cbf8045e33ca0f26654294f67562c39f0f7bced Mon Sep 17 00:00:00 2001
+From 3c0745cee92e6ac8a95cd9538a37cf2354823b13 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 18 Jul 2024 21:07:24 +0800
 Subject: [PATCH 0824/1206] usb: disable remote wakeup default
@@ -10,7 +10,7 @@ Change-Id: I35e8fe94d87e9c494a29425da9b7591fea372979
  2 files changed, 33 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 18cd71719886..b0fa0eb98009 100644
+index 18cd717198868..b0fa0eb98009d 100644
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -247,6 +247,7 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
@@ -74,7 +74,7 @@ index 18cd71719886..b0fa0eb98009 100644
  }
  
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index 1875e9d70ac6..e457d1684649 100644
+index 1875e9d70ac62..e457d16846496 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -261,6 +261,7 @@ static int mv_ehci_probe(struct platform_device *pdev)

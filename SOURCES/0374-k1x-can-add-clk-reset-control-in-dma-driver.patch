@@ -1,4 +1,4 @@
-From d0d6590b2a04446169fcc80306ef3586cb46185c Mon Sep 17 00:00:00 2001
+From 125b81ced5c1fbbd162442fb6bfd7698050aff2e Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 15 Jan 2024 19:59:17 +0800
 Subject: [PATCH 0374/1206] k1x-can:add clk&reset control in dma driver
@@ -10,7 +10,7 @@ Change-Id: Id971bbff39cda9a56a1a248ef6d228ba1d8cdb58
  2 files changed, 19 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index fca290afb532..b5c74afda9b4 100644
+index fca290afb5329..b5c74afda9b45 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -19,6 +19,7 @@
@@ -72,7 +72,7 @@ index fca290afb532..b5c74afda9b4 100644
  
  	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
 diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
-index 2cf886618c96..5e62e2ae6120 100644
+index 2cf886618c962..5e62e2ae61202 100644
 --- a/drivers/net/can/flexcan/flexcan.h
 +++ b/drivers/net/can/flexcan/flexcan.h
 @@ -105,6 +105,7 @@ struct flexcan_priv {

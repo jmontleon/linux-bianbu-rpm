@@ -1,4 +1,4 @@
-From dd101a08f83278a72289a1fa61d3244494614b08 Mon Sep 17 00:00:00 2001
+From b3f12db8b5faa9b134874048ae2d99a73533be3c Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Sun, 29 Sep 2024 15:43:04 +0800
 Subject: [PATCH 1005/1206] hung task: set hung timeout 120s
@@ -9,7 +9,7 @@ Change-Id: I2b4fdcb8115bf038a28883fc8b2d098ce10dcc6b
  1 file changed, 1 deletion(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 672c5db37091..c90211e64dc7 100644
+index 672c5db370917..c90211e64dc7d 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -1303,7 +1303,6 @@ CONFIG_DEBUG_WX=y

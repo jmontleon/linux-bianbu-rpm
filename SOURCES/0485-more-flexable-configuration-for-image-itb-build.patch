@@ -1,4 +1,4 @@
-From 059b766f526ee90fd393735ec2f27a0ec42a27c7 Mon Sep 17 00:00:00 2001
+From 81d1fac9c4f0e218d1d61b6483a99364f399daaf Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Wed, 13 Mar 2024 19:23:47 +0800
 Subject: [PATCH 0485/1206] more flexable configuration for image itb build
@@ -10,7 +10,7 @@ Change-Id: I16a819e627d987374f20808242dbefbcfc5fd603
  2 files changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index 8887d0643680..cd2cbe155617 100644
+index 8887d0643680f..cd2cbe155617e 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
 @@ -70,6 +70,21 @@ $(obj)/Image.xz: $(obj)/Image FORCE
@@ -56,7 +56,7 @@ index 8887d0643680..cd2cbe155617 100644
  quiet_cmd_itb-image = ITB     $@
        cmd_itb-image = \
 diff --git a/arch/riscv/generic/Image.its.S b/arch/riscv/generic/Image.its.S
-index 4891bc36ba18..77525701a852 100644
+index 4891bc36ba186..77525701a852d 100644
 --- a/arch/riscv/generic/Image.its.S
 +++ b/arch/riscv/generic/Image.its.S
 @@ -3,7 +3,7 @@

@@ -1,4 +1,4 @@
-From db8902a6f9b9964c58cfd328898b12e481ac2cc1 Mon Sep 17 00:00:00 2001
+From 14070b691bc7b34347552221438236dfb6d7efdc Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 16 Aug 2024 16:55:42 +0800
 Subject: [PATCH 0930/1206] ai: fix error in bind ai task to ai core
@@ -9,7 +9,7 @@ Change-Id: Ic4d5ab9a55dea38e7cb15d093eb3a03c927d1694
  1 file changed, 16 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index d823c9fcb107..d1697bd1fe5f 100644
+index 290e7a8a43c9a..b27851101a3bc 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
 @@ -178,21 +178,28 @@ DO_ERROR_INFO(do_trap_insn_fault,

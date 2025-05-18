@@ -1,4 +1,4 @@
-From 0e3eeb9f4a4ddba316387f861289015f6999b4a5 Mon Sep 17 00:00:00 2001
+From 44c10a1c143279d5354f0a6ee3b3eea25a5e6d44 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 29 Mar 2024 11:24:33 +0800
 Subject: [PATCH 0530/1206] display: support lt8911exb driver
@@ -19,7 +19,7 @@ Change-Id: I1c7e758af3a3c9f98ef1173f7fc97c70a9a91116
  create mode 100644 drivers/gpu/drm/spacemit/lt8911exb.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
-index 5af4c16848c6..024ac5bf43ed 100644
+index 5af4c16848c6b..024ac5bf43ede 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 @@ -56,7 +56,11 @@ ports {
@@ -36,7 +36,7 @@ index 5af4c16848c6..024ac5bf43ed 100644
  				};
  			};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 3dc7ba3509be..abff4eca0d9f 100644
+index 3dc7ba3509be7..abff4eca0d9f5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -5,8 +5,9 @@
@@ -180,7 +180,7 @@ index 3dc7ba3509be..abff4eca0d9f 100644
  	clst0-supply = <&edcdc_1>;
  	vin-supply-names = "clst0";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 17afe1f49c91..3927a4b5a4a6 100644
+index 17afe1f49c910..3927a4b5a4a61 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -5,6 +5,8 @@
@@ -315,7 +315,7 @@ index 17afe1f49c91..3927a4b5a4a6 100644
  	vin-supply-names = "clst0";
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
 new file mode 100644
-index 000000000000..59427e12c7e5
+index 0000000000000..59427e12c7e59
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
 @@ -0,0 +1,65 @@
@@ -386,7 +386,7 @@ index 000000000000..59427e12c7e5
 +};};
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
 new file mode 100644
-index 000000000000..0d9636b904b6
+index 0000000000000..0d9636b904b65
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
 @@ -0,0 +1,65 @@
@@ -456,7 +456,7 @@ index 000000000000..0d9636b904b6
 +	};
 +};};
 diff --git a/drivers/gpu/drm/spacemit/Kconfig b/drivers/gpu/drm/spacemit/Kconfig
-index 7e61e6426d3f..e322b27ff532 100644
+index 7e61e6426d3f3..e322b27ff5323 100644
 --- a/drivers/gpu/drm/spacemit/Kconfig
 +++ b/drivers/gpu/drm/spacemit/Kconfig
 @@ -20,3 +20,17 @@ config DRM_SPACEMIT
@@ -479,7 +479,7 @@ index 7e61e6426d3f..e322b27ff532 100644
 +	  Support for Lontium LT8911EXB DSI to eDP driver.
 \ No newline at end of file
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
-index dc15353d311d..b83eda2b082b 100644
+index dc15353d311da..b83eda2b082bf 100644
 --- a/drivers/gpu/drm/spacemit/Makefile
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -27,4 +27,6 @@ spacemit-drm-y := 	spacemit_drm.o \
@@ -491,7 +491,7 @@ index dc15353d311d..b83eda2b082b 100644
  obj-$(CONFIG_SPACEMIT_MIPI_PANEL) += spacemit_mipi_panel.o
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
 new file mode 100644
-index 000000000000..2fa4d54bf450
+index 0000000000000..2fa4d54bf450d
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -0,0 +1,1592 @@

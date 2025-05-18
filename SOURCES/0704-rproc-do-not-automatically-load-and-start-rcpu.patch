@@ -1,4 +1,4 @@
-From e47f26933f347cb80d6dcd232acc1d69c3349d35 Mon Sep 17 00:00:00 2001
+From 726a3bb18b50a0e8a041d2c95c1fb80c715efad9 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 13 Jun 2024 15:58:10 +0800
 Subject: [PATCH 0704/1206] rproc:do not automatically load and start rcpu
@@ -9,7 +9,7 @@ Change-Id: I66fe2fa29ed270bbef6d40917b409facf55c280d
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index d529e28a4b8b..6512bace3fbc 100644
+index d529e28a4b8b6..6512bace3fbc2 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -621,12 +621,16 @@ static int spacemit_rproc_probe(struct platform_device *pdev)

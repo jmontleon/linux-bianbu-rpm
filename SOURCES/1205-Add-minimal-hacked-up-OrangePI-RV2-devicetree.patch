@@ -1,4 +1,4 @@
-From fe2042d2ba397c3ff51def3e25ae4a82fb993091 Mon Sep 17 00:00:00 2001
+From 3e81863bebc478b9161a53d7033e382b0dfa4e14 Mon Sep 17 00:00:00 2001
 From: Yanko Kaneti <yaneti@declera.com>
 Date: Mon, 24 Mar 2025 20:59:05 +0200
 Subject: [PATCH 1205/1206] Add minimal hacked up OrangePI RV2 devicetree.
@@ -12,7 +12,7 @@ Limited to supporting basic functionality - USB, MMC and PCIe
  create mode 100644 arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index c5e289d01ecb..43b3b25fb55a 100644
+index c5e289d01ecbc..43b3b25fb55a5 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -8,5 +8,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -24,7 +24,7 @@ index c5e289d01ecb..43b3b25fb55a 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 new file mode 100644
-index 000000000000..11f7e49314a1
+index 0000000000000..11f7e49314a1d
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 @@ -0,0 +1,991 @@

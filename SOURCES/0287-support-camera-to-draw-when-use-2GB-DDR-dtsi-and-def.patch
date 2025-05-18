@@ -1,4 +1,4 @@
-From ee4671f86ce679c5230729323054c01fc5be3081 Mon Sep 17 00:00:00 2001
+From f93deb8f230771d0bc37a435bb4a1b82d6327aef Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Sat, 30 Dec 2023 20:23:54 +0800
 Subject: [PATCH 0287/1206] support camera to draw, when use 2GB DDR (dtsi and
@@ -19,7 +19,7 @@ Change-Id: I09edab1f2d96fa49f74439376512871101a67e46
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi
 new file mode 100755
-index 000000000000..06b6ea8fa83e
+index 0000000000000..06b6ea8fa83eb
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-reserved-mm.dtsi
 @@ -0,0 +1,17 @@
@@ -42,7 +42,7 @@ index 000000000000..06b6ea8fa83e
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 new file mode 100755
-index 000000000000..152c93fd60ff
+index 0000000000000..152c93fd60fff
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 @@ -0,0 +1,187 @@
@@ -235,7 +235,7 @@ index 000000000000..152c93fd60ff
 +}; /* soc */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
 new file mode 100755
-index 000000000000..bcefb96ad6b2
+index 0000000000000..bcefb96ad6b20
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
 @@ -0,0 +1,73 @@
@@ -313,7 +313,7 @@ index 000000000000..bcefb96ad6b2
 +	};
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 4b5cb07ff1d1..8c0bb0c85e03 100644
+index 4b5cb07ff1d16..8c0bb0c85e038 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -434,7 +434,7 @@ area_reserved@80000000 {
@@ -334,7 +334,7 @@ index 4b5cb07ff1d1..8c0bb0c85e03 100644
  			jpu,cclk-min-frequency = <409000000>;
  			jpu,cclk-default-frequency = <614000000>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index b59bc3cc155b..a868772b580a 100644
+index b59bc3cc155bc..a868772b580a5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -326,14 +326,15 @@ pinctrl_mn_clk_2: mn_clk_2_grp {
@@ -390,7 +390,7 @@ index b59bc3cc155b..a868772b580a 100644
      };
  
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 7d6a82194ba4..a6a15ec391f8 100644
+index 7d6a82194ba4e..a6a15ec391f85 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -220,6 +220,12 @@ CONFIG_USB_VIDEO_CLASS=y

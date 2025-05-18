@@ -1,4 +1,4 @@
-From 708ab370fea53e98dc37333923e048451e711c23 Mon Sep 17 00:00:00 2001
+From 62aceedef68e2d98b74bea3de5477f312e42d3bb Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 6 Apr 2024 13:35:59 +0800
 Subject: [PATCH 0547/1206] plic: clear irq pending when init plic
@@ -16,7 +16,7 @@ Change-Id: I88db4db0af7f7e8a9893b0ffb9db07b7d0203c37
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index c4bed017bea0..651f9d503de9 100644
+index c4bed017bea08..651f9d503de9b 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -47,6 +47,7 @@

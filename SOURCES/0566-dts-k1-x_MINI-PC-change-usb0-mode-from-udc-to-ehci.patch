@@ -1,4 +1,4 @@
-From 2ded4ba1f89e0cf4f8766ecff1ec1a6394b623cc Mon Sep 17 00:00:00 2001
+From ec828f324018d9462462fc03bd76556918c4ec3f Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 9 Apr 2024 09:50:36 +0800
 Subject: [PATCH 0566/1206] dts: k1-x_MINI-PC: change usb0 mode from udc to
@@ -10,7 +10,7 @@ Change-Id: Ic366af23327ec631712203aef300f58e43ab761a
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index a893af99a8dd..db7d7843e5ff 100644
+index a893af99a8dde..db7d7843e5ff9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -614,10 +614,8 @@ &usbphy {
