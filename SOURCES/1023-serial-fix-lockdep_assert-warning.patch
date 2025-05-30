@@ -1,7 +1,7 @@
-From a21a5f9ac4b156ad0d7ee5b4928d33de21ebf45d Mon Sep 17 00:00:00 2001
+From 24ad35b87b0db47a929958c078a88ab10cc12d3f Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 11:11:01 +0800
-Subject: [PATCH 1023/1206] serial: fix lockdep_assert warning
+Subject: [PATCH 1023/1208] serial: fix lockdep_assert warning
 
 err log:
 [   95.350714] WARNING: CPU: 0 PID: 0 at drivers/tty/serial/serial_core.c:3510 uart_handle_cts_change+0x6e/0x88

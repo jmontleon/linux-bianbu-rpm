@@ -25,12 +25,12 @@
  drivers/acpi/irq.c                                 |   17 +-
  drivers/acpi/scan.c                                |    9 +
  drivers/ata/libahci.c                              |   18 +
- drivers/block/loop.c                               |   23 -
  drivers/char/ipmi/ipmi_dmi.c                       |   15 +
  drivers/char/ipmi/ipmi_msghandler.c                |   16 +-
  drivers/firmware/efi/Makefile                      |    1 +
  drivers/firmware/efi/efi.c                         |  124 ++-
  drivers/firmware/efi/secureboot.c                  |   38 +
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |   16 +-
  drivers/gpu/drm/i915/display/intel_atomic_plane.c  |    2 +-
  drivers/gpu/drm/i915/display/intel_cursor.c        |    2 +-
  drivers/gpu/drm/i915/display/intel_fb_pin.c        |    3 +-
@@ -77,7 +77,7 @@
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
  security/lockdown/lockdown.c                       |   11 +
- 79 files changed, 3162 insertions(+), 691 deletions(-)
+ 79 files changed, 3167 insertions(+), 679 deletions(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-kernel-fadump b/Documentation/ABI/testing/sysfs-kernel-fadump
 index 2f9daa7ca55b..b64b7622e6fc 100644
@@ -152,7 +152,7 @@ index c0d5232a473b..00b60a837d5e 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 70011eb4745f..656884906cea 100644
+index 884279eb952d..55904348cd59 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -192,7 +192,7 @@ index 70011eb4745f..656884906cea 100644
  ifdef mixed-build
  # ===========================================================================
  # We're called with mixed targets (*config and build targets).
-@@ -1917,6 +1940,23 @@ endif
+@@ -1913,6 +1936,23 @@ endif
  
  ifdef CONFIG_MODULES
  
@@ -301,7 +301,7 @@ index 4b371c738213..26e3d151e048 100644
  
  	fw_dump.param_area = memblock_phys_alloc_range(COMMAND_LINE_SIZE,
 diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index 57082fac4668..fce32b162ef3 100644
+index fe4659ba8c22..827c958677f8 100644
 --- a/arch/powerpc/kernel/prom_init.c
 +++ b/arch/powerpc/kernel/prom_init.c
 @@ -1061,7 +1061,7 @@ static const struct ibm_arch_vec ibm_architecture_vec_template __initconst = {
@@ -852,54 +852,6 @@ index 22afa4ff860d..78eacccaa1ae 100644
  	/* wait for engine to stop. This could be as long as 500 msec */
  	tmp = ata_wait_register(ap, port_mmio + PORT_CMD,
  				PORT_CMD_LIST_ON, PORT_CMD_LIST_ON, 1, 500);
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index b378d2aa49f0..61ce7ccde344 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -504,17 +504,6 @@ static void loop_assign_backing_file(struct loop_device *lo, struct file *file)
- 			lo->old_gfp_mask & ~(__GFP_IO | __GFP_FS));
- }
- 
--static int loop_check_backing_file(struct file *file)
--{
--	if (!file->f_op->read_iter)
--		return -EINVAL;
--
--	if ((file->f_mode & FMODE_WRITE) && !file->f_op->write_iter)
--		return -EINVAL;
--
--	return 0;
--}
--
- /*
-  * loop_change_fd switched the backing store of a loopback device to
-  * a new file. This is useful for operating system installers to free up
-@@ -536,10 +525,6 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 	if (!file)
- 		return -EBADF;
- 
--	error = loop_check_backing_file(file);
--	if (error)
--		return error;
--
- 	/* suppress uevents while reconfiguring the device */
- 	dev_set_uevent_suppress(disk_to_dev(lo->lo_disk), 1);
- 
-@@ -971,14 +956,6 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
- 
- 	if (!file)
- 		return -EBADF;
--
--	if ((mode & BLK_OPEN_WRITE) && !file->f_op->write_iter)
--		return -EINVAL;
--
--	error = loop_check_backing_file(file);
--	if (error)
--		return error;
--
- 	is_loop = is_loop_device(file);
- 
- 	/* This is safe, since we have a reference from open(). */
 diff --git a/drivers/char/ipmi/ipmi_dmi.c b/drivers/char/ipmi/ipmi_dmi.c
 index bbf7029e224b..cf7faa970dd6 100644
 --- a/drivers/char/ipmi/ipmi_dmi.c
@@ -1162,6 +1114,37 @@ index 000000000000..de0a3714a5d4
 +		}
 +	}
 +}
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 1a7bfc548d70..4801dcde2cb3 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -670,21 +670,15 @@ static void dm_crtc_high_irq(void *interrupt_params)
+ 	spin_lock_irqsave(&adev_to_drm(adev)->event_lock, flags);
+ 
+ 	if (acrtc->dm_irq_params.stream &&
+-		acrtc->dm_irq_params.vrr_params.supported) {
+-		bool replay_en = acrtc->dm_irq_params.stream->link->replay_settings.replay_feature_enabled;
+-		bool psr_en = acrtc->dm_irq_params.stream->link->psr_settings.psr_feature_enabled;
+-		bool fs_active_var_en = acrtc->dm_irq_params.freesync_config.state == VRR_STATE_ACTIVE_VARIABLE;
+-
++	    acrtc->dm_irq_params.vrr_params.supported &&
++	    acrtc->dm_irq_params.freesync_config.state ==
++		    VRR_STATE_ACTIVE_VARIABLE) {
+ 		mod_freesync_handle_v_update(adev->dm.freesync_module,
+ 					     acrtc->dm_irq_params.stream,
+ 					     &acrtc->dm_irq_params.vrr_params);
+ 
+-		/* update vmin_vmax only if freesync is enabled, or only if PSR and REPLAY are disabled */
+-		if (fs_active_var_en || (!fs_active_var_en && !replay_en && !psr_en)) {
+-			dc_stream_adjust_vmin_vmax(adev->dm.dc,
+-					acrtc->dm_irq_params.stream,
+-					&acrtc->dm_irq_params.vrr_params.adjust);
+-		}
++		dc_stream_adjust_vmin_vmax(adev->dm.dc, acrtc->dm_irq_params.stream,
++					   &acrtc->dm_irq_params.vrr_params.adjust);
+ 	}
+ 
+ 	/*
 diff --git a/drivers/gpu/drm/i915/display/intel_atomic_plane.c b/drivers/gpu/drm/i915/display/intel_atomic_plane.c
 index 612e9b0ec14a..3e014afaee08 100644
 --- a/drivers/gpu/drm/i915/display/intel_atomic_plane.c
@@ -1716,7 +1699,7 @@ index 2168b6cd7167..5d7cda175a0c 100644
  	if (data->f01_container->dev.driver) {
  		/* Driver already bound, so enable ATTN now. */
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 1efe7cddb4fe..e5cb44fab8dc 100644
+index 3a2804a98203..9c9bba8176b4 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
 @@ -8,6 +8,7 @@
@@ -5534,10 +5517,10 @@ index a2ff4242e623..f0d2be1ee4f1 100644
  
  int module_sig_check(struct load_info *info, int flags)
 diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 686197407c3c..ca5427a94deb 100644
+index 5652d9035232..904300ab9b04 100644
 --- a/scripts/Makefile.extrawarn
 +++ b/scripts/Makefile.extrawarn
-@@ -20,6 +20,10 @@ KBUILD_CFLAGS += $(call cc-disable-warning, address-of-packed-member)
+@@ -21,6 +21,10 @@ KBUILD_CFLAGS += $(call cc-disable-warning, address-of-packed-member)
  KBUILD_CFLAGS += -Wmissing-declarations
  KBUILD_CFLAGS += -Wmissing-prototypes
  

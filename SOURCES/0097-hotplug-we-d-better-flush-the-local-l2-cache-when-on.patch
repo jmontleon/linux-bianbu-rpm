@@ -1,7 +1,7 @@
-From dde82d5da4b39784ba3922802aea9faf8ffbd457 Mon Sep 17 00:00:00 2001
+From a8c7e9d6f7a18975b653c4829b120f5791e1f45b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
-Subject: [PATCH 0097/1206] hotplug: we'd better flush the local & l2 cache
+Subject: [PATCH 0097/1208] hotplug: we'd better flush the local & l2 cache
  when one cpu going to die
 
 Change-Id: I64e4158a8669af577abf1ab5018a7bdb424941aa
@@ -68,10 +68,10 @@ index 1989b8cade1b9..d122546c69105 100644
   * sbi_remote_hfence_vvma_asid() - Execute HFENCE.VVMA instructions on given
   * remote harts for current guest virtual address range belonging to a specific
 diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index 48ce50c5f5e68..96c122fbe43af 100644
+index 4d7cf338824a3..4f792d6d7e393 100644
 --- a/drivers/clocksource/timer-riscv.c
 +++ b/drivers/clocksource/timer-riscv.c
-@@ -167,6 +167,13 @@ static int __init riscv_timer_init_common(void)
+@@ -173,6 +173,13 @@ static int __init riscv_timer_init_common(void)
  		return -ENODEV;
  	}
  
@@ -85,7 +85,7 @@ index 48ce50c5f5e68..96c122fbe43af 100644
  	error = clocksource_register_hz(&riscv_clocksource, riscv_timebase);
  	if (error) {
  		pr_err("RISCV timer registration failed [%d]\n", error);
-@@ -183,10 +190,12 @@ static int __init riscv_timer_init_common(void)
+@@ -189,10 +196,12 @@ static int __init riscv_timer_init_common(void)
  		return error;
  	}
  

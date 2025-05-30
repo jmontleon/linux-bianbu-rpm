@@ -1,7 +1,7 @@
-From 63bb1cfbc21256fb5d06eb5bcc2b5a85446a5f6e Mon Sep 17 00:00:00 2001
+From a8d3e9f356214a0e7cd4b04b7ed5f05c03b4b541 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
-Subject: [PATCH 0095/1206] mmc: support spacemit k1x platform
+Subject: [PATCH 0095/1208] mmc: support spacemit k1x platform
 
 Change-Id: Iac553b07dd96bc7f80dcd521b8e41733bdda828a
 ---
@@ -2004,7 +2004,7 @@ index 0000000000000..030bc3845fedc
 +MODULE_DESCRIPTION("SDHCI platform driver for Spacemit");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index f4a7733a8ad22..42a8c281e200c 100644
+index 5f91b44891f9b..14c195e64d779 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,6 +1733,15 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -2023,7 +2023,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  	if (host->use_external_dma)
  		sdhci_external_dma_pre_transfer(host, cmd);
  
-@@ -2079,13 +2088,43 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
+@@ -2084,13 +2093,43 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
  				unsigned short vdd)
  {
  	struct mmc_host *mmc = host->mmc;
@@ -2067,7 +2067,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  }
  
  unsigned short sdhci_get_vdd_value(unsigned short vdd)
-@@ -2657,6 +2696,12 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
+@@ -2662,6 +2701,12 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
  		ctrl &= ~SDHCI_CTRL_VDD_180;
  		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
  
@@ -2080,7 +2080,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  		if (!IS_ERR(mmc->supply.vqmmc)) {
  			ret = mmc_regulator_set_vqmmc(mmc, ios);
  			if (ret < 0) {
-@@ -2739,6 +2784,56 @@ static int sdhci_card_busy(struct mmc_host *mmc)
+@@ -2744,6 +2789,56 @@ static int sdhci_card_busy(struct mmc_host *mmc)
  	return !(present_state & SDHCI_DATA_0_LVL_MASK);
  }
  
@@ -2137,7 +2137,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  static int sdhci_prepare_hs400_tuning(struct mmc_host *mmc, struct mmc_ios *ios)
  {
  	struct sdhci_host *host = mmc_priv(mmc);
-@@ -3091,6 +3186,14 @@ static const struct mmc_host_ops sdhci_ops = {
+@@ -3096,6 +3191,14 @@ static const struct mmc_host_ops sdhci_ops = {
  	.execute_tuning			= sdhci_execute_tuning,
  	.card_event			= sdhci_card_event,
  	.card_busy	= sdhci_card_busy,
@@ -2152,7 +2152,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  };
  
  /*****************************************************************************\
-@@ -3577,6 +3680,10 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+@@ -3582,6 +3685,10 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
  
  	do {
  		DBG("IRQ status 0x%08x\n", intmask);
@@ -2163,7 +2163,7 @@ index f4a7733a8ad22..42a8c281e200c 100644
  
  		if (host->ops->irq) {
  			intmask = host->ops->irq(host, intmask);
-@@ -4632,6 +4739,11 @@ int sdhci_setup_host(struct sdhci_host *host)
+@@ -4637,6 +4744,11 @@ int sdhci_setup_host(struct sdhci_host *host)
  	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
  

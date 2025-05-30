@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.14.8
-%define specversion 6.14.8
+%define specrpmversion 6.14.9
+%define specversion 6.14.9
 %define patchversion 6.14
-%define pkgrelease 301
+%define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.14.8
+%define tarfile_release 6.14.9
 # This is needed to do merge window version magic
 %define patchlevel 14
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.14.8
+%define kabiversion 6.14.9
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -2292,6 +2292,8 @@ Patch11203: 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 Patch11204: 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 Patch11205: 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 Patch11206: 1206-Add-distinct-compatibles-for-boards-currently-used-f.patch
+Patch11207: 1207-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+Patch11208: 1208-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 
 
 
@@ -4339,6 +4341,8 @@ ApplyOptionalPatch 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
 ApplyOptionalPatch 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 ApplyOptionalPatch 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 ApplyOptionalPatch 1206-Add-distinct-compatibles-for-boards-currently-used-f.patch
+ApplyOptionalPatch 1207-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+ApplyOptionalPatch 1208-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 
 
 
@@ -6637,6 +6641,12 @@ fi\
 #
 #
 %changelog
+* Thu May 29 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.14.9-0]
+- Revert "drm/amd/display: more liberal vmin/vmax update for freesync" (Justin M. Forbes)
+- Reapply "loop: Add sanity check for read/write_iter" (Justin M. Forbes)
+- aarch64: Switch TI_SCI_CLK and TI_SCI_PM_DOMAINS symbols to built-in (Peter Robinson)
+- Linux v6.14.9
+
 * Thu May 22 2025 Augusto Caringi <acaringi@redhat.com> [6.14.8-0]
 - drm/xe/display: Re-use display vmas when possible (Maarten Lankhorst) [2367813]
 - Revert "loop: Add sanity check for read/write_iter" (Justin M. Forbes)

@@ -1,7 +1,7 @@
-From ac02c5f742bd39b539818aae280cc4d781041f16 Mon Sep 17 00:00:00 2001
+From fc5d1f373c25beebdf469ac2e1755f6e6df418c8 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 29 Apr 2024 11:45:24 +0800
-Subject: [PATCH 0616/1206] wirless: don't show error when load regulatory.db
+Subject: [PATCH 0616/1208] wirless: don't show error when load regulatory.db
  failed
 
 Change-Id: Ibb2ef594a00871ea336fb38fbd02556a5c9fc38d
@@ -10,7 +10,7 @@ Change-Id: Ibb2ef594a00871ea336fb38fbd02556a5c9fc38d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index 212e9561aae77..2725181c3b809 100644
+index c1752b31734fa..f10fad2e3a65a 100644
 --- a/net/wireless/reg.c
 +++ b/net/wireless/reg.c
 @@ -1008,7 +1008,7 @@ static void regdb_fw_cb(const struct firmware *fw, void *context)

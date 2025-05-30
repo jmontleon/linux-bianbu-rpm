@@ -1,7 +1,7 @@
-From a78319143f6c411dc83d50124d3fa4aec8a851d4 Mon Sep 17 00:00:00 2001
+From 718c9aeca4d8debaf23ea5be1862bc82b1701080 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 31 Oct 2023 15:54:06 +0800
-Subject: [PATCH 0139/1206] k1x: support cpufreq driver
+Subject: [PATCH 0139/1208] k1x: support cpufreq driver
 
 disable the configuration by default
 
@@ -151,7 +151,7 @@ index bb9a1660c5c53..48089048c2452 100644
  
  	reserved-memory {
 diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 2aa00769cf09d..0a35f66ffe31b 100644
+index a010da0f6337f..02b7862d5cb7e 100644
 --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
 @@ -95,6 +95,8 @@ static const struct of_device_id allowlist[] __initconst = {
@@ -163,7 +163,7 @@ index 2aa00769cf09d..0a35f66ffe31b 100644
  	{ }
  };
  
-@@ -197,6 +199,8 @@ static const struct of_device_id blocklist[] __initconst = {
+@@ -198,6 +200,8 @@ static const struct of_device_id blocklist[] __initconst = {
  	{ .compatible = "qcom,msm8974", },
  	{ .compatible = "qcom,msm8960", },
  

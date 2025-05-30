@@ -1,7 +1,7 @@
-From 80ae7c5a1c7d0ec9caf6b1af40cf3a5480bda5b8 Mon Sep 17 00:00:00 2001
+From e81378a0ae266e752728dacd40e97154d4832cbe Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 23 Jul 2024 09:42:28 +0800
-Subject: [PATCH 0868/1206] gmac: fixed the bug that Ethernet phy cannot enter
+Subject: [PATCH 0868/1208] gmac: fixed the bug that Ethernet phy cannot enter
  low power state
 
   1. remove the mac_managed_pm flag, the phy suspend and resume functions will be called.
