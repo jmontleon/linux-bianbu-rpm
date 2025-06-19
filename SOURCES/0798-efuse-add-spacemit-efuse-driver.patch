@@ -1,7 +1,7 @@
-From d5172849fc16acd750e8d3d5792d0f69d5d83668 Mon Sep 17 00:00:00 2001
+From 54f9020fc99285e7b7c75694085b91fa3e1ac689 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jul 2024 12:41:43 +0800
-Subject: [PATCH 0798/1205] efuse: add spacemit efuse driver
+Subject: [PATCH 0798/1209] efuse: add spacemit efuse driver
 
 Change-Id: Id880a5bf36fb4093eb55e2edc17eba6fbf4205ee
 ---
@@ -72,10 +72,10 @@ index 000000000000..5aee36ef11f6
 +};
 +
 diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 8671b7c974b9..b6ba16d05cf1 100644
+index eceb3cdb421f..41d6c144853f 100644
 --- a/drivers/nvmem/Kconfig
 +++ b/drivers/nvmem/Kconfig
-@@ -310,6 +310,16 @@ config NVMEM_SNVS_LPGPR
+@@ -311,6 +311,16 @@ config NVMEM_SNVS_LPGPR
  	  This driver can also be built as a module. If so, the module
  	  will be called nvmem-snvs-lpgpr.
  

@@ -1,7 +1,7 @@
-From 00df48d19087a8df98868a09462a2f1b226c090c Mon Sep 17 00:00:00 2001
+From 340566b1eac76fb85035eb8524f4b1f43fd22b8b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 6 Jun 2023 10:51:18 +0800
-Subject: [PATCH 0039/1205] usb: xhci: modify DMA capability for k1-pro
+Subject: [PATCH 0039/1209] usb: xhci: modify DMA capability for k1-pro
  platform
 
 Change-Id: If5c5c0c66ef1619f8fd6f374e282701d44ab4e48
@@ -10,10 +10,10 @@ Change-Id: If5c5c0c66ef1619f8fd6f374e282701d44ab4e48
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 0452b8d65832..5f13ce618eff 100644
+index 90eb491267b5..654ab8a1bca7 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
-@@ -5360,6 +5360,10 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+@@ -5352,6 +5352,10 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
  			!dma_set_mask(dev, DMA_BIT_MASK(64))) {
  		xhci_dbg(xhci, "Enabling 64-bit DMA addresses.\n");
  		dma_set_coherent_mask(dev, DMA_BIT_MASK(64));

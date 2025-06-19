@@ -1,7 +1,7 @@
-From b23c87ee81f7414e5ab0e0de0e5a92ade9eb68f1 Mon Sep 17 00:00:00 2001
+From 9293590e087919df898f85c7a64ee0ee9706c53a Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
-Subject: [PATCH 0095/1205] mmc: support spacemit k1x platform
+Subject: [PATCH 0095/1209] mmc: support spacemit k1x platform
 
 Change-Id: Iac553b07dd96bc7f80dcd521b8e41733bdda828a
 ---
@@ -410,7 +410,7 @@ index 5fd455816393..edc76fc8dcdd 100644
  	mmc_detect_change(host, msecs_to_jiffies(ctx->cd_debounce_delay_ms));
  
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index e8003c9f81f5..45a8b7aa528a 100644
+index 10eecf120835..d199a5a7cb6a 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -274,14 +274,27 @@ config MMC_SDHCI_OF_MA35D1

@@ -1,7 +1,7 @@
-From d174a6f10ffbc1355dab78ac6ff7f8812225a2db Mon Sep 17 00:00:00 2001
+From e01ddba2d1c2d4839ae8f8fe9009002735c95485 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:22:19 +0800
-Subject: [PATCH 0519/1205] usb: xhci: fix spacemit k1x phy disconnect detect
+Subject: [PATCH 0519/1209] usb: xhci: fix spacemit k1x phy disconnect detect
 
 Change-Id: I78d4de5080384eb24b7fe1fb13954cc22f3a3f26
 ---
@@ -22,7 +22,7 @@ index d03ff7a22f1e..7e10f8d0e5d5 100644
  			status = "disabled";
  		};
 diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index c0f226584a40..b05f62648280 100644
+index 486347776cb2..b2e1e8c7bfe5 100644
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
 @@ -13,6 +13,7 @@

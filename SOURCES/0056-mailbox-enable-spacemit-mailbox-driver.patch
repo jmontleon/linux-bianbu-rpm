@@ -1,7 +1,7 @@
-From 83d81f5f8d05a9d5b12eaa89814479a607b30484 Mon Sep 17 00:00:00 2001
+From 259d5e34974d72ece323842119498714d4736416 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 29 Jun 2023 09:01:48 +0800
-Subject: [PATCH 0056/1205] mailbox: enable spacemit mailbox driver
+Subject: [PATCH 0056/1209] mailbox: enable spacemit mailbox driver
 
 Change-Id: If9bd59b3168665aa85af896d0b224e0cd8336f36
 ---
@@ -55,7 +55,7 @@ index a209ded8df1e..b4c1ba470ce7 100644
  CONFIG_REMOTEPROC=y
  CONFIG_SPACEMIT_REMOTEPROC=y
 diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index ed52db272f4d..84fa24da8b0c 100644
+index e8445cda7c61..df1b9bb82f42 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -330,4 +330,12 @@ config THEAD_TH1520_MBOX

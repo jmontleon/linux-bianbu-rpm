@@ -1,7 +1,7 @@
-From a9306a460fe40b1da42f071e66589d261aceb11e Mon Sep 17 00:00:00 2001
+From 622c08531be7728faf4a0722085bcacc7bacc9e5 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:35:24 +0800
-Subject: [PATCH 0897/1205] k1x_udc_core: fix global variable and extcon
+Subject: [PATCH 0897/1209] k1x_udc_core: fix global variable and extcon
 
 1. Return -EPROBE_DEFER as earlier as we can if needed.
 2. Don't use extern_attr to improve readability.

@@ -1,7 +1,7 @@
-From fcfa1b133205164e955e23d14988688b63fcb678 Mon Sep 17 00:00:00 2001
+From 0f1d1282dacdd485b929c367422145aa227d23f1 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 12 Sep 2024 21:07:59 +0800
-Subject: [PATCH 0995/1205] usb: f_uvc: use GFP_DMA32 for vb2_queue at spacemit
+Subject: [PATCH 0995/1209] usb: f_uvc: use GFP_DMA32 for vb2_queue at spacemit
  k1x platform
 
 Current videobuf2-dma-sg implementation will alloc sg_table that have

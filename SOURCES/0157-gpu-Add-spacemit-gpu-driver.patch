@@ -1,7 +1,7 @@
-From 0c9a0c33ba0ccc711fe95f430f76d6452ca7ac30 Mon Sep 17 00:00:00 2001
+From 54baae396d505d06126c592acd2eb97355ce8cd4 Mon Sep 17 00:00:00 2001
 From: Dengbo <bo.deng@spacemit.com>
 Date: Tue, 21 Nov 2023 13:58:40 +0800
-Subject: [PATCH 0157/1205] gpu: Add spacemit gpu driver
+Subject: [PATCH 0157/1209] gpu: Add spacemit gpu driver
 
 Change-Id: I566fbdc75139307da0d0dd16746e313fec031f5f
 ---
@@ -1061,7 +1061,7 @@ index 07cd6ac76650..ce9ecbe0c650 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index c4fddee6feaa..2da86c35b32d 100644
+index 53852a53c1ff..f5c505da67f0 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -462,6 +462,10 @@ source "drivers/gpu/drm/imagination/Kconfig"

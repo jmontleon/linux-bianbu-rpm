@@ -1,7 +1,7 @@
-From 7669280a4df9b102ca97975cdf79c08bcd8bb659 Mon Sep 17 00:00:00 2001
+From 61c3756f609ca6cd082357a9041d3d6a87689243 Mon Sep 17 00:00:00 2001
 From: liweizhi <weizhi.li@spacemit.com>
 Date: Thu, 4 Jul 2024 20:00:56 +0800
-Subject: [PATCH 0805/1205] scripts/package/mkdebian
+Subject: [PATCH 0805/1209] scripts/package/mkdebian
 
 linux-image-6.6.deb depends on spacemit-flash-dtbs.deb
 
@@ -11,7 +11,7 @@ Change-Id: I0f5faaf2cbe7a47d89955faaab0f2712db203af2
  1 file changed, 1 insertion(+)
 
 diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 744ddba01d93..88faf8e82a33 100755
+index d4b007b38a47..1ec8daf3131d 100755
 --- a/scripts/package/mkdebian
 +++ b/scripts/package/mkdebian
 @@ -220,6 +220,7 @@ Architecture: $debarch

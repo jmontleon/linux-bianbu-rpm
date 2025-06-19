@@ -150,7 +150,7 @@ Summary: The Linux kernel
 #  kernel release. (This includes prepatch or "rc" releases.)
 # Set released_kernel to 0 when the upstream source tarball contains an
 #  unreleased kernel development snapshot.
-%global released_kernel 0
+%global released_kernel 1
 # Set debugbuildsenabled to 1 to build separate base and debug kernels
 #  (on supported architectures). The kernel-debug-* subpackages will
 #  contain the debug kernel.
@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.15.0
-%define specversion 6.15.0
+%define specrpmversion 6.15.3
+%define specversion 6.15.3
 %define patchversion 6.15
-%define pkgrelease 0.rc1.200
+%define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.15-rc1
+%define tarfile_release 6.15.3
 # This is needed to do merge window version magic
 %define patchlevel 15
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc1.200%{?buildid}%{?dist}
+%define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.15.0
+%define kabiversion 6.15.3
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -207,6 +207,8 @@ Summary: The Linux kernel
 %define with_arm64_64k %{?_without_arm64_64k: 0} %{?!_without_arm64_64k: 1}
 # kernel-rt (x86_64 and aarch64 only PREEMPT_RT enabled kernel)
 %define with_realtime  %{?_without_realtime:  0} %{?!_without_realtime:  1}
+# kernel-rt-64k (aarch64 RT kernel with 64K page_size)
+%define with_realtime_arm64_64k %{?_without_realtime_arm64_64k: 0} %{?!_without_realtime_arm64_64k: 1}
 # kernel-automotive (x86_64 and aarch64 with PREEMPT_RT enabled - currently off by default)
 %define with_automotive %{?_with_automotive:  1} %{?!_with_automotive:   0}
 
@@ -249,6 +251,8 @@ Summary: The Linux kernel
 %define with_rtonly    %{?_with_rtonly:       1} %{?!_with_rtonly:       0}
 # Only build the automotive kernel (--with automotiveonly):%
 %define with_automotiveonly %{?_with_automotiveonly:       1} %{?!_with_automotiveonly:       0}
+# Only build the tools package
+%define with_toolsonly %{?_with_toolsonly:    1} %{?!_with_toolsonly:    0}
 # Control whether we perform a compat. check against published ABI.
 %define with_kabichk   %{?_without_kabichk:   0} %{?!_without_kabichk:   1}
 # Temporarily disable kabi checks until RC.
@@ -284,10 +288,6 @@ Summary: The Linux kernel
 # gcov support
 %define with_gcov %{?_with_gcov:1}%{?!_with_gcov:0}
 
-#
-# ipa_clone support
-%define with_ipaclones %{?_without_ipaclones: 0} %{?!_without_ipaclones: 1}
-
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
 
@@ -301,12 +301,11 @@ Summary: The Linux kernel
 # Kernel headers are being split out into a separate package
 %define with_headers 0
 %define with_cross_headers 0
-# no ipa_clone for now
-%define with_ipaclones 0
 # no stablelist
 %define with_kernel_abi_stablelists 0
 %define with_arm64_64k 0
 %define with_realtime 0
+%define with_realtime_arm64_64k 0
 %define with_automotive 0
 %endif
 
@@ -328,8 +327,6 @@ Summary: The Linux kernel
 %global clang_make_opts %{clang_make_opts} LLVM=1
 %endif
 %global make_opts %{make_opts} %{clang_make_opts}
-# clang does not support the -fdump-ipa-clones option
-%global with_ipaclones 0
 %endif
 
 # turn off debug kernel and kabichk for gcov builds
@@ -345,16 +342,6 @@ Summary: The Linux kernel
 # turn off kABI DWARF-based check if we're generating the base dataset
 %if %{with_kabidw_base}
 %define with_kabidwchk 0
-%endif
-
-# kpatch_kcflags are extra compiler flags applied to base kernel
-# -fdump-ipa-clones is enabled only for base kernels on selected arches
-%if %{with_ipaclones}
-%ifarch x86_64 ppc64le
-%define kpatch_kcflags -fdump-ipa-clones
-%else
-%define with_ipaclones 0
-%endif
 %endif
 
 %define make_target bzImage
@@ -395,7 +382,6 @@ Summary: The Linux kernel
 %define with_tools 0
 %define with_kernel_abi_stablelists 0
 %define with_selftests 0
-%define with_ipaclones 0
 %endif
 
 # if requested, only build debug kernel
@@ -407,12 +393,12 @@ Summary: The Linux kernel
 %define with_tools 0
 %define with_kernel_abi_stablelists 0
 %define with_selftests 0
-%define with_ipaclones 0
 %endif
 
 # if requested, only build realtime kernel
 %if %{with_rtonly}
 %define with_realtime 1
+%define with_realtime_arm64_64k 1
 %define with_automotive 0
 %define with_up 0
 %define with_debug 0
@@ -423,7 +409,6 @@ Summary: The Linux kernel
 %define with_tools 0
 %define with_kernel_abi_stablelists 0
 %define with_selftests 0
-%define with_ipaclones 0
 %define with_headers 0
 %define with_efiuki 0
 %define with_zfcpdump 0
@@ -442,6 +427,33 @@ Summary: The Linux kernel
 %define with_selftests 1
 %endif
 
+# if requested, only build tools
+%if %{with_toolsonly}
+%define with_tools 1
+%define with_up 0
+%define with_base 0
+%define with_debug 0
+%define with_realtime 0
+%define with_realtime_arm64_64k 0
+%define with_arm64_16k 0
+%define with_arm64_64k 0
+%define with_automotive 0
+%define with_cross_headers 0
+%define with_doc 0
+%define with_selftests 0
+%define with_headers 0
+%define with_efiuki 0
+%define with_zfcpdump 0
+%define with_vdso_install 0
+%define with_kabichk 0
+%define with_kabidwchk 0
+%define with_kabidw_base 0
+%define with_kernel_abi_stablelists 0
+%define with_selftests 0
+%define with_vdso_install 0
+%define with_configchecks 0
+%endif
+
 # RT and Automotive kernels are only built on x86_64 and aarch64
 %ifnarch x86_64 aarch64
 %define with_realtime 0
@@ -456,6 +468,7 @@ Summary: The Linux kernel
 
 # automotive does not support the following variants
 %define with_realtime 0
+%define with_realtime_arm64_64k 0
 %define with_arm64_16k 0
 %define with_arm64_64k 0
 %define with_efiuki 0
@@ -468,7 +481,6 @@ Summary: The Linux kernel
 %define with_kabichk 0
 %define with_kernel_abi_stablelists 0
 %define with_kabidw_base 0
-%define with_ipaclones 0
 %endif
 
 
@@ -536,6 +548,7 @@ Summary: The Linux kernel
 %ifnarch aarch64
 %define with_arm64_16k 0
 %define with_arm64_64k 0
+%define with_realtime_arm64_64k 0
 %endif
 
 %if 0%{?fedora}
@@ -613,6 +626,7 @@ Summary: The Linux kernel
 %define with_arm64_16k 0
 %define with_arm64_64k 0
 %define with_realtime 0
+%define with_realtime_arm64_64k 0
 %define with_automotive 0
 
 %define with_debuginfo 0
@@ -676,6 +690,11 @@ Summary: The Linux kernel
 %else
 %define with_arm64_64k_base 0
 %endif
+%if %{with_realtime_arm64_64k} && %{with_base}
+%define with_realtime_arm64_64k_base 1
+%else
+%define with_realtime_arm64_64k_base 0
+%endif
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -702,6 +721,7 @@ ExclusiveOS: Linux
 Requires: kernel-core-uname-r = %{KVERREL}
 Requires: kernel-modules-uname-r = %{KVERREL}
 Requires: kernel-modules-core-uname-r = %{KVERREL}
+Requires: ((kernel-modules-extra-uname-r = %{KVERREL}) if kernel-modules-extra-matched)
 Provides: installonlypkg(kernel)
 %endif
 
@@ -711,10 +731,12 @@ Provides: installonlypkg(kernel)
 #
 BuildRequires: kmod, bash, coreutils, tar, git-core, which
 BuildRequires: bzip2, xz, findutils, m4, perl-interpreter, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk, %compression
-BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc, bison, flex, gcc-c++
-%if 0%{?fedora}
-BuildRequires: rust, rust-src, bindgen, rustfmt
+# Kernel EFI/Compression set by CONFIG_KERNEL_ZSTD
+%ifarch x86_64 aarch64 riscv64
+BuildRequires: zstd
 %endif
+BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc, bison, flex, gcc-c++
+BuildRequires: rust, rust-src, bindgen, rustfmt, clippy
 BuildRequires: net-tools, hostname, bc, elfutils-devel
 BuildRequires: dwarves
 BuildRequires: python3
@@ -755,6 +777,9 @@ BuildRequires: libcap-devel libcap-ng-devel
 BuildRequires: python3-docutils
 BuildRequires: libtraceevent-devel
 BuildRequires: libtracefs-devel
+BuildRequires: libbpf-devel
+BuildRequires: bpftool
+BuildRequires: clang
 
 %ifnarch s390x
 BuildRequires: pciutils-devel
@@ -773,7 +798,7 @@ BuildRequires: (python3-wheel if python3-setuptools < 70)
 BuildRequires: openssl-devel
 %endif
 %if %{with_selftests}
-BuildRequires: clang llvm-devel fuse-devel zlib-devel binutils-devel
+BuildRequires: clang llvm-devel fuse-devel zlib-devel binutils-devel python3-docutils python3-jsonschema
 %ifarch x86_64 riscv64
 BuildRequires: lld
 %endif
@@ -1041,25 +1066,29 @@ Source301: kernel-kabi-dw-%{kabiversion}.tar.xz
 %if 0%{include_rhel}
 Source474: %{name}-aarch64-rt-rhel.config
 Source475: %{name}-aarch64-rt-debug-rhel.config
-Source476: %{name}-x86_64-rt-rhel.config
-Source477: %{name}-x86_64-rt-debug-rhel.config
+Source476: %{name}-aarch64-rt-64k-rhel.config
+Source477: %{name}-aarch64-rt-64k-debug-rhel.config
+Source478: %{name}-x86_64-rt-rhel.config
+Source479: %{name}-x86_64-rt-debug-rhel.config
 %endif
 %if 0%{include_fedora}
-Source478: %{name}-aarch64-rt-fedora.config
-Source479: %{name}-aarch64-rt-debug-fedora.config
-Source480: %{name}-x86_64-rt-fedora.config
-Source481: %{name}-x86_64-rt-debug-fedora.config
-Source482: %{name}-riscv64-rt-fedora.config
-Source483: %{name}-riscv64-rt-debug-fedora.config
+Source480: %{name}-aarch64-rt-fedora.config
+Source481: %{name}-aarch64-rt-debug-fedora.config
+Source482: %{name}-aarch64-rt-64k-fedora.config
+Source483: %{name}-aarch64-rt-64k-debug-fedora.config
+Source484: %{name}-x86_64-rt-fedora.config
+Source485: %{name}-x86_64-rt-debug-fedora.config
+Source486: %{name}-riscv64-rt-fedora.config
+Source487: %{name}-riscv64-rt-debug-fedora.config
 %endif
 %endif
 
 %if %{include_automotive}
 # automotive config files
-Source484: %{name}-aarch64-automotive-rhel.config
-Source485: %{name}-aarch64-automotive-debug-rhel.config
-Source486: %{name}-x86_64-automotive-rhel.config
-Source487: %{name}-x86_64-automotive-debug-rhel.config
+Source488: %{name}-aarch64-automotive-rhel.config
+Source489: %{name}-aarch64-automotive-debug-rhel.config
+Source490: %{name}-x86_64-automotive-rhel.config
+Source491: %{name}-x86_64-automotive-debug-rhel.config
 %endif
 
 
@@ -2296,6 +2325,8 @@ Patch11204: 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 Patch11205: 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 Patch11206: 1206-6.15-fixes.patch
 Patch11207: 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
+Patch11208: 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+Patch11209: 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 
 
 
@@ -2528,6 +2559,7 @@ Epoch: %{gemini}
 Summary: Real-Time Linux Analysis tools
 Requires: libtraceevent
 Requires: libtracefs
+Requires: libbpf
 %ifarch %{cpupowerarchs}
 Requires: %{package_name}-tools-libs = %{version}-%{release}
 %endif
@@ -2659,16 +2691,11 @@ Requires: %{package_name}%{?1:-%{1}}-core = %{specrpmversion}-%{release}\
 This meta package is used to install matching core and devel packages for a given %{?2:%{2} }kernel.\
 %{nil}
 
-#
-# kernel-<variant>-ipaclones-internal package
-#
-%define kernel_ipaclones_package() \
-%package %{?1:%{1}-}ipaclones-internal\
-Summary: *.ipa-clones files generated by -fdump-ipa-clones for kernel%{?1:-%{1}}\
-Group: System Environment/Kernel\
-AutoReqProv: no\
-%description %{?1:%{1}-}ipaclones-internal\
-This package provides *.ipa-clones files.\
+%define kernel_modules_extra_matched_package(m) \
+%package modules-extra-matched\
+Summary: Meta package which requires modules-extra to be installed for all kernels.\
+%description modules-extra-matched\
+This meta package provides a single reference that other packages can Require to have modules-extra installed for all kernels.\
 %{nil}
 
 #
@@ -2772,32 +2799,14 @@ summary: kernel meta-package for the %{1} kernel\
 Requires: kernel-%{1}-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
 Requires: kernel-%{1}-modules-uname-r = %{KVERREL}%{uname_suffix %{1}}\
 Requires: kernel-%{1}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
-%if "%{1}" == "rt" || "%{1}" == "rt-debug"\
+Requires: ((kernel-%{1}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{1}}) if kernel-modules-extra-matched)\
+%if "%{1}" == "rt" || "%{1}" == "rt-debug" || "%{1}" == "rt-64k" || "%{1}" == "rt-64k-debug"\
 Requires: realtime-setup\
 %endif\
 Provides: installonlypkg(kernel)\
 %description %{1}\
 The meta-package for the %{1} kernel\
 %{nil}
-
-%if %{with_realtime}
-#
-# this macro creates a kernel-rt-<subpackage>-kvm package
-# %%kernel_kvm_package <subpackage>
-#
-%define kernel_kvm_package() \
-%package %{?1:%{1}-}kvm\
-Summary: KVM modules for package kernel%{?1:-%{1}}\
-Group: System Environment/Kernel\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-kvm-%{_target_cpu} = %{version}-%{release}\
-AutoReq: no\
-%description -n kernel%{?1:-%{1}}-kvm\
-This package provides KVM modules for package kernel%{?1:-%{1}}.\
-%{nil}
-%endif
 
 #
 # This macro creates a kernel-<subpackage> and its -devel and -debuginfo too.
@@ -2829,10 +2838,7 @@ Requires: kernel-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %{
 %endif\
 %{expand:%%kernel_debuginfo_package %{?1:%{1}}}\
 %endif\
-%if "%{1}" == "rt" || "%{1}" == "rt-debug"\
-%{expand:%%kernel_kvm_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
-%else \
-%if %{with_efiuki}\
+%if %{with_efiuki} && ("%{1}" != "rt" && "%{1}" != "rt-debug" && "%{1}" != "rt-64k" && "%{1}" != "rt-64k-debug")\
 %package %{?1:%{1}-}uki-virt\
 Summary: %{variant_summary} unified kernel image for virtual machines\
 Provides: installonlypkg(kernel)\
@@ -2840,12 +2846,12 @@ Provides: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): systemd >= 254-1\
+Recommends: uki-direct\
 %package %{?1:%{1}-}uki-virt-addons\
 Summary: %{variant_summary} unified kernel image addons for virtual machines\
 Provides: installonlypkg(kernel)\
 Requires: kernel%{?1:-%{1}}-uki-virt = %{specrpmversion}-%{release}\
 Requires(pre): systemd >= 254-1\
-%endif\
 %endif\
 %if %{with_gcov}\
 %{expand:%%kernel_gcov_package %{?1:%{1}}}\
@@ -2952,6 +2958,29 @@ This package includes a version of the Linux kernel compiled with the
 PREEMPT_RT real-time preemption support
 %endif
 
+%if %{with_realtime_arm64_64k_base}
+%define variant_summary The Linux PREEMPT_RT kernel compiled for 64k pagesize usage
+%kernel_variant_package rt-64k
+%description rt-64k-core
+The kernel package contains a variant of the ARM64 Linux PREEMPT_RT kernel using
+a 64K page size.
+%endif
+
+%if %{with_realtime_arm64_64k} && %{with_debug}
+%define variant_summary The Linux PREEMPT_RT kernel compiled with extra debugging enabled
+%if !%{debugbuildsenabled}
+%kernel_variant_package -m rt-64k-debug
+%else
+%kernel_variant_package rt-64k-debug
+%endif
+%description rt-64k-debug-core
+The debug kernel package contains a variant of the ARM64 Linux PREEMPT_RT kernel using
+a 64K page size.
+This variant of the kernel has numerous debugging options enabled.
+It should only be installed when trying to gather additional information
+on kernel bugs, as some of these options impact performance noticably.
+%endif
+
 %if %{with_debug} && %{with_automotive}
 %define variant_summary The Linux Automotive kernel compiled with extra debugging enabled
 %kernel_variant_package automotive-debug
@@ -3051,9 +3080,7 @@ Prebuilt 64k unified kernel image for virtual machines.
 Prebuilt 64k unified kernel image addons for virtual machines.
 %endif
 
-%if %{with_ipaclones}
-%kernel_ipaclones_package
-%endif
+%kernel_modules_extra_matched_package
 
 %define log_msg() \
 	{ set +x; } 2>/dev/null \
@@ -4344,6 +4371,8 @@ ApplyOptionalPatch 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
 ApplyOptionalPatch 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
 ApplyOptionalPatch 1206-6.15-fixes.patch
 ApplyOptionalPatch 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
+ApplyOptionalPatch 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+ApplyOptionalPatch 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 
 
 
@@ -4481,14 +4510,6 @@ for i in *.config; do
 done
 %endif
 
-# Adjust FIPS module name for RHEL
-%if 0%{?rhel}
-%{log_msg "Adjust FIPS module name for RHEL"}
-for i in *.config; do
-  sed -i 's/CONFIG_CRYPTO_FIPS_NAME=.*/CONFIG_CRYPTO_FIPS_NAME="Red Hat Enterprise Linux %{rhel} - Kernel Cryptographic API"/' $i
-done
-%endif
-
 %{log_msg "Set process_configs.sh $OPTS"}
 cp %{SOURCE81} .
 OPTS=""
@@ -4611,12 +4632,13 @@ InitBuildVars() {
     %{log_msg "InitBuildVars: USING ARCH=$Arch"}
 
     KCFLAGS="%{?kcflags}"
+}
 
-    # add kpatch flags for base kernel
-    %{log_msg "InitBuildVars: Configure KCFLAGS"}
-    if [ "$Variant" == "" ]; then
-        KCFLAGS="$KCFLAGS %{?kpatch_kcflags}"
-    fi
+#Build bootstrap bpftool
+BuildBpftool(){
+    export BPFBOOTSTRAP_CFLAGS=$(echo "%{__global_compiler_flags}" | sed -r "s/\-specs=[^\ ]+\/redhat-annobin-cc1//")
+    export BPFBOOTSTRAP_LDFLAGS=$(echo "%{__global_ldflags}" | sed -r "s/\-specs=[^\ ]+\/redhat-annobin-cc1//")
+    CFLAGS="" LDFLAGS="" make EXTRA_CFLAGS="${BPFBOOTSTRAP_CFLAGS}" EXTRA_CXXFLAGS="${BPFBOOTSTRAP_CFLAGS}" EXTRA_LDFLAGS="${BPFBOOTSTRAP_LDFLAGS}" %{?make_opts} %{?clang_make_opts} V=1 -C tools/bpf/bpftool bootstrap
 }
 
 BuildKernel() {
@@ -5121,7 +5143,7 @@ BuildKernel() {
     # Copy the System.map file for depmod to use
     cp System.map $RPM_BUILD_ROOT/.
 
-    if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug" ]]; then
+    if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug" ]]; then
 	%{log_msg "Skipping efiuki build"}
     else
 %if %{with_efiuki}
@@ -5131,12 +5153,22 @@ BuildKernel() {
 %if 0%{?centos}
         SBATsuffix="centos"
 %else
+%if 0%{?fedora}
+        SBATsuffix="fedora"
+%else
         SBATsuffix="rhel"
+%endif
 %endif
         SBAT=$(cat <<- EOF
 	linux,1,Red Hat,linux,$KernelVer,mailto:secalert@redhat.com
 	linux.$SBATsuffix,1,Red Hat,linux,$KernelVer,mailto:secalert@redhat.com
 	kernel-uki-virt.$SBATsuffix,1,Red Hat,kernel-uki-virt,$KernelVer,mailto:secalert@redhat.com
+	EOF
+	)
+
+        ADDONS_SBAT=$(cat <<- EOF
+	sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+	kernel-uki-virt-addons.$SBATsuffix,1,Red Hat,kernel-uki-virt-addons,$KernelVer,mailto:secalert@redhat.com
 	EOF
 	)
 
@@ -5161,7 +5193,7 @@ BuildKernel() {
 
   KernelAddonsDirOut="$KernelUnifiedImage.extra.d"
   mkdir -p $KernelAddonsDirOut
-  python3 %{SOURCE151} %{SOURCE152} $KernelAddonsDirOut virt %{primary_target} %{_target_cpu}
+  python3 %{SOURCE151} %{SOURCE152} $KernelAddonsDirOut virt %{primary_target} %{_target_cpu} "$ADDONS_SBAT"
 
 %if %{signkernel}
 	%{log_msg "Sign the EFI UKI kernel"}
@@ -5276,6 +5308,9 @@ BuildKernel() {
         if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" ]]; then
             variants_param="-r rt"
         fi
+        if [[ "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" ]]; then
+            variants_param="-r rt-64k"
+        fi
         if [[ "$Variant" == "automotive" || "$Variant" == "automotive-debug" ]]; then
             variants_param="-r automotive"
         fi
@@ -5298,9 +5333,6 @@ BuildKernel() {
         create_module_file_list "kernel" ../modules.list ../kernel${Variant:+-${Variant}}-modules.list 0 0
         create_module_file_list "internal" ../modules-internal.list ../kernel${Variant:+-${Variant}}-modules-internal.list 0 1
         create_module_file_list "kernel" ../modules-extra.list ../kernel${Variant:+-${Variant}}-modules-extra.list 0 1
-        if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" ]]; then
-            create_module_file_list "kvm" ../modules-rt-kvm.list ../kernel${Variant:+-${Variant}}-modules-rt-kvm.list 0 1
-        fi
 %if 0%{!?fedora:1}
         create_module_file_list "partner" ../modules-partner.list ../kernel${Variant:+-${Variant}}-modules-partner.list 1 1
 %endif
@@ -5346,10 +5378,7 @@ BuildKernel() {
     if [ "$Variant" != "zfcpdump" ]; then
 	%{log_msg "Build the bootstrap bpftool to generate vmlinux.h"}
         # Build the bootstrap bpftool to generate vmlinux.h
-        export BPFBOOTSTRAP_CFLAGS=$(echo "%{__global_compiler_flags}" | sed -r "s/\-specs=[^\ ]+\/redhat-annobin-cc1//")
-        export BPFBOOTSTRAP_LDFLAGS=$(echo "%{__global_ldflags}" | sed -r "s/\-specs=[^\ ]+\/redhat-annobin-cc1//")
-        CFLAGS="" LDFLAGS="" make EXTRA_CFLAGS="${BPFBOOTSTRAP_CFLAGS}" EXTRA_CXXFLAGS="${BPFBOOTSTRAP_CFLAGS}" EXTRA_LDFLAGS="${BPFBOOTSTRAP_LDFLAGS}" %{?make_opts} %{?clang_make_opts} V=1 -C tools/bpf/bpftool bootstrap
-
+        BuildBpftool
         tools/bpf/bpftool/bootstrap/bpftool btf dump file vmlinux format c > $RPM_BUILD_ROOT/$DevelDir/vmlinux.h
     fi
 %endif
@@ -5392,18 +5421,6 @@ BuildKernel() {
     fi
 %endif
 
-%if %{with_ipaclones}
-    %{log_msg "install IPA clones"}
-    MAXPROCS=$(echo %{?_smp_mflags} | sed -n 's/-j\s*\([0-9]\+\)/\1/p')
-    if [ -z "$MAXPROCS" ]; then
-        MAXPROCS=1
-    fi
-    if [ "$Variant" == "" ]; then
-        mkdir -p $RPM_BUILD_ROOT/$DevelDir-ipaclones
-        find . -name '*.ipa-clones' | xargs -i{} -r -n 1 -P $MAXPROCS install -m 644 -D "{}" "$RPM_BUILD_ROOT/$DevelDir-ipaclones/{}"
-    fi
-%endif
-
 %if %{with_gcov}
     popd
 %endif
@@ -5423,6 +5440,10 @@ cd linux-%{KVERREL}
 %if %{with_debug}
 %if %{with_realtime}
 BuildKernel %make_target %kernel_image %{_use_vdso} rt-debug
+%endif
+
+%if %{with_realtime_arm64_64k}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k-debug
 %endif
 
 %if %{with_automotive}
@@ -5458,6 +5479,10 @@ BuildKernel %make_target %kernel_image %{_use_vdso} 64k
 BuildKernel %make_target %kernel_image %{_use_vdso} rt
 %endif
 
+%if %{with_realtime_arm64_64k_base}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k
+%endif
+
 %if %{with_automotive_base}
 BuildKernel %make_target %kernel_image %{_use_vdso} automotive
 %endif
@@ -5467,7 +5492,7 @@ BuildKernel %make_target %kernel_image %{_use_vdso}
 %endif
 
 %ifnarch noarch i686 %{nobuildarches}
-%if !%{with_debug} && !%{with_zfcpdump} && !%{with_up} && !%{with_arm64_16k} && !%{with_arm64_64k} && !%{with_realtime} && !%{with_automotive}
+%if !%{with_debug} && !%{with_zfcpdump} && !%{with_up} && !%{with_arm64_16k} && !%{with_arm64_64k} && !%{with_realtime} && !%{with_realtime_arm64_64k} && !%{with_automotive}
 # If only building the user space tools, then initialize the build environment
 # and some variables so that the various userspace tools can be built.
 %{log_msg "Initialize userspace tools build environment"}
@@ -5586,7 +5611,10 @@ pushd tools/tracing/rtla
 popd
 %endif
 
-if [ -f $DevelDir/vmlinux.h ]; then
+#set RPM_VMLINUX_H
+if [ -f $RPM_BUILD_ROOT/$DevelDir/vmlinux.h ]; then
+  RPM_VMLINUX_H=$RPM_BUILD_ROOT/$DevelDir/vmlinux.h
+elif [ -f $DevelDir/vmlinux.h ]; then
   RPM_VMLINUX_H=$DevelDir/vmlinux.h
 fi
 echo "${RPM_VMLINUX_H}" > ../vmlinux_h_path
@@ -5607,8 +5635,13 @@ if [ ! -f include/generated/autoconf.h ]; then
    %{make} %{?_smp_mflags} modules_prepare
 fi
 
+# Build BPFtool for samples/bpf
+if [ ! -f tools/bpf/bpftool/bootstrap/bpftool ]; then
+  BuildBpftool
+fi
+
 %{log_msg "build samples/bpf"}
-%{make} %{?_smp_mflags} ARCH=$Arch V=1 M=samples/bpf/ VMLINUX_H="${RPM_VMLINUX_H}" || true
+%{make} %{?_smp_mflags} ARCH=$Arch BPFTOOL=$(pwd)/tools/bpf/bpftool/bootstrap/bpftool V=1 M=samples/bpf/ VMLINUX_H="${RPM_VMLINUX_H}" || true
 
 pushd tools/testing/selftests
 # We need to install here because we need to call make with ARCH set which
@@ -5620,7 +5653,7 @@ pushd tools/testing/selftests
 %endif
 
 %{log_msg "main selftests compile"}
-%{make} %{?_smp_mflags} ARCH=$Arch V=1 TARGETS="bpf cgroup mm net net/forwarding net/mptcp net/netfilter tc-testing memfd drivers/net/bonding iommu cachestat" SKIP_TARGETS="" $force_targets INSTALL_PATH=%{buildroot}%{_libexecdir}/kselftests VMLINUX_H="${RPM_VMLINUX_H}" install
+%{make} %{?_smp_mflags} ARCH=$Arch V=1 TARGETS="bpf cgroup mm net net/forwarding net/mptcp net/netfilter net/packetdrill tc-testing memfd drivers/net/bonding iommu cachestat pid_namespace rlimits" SKIP_TARGETS="" $force_targets INSTALL_PATH=%{buildroot}%{_libexecdir}/kselftests VMLINUX_H="${RPM_VMLINUX_H}" install
 
 %ifarch %{klptestarches}
 	# kernel livepatching selftest test_modules will build against
@@ -5991,6 +6024,12 @@ find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/net/netfilte
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/net/netfilter/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/net/netfilter/{} \;
 popd
+# install net/packetdrill selftests
+pushd tools/testing/selftests/net/packetdrill
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/net/packetdrill/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/net/packetdrill/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/net/packetdrill/{} \;
+popd
 
 # install memfd selftests
 pushd tools/testing/selftests/memfd
@@ -6003,6 +6042,18 @@ pushd tools/testing/selftests/iommu
 find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/iommu/{} \;
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/iommu/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/iommu/{} \;
+popd
+# install rlimits selftests
+pushd tools/testing/selftests/rlimits
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/rlimits/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/rlimits/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/rlimits/{} \;
+popd
+# install pid_namespace selftests
+pushd tools/testing/selftests/pid_namespace
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
 popd
 %endif
 
@@ -6092,21 +6143,6 @@ fi\
 %{expand:%%postun %{?1:%{1}-}modules-partner}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}
-
-%if %{with_realtime}
-#
-# This macro defines a %%post script for a kernel*-kvm package.
-# It also defines a %%postun script that does the same thing.
-#	%%kernel_kvm_post [<subpackage>]
-#
-%define kernel_kvm_post() \
-%{expand:%%post %{?1:%{1}-}kvm}\
-/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
-%{nil}\
-%{expand:%%postun %{?1:%{1}-}kvm}\
-/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
-%{nil}
-%endif
 
 #
 # This macro defines a %%post script for a kernel*-modules package.
@@ -6273,7 +6309,6 @@ fi\
 %if %{with_realtime_base}
 %kernel_variant_preun -v rt
 %kernel_variant_post -v rt -r kernel
-%kernel_kvm_post rt
 %endif
 
 %if %{with_automotive_base}
@@ -6284,7 +6319,18 @@ fi\
 %if %{with_realtime} && %{with_debug}
 %kernel_variant_preun -v rt-debug
 %kernel_variant_post -v rt-debug
-%kernel_kvm_post rt-debug
+%endif
+
+%if %{with_realtime_arm64_64k_base}
+%kernel_variant_preun -v rt-64k
+%kernel_variant_post -v rt-64k
+%kernel_kvm_post rt-64k
+%endif
+
+%if %{with_debug} && %{with_realtime_arm64_64k}
+%kernel_variant_preun -v rt-64k-debug
+%kernel_variant_post -v rt-64k-debug
+%kernel_kvm_post rt-64k-debug
 %endif
 
 %if %{with_automotive} && %{with_debug}
@@ -6300,6 +6346,7 @@ fi\
 %files headers
 /usr/include/*
 %exclude %{_includedir}/cpufreq.h
+%exclude %{_includedir}/ynl
 %endif
 
 %if %{with_cross_headers}
@@ -6568,10 +6615,7 @@ fi\
 %{expand:%%files -f debuginfo%{?3}.list %{?3:%{3}-}debuginfo}\
 %endif\
 %endif\
-%if "%{3}" == "rt" || "%{3}" == "rt-debug"\
-%{expand:%%files -f kernel-%{?3:%{3}-}modules-rt-kvm.list %{?3:%{3}-}kvm}\
-%else\
-%if %{with_efiuki}\
+%if %{with_efiuki} && "%{3}" != "rt" && "%{3}" != "rt-debug" && "%{3}" != "rt-64k" && "%{3}" != "rt-64k-debug"\
 %{expand:%%files %{?3:%{3}-}uki-virt}\
 %dir /lib/modules\
 %dir /lib/modules/%{KVERREL}%{?3:+%{3}}\
@@ -6585,7 +6629,6 @@ fi\
 %{expand:%%files %{?3:%{3}-}uki-virt-addons}\
 %dir /lib/modules/%{KVERREL}%{?3:+%{3}}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-virt.efi.extra.d/ \
 /lib/modules/%{KVERREL}%{?3:+%{3}}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-virt.efi.extra.d/*.addon.efi\
-%endif\
 %endif\
 %if %{?3:1} %{!?3:0}\
 %{expand:%%files %{3}}\
@@ -6644,27 +6687,265 @@ fi\
 %kernel_variant_files %{_use_vdso} %{with_zfcpdump} zfcpdump
 %kernel_variant_files %{_use_vdso} %{with_arm64_16k_base} 16k
 %kernel_variant_files %{_use_vdso} %{with_arm64_64k_base} 64k
+%kernel_variant_files %{_use_vdso} %{with_realtime_arm64_64k_base} rt-64k
+%if %{with_realtime_arm64_64k}
+%kernel_variant_files %{_use_vdso} %{with_debug} rt-64k-debug
+%endif
 
-%define kernel_variant_ipaclones(k:) \
-%if %{1}\
-%if %{with_ipaclones}\
-%{expand:%%files %{?2:%{2}-}ipaclones-internal}\
-%defattr(-,root,root)\
-%defverify(not mtime)\
-/usr/src/kernels/%{KVERREL}%{?2:+%{2}}-ipaclones\
-%endif\
-%endif\
-%{nil}
-
-%kernel_variant_ipaclones %{with_up_base}
+%files modules-extra-matched
 
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
 #
 %changelog
-* Mon Apr 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.14]
-- apply -Wno-error=unterminated-string-initialization temporarily (Thorsten Leemhuis)
+* Thu Jun 19 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.3-0]
+- ACPICA: Refuse to evaluate a method if arguments are missing (Rafael J. Wysocki)
+- Linux v6.15.3
+
+* Fri Jun 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
+- wifi: ath12k: support MLO as well if single_chip_mlo_support flag is set (Baochen Qiang)
+- wifi: ath12k: use fw_features only when it is valid (Baochen Qiang)
+- wifi: ath12k: introduce ath12k_fw_feature_supported() (Baochen Qiang)
+- aarch64: Switch TI_SCI_CLK and TI_SCI_PM_DOMAINS symbols to built-in (Peter Robinson)
+- redhat/configs: fedora: set some qcom clk, icc, and pinctrl drivers to built in (Brian Masney)
+
+* Tue Jun 10 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
+- Revert "drm/amd/display: more liberal vmin/vmax update for freesync" (Justin M. Forbes)
+- Linux v6.15.2
+
+* Wed Jun 04 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.1-0]
+- arm64: dts: rockchip: Drop assigned-clock* from cpu nodes on rk3588 (Diederik de Haas)
+- arm64: dts: rockchip: Improve LED config for NanoPi R5S (Diederik de Haas)
+- arm64: dts: rockchip: Move rk3568 PCIe3 MSI to use GIC ITS (Chukun Pan)
+- arm64: dts: rockchip: Update eMMC for NanoPi R5 series (Peter Robinson)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-rock3c (Peter Robinson)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-quartz64-b (Diederik de Haas)
+- arm64: dts: rockchip: Add phy-supply to gmac0 on NanoPi R5S (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3588-rock-5b (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3399-rockpro64 (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3328-rock64 (Diederik de Haas)
+- arm64: dts: rockchip: Move SHMEM memory to reserved memory on rk3588 (Chukun Pan)
+- arm64: dts: rockchip: Add gmac phy reset GPIO to QNAP TS433 (Uwe Kleine-König)
+- arm64: dts: rockchip: Correct gmac phy address on QNAP TS433 (Uwe Kleine-König)
+- Reset build id for fedora-srpm script (Justin M. Forbes)
+- redhat/configs: Add configs for new ov02c10 and ov02e10 drivers (Hans de Goede)
+- media: i2c: Add Omnivision OV02C10 sensor driver (Heimir Thor Sverrisson)
+- media: i2c: ov02e10: add OV02E10 image sensor driver (Jingjing Xiong)
+- platform/x86: int3472: Debug log when remapping pins (Hans de Goede)
+- platform/x86: int3472: Add handshake pin support (Hans de Goede)
+- platform/x86: int3472: Prepare for registering more than 1 GPIO regulator (Hans de Goede)
+- platform/x86: int3472: Avoid GPIO regulator spikes (Hans de Goede)
+- platform/x86: int3472: Make regulator supply name configurable (Hans de Goede)
+- platform/x86: int3472: Rework AVDD second sensor quirk handling (Hans de Goede)
+- platform/x86: int3472: Drop unused gpio field from struct int3472_gpio_regulator (Hans de Goede)
+- platform/x86: int3472: Stop setting a supply-name for GPIO regulators (Hans de Goede)
+- platform/x86: int3472: Add skl_int3472_register_clock() helper (Hans de Goede)
+- powerpc: Fix struct termio related ioctl macros (Madhavan Srinivasan)
+- Initial setup for stable Fedora releases (Justin M. Forbes)
+- Reset RHEL_RELEASE for the 6.16 cycle (Justin M. Forbes)
+- fedora: add 'fedora' SBAT suffix for UKI addons (Li Tian)
+- redhat: add downstream SBAT for UKI addons (Emanuele Giuseppe Esposito)
+- uki_addons: provide custom SBAT as input parameter (Emanuele Giuseppe Esposito)
+- uki_addons: remove completely sbat/sbat.conf (Emanuele Giuseppe Esposito)
+- Linux v6.15.1
+
+* Mon May 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-60]
+- Consolidate configs to common for 6.15 (Justin M. Forbes)
+- Linux v6.15.0
+
+* Thu May 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.d608703fcdd9.59]
+- Linux v6.15.0-0.rc7.d608703fcdd9
+
+* Wed May 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.4a95bc121ccd.58]
+- redhat/configs: automotive: enable MHI_BUS_EP (Eric Chanudet)
+- Fix PHYSICAL_ALIGN for x86 Fedora (Justin M. Forbes)
+- Switch ZSWAP_ZPOOL_DEFAULT to ZSMALLOC as ZBUD has been removed (Justin M. Forbes)
+- redhat: configs: rhel: Enable CX231XX drivers (Kate Hsuan)
+- configs: add redhat/configs/common/generic/CONFIG_OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
+- redhat: make ENABLE_WERROR also enable OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
+- redhat/configs: Enable CONFIG_X86_POSTED_MSI (Jerry Snitselaar)
+- Linux v6.15.0-0.rc7.4a95bc121ccd
+
+* Mon May 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.57]
+- redhat/configs: remove CRC16 config files (Scott Weaver)
+- Linux v6.15.0-0.rc7
+
+* Sun May 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.5723cc3450bc.56]
+- Revert CONFIG_GENKSYMS in pending for x86 (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.5723cc3450bc
+
+* Sat May 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.172a9d94339c.55]
+- Linux v6.15.0-0.rc6.172a9d94339c
+
+* Fri May 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.fee3e843b309.54]
+- Linux v6.15.0-0.rc6.fee3e843b309
+
+* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.088d13246a46.53]
+- Flip GENKSYMS for RHEL (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.088d13246a46
+
+* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.52]
+- Move MITIGATION_ITS to the x86 directory (Justin M. Forbes)
+- Set MITIGATION_ITS for Fedora (Justin M. Forbes)
+- Fedora: arm: Updates for QCom devices (Souradeep Chowdhury)
+
+* Wed May 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.51]
+- redhat/configs: Explicitly disable CONFIG_VIRTIO_MEM on powerpc in RHEL (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_AP_DEBUG config switch (Thomas Huth)
+- Linux v6.15.0-0.rc6.9f35e33144ae
+
+* Tue May 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.e9565e23cd89.50]
+- Set Fedora configs for 6.15 (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.e9565e23cd89
+
+* Mon May 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.49]
+- Shorten the uname for git snapshots (Justin M. Forbes)
+- Linux v6.15.0-0.rc6
+
+* Sun May 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.3ce9925823c7.48]
+- Linux v6.15.0-0.rc5.3ce9925823c7
+
+* Sat May 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.1a33418a69cc.47]
+- nvme: explicitly enable the nvme keyring (Maurizio Lombardi)
+- Linux v6.15.0-0.rc5.1a33418a69cc
+
+* Fri May 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.9c69f8884904.46]
+- Enable the gs_usb CAN bus driver in RHEL (Radu Rendec)
+- Stop disabling some modules needed to run on Azure (Pierre-Yves Chibon)
+- redhat/configs: enable ACPI_DEBUG on non-debug kernels (Mark Langsdorf)
+- specfile:  add with_toolsonly variable to build only tools packages (Clark Williams)
+- redhat/configs: Enable CONFIG_TYPEC_TBT_ALTMODE in RHEL (Desnes Nunes) [RHEL-78931]
+- Linux v6.15.0-0.rc5.9c69f8884904
+
+* Thu May 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.d76bb1ebb558.45]
+- Linux v6.15.0-0.rc5.d76bb1ebb558
+
+* Wed May 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.0d8d44db295c.44]
+- Linux v6.15.0-0.rc5.0d8d44db295c
+
+* Tue May 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.01f95500a162.43]
+- Linux v6.15.0-0.rc5.01f95500a162
+
+* Mon May 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.42]
+- Linux v6.15.0-0.rc5
+
+* Sun May 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.e8ab83e34bdc.41]
+- Linux v6.15.0-0.rc4.e8ab83e34bdc
+
+* Sat May 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.95d3481af6dc.40]
+- Turn on ACPI_DEBUG for Fedora (Justin M. Forbes)
+- redhat: fix kernel-rt-kvm package removal for Fedora (Thorsten Leemhuis)
+- Linux v6.15.0-0.rc4.95d3481af6dc
+
+* Fri May 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ebd297a2affa.39]
+- redhat/configs: aarch64: Enable Apple touchbar display driver for Fedora (Neal Gompa)
+- Linux v6.15.0-0.rc4.ebd297a2affa
+
+* Thu May 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.4f79eaa2ceac.38]
+- redhat: remove kernel-rt-kvm package (Clark Williams)
+- redhat: introduce modules-extra-matched meta package (Jan Stancek)
+- Fix up some Netfilter configs for Fedora (Justin M. Forbes)
+- Turn NF_CT_NETLINK_TIMEOUT for Fedora (Justin M. Forbes)
+- Turn on NF_CONNTRACK_TIMEOUT for Fedora (Justin M. Forbes)
+- Linux v6.15.0-0.rc4.4f79eaa2ceac
+
+* Wed Apr 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.b6ea1680d0ac.37]
+- redhat/configs: Adjust CONFIG_TUNE for s390x (Mete Durlu)
+- Linux v6.15.0-0.rc4.b6ea1680d0ac
+
+* Tue Apr 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ca91b9500108.36]
+- redhat/spec: fix selftests dependencies (Gregory Bell) [RHEL-88228]
+- redhat: add namespace selftests to kernel-modules-internal package (Joel Savitz) [RHEL-88635]
+- Turn off CONFIG_PCI_REALLOC_ENABLE_AUTO for Fedora (Justin M. Forbes)
+- Linux v6.15.0-0.rc4.ca91b9500108
+
+* Mon Apr 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.35]
+- Linux v6.15.0-0.rc4
+
+* Sun Apr 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.5bc1018675ec.34]
+- Linux v6.15.0-0.rc3.5bc1018675ec
+
+* Sat Apr 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.f1a3944c860b.33]
+- Linux v6.15.0-0.rc3.f1a3944c860b
+
+* Fri Apr 25 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.02ddfb981de8.32]
+- gitlab-ci: enable pipelines for rt-64k (Clark Williams)
+- rt-64k:  Enable building 64k page-size RT kernel (Clark Williams)
+- Linux v6.15.0-0.rc3.02ddfb981de8
+
+* Thu Apr 24 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a79be02bba5c.31]
+- redhat: drop Y issues from changelog (Jan Stancek)
+- redhat/configs: Update the CONFIG_KERNEL_IMAGE_BASE kernel config option (Thomas Huth)
+- redhat/configs: Remove the obsolete CONFIG_ZCRYPT_DEBUG switches (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_AP switch (Thomas Huth)
+- Linux v6.15.0-0.rc3.a79be02bba5c
+
+* Wed Apr 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.bc3372351d0c.30]
+- Linux v6.15.0-0.rc3.bc3372351d0c
+
+* Tue Apr 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a33b5a08cbbd.29]
+- fedora: updates for 6.15 (Peter Robinson)
+- redhat/configs: Disable CONFIG_COMPAT option on s390 (Mete Durlu) [RHEL-24047]
+- Linux v6.15.0-0.rc3.a33b5a08cbbd
+
+* Mon Apr 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.9d7a0577c9db.28]
+- Linux v6.15.0-0.rc3.9d7a0577c9db
+
+* Sun Apr 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.6fea5fabd332.27]
+- Linux v6.15.0-0.rc2.6fea5fabd332
+
+* Sat Apr 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.8560697b23dc.26]
+- uki: Add weak dependency on 'uki-direct' (Vitaly Kuznetsov)
+- redhat/kernel.spec: fix duplicate packaging of ynl headers (Jan Stancek)
+- Enable FunctionFS on aarch64 + x86 (Sam Day)
+- Linux v6.15.0-0.rc2.8560697b23dc
+
+* Fri Apr 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.fc96b232f8e7.25]
+- Turn on USB Gadget for Fedora x86 (Justin M. Forbes)
+- Linux v6.15.0-0.rc2.fc96b232f8e7
+
+* Thu Apr 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.cfb2e2c57aef.24]
+- redhat: enable drm panic screen with a QR code (Scott Weaver)
+- redhat: enable Rust code in ELN (Scott Weaver)
+- redhat: strip leading '(' in dist-get-buildreqs (Jan Stancek)
+- Linux v6.15.0-0.rc2.cfb2e2c57aef
+
+* Wed Apr 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.1a1d569a75f3.23]
+- Linux v6.15.0-0.rc2.1a1d569a75f3
+
+* Tue Apr 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.834a4a689699.22]
+- Linux v6.15.0-0.rc2.834a4a689699
+
+* Mon Apr 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.21]
+- Linux v6.15.0-0.rc2
+
+* Sun Apr 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.7cdabafc0012.20]
+- Linux v6.15.0-0.rc1.7cdabafc0012
+
+* Sat Apr 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3bde70a2c827.19]
+- Linux v6.15.0-0.rc1.3bde70a2c827
+
+* Fri Apr 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.900241a5cc15.18]
+- Linux v6.15.0-0.rc1.900241a5cc15
+
+* Thu Apr 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3b07108ada81.17]
+- Linux v6.15.0-0.rc1.3b07108ada81
+
+* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.a24588245776.16]
+- Fix up CONFIG_CRC_ITU_T mismatch (Scott Weaver)
+- Fix up CONFIG_CRC16 mismatch (Scott Weaver)
+- Linux v6.15.0-0.rc1.a24588245776
+
+* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.15]
+- redhat: remove kernel-ipaclones-internal package (Joe Lawrence)
+- redhat/kernel.spec.template: add net packetdrill selftests (Hangbin Liu)
+- redhat/kernel.spec.template: Build rtla with BPF sample collection (Tomas Glozar)
+
+* Tue Apr 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.14]
+- redhat/configs: automotive: Enable CONFIG_BOOTPARAM_HUNG_TASK_PANIC config (Dorinda Bassey)
+- samples/bpf: fix build (Gregory Bell)
+- redhat: create 'systemd-volatile-overlay' addon for UKI (Emanuele Giuseppe Esposito)
 
 * Mon Apr 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.13]
 - fedora: arm64: move some TI drivers to modular (Peter Robinson)

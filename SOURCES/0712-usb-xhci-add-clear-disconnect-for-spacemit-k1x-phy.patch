@@ -1,7 +1,7 @@
-From a6a85131c2de72e036d3c5015c9f0bc423add7e7 Mon Sep 17 00:00:00 2001
+From 40ac65fe82470cfe7c070f1a77795aa68f3c0a6d Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 22 May 2024 11:13:33 +0800
-Subject: [PATCH 0712/1205] usb: xhci: add clear disconnect for spacemit k1x
+Subject: [PATCH 0712/1209] usb: xhci: add clear disconnect for spacemit k1x
  phy
 
 Commit e7c4bdd11bae clear disconnect bit by calling notify_connect
@@ -17,7 +17,7 @@ Change-Id: I0b4a7447681691ec9faf7c1d05ac3bcc0a8e7fe7
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index b05f62648280..70749c1abc84 100644
+index b2e1e8c7bfe5..dfa7f606d325 100644
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
 @@ -578,6 +578,10 @@ static void xhci_disable_port(struct xhci_hcd *xhci, struct xhci_port *port)

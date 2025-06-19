@@ -1,7 +1,7 @@
-From cd1d56f73d4bf9cabf3d6cde21d5ec027724c5c4 Mon Sep 17 00:00:00 2001
+From fc6d5350678ab3f4067a5ec86cffdd1c973e1d7b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Feb 2024 11:10:29 +0800
-Subject: [PATCH 0423/1205] k1x: support mailbox driver
+Subject: [PATCH 0423/1209] k1x: support mailbox driver
 
 Change-Id: I19921107464db0f219473d24f45b845f34299439
 ---
@@ -44,7 +44,7 @@ index e79540a90689..d5b0e1136447 100644
  			compatible = "spacemit,pdma-1.0";
  			reg = <0x0 0xd4000000 0x0 0x4000>;
 diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 84fa24da8b0c..39eaa99d6235 100644
+index df1b9bb82f42..3c5e551a519f 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -338,4 +338,20 @@ config SPACEMIT_MAILBOX

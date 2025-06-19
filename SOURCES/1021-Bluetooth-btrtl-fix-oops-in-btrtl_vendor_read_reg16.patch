@@ -1,7 +1,7 @@
-From ad8084520fce7c9984917da09458f8f60e9110de Mon Sep 17 00:00:00 2001
+From a1f9ede5350d41eba6bbbe5879aff003acca16fb Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 18 Oct 2024 17:50:53 +0800
-Subject: [PATCH 1021/1205] Bluetooth: btrtl: fix oops in
+Subject: [PATCH 1021/1209] Bluetooth: btrtl: fix oops in
  btrtl_vendor_read_reg16()
 
 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
@@ -43,7 +43,7 @@ Change-Id: Iaf296ffbd6623191356c46a420a358233723e728
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index d3eba0d4a57d..fdadd2eec90b 100644
+index 7838c89e529e..e0c7ee000d01 100644
 --- a/drivers/bluetooth/btrtl.c
 +++ b/drivers/bluetooth/btrtl.c
 @@ -419,7 +419,7 @@ static int btrtl_vendor_read_reg16(struct hci_dev *hdev,

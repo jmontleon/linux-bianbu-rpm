@@ -1,7 +1,7 @@
-From 5057bfbf86d4a86a404155fc2bf956ecf16a9617 Mon Sep 17 00:00:00 2001
+From aa5066b2c262cab7fa81e2abc3344e845ff14b6e Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 31 Aug 2024 12:46:41 +0800
-Subject: [PATCH 0970/1205] k1:cpufreq: delete the boost related node for k1
+Subject: [PATCH 0970/1209] k1:cpufreq: delete the boost related node for k1
 
 Change-Id: I4ed3d9517d8769f57c49c02187f5a8632775fc3c
 ---
@@ -32,10 +32,10 @@ index d6f96fb64001..2c04c05840c2 100644
  	.target_index = set_target,
  	.get = cpufreq_generic_get,
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 3841c9da6cac..ad4f0fa8306f 100644
+index f45ded62b0e0..02770eb58999 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
-@@ -2905,11 +2905,31 @@ static int create_boost_sysfs_file(void)
+@@ -2929,11 +2929,31 @@ static int create_boost_sysfs_file(void)
  	return ret;
  }
  
@@ -68,7 +68,7 @@ index 3841c9da6cac..ad4f0fa8306f 100644
  bool cpufreq_boost_enabled(void)
  {
 diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
-index c03a91502f84..47b44ee32232 100644
+index 35de513af6c9..f71c1e2a1113 100644
 --- a/drivers/cpufreq/freq_table.c
 +++ b/drivers/cpufreq/freq_table.c
 @@ -56,7 +56,9 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,

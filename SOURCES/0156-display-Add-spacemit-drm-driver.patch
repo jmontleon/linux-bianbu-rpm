@@ -1,7 +1,7 @@
-From 78c49d0c86dc428b0757f590eb5a2798ad175756 Mon Sep 17 00:00:00 2001
+From 29bfb0db1cf3ee689c6618fc85e8308b96ae435a Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 17 Nov 2023 09:42:35 +0800
-Subject: [PATCH 0156/1205] display: Add spacemit drm driver
+Subject: [PATCH 0156/1209] display: Add spacemit drm driver
 
 Change-Id: I831e1fb0eec8448b84a8e873a6a517c5f39c3608
 ---
@@ -425,7 +425,7 @@ index 39aca611c0b5..07cd6ac76650 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 2cba2b6ebe1c..c4fddee6feaa 100644
+index f01925ed8176..53852a53c1ff 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -460,6 +460,8 @@ source "drivers/gpu/drm/sprd/Kconfig"

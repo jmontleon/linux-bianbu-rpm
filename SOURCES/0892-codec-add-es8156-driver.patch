@@ -1,7 +1,7 @@
-From f328777a95207439aea8b58feb18bb0ecdefabb7 Mon Sep 17 00:00:00 2001
+From 3e334c4e7ec39e9ae6d2266ab4b648fedd093ec3 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:24:02 +0800
-Subject: [PATCH 0892/1205] codec: add es8156 driver
+Subject: [PATCH 0892/1209] codec: add es8156 driver
 
 Change-Id: Iad0aa2b7ff304d10ca72e4e6ebfa588d834887dd
 Signed-off-by: xudong <dong.xu@spacemit.com>
@@ -28,7 +28,7 @@ index 315e95b8f78f..5d3d023daaee 100644
  CONFIG_SND_SIMPLE_CARD=y
  CONFIG_UHID=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0c57ff91a7a3..641408b0006d 100644
+index 1c0ef0b41c56..3621cb671114 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -114,6 +114,7 @@ config SND_SOC_ALL_CODECS
@@ -39,7 +39,7 @@ index 0c57ff91a7a3..641408b0006d 100644
  	imply SND_SOC_ES8316
  	imply SND_SOC_ES8323
  	imply SND_SOC_ES8326
-@@ -1175,6 +1176,10 @@ config SND_SOC_ES83XX_DSM_COMMON
+@@ -1174,6 +1175,10 @@ config SND_SOC_ES83XX_DSM_COMMON
  	depends on ACPI
  	tristate
  

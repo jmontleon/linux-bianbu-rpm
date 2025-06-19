@@ -1,7 +1,7 @@
-From 820b19692a210d760dcfaf649e11fdac00a4f8e9 Mon Sep 17 00:00:00 2001
+From ff83425c1e29f18159cf4e0547c8fd6bcfaa0fbf Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 7 Aug 2024 20:51:15 +0800
-Subject: [PATCH 0895/1205] k1:pm:rproc: put the de-assert of rproc's clock
+Subject: [PATCH 0895/1209] k1:pm:rproc: put the de-assert of rproc's clock
  into wake callback function
 
 between prepare_late and syscore_ops system calls, the system sleep process may

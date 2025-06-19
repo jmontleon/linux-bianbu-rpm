@@ -1,7 +1,7 @@
-From ef317c11c58f6abbf020fcefa4ed9c2d16fbfc96 Mon Sep 17 00:00:00 2001
+From c7d7cfbe38adc5f3256224394c1024cc73be0ae8 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Tue, 18 Apr 2023 11:18:33 +0800
-Subject: [PATCH 0675/1205] do_trap_insn_illegal: bind ai cores when use ai
+Subject: [PATCH 0675/1209] do_trap_insn_illegal: bind ai cores when use ai
  instruction
 
 Change-Id: Ib551054242131f58699015f28fa30ee976fcbc0f
@@ -85,7 +85,7 @@ index 2054f6c4b0ae..3954cdc11350 100644
   * riscv_isa_extension_base() - Get base extension word
   *
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 8ff8e8b36524..d823c9fcb107 100644
+index 9c83848797a7..290e7a8a43c9 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
 @@ -167,10 +167,29 @@ DO_ERROR_INFO(do_trap_insn_misaligned,

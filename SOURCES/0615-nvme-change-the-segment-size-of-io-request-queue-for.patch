@@ -1,7 +1,7 @@
-From f79aec29a9176ddcfd836590b361e2d25be01e57 Mon Sep 17 00:00:00 2001
+From 95dd3f582d397947be32b25749251d3c1716a33c Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
-Subject: [PATCH 0615/1205] nvme: change the segment size of io request queue
+Subject: [PATCH 0615/1209] nvme: change the segment size of io request queue
  for nvme on k1
 
   Because the swiotlb buffer size is 512k, for nvme ssd devices,
@@ -9,20 +9,21 @@ Subject: [PATCH 0615/1205] nvme: change the segment size of io request queue
 
 Change-Id: I7b02572742dd5b9ff26de6e469dce71c20741aae
 ---
- drivers/nvme/host/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/nvme/host/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index cc23035148b4..021f8f355b69 100644
+index 93a8119ad5ca..24b6143dc707 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
-@@ -2201,6 +2201,9 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
- 	nvme_set_chunk_sectors(ns, id, &lim);
- 	if (!nvme_update_disk_info(ns, id, &lim))
- 		capacity = 0;
+@@ -2225,6 +2225,10 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
+ 		goto out;
+ 	}
+ 
 +#if defined(CONFIG_SOC_SPACEMIT_K1X)
 +	blk_queue_max_segment_size(ns->disk->queue, 0x80000);
 +#endif
++
  	nvme_config_discard(ns, &lim);
  	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
  	    ns->head->ids.csi == NVME_CSI_ZNS)

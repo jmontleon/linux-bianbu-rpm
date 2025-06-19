@@ -1,7 +1,7 @@
-From d1686ea0c7454f73856af850230a94f63b77ba0f Mon Sep 17 00:00:00 2001
+From a30391add47af817db9d619c76fec714a25e57e4 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Mon, 7 Apr 2025 19:34:18 -0400
-Subject: [PATCH 1206/1206] 6.15 fixes
+Subject: [PATCH 1206/1209] 6.15 fixes
 
 ---
  drivers/cpufreq/cpufreq.c                                   | 4 ++++
@@ -27,10 +27,10 @@ Subject: [PATCH 1206/1206] 6.15 fixes
  20 files changed, 29 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 7f73eafb8fd1..8f1f42cb2419 100644
+index 8f586b970fcd..236a5f13c9b3 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
-@@ -2923,10 +2923,14 @@ void remove_boost_sysfs_file(void)
+@@ -2947,10 +2947,14 @@ void remove_boost_sysfs_file(void)
  
  void remove_policy_boost_sysfs_file(struct cpufreq_policy *policy)
  {

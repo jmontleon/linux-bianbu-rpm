@@ -1,5 +1,300 @@
-* Mon Apr 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.14]
-- apply -Wno-error=unterminated-string-initialization temporarily (Thorsten Leemhuis)
+* Thu Jun 19 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.3-0]
+- ACPICA: Refuse to evaluate a method if arguments are missing (Rafael J. Wysocki)
+- Linux v6.15.3
+Resolves: 
+
+* Fri Jun 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
+- wifi: ath12k: support MLO as well if single_chip_mlo_support flag is set (Baochen Qiang)
+- wifi: ath12k: use fw_features only when it is valid (Baochen Qiang)
+- wifi: ath12k: introduce ath12k_fw_feature_supported() (Baochen Qiang)
+- aarch64: Switch TI_SCI_CLK and TI_SCI_PM_DOMAINS symbols to built-in (Peter Robinson)
+- redhat/configs: fedora: set some qcom clk, icc, and pinctrl drivers to built in (Brian Masney)
+Resolves: 
+
+* Tue Jun 10 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
+- Revert "drm/amd/display: more liberal vmin/vmax update for freesync" (Justin M. Forbes)
+- Linux v6.15.2
+Resolves: 
+
+* Wed Jun 04 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.1-0]
+- arm64: dts: rockchip: Drop assigned-clock* from cpu nodes on rk3588 (Diederik de Haas)
+- arm64: dts: rockchip: Improve LED config for NanoPi R5S (Diederik de Haas)
+- arm64: dts: rockchip: Move rk3568 PCIe3 MSI to use GIC ITS (Chukun Pan)
+- arm64: dts: rockchip: Update eMMC for NanoPi R5 series (Peter Robinson)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-rock3c (Peter Robinson)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-quartz64-b (Diederik de Haas)
+- arm64: dts: rockchip: Add phy-supply to gmac0 on NanoPi R5S (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3588-rock-5b (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3399-rockpro64 (Diederik de Haas)
+- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3328-rock64 (Diederik de Haas)
+- arm64: dts: rockchip: Move SHMEM memory to reserved memory on rk3588 (Chukun Pan)
+- arm64: dts: rockchip: Add gmac phy reset GPIO to QNAP TS433 (Uwe Kleine-König)
+- arm64: dts: rockchip: Correct gmac phy address on QNAP TS433 (Uwe Kleine-König)
+- Reset build id for fedora-srpm script (Justin M. Forbes)
+- redhat/configs: Add configs for new ov02c10 and ov02e10 drivers (Hans de Goede)
+- media: i2c: Add Omnivision OV02C10 sensor driver (Heimir Thor Sverrisson)
+- media: i2c: ov02e10: add OV02E10 image sensor driver (Jingjing Xiong)
+- platform/x86: int3472: Debug log when remapping pins (Hans de Goede)
+- platform/x86: int3472: Add handshake pin support (Hans de Goede)
+- platform/x86: int3472: Prepare for registering more than 1 GPIO regulator (Hans de Goede)
+- platform/x86: int3472: Avoid GPIO regulator spikes (Hans de Goede)
+- platform/x86: int3472: Make regulator supply name configurable (Hans de Goede)
+- platform/x86: int3472: Rework AVDD second sensor quirk handling (Hans de Goede)
+- platform/x86: int3472: Drop unused gpio field from struct int3472_gpio_regulator (Hans de Goede)
+- platform/x86: int3472: Stop setting a supply-name for GPIO regulators (Hans de Goede)
+- platform/x86: int3472: Add skl_int3472_register_clock() helper (Hans de Goede)
+- powerpc: Fix struct termio related ioctl macros (Madhavan Srinivasan)
+- Initial setup for stable Fedora releases (Justin M. Forbes)
+- Reset RHEL_RELEASE for the 6.16 cycle (Justin M. Forbes)
+- fedora: add 'fedora' SBAT suffix for UKI addons (Li Tian)
+- redhat: add downstream SBAT for UKI addons (Emanuele Giuseppe Esposito)
+- uki_addons: provide custom SBAT as input parameter (Emanuele Giuseppe Esposito)
+- uki_addons: remove completely sbat/sbat.conf (Emanuele Giuseppe Esposito)
+- Linux v6.15.1
+Resolves: 
+
+* Mon May 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-60]
+- Consolidate configs to common for 6.15 (Justin M. Forbes)
+- Linux v6.15.0
+Resolves: 
+
+* Thu May 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.d608703fcdd9.59]
+- Linux v6.15.0-0.rc7.d608703fcdd9
+Resolves: 
+
+* Wed May 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.4a95bc121ccd.58]
+- redhat/configs: automotive: enable MHI_BUS_EP (Eric Chanudet)
+- Fix PHYSICAL_ALIGN for x86 Fedora (Justin M. Forbes)
+- Switch ZSWAP_ZPOOL_DEFAULT to ZSMALLOC as ZBUD has been removed (Justin M. Forbes)
+- redhat: configs: rhel: Enable CX231XX drivers (Kate Hsuan)
+- configs: add redhat/configs/common/generic/CONFIG_OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
+- redhat: make ENABLE_WERROR also enable OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
+- redhat/configs: Enable CONFIG_X86_POSTED_MSI (Jerry Snitselaar)
+- Linux v6.15.0-0.rc7.4a95bc121ccd
+Resolves: RHEL-85301
+
+* Mon May 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.57]
+- redhat/configs: remove CRC16 config files (Scott Weaver)
+- Linux v6.15.0-0.rc7
+Resolves: 
+
+* Sun May 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.5723cc3450bc.56]
+- Revert CONFIG_GENKSYMS in pending for x86 (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.5723cc3450bc
+Resolves: 
+
+* Sat May 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.172a9d94339c.55]
+- Linux v6.15.0-0.rc6.172a9d94339c
+Resolves: 
+
+* Fri May 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.fee3e843b309.54]
+- Linux v6.15.0-0.rc6.fee3e843b309
+Resolves: 
+
+* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.088d13246a46.53]
+- Flip GENKSYMS for RHEL (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.088d13246a46
+Resolves: 
+
+* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.52]
+- Move MITIGATION_ITS to the x86 directory (Justin M. Forbes)
+- Set MITIGATION_ITS for Fedora (Justin M. Forbes)
+- Fedora: arm: Updates for QCom devices (Souradeep Chowdhury)
+Resolves: 
+
+* Wed May 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.51]
+- redhat/configs: Explicitly disable CONFIG_VIRTIO_MEM on powerpc in RHEL (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_AP_DEBUG config switch (Thomas Huth)
+- Linux v6.15.0-0.rc6.9f35e33144ae
+Resolves: 
+
+* Tue May 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.e9565e23cd89.50]
+- Set Fedora configs for 6.15 (Justin M. Forbes)
+- Linux v6.15.0-0.rc6.e9565e23cd89
+Resolves: 
+
+* Mon May 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.49]
+- Shorten the uname for git snapshots (Justin M. Forbes)
+- Linux v6.15.0-0.rc6
+Resolves: 
+
+* Sun May 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.3ce9925823c7.48]
+- Linux v6.15.0-0.rc5.3ce9925823c7
+Resolves: 
+
+* Sat May 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.1a33418a69cc.47]
+- nvme: explicitly enable the nvme keyring (Maurizio Lombardi)
+- Linux v6.15.0-0.rc5.1a33418a69cc
+Resolves: 
+
+* Fri May 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.9c69f8884904.46]
+- Enable the gs_usb CAN bus driver in RHEL (Radu Rendec)
+- Stop disabling some modules needed to run on Azure (Pierre-Yves Chibon)
+- redhat/configs: enable ACPI_DEBUG on non-debug kernels (Mark Langsdorf)
+- specfile:  add with_toolsonly variable to build only tools packages (Clark Williams)
+- redhat/configs: Enable CONFIG_TYPEC_TBT_ALTMODE in RHEL (Desnes Nunes) [RHEL-78931]
+- Linux v6.15.0-0.rc5.9c69f8884904
+Resolves: RHEL-78931
+
+* Thu May 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.d76bb1ebb558.45]
+- Linux v6.15.0-0.rc5.d76bb1ebb558
+Resolves: 
+
+* Wed May 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.0d8d44db295c.44]
+- Linux v6.15.0-0.rc5.0d8d44db295c
+Resolves: 
+
+* Tue May 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.01f95500a162.43]
+- Linux v6.15.0-0.rc5.01f95500a162
+Resolves: 
+
+* Mon May 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.42]
+- Linux v6.15.0-0.rc5
+Resolves: 
+
+* Sun May 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.e8ab83e34bdc.41]
+- Linux v6.15.0-0.rc4.e8ab83e34bdc
+Resolves: 
+
+* Sat May 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.95d3481af6dc.40]
+- Turn on ACPI_DEBUG for Fedora (Justin M. Forbes)
+- redhat: fix kernel-rt-kvm package removal for Fedora (Thorsten Leemhuis)
+- Linux v6.15.0-0.rc4.95d3481af6dc
+Resolves: 
+
+* Fri May 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ebd297a2affa.39]
+- redhat/configs: aarch64: Enable Apple touchbar display driver for Fedora (Neal Gompa)
+- Linux v6.15.0-0.rc4.ebd297a2affa
+Resolves: 
+
+* Thu May 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.4f79eaa2ceac.38]
+- redhat: remove kernel-rt-kvm package (Clark Williams)
+- redhat: introduce modules-extra-matched meta package (Jan Stancek)
+- Fix up some Netfilter configs for Fedora (Justin M. Forbes)
+- Turn NF_CT_NETLINK_TIMEOUT for Fedora (Justin M. Forbes)
+- Turn on NF_CONNTRACK_TIMEOUT for Fedora (Justin M. Forbes)
+- Linux v6.15.0-0.rc4.4f79eaa2ceac
+Resolves: 
+
+* Wed Apr 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.b6ea1680d0ac.37]
+- redhat/configs: Adjust CONFIG_TUNE for s390x (Mete Durlu)
+- Linux v6.15.0-0.rc4.b6ea1680d0ac
+Resolves: 
+
+* Tue Apr 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ca91b9500108.36]
+- redhat/spec: fix selftests dependencies (Gregory Bell) [RHEL-88228]
+- redhat: add namespace selftests to kernel-modules-internal package (Joel Savitz) [RHEL-88635]
+- Turn off CONFIG_PCI_REALLOC_ENABLE_AUTO for Fedora (Justin M. Forbes)
+- Linux v6.15.0-0.rc4.ca91b9500108
+Resolves: RHEL-88228, RHEL-88635
+
+* Mon Apr 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.35]
+- Linux v6.15.0-0.rc4
+Resolves: 
+
+* Sun Apr 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.5bc1018675ec.34]
+- Linux v6.15.0-0.rc3.5bc1018675ec
+Resolves: 
+
+* Sat Apr 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.f1a3944c860b.33]
+- Linux v6.15.0-0.rc3.f1a3944c860b
+Resolves: 
+
+* Fri Apr 25 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.02ddfb981de8.32]
+- gitlab-ci: enable pipelines for rt-64k (Clark Williams)
+- rt-64k:  Enable building 64k page-size RT kernel (Clark Williams)
+- Linux v6.15.0-0.rc3.02ddfb981de8
+Resolves: 
+
+* Thu Apr 24 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a79be02bba5c.31]
+- redhat: drop Y issues from changelog (Jan Stancek)
+- redhat/configs: Update the CONFIG_KERNEL_IMAGE_BASE kernel config option (Thomas Huth)
+- redhat/configs: Remove the obsolete CONFIG_ZCRYPT_DEBUG switches (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_AP switch (Thomas Huth)
+- Linux v6.15.0-0.rc3.a79be02bba5c
+Resolves: 
+
+* Wed Apr 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.bc3372351d0c.30]
+- Linux v6.15.0-0.rc3.bc3372351d0c
+Resolves: 
+
+* Tue Apr 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a33b5a08cbbd.29]
+- fedora: updates for 6.15 (Peter Robinson)
+- redhat/configs: Disable CONFIG_COMPAT option on s390 (Mete Durlu) [RHEL-24047]
+- Linux v6.15.0-0.rc3.a33b5a08cbbd
+Resolves: RHEL-24047
+
+* Mon Apr 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.9d7a0577c9db.28]
+- Linux v6.15.0-0.rc3.9d7a0577c9db
+Resolves: 
+
+* Sun Apr 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.6fea5fabd332.27]
+- Linux v6.15.0-0.rc2.6fea5fabd332
+Resolves: 
+
+* Sat Apr 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.8560697b23dc.26]
+- uki: Add weak dependency on 'uki-direct' (Vitaly Kuznetsov)
+- redhat/kernel.spec: fix duplicate packaging of ynl headers (Jan Stancek)
+- Enable FunctionFS on aarch64 + x86 (Sam Day)
+- Linux v6.15.0-0.rc2.8560697b23dc
+Resolves: 
+
+* Fri Apr 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.fc96b232f8e7.25]
+- Turn on USB Gadget for Fedora x86 (Justin M. Forbes)
+- Linux v6.15.0-0.rc2.fc96b232f8e7
+Resolves: 
+
+* Thu Apr 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.cfb2e2c57aef.24]
+- redhat: enable drm panic screen with a QR code (Scott Weaver)
+- redhat: enable Rust code in ELN (Scott Weaver)
+- redhat: strip leading '(' in dist-get-buildreqs (Jan Stancek)
+- Linux v6.15.0-0.rc2.cfb2e2c57aef
+Resolves: 
+
+* Wed Apr 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.1a1d569a75f3.23]
+- Linux v6.15.0-0.rc2.1a1d569a75f3
+Resolves: 
+
+* Tue Apr 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.834a4a689699.22]
+- Linux v6.15.0-0.rc2.834a4a689699
+Resolves: 
+
+* Mon Apr 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.21]
+- Linux v6.15.0-0.rc2
+Resolves: 
+
+* Sun Apr 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.7cdabafc0012.20]
+- Linux v6.15.0-0.rc1.7cdabafc0012
+Resolves: 
+
+* Sat Apr 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3bde70a2c827.19]
+- Linux v6.15.0-0.rc1.3bde70a2c827
+Resolves: 
+
+* Fri Apr 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.900241a5cc15.18]
+- Linux v6.15.0-0.rc1.900241a5cc15
+Resolves: 
+
+* Thu Apr 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3b07108ada81.17]
+- Linux v6.15.0-0.rc1.3b07108ada81
+Resolves: 
+
+* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.a24588245776.16]
+- Fix up CONFIG_CRC_ITU_T mismatch (Scott Weaver)
+- Fix up CONFIG_CRC16 mismatch (Scott Weaver)
+- Linux v6.15.0-0.rc1.a24588245776
+Resolves: 
+
+* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.15]
+- redhat: remove kernel-ipaclones-internal package (Joe Lawrence)
+- redhat/kernel.spec.template: add net packetdrill selftests (Hangbin Liu)
+- redhat/kernel.spec.template: Build rtla with BPF sample collection (Tomas Glozar)
+Resolves: 
+
+* Tue Apr 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.14]
+- redhat/configs: automotive: Enable CONFIG_BOOTPARAM_HUNG_TASK_PANIC config (Dorinda Bassey)
+- samples/bpf: fix build (Gregory Bell)
+- redhat: create 'systemd-volatile-overlay' addon for UKI (Emanuele Giuseppe Esposito)
 Resolves: 
 
 * Mon Apr 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.13]

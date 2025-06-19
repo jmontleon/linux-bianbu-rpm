@@ -1,7 +1,7 @@
-From e50ae435c29283ed200abbb42c33d86a4a5be2d0 Mon Sep 17 00:00:00 2001
+From f3a846a71a852e92f977eeabd35b47efc3a3efda Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 20 Dec 2023 20:35:43 +0800
-Subject: [PATCH 0204/1205] qspi: fix the bus_num for k1x qspi controller
+Subject: [PATCH 0204/1209] qspi: fix the bus_num for k1x qspi controller
 
   When the bus_num of qspi is the same as the bus_num of spi0,
   If the spi0 driver has been registered,
