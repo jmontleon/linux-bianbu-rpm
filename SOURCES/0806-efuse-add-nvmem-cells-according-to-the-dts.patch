@@ -1,4 +1,4 @@
-From c5f7f19ebeeb665211efe6ab9a43a62f5a70311a Mon Sep 17 00:00:00 2001
+From 8b6a36951c38e7b1e0855d34392b0faf2c1ab4ac Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 6 Jul 2024 13:27:41 +0800
 Subject: [PATCH 0806/1209] efuse: add nvmem cells according to the dts
@@ -21,5 +21,5 @@ index 782dbf02a8ff..282ecc8977c3 100644
  	nvmem = devm_nvmem_register(dev, econfig);
  	efuse->nvmem = nvmem;
 -- 
-2.49.0
+2.50.0
 

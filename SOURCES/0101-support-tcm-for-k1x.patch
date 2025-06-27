@@ -1,4 +1,4 @@
-From 3bed9b3dff52904f28b0934cbe503251d170369d Mon Sep 17 00:00:00 2001
+From 6e66269c6181e3fa6dd764adcc3f963eeaf54211 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 11 Sep 2023 16:15:53 +0800
 Subject: [PATCH 0101/1209] support tcm for k1x
@@ -77,5 +77,5 @@ index 7cd8674a527a..e7e0d321806f 100644
 -obj-y				+= tcm.o
 +obj-$(CONFIG_SPACEMIT_TCM)	+= tcm.o
 -- 
-2.49.0
+2.50.0
 

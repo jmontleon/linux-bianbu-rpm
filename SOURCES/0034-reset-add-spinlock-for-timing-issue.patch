@@ -1,4 +1,4 @@
-From 4ea22b364138bc39ef263c95a909a7404666aa9c Mon Sep 17 00:00:00 2001
+From 9a574e81cf1154451ddc85d11a879b7a0063ae53 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 26 May 2023 14:56:08 +0800
 Subject: [PATCH 0034/1209] reset: add spinlock for timing issue
@@ -84,5 +84,5 @@ index 38957c64a168..354690dd4715 100755
      reset->gsr_signals = k1pro_reset_data.gsr_signals;
      reset->rcdev.owner     = THIS_MODULE;
 -- 
-2.49.0
+2.50.0
 

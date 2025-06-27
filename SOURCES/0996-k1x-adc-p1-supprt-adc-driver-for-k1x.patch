@@ -1,4 +1,4 @@
-From 461d9d1c89458c3ec5d9e5d143ed2914d8dda3d0 Mon Sep 17 00:00:00 2001
+From 0e20adce42f04298ed64fdae16b8cc85ea87ef75 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 20 Sep 2024 10:10:13 +0800
 Subject: [PATCH 0996/1209] k1x:adc:p1: supprt adc driver for k1x
@@ -220,10 +220,10 @@ index 559e39fda6c8..f90e68fcc9d0 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 6529df1a498c..9dfe564c93c7 100644
+index b7aac84e5224..e636ea820c18 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
-@@ -1740,4 +1740,10 @@ config XILINX_AMS
+@@ -1742,4 +1742,10 @@ config XILINX_AMS
  	  The driver can also be built as a module. If so, the module will be called
  	  xilinx-ams.
  
@@ -651,5 +651,5 @@ index 857963217853..ec7de4509768 100644
 +
  #endif /* __SPM8821_H__ */
 -- 
-2.49.0
+2.50.0
 

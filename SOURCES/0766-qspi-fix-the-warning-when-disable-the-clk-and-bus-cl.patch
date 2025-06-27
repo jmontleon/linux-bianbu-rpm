@@ -1,4 +1,4 @@
-From 7347decc63ac2cedeabc6094b0819470868c65b2 Mon Sep 17 00:00:00 2001
+From 6c4da31864a9a074be2b539a8bee6381ae078954 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 25 Jun 2024 20:24:19 +0800
 Subject: [PATCH 0766/1209] qspi: fix the warning when disable the clk and bus
@@ -27,5 +27,5 @@ index c5a6d46597c0..88a73be7d29e 100644
  	if (ret) {
  		dev_err(qspi->dev, "fail to set clk, ret:%d\n", ret);
 -- 
-2.49.0
+2.50.0
 

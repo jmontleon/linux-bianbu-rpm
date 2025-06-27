@@ -1,4 +1,4 @@
-From 91e818b074cbcc2c21813bbc1ee5c49897dd8962 Mon Sep 17 00:00:00 2001
+From 1312dbca43604710dcd5f1a959a5a145568a5542 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Wed, 23 Oct 2024 16:10:39 +0800
 Subject: [PATCH 1026/1209] camera:Fix dma_buf warning with enabled lockdep
@@ -63,5 +63,5 @@ index 4a360d72a3c1..a4b199b42942 100644
  		ret = -EPERM;
  		goto fail_detach;
 -- 
-2.49.0
+2.50.0
 

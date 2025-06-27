@@ -1,4 +1,4 @@
-From f2cf890a06dca1144262030fc9e81b6963fd5f82 Mon Sep 17 00:00:00 2001
+From 72faa1c30de19a208fe74252b15f932c2c82ccbb Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 18 Apr 2024 19:52:01 +0800
 Subject: [PATCH 0600/1209] display: Fix the issue caused by alloc pages failed
@@ -32,5 +32,5 @@ index 9b5772a05556..eb48f233ec07 100644
  	spacemit_obj->vmap_cnt = 0;
  	mutex_init(&spacemit_obj->vmap_lock);
 -- 
-2.49.0
+2.50.0
 
