@@ -1,7 +1,7 @@
-From 0cf8bff90f7a95c53f41cfed65f92c648924a6f9 Mon Sep 17 00:00:00 2001
+From 7dabe280f7cafd76d7ce4379ac10bc8ed4f3d013 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 3 Jan 2024 19:47:54 +0800
-Subject: [PATCH 0303/1209] usb: f_tcm: support mutltiple cmds, enhance
+Subject: [PATCH 0303/1210] usb: f_tcm: support mutltiple cmds, enhance
  performance
 
 Change-Id: I9b323e182614482fecf0c0b719387d46d8c541dd
@@ -11,7 +11,7 @@ Change-Id: I9b323e182614482fecf0c0b719387d46d8c541dd
  2 files changed, 201 insertions(+), 235 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
-index 5a2e1237f85c..9bd86604c96a 100644
+index 6e8804f04baa..5ab8ebd001ee 100644
 --- a/drivers/usb/gadget/function/f_tcm.c
 +++ b/drivers/usb/gadget/function/f_tcm.c
 @@ -63,11 +63,10 @@ static void bot_status_complete(struct usb_ep *ep, struct usb_request *req)

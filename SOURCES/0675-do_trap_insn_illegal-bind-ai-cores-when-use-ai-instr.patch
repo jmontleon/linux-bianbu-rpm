@@ -1,7 +1,7 @@
-From 23a4b0d7f057b410f0c48e2c5b3b6ed7e8dddd6d Mon Sep 17 00:00:00 2001
+From d509f730266a42bc735412ca9917c3bfe6adf2e3 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Tue, 18 Apr 2023 11:18:33 +0800
-Subject: [PATCH 0675/1209] do_trap_insn_illegal: bind ai cores when use ai
+Subject: [PATCH 0675/1210] do_trap_insn_illegal: bind ai cores when use ai
  instruction
 
 Change-Id: Ib551054242131f58699015f28fa30ee976fcbc0f
@@ -31,10 +31,10 @@ index d358e5be3c4e..73705c1accbe 100644
  
  endmenu # "SoC selection"
 diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index 5f56eb9d114a..8d2a1a703746 100644
+index e27fe5b97b50..b203663d1735 100644
 --- a/arch/riscv/include/asm/processor.h
 +++ b/arch/riscv/include/asm/processor.h
-@@ -158,6 +158,7 @@ int riscv_of_parent_hartid(struct device_node *node, unsigned long *hartid);
+@@ -159,6 +159,7 @@ int riscv_of_parent_hartid(struct device_node *node, unsigned long *hartid);
  
  extern void riscv_fill_hwcap(void);
  extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);

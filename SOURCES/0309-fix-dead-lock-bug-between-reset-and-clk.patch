@@ -1,7 +1,7 @@
-From e5d6b424d91a64bc6ba70e8623b9659c58dfccca Mon Sep 17 00:00:00 2001
+From d6324441d343dfbba2e5d84e713ee40087be620d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jan 2024 04:55:16 +0800
-Subject: [PATCH 0309/1209] fix dead-lock bug between reset and clk
+Subject: [PATCH 0309/1210] fix dead-lock bug between reset and clk
 
 there is a global spinlock between reset and clk, if locked in reset,
 then print some debug information, maybe dead-lock when uart driver

@@ -1,7 +1,7 @@
-From ab7b5dadca74480a20cda8d19c6f43166a1e7ec3 Mon Sep 17 00:00:00 2001
+From 3e06962536c706c36219b8aeab5efbcabba78dfa Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=9D=8E=E5=88=A9=E5=86=9B?= <lijun.li@spacemit.com>
 Date: Fri, 25 Oct 2024 11:01:02 +0800
-Subject: [PATCH 1030/1209] "display: modify the initcall sequence of the hdmi
+Subject: [PATCH 1030/1210] "display: modify the initcall sequence of the hdmi
  driver to late_initcall, as the initialization process for suspend to disk is
  late_initcall_sync, need to ensure that the hdmi driver probe before suspend
  to disk.""

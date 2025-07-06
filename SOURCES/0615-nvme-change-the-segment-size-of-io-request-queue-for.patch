@@ -1,7 +1,7 @@
-From fd0890d71c4862f4291f45e7215727729d2a81d7 Mon Sep 17 00:00:00 2001
+From 2f9c773763f8e333dca48b7d7e8b10e558f71b40 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
-Subject: [PATCH 0615/1209] nvme: change the segment size of io request queue
+Subject: [PATCH 0615/1210] nvme: change the segment size of io request queue
  for nvme on k1
 
   Because the swiotlb buffer size is 512k, for nvme ssd devices,
@@ -9,17 +9,27 @@ Subject: [PATCH 0615/1209] nvme: change the segment size of io request queue
 
 Change-Id: I7b02572742dd5b9ff26de6e469dce71c20741aae
 ---
- drivers/nvme/host/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/nvme/host/core.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 93a8119ad5ca..24b6143dc707 100644
+index d253b8290111..42d3d57dce38 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
-@@ -2225,6 +2225,10 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
- 		goto out;
- 	}
+@@ -2209,6 +2209,20 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
+ 	if (!nvme_update_disk_info(ns, id, &lim))
+ 		capacity = 0;
  
++	/*
++	 * Validate the max atomic write size fits within the subsystem's
++	 * atomic write capabilities.
++	 */
++	if (lim.atomic_write_hw_max > ns->ctrl->subsys->atomic_bs) {
++		blk_mq_unfreeze_queue(ns->disk->queue, memflags);
++		ret = -ENXIO;
++		goto out;
++	}
++
 +#if defined(CONFIG_SOC_SPACEMIT_K1X)
 +	blk_queue_max_segment_size(ns->disk->queue, 0x80000);
 +#endif
