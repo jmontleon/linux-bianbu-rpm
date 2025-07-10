@@ -1,7 +1,7 @@
-From f4e3bf13aea2fe8c03cff5b96cf089e077e52b35 Mon Sep 17 00:00:00 2001
+From c630f7a1d40e3abf3940de58118e07705cc3fdd1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 21 Aug 2023 16:13:37 +0800
-Subject: [PATCH 0088/1210] k1x:multi-core: modify the configurations related
+Subject: [PATCH 0088/1211] k1x:multi-core: modify the configurations related
  to multi-core
 
 Change-Id: I49aded2456b15fcbb5e251ee9f2339c493c2eb50
@@ -62,7 +62,7 @@ index a6bd78539626..a93c66aa8f70 100644
  # CONFIG_IOMMU_SUPPORT is not set
  # CONFIG_DPAA2_CONSOLE is not set
 diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-index bb69c108c2ef..f968e5186c8b 100644
+index 3c1f5d36bc6a..f0110eb5c577 100644
 --- a/arch/riscv/kernel/cpu_ops_sbi.c
 +++ b/arch/riscv/kernel/cpu_ops_sbi.c
 @@ -100,7 +100,6 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)

@@ -1,7 +1,7 @@
-From 19b14f4289e81973c56be10b5106242fac5c8c8c Mon Sep 17 00:00:00 2001
+From 94f2ad3ff7d10f8938da492cf55f739655853b54 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 6 Aug 2024 10:13:51 +0800
-Subject: [PATCH 0856/1210] k1:hotplug: close the SCMI configuration
+Subject: [PATCH 0856/1211] k1:hotplug: close the SCMI configuration
 
 Change-Id: I6015fcabf3181e0901a7fb4ae224dbd98013b3f8
 ---
@@ -30,7 +30,7 @@ index e59775825179..455c4b260578 100644
  # CONFIG_RESET_K1MATRIX_SPACEMIT is not set
  # CONFIG_PHY_MVEBU_A3700_UTMI is not set
 diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-index f968e5186c8b..f649fcf44960 100644
+index f0110eb5c577..9d1484da541e 100644
 --- a/arch/riscv/kernel/cpu_ops_sbi.c
 +++ b/arch/riscv/kernel/cpu_ops_sbi.c
 @@ -94,7 +94,7 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)

@@ -1,7 +1,7 @@
-From 85dc413b61babfc4e019ebcb5209a62bfec2c1c0 Mon Sep 17 00:00:00 2001
+From 9aa139eb282790b89a2a9091933e482a382e316c Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 30 May 2023 11:44:19 +0800
-Subject: [PATCH 0035/1210] mmc: modify reset card only once
+Subject: [PATCH 0035/1211] mmc: modify reset card only once
 
 reset control will cause system halt, so just deassert during
 probe() until fix bug about reset control

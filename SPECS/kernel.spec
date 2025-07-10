@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.15.5
-%define specversion 6.15.5
+%define specrpmversion 6.15.6
+%define specversion 6.15.6
 %define patchversion 6.15
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.15.5
+%define tarfile_release 6.15.6
 # This is needed to do merge window version magic
 %define patchlevel 15
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.15.5
+%define kabiversion 6.15.6
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -2328,6 +2328,7 @@ Patch11207: 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
 Patch11208: 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
 Patch11209: 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 Patch11210: 1210-RTL8852-6.15-fixes.patch
+Patch11211: 1211-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 
 
 
@@ -4375,6 +4376,7 @@ ApplyOptionalPatch 1207-Add-distinct-compatibles-for-boards-currently-used-f.pat
 ApplyOptionalPatch 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
 ApplyOptionalPatch 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
 ApplyOptionalPatch 1210-RTL8852-6.15-fixes.patch
+ApplyOptionalPatch 1211-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 
 
 
@@ -6701,6 +6703,11 @@ fi\
 #
 #
 %changelog
+* Thu Jul 10 2025 Augusto Caringi <acaringi@redhat.com> [6.15.6-0]
+- Turn on MITIGATION_TSA for RHEL configs (Augusto Caringi)
+- Turn on TSA Mitigation for Fedora (Justin M. Forbes)
+- Linux v6.15.6
+
 * Sun Jul 06 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.5-0]
 - io_uring: gate REQ_F_ISREG on !S_ANON_INODE as well (Jens Axboe)
 - Linux v6.15.5

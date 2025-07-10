@@ -1,7 +1,7 @@
-From 3a5ead9a52a29a00ae08410950da1b8e8a96258f Mon Sep 17 00:00:00 2001
+From 38b0834b76ffc263419bce1809013c2c5f17e01f Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:49:50 +0800
-Subject: [PATCH 0899/1210] ehci-k1x-ci: fix otg suspend resume and pm_runtime
+Subject: [PATCH 0899/1211] ehci-k1x-ci: fix otg suspend resume and pm_runtime
 
 If ehci is used with phy-k1x-ci-otg driver,
 1. clk/rst/phy would be handled in otg driver, we don't operate them.
