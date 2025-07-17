@@ -1,4 +1,4 @@
-From 062e43dcbd51e26994a086c67ed865c7afc05886 Mon Sep 17 00:00:00 2001
+From 189791b941eca899cbdf29d0d98b28d44b4356fa Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 3 Jul 2024 18:26:41 +0800
 Subject: [PATCH 0797/1211] crypto: reset and clock is shared between crypto
@@ -23,5 +23,5 @@ index 224f1fe62ebd..89f97994a819 100644
  		return PTR_ERR(ctrl->reset);
  	reset_control_deassert(ctrl->reset);
 -- 
-2.50.0
+2.50.1
 

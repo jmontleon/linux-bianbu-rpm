@@ -88,7 +88,7 @@ index dd844ac8d910..dab2b4892122 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 959b55a05d1b..60d048560446 100644
+index 29a19c24428d..81f2e34425d2 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -661,7 +661,7 @@ index bbf7029e224b..cf7faa970dd6 100644
  		dmi_decode_ipmi((const struct dmi_header *) dev->device_data);
  
 diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 3ba9d7e9a6c7..82300dc5fd49 100644
+index 6047c9600e03..bc6063090639 100644
 --- a/drivers/char/ipmi/ipmi_msghandler.c
 +++ b/drivers/char/ipmi/ipmi_msghandler.c
 @@ -35,6 +35,7 @@
@@ -672,7 +672,7 @@ index 3ba9d7e9a6c7..82300dc5fd49 100644
  #include <linux/delay.h>
  
  #define IPMI_DRIVER_VERSION "39.2"
-@@ -5508,8 +5509,21 @@ static int __init ipmi_init_msghandler_mod(void)
+@@ -5509,8 +5510,21 @@ static int __init ipmi_init_msghandler_mod(void)
  {
  	int rv;
  

@@ -1,4 +1,4 @@
-From c5f71f3f7d22f9deeec5436c3ea086c41ef750e2 Mon Sep 17 00:00:00 2001
+From da1d33ec393b30df7cd30b9c014b04d3791cc8ec Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:29:07 +0800
 Subject: [PATCH 0520/1211] phy-spacemit-k1x-combphy: don't assert when use
@@ -27,5 +27,5 @@ index b8a9581acd51..374c621dff79 100644
  	if (IS_ERR(priv->phy)) {
  		dev_err(dev, "failed to create combphy\n");
 -- 
-2.50.0
+2.50.1
 

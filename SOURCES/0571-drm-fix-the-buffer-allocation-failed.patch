@@ -1,4 +1,4 @@
-From 2767981e626bdd5463ea07a0b1d2fab279d1d059 Mon Sep 17 00:00:00 2001
+From aa8f8ef782c1fe3c6764d4a5e22f57856f2b72a7 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Apr 2024 14:24:13 +0800
 Subject: [PATCH 0571/1211] drm: fix the buffer allocation failed
@@ -32,5 +32,5 @@ index 95b7c89da715..9b5772a05556 100644
  		page = alloc_pages(gfp_flags, order);
  		if (!page)
 -- 
-2.50.0
+2.50.1
 

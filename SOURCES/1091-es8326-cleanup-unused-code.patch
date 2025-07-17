@@ -1,4 +1,4 @@
-From 7d6c1d00fdefd6910622774e467f0d918b69237e Mon Sep 17 00:00:00 2001
+From 16bc68f9931235a7595e35428744439d665c7c1f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Mon, 28 Oct 2024 09:16:08 +0800
 Subject: [PATCH 1091/1211] es8326: cleanup unused code
@@ -34,5 +34,5 @@ index 3f723a2479d8..c3139dd67509 100644
  		es8326->hp = 0;
  		regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x01);
 -- 
-2.50.0
+2.50.1
 

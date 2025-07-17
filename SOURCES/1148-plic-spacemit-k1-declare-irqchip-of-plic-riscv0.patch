@@ -1,4 +1,4 @@
-From 7a101807e26e0ee6be048b0e7f9313b9c4a96906 Mon Sep 17 00:00:00 2001
+From 81768bd3c3dbd13ec36d395ab5752d972b9f98b3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 2 Dec 2024 16:50:19 +0800
 Subject: [PATCH 1148/1211] plic: spacemit/k1: declare irqchip of 'plic,riscv0'
@@ -18,5 +18,5 @@ index b632031ee6a9..bc5c3bc34912 100644
  IRQCHIP_DECLARE(riscv, "allwinner,sun20i-d1-plic", plic_early_probe);
 +IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_early_probe); /* for legacy systems */
 -- 
-2.50.0
+2.50.1
 

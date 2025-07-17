@@ -1,4 +1,4 @@
-From 70f2494a51ab0736a4de60b732fa344f8754f58a Mon Sep 17 00:00:00 2001
+From 737ee9016fdbf06f688dece3f45266757bdc099d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 11 Jul 2024 19:16:03 +0800
 Subject: [PATCH 0811/1211] pinctrl: fix compile warning
@@ -24,5 +24,5 @@ index bdbcd3975379..553b2d627b00 100644
  	soc = of_device_get_match_data(&pdev->dev);
  	if (WARN_ON(!soc))
 -- 
-2.50.0
+2.50.1
 
