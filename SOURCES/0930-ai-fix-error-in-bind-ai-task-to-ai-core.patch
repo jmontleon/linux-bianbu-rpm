@@ -1,18 +1,18 @@
-From c2a59fd426ff9b8161bb919d1beca7ed9fc950e5 Mon Sep 17 00:00:00 2001
+From fa030ea92540c2e53d91936d1c346862d8f5525d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 16 Aug 2024 16:55:42 +0800
 Subject: [PATCH 0930/1211] ai: fix error in bind ai task to ai core
 
 Change-Id: Ic4d5ab9a55dea38e7cb15d093eb3a03c927d1694
 ---
- arch/riscv/kernel/traps.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ arch/riscv/kernel/traps.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 290e7a8a43c9..b27851101a3b 100644
+index fca1ac9dcf86..f5fdea68c759 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
-@@ -178,21 +178,28 @@ DO_ERROR_INFO(do_trap_insn_fault,
+@@ -181,20 +181,28 @@ DO_ERROR_INFO(do_trap_insn_fault,
  asmlinkage __visible __trap_section void do_trap_insn_illegal(struct pt_regs *regs)
  {
  	bool handled;
@@ -31,7 +31,7 @@ index 290e7a8a43c9..b27851101a3b 100644
  
  	if (user_mode(regs)) {
  		irqentry_enter_from_user_mode(regs);
- 
++
 +#ifdef CONFIG_BIND_THREAD_TO_AICORES
 +		/* check if trapped by ai instruction */
 +		__get_user(epc, (u32 __user *)regs->epc);

@@ -88,7 +88,7 @@ index dd844ac8d910..dab2b4892122 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 29a19c24428d..81f2e34425d2 100644
+index 8e2d03723368..631695c2ad45 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -4072,10 +4072,10 @@ index 89d5c4b17bc4..8cc874715933 100644
  	if (err)
  		goto err_out_driver;
 diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index f71b807d71a7..ee8abbe5a43a 100644
+index 1e0be266e9b2..d5ff94117e0b 100644
 --- a/drivers/usb/core/hub.c
 +++ b/drivers/usb/core/hub.c
-@@ -5857,6 +5857,13 @@ static void hub_event(struct work_struct *work)
+@@ -5889,6 +5889,13 @@ static void hub_event(struct work_struct *work)
  			(u16) hub->change_bits[0],
  			(u16) hub->event_bits[0]);
  

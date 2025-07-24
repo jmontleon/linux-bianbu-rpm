@@ -1,4 +1,4 @@
-From 3a778db4bd3c1e46596f8239170b24336235c071 Mon Sep 17 00:00:00 2001
+From 6cea55eef625ef0091649c0aa6a2c548ffcf4170 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Tue, 18 Apr 2023 11:18:33 +0800
 Subject: [PATCH 0675/1211] do_trap_insn_illegal: bind ai cores when use ai
@@ -85,10 +85,10 @@ index 2054f6c4b0ae..3954cdc11350 100644
   * riscv_isa_extension_base() - Get base extension word
   *
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 9c83848797a7..290e7a8a43c9 100644
+index 80230de167de..fca1ac9dcf86 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
-@@ -167,10 +167,29 @@ DO_ERROR_INFO(do_trap_insn_misaligned,
+@@ -170,10 +170,29 @@ DO_ERROR_INFO(do_trap_insn_misaligned,
  DO_ERROR_INFO(do_trap_insn_fault,
  	SIGSEGV, SEGV_ACCERR, "instruction access fault");
  
@@ -117,7 +117,7 @@ index 9c83848797a7..290e7a8a43c9 100644
 +
  	if (user_mode(regs)) {
  		irqentry_enter_from_user_mode(regs);
- 
+ 		local_irq_enable();
 -- 
 2.50.1
 
