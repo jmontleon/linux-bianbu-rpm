@@ -111,6 +111,9 @@ Summary: The Linux kernel
 # Sign modules on all arches
 %global signmodules 1
 
+# Add additional rhel certificates to system trusted keys.
+%global rhelkeys 1
+
 # Compress modules only for architectures that build modules
 %ifarch noarch
 %global zipmodules 0
@@ -143,14 +146,14 @@ Summary: The Linux kernel
 # Include RT files
 %global include_rt 1
 # Include Automotive files
-%global include_automotive 1
+%global include_automotive 0
 # Provide Patchlist.changelog file
 %global patchlist_changelog 1
 # Set released_kernel to 1 when the upstream source tarball contains a
 #  kernel release. (This includes prepatch or "rc" releases.)
 # Set released_kernel to 0 when the upstream source tarball contains an
 #  unreleased kernel development snapshot.
-%global released_kernel 1
+%global released_kernel 0
 # Set debugbuildsenabled to 1 to build separate base and debug kernels
 #  (on supported architectures). The kernel-debug-* subpackages will
 #  contain the debug kernel.
@@ -159,18 +162,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.15.7
-%define specversion 6.15.7
-%define patchversion 6.15
-%define pkgrelease 200
+%define specrpmversion 6.16.0
+%define specversion 6.16.0
+%define patchversion 6.16
+%define pkgrelease 0.rc7.60
 %define kversion 6
-%define tarfile_release 6.15.7
+%define tarfile_release 6.16-rc7
 # This is needed to do merge window version magic
-%define patchlevel 15
+%define patchlevel 16
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 200%{?buildid}%{?dist}
+%define specrelease 0.rc7.60%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.15.7
+%define kabiversion 6.16.0
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -249,8 +252,10 @@ Summary: The Linux kernel
 %define with_dbgonly   %{?_with_dbgonly:      1} %{?!_with_dbgonly:      0}
 # Only build the realtime kernel (--with rtonly):
 %define with_rtonly    %{?_with_rtonly:       1} %{?!_with_rtonly:       0}
-# Only build the automotive kernel (--with automotiveonly):%
+# Only build the automotive variant of the kernel (--with automotiveonly):
 %define with_automotiveonly %{?_with_automotiveonly:       1} %{?!_with_automotiveonly:       0}
+# Build the automotive kernel (--with automotive_build), this builds base variant with automotive config/options:
+%define with_automotive_build %{?_with_automotive_build:   1} %{?!_with_automotive_build:     0}
 # Only build the tools package
 %define with_toolsonly %{?_with_toolsonly:    1} %{?!_with_toolsonly:    0}
 # Control whether we perform a compat. check against published ABI.
@@ -416,7 +421,7 @@ Summary: The Linux kernel
 %define with_arm64_64k 0
 %endif
 
-# if requested, only build automotive kernel
+# if requested, only build the automotive variant of the kernel
 %if %{with_automotiveonly}
 %define with_automotive 1
 %define with_realtime 0
@@ -424,6 +429,12 @@ Summary: The Linux kernel
 %define with_debug 0
 %define with_debuginfo 0
 %define with_vdso_install 0
+%define with_selftests 1
+%endif
+
+# if requested, build kernel-automotive
+%if %{with_automotive_build}
+%define with_automotive 1
 %define with_selftests 1
 %endif
 
@@ -481,6 +492,9 @@ Summary: The Linux kernel
 %define with_kabichk 0
 %define with_kernel_abi_stablelists 0
 %define with_kabidw_base 0
+%define signkernel 0
+%define signmodules 1
+%define rhelkeys 0
 %endif
 
 
@@ -644,9 +658,6 @@ Summary: The Linux kernel
 %define cpupowerarchs i686 x86_64 ppc64le aarch64 riscv64
 %endif
 
-# Architectures we build kernel livepatching selftests on
-%define klptestarches x86_64 ppc64le s390x
-
 %if 0%{?use_vdso}
 %define _use_vdso 1
 %else
@@ -675,7 +686,7 @@ Summary: The Linux kernel
 %else
 %define with_realtime_base 0
 %endif
-%if %{with_automotive} && %{with_base}
+%if %{with_automotive} && %{with_base} && !%{with_automotive_build}
 %define with_automotive_base 1
 %else
 %define with_automotive_base 0
@@ -714,14 +725,14 @@ Release: %{pkg_release}
 %if 0%{?fedora}
 ExclusiveArch: noarch x86_64 s390x aarch64 ppc64le riscv64
 %else
-ExclusiveArch: noarch i386 i686 x86_64 s390x aarch64 ppc64le
+ExclusiveArch: noarch i386 i686 x86_64 s390x aarch64 ppc64le riscv64
 %endif
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
-Requires: kernel-core-uname-r = %{KVERREL}
-Requires: kernel-modules-uname-r = %{KVERREL}
-Requires: kernel-modules-core-uname-r = %{KVERREL}
-Requires: ((kernel-modules-extra-uname-r = %{KVERREL}) if kernel-modules-extra-matched)
+Requires: %{name}-core-uname-r = %{KVERREL}
+Requires: %{name}-modules-uname-r = %{KVERREL}
+Requires: %{name}-modules-core-uname-r = %{KVERREL}
+Requires: ((%{name}-modules-extra-uname-r = %{KVERREL}) if %{name}-modules-extra-matched)
 Provides: installonlypkg(kernel)
 %endif
 
@@ -794,9 +805,8 @@ BuildRequires: python3-pyyaml python3-jsonschema python3-pip python3-setuptools 
 BuildRequires: (python3-wheel if python3-setuptools < 70)
 %endif
 
-%if %{with_tools} || %{signmodules} || %{signkernel}
 BuildRequires: openssl-devel
-%endif
+
 %if %{with_selftests}
 BuildRequires: clang llvm-devel fuse-devel zlib-devel binutils-devel python3-docutils python3-jsonschema
 %ifarch x86_64 riscv64
@@ -857,6 +867,16 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 # debugedit-5.1-5 in F42 added support to override tools with target versions.
 %undefine _include_gdb_index
 %endif
+
+%if 0%{?rhel}%{?centos}
+%ifarch riscv64
+# Temporary workaround to avoid using find-debuginfo and gdb.minimal.
+# The current c10s version of gdb-minimal (14.2-4.el10) crashes when given some
+# riscv64 kernel modules (see RHEL-91586). Not building the gdb index avoids
+# breaking CI for now.
+%undefine _include_gdb_index
+%endif
+%endif
 %endif
 
 # These below are required to build man pages
@@ -908,7 +928,7 @@ BuildRequires: redhat-sb-certs >= 9.4-0.1
 Source0: linux-%{tarfile_release}.tar.xz
 
 Source1: Makefile.rhelver
-Source2: kernel.changelog
+Source2: %{package_name}.changelog
 
 Source10: redhatsecurebootca5.cer
 Source13: redhatsecureboot501.cer
@@ -961,11 +981,8 @@ Source22: filtermods.py
 %define modsign_cmd %{SOURCE21}
 
 %if 0%{?include_rhel}
-Source23: x509.genkey.rhel
-
 Source24: %{name}-aarch64-rhel.config
 Source25: %{name}-aarch64-debug-rhel.config
-
 Source27: %{name}-ppc64le-rhel.config
 Source28: %{name}-ppc64le-debug-rhel.config
 Source29: %{name}-s390x-rhel.config
@@ -973,14 +990,18 @@ Source30: %{name}-s390x-debug-rhel.config
 Source31: %{name}-s390x-zfcpdump-rhel.config
 Source32: %{name}-x86_64-rhel.config
 Source33: %{name}-x86_64-debug-rhel.config
-
-Source34: def_variants.yaml.rhel
-
-Source41: x509.genkey.centos
 # ARM64 64K page-size kernel config
 Source42: %{name}-aarch64-64k-rhel.config
 Source43: %{name}-aarch64-64k-debug-rhel.config
 
+Source44: %{name}-riscv64-rhel.config
+Source45: %{name}-riscv64-debug-rhel.config
+%endif
+
+%if %{include_rhel} || %{include_automotive}
+Source23: x509.genkey.rhel
+Source34: def_variants.yaml.rhel
+Source41: x509.genkey.centos
 %endif
 
 %if 0%{?include_fedora}
@@ -1084,11 +1105,17 @@ Source487: %{name}-riscv64-rt-debug-fedora.config
 %endif
 
 %if %{include_automotive}
-# automotive config files
+%if %{with_automotive_build}
+Source488: %{name}-aarch64-rhel.config
+Source489: %{name}-aarch64-debug-rhel.config
+Source490: %{name}-x86_64-rhel.config
+Source491: %{name}-x86_64-debug-rhel.config
+%else
 Source488: %{name}-aarch64-automotive-rhel.config
 Source489: %{name}-aarch64-automotive-debug-rhel.config
 Source490: %{name}-x86_64-automotive-rhel.config
 Source491: %{name}-x86_64-automotive-debug-rhel.config
+%endif
 %endif
 
 
@@ -1118,1217 +1145,1221 @@ Patch1: patch-%{patchversion}-redhat.patch
 
 
 
-Patch10001: 0001-add-k1-pro-base-platform-support.patch
-Patch10002: 0002-media-support-a-new-vpu-driver-which-use-V4L2-standa.patch
-Patch10003: 0003-add-SOC_SPACEMIT_K1-for-spacemit-k1-serial-SOCs.patch
-Patch10004: 0004-update-kernel-configuration-for-qemu-board.patch
-Patch10005: 0005-kernel-config-add-SOC_SPACEMIT_K1_FPGA-option-for-fp.patch
-Patch10006: 0006-fpga-kconfig-update-kernel-configuration-for-k1-pro-.patch
-Patch10007: 0007-qemu-kconfig-update-kernel-configuration-for-k1-pro-.patch
-Patch10008: 0008-sim-kconfig-update-kernel-configuration-for-k1-pro-s.patch
-Patch10009: 0009-add-k1pro-ccu-driver-and-config.patch
-Patch10010: 0010-add-k1pro-reset-controller-driver-and-config.patch
-Patch10011: 0011-update-kernel-config-add-FPGA-label-and-enable-debug.patch
-Patch10012: 0012-dtsi-enable-zicbom.patch
-Patch10013: 0013-change-dtb-configuration-to-k1-pro-SOC-1.-ddr-uart-p.patch
-Patch10014: 0014-dts-add-tcm-node-kernel-add-tcm-driver.patch
-Patch10015: 0015-add-.h-for-clock-reset-and-change-reg.patch
-Patch10016: 0016-pwm-dwc-driver-loaded-by-platform-changes-in-Makefil.patch
-Patch10017: 0017-sync-clk-reset-V1.1-spec-and-use-CLK_OF_DECLARE-for-.patch
-Patch10018: 0018-spi-adding-the-driver-for-Designware-enhanced-spi-co.patch
-Patch10019: 0019-riscv-support-svpbmt.patch
-Patch10020: 0020-usb-dwc3-support-spacemit-platform.patch
-Patch10021: 0021-dts-dwc3-add-dts-config-for-k1-pro.patch
-Patch10022: 0022-usb-update-usb-kernel-configuration.patch
-Patch10023: 0023-usb-dwc3-avoid-suspend-phy.patch
-Patch10024: 0024-riscv-mm-fix-reserve-cma-for-platform-not-having-ZON.patch
-Patch10025: 0025-kconfig-enable-cma-for-k1-pro-board.patch
-Patch10026: 0026-ethernet-adding-the-driver-of-the-Designware-gmac-co.patch
-Patch10027: 0027-reset-reset-driver-handle-all-global-soft-reset-sing.patch
-Patch10028: 0028-dma-dw-axi-dma-support-handshake-num-more-than-16.patch
-Patch10029: 0029-usb-dwc3-modify-reset-control-for-usb31.patch
-Patch10030: 0030-usb-dwc3-modify-DMA-capability.patch
-Patch10031: 0031-dma-fix-an-error-burst_trans_len-undeclare-in-dma-dr.patch
-Patch10032: 0032-mmc-support-spacemit-k1-pro-platform.patch
-Patch10033: 0033-mmc-dts-support-emmc-and-sdcard.patch
-Patch10034: 0034-reset-add-spinlock-for-timing-issue.patch
-Patch10035: 0035-mmc-modify-reset-card-only-once.patch
-Patch10036: 0036-reshape-dtsi-format-use-table-to-replace-space.patch
-Patch10037: 0037-k1-pro.dtsi-add-pmu-configs.patch
-Patch10038: 0038-pcie-support-spacemit-k1-pro-pcie-controller-RC-mode.patch
-Patch10039: 0039-usb-xhci-modify-DMA-capability-for-k1-pro-platform.patch
-Patch10040: 0040-change-dts-for-I2C-support.patch
-Patch10041: 0041-can-add-can-device-driver-and-kernel-config.patch
-Patch10042: 0042-ccu-add-mcu-clocks.patch
-Patch10043: 0043-fs-support-nfs.patch
-Patch10044: 0044-spi-support-spi-nor-and-correct-the-params-of-the-sp.patch
-Patch10045: 0045-mmc-enable-host-version-4-mode.patch
-Patch10046: 0046-mmc-deattach-clk-400k-during-mmc_rescan.patch
-Patch10047: 0047-add-script-for-extract-generate-rootfs.cpio.gz.patch
-Patch10048: 0048-mmc-increase-date-timeout-counter-value-to-max.patch
-Patch10049: 0049-remoteproc-support-bringup-esos-for-spacemit-k1-pro_.patch
-Patch10050: 0050-media-support-usb-media-enable-uvc-and-f_uvc.patch
-Patch10051: 0051-vpu-fix-vpu-compile-error-for-linux6.1.patch
-Patch10052: 0052-vpu-add-vpu-dts-config.patch
-Patch10053: 0053-can-update-kernel-defconfig-IPMS_CAN-y.patch
-Patch10054: 0054-clk-add-spinlock-and-mailbox-clock-for-mcu-system.patch
-Patch10055: 0055-reset-add-spinlock-and-mailbox-reset-for-mcu-system.patch
-Patch10056: 0056-mailbox-enable-spacemit-mailbox-driver.patch
-Patch10057: 0057-scmi-support-arm-s-scmi-protocol-for-spacemit-platfo.patch
-Patch10058: 0058-rproc-change-compatible-name-for-rproc-driver.patch
-Patch10059: 0059-pinctrl-support-the-driver-of-spacemit-pinctrl-contr.patch
-Patch10060: 0060-dts-add-the-table-of-pin-functions.patch
-Patch10061: 0061-vpu-add-reset-control-logic.patch
-Patch10062: 0062-vpu-add-device-caps-config.patch
-Patch10063: 0063-vpu-remove-severity-and-drain-file-node-for-probe-er.patch
-Patch10064: 0064-vpu-enable-debug-mode.patch
-Patch10065: 0065-arm_scmi-regulator-enable-an-dummy-regulator-using-s.patch
-Patch10066: 0066-dts-disable-vpu-as-some-bitfiles-have-no-vpu.patch
-Patch10067: 0067-ethernet-support-ethernet-qos.patch
-Patch10068: 0068-scmi-enable-scmi-power-domain-protocol.patch
-Patch10069: 0069-scmi-voltage_domain-add-vlittle-vgpu-nodes-in-scmi-d.patch
-Patch10070: 0070-cpufreq-support-scmi-cpufreq-driver-spacemit-platfor.patch
-Patch10071: 0071-wifi-cfg80211-enable-wireless-LAN-configuration-API.patch
-Patch10072: 0072-mmc-dts-support-sdio-interface.patch
-Patch10073: 0073-GMAC-support-IEEE_1588-hwtimestamp.patch
-Patch10074: 0074-usb-dts-add-dwc2-dts-for-k1-pro-fpga.patch
-Patch10075: 0075-usb-kconfig-enable-dwc2-configuration.patch
-Patch10076: 0076-usb-dwc2-add-params-for-k1-pro-fpga.patch
-Patch10077: 0077-pinctrl-change-the-format-of-pin-config.patch
-Patch10078: 0078-spi-nand-support-2x-4x-8x-for-spi-nand-tx-and-rx.patch
-Patch10079: 0079-ubi-kconfig-enable-ubi-configuration.patch
-Patch10080: 0080-usb-dwc2-modify-gadget-DMA-capability.patch
-Patch10081: 0081-add-k1-x-device-support.patch
-Patch10082: 0082-update-vpu-driver.patch
-Patch10083: 0083-cpu-support-cpu-hotplug.patch
-Patch10084: 0084-pinctrl-modify-the-format-of-the-pinctrl-group-name.patch
-Patch10085: 0085-update-dts-for-k1-x-platform.patch
-Patch10086: 0086-add-pxa_k1x-driver-for-k1x-platform.patch
-Patch10087: 0087-k1pro-enable-first-can-use-version-of-cpuidle.patch
-Patch10088: 0088-k1x-multi-core-modify-the-configurations-related-to-.patch
-Patch10089: 0089-k1pro-add-i2c-configuration.patch
-Patch10090: 0090-disable-pm-power-management-is-not-support-now.patch
-Patch10091: 0091-k1-x-add-mmp_pdma-driver-support.patch
-Patch10092: 0092-k1x-add-k1-x_fpga-1x4-2x2-proj.patch
-Patch10093: 0093-k1-x-support-pxa-uart-driver-dts-configs-pm-amend-in.patch
-Patch10094: 0094-ethernet-adding-gmac-driver-for-k1-x.patch
-Patch10095: 0095-mmc-support-spacemit-k1x-platform.patch
-Patch10096: 0096-ethernet-change-the-phy-mode-config-from-device-tree.patch
-Patch10097: 0097-hotplug-we-d-better-flush-the-local-l2-cache-when-on.patch
-Patch10098: 0098-mmc-update-dts-remove-axi-node.patch
-Patch10099: 0099-turn-off-CONFIG_PM-for-debug.patch
-Patch10100: 0100-config-support-gmac-driver-for-k1-x-1x4-and-2x2.patch
-Patch10101: 0101-support-tcm-for-k1x.patch
-Patch10102: 0102-add-udma-driver-for-userspace.patch
-Patch10103: 0103-dma-copy-use-vaddr.patch
-Patch10104: 0104-rm-udma-log.patch
-Patch10105: 0105-update-defconfig-for-support-sdmmc-udma.patch
-Patch10106: 0106-add-mutex-va2pa-fix-tcm_discontinuous_malloc.patch
-Patch10107: 0107-update-for-support-tcm.patch
-Patch10108: 0108-usb-gadget-support-k1x-udc.patch
-Patch10109: 0109-pcie-adding-pcie-driver-for-k1x.patch
-Patch10110: 0110-usb-dwc3-support-k1x-platform.patch
-Patch10111: 0111-k1x-add-pwm-pxa-driver-support.patch
-Patch10112: 0112-update-vpu-driver.patch
-Patch10113: 0113-k1pro-adjust-pwm-driver-config-name.patch
-Patch10114: 0114-k1x-add-soc-timer-driver-support.patch
-Patch10115: 0115-k1pro-deconfig-axi-dma-driver-Y.patch
-Patch10116: 0116-support-I2C-for-k1x.patch
-Patch10117: 0117-media-k1x-vpu-reshape-file-style.patch
-Patch10118: 0118-update-kernel-default-config.patch
-Patch10119: 0119-reset-update-reset-controller-driver.patch
-Patch10120: 0120-ccu-update-clock-controller-driver.patch
-Patch10121: 0121-fix-config-PCIE_SPACEMIT-depends-on-CONFIG_SOC_SPACE.patch
-Patch10122: 0122-k1x-switch-pwm-deconfig-Y-on-1x4-2x2-board.patch
-Patch10123: 0123-k1pro-cpuidle-support-cpuidle.patch
-Patch10124: 0124-k1pro-add-k1pro-fpga_1x4-k1pro-fpga_2x2-proj.patch
-Patch10125: 0125-k1-x-add-k1x-gpio-driver-support.patch
-Patch10126: 0126-riscv-spacemit-remove-k1pro-configuration-it-is-just.patch
-Patch10127: 0127-yk1x-add-the-first-version-of-pm-domain.patch
-Patch10128: 0128-k1-x-add-gmac-PTP-support.patch
-Patch10129: 0129-usb-dwc2-update-fifo-and-reset-config-for-k1-pro.patch
-Patch10130: 0130-k1x-enable-dmabuf.patch
-Patch10131: 0131-qspi-adding-driver-for-k1x-qspi-controller.patch
-Patch10132: 0132-qspi-fix-typo-cause-compilation-errors.patch
-Patch10133: 0133-add-spacemit-ir-rx-driver.patch
-Patch10134: 0134-k1x-dts-modify-the-actual-reference-clock-for-sdhci.patch
-Patch10135: 0135-k1pro-cpuidle-support-cpu0-cluster0-go-deepidle.patch
-Patch10136: 0136-cpuidle-adapt-code-for-CPUidle-functionality.patch
-Patch10137: 0137-update-k1x-vpu-driver.patch
-Patch10138: 0138-k1x-cpuidle-synchronize-relevant-patches-from-k1pro.patch
-Patch10139: 0139-k1x-support-cpufreq-driver.patch
-Patch10140: 0140-reset-add-reset-controller-driver-for-k1x.patch
-Patch10141: 0141-clock-add-clock-controller-driver-for-k1x.patch
-Patch10142: 0142-dts-fix-worng-and-warning-for-k1x-clk-reset.patch
-Patch10143: 0143-clock-fix-k1x-clock-id.patch
-Patch10144: 0144-pinctrl-adding-pinctrl-config-for-k1x-soc.patch
-Patch10145: 0145-reset-modify-reset-driver-file-name-of-k1pro.patch
-Patch10146: 0146-clock-modify-clock-driver-file-name-of-k1pro.patch
-Patch10147: 0147-pm_domain-move-the-pm_domain-driver-to-the-directy-s.patch
-Patch10148: 0148-v2d-Add-v2d-driver.patch
-Patch10149: 0149-add-tcm_cfg_save-restore.patch
-Patch10150: 0150-add-tcm-sync-malloc-code-clean.patch
-Patch10151: 0151-update-k1-x_fpga.dts-with-device-k1-x-board.dts.patch
-Patch10152: 0152-mmc-sdhci-of-k1x-support-configure-reset-and-clk-fro.patch
-Patch10153: 0153-usb-add-reset-and-clk-configurations.patch
-Patch10154: 0154-pinctrl-supports-the-allocation-of-GPIOs-with-the-sa.patch
-Patch10155: 0155-pcie-update-the-operations-of-clk-and-reset.patch
-Patch10156: 0156-display-Add-spacemit-drm-driver.patch
-Patch10157: 0157-gpu-Add-spacemit-gpu-driver.patch
-Patch10158: 0158-gpio-update-the-operation-of-clk-for-gpio.patch
-Patch10159: 0159-pmic-add-the-first-version-of-pmic-driver.patch
-Patch10160: 0160-pmic-spm8821-pinctrl-first-version-to-support-pinctr.patch
-Patch10161: 0161-fix-some-warning-when-building-dts.patch
-Patch10162: 0162-add-configurations-for-k1-x-evb-board.patch
-Patch10163: 0163-ethernet-update-driver-of-k1x-emac-driver.patch
-Patch10164: 0164-pm-domain-correction-of-previous-driver-errors-and-a.patch
-Patch10165: 0165-add-ranges-property-for-some-nodes-which-contain-som.patch
-Patch10166: 0166-qspi-update-the-opertions-of-clk-and-reset-for-k1x-q.patch
-Patch10167: 0167-pm_domain-improve-the-execution-process-of-this-driv.patch
-Patch10168: 0168-pm_domain-move-the-pm-domain-dts-node-to-k1-x.dtsi-f.patch
-Patch10169: 0169-gpu-Compatible-with-gpu-umd-driver.patch
-Patch10170: 0170-camera-init-version-of-camera-driver-on-k1.patch
-Patch10171: 0171-display-Add-spacemit-drm-debugfs-node.patch
-Patch10172: 0172-k1x-dma-add-clk-reset-control-in-dma-driver.patch
-Patch10173: 0173-qspi-adding-resets-for-k1-x-qspi.patch
-Patch10174: 0174-fix-cpu-node-properties-defined-by-linux-6.x.y.patch
-Patch10175: 0175-spi-add-the-driver-for-k1x-spi-controller.patch
-Patch10176: 0176-pmic-pm853-support-regulator-driver-and-compatible-w.patch
-Patch10177: 0177-k1x-uart-add-clock-reset-in-uart-driver.patch
-Patch10178: 0178-clock-fix-clock-driver-issues-of-k1x.patch
-Patch10179: 0179-pm-domain-add-new-feature.patch
-Patch10180: 0180-update-dts-for-support-i2c0.patch
-Patch10181: 0181-k1x-pwm-driver-adds-clk-reset-control.patch
-Patch10182: 0182-update-kconfig-to-support-spacemit-k1x-timer-configu.patch
-Patch10183: 0183-fix-uart-board-configuration-for-asic.patch
-Patch10184: 0184-clock-reset-fix-pwm-clk-reset-reg-bit.patch
-Patch10185: 0185-pm853-support-the-regulator-func-in-asic.patch
-Patch10186: 0186-pmic-open-the-configuration-of-pmic-driver.patch
-Patch10187: 0187-update-dts-for-i2c-to-support-clk-operation.patch
-Patch10188: 0188-k1x-i2c-driver-add-clk-reset.patch
-Patch10189: 0189-k1x-pm-domain-add-gnss-domain.patch
-Patch10190: 0190-gmac-modify-the-config-for-k1x-gmac-controller.patch
-Patch10191: 0191-usb-udc-k1x_udc-fix-udc-disconnect.patch
-Patch10192: 0192-k1x-usb-fix-reset-and-clk-configuration.patch
-Patch10193: 0193-update-evb-board-dts.patch
-Patch10194: 0194-remove-some-unused-kernel-module.patch
-Patch10195: 0195-k1-x-pinctrl-add-fast-config-for-sdcard.patch
-Patch10196: 0196-update-board-dts-for-evb-and-fpga-boards.patch
-Patch10197: 0197-display-Add-lcd-gc9503v_mipi.patch
-Patch10198: 0198-support-jpu-driver-for-k1x.patch
-Patch10199: 0199-clock-fix-the-result-of-set_rate-is-not-the-closest-.patch
-Patch10200: 0200-clock-enable-some-clocks.patch
-Patch10201: 0201-remove-clint-timer.patch
-Patch10202: 0202-update-dtsi-for-k1-x-platform.patch
-Patch10203: 0203-config-adding-spacemit-k1x-spi-driver.patch
-Patch10204: 0204-qspi-fix-the-bus_num-for-k1x-qspi-controller.patch
-Patch10205: 0205-k1x-vpu-update-driver.patch
-Patch10206: 0206-k1x-dtsi-linlon-vpu-update-config.patch
-Patch10207: 0207-usb-k1x_udc-deassert-reset-before-phy-init.patch
-Patch10208: 0208-k1x-dma-1.add-pm-func-in-dma-driver-2.modify-dma-Kco.patch
-Patch10209: 0209-k1x-uart-driver-add-pm-func.patch
-Patch10210: 0210-k1x-i2c-driver-add-pm-domains-revision.patch
-Patch10211: 0211-qspi-support-pm-runtime-for-qspi-driver.patch
-Patch10212: 0212-dts-adding-power-domains-for-k1x-qspi.patch
-Patch10213: 0213-k1x-pm-open-the-configuration-of-pm-domain-driver.patch
-Patch10214: 0214-k1x-dtsi-jpu-update-config.patch
-Patch10215: 0215-k1x-evb-defconfig-enable-CHIP_MEDIA_JPU.patch
-Patch10216: 0216-add-some-debug-configuration.patch
-Patch10217: 0217-feat-gpu-Support-gpu-for-k1x-evb-board.patch
-Patch10218: 0218-mmc-k1x-add-host-capability-MMC_CAP_NEED_RSP_BUSY.patch
-Patch10219: 0219-k1x-dtsi-jpu-add-reset-config.patch
-Patch10220: 0220-k1x-uart-add-reference-to-pm-domain.patch
-Patch10221: 0221-k1x-dma-add-reference-to-pm-domain.patch
-Patch10222: 0222-k1x-cpufreq-support-cpufreq-function.patch
-Patch10223: 0223-usb-phy-k1x-ci-usb2-update-phy-init-parameters-fix-h.patch
-Patch10224: 0224-usb-ehci-add-support-for-k1-x-ehci-driver.patch
-Patch10225: 0225-dts-k1-x-add-ehci-usb-host-support.patch
-Patch10226: 0226-config-enable-k1x-ehci-host-driver.patch
-Patch10227: 0227-update-evb-board-dts.patch
-Patch10228: 0228-disable-cpufreq-it-will-crash-kernel.patch
-Patch10229: 0229-config-k1-x-enable-more-usb-functions.patch
-Patch10230: 0230-clock-fix-camm2-no-clock-issue-change-enable-bit.patch
-Patch10231: 0231-clock-fix-set_rate-function-it-change-rate-by-div-an.patch
-Patch10232: 0232-clock-enable-some-clocks-for-cpu-remove-cpu-core-clk.patch
-Patch10233: 0233-k1x-cpufreq-don-t-need-to-set-parent-when-set-the-fr.patch
-Patch10234: 0234-display-Support-lcd-icnl9911c-mipi.patch
-Patch10235: 0235-sync-dts-with-device-board.dts.patch
-Patch10236: 0236-usb-hid-enable-raw-HID-device-support.patch
-Patch10237: 0237-clock-fix-qspi_clk-issue-only-set-fc-bit-when-settin.patch
-Patch10238: 0238-k1x-pm-domain-change-the-log-level-of-debug-info.patch
-Patch10239: 0239-display-fix-dpu-reset-control.patch
-Patch10240: 0240-config-k1x-enable-usb-webcam-support.patch
-Patch10241: 0241-k1x-add-watchdog-driver-support.patch
-Patch10242: 0242-k1x-add-reboot-with-args-support.patch
-Patch10243: 0243-fix-gpu-move-loading-firmware-later.patch
-Patch10244: 0244-k1x-spacemit-timer-driver-add-clk-reset-interface.patch
-Patch10245: 0245-k1x-timer-clk-reset-dts-config.patch
-Patch10246: 0246-mmc-sdhci-of-k1x-add-quirks2-SDHCI_QUIRK2_BROKEN_64_.patch
-Patch10247: 0247-reserved-2GB-4GB-area-from-memory-space-it-should-be.patch
-Patch10248: 0248-k1x-pm_domain-using-hw-mode-to-power-on-off-audio-s-.patch
-Patch10249: 0249-k1x-add-k1x-soc-rtc-driver-and-clk-reset-interface.patch
-Patch10250: 0250-sync-evb-board-dts-from-device-k1x-evb-board.dts.patch
-Patch10251: 0251-clean-compile-warning-in-arch-riscv-mm-init.c.patch
-Patch10252: 0252-clean-compile-warning-in-display-driver.patch
-Patch10253: 0253-clean-compile-warning-in-pcie-driver.patch
-Patch10254: 0254-k1x-wdt-update-watchdog-driver.patch
-Patch10255: 0255-clock-twsi8-clk-reset-reg-is-write-only-don-t-read-i.patch
-Patch10256: 0256-k1x-reboot-fix-reboot-into-fastboot-mode-with-no-arg.patch
-Patch10257: 0257-add-pwm-control-backlight.patch
-Patch10258: 0258-k1x-pinctrl.dtsi-fix-some-pinctrl-error.patch
-Patch10259: 0259-k1x-update-DTS-automatically-based-on-env.patch
-Patch10260: 0260-mmc-sdhci-of-k1x-update-sdio-scan-interface.patch
-Patch10261: 0261-add-tcm_override_readl-writel-for-access-tcm-overrid.patch
-Patch10262: 0262-k1x-unique-mac-address-in-eeprom.patch
-Patch10263: 0263-modify-compile-optimize-from-O2-to-Os.patch
-Patch10264: 0264-clean-compile-waring-in-vpu-driver.patch
-Patch10265: 0265-dts-add-apbc2-reg-base-for-clock-and-reset.patch
-Patch10266: 0266-clock-add-apbc2-reg-base-clocks.patch
-Patch10267: 0267-reset-add-apb2-reg-base-resets.patch
-Patch10268: 0268-clock-add-CLK_IGNORE_UNUSED-flag-for-some-clocks.patch
-Patch10269: 0269-vpu-can-use-when-RAM-2GB.patch
-Patch10270: 0270-support-non-uniform-address-mapping-between-peripher.patch
-Patch10271: 0271-add-nfsd-support.patch
-Patch10272: 0272-add-exfat-fs-support.patch
-Patch10273: 0273-add-xfs-support.patch
-Patch10274: 0274-add-btrfs-support.patch
-Patch10275: 0275-add-f2fs-support.patch
-Patch10276: 0276-add-quota-used-by-ext4-support.patch
-Patch10277: 0277-add-device-mapper-used-by-RAID-and-FS-crypto.patch
-Patch10278: 0278-add-bridge-and-vlan-support-used-by-docker-vm.patch
-Patch10279: 0279-add-ipv6-support.patch
-Patch10280: 0280-add-ntfs-v3.1-same-with-win10-s-native-fs-support.patch
-Patch10281: 0281-yk1x-thermal-support-thermal-driver.patch
-Patch10282: 0282-k1x-dma-close-some-unnecessary-config.patch
-Patch10283: 0283-k1x-dma-range-add-a-driver-for-devices-node-dram_ran.patch
-Patch10284: 0284-k1x-dma-fix-compile-error-in-include-k1x-dmac.h.-def.patch
-Patch10285: 0285-k1x-support-aes-crypto-engine.patch
-Patch10286: 0286-k1x-kernel-support-afalg-engine.patch
-Patch10287: 0287-support-camera-to-draw-when-use-2GB-DDR-dtsi-and-def.patch
-Patch10288: 0288-clear-compile-warning.patch
-Patch10289: 0289-clear-compile-warning.patch
-Patch10290: 0290-sync-evb-board.dts-from-devices-k1x-evb.patch
-Patch10291: 0291-camera-self-managed-ldo.patch
-Patch10292: 0292-k1x-pm-domain-add-hdmi-domiain.patch
-Patch10293: 0293-v2d-support-use-memory-2GB.patch
-Patch10294: 0294-k1x-pmic-refine-some-code.patch
-Patch10295: 0295-support-camera-to-draw-when-use-4GB-DDR.patch
-Patch10296: 0296-display-phy-driver-has-been-registered-in-another-fu.patch
-Patch10297: 0297-pci-add-initialization-phy-of-pcie-for-k1x.patch
-Patch10298: 0298-k1x-pm-domain-the-IO-size-too-small-to-cover-the-HDM.patch
-Patch10299: 0299-pcie-adding-dram_range1-for-pcie0-pcie1-pci2.patch
-Patch10300: 0300-add-dts-and-config-for-deb2-board.patch
-Patch10301: 0301-display-Support-spacemit-hdmi-driver.patch
-Patch10302: 0302-target-add-task-management-values-and-overlapped-res.patch
-Patch10303: 0303-usb-f_tcm-support-mutltiple-cmds-enhance-performance.patch
-Patch10304: 0304-k1x-support-reboot-to-uboot-shell.patch
-Patch10305: 0305-sync-evb-deb2-board-dts-from-devices.patch
-Patch10306: 0306-fix-cpp-clk-timeout.patch
-Patch10307: 0307-fix-gpu-memory-leak-when-launch-weston.patch
-Patch10308: 0308-k1x-cpufreq-support-adjust-the-ace-tcm-s-frequency-a.patch
-Patch10309: 0309-fix-dead-lock-bug-between-reset-and-clk.patch
-Patch10310: 0310-k1x-cpu-cooling-support-cpu-cooling-device.patch
-Patch10311: 0311-extcon-add-extcon-k1xci-driver-for-usb2.0-otg.patch
-Patch10312: 0312-usb-otg-add-k1x-ci-otg-driver.patch
-Patch10313: 0313-dtsi-k1-x-add-usb2-otg-support.patch
-Patch10314: 0314-clock-add-apb-clk-enable-apb-axi-clk-when-init.patch
-Patch10315: 0315-k1x-pmic-refine-the-pmic-code.patch
-Patch10316: 0316-display-Support-hdmi-1080p.patch
-Patch10317: 0317-clock-dead-lock-issue-may-happen.patch
-Patch10318: 0318-mmc-dts-support-power-domain.patch
-Patch10319: 0319-mmc-sdhci-of-k1x-add-pm_runtime_get_sync-during-prob.patch
-Patch10320: 0320-pcie-Optimize-phy-initialization-code-for-k1x-pcie-d.patch
-Patch10321: 0321-dts-modify-the-domain-id-of-pcie1-to-1.patch
-Patch10322: 0322-k1x-pmic-support-power-key-driver.patch
-Patch10323: 0323-k1x-pmic-rtc-support-spm8821-rtc-driver.patch
-Patch10324: 0324-reshape-pinctrl-dtsi-and-platform-dtsi.patch
-Patch10325: 0325-display-Fix-reset-control-deassert-and-assert.patch
-Patch10326: 0326-clean-clk-driver-debug-info.patch
-Patch10327: 0327-clean-drm-driver-debug-info.patch
-Patch10328: 0328-clean-camera-driver-debug-info.patch
-Patch10329: 0329-clean-dma-driver-debug-info.patch
-Patch10330: 0330-clean-usb-driver-debug-info.patch
-Patch10331: 0331-clean-tcm-driver-debug-info.patch
-Patch10332: 0332-clean-qspi-driver-debug-info.patch
-Patch10333: 0333-clean-crypto-driver-debug-info.patch
-Patch10334: 0334-clean-i2c-driver-debug-info.patch
-Patch10335: 0335-clean-reset-driver-debug-info.patch
-Patch10336: 0336-clean-gmac-driver-debug-info.patch
-Patch10337: 0337-clean-some-unused-driver-module.patch
-Patch10338: 0338-add-gx09inx101-mipi-lcd-configuration.patch
-Patch10339: 0339-k1x-crypto-1.handle-memleak-in-probe-2.ture-down-sel.patch
-Patch10340: 0340-k1x-pmic-refactoring-code-to-support-new-dcdc.patch
-Patch10341: 0341-defconfig-add-usb3.0-support-for-k1-x-evb2.patch
-Patch10342: 0342-usb-misc-add-spacemit-onboard-hub-driver.patch
-Patch10343: 0343-dtsi-k1-x-add-usb3.0-support.patch
-Patch10344: 0344-usb-add-spacemit-k1x-dma-mask-setting.patch
-Patch10345: 0345-phy-add-spacemit-pcie-usb3-combphy-driver.patch
-Patch10346: 0346-spacemit-rf-add-wifi-platform-driver.patch
-Patch10347: 0347-spacemit-rf-dts-enable-spacemit-rf-pwrseq.patch
-Patch10348: 0348-k1x-cpuidle-support-cpu-power-down-only.patch
-Patch10349: 0349-wireless-rtl8852bs-add-rtl8852bs-sdio-wifi-driver.patch
-Patch10350: 0350-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
-Patch10351: 0351-k1x-cpufreq-support-adjust-the-voltage-when-the-cpu-.patch
-Patch10352: 0352-display-Fix-hdmi-qos-control.patch
-Patch10353: 0353-mmc-dts-alloc-index-from-alias-id.patch
-Patch10354: 0354-disable-rtl8852bs-wifi-driver-there-is-too-much-warn.patch
-Patch10355: 0355-update-evb-board-dts.patch
-Patch10356: 0356-update-deb2-board-dts.patch
-Patch10357: 0357-update-deb2-kernel-config.patch
-Patch10358: 0358-sync-deb2-board-dts.patch
-Patch10359: 0359-wifi-k1x-deb2-enable-aic8800dc-wifi-defconfig.patch
-Patch10360: 0360-wifi-k1x-evb-enable-aic8800dc-wifi-defconfig.patch
-Patch10361: 0361-audio-add-audio-driver.patch
-Patch10362: 0362-dts-add-audio-snd-card-support.patch
-Patch10363: 0363-enable-audio-driver-for-evb-board.patch
-Patch10364: 0364-enable-audio-driver-for-deb2.patch
-Patch10365: 0365-clear-compile-warning.patch
-Patch10366: 0366-support-dvfs-for-evb-performance.patch
-Patch10367: 0367-use-performance-governor-as-default.patch
-Patch10368: 0368-audio-change-pcm-hw_params.patch
-Patch10369: 0369-display-Support-kernel-logo.patch
-Patch10370: 0370-display-update-kernel-logo.patch
-Patch10371: 0371-disable-audio-and-adsp-driver.patch
-Patch10372: 0372-disable-audio-and-adsp-driver.patch
-Patch10373: 0373-display-fix-kernel-logo.patch
-Patch10374: 0374-k1x-can-add-clk-reset-control-in-dma-driver.patch
-Patch10375: 0375-clock-fix-can-func-clk-incorrect-issue.patch
-Patch10376: 0376-reset-fix-reset-bit-of-aes.patch
-Patch10377: 0377-k1x-deb1-support-deb1-project.patch
-Patch10378: 0378-k1x-deb1-add-k1-x_deb1.dts-to-fix-compiling-error-wh.patch
-Patch10379: 0379-k1x-pmic-support-pwr-key-rtc-pinctrl-function.patch
-Patch10380: 0380-spacemit-rf-add-bluetooth-platform-driver.patch
-Patch10381: 0381-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
-Patch10382: 0382-sync-board-dts-from-devices.patch
-Patch10383: 0383-add-k1-universal-config-for-all-board.patch
-Patch10384: 0384-fix-disable-CONFIG_INITRAMFS_SOURCE-which-may-overla.patch
-Patch10385: 0385-wifi-k1x-deb1-enable-rtl8852bs-wifi-defconfig.patch
-Patch10386: 0386-k1-x-crypto-speed-up-expand-single-encrypt-decrypt-s.patch
-Patch10387: 0387-sync-board-dts-from-devices.patch
-Patch10388: 0388-wireless-rtl8852be-add-wifi-driver.patch
-Patch10389: 0389-k1x-cpu-cooling-add-the-cpuidle-cooling-function.patch
-Patch10390: 0390-clock-reset-fix-pwm0-clk-reset-reg-bit.patch
-Patch10391: 0391-add-cpu-model-name-showed-in-proc-cpuinfo.patch
-Patch10392: 0392-k1x-adjust-i2c-driver-strength.patch
-Patch10393: 0393-add-docker-required-configurations-1.-bridge-and-vla.patch
-Patch10394: 0394-k1x-deb1-support-power-off-system.patch
-Patch10395: 0395-display-Fix-dpu-reset-issue.patch
-Patch10396: 0396-sync-board-dts-from-devices.patch
-Patch10397: 0397-tools-perf-pmu-events-add-SpacemiT-X60-JSON-files.patch
-Patch10398: 0398-k1x-add-zicboz-and-zicbop-to-dts.patch
-Patch10399: 0399-modify-compile-optimize-from-size-to-performance.patch
-Patch10400: 0400-display-disable-kernel-logo.patch
-Patch10401: 0401-set-cma-alloc-range-from-0x40000000.patch
-Patch10402: 0402-sync-board-dts-from-devices-configuration.patch
-Patch10403: 0403-qspi-Correct-the-setting-clk-rate-of-k1x-qspi.patch
-Patch10404: 0404-performance-optimize.patch
-Patch10405: 0405-k1x-support-PCIE-SATA-JMB585-board.patch
-Patch10406: 0406-Bluetooth-enable-bluez-stack.patch
-Patch10407: 0407-uart-disable-bluesleep-hostwake-detect.patch
-Patch10408: 0408-clock-uart-source-48M-and-14.7M-have-same-gate-bit-i.patch
-Patch10409: 0409-k1x-uart-add-uart-parent-clk-gate-function.patch
-Patch10410: 0410-sync-board-dts-with-devices.patch
-Patch10411: 0411-display-Update-hdmi-phy-config.patch
-Patch10412: 0412-k1-x-aes-prevent-writing-buffer-requests-in-the-mean.patch
-Patch10413: 0413-k1x-aes-add-xts-cipher.patch
-Patch10414: 0414-display-Support-dsi-and-hdmi-double-screens.patch
-Patch10415: 0415-use-the-unified-defconfig-for-k1-5-5.patch
-Patch10416: 0416-add-ramdisk-for-develop-branch.patch
-Patch10417: 0417-k1-enable-usb-serial.patch
-Patch10418: 0418-mmc-sdhci-of-k1x-improve-the-sd-tuning-process.patch
-Patch10419: 0419-scatterlist-mask-out-GFP_DMA32-flag-when-call-kmallo.patch
-Patch10420: 0420-target-alloc-scatterlist-with-GFP_DMA32-flag-on-spac.patch
-Patch10421: 0421-k1-x-enable-ehci-for-deb1-and-deb2.patch
-Patch10422: 0422-display-Remove-error-logs.patch
-Patch10423: 0423-k1x-support-mailbox-driver.patch
-Patch10424: 0424-k1x-remoteproc-support-remoteproc-driver.patch
-Patch10425: 0425-k1x-rproc-launching-rcpu-during-the-system-startup-p.patch
-Patch10426: 0426-k1x-defconfig-enable-mailbox-rproc-rpmsg_virtio-defc.patch
-Patch10427: 0427-k1-rcpu-ipc-reserved-memory-for-rcpu-and-ipc.patch
-Patch10428: 0428-k1x-adma-add-adma-driver-for-sspa.patch
-Patch10429: 0429-audio-add-hdmi-audio-driver-and-remove-unused-code.patch
-Patch10430: 0430-deconfig-enable-sound-support.patch
-Patch10431: 0431-dts-add-hdmi-audio-config.patch
-Patch10432: 0432-dts-modify-audio-config.patch
-Patch10433: 0433-k1x-rporc-add-the-reference-of-mailbox-memory-region.patch
-Patch10434: 0434-audio-modify-hdmi-audio-params-set-enable-ctrl-reg.patch
-Patch10435: 0435-k1-support-CTP-driver.patch
-Patch10436: 0436-display-Fixed-dtsi-warning.patch
-Patch10437: 0437-dtb-adding-the-dts-of-linux-for-hs450-board.patch
-Patch10438: 0438-k1-defconfig-enable-support-for-r8152.patch
-Patch10439: 0439-disp-adjust-gpu-and-drm-initcall-sequence-for-fixed-.patch
-Patch10440: 0440-gitignore-add-user_headers-generated-by-openwrt-to-g.patch
-Patch10441: 0441-k1x-snd-fix-compile-warning-in-spacemit-snd-card.c.patch
-Patch10442: 0442-img-rogue-fix-compile-warning.patch
-Patch10443: 0443-k1x-display-fix-compile-warning.patch
-Patch10444: 0444-gt9xx-fix-compile-warning.patch
-Patch10445: 0445-eeprom-at24-fix-compile-warning.patch
-Patch10446: 0446-k1x-hdmi-fix-compile-warning-because-of-unused-varia.patch
-Patch10447: 0447-brtfs-fix-compile-warning.patch
-Patch10448: 0448-sync-camera-code-from-Release-JINDIE-V3.8.patch
-Patch10449: 0449-sync-camera-code-from-Release-JINDIE-V4.0.patch
-Patch10450: 0450-mmc-sdhci-of-k1x-update-phy-dll-config.patch
-Patch10451: 0451-aud-modify-hdmi-audio-period_size-fix-coding-issue.patch
-Patch10452: 0452-k1-gpio-support-irq-controller-mode.patch
-Patch10453: 0453-k1-open-hid-configs.patch
-Patch10454: 0454-k1-support-touchpad-for-hs450-board.patch
-Patch10455: 0455-aud-add-spi-i2s-driver.patch
-Patch10456: 0456-dts-add-i2s-support.patch
-Patch10457: 0457-dts-add-codec-es8326-support-i2s-pin-config.patch
-Patch10458: 0458-config-enable-codec-es8326.patch
-Patch10459: 0459-aud-add-es8326-sound-card-support.patch
-Patch10460: 0460-k1_defconfig-enable-USB_NET_QMI_WWAN.patch
-Patch10461: 0461-udma-open-failed-when-dma_dev-NULL.patch
-Patch10462: 0462-k1x-dma-support-console-tx-rx-dma-mode.patch
-Patch10463: 0463-dtb-adding-the-dts-of-linux-for-kx312-board.patch
-Patch10464: 0464-Bluetooth-defconfig-support-hid-and-pan-profile.patch
-Patch10465: 0465-gmac-Modify-gmac-pin-configuration-in-order-to-impro.patch
-Patch10466: 0466-usb-misc-spacemit_onboard_hub-use-gpio-array.patch
-Patch10467: 0467-dts-k1-x_kx312-enable-usbdrd3-and-usb3hub.patch
-Patch10468: 0468-dtb-adding-the-dts-of-linux-for-MINI-PC-board.patch
-Patch10469: 0469-add-kernel-image-itb-build-support.patch
-Patch10470: 0470-perfect-camera-dts-gpio-config.patch
-Patch10471: 0471-display-Fix-dpu-irqs-timeout.patch
-Patch10472: 0472-k1-align-initial-state-for-audio.patch
-Patch10473: 0473-k1-rpoc-using-a-RT-thread-to-process-the-virtio-msg.patch
-Patch10474: 0474-k1-delete-undefined-pm-function.patch
-Patch10475: 0475-dtb-adding-the-dts-of-linux-for-mingo-board.patch
-Patch10476: 0476-kx312-fix-the-compile-error-that-it-can-t-find-dpu_o.patch
-Patch10477: 0477-k1x-uart-fix-uart9-dts-config.patch
-Patch10478: 0478-k1x-serial-fix-bug-of-pm-runtime-feature.patch
-Patch10479: 0479-k1x-system_suspend-support-pmic-wakeup-source.patch
-Patch10480: 0480-mmc-sdhci-of-k1x-optimize-sdcard-tuning-procedure.patch
-Patch10481: 0481-k1-dts-update-dts.patch
-Patch10482: 0482-vpu-update-vpu-driver-version-to-Release-JINDIE-V4.2.patch
-Patch10483: 0483-v2d-mv-v2d-from-drivers-media-platform-spacemit-v2d-.patch
-Patch10484: 0484-add-kernel-image-offset-configuration-which-would-be.patch
-Patch10485: 0485-more-flexable-configuration-for-image-itb-build.patch
-Patch10486: 0486-k1x-dts-enable-sdio-sdr104-mode.patch
-Patch10487: 0487-mmc-sdhci-of-k1x-support-disable-caps.patch
-Patch10488: 0488-add-compressed-gzip-kernel-itb-build.patch
-Patch10489: 0489-k1-dts-disable-mipi-dsi-for-deb1.patch
-Patch10490: 0490-display-Fix-dpu-irqs-error.patch
-Patch10491: 0491-arch-riscv-Changed-default-target-to-Image.gz.itb-wh.patch
-Patch10492: 0492-update-evb-dts.patch
-Patch10493: 0493-display-add-hdmi-edid.patch
-Patch10494: 0494-dts-dpu_reserved-move-dpu-reserved-memory-to-0x2ff40.patch
-Patch10495: 0495-wireless-build-rtl8852be-module-into-kernel.patch
-Patch10496: 0496-aud-limit-i2s-audio-params.patch
-Patch10497: 0497-dts-config-codec-snd-card-support.patch
-Patch10498: 0498-k1-system_suspend-enable-cpuidle-configuration-for-s.patch
-Patch10499: 0499-k1-dma-add-suspend-resume-callback-for-dma-module.patch
-Patch10500: 0500-display-Fix-read-hdmi-edid-data-error.patch
-Patch10501: 0501-vpu-sync-Release-JINDIE-V4.3.1-on-2024-03-19-06-08.patch
-Patch10502: 0502-mmc-sdhci-of-k1x-avoid-scan-sdio-during-start-host.patch
-Patch10503: 0503-k1-cpufreq-fix-bug-that-the-system-do-not-update-the.patch
-Patch10504: 0504-k1-cpu_cooling_device-add-the-mechanism-for-cpu-cool.patch
-Patch10505: 0505-k1-cpu_cooling-add-the-function-that-hotpluging-core.patch
-Patch10506: 0506-k1-thermal-enable-cpufreq-cooling-device.patch
-Patch10507: 0507-mmc-sdhci-of-k1x-improve-the-tuning-window-select.patch
-Patch10508: 0508-k1x-adjust-i2s-driver-strength.patch
-Patch10509: 0509-dts-config-es8326-ADC-src-to-dmic.patch
-Patch10510: 0510-eth-changing-the-dma-range-and-setting-dma-coherent-.patch
-Patch10511: 0511-display-Fix-hdmi-read-edid-data-code-error.patch
-Patch10512: 0512-phy-spacemit-k1x-combphy-get-shared-reset.patch
-Patch10513: 0513-MINIPC-fix-pcie2-lane-config.patch
-Patch10514: 0514-k1x-dts-update-mmc-tuning-config.patch
-Patch10515: 0515-aud-fix-i2s-capture-issue.patch
-Patch10516: 0516-mmc-sdhci-of-k1x-add-tx-delaycode-attr-for-sd-sdio.patch
-Patch10517: 0517-leds-Support-hearbeat.patch
-Patch10518: 0518-phy-k1x-ci-usb2-add-notify-callbacks-remove-unused-c.patch
-Patch10519: 0519-usb-xhci-fix-spacemit-k1x-phy-disconnect-detect.patch
-Patch10520: 0520-phy-spacemit-k1x-combphy-don-t-assert-when-use-share.patch
-Patch10521: 0521-eth-change-the-range-of-dma-to-range1.patch
-Patch10522: 0522-eth-improve-the-through-of-gmac.patch
-Patch10523: 0523-display-Modify-hdmi-and-mipi-dsi-qos.patch
-Patch10524: 0524-k1-kx312-add-touchpad-dts.patch
-Patch10525: 0525-kx312-enable-es8326-sound-card-support.patch
-Patch10526: 0526-clk-add-pll2-support-2800MHz.patch
-Patch10527: 0527-eth-change-the-num-of-tx-rx-desc-buffer-to-1024-for-.patch
-Patch10528: 0528-k1-sys-reboot-using-the-reset-function-of-pmic-rathe.patch
-Patch10529: 0529-display-modify-mipi-dsi-dpu-bit-clock.patch
-Patch10530: 0530-display-support-lt8911exb-driver.patch
-Patch10531: 0531-pcie-getting-the-num-lanes-of-pcie-controller-in-phy.patch
-Patch10532: 0532-pcie-change-the-dma-ranges-of-pcie-to-drma_range2.patch
-Patch10533: 0533-kx312-modify-pcie1-to-1-lane.patch
-Patch10534: 0534-scripts-Added-build_kernel.sh.patch
-Patch10535: 0535-aud-fix-the-first-buffer-data-loss-issue.patch
-Patch10536: 0536-i2s-fix-LR-channel-mapping-incorrect-issue.patch
-Patch10537: 0537-usb-spacemit_onboard_hub-fix-bug-caused-by-no-delay-.patch
-Patch10538: 0538-pcie-change-the-get_reset-method-of-pcie0-to-shared.patch
-Patch10539: 0539-scripts-Fixed-build_kernel.sh-error.patch
-Patch10540: 0540-config-enable-needed-config-checked-by-check-config..patch
-Patch10541: 0541-k1x-i2c-update-i2c-driver.patch
-Patch10542: 0542-display-Support-hdmi-hot-plug-detection.patch
-Patch10543: 0543-display-Fix-pm-runtime-status.patch
-Patch10544: 0544-dts-Enable-kx312-hdmi.patch
-Patch10545: 0545-k1x-wdt-fix-timeout-setting-bug.patch
-Patch10546: 0546-k1-cpufreq-cooling-refine-some-code-for-cpu-cooling.patch
-Patch10547: 0547-plic-clear-irq-pending-when-init-plic.patch
-Patch10548: 0548-k1-i2c-let-the-system-framework-dealing-with-suspend.patch
-Patch10549: 0549-k1-spi-jion-the-pm-domain-framework-to-achieve-power.patch
-Patch10550: 0550-k1-qspi-support-pm-runtime-system-suspend.patch
-Patch10551: 0551-k1-rproc-support-system-suspend-callback-for-rcpu.patch
-Patch10552: 0552-k1x-aes-add-aes-clk-reset-and-suspend-resume-callbac.patch
-Patch10553: 0553-eth-support-suspend-and-resume-for-pm.patch
-Patch10554: 0554-k1x-MINIPC-support-kernel-hdmi.patch
-Patch10555: 0555-k1x-rcpu-support-suspend-resume-function-for-rcpu.patch
-Patch10556: 0556-clock-add-audio-clocks.patch
-Patch10557: 0557-display-Do-not-set-clock-rate-in-dts.patch
-Patch10558: 0558-reset-add-audio-resets.patch
-Patch10559: 0559-hdmiaudio-add-pm-runtime-and-reset.patch
-Patch10560: 0560-i2s-add-pm-runtime-and-suspend-resume.patch
-Patch10561: 0561-vpu-support-suspend-and-resume.patch
-Patch10562: 0562-jpu-support-suspend-and-resume.patch
-Patch10563: 0563-display-Fix-the-minimum-brightness-for-the-lcd.patch
-Patch10564: 0564-vpu-remove-some-unuseful-log.patch
-Patch10565: 0565-dtsi-k1-x-add-interconnects-to-ehci.patch
-Patch10566: 0566-dts-k1-x_MINI-PC-change-usb0-mode-from-udc-to-ehci.patch
-Patch10567: 0567-display-Support-no-edid-panel.patch
-Patch10568: 0568-pcie-support-suspend-and-resume-for-pm.patch
-Patch10569: 0569-dts-k1-x_MINI-PC-add-usb2hub-node.patch
-Patch10570: 0570-k1_defconfig-enable-usb-serial-drivers-as-modules.patch
-Patch10571: 0571-drm-fix-the-buffer-allocation-failed.patch
-Patch10572: 0572-delete-camera-debug-code.patch
-Patch10573: 0573-k1-pmic-increase-initialization-level-for-other-modu.patch
-Patch10574: 0574-MINI-PC-Disable-mipi-dsi.patch
-Patch10575: 0575-fix-gpu_clk-clock-setting-timeout.patch
-Patch10576: 0576-k1_defconfig-change-dummy-device-default-to-module.patch
-Patch10577: 0577-dts-k1-x_deb1-use-PAD_1V8_DS0-for-DVL1-and-GPIO_123.patch
-Patch10578: 0578-dts-adding-module_usrload-for-loading-wifi-driver.patch
-Patch10579: 0579-k1x-pinctrl-adjust-uart2-driver-strength.patch
-Patch10580: 0580-usb-spacemit_onboard_hub-use-devm_gpiod_get_array_op.patch
-Patch10581: 0581-swiotlb-Adjust-the-size-of-swiotlb-to-128M.patch
-Patch10582: 0582-dram_range-change-the-mapping-range-for-dram_range2.patch
-Patch10583: 0583-swiotlb-adjust-the-size-and-segsize-of-io-tlb.patch
-Patch10584: 0584-display-Fix-card-order-for-mipi-dsi-and-hdmi.patch
-Patch10585: 0585-fix-wdt-timeout-setting-use-max-timeout-if-timeout-o.patch
-Patch10586: 0586-mmc-sdhci-of-k1x-add-get-aib-clk-avoid-disable-as-cl.patch
-Patch10587: 0587-clock-fix-emac-ptp-clk-source.patch
-Patch10588: 0588-k1x-rtc-fix-the-bug-that-setting-rtc-time-failed.patch
-Patch10589: 0589-aud-support-snd-card-config-in-dts.patch
-Patch10590: 0590-dts-change-hdmi-es8326-snd-card-config.patch
-Patch10591: 0591-k1x-rproc-fix-bug-of-rproc-driver.patch
-Patch10592: 0592-dtb-adding-the-dts-of-linux-for-MUSE-N1-board.patch
-Patch10593: 0593-clear-compile-warning.patch
-Patch10594: 0594-clean-compile-warning.patch
-Patch10595: 0595-clean-compile-warning.patch
+Patch10001: 0001-Revert-clk-spacemit-k1-Add-TWSI8-bus-and-function-cl.patch
+Patch10002: 0002-Revert-clk-spacemit-Add-clock-support-for-SpacemiT-K.patch
+Patch10003: 0003-add-k1-pro-base-platform-support.patch
+Patch10004: 0004-media-support-a-new-vpu-driver-which-use-V4L2-standa.patch
+Patch10005: 0005-add-SOC_SPACEMIT_K1-for-spacemit-k1-serial-SOCs.patch
+Patch10006: 0006-update-kernel-configuration-for-qemu-board.patch
+Patch10007: 0007-kernel-config-add-SOC_SPACEMIT_K1_FPGA-option-for-fp.patch
+Patch10008: 0008-fpga-kconfig-update-kernel-configuration-for-k1-pro-.patch
+Patch10009: 0009-qemu-kconfig-update-kernel-configuration-for-k1-pro-.patch
+Patch10010: 0010-sim-kconfig-update-kernel-configuration-for-k1-pro-s.patch
+Patch10011: 0011-add-k1pro-ccu-driver-and-config.patch
+Patch10012: 0012-add-k1pro-reset-controller-driver-and-config.patch
+Patch10013: 0013-update-kernel-config-add-FPGA-label-and-enable-debug.patch
+Patch10014: 0014-dtsi-enable-zicbom.patch
+Patch10015: 0015-change-dtb-configuration-to-k1-pro-SOC-1.-ddr-uart-p.patch
+Patch10016: 0016-dts-add-tcm-node-kernel-add-tcm-driver.patch
+Patch10017: 0017-add-.h-for-clock-reset-and-change-reg.patch
+Patch10018: 0018-pwm-dwc-driver-loaded-by-platform-changes-in-Makefil.patch
+Patch10019: 0019-sync-clk-reset-V1.1-spec-and-use-CLK_OF_DECLARE-for-.patch
+Patch10020: 0020-spi-adding-the-driver-for-Designware-enhanced-spi-co.patch
+Patch10021: 0021-riscv-support-svpbmt.patch
+Patch10022: 0022-usb-dwc3-support-spacemit-platform.patch
+Patch10023: 0023-dts-dwc3-add-dts-config-for-k1-pro.patch
+Patch10024: 0024-usb-update-usb-kernel-configuration.patch
+Patch10025: 0025-usb-dwc3-avoid-suspend-phy.patch
+Patch10026: 0026-riscv-mm-fix-reserve-cma-for-platform-not-having-ZON.patch
+Patch10027: 0027-kconfig-enable-cma-for-k1-pro-board.patch
+Patch10028: 0028-ethernet-adding-the-driver-of-the-Designware-gmac-co.patch
+Patch10029: 0029-reset-reset-driver-handle-all-global-soft-reset-sing.patch
+Patch10030: 0030-dma-dw-axi-dma-support-handshake-num-more-than-16.patch
+Patch10031: 0031-usb-dwc3-modify-reset-control-for-usb31.patch
+Patch10032: 0032-usb-dwc3-modify-DMA-capability.patch
+Patch10033: 0033-dma-fix-an-error-burst_trans_len-undeclare-in-dma-dr.patch
+Patch10034: 0034-mmc-support-spacemit-k1-pro-platform.patch
+Patch10035: 0035-mmc-dts-support-emmc-and-sdcard.patch
+Patch10036: 0036-reset-add-spinlock-for-timing-issue.patch
+Patch10037: 0037-mmc-modify-reset-card-only-once.patch
+Patch10038: 0038-reshape-dtsi-format-use-table-to-replace-space.patch
+Patch10039: 0039-k1-pro.dtsi-add-pmu-configs.patch
+Patch10040: 0040-pcie-support-spacemit-k1-pro-pcie-controller-RC-mode.patch
+Patch10041: 0041-usb-xhci-modify-DMA-capability-for-k1-pro-platform.patch
+Patch10042: 0042-change-dts-for-I2C-support.patch
+Patch10043: 0043-can-add-can-device-driver-and-kernel-config.patch
+Patch10044: 0044-ccu-add-mcu-clocks.patch
+Patch10045: 0045-fs-support-nfs.patch
+Patch10046: 0046-spi-support-spi-nor-and-correct-the-params-of-the-sp.patch
+Patch10047: 0047-mmc-enable-host-version-4-mode.patch
+Patch10048: 0048-mmc-deattach-clk-400k-during-mmc_rescan.patch
+Patch10049: 0049-add-script-for-extract-generate-rootfs.cpio.gz.patch
+Patch10050: 0050-mmc-increase-date-timeout-counter-value-to-max.patch
+Patch10051: 0051-remoteproc-support-bringup-esos-for-spacemit-k1-pro_.patch
+Patch10052: 0052-media-support-usb-media-enable-uvc-and-f_uvc.patch
+Patch10053: 0053-vpu-fix-vpu-compile-error-for-linux6.1.patch
+Patch10054: 0054-vpu-add-vpu-dts-config.patch
+Patch10055: 0055-can-update-kernel-defconfig-IPMS_CAN-y.patch
+Patch10056: 0056-clk-add-spinlock-and-mailbox-clock-for-mcu-system.patch
+Patch10057: 0057-reset-add-spinlock-and-mailbox-reset-for-mcu-system.patch
+Patch10058: 0058-mailbox-enable-spacemit-mailbox-driver.patch
+Patch10059: 0059-scmi-support-arm-s-scmi-protocol-for-spacemit-platfo.patch
+Patch10060: 0060-rproc-change-compatible-name-for-rproc-driver.patch
+Patch10061: 0061-pinctrl-support-the-driver-of-spacemit-pinctrl-contr.patch
+Patch10062: 0062-dts-add-the-table-of-pin-functions.patch
+Patch10063: 0063-vpu-add-reset-control-logic.patch
+Patch10064: 0064-vpu-add-device-caps-config.patch
+Patch10065: 0065-vpu-remove-severity-and-drain-file-node-for-probe-er.patch
+Patch10066: 0066-vpu-enable-debug-mode.patch
+Patch10067: 0067-arm_scmi-regulator-enable-an-dummy-regulator-using-s.patch
+Patch10068: 0068-dts-disable-vpu-as-some-bitfiles-have-no-vpu.patch
+Patch10069: 0069-ethernet-support-ethernet-qos.patch
+Patch10070: 0070-scmi-enable-scmi-power-domain-protocol.patch
+Patch10071: 0071-scmi-voltage_domain-add-vlittle-vgpu-nodes-in-scmi-d.patch
+Patch10072: 0072-cpufreq-support-scmi-cpufreq-driver-spacemit-platfor.patch
+Patch10073: 0073-wifi-cfg80211-enable-wireless-LAN-configuration-API.patch
+Patch10074: 0074-mmc-dts-support-sdio-interface.patch
+Patch10075: 0075-GMAC-support-IEEE_1588-hwtimestamp.patch
+Patch10076: 0076-usb-dts-add-dwc2-dts-for-k1-pro-fpga.patch
+Patch10077: 0077-usb-kconfig-enable-dwc2-configuration.patch
+Patch10078: 0078-usb-dwc2-add-params-for-k1-pro-fpga.patch
+Patch10079: 0079-pinctrl-change-the-format-of-pin-config.patch
+Patch10080: 0080-spi-nand-support-2x-4x-8x-for-spi-nand-tx-and-rx.patch
+Patch10081: 0081-ubi-kconfig-enable-ubi-configuration.patch
+Patch10082: 0082-usb-dwc2-modify-gadget-DMA-capability.patch
+Patch10083: 0083-add-k1-x-device-support.patch
+Patch10084: 0084-update-vpu-driver.patch
+Patch10085: 0085-cpu-support-cpu-hotplug.patch
+Patch10086: 0086-pinctrl-modify-the-format-of-the-pinctrl-group-name.patch
+Patch10087: 0087-update-dts-for-k1-x-platform.patch
+Patch10088: 0088-add-pxa_k1x-driver-for-k1x-platform.patch
+Patch10089: 0089-k1pro-enable-first-can-use-version-of-cpuidle.patch
+Patch10090: 0090-k1x-multi-core-modify-the-configurations-related-to-.patch
+Patch10091: 0091-k1pro-add-i2c-configuration.patch
+Patch10092: 0092-disable-pm-power-management-is-not-support-now.patch
+Patch10093: 0093-k1-x-add-mmp_pdma-driver-support.patch
+Patch10094: 0094-k1x-add-k1-x_fpga-1x4-2x2-proj.patch
+Patch10095: 0095-k1-x-support-pxa-uart-driver-dts-configs-pm-amend-in.patch
+Patch10096: 0096-ethernet-adding-gmac-driver-for-k1-x.patch
+Patch10097: 0097-mmc-support-spacemit-k1x-platform.patch
+Patch10098: 0098-ethernet-change-the-phy-mode-config-from-device-tree.patch
+Patch10099: 0099-hotplug-we-d-better-flush-the-local-l2-cache-when-on.patch
+Patch10100: 0100-mmc-update-dts-remove-axi-node.patch
+Patch10101: 0101-turn-off-CONFIG_PM-for-debug.patch
+Patch10102: 0102-config-support-gmac-driver-for-k1-x-1x4-and-2x2.patch
+Patch10103: 0103-support-tcm-for-k1x.patch
+Patch10104: 0104-add-udma-driver-for-userspace.patch
+Patch10105: 0105-dma-copy-use-vaddr.patch
+Patch10106: 0106-rm-udma-log.patch
+Patch10107: 0107-update-defconfig-for-support-sdmmc-udma.patch
+Patch10108: 0108-add-mutex-va2pa-fix-tcm_discontinuous_malloc.patch
+Patch10109: 0109-update-for-support-tcm.patch
+Patch10110: 0110-usb-gadget-support-k1x-udc.patch
+Patch10111: 0111-pcie-adding-pcie-driver-for-k1x.patch
+Patch10112: 0112-usb-dwc3-support-k1x-platform.patch
+Patch10113: 0113-k1x-add-pwm-pxa-driver-support.patch
+Patch10114: 0114-update-vpu-driver.patch
+Patch10115: 0115-k1pro-adjust-pwm-driver-config-name.patch
+Patch10116: 0116-k1x-add-soc-timer-driver-support.patch
+Patch10117: 0117-k1pro-deconfig-axi-dma-driver-Y.patch
+Patch10118: 0118-support-I2C-for-k1x.patch
+Patch10119: 0119-media-k1x-vpu-reshape-file-style.patch
+Patch10120: 0120-update-kernel-default-config.patch
+Patch10121: 0121-reset-update-reset-controller-driver.patch
+Patch10122: 0122-ccu-update-clock-controller-driver.patch
+Patch10123: 0123-fix-config-PCIE_SPACEMIT-depends-on-CONFIG_SOC_SPACE.patch
+Patch10124: 0124-k1x-switch-pwm-deconfig-Y-on-1x4-2x2-board.patch
+Patch10125: 0125-k1pro-cpuidle-support-cpuidle.patch
+Patch10126: 0126-k1pro-add-k1pro-fpga_1x4-k1pro-fpga_2x2-proj.patch
+Patch10127: 0127-k1-x-add-k1x-gpio-driver-support.patch
+Patch10128: 0128-riscv-spacemit-remove-k1pro-configuration-it-is-just.patch
+Patch10129: 0129-yk1x-add-the-first-version-of-pm-domain.patch
+Patch10130: 0130-k1-x-add-gmac-PTP-support.patch
+Patch10131: 0131-usb-dwc2-update-fifo-and-reset-config-for-k1-pro.patch
+Patch10132: 0132-k1x-enable-dmabuf.patch
+Patch10133: 0133-qspi-adding-driver-for-k1x-qspi-controller.patch
+Patch10134: 0134-qspi-fix-typo-cause-compilation-errors.patch
+Patch10135: 0135-add-spacemit-ir-rx-driver.patch
+Patch10136: 0136-k1x-dts-modify-the-actual-reference-clock-for-sdhci.patch
+Patch10137: 0137-k1pro-cpuidle-support-cpu0-cluster0-go-deepidle.patch
+Patch10138: 0138-cpuidle-adapt-code-for-CPUidle-functionality.patch
+Patch10139: 0139-update-k1x-vpu-driver.patch
+Patch10140: 0140-k1x-cpuidle-synchronize-relevant-patches-from-k1pro.patch
+Patch10141: 0141-k1x-support-cpufreq-driver.patch
+Patch10142: 0142-reset-add-reset-controller-driver-for-k1x.patch
+Patch10143: 0143-clock-add-clock-controller-driver-for-k1x.patch
+Patch10144: 0144-dts-fix-worng-and-warning-for-k1x-clk-reset.patch
+Patch10145: 0145-clock-fix-k1x-clock-id.patch
+Patch10146: 0146-pinctrl-adding-pinctrl-config-for-k1x-soc.patch
+Patch10147: 0147-reset-modify-reset-driver-file-name-of-k1pro.patch
+Patch10148: 0148-clock-modify-clock-driver-file-name-of-k1pro.patch
+Patch10149: 0149-pm_domain-move-the-pm_domain-driver-to-the-directy-s.patch
+Patch10150: 0150-v2d-Add-v2d-driver.patch
+Patch10151: 0151-add-tcm_cfg_save-restore.patch
+Patch10152: 0152-add-tcm-sync-malloc-code-clean.patch
+Patch10153: 0153-update-k1-x_fpga.dts-with-device-k1-x-board.dts.patch
+Patch10154: 0154-mmc-sdhci-of-k1x-support-configure-reset-and-clk-fro.patch
+Patch10155: 0155-usb-add-reset-and-clk-configurations.patch
+Patch10156: 0156-pinctrl-supports-the-allocation-of-GPIOs-with-the-sa.patch
+Patch10157: 0157-pcie-update-the-operations-of-clk-and-reset.patch
+Patch10158: 0158-display-Add-spacemit-drm-driver.patch
+Patch10159: 0159-gpu-Add-spacemit-gpu-driver.patch
+Patch10160: 0160-gpio-update-the-operation-of-clk-for-gpio.patch
+Patch10161: 0161-pmic-add-the-first-version-of-pmic-driver.patch
+Patch10162: 0162-pmic-spm8821-pinctrl-first-version-to-support-pinctr.patch
+Patch10163: 0163-fix-some-warning-when-building-dts.patch
+Patch10164: 0164-add-configurations-for-k1-x-evb-board.patch
+Patch10165: 0165-ethernet-update-driver-of-k1x-emac-driver.patch
+Patch10166: 0166-pm-domain-correction-of-previous-driver-errors-and-a.patch
+Patch10167: 0167-add-ranges-property-for-some-nodes-which-contain-som.patch
+Patch10168: 0168-qspi-update-the-opertions-of-clk-and-reset-for-k1x-q.patch
+Patch10169: 0169-pm_domain-improve-the-execution-process-of-this-driv.patch
+Patch10170: 0170-pm_domain-move-the-pm-domain-dts-node-to-k1-x.dtsi-f.patch
+Patch10171: 0171-gpu-Compatible-with-gpu-umd-driver.patch
+Patch10172: 0172-camera-init-version-of-camera-driver-on-k1.patch
+Patch10173: 0173-display-Add-spacemit-drm-debugfs-node.patch
+Patch10174: 0174-k1x-dma-add-clk-reset-control-in-dma-driver.patch
+Patch10175: 0175-qspi-adding-resets-for-k1-x-qspi.patch
+Patch10176: 0176-fix-cpu-node-properties-defined-by-linux-6.x.y.patch
+Patch10177: 0177-spi-add-the-driver-for-k1x-spi-controller.patch
+Patch10178: 0178-pmic-pm853-support-regulator-driver-and-compatible-w.patch
+Patch10179: 0179-k1x-uart-add-clock-reset-in-uart-driver.patch
+Patch10180: 0180-clock-fix-clock-driver-issues-of-k1x.patch
+Patch10181: 0181-pm-domain-add-new-feature.patch
+Patch10182: 0182-update-dts-for-support-i2c0.patch
+Patch10183: 0183-k1x-pwm-driver-adds-clk-reset-control.patch
+Patch10184: 0184-update-kconfig-to-support-spacemit-k1x-timer-configu.patch
+Patch10185: 0185-fix-uart-board-configuration-for-asic.patch
+Patch10186: 0186-clock-reset-fix-pwm-clk-reset-reg-bit.patch
+Patch10187: 0187-pm853-support-the-regulator-func-in-asic.patch
+Patch10188: 0188-pmic-open-the-configuration-of-pmic-driver.patch
+Patch10189: 0189-update-dts-for-i2c-to-support-clk-operation.patch
+Patch10190: 0190-k1x-i2c-driver-add-clk-reset.patch
+Patch10191: 0191-k1x-pm-domain-add-gnss-domain.patch
+Patch10192: 0192-gmac-modify-the-config-for-k1x-gmac-controller.patch
+Patch10193: 0193-usb-udc-k1x_udc-fix-udc-disconnect.patch
+Patch10194: 0194-k1x-usb-fix-reset-and-clk-configuration.patch
+Patch10195: 0195-update-evb-board-dts.patch
+Patch10196: 0196-remove-some-unused-kernel-module.patch
+Patch10197: 0197-k1-x-pinctrl-add-fast-config-for-sdcard.patch
+Patch10198: 0198-update-board-dts-for-evb-and-fpga-boards.patch
+Patch10199: 0199-display-Add-lcd-gc9503v_mipi.patch
+Patch10200: 0200-support-jpu-driver-for-k1x.patch
+Patch10201: 0201-clock-fix-the-result-of-set_rate-is-not-the-closest-.patch
+Patch10202: 0202-clock-enable-some-clocks.patch
+Patch10203: 0203-remove-clint-timer.patch
+Patch10204: 0204-update-dtsi-for-k1-x-platform.patch
+Patch10205: 0205-config-adding-spacemit-k1x-spi-driver.patch
+Patch10206: 0206-qspi-fix-the-bus_num-for-k1x-qspi-controller.patch
+Patch10207: 0207-k1x-vpu-update-driver.patch
+Patch10208: 0208-k1x-dtsi-linlon-vpu-update-config.patch
+Patch10209: 0209-usb-k1x_udc-deassert-reset-before-phy-init.patch
+Patch10210: 0210-k1x-dma-1.add-pm-func-in-dma-driver-2.modify-dma-Kco.patch
+Patch10211: 0211-k1x-uart-driver-add-pm-func.patch
+Patch10212: 0212-k1x-i2c-driver-add-pm-domains-revision.patch
+Patch10213: 0213-qspi-support-pm-runtime-for-qspi-driver.patch
+Patch10214: 0214-dts-adding-power-domains-for-k1x-qspi.patch
+Patch10215: 0215-k1x-pm-open-the-configuration-of-pm-domain-driver.patch
+Patch10216: 0216-k1x-dtsi-jpu-update-config.patch
+Patch10217: 0217-k1x-evb-defconfig-enable-CHIP_MEDIA_JPU.patch
+Patch10218: 0218-add-some-debug-configuration.patch
+Patch10219: 0219-feat-gpu-Support-gpu-for-k1x-evb-board.patch
+Patch10220: 0220-mmc-k1x-add-host-capability-MMC_CAP_NEED_RSP_BUSY.patch
+Patch10221: 0221-k1x-dtsi-jpu-add-reset-config.patch
+Patch10222: 0222-k1x-uart-add-reference-to-pm-domain.patch
+Patch10223: 0223-k1x-dma-add-reference-to-pm-domain.patch
+Patch10224: 0224-k1x-cpufreq-support-cpufreq-function.patch
+Patch10225: 0225-usb-phy-k1x-ci-usb2-update-phy-init-parameters-fix-h.patch
+Patch10226: 0226-usb-ehci-add-support-for-k1-x-ehci-driver.patch
+Patch10227: 0227-dts-k1-x-add-ehci-usb-host-support.patch
+Patch10228: 0228-config-enable-k1x-ehci-host-driver.patch
+Patch10229: 0229-update-evb-board-dts.patch
+Patch10230: 0230-disable-cpufreq-it-will-crash-kernel.patch
+Patch10231: 0231-config-k1-x-enable-more-usb-functions.patch
+Patch10232: 0232-clock-fix-camm2-no-clock-issue-change-enable-bit.patch
+Patch10233: 0233-clock-fix-set_rate-function-it-change-rate-by-div-an.patch
+Patch10234: 0234-clock-enable-some-clocks-for-cpu-remove-cpu-core-clk.patch
+Patch10235: 0235-k1x-cpufreq-don-t-need-to-set-parent-when-set-the-fr.patch
+Patch10236: 0236-display-Support-lcd-icnl9911c-mipi.patch
+Patch10237: 0237-sync-dts-with-device-board.dts.patch
+Patch10238: 0238-usb-hid-enable-raw-HID-device-support.patch
+Patch10239: 0239-clock-fix-qspi_clk-issue-only-set-fc-bit-when-settin.patch
+Patch10240: 0240-k1x-pm-domain-change-the-log-level-of-debug-info.patch
+Patch10241: 0241-display-fix-dpu-reset-control.patch
+Patch10242: 0242-config-k1x-enable-usb-webcam-support.patch
+Patch10243: 0243-k1x-add-watchdog-driver-support.patch
+Patch10244: 0244-k1x-add-reboot-with-args-support.patch
+Patch10245: 0245-fix-gpu-move-loading-firmware-later.patch
+Patch10246: 0246-k1x-spacemit-timer-driver-add-clk-reset-interface.patch
+Patch10247: 0247-k1x-timer-clk-reset-dts-config.patch
+Patch10248: 0248-mmc-sdhci-of-k1x-add-quirks2-SDHCI_QUIRK2_BROKEN_64_.patch
+Patch10249: 0249-reserved-2GB-4GB-area-from-memory-space-it-should-be.patch
+Patch10250: 0250-k1x-pm_domain-using-hw-mode-to-power-on-off-audio-s-.patch
+Patch10251: 0251-k1x-add-k1x-soc-rtc-driver-and-clk-reset-interface.patch
+Patch10252: 0252-sync-evb-board-dts-from-device-k1x-evb-board.dts.patch
+Patch10253: 0253-clean-compile-warning-in-arch-riscv-mm-init.c.patch
+Patch10254: 0254-clean-compile-warning-in-display-driver.patch
+Patch10255: 0255-clean-compile-warning-in-pcie-driver.patch
+Patch10256: 0256-k1x-wdt-update-watchdog-driver.patch
+Patch10257: 0257-clock-twsi8-clk-reset-reg-is-write-only-don-t-read-i.patch
+Patch10258: 0258-k1x-reboot-fix-reboot-into-fastboot-mode-with-no-arg.patch
+Patch10259: 0259-add-pwm-control-backlight.patch
+Patch10260: 0260-k1x-pinctrl.dtsi-fix-some-pinctrl-error.patch
+Patch10261: 0261-k1x-update-DTS-automatically-based-on-env.patch
+Patch10262: 0262-mmc-sdhci-of-k1x-update-sdio-scan-interface.patch
+Patch10263: 0263-add-tcm_override_readl-writel-for-access-tcm-overrid.patch
+Patch10264: 0264-k1x-unique-mac-address-in-eeprom.patch
+Patch10265: 0265-modify-compile-optimize-from-O2-to-Os.patch
+Patch10266: 0266-clean-compile-waring-in-vpu-driver.patch
+Patch10267: 0267-dts-add-apbc2-reg-base-for-clock-and-reset.patch
+Patch10268: 0268-clock-add-apbc2-reg-base-clocks.patch
+Patch10269: 0269-reset-add-apb2-reg-base-resets.patch
+Patch10270: 0270-clock-add-CLK_IGNORE_UNUSED-flag-for-some-clocks.patch
+Patch10271: 0271-vpu-can-use-when-RAM-2GB.patch
+Patch10272: 0272-support-non-uniform-address-mapping-between-peripher.patch
+Patch10273: 0273-add-nfsd-support.patch
+Patch10274: 0274-add-exfat-fs-support.patch
+Patch10275: 0275-add-xfs-support.patch
+Patch10276: 0276-add-btrfs-support.patch
+Patch10277: 0277-add-f2fs-support.patch
+Patch10278: 0278-add-quota-used-by-ext4-support.patch
+Patch10279: 0279-add-device-mapper-used-by-RAID-and-FS-crypto.patch
+Patch10280: 0280-add-bridge-and-vlan-support-used-by-docker-vm.patch
+Patch10281: 0281-add-ipv6-support.patch
+Patch10282: 0282-add-ntfs-v3.1-same-with-win10-s-native-fs-support.patch
+Patch10283: 0283-yk1x-thermal-support-thermal-driver.patch
+Patch10284: 0284-k1x-dma-close-some-unnecessary-config.patch
+Patch10285: 0285-k1x-dma-range-add-a-driver-for-devices-node-dram_ran.patch
+Patch10286: 0286-k1x-dma-fix-compile-error-in-include-k1x-dmac.h.-def.patch
+Patch10287: 0287-k1x-support-aes-crypto-engine.patch
+Patch10288: 0288-k1x-kernel-support-afalg-engine.patch
+Patch10289: 0289-support-camera-to-draw-when-use-2GB-DDR-dtsi-and-def.patch
+Patch10290: 0290-clear-compile-warning.patch
+Patch10291: 0291-clear-compile-warning.patch
+Patch10292: 0292-sync-evb-board.dts-from-devices-k1x-evb.patch
+Patch10293: 0293-camera-self-managed-ldo.patch
+Patch10294: 0294-k1x-pm-domain-add-hdmi-domiain.patch
+Patch10295: 0295-v2d-support-use-memory-2GB.patch
+Patch10296: 0296-k1x-pmic-refine-some-code.patch
+Patch10297: 0297-support-camera-to-draw-when-use-4GB-DDR.patch
+Patch10298: 0298-display-phy-driver-has-been-registered-in-another-fu.patch
+Patch10299: 0299-pci-add-initialization-phy-of-pcie-for-k1x.patch
+Patch10300: 0300-k1x-pm-domain-the-IO-size-too-small-to-cover-the-HDM.patch
+Patch10301: 0301-pcie-adding-dram_range1-for-pcie0-pcie1-pci2.patch
+Patch10302: 0302-add-dts-and-config-for-deb2-board.patch
+Patch10303: 0303-display-Support-spacemit-hdmi-driver.patch
+Patch10304: 0304-target-add-task-management-values-and-overlapped-res.patch
+Patch10305: 0305-usb-f_tcm-support-mutltiple-cmds-enhance-performance.patch
+Patch10306: 0306-k1x-support-reboot-to-uboot-shell.patch
+Patch10307: 0307-sync-evb-deb2-board-dts-from-devices.patch
+Patch10308: 0308-fix-cpp-clk-timeout.patch
+Patch10309: 0309-fix-gpu-memory-leak-when-launch-weston.patch
+Patch10310: 0310-k1x-cpufreq-support-adjust-the-ace-tcm-s-frequency-a.patch
+Patch10311: 0311-fix-dead-lock-bug-between-reset-and-clk.patch
+Patch10312: 0312-k1x-cpu-cooling-support-cpu-cooling-device.patch
+Patch10313: 0313-extcon-add-extcon-k1xci-driver-for-usb2.0-otg.patch
+Patch10314: 0314-usb-otg-add-k1x-ci-otg-driver.patch
+Patch10315: 0315-dtsi-k1-x-add-usb2-otg-support.patch
+Patch10316: 0316-clock-add-apb-clk-enable-apb-axi-clk-when-init.patch
+Patch10317: 0317-k1x-pmic-refine-the-pmic-code.patch
+Patch10318: 0318-display-Support-hdmi-1080p.patch
+Patch10319: 0319-clock-dead-lock-issue-may-happen.patch
+Patch10320: 0320-mmc-dts-support-power-domain.patch
+Patch10321: 0321-mmc-sdhci-of-k1x-add-pm_runtime_get_sync-during-prob.patch
+Patch10322: 0322-pcie-Optimize-phy-initialization-code-for-k1x-pcie-d.patch
+Patch10323: 0323-dts-modify-the-domain-id-of-pcie1-to-1.patch
+Patch10324: 0324-k1x-pmic-support-power-key-driver.patch
+Patch10325: 0325-k1x-pmic-rtc-support-spm8821-rtc-driver.patch
+Patch10326: 0326-reshape-pinctrl-dtsi-and-platform-dtsi.patch
+Patch10327: 0327-display-Fix-reset-control-deassert-and-assert.patch
+Patch10328: 0328-clean-clk-driver-debug-info.patch
+Patch10329: 0329-clean-drm-driver-debug-info.patch
+Patch10330: 0330-clean-camera-driver-debug-info.patch
+Patch10331: 0331-clean-dma-driver-debug-info.patch
+Patch10332: 0332-clean-usb-driver-debug-info.patch
+Patch10333: 0333-clean-tcm-driver-debug-info.patch
+Patch10334: 0334-clean-qspi-driver-debug-info.patch
+Patch10335: 0335-clean-crypto-driver-debug-info.patch
+Patch10336: 0336-clean-i2c-driver-debug-info.patch
+Patch10337: 0337-clean-reset-driver-debug-info.patch
+Patch10338: 0338-clean-gmac-driver-debug-info.patch
+Patch10339: 0339-clean-some-unused-driver-module.patch
+Patch10340: 0340-add-gx09inx101-mipi-lcd-configuration.patch
+Patch10341: 0341-k1x-crypto-1.handle-memleak-in-probe-2.ture-down-sel.patch
+Patch10342: 0342-k1x-pmic-refactoring-code-to-support-new-dcdc.patch
+Patch10343: 0343-defconfig-add-usb3.0-support-for-k1-x-evb2.patch
+Patch10344: 0344-usb-misc-add-spacemit-onboard-hub-driver.patch
+Patch10345: 0345-dtsi-k1-x-add-usb3.0-support.patch
+Patch10346: 0346-usb-add-spacemit-k1x-dma-mask-setting.patch
+Patch10347: 0347-phy-add-spacemit-pcie-usb3-combphy-driver.patch
+Patch10348: 0348-spacemit-rf-add-wifi-platform-driver.patch
+Patch10349: 0349-spacemit-rf-dts-enable-spacemit-rf-pwrseq.patch
+Patch10350: 0350-k1x-cpuidle-support-cpu-power-down-only.patch
+Patch10351: 0351-wireless-rtl8852bs-add-rtl8852bs-sdio-wifi-driver.patch
+Patch10352: 0352-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
+Patch10353: 0353-k1x-cpufreq-support-adjust-the-voltage-when-the-cpu-.patch
+Patch10354: 0354-display-Fix-hdmi-qos-control.patch
+Patch10355: 0355-mmc-dts-alloc-index-from-alias-id.patch
+Patch10356: 0356-disable-rtl8852bs-wifi-driver-there-is-too-much-warn.patch
+Patch10357: 0357-update-evb-board-dts.patch
+Patch10358: 0358-update-deb2-board-dts.patch
+Patch10359: 0359-update-deb2-kernel-config.patch
+Patch10360: 0360-sync-deb2-board-dts.patch
+Patch10361: 0361-wifi-k1x-deb2-enable-aic8800dc-wifi-defconfig.patch
+Patch10362: 0362-wifi-k1x-evb-enable-aic8800dc-wifi-defconfig.patch
+Patch10363: 0363-audio-add-audio-driver.patch
+Patch10364: 0364-dts-add-audio-snd-card-support.patch
+Patch10365: 0365-enable-audio-driver-for-evb-board.patch
+Patch10366: 0366-enable-audio-driver-for-deb2.patch
+Patch10367: 0367-clear-compile-warning.patch
+Patch10368: 0368-support-dvfs-for-evb-performance.patch
+Patch10369: 0369-use-performance-governor-as-default.patch
+Patch10370: 0370-audio-change-pcm-hw_params.patch
+Patch10371: 0371-display-Support-kernel-logo.patch
+Patch10372: 0372-display-update-kernel-logo.patch
+Patch10373: 0373-disable-audio-and-adsp-driver.patch
+Patch10374: 0374-disable-audio-and-adsp-driver.patch
+Patch10375: 0375-display-fix-kernel-logo.patch
+Patch10376: 0376-k1x-can-add-clk-reset-control-in-dma-driver.patch
+Patch10377: 0377-clock-fix-can-func-clk-incorrect-issue.patch
+Patch10378: 0378-reset-fix-reset-bit-of-aes.patch
+Patch10379: 0379-k1x-deb1-support-deb1-project.patch
+Patch10380: 0380-k1x-deb1-add-k1-x_deb1.dts-to-fix-compiling-error-wh.patch
+Patch10381: 0381-k1x-pmic-support-pwr-key-rtc-pinctrl-function.patch
+Patch10382: 0382-spacemit-rf-add-bluetooth-platform-driver.patch
+Patch10383: 0383-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
+Patch10384: 0384-sync-board-dts-from-devices.patch
+Patch10385: 0385-add-k1-universal-config-for-all-board.patch
+Patch10386: 0386-fix-disable-CONFIG_INITRAMFS_SOURCE-which-may-overla.patch
+Patch10387: 0387-wifi-k1x-deb1-enable-rtl8852bs-wifi-defconfig.patch
+Patch10388: 0388-k1-x-crypto-speed-up-expand-single-encrypt-decrypt-s.patch
+Patch10389: 0389-sync-board-dts-from-devices.patch
+Patch10390: 0390-wireless-rtl8852be-add-wifi-driver.patch
+Patch10391: 0391-k1x-cpu-cooling-add-the-cpuidle-cooling-function.patch
+Patch10392: 0392-clock-reset-fix-pwm0-clk-reset-reg-bit.patch
+Patch10393: 0393-add-cpu-model-name-showed-in-proc-cpuinfo.patch
+Patch10394: 0394-k1x-adjust-i2c-driver-strength.patch
+Patch10395: 0395-add-docker-required-configurations-1.-bridge-and-vla.patch
+Patch10396: 0396-k1x-deb1-support-power-off-system.patch
+Patch10397: 0397-display-Fix-dpu-reset-issue.patch
+Patch10398: 0398-sync-board-dts-from-devices.patch
+Patch10399: 0399-tools-perf-pmu-events-add-SpacemiT-X60-JSON-files.patch
+Patch10400: 0400-k1x-add-zicboz-and-zicbop-to-dts.patch
+Patch10401: 0401-modify-compile-optimize-from-size-to-performance.patch
+Patch10402: 0402-display-disable-kernel-logo.patch
+Patch10403: 0403-set-cma-alloc-range-from-0x40000000.patch
+Patch10404: 0404-sync-board-dts-from-devices-configuration.patch
+Patch10405: 0405-qspi-Correct-the-setting-clk-rate-of-k1x-qspi.patch
+Patch10406: 0406-performance-optimize.patch
+Patch10407: 0407-k1x-support-PCIE-SATA-JMB585-board.patch
+Patch10408: 0408-Bluetooth-enable-bluez-stack.patch
+Patch10409: 0409-uart-disable-bluesleep-hostwake-detect.patch
+Patch10410: 0410-clock-uart-source-48M-and-14.7M-have-same-gate-bit-i.patch
+Patch10411: 0411-k1x-uart-add-uart-parent-clk-gate-function.patch
+Patch10412: 0412-sync-board-dts-with-devices.patch
+Patch10413: 0413-display-Update-hdmi-phy-config.patch
+Patch10414: 0414-k1-x-aes-prevent-writing-buffer-requests-in-the-mean.patch
+Patch10415: 0415-k1x-aes-add-xts-cipher.patch
+Patch10416: 0416-display-Support-dsi-and-hdmi-double-screens.patch
+Patch10417: 0417-use-the-unified-defconfig-for-k1-5-5.patch
+Patch10418: 0418-add-ramdisk-for-develop-branch.patch
+Patch10419: 0419-k1-enable-usb-serial.patch
+Patch10420: 0420-mmc-sdhci-of-k1x-improve-the-sd-tuning-process.patch
+Patch10421: 0421-scatterlist-mask-out-GFP_DMA32-flag-when-call-kmallo.patch
+Patch10422: 0422-target-alloc-scatterlist-with-GFP_DMA32-flag-on-spac.patch
+Patch10423: 0423-k1-x-enable-ehci-for-deb1-and-deb2.patch
+Patch10424: 0424-display-Remove-error-logs.patch
+Patch10425: 0425-k1x-support-mailbox-driver.patch
+Patch10426: 0426-k1x-remoteproc-support-remoteproc-driver.patch
+Patch10427: 0427-k1x-rproc-launching-rcpu-during-the-system-startup-p.patch
+Patch10428: 0428-k1x-defconfig-enable-mailbox-rproc-rpmsg_virtio-defc.patch
+Patch10429: 0429-k1-rcpu-ipc-reserved-memory-for-rcpu-and-ipc.patch
+Patch10430: 0430-k1x-adma-add-adma-driver-for-sspa.patch
+Patch10431: 0431-audio-add-hdmi-audio-driver-and-remove-unused-code.patch
+Patch10432: 0432-deconfig-enable-sound-support.patch
+Patch10433: 0433-dts-add-hdmi-audio-config.patch
+Patch10434: 0434-dts-modify-audio-config.patch
+Patch10435: 0435-k1x-rporc-add-the-reference-of-mailbox-memory-region.patch
+Patch10436: 0436-audio-modify-hdmi-audio-params-set-enable-ctrl-reg.patch
+Patch10437: 0437-k1-support-CTP-driver.patch
+Patch10438: 0438-display-Fixed-dtsi-warning.patch
+Patch10439: 0439-dtb-adding-the-dts-of-linux-for-hs450-board.patch
+Patch10440: 0440-k1-defconfig-enable-support-for-r8152.patch
+Patch10441: 0441-disp-adjust-gpu-and-drm-initcall-sequence-for-fixed-.patch
+Patch10442: 0442-gitignore-add-user_headers-generated-by-openwrt-to-g.patch
+Patch10443: 0443-k1x-snd-fix-compile-warning-in-spacemit-snd-card.c.patch
+Patch10444: 0444-img-rogue-fix-compile-warning.patch
+Patch10445: 0445-k1x-display-fix-compile-warning.patch
+Patch10446: 0446-gt9xx-fix-compile-warning.patch
+Patch10447: 0447-eeprom-at24-fix-compile-warning.patch
+Patch10448: 0448-k1x-hdmi-fix-compile-warning-because-of-unused-varia.patch
+Patch10449: 0449-brtfs-fix-compile-warning.patch
+Patch10450: 0450-sync-camera-code-from-Release-JINDIE-V3.8.patch
+Patch10451: 0451-sync-camera-code-from-Release-JINDIE-V4.0.patch
+Patch10452: 0452-mmc-sdhci-of-k1x-update-phy-dll-config.patch
+Patch10453: 0453-aud-modify-hdmi-audio-period_size-fix-coding-issue.patch
+Patch10454: 0454-k1-gpio-support-irq-controller-mode.patch
+Patch10455: 0455-k1-open-hid-configs.patch
+Patch10456: 0456-k1-support-touchpad-for-hs450-board.patch
+Patch10457: 0457-aud-add-spi-i2s-driver.patch
+Patch10458: 0458-dts-add-i2s-support.patch
+Patch10459: 0459-dts-add-codec-es8326-support-i2s-pin-config.patch
+Patch10460: 0460-config-enable-codec-es8326.patch
+Patch10461: 0461-aud-add-es8326-sound-card-support.patch
+Patch10462: 0462-k1_defconfig-enable-USB_NET_QMI_WWAN.patch
+Patch10463: 0463-udma-open-failed-when-dma_dev-NULL.patch
+Patch10464: 0464-k1x-dma-support-console-tx-rx-dma-mode.patch
+Patch10465: 0465-dtb-adding-the-dts-of-linux-for-kx312-board.patch
+Patch10466: 0466-Bluetooth-defconfig-support-hid-and-pan-profile.patch
+Patch10467: 0467-gmac-Modify-gmac-pin-configuration-in-order-to-impro.patch
+Patch10468: 0468-usb-misc-spacemit_onboard_hub-use-gpio-array.patch
+Patch10469: 0469-dts-k1-x_kx312-enable-usbdrd3-and-usb3hub.patch
+Patch10470: 0470-dtb-adding-the-dts-of-linux-for-MINI-PC-board.patch
+Patch10471: 0471-add-kernel-image-itb-build-support.patch
+Patch10472: 0472-perfect-camera-dts-gpio-config.patch
+Patch10473: 0473-display-Fix-dpu-irqs-timeout.patch
+Patch10474: 0474-k1-align-initial-state-for-audio.patch
+Patch10475: 0475-k1-rpoc-using-a-RT-thread-to-process-the-virtio-msg.patch
+Patch10476: 0476-k1-delete-undefined-pm-function.patch
+Patch10477: 0477-dtb-adding-the-dts-of-linux-for-mingo-board.patch
+Patch10478: 0478-kx312-fix-the-compile-error-that-it-can-t-find-dpu_o.patch
+Patch10479: 0479-k1x-uart-fix-uart9-dts-config.patch
+Patch10480: 0480-k1x-serial-fix-bug-of-pm-runtime-feature.patch
+Patch10481: 0481-k1x-system_suspend-support-pmic-wakeup-source.patch
+Patch10482: 0482-mmc-sdhci-of-k1x-optimize-sdcard-tuning-procedure.patch
+Patch10483: 0483-k1-dts-update-dts.patch
+Patch10484: 0484-vpu-update-vpu-driver-version-to-Release-JINDIE-V4.2.patch
+Patch10485: 0485-v2d-mv-v2d-from-drivers-media-platform-spacemit-v2d-.patch
+Patch10486: 0486-add-kernel-image-offset-configuration-which-would-be.patch
+Patch10487: 0487-more-flexable-configuration-for-image-itb-build.patch
+Patch10488: 0488-k1x-dts-enable-sdio-sdr104-mode.patch
+Patch10489: 0489-mmc-sdhci-of-k1x-support-disable-caps.patch
+Patch10490: 0490-add-compressed-gzip-kernel-itb-build.patch
+Patch10491: 0491-k1-dts-disable-mipi-dsi-for-deb1.patch
+Patch10492: 0492-display-Fix-dpu-irqs-error.patch
+Patch10493: 0493-arch-riscv-Changed-default-target-to-Image.gz.itb-wh.patch
+Patch10494: 0494-update-evb-dts.patch
+Patch10495: 0495-display-add-hdmi-edid.patch
+Patch10496: 0496-dts-dpu_reserved-move-dpu-reserved-memory-to-0x2ff40.patch
+Patch10497: 0497-wireless-build-rtl8852be-module-into-kernel.patch
+Patch10498: 0498-aud-limit-i2s-audio-params.patch
+Patch10499: 0499-dts-config-codec-snd-card-support.patch
+Patch10500: 0500-k1-system_suspend-enable-cpuidle-configuration-for-s.patch
+Patch10501: 0501-k1-dma-add-suspend-resume-callback-for-dma-module.patch
+Patch10502: 0502-display-Fix-read-hdmi-edid-data-error.patch
+Patch10503: 0503-vpu-sync-Release-JINDIE-V4.3.1-on-2024-03-19-06-08.patch
+Patch10504: 0504-mmc-sdhci-of-k1x-avoid-scan-sdio-during-start-host.patch
+Patch10505: 0505-k1-cpufreq-fix-bug-that-the-system-do-not-update-the.patch
+Patch10506: 0506-k1-cpu_cooling_device-add-the-mechanism-for-cpu-cool.patch
+Patch10507: 0507-k1-cpu_cooling-add-the-function-that-hotpluging-core.patch
+Patch10508: 0508-k1-thermal-enable-cpufreq-cooling-device.patch
+Patch10509: 0509-mmc-sdhci-of-k1x-improve-the-tuning-window-select.patch
+Patch10510: 0510-k1x-adjust-i2s-driver-strength.patch
+Patch10511: 0511-dts-config-es8326-ADC-src-to-dmic.patch
+Patch10512: 0512-eth-changing-the-dma-range-and-setting-dma-coherent-.patch
+Patch10513: 0513-display-Fix-hdmi-read-edid-data-code-error.patch
+Patch10514: 0514-phy-spacemit-k1x-combphy-get-shared-reset.patch
+Patch10515: 0515-MINIPC-fix-pcie2-lane-config.patch
+Patch10516: 0516-k1x-dts-update-mmc-tuning-config.patch
+Patch10517: 0517-aud-fix-i2s-capture-issue.patch
+Patch10518: 0518-mmc-sdhci-of-k1x-add-tx-delaycode-attr-for-sd-sdio.patch
+Patch10519: 0519-leds-Support-hearbeat.patch
+Patch10520: 0520-phy-k1x-ci-usb2-add-notify-callbacks-remove-unused-c.patch
+Patch10521: 0521-usb-xhci-fix-spacemit-k1x-phy-disconnect-detect.patch
+Patch10522: 0522-phy-spacemit-k1x-combphy-don-t-assert-when-use-share.patch
+Patch10523: 0523-eth-change-the-range-of-dma-to-range1.patch
+Patch10524: 0524-eth-improve-the-through-of-gmac.patch
+Patch10525: 0525-display-Modify-hdmi-and-mipi-dsi-qos.patch
+Patch10526: 0526-k1-kx312-add-touchpad-dts.patch
+Patch10527: 0527-kx312-enable-es8326-sound-card-support.patch
+Patch10528: 0528-clk-add-pll2-support-2800MHz.patch
+Patch10529: 0529-eth-change-the-num-of-tx-rx-desc-buffer-to-1024-for-.patch
+Patch10530: 0530-k1-sys-reboot-using-the-reset-function-of-pmic-rathe.patch
+Patch10531: 0531-display-modify-mipi-dsi-dpu-bit-clock.patch
+Patch10532: 0532-display-support-lt8911exb-driver.patch
+Patch10533: 0533-pcie-getting-the-num-lanes-of-pcie-controller-in-phy.patch
+Patch10534: 0534-pcie-change-the-dma-ranges-of-pcie-to-drma_range2.patch
+Patch10535: 0535-kx312-modify-pcie1-to-1-lane.patch
+Patch10536: 0536-scripts-Added-build_kernel.sh.patch
+Patch10537: 0537-aud-fix-the-first-buffer-data-loss-issue.patch
+Patch10538: 0538-i2s-fix-LR-channel-mapping-incorrect-issue.patch
+Patch10539: 0539-usb-spacemit_onboard_hub-fix-bug-caused-by-no-delay-.patch
+Patch10540: 0540-pcie-change-the-get_reset-method-of-pcie0-to-shared.patch
+Patch10541: 0541-scripts-Fixed-build_kernel.sh-error.patch
+Patch10542: 0542-config-enable-needed-config-checked-by-check-config..patch
+Patch10543: 0543-k1x-i2c-update-i2c-driver.patch
+Patch10544: 0544-display-Support-hdmi-hot-plug-detection.patch
+Patch10545: 0545-display-Fix-pm-runtime-status.patch
+Patch10546: 0546-dts-Enable-kx312-hdmi.patch
+Patch10547: 0547-k1x-wdt-fix-timeout-setting-bug.patch
+Patch10548: 0548-k1-cpufreq-cooling-refine-some-code-for-cpu-cooling.patch
+Patch10549: 0549-plic-clear-irq-pending-when-init-plic.patch
+Patch10550: 0550-k1-i2c-let-the-system-framework-dealing-with-suspend.patch
+Patch10551: 0551-k1-spi-jion-the-pm-domain-framework-to-achieve-power.patch
+Patch10552: 0552-k1-qspi-support-pm-runtime-system-suspend.patch
+Patch10553: 0553-k1-rproc-support-system-suspend-callback-for-rcpu.patch
+Patch10554: 0554-k1x-aes-add-aes-clk-reset-and-suspend-resume-callbac.patch
+Patch10555: 0555-eth-support-suspend-and-resume-for-pm.patch
+Patch10556: 0556-k1x-MINIPC-support-kernel-hdmi.patch
+Patch10557: 0557-k1x-rcpu-support-suspend-resume-function-for-rcpu.patch
+Patch10558: 0558-clock-add-audio-clocks.patch
+Patch10559: 0559-display-Do-not-set-clock-rate-in-dts.patch
+Patch10560: 0560-reset-add-audio-resets.patch
+Patch10561: 0561-hdmiaudio-add-pm-runtime-and-reset.patch
+Patch10562: 0562-i2s-add-pm-runtime-and-suspend-resume.patch
+Patch10563: 0563-vpu-support-suspend-and-resume.patch
+Patch10564: 0564-jpu-support-suspend-and-resume.patch
+Patch10565: 0565-display-Fix-the-minimum-brightness-for-the-lcd.patch
+Patch10566: 0566-vpu-remove-some-unuseful-log.patch
+Patch10567: 0567-dtsi-k1-x-add-interconnects-to-ehci.patch
+Patch10568: 0568-dts-k1-x_MINI-PC-change-usb0-mode-from-udc-to-ehci.patch
+Patch10569: 0569-display-Support-no-edid-panel.patch
+Patch10570: 0570-pcie-support-suspend-and-resume-for-pm.patch
+Patch10571: 0571-dts-k1-x_MINI-PC-add-usb2hub-node.patch
+Patch10572: 0572-k1_defconfig-enable-usb-serial-drivers-as-modules.patch
+Patch10573: 0573-drm-fix-the-buffer-allocation-failed.patch
+Patch10574: 0574-delete-camera-debug-code.patch
+Patch10575: 0575-k1-pmic-increase-initialization-level-for-other-modu.patch
+Patch10576: 0576-MINI-PC-Disable-mipi-dsi.patch
+Patch10577: 0577-fix-gpu_clk-clock-setting-timeout.patch
+Patch10578: 0578-k1_defconfig-change-dummy-device-default-to-module.patch
+Patch10579: 0579-dts-k1-x_deb1-use-PAD_1V8_DS0-for-DVL1-and-GPIO_123.patch
+Patch10580: 0580-dts-adding-module_usrload-for-loading-wifi-driver.patch
+Patch10581: 0581-k1x-pinctrl-adjust-uart2-driver-strength.patch
+Patch10582: 0582-usb-spacemit_onboard_hub-use-devm_gpiod_get_array_op.patch
+Patch10583: 0583-swiotlb-Adjust-the-size-of-swiotlb-to-128M.patch
+Patch10584: 0584-dram_range-change-the-mapping-range-for-dram_range2.patch
+Patch10585: 0585-swiotlb-adjust-the-size-and-segsize-of-io-tlb.patch
+Patch10586: 0586-display-Fix-card-order-for-mipi-dsi-and-hdmi.patch
+Patch10587: 0587-fix-wdt-timeout-setting-use-max-timeout-if-timeout-o.patch
+Patch10588: 0588-mmc-sdhci-of-k1x-add-get-aib-clk-avoid-disable-as-cl.patch
+Patch10589: 0589-clock-fix-emac-ptp-clk-source.patch
+Patch10590: 0590-k1x-rtc-fix-the-bug-that-setting-rtc-time-failed.patch
+Patch10591: 0591-aud-support-snd-card-config-in-dts.patch
+Patch10592: 0592-dts-change-hdmi-es8326-snd-card-config.patch
+Patch10593: 0593-k1x-rproc-fix-bug-of-rproc-driver.patch
+Patch10594: 0594-dtb-adding-the-dts-of-linux-for-MUSE-N1-board.patch
+Patch10595: 0595-clear-compile-warning.patch
 Patch10596: 0596-clean-compile-warning.patch
-Patch10597: 0597-clear-compile-warning.patch
-Patch10598: 0598-usb-ehci-k1x-ci-support-power-management.patch
-Patch10599: 0599-usb-spacemit_onboard_hub-support-power-management.patch
-Patch10600: 0600-display-Fix-the-issue-caused-by-alloc-pages-failed.patch
-Patch10601: 0601-support-2lane-camera-to-draw-when-okay-frontsensor-n.patch
-Patch10602: 0602-k1-add-kernel-dts-config-for-MUSE-Pi.patch
-Patch10603: 0603-k1-rproc-fix-bug-in-system-shutdown-process.patch
-Patch10604: 0604-spi-fix-the-bug-of-accessing-illegal-pointers-when-t.patch
-Patch10605: 0605-clock-add-rcpu-can-clock.patch
-Patch10606: 0606-reset-add-rcpu-can-reset.patch
-Patch10607: 0607-k1-MUSE-Pi-update-card-detection-logic.patch
-Patch10608: 0608-spi-adding-the-device-node-of-spi2-controller.patch
-Patch10609: 0609-aud-fix-codec-persistent-noise-issue-when-switch-hdm.patch
-Patch10610: 0610-v2d-fix-set-clock-rate-timeout.patch
-Patch10611: 0611-display-fix-hdmi-compatibility-issues.patch
-Patch10612: 0612-Move-GPU-alloc-page-from-DMA32-to-Normal-zone.patch
-Patch10613: 0613-k1-pull-up-gpio70-71-for-SATA.patch
-Patch10614: 0614-k1x-uart-check-uart-dma-function-before-release-uart.patch
-Patch10615: 0615-nvme-change-the-segment-size-of-io-request-queue-for.patch
-Patch10616: 0616-wirless-don-t-show-error-when-load-regulatory.db-fai.patch
-Patch10617: 0617-clock-add-rcpu2-pwm-clock.patch
-Patch10618: 0618-display-fix-dpu-under-run-issues.patch
-Patch10619: 0619-reset-add-rcpu2-pwm-reset.patch
-Patch10620: 0620-i2s-change-log-level.patch
-Patch10621: 0621-display-clear-dpu-irq-and-status-after-bootlogo.patch
-Patch10622: 0622-k1x-support-x60-operate-can-controller-in-rcpu.patch
-Patch10623: 0623-k1x-deb1-support-rpwm2-for-fan.patch
-Patch10624: 0624-dtb-k1-x_MUSE-N1-set-otg-mode-for-dwc3.patch
-Patch10625: 0625-1.increase-command-line-buffer-size-to-2KB.patch
-Patch10626: 0626-k1x-uart3-fix-compatible-error-in-dts.patch
-Patch10627: 0627-k1x-wdt-adjust-reboot-handler-timeout.patch
-Patch10628: 0628-display-add-drm-resume-and-suspend.patch
-Patch10629: 0629-riscv-dts-correct-isa-string-for-Spacemit-K1.patch
-Patch10630: 0630-pcie-modify-suspend_noirq-and-resume_noirq-of-k1-pci.patch
-Patch10631: 0631-k1x-rtc-fix-the-issue-of-probabilistic-failure-on-se.patch
-Patch10632: 0632-dtb-k1-x-update-quirks-for-usbdrd3.patch
-Patch10633: 0633-k1-rtc-fix-stack-out-of-bounds-when-open-KASAN.patch
-Patch10634: 0634-camera-switch-unknow-ioctl-print-level-to-warning.patch
-Patch10635: 0635-Linux-Integrate-Battery-Driver.patch
-Patch10636: 0636-USB-xhci-plat-fix-legacy-PHY-double-init.patch
-Patch10637: 0637-display-add-hdmi-resume-and-suspend.patch
-Patch10638: 0638-display-fix-hdmi-compatibility-issues.patch
-Patch10639: 0639-1.change-license-statement-to-GPL-2.0-WITH-Linux-sys.patch
-Patch10640: 0640-usb-k1x_udc_core-remove-req-from-queue-even-it-s-alr.patch
-Patch10641: 0641-display-fix-build-warning.patch
-Patch10642: 0642-display-fix-hdmi-compatibility-issues.patch
-Patch10643: 0643-pcie-fix-the-compiler-warning.patch
-Patch10644: 0644-aud-fix-hdmi-sound-card-create-fail-issue.patch
-Patch10645: 0645-MUSE-N1-pull-down-GPIO-118-and-119-default-for-toggl.patch
-Patch10646: 0646-add-reboot-mode-select-support-while-P1-reset-will-p.patch
-Patch10647: 0647-aud-fix-global-out-of-bounds-when-open-KASAN.patch
-Patch10648: 0648-k1x_MUSE-Pi-add-spi3-pinctrl-config.patch
-Patch10649: 0649-qspi-fix-the-bug-the-actual-clk-frequency-not-equal-.patch
-Patch10650: 0650-clock-remove-qspi_clk-fc-bit-setting.patch
-Patch10651: 0651-rtc-fix-read-rtc-error-when-the-registers-of-pmic-ar.patch
-Patch10652: 0652-k1-dts-rproc-delete-the-dma-range-property-which-wil.patch
-Patch10653: 0653-pcie-modify-the-enable-phy-function-for-pcie-resume.patch
-Patch10654: 0654-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timeout.patch
-Patch10655: 0655-k1-rproc-increase-initialization-level-of-rproc-driv.patch
-Patch10656: 0656-pcie-supporting-the-link-enters-l2-state-when-suspen.patch
-Patch10657: 0657-pcie-Add-a-timeout-to-do-while-to-prevent-an-infinit.patch
-Patch10658: 0658-Linux-Separate-the-I2C-configuration-between-the-boa.patch
-Patch10659: 0659-dts-enable-hdmi-sound-card-for-deb2-MINI-PC.patch
-Patch10660: 0660-k1x-dma-fix-dma-tasklet-schedule-bug.patch
-Patch10661: 0661-Linux-The-integration-of-the-laptop-lid-switch-drive.patch
-Patch10662: 0662-display-fix-dpu-resume-and-suspend-issues.patch
-Patch10663: 0663-1.change-kernel-entry-addr-to-0x20_0000.patch
-Patch10664: 0664-audio-remove-SNDRV_PCM_INFO_PAUSE-support.patch
-Patch10665: 0665-k1-wireless-disable-power-always-on.patch
-Patch10666: 0666-display-modify-lcd-gx09inx101-pixel-clock.patch
-Patch10667: 0667-gpu-fix-failed-to-import-external-image-from-highmem.patch
-Patch10668: 0668-net-usb-add-asix-usb-nic-driver-ver-v3.1.0.patch
-Patch10669: 0669-k1-usb-enable-parkmode_disable_ss_quirk-on-DWC3-cont.patch
-Patch10670: 0670-k1-usb-update-quirks-for-usbdrd3-in-k1-x_MINI-PC.patch
-Patch10671: 0671-k1-use-ax_usb_nic-instead-of-ax88179_178a.patch
-Patch10672: 0672-k1-modify-sdio-rx-dline-configuration.patch
-Patch10673: 0673-audio-fix-hdmiaudio-can-not-playback-after-suspend-r.patch
-Patch10674: 0674-asix_usb-fix-compile-error.patch
-Patch10675: 0675-do_trap_insn_illegal-bind-ai-cores-when-use-ai-instr.patch
-Patch10676: 0676-k1-sync-k1-dtsi-from-linux6.1-dts.patch
-Patch10677: 0677-k1-cpu-fix-compilation-errs.patch
-Patch10678: 0678-k1-ccu-add-determine_rate-func.patch
-Patch10679: 0679-k1-gt9xx-delete-i2c_device_id-args.patch
-Patch10680: 0680-k1-camera-adjust-class_create.patch
-Patch10681: 0681-k1-pmic-delect-i2c_device_id-agrs.patch
-Patch10682: 0682-k1-dma-adjust-vm_flags_set-and-class_create-func.patch
-Patch10683: 0683-k1-gpio-adjust-struct-gpio_chip.fwnode.patch
-Patch10684: 0684-k1-usb-goto-valid-identifier.patch
-Patch10685: 0685-k1-update-k1_defconfig-to-linux-6.6-bringup.patch
-Patch10686: 0686-emac-change-the-function-of-adjusting-hardware-time-.patch
-Patch10687: 0687-display-update-config-for-hdmi-compatibility.patch
-Patch10688: 0688-display-drm-alloc-pages-from-highuser-zone.patch
-Patch10689: 0689-usb-xhci-plat-read-reset-on-resume-from-device-prope.patch
-Patch10690: 0690-usb-ehci-k1x-ci-support-reset-on-resume.patch
-Patch10691: 0691-usb-dwc3-spacemit-add-reset-operation-at-standby-set.patch
-Patch10692: 0692-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timout.patch
-Patch10693: 0693-k1-udma-add-pte_unmap-to-avoid-sleeping-function-cal.patch
-Patch10694: 0694-k1-deassert-rpwm-reset-in-resume-ops.patch
-Patch10695: 0695-pcie-change-the-dependence-of-PCI_K1X_HOST-to-PCI_MS.patch
-Patch10696: 0696-k1-rproc-enable-rproc-module-to-avoid-bus-hangs-dead.patch
-Patch10697: 0697-k1-vpu-fix-clk-warning-when-kernel-boot.patch
-Patch10698: 0698-k1-jpu-fix-compile-error-on-6.6.patch
-Patch10699: 0699-k1-jpu-enable-jpu.patch
-Patch10700: 0700-es8326-support-hp-mic-detect-process.patch
-Patch10701: 0701-sound-change-file-mode-from-0755-to-0644.patch
-Patch10702: 0702-pm-rproc-adjusting-the-sleep-process-level-of-rproc.patch
-Patch10703: 0703-pm-regulator-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
-Patch10704: 0704-rproc-do-not-automatically-load-and-start-rcpu.patch
-Patch10705: 0705-k1-pm-domain-fix-error-in-deleting-qos-nodes-when-di.patch
-Patch10706: 0706-k1-pm-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
-Patch10707: 0707-qspi-Fix-the-bug-of-data-transmission-failure-with-a.patch
-Patch10708: 0708-k1_defconfig-build-cdc_ncm-as-module.patch
-Patch10709: 0709-phy-k1x-ci-usb2-update-phy-init-sequence-report-erro.patch
-Patch10710: 0710-usb-dwc3-spacemit-support-phy-setup.patch
-Patch10711: 0711-k1-usb-setup-phy-in-dwc3-spacemit-instead-of-dwc3.patch
-Patch10712: 0712-usb-xhci-add-clear-disconnect-for-spacemit-k1x-phy.patch
-Patch10713: 0713-net-usb-promote-the-priority-of-ax_usb_nic-driver.patch
-Patch10714: 0714-camera-fix-call_get_fmt-EINVAL-return-to-support-dra.patch
-Patch10715: 0715-config-enable-kasan-to-memory-debug.patch
-Patch10716: 0716-k1-ce-fix-ce-compile-errs-and-enable-ce-config.patch
-Patch10717: 0717-gpu-enable-gpu-in-linux6.6.patch
-Patch10718: 0718-spacemit-rf-add-missing-includes.patch
-Patch10719: 0719-k1-enable-RTL8852BS-and-SPACEMIT_RFKILL.patch
-Patch10720: 0720-mmc-sdhci-of-k1x-add-tuning-windows-type-configurati.patch
-Patch10721: 0721-k1-change-sdio-max-clock-frequency-to-187MHz.patch
-Patch10722: 0722-deconfig-enable-aes-engine-to-full-disk-encryption.patch
-Patch10723: 0723-dts-modify-codec-card-name-config-and-add-mclk_fs-co.patch
-Patch10724: 0724-muse-book-add-muse-book-board-dts-support.patch
-Patch10725: 0725-k1-enable-USB_RTL8152.patch
-Patch10726: 0726-k1-ce-fix-slab-out-of-bounds-by-KASAN-report.patch
-Patch10727: 0727-display-Update-spacemit-drm-to-linux6.6.patch
-Patch10728: 0728-v2d-Enable-v2d.patch
-Patch10729: 0729-ax88179-change-file-mode-from-0755-to-0644.patch
-Patch10730: 0730-clk-change-file-mode-from-0755-to-0644.patch
-Patch10731: 0731-gmac-change-file-mode-from-0755-to-0644.patch
-Patch10732: 0732-rf-change-file-mode-from-0755-to-0644.patch
-Patch10733: 0733-usb-change-file-mode-from-0755-to-0644.patch
-Patch10734: 0734-pinctrl-change-file-mode-from-0755-to-0644.patch
-Patch10735: 0735-crypto-change-file-mode-0755-to-0644.patch
-Patch10736: 0736-input-change-mode-from-0755-to-0644.patch
-Patch10737: 0737-spi-change-file-mode-from-0755-to-0644.patch
-Patch10738: 0738-pci-change-file-mode-from-0755-to-0644.patch
-Patch10739: 0739-reset-change-file-mode-from-0755-to-0644.patch
-Patch10740: 0740-adma-change-file-mode-from-0755-to-0644.patch
-Patch10741: 0741-ir-chagne-file-mode-from-0755-to-0644.patch
-Patch10742: 0742-pwm-change-file-mode-from-0755-to-0644.patch
-Patch10743: 0743-wdt-change-file-mode-from-0755-to-0644.patch
-Patch10744: 0744-reboot-change-file-mode-from-0755-to-0644.patch
-Patch10745: 0745-dts-change-file-mode-from-0755-to-0644.patch
-Patch10746: 0746-camera-change-file-mode-from-0755-to-0644.patch
-Patch10747: 0747-k1-spm8821-enable-mask_unmask_non_inverted-property-.patch
-Patch10748: 0748-dts-set-iomem-the-nomap-propertiers.patch
-Patch10749: 0749-wireless-support-pcie-wifi-rtl8852be.patch
-Patch10750: 0750-hdmiaudio-fix-no-sound-after-suspend-resume.patch
-Patch10751: 0751-dts-change-i2s-target-rate.patch
-Patch10752: 0752-clock-change-i2s-clock-parent-and-rate.patch
-Patch10753: 0753-audio-add-mclk-config-flow.patch
-Patch10754: 0754-dts-add-es8326-snd-card-support-for-MINI-PC.patch
-Patch10755: 0755-audio-fix-audio-compile-error.patch
-Patch10756: 0756-k1x-enable-audio-support.patch
-Patch10757: 0757-audio-fix-i2s-audio-noise-due-to-dmabuffer-is-cached.patch
-Patch10758: 0758-fix-regulator-do-not-load-the-driver-asynchronously-.patch
-Patch10759: 0759-kconfig-add-config-ARCH_FORCE_MAX_ORDER-to-fix-defau.patch
-Patch10760: 0760-riscv-show-reason-of-unaligned-access-speed-are-diff.patch
-Patch10761: 0761-isa-modify-riscv-isa-format-definition.patch
-Patch10762: 0762-deconfig-enable-CONFIG_DEBUG-to-more-debug-log.patch
-Patch10763: 0763-aud-fix-i2s-pointer-pos-to-integer-multiple-of-perio.patch
-Patch10764: 0764-arch-riscv-boot-dts-Fixed-MUSE-Book-model-to-M1-MUSE.patch
-Patch10765: 0765-dts-add-orisetech-ota7290b-lcd-panel-1920-1200.patch
-Patch10766: 0766-qspi-fix-the-warning-when-disable-the-clk-and-bus-cl.patch
-Patch10767: 0767-k1x-6.6-support-flexcan-on-k1x-platform.patch
-Patch10768: 0768-arch-riscv-k1_deb1-Added-pwm-fan.patch
-Patch10769: 0769-dts-sync-the-k1-x_deb1-modify-to-the-k1-x_milkv-jupi.patch
-Patch10770: 0770-dts-add-milkv-jupiter-board-of-M1.patch
-Patch10771: 0771-dts-add-SiPEED-LPi3A-board-support.patch
-Patch10772: 0772-at24-clean-compile-warning.patch
-Patch10773: 0773-defconfig-update-defconfig.patch
-Patch10774: 0774-defconfig-support-some-cpufreq-governor.patch
-Patch10775: 0775-pm-pinctrl-support-edge-detect-wakeup-functoin.patch
-Patch10776: 0776-spacemit-rf-support-wlan-irq-hostwake.patch
-Patch10777: 0777-k1-modify-wlan-hostwake-to-pinctl.patch
-Patch10778: 0778-deconfig-disable-kasan-debug.patch
-Patch10779: 0779-k1-set-USB0-to-host-mode-for-MUSE-Book.patch
-Patch10780: 0780-k1-add-wlan-hostwake-config-for-MINI-PC-and-milkv-ju.patch
-Patch10781: 0781-display-fix-dsi-dphy-hs-prepare-and-hs-zero-cycle.patch
-Patch10782: 0782-display-reserve-hdmi-compatibility-config-for-chips-.patch
-Patch10783: 0783-display-modify-the-method-for-obtaining-hdmi-edid.patch
-Patch10784: 0784-display-support-lt9711-for-mipi-dsi-to-dp.patch
-Patch10785: 0785-display-remove-debug-log.patch
-Patch10786: 0786-display-remove-useless-codes-and-fix-edp-driver.patch
-Patch10787: 0787-display-support-dp-panel.patch
-Patch10788: 0788-display-modify-edp-brightness-levels.patch
-Patch10789: 0789-display-support-256-bytes-edid-data-for-hdmi.patch
-Patch10790: 0790-display-detect-dp-plug-in-and-plug-out.patch
-Patch10791: 0791-display-modify-the-order-of-the-backlight-for-the-lt.patch
-Patch10792: 0792-display-do-not-operate-clock-during-the-pm-runtime.patch
-Patch10793: 0793-display-modify-the-minimum-backlight-brightness-valu.patch
-Patch10794: 0794-keep-bootloader-logo-on-and-release-backlight-first.patch
-Patch10795: 0795-display-trun-off-lcd-power-domain-after-the-probe-fu.patch
-Patch10796: 0796-ccu-fix-rpwm-clk-sel.patch
-Patch10797: 0797-crypto-reset-and-clock-is-shared-between-crypto-engi.patch
-Patch10798: 0798-efuse-add-spacemit-efuse-driver.patch
-Patch10799: 0799-socinfo-add-spacemit-soc-information-driver.patch
-Patch10800: 0800-dts-support-efuse-and-cpuinfo-module.patch
-Patch10801: 0801-defconfig-enable-efuse-and-socinfo-module.patch
-Patch10802: 0802-k1x-adjust-ddr-master-devices-dram_range.patch
-Patch10803: 0803-dts-modify-pcie-bar-area-layout.patch
-Patch10804: 0804-ccu-add-pll3-clk-frequency.patch
-Patch10805: 0805-scripts-package-mkdebian.patch
-Patch10806: 0806-efuse-add-nvmem-cells-according-to-the-dts.patch
-Patch10807: 0807-dts-fix-the-error-of-cache-sets-number.patch
-Patch10808: 0808-gpu-fix-workqueue-warning.patch
-Patch10809: 0809-k1-support-mult-frequency-table-and-using-one-policy.patch
-Patch10810: 0810-hdmiaudio-fix-no-sound-issue-on-some-hdmi-display-du.patch
-Patch10811: 0811-pinctrl-fix-compile-warning.patch
-Patch10812: 0812-mipi-fix-compile-warninng.patch
-Patch10813: 0813-i2c-fix-warn_on-when-system-power-off.patch
-Patch10814: 0814-aud-fix-can-not-play-record-issue-after-suspend-resu.patch
-Patch10815: 0815-display-release-reserved-memory-for-bootlogo.patch
-Patch10816: 0816-fs-enable-ubifs-jffs2-and-squashfs.patch
-Patch10817: 0817-k1-thermal-separate-the-thermal-configuration-and-re.patch
-Patch10818: 0818-k1x-add-MUSE-Card-dts-support.patch
-Patch10819: 0819-k1x-add-MUSE-Paper-dts-support.patch
-Patch10820: 0820-usb-dwc3-support-remote-wakeup.patch
-Patch10821: 0821-usb-ehci-support-remote-wakeup.patch
-Patch10822: 0822-usb-dwc3-enable-irqwake-in-dwc3_suspend-instead-of-s.patch
-Patch10823: 0823-usb-dwc3-enable-linestate1-wakeup-mask.patch
-Patch10824: 0824-usb-disable-remote-wakeup-default.patch
-Patch10825: 0825-phy-k1x-ci-otg-adjust-Makefile-order.patch
-Patch10826: 0826-bluetooth-use-kernel-btrtl-for-8852bu-instead-of-rtk.patch
-Patch10827: 0827-phy-spacemit-k1x-combphy-add-suspend-term-quirk.patch
-Patch10828: 0828-k1x-adjust-crypto-alloc-buffer-and-set-mask-turns.patch
-Patch10829: 0829-riscv-dts-spacemit-fix-PCIe-lane-number-for-deb1.patch
-Patch10830: 0830-pinctrl-modify-some-pins-pull-configurations.patch
-Patch10831: 0831-spacemit-rf-modify-default-value-of-poweron-delay.patch
-Patch10832: 0832-k1-MUSE-Pi-update-sdio-tx-delaycode.patch
-Patch10833: 0833-mmc-sdhci-of-k1x-fix-cpufreq-while-execute-sw-tuning.patch
-Patch10834: 0834-m1-milkv-jupiter-specify-cpufreq-during-sdio-rx-tuni.patch
-Patch10835: 0835-camera-move-spacemit-bifmode-enable-from-dtsi-to-dts.patch
-Patch10836: 0836-MUSE-Paper-remove-hdmiaudio-support.patch
-Patch10837: 0837-k1-MUSE-Pi-update-sdio-tx-delaycode-to-0x30.patch
-Patch10838: 0838-uart0-dts-add-uart-controller-configuration-for-open.patch
-Patch10839: 0839-k1-cpufreq-using-the-default-vf-table-of-we-did-not-.patch
-Patch10840: 0840-k1x-adjust-buck4-ldo1-7-suspend-voltage-to-0V.patch
-Patch10841: 0841-k1x-MINIPC-adjust-ldo1-to-always-on-for-secjtag-TRST.patch
-Patch10842: 0842-uart-clean-debug-info.patch
-Patch10843: 0843-jpu-clean-debug-info.patch
-Patch10844: 0844-pcie-clean-debug-info.patch
-Patch10845: 0845-sound-clean-debug-info.patch
-Patch10846: 0846-k1x-fix-dldo1-always-on-to-aldo1-always-on.patch
-Patch10847: 0847-change-error-to-warning-when-frequency-table-is-full.patch
-Patch10848: 0848-Add-support-for-ICM42607-sensor.patch
-Patch10849: 0849-camera-sync-code-from-linux-6.1.patch
-Patch10850: 0850-k1-pm-domain-disable-wakeup5-by-default.patch
-Patch10851: 0851-k1-pm-close-some-dcdc-ldo-to-optimize-sleep-power-co.patch
-Patch10852: 0852-Linux-Open-jffs2-and-squash-support.patch
-Patch10853: 0853-Linux-For-the-Power-button-shutdown-add-support-for-.patch
-Patch10854: 0854-To-ensure-a-better-user-experience-set-the-battery-l.patch
-Patch10855: 0855-To-add-hall-sensor-support-for-Muse-Paper-report-SW_.patch
-Patch10856: 0856-k1-hotplug-close-the-SCMI-configuration.patch
-Patch10857: 0857-pcie-supporting-PCIe-interface-power-management.patch
-Patch10858: 0858-clock-add-rcpu-i2c-clock.patch
-Patch10859: 0859-reset-add-rcpu-i2c-reset.patch
-Patch10860: 0860-gmac-supporting-ptp-with-hardware-timestamp.patch
-Patch10861: 0861-display-modify-panel-backlight-level.patch
-Patch10862: 0862-display-add-panel-notifier-event-for-spacemit.patch
-Patch10863: 0863-display-add-mipi-lcd-icnl9951r.patch
-Patch10864: 0864-display-support-mipi-lcd-avee-and-avdd.patch
-Patch10865: 0865-display-add-resume-and-suspend-for-lt9711-driver.patch
-Patch10866: 0866-k1-cpufreq-Support-dynamic-switching-of-1.6G-and-1.8.patch
-Patch10867: 0867-k1-pm-domain-improve-the-detach-operation-of-the-pow.patch
-Patch10868: 0868-gmac-fixed-the-bug-that-Ethernet-phy-cannot-enter-lo.patch
-Patch10869: 0869-k1x-add-MUSE-Paper-mini-4g-dts-support.patch
-Patch10870: 0870-clock-fix-can-not-get-correct-rate-issue.patch
-Patch10871: 0871-pcie-modify-the-phy-initialization-for-pcie-controll.patch
-Patch10872: 0872-k1-x_MUSE-Book-not-reset-usb-during-suspend.patch
-Patch10873: 0873-k1-MUSE-Paper-update-dts-enable-usb-and-wifi.patch
-Patch10874: 0874-k1-MUSE-Paper-enable-uart2-for-bluetooth.patch
-Patch10875: 0875-k1-MUSE-Paper-update-card-detection-logic.patch
-Patch10876: 0876-ehci-k1x-ci-fix-multiple-instance-debugfs-conflict.patch
-Patch10877: 0877-mingo-change-u3-role-switch-default-mode-to-host.patch
-Patch10878: 0878-spi-nor-supporting-FM25Q64AI3-spi-nor-flash.patch
-Patch10879: 0879-k1x-i2c1-i2c6-apply-for-the-same-pin-delete-i2c1.patch
-Patch10880: 0880-k1x-fix-crypto-buffer-data-copy-method.patch
-Patch10881: 0881-dts-adding-the-power-switch-of-wifi-and-bt-on-kx312.patch
-Patch10882: 0882-dts-adding-the-power-switch-of-wifi-and-bt-on-MUSE-B.patch
-Patch10883: 0883-this-is-not-pcie-patch-Revert-pcie-clean-debug-info.patch
-Patch10884: 0884-pcie-clean-debug-info.patch
-Patch10885: 0885-pcie-fix-the-bug-that-Samsung-nvme-ssd-link-establis.patch
-Patch10886: 0886-k1x-disable-watchdog.patch
-Patch10887: 0887-arch-riscv-boot-dts-Enable-MUSE-Book-eeprom-by-defau.patch
-Patch10888: 0888-k1-x_lpi3a.dts-change-usb2.0otg-port-to-device-mode.patch
-Patch10889: 0889-k1-x_lpi3a.dts-fix-no-interrupt-of-ctp.patch
-Patch10890: 0890-k1_deconfig-add-i2c-gpio-expander-PCA953X-driver.patch
-Patch10891: 0891-codec-add-es7210-driver.patch
-Patch10892: 0892-codec-add-es8156-driver.patch
-Patch10893: 0893-dts-fix-JD9365DA-10.1-inch-lcd-cann-t-display-for-lp.patch
-Patch10894: 0894-as1911-change-file-mode-to-0644.patch
-Patch10895: 0895-k1-pm-rproc-put-the-de-assert-of-rproc-s-clock-into-.patch
-Patch10896: 0896-dtsi-k1-add-otg1-support-add-wakeup_reg-reg.patch
-Patch10897: 0897-k1x_udc_core-fix-global-variable-and-extcon.patch
-Patch10898: 0898-phy-k1x-ci-otg-refactor-otg-logic-to-support-more-us.patch
-Patch10899: 0899-ehci-k1x-ci-fix-otg-suspend-resume-and-pm_runtime.patch
-Patch10900: 0900-k1_defconfig-enable-otg-support.patch
-Patch10901: 0901-k1-milkv-jupiter-update-sdio-tx-delaycode-to-0x30.patch
-Patch10902: 0902-Linux-Add-a-virtual-charger-driver.This-resolves-the.patch
-Patch10903: 0903-display-fix-the-issue-of-bootlogo-flashing-screen.patch
-Patch10904: 0904-gmac-set-mac_managed_pm-to-true-to-fix-mdio-resume-w.patch
-Patch10905: 0905-MUSE-N1-u3-set-the-default-mode-to-host-1.so-2.5G-et.patch
-Patch10906: 0906-adma-fix-compile-warning.patch
-Patch10907: 0907-k1x-flexcan-do-ram-init-by-iowrite32-instead-of-mems.patch
-Patch10908: 0908-thermal-add-hwmon-sysfs-node-for-some-debug-tools.patch
-Patch10909: 0909-thermal-fix-compile-error-because-of-sysfs-register-.patch
-Patch10910: 0910-k1x-support-cw2015-driver.patch
-Patch10911: 0911-defconfig-update-kernel-default-configuration.patch
-Patch10912: 0912-clock-add-rcpu-ir-uart0-uart1-ssp-clocks.patch
-Patch10913: 0913-reset-add-rcpu-ir-uart0-uart1-ssp-resets.patch
-Patch10914: 0914-display-fix-compile-warning.patch
-Patch10915: 0915-camera-fix-compile-warning.patch
-Patch10916: 0916-crypto-fix-compile-warning.patch
-Patch10917: 0917-vpu-fix-compile-warning.patch
-Patch10918: 0918-reset-fix-compile-warning.patch
-Patch10919: 0919-cpufreq-fix-compile-warning.patch
-Patch10920: 0920-spi-fix-compile-warning.patch
-Patch10921: 0921-usb-fix-compiler-warning.patch
-Patch10922: 0922-clock-fix-compile-warning.patch
-Patch10923: 0923-gmac-fix-compiler-warning.patch
-Patch10924: 0924-codec-fix-compile-warning.patch
-Patch10925: 0925-k1-muse_book-support-hall-to-wakeup-system.patch
-Patch10926: 0926-usb-typec-husb239-support-hynetek-husb239.patch
-Patch10927: 0927-k1-defconfig-support-husb239-typec-controller.patch
-Patch10928: 0928-k1x-x60-can-and-rcpu-can-separate.patch
-Patch10929: 0929-k1-MUSE-Paper-support-husb239-typec-controller.patch
-Patch10930: 0930-ai-fix-error-in-bind-ai-task-to-ai-core.patch
-Patch10931: 0931-phy-k1x-ci-usb2-add-set_suspend-op.patch
-Patch10932: 0932-phy-k1x-ci-otg-set-role-to-default-role-in-probe.patch
-Patch10933: 0933-k1-x_MUSE-Pi-enable-otg1-and-set-dwc3-to-drd-mode.patch
-Patch10934: 0934-k1-x_MUSE-Book-enable-otg-for-usb0.patch
-Patch10935: 0935-k1x-support-rcpu-uart1-function-through-x60.patch
-Patch10936: 0936-k1-i2c-support-i2c-driver-of-rcpu-domain.patch
-Patch10937: 0937-spacemit_onboard_hub-add-pm-domain-support.patch
-Patch10938: 0938-dwc3-spacemit-add-pm-domain-support.patch
-Patch10939: 0939-dtsi-k1-update-usb-power-domain-settings.patch
-Patch10940: 0940-display-fix-the-issue-while-the-i2c-communication-is.patch
-Patch10941: 0941-insmod-simplify-section-header-process-for-optimize-.patch
-Patch10942: 0942-k1-pinctrl-we-d-better-clean-the-edge-detect-pending.patch
-Patch10943: 0943-k1x-i2c-add-one-callback-of-power-off.patch
-Patch10944: 0944-k1-x_MUSE-Paper-mini-4g-camera-verify-ok.patch
-Patch10945: 0945-display-add-mipi-lcd-jd9365dah3.patch
-Patch10946: 0946-display-add-hdmi-notifier-event-for-spacemit.patch
-Patch10947: 0947-k1-power-key-don-t-report-the-event-of-power-key-whe.patch
-Patch10948: 0948-k1-MUSE-Paper-mini-4g-update-dts-enable-typec-and-wi.patch
-Patch10949: 0949-usb-typec-husb239-fix-possible-NULL-pointer-derefere.patch
-Patch10950: 0950-k1-serial-register-freeze-restore-callback-for-hiber.patch
-Patch10951: 0951-MUSE-Paper-mini-4g-enable-codec-snd-card-support.patch
-Patch10952: 0952-clear-some-boot-error-without-including-these-dtsi.patch
-Patch10953: 0953-pcie-Add-request-operation-before-gpio-operation.patch
-Patch10954: 0954-k1x-flexcan-fix-clock-frequency-config-and-clk-set.patch
-Patch10955: 0955-arch-riscv-configs-Update-k1_defconfig.patch
-Patch10956: 0956-k1x-support-rcpu-ir.patch
-Patch10957: 0957-asix_usb-fix-netdev-dev_addr_shadow-not-set.patch
-Patch10958: 0958-k1-MUSE-Paper-mini-4g-update-modules_usrload.patch
-Patch10959: 0959-mmc-sdhci-of-k1x-use-remove_new-instead-of-remove.patch
-Patch10960: 0960-phy-k1x-ci-otg-fix-shared-reset-assert-warning.patch
-Patch10961: 0961-spacemit-rf-introduce-spacemit-rfkill-driver.patch
-Patch10962: 0962-k1-x_MUSE-Paper-mini-4g-add-4g-module-support.patch
-Patch10963: 0963-pcie-Set-the-vendor-id-and-device-id-of-k1x-pcie-rc.patch
-Patch10964: 0964-qmi_wwan_f-add-fibocom-qmi-modem-driver.patch
-Patch10965: 0965-k1_defconfig-enable-qmi_wwan_f-as-module.patch
-Patch10966: 0966-defconfig-enable-CONFIG_MTD_CMDLINE_PARTS.patch
-Patch10967: 0967-k1x-turn-on-ir-spacemit-defconfig.patch
-Patch10968: 0968-sbs-charger-change-file-mode-0755-0644.patch
-Patch10969: 0969-k1-cpufreq-using-on-v-f-table-to-support-k1-m1-chip.patch
-Patch10970: 0970-k1-cpufreq-delete-the-boost-related-node-for-k1.patch
-Patch10971: 0971-k1-thermal-using-one-thermal-table-for-both-m1-k1.patch
-Patch10972: 0972-k1_defconfig-add-USB-Audio-UAC-devices-support.patch
-Patch10973: 0973-k1-alsa-alsa-driver-adds-audio-data-dump.patch
-Patch10974: 0974-spacemit_onboard_hub-fix-Kconfig-dependancy.patch
-Patch10975: 0975-gpu-Fix-building-error-with-FORTIFY_SOURCE-enabled.patch
-Patch10976: 0976-k1-thermal-fix-the-issue-where-the-frequency-cannot-.patch
-Patch10977: 0977-pcie-print-MSIX_AFIFO_FULL-information-once.patch
-Patch10978: 0978-deconfig-enable-spinlock_debug.patch
-Patch10979: 0979-MUSE-Paper-mini-support-battery-profile.patch
-Patch10980: 0980-MUSE-Paper-mini-support-some-sensor.patch
-Patch10981: 0981-k1x_udc_core-fix-missing-STATUS-IN-in-control-out-tr.patch
-Patch10982: 0982-k1x_udc_core-fix-enable-after-disable-may-fail.patch
-Patch10983: 0983-k1x_udc_core-fix-high-bandwidth-isoc-endpoint-transf.patch
-Patch10984: 0984-k1x_udc_core-cleanup-info-print.patch
-Patch10985: 0985-usb-typec-husb239-support-mic-switch.patch
-Patch10986: 0986-usb-typec-husb239-update-pd-contract.patch
-Patch10987: 0987-display-reduce-panel-lt8911exb-resume-time.patch
-Patch10988: 0988-lpi3a-add-aic8800-wifi-support.patch
-Patch10989: 0989-camera-fix-unknown-type-compile-error-and-comment-sl.patch
-Patch10990: 0990-spacemit-rf-use-gpiod_set_value_cansleep-instead-of-.patch
-Patch10991: 0991-display-fix-the-issue-of-bootlogo-flashing-screen.patch
-Patch10992: 0992-k1-pm_domain-lcd-don-t-open-the-power-switch-again-i.patch
-Patch10993: 0993-camera-perfect-open-close-node-in-pinmulti-mode.patch
-Patch10994: 0994-k1-update-sd-sdio-tx-delaycode.patch
-Patch10995: 0995-usb-f_uvc-use-GFP_DMA32-for-vb2_queue-at-spacemit-k1.patch
-Patch10996: 0996-k1x-adc-p1-supprt-adc-driver-for-k1x.patch
-Patch10997: 0997-display-add-plane-cursor-type-and-support-crop.patch
-Patch10998: 0998-add-baton-camera-solution.patch
-Patch10999: 0999-dts-add-k1-x_FusionOne-for-eli-NAS.patch
-Patch11000: 1000-k1-suspend-skip-system-sync-in-kernel.patch
-Patch11001: 1001-k1x-support-touchscreen-chipone-tddi.patch
-Patch11002: 1002-k1x-support-sgm41515-charger-driver.patch
-Patch11003: 1003-k1-reboot-add-a-flag-indicating-whether-to-shutdown-.patch
-Patch11004: 1004-MUSE-Paper-support-volume-up-dowm-key-event.patch
-Patch11005: 1005-hung-task-set-hung-timeout-120s.patch
-Patch11006: 1006-add-new-pinctrl-node-for-FusionOne-to-support-wifi-s.patch
-Patch11007: 1007-soc-support-notifier-among-modules.patch
-Patch11008: 1008-usb-typec-husb239-add-notifier-event-for-typec-heads.patch
-Patch11009: 1009-cpuidle-delete-the-dts-node-for-cpuidle.patch
-Patch11010: 1010-clock-add-dpll-and-ddr-clocks.patch
-Patch11011: 1011-usb-typec-husb239-add-vdd-supply-and-usb2-switch.patch
-Patch11012: 1012-mmc-sdhci-of-k1x-avoid-recovery-sdr104-while-dts-dis.patch
-Patch11013: 1013-enable-typec-for-FusionOne.patch
-Patch11014: 1014-muse-paper-sync-camera-draw-dts-configuration.patch
-Patch11015: 1015-k1-dts-add-all-disabled-usb-nodes.patch
-Patch11016: 1016-blk-add-request-completion-flags-for-debug.patch
-Patch11017: 1017-deconfig-enable-CONFIG_LOCKDEP-for-debug.patch
-Patch11018: 1018-display-fix-the-issue-of-trace-during-system-sleep-a.patch
-Patch11019: 1019-sound-support-build-module.patch
-Patch11020: 1020-defconfig-add-audio-config.patch
-Patch11021: 1021-Bluetooth-btrtl-fix-oops-in-btrtl_vendor_read_reg16.patch
-Patch11022: 1022-k1-pm_domain-fix-bug-when-device-detach-from-pm-doma.patch
-Patch11023: 1023-serial-fix-lockdep_assert-warning.patch
-Patch11024: 1024-nvme-expose-allocation-or-mapping-failure-reports.patch
-Patch11025: 1025-Fix-dma_buf-warning-with-enabled-lockdep.patch
-Patch11026: 1026-camera-Fix-dma_buf-warning-with-enabled-lockdep.patch
-Patch11027: 1027-vpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
-Patch11028: 1028-jpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
-Patch11029: 1029-v2d-fix-dmabuf-warning-with-enabled-lockdep.patch
-Patch11030: 1030-display-modify-the-initcall-sequence-of-the-hdmi-dri.patch
-Patch11031: 1031-dts-modify-hdmiaudio-config.patch
-Patch11032: 1032-sound-change-from-late_initcall_sync-to-late_initcal.patch
-Patch11033: 1033-hdmiaudio-support-hot-plug.patch
-Patch11034: 1034-display-adjust-resolution-to-60Hz.patch
-Patch11035: 1035-ir-fix-global-out-of-bounds-when-KASAN-enable.patch
-Patch11036: 1036-k1x-chipone-tddi-reduce-init-log-level.patch
-Patch11037: 1037-disable-the-function-that-auto-switch-usb-mode-at-Fu.patch
-Patch11038: 1038-dts-add-orangepi-rv2-solution.patch
-Patch11039: 1039-orangepi-rv2-add-usb-ctl-adaptation.patch
-Patch11040: 1040-k1-hall-support-separating-wake-up-interrupts-from-n.patch
-Patch11041: 1041-k1-pwr-key-support-wakeup-count.patch
-Patch11042: 1042-k1x-fix-xts-aes-key2-error.patch
-Patch11043: 1043-mmc-sdhci-of-k1x-support-MMC1-debug-as-uart0.patch
-Patch11044: 1044-k1-MUSE-Paper-add-SD-debug-pinctrl.patch
-Patch11045: 1045-stacktrace-delect-KASAN-warning.patch
-Patch11046: 1046-gpu-fix-slab-use-after-free-err.patch
-Patch11047: 1047-k1x-support-ddr-bandwidth-tool-driver.patch
-Patch11048: 1048-dts-MUSE-Pi-remove-cd-inverted-of-sdhci0.patch
-Patch11049: 1049-k1x-clean-uart-useless-info.patch
-Patch11050: 1050-add-ili9881c-mipi-to-orangepi-rv2.patch
-Patch11051: 1051-camera-verify-camera-success.patch
-Patch11052: 1052-orangepi-rv2-add-es8323-config-and-modify-sound-code.patch
-Patch11053: 1053-defconfig-support-codec-es8323.patch
-Patch11054: 1054-usb-typec-husb239-enable-Try.SNK-mechanism.patch
-Patch11055: 1055-display-fix-mmu-configuration-error-while-tbu-id-is-.patch
-Patch11056: 1056-k1x-stop-watchdog-before-the-system-suspend-and-reco.patch
-Patch11057: 1057-k1x-remove-cw2015-useless-info.patch
-Patch11058: 1058-k1-MUSE-Paper-fix-the-mistake-about-sd-sdio-tx-delay.patch
-Patch11059: 1059-camera-sync-V5.7-code-and-verify-single_online_test.patch
-Patch11060: 1060-k1x-update-MUSE-Paper-cw2015-profile.patch
-Patch11061: 1061-k1x-add-ZT001H-dts-support.patch
-Patch11062: 1062-vpu-Fix-circular-lock-warning-with-enabled-lockdep.patch
-Patch11063: 1063-vpu-Fix-amvx-build-error-when-building-amvx-as-modul.patch
-Patch11064: 1064-k1-add-fanghang-k1-x_uav-dts.patch
-Patch11065: 1065-riscv-Flush-the-icache-of-all-cores-related-to-the-c.patch
-Patch11066: 1066-clock-reset-add-rcpu-pwm-clocks-and-resets.patch
-Patch11067: 1067-k1x-1.fix-gpio74-function2-pwm9-rpwm9-2.add-rpwm0-9-.patch
-Patch11068: 1068-dts-modify-the-address-space-allocation-of-pcie2_rc.patch
-Patch11069: 1069-PCI-Add-arch_can_pci_mmap_wc-macro-on-spacemit-k1-so.patch
-Patch11070: 1070-k1x-support-chsc5xxx-touchpad-driver.patch
-Patch11071: 1071-k1x-MUSE-Paper-mini-4g-support-charger.patch
-Patch11072: 1072-k1-x_uav-camera-verify-imx415-okay.patch
-Patch11073: 1073-defconfig-add-real-time-linux-defconfig.patch
-Patch11074: 1074-k1_uav-enable-uart-ports.patch
-Patch11075: 1075-drm-radeon-mask-MSI-on-K1x.patch
-Patch11076: 1076-radeon-amdgpu-force-32-bit-dma.patch
-Patch11077: 1077-Radeon-modify-cached-mapping-to-writecombine.patch
-Patch11078: 1078-k1-add-radeon-module-in-k1_defconfig.patch
-Patch11079: 1079-camera-Fix-isp-and-cpp-build-error-when-building-the.patch
-Patch11080: 1080-defconfig-disable-LOCKDEP-config.patch
-Patch11081: 1081-rt-defconfig-config-CONFIG_PREEMPT_RT.patch
-Patch11082: 1082-mmc-sdhci-of-k1x-fix-bug-about-get-invalid-cpufreq_p.patch
-Patch11083: 1083-dts-update-k1-x_uav-disabled-some-no-used-moduels-fi.patch
-Patch11084: 1084-k1-support-decompression-of-zstd-format-file.patch
-Patch11085: 1085-1.add-clk-reset-to-i2c3-2.enable-rpwm9.patch
-Patch11086: 1086-cpuinfo-add-uarch-information.patch
-Patch11087: 1087-k1x-clear-charger-useless-info.patch
-Patch11088: 1088-es8326-support-headphone-notifier-call-chain.patch
-Patch11089: 1089-es8326-fix-es8326-no-sound-due-to-data-length-settin.patch
-Patch11090: 1090-es8326-fix-no-sound-issue-after-suspend-resume.patch
-Patch11091: 1091-es8326-cleanup-unused-code.patch
-Patch11092: 1092-es8326-reset-jack-status-when-suspend.patch
-Patch11093: 1093-riscv-rwonce-add-__READ_ONCE-implementation-for-risc.patch
-Patch11094: 1094-riscv-spackemit-add-of-node-get-for-process-cpuinfo-.patch
-Patch11095: 1095-sound-adapt-linux-kernel-new-vision.patch
-Patch11096: 1096-usb-phy-modify-prototype-of-device-remove-function.patch
-Patch11097: 1097-usb-dwc3-modify-prototype-of-device-remove-function.patch
-Patch11098: 1098-usb-udc-modify-prototype-of-device-remove-function.patch
-Patch11099: 1099-usb-host-modify-prototype-of-device-remove-function.patch
-Patch11100: 1100-usb-misc-modify-prototype-of-device-remove-function.patch
-Patch11101: 1101-spi-spacemit-modify-prototype-of-device-remove-funct.patch
-Patch11102: 1102-qspi-spacemit-modify-prototype-of-device-remove-func.patch
-Patch11103: 1103-crypto-spacemit-replace-strlcpy-with-strscpy.patch
-Patch11104: 1104-dma-spacemit-adma-modify-prototype-of-device-remove-.patch
-Patch11105: 1105-dma-spacemit-modify-prototype-of-device-remove-funct.patch
-Patch11106: 1106-spacemit-v2d-modify-prototype-of-device-remove-funct.patch
-Patch11107: 1107-soc-spacemit-modify-prototype-of-device-remove-funct.patch
-Patch11108: 1108-soc-spacemit-pm-fix-error-when-save-context-for-lowp.patch
-Patch11109: 1109-spacemit-jpu-modify-prototype-of-device-remove-funct.patch
-Patch11110: 1110-spacemit-ddrbw-clear-compile-warnings.patch
-Patch11111: 1111-remoteproc-spacemit-modify-prototype-of-device-remov.patch
-Patch11112: 1112-i2c-k1x-modify-prototype-of-device-remove-function.patch
-Patch11113: 1113-plic-fix-error-on-some-offset-macro-definition.patch
-Patch11114: 1114-mailbox-spacemit-modify-prototype-of-device-remove-f.patch
-Patch11115: 1115-extcon-k1x-modify-prototype-of-device-remove-functio.patch
-Patch11116: 1116-camera-spacemit-modify-prototype-of-device-remove-fu.patch
-Patch11117: 1117-vpu-spacemit-modify-prototype-of-device-remove-funct.patch
-Patch11118: 1118-ir-spacemit-modify-prototype-of-device-remove-functi.patch
-Patch11119: 1119-wdt-k1x-modify-prototype-of-device-remove-function.patch
-Patch11120: 1120-thermal-k1x-modify-prototype-of-device-remove-functi.patch
-Patch11121: 1121-phy-combphy-clean-compile-warning-because-of-prototy.patch
-Patch11122: 1122-pxa-k1x-adapt-to-linux-kernel-new-version.patch
-Patch11123: 1123-power-supply-sbs-modify-prototype-of-device-remove-f.patch
-Patch11124: 1124-pcie-k1x-porting-to-linux-6.12.patch
-Patch11125: 1125-nvme-remove-segment-buffer-size-limit.patch
-Patch11126: 1126-tcm-spacemit-modify-prototype-of-device-remove-funct.patch
-Patch11127: 1127-flexcan-fix-error-in-flexcan-core-probe-function.patch
-Patch11128: 1128-emac-k1x-fix-compile-warning-on-function-prototype.patch
-Patch11129: 1129-stmmac-modify-prototype-of-device-remove-function.patch
-Patch11130: 1130-ax88179a-porting-to-linux-6.12.patch
-Patch11131: 1131-usb-qmi_wwan_f-replace-strlcpy-by-strscpy.patch
-Patch11132: 1132-spi-nor-porting-fmsh-device-driver-to-linux-6.12.patch
-Patch11133: 1133-drm-spacemit-porting-drm-driver-to-linux-6.12.patch
-Patch11134: 1134-gpio-k1x-porting-gpio-driver-to-linux-6.12.patch
-Patch11135: 1135-build-disable-character-output-display-during-the-ke.patch
-Patch11136: 1136-riscv-restore-vmlinux-target-building-command.patch
-Patch11137: 1137-wireless-rtl8852be-porting-to-linux-6.12.patch
-Patch11138: 1138-wireless-rtl8852bs-porting-to-linux-6.12.patch
-Patch11139: 1139-defconfig-disable-some-modules-which-not-ready.patch
-Patch11140: 1140-k1-mainline-update-head-files-for-compile-errors.patch
-Patch11141: 1141-k1-mainline-defconfig-enable-spacemit-ir-driver.patch
-Patch11142: 1142-k1-mainline-defconfig-enable-codec-es8326-support.patch
-Patch11143: 1143-k1-mainline-es8326-fix-es8326-compile-and-work-issue.patch
-Patch11144: 1144-k1-regulator-enable-the-driver-of-regulator.patch
-Patch11145: 1145-display-resolve-the-issue-of-no-display-on-HDMI.patch
-Patch11146: 1146-i2c-spacemit-k1-fix-strcpy-func-in-i2c-driver.patch
-Patch11147: 1147-riscv-k1-defconfig-support-i2c-driver.patch
-Patch11148: 1148-plic-spacemit-k1-declare-irqchip-of-plic-riscv0.patch
-Patch11149: 1149-watchdog-spacemit-k1-fix-suspend-enable-judge.patch
-Patch11150: 1150-gpu-upgrade-to-24.2.patch
-Patch11151: 1151-gpu-img-rogue-add-judgment-of-linux-version-and-keep.patch
-Patch11152: 1152-gpu-make-sure-gpu-probe-before-display.patch
-Patch11153: 1153-drm-img-rogue-porting-gpu-driver-to-linux-6.12.patch
-Patch11154: 1154-gpu-img-rogue-update-to-linux-6.12-fix-pvr_drm_fops.patch
-Patch11155: 1155-soc-spacemit-add-prototype-define-for-multi-modules.patch
-Patch11156: 1156-clk-spacemit-clean-compile-warnings.patch
-Patch11157: 1157-pinctrl-spacemit-p1-support-pmic-pins.patch
-Patch11158: 1158-spi-k1-spi-porting-to-linux-6.12.patch
-Patch11159: 1159-spi-k1-qspi-porting-to-linux-6.12.patch
-Patch11160: 1160-dwc3-spacemit-fix-compile-warning.patch
-Patch11161: 1161-usb-gadget-fix-compile-warning.patch
-Patch11162: 1162-usb-xhci-hub-fix-compile-warnings.patch
-Patch11163: 1163-wdt-k1-fix-compile-warning.patch
-Patch11164: 1164-wireless-rtl8852bs-porting-to-linux-6.12.patch
-Patch11165: 1165-cpufreq-k1-fix-compile-warning.patch
-Patch11166: 1166-crypto-k1-fix-compile-warning.patch
-Patch11167: 1167-usbnet-fix-compile-warning.patch
-Patch11168: 1168-mmc-k1x-fix-compile-warning.patch
-Patch11169: 1169-v2d-spacemit-fix-compile-warning.patch
-Patch11170: 1170-power-sgm4154x-reshape-file-style.patch
-Patch11171: 1171-media-k1x-vpu-porting-to-linux-6.12.patch
-Patch11172: 1172-media-k1x-camera-porting-to-linux-6.12.patch
-Patch11173: 1173-drm-k1x-fix-compile-warning.patch
-Patch11174: 1174-drm-k1x-gpu-fix-compile-warning.patch
-Patch11175: 1175-riscv-k1-kconfig-update-kernel-configuration.patch
-Patch11176: 1176-media-k1-vpu-fix-error-on-MODULE_IMPORT_NS-using.patch
-Patch11177: 1177-mmc-k1-fix-error-of-driver.remove.patch
-Patch11178: 1178-soc-spacemit-v2d-fix-error-on-MODULE_IMPORT_NS-using.patch
-Patch11179: 1179-usb-spacemit-k1-fix-compile-error.patch
-Patch11180: 1180-sound-k1-fix-compile-error.patch
-Patch11181: 1181-opp-k1-fix-compile-error.patch
-Patch11182: 1182-can-k1-flexcan-fix-error-on-driver.remove.patch
-Patch11183: 1183-wireless-rtl8852bs-porting-to-linux-6.13.patch
-Patch11184: 1184-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
-Patch11185: 1185-drm-spacemit-porting-to-linux-6.13.patch
-Patch11186: 1186-camera-fix-compilation-problems-and-run-imx415-in-de.patch
-Patch11187: 1187-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
-Patch11188: 1188-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
-Patch11189: 1189-thermal-k1-Correct-a-typo-in-the-code.patch
-Patch11190: 1190-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
-Patch11191: 1191-media-k1-camera-fix-some-compile-warnings.patch
-Patch11192: 1192-riscv-k1-dts-remove-some-reserved-memory-region.patch
-Patch11193: 1193-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-Patch11194: 1194-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-Patch11195: 1195-fix-module-dma_buf-ns.patch
-Patch11196: 1196-fix-wrong-style-comments.patch
-Patch11197: 1197-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-Patch11198: 1198-remove-trace_printk.patch
-Patch11199: 1199-remove-unused-var.patch
-Patch11200: 1200-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-Patch11201: 1201-fix-includes-for-timestamp.patch
-Patch11202: 1202-remove-debug-rdinit-from-m1-bpi.patch
-Patch11203: 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
-Patch11204: 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
-Patch11205: 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
-Patch11206: 1206-6.15-fixes.patch
-Patch11207: 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
-Patch11208: 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
-Patch11209: 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
-Patch11210: 1210-RTL8852-6.15-fixes.patch
-Patch11211: 1211-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
+Patch10597: 0597-clean-compile-warning.patch
+Patch10598: 0598-clean-compile-warning.patch
+Patch10599: 0599-clear-compile-warning.patch
+Patch10600: 0600-usb-ehci-k1x-ci-support-power-management.patch
+Patch10601: 0601-usb-spacemit_onboard_hub-support-power-management.patch
+Patch10602: 0602-display-Fix-the-issue-caused-by-alloc-pages-failed.patch
+Patch10603: 0603-support-2lane-camera-to-draw-when-okay-frontsensor-n.patch
+Patch10604: 0604-k1-add-kernel-dts-config-for-MUSE-Pi.patch
+Patch10605: 0605-k1-rproc-fix-bug-in-system-shutdown-process.patch
+Patch10606: 0606-spi-fix-the-bug-of-accessing-illegal-pointers-when-t.patch
+Patch10607: 0607-clock-add-rcpu-can-clock.patch
+Patch10608: 0608-reset-add-rcpu-can-reset.patch
+Patch10609: 0609-k1-MUSE-Pi-update-card-detection-logic.patch
+Patch10610: 0610-spi-adding-the-device-node-of-spi2-controller.patch
+Patch10611: 0611-aud-fix-codec-persistent-noise-issue-when-switch-hdm.patch
+Patch10612: 0612-v2d-fix-set-clock-rate-timeout.patch
+Patch10613: 0613-display-fix-hdmi-compatibility-issues.patch
+Patch10614: 0614-Move-GPU-alloc-page-from-DMA32-to-Normal-zone.patch
+Patch10615: 0615-k1-pull-up-gpio70-71-for-SATA.patch
+Patch10616: 0616-k1x-uart-check-uart-dma-function-before-release-uart.patch
+Patch10617: 0617-nvme-change-the-segment-size-of-io-request-queue-for.patch
+Patch10618: 0618-wirless-don-t-show-error-when-load-regulatory.db-fai.patch
+Patch10619: 0619-clock-add-rcpu2-pwm-clock.patch
+Patch10620: 0620-display-fix-dpu-under-run-issues.patch
+Patch10621: 0621-reset-add-rcpu2-pwm-reset.patch
+Patch10622: 0622-i2s-change-log-level.patch
+Patch10623: 0623-display-clear-dpu-irq-and-status-after-bootlogo.patch
+Patch10624: 0624-k1x-support-x60-operate-can-controller-in-rcpu.patch
+Patch10625: 0625-k1x-deb1-support-rpwm2-for-fan.patch
+Patch10626: 0626-dtb-k1-x_MUSE-N1-set-otg-mode-for-dwc3.patch
+Patch10627: 0627-1.increase-command-line-buffer-size-to-2KB.patch
+Patch10628: 0628-k1x-uart3-fix-compatible-error-in-dts.patch
+Patch10629: 0629-k1x-wdt-adjust-reboot-handler-timeout.patch
+Patch10630: 0630-display-add-drm-resume-and-suspend.patch
+Patch10631: 0631-riscv-dts-correct-isa-string-for-Spacemit-K1.patch
+Patch10632: 0632-pcie-modify-suspend_noirq-and-resume_noirq-of-k1-pci.patch
+Patch10633: 0633-k1x-rtc-fix-the-issue-of-probabilistic-failure-on-se.patch
+Patch10634: 0634-dtb-k1-x-update-quirks-for-usbdrd3.patch
+Patch10635: 0635-k1-rtc-fix-stack-out-of-bounds-when-open-KASAN.patch
+Patch10636: 0636-camera-switch-unknow-ioctl-print-level-to-warning.patch
+Patch10637: 0637-Linux-Integrate-Battery-Driver.patch
+Patch10638: 0638-USB-xhci-plat-fix-legacy-PHY-double-init.patch
+Patch10639: 0639-display-add-hdmi-resume-and-suspend.patch
+Patch10640: 0640-display-fix-hdmi-compatibility-issues.patch
+Patch10641: 0641-1.change-license-statement-to-GPL-2.0-WITH-Linux-sys.patch
+Patch10642: 0642-usb-k1x_udc_core-remove-req-from-queue-even-it-s-alr.patch
+Patch10643: 0643-display-fix-build-warning.patch
+Patch10644: 0644-display-fix-hdmi-compatibility-issues.patch
+Patch10645: 0645-pcie-fix-the-compiler-warning.patch
+Patch10646: 0646-aud-fix-hdmi-sound-card-create-fail-issue.patch
+Patch10647: 0647-MUSE-N1-pull-down-GPIO-118-and-119-default-for-toggl.patch
+Patch10648: 0648-add-reboot-mode-select-support-while-P1-reset-will-p.patch
+Patch10649: 0649-aud-fix-global-out-of-bounds-when-open-KASAN.patch
+Patch10650: 0650-k1x_MUSE-Pi-add-spi3-pinctrl-config.patch
+Patch10651: 0651-qspi-fix-the-bug-the-actual-clk-frequency-not-equal-.patch
+Patch10652: 0652-clock-remove-qspi_clk-fc-bit-setting.patch
+Patch10653: 0653-rtc-fix-read-rtc-error-when-the-registers-of-pmic-ar.patch
+Patch10654: 0654-k1-dts-rproc-delete-the-dma-range-property-which-wil.patch
+Patch10655: 0655-pcie-modify-the-enable-phy-function-for-pcie-resume.patch
+Patch10656: 0656-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timeout.patch
+Patch10657: 0657-k1-rproc-increase-initialization-level-of-rproc-driv.patch
+Patch10658: 0658-pcie-supporting-the-link-enters-l2-state-when-suspen.patch
+Patch10659: 0659-pcie-Add-a-timeout-to-do-while-to-prevent-an-infinit.patch
+Patch10660: 0660-Linux-Separate-the-I2C-configuration-between-the-boa.patch
+Patch10661: 0661-dts-enable-hdmi-sound-card-for-deb2-MINI-PC.patch
+Patch10662: 0662-k1x-dma-fix-dma-tasklet-schedule-bug.patch
+Patch10663: 0663-Linux-The-integration-of-the-laptop-lid-switch-drive.patch
+Patch10664: 0664-display-fix-dpu-resume-and-suspend-issues.patch
+Patch10665: 0665-1.change-kernel-entry-addr-to-0x20_0000.patch
+Patch10666: 0666-audio-remove-SNDRV_PCM_INFO_PAUSE-support.patch
+Patch10667: 0667-k1-wireless-disable-power-always-on.patch
+Patch10668: 0668-display-modify-lcd-gx09inx101-pixel-clock.patch
+Patch10669: 0669-gpu-fix-failed-to-import-external-image-from-highmem.patch
+Patch10670: 0670-net-usb-add-asix-usb-nic-driver-ver-v3.1.0.patch
+Patch10671: 0671-k1-usb-enable-parkmode_disable_ss_quirk-on-DWC3-cont.patch
+Patch10672: 0672-k1-usb-update-quirks-for-usbdrd3-in-k1-x_MINI-PC.patch
+Patch10673: 0673-k1-use-ax_usb_nic-instead-of-ax88179_178a.patch
+Patch10674: 0674-k1-modify-sdio-rx-dline-configuration.patch
+Patch10675: 0675-audio-fix-hdmiaudio-can-not-playback-after-suspend-r.patch
+Patch10676: 0676-asix_usb-fix-compile-error.patch
+Patch10677: 0677-do_trap_insn_illegal-bind-ai-cores-when-use-ai-instr.patch
+Patch10678: 0678-k1-sync-k1-dtsi-from-linux6.1-dts.patch
+Patch10679: 0679-k1-cpu-fix-compilation-errs.patch
+Patch10680: 0680-k1-ccu-add-determine_rate-func.patch
+Patch10681: 0681-k1-gt9xx-delete-i2c_device_id-args.patch
+Patch10682: 0682-k1-camera-adjust-class_create.patch
+Patch10683: 0683-k1-pmic-delect-i2c_device_id-agrs.patch
+Patch10684: 0684-k1-dma-adjust-vm_flags_set-and-class_create-func.patch
+Patch10685: 0685-k1-gpio-adjust-struct-gpio_chip.fwnode.patch
+Patch10686: 0686-k1-usb-goto-valid-identifier.patch
+Patch10687: 0687-k1-update-k1_defconfig-to-linux-6.6-bringup.patch
+Patch10688: 0688-emac-change-the-function-of-adjusting-hardware-time-.patch
+Patch10689: 0689-display-update-config-for-hdmi-compatibility.patch
+Patch10690: 0690-display-drm-alloc-pages-from-highuser-zone.patch
+Patch10691: 0691-usb-xhci-plat-read-reset-on-resume-from-device-prope.patch
+Patch10692: 0692-usb-ehci-k1x-ci-support-reset-on-resume.patch
+Patch10693: 0693-usb-dwc3-spacemit-add-reset-operation-at-standby-set.patch
+Patch10694: 0694-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timout.patch
+Patch10695: 0695-k1-udma-add-pte_unmap-to-avoid-sleeping-function-cal.patch
+Patch10696: 0696-k1-deassert-rpwm-reset-in-resume-ops.patch
+Patch10697: 0697-pcie-change-the-dependence-of-PCI_K1X_HOST-to-PCI_MS.patch
+Patch10698: 0698-k1-rproc-enable-rproc-module-to-avoid-bus-hangs-dead.patch
+Patch10699: 0699-k1-vpu-fix-clk-warning-when-kernel-boot.patch
+Patch10700: 0700-k1-jpu-fix-compile-error-on-6.6.patch
+Patch10701: 0701-k1-jpu-enable-jpu.patch
+Patch10702: 0702-es8326-support-hp-mic-detect-process.patch
+Patch10703: 0703-sound-change-file-mode-from-0755-to-0644.patch
+Patch10704: 0704-pm-rproc-adjusting-the-sleep-process-level-of-rproc.patch
+Patch10705: 0705-pm-regulator-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
+Patch10706: 0706-rproc-do-not-automatically-load-and-start-rcpu.patch
+Patch10707: 0707-k1-pm-domain-fix-error-in-deleting-qos-nodes-when-di.patch
+Patch10708: 0708-k1-pm-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
+Patch10709: 0709-qspi-Fix-the-bug-of-data-transmission-failure-with-a.patch
+Patch10710: 0710-k1_defconfig-build-cdc_ncm-as-module.patch
+Patch10711: 0711-phy-k1x-ci-usb2-update-phy-init-sequence-report-erro.patch
+Patch10712: 0712-usb-dwc3-spacemit-support-phy-setup.patch
+Patch10713: 0713-k1-usb-setup-phy-in-dwc3-spacemit-instead-of-dwc3.patch
+Patch10714: 0714-usb-xhci-add-clear-disconnect-for-spacemit-k1x-phy.patch
+Patch10715: 0715-net-usb-promote-the-priority-of-ax_usb_nic-driver.patch
+Patch10716: 0716-camera-fix-call_get_fmt-EINVAL-return-to-support-dra.patch
+Patch10717: 0717-config-enable-kasan-to-memory-debug.patch
+Patch10718: 0718-k1-ce-fix-ce-compile-errs-and-enable-ce-config.patch
+Patch10719: 0719-gpu-enable-gpu-in-linux6.6.patch
+Patch10720: 0720-spacemit-rf-add-missing-includes.patch
+Patch10721: 0721-k1-enable-RTL8852BS-and-SPACEMIT_RFKILL.patch
+Patch10722: 0722-mmc-sdhci-of-k1x-add-tuning-windows-type-configurati.patch
+Patch10723: 0723-k1-change-sdio-max-clock-frequency-to-187MHz.patch
+Patch10724: 0724-deconfig-enable-aes-engine-to-full-disk-encryption.patch
+Patch10725: 0725-dts-modify-codec-card-name-config-and-add-mclk_fs-co.patch
+Patch10726: 0726-muse-book-add-muse-book-board-dts-support.patch
+Patch10727: 0727-k1-enable-USB_RTL8152.patch
+Patch10728: 0728-k1-ce-fix-slab-out-of-bounds-by-KASAN-report.patch
+Patch10729: 0729-display-Update-spacemit-drm-to-linux6.6.patch
+Patch10730: 0730-v2d-Enable-v2d.patch
+Patch10731: 0731-ax88179-change-file-mode-from-0755-to-0644.patch
+Patch10732: 0732-clk-change-file-mode-from-0755-to-0644.patch
+Patch10733: 0733-gmac-change-file-mode-from-0755-to-0644.patch
+Patch10734: 0734-rf-change-file-mode-from-0755-to-0644.patch
+Patch10735: 0735-usb-change-file-mode-from-0755-to-0644.patch
+Patch10736: 0736-pinctrl-change-file-mode-from-0755-to-0644.patch
+Patch10737: 0737-crypto-change-file-mode-0755-to-0644.patch
+Patch10738: 0738-input-change-mode-from-0755-to-0644.patch
+Patch10739: 0739-spi-change-file-mode-from-0755-to-0644.patch
+Patch10740: 0740-pci-change-file-mode-from-0755-to-0644.patch
+Patch10741: 0741-reset-change-file-mode-from-0755-to-0644.patch
+Patch10742: 0742-adma-change-file-mode-from-0755-to-0644.patch
+Patch10743: 0743-ir-chagne-file-mode-from-0755-to-0644.patch
+Patch10744: 0744-pwm-change-file-mode-from-0755-to-0644.patch
+Patch10745: 0745-wdt-change-file-mode-from-0755-to-0644.patch
+Patch10746: 0746-reboot-change-file-mode-from-0755-to-0644.patch
+Patch10747: 0747-dts-change-file-mode-from-0755-to-0644.patch
+Patch10748: 0748-camera-change-file-mode-from-0755-to-0644.patch
+Patch10749: 0749-k1-spm8821-enable-mask_unmask_non_inverted-property-.patch
+Patch10750: 0750-dts-set-iomem-the-nomap-propertiers.patch
+Patch10751: 0751-wireless-support-pcie-wifi-rtl8852be.patch
+Patch10752: 0752-hdmiaudio-fix-no-sound-after-suspend-resume.patch
+Patch10753: 0753-dts-change-i2s-target-rate.patch
+Patch10754: 0754-clock-change-i2s-clock-parent-and-rate.patch
+Patch10755: 0755-audio-add-mclk-config-flow.patch
+Patch10756: 0756-dts-add-es8326-snd-card-support-for-MINI-PC.patch
+Patch10757: 0757-audio-fix-audio-compile-error.patch
+Patch10758: 0758-k1x-enable-audio-support.patch
+Patch10759: 0759-audio-fix-i2s-audio-noise-due-to-dmabuffer-is-cached.patch
+Patch10760: 0760-fix-regulator-do-not-load-the-driver-asynchronously-.patch
+Patch10761: 0761-kconfig-add-config-ARCH_FORCE_MAX_ORDER-to-fix-defau.patch
+Patch10762: 0762-riscv-show-reason-of-unaligned-access-speed-are-diff.patch
+Patch10763: 0763-isa-modify-riscv-isa-format-definition.patch
+Patch10764: 0764-deconfig-enable-CONFIG_DEBUG-to-more-debug-log.patch
+Patch10765: 0765-aud-fix-i2s-pointer-pos-to-integer-multiple-of-perio.patch
+Patch10766: 0766-arch-riscv-boot-dts-Fixed-MUSE-Book-model-to-M1-MUSE.patch
+Patch10767: 0767-dts-add-orisetech-ota7290b-lcd-panel-1920-1200.patch
+Patch10768: 0768-qspi-fix-the-warning-when-disable-the-clk-and-bus-cl.patch
+Patch10769: 0769-k1x-6.6-support-flexcan-on-k1x-platform.patch
+Patch10770: 0770-arch-riscv-k1_deb1-Added-pwm-fan.patch
+Patch10771: 0771-dts-sync-the-k1-x_deb1-modify-to-the-k1-x_milkv-jupi.patch
+Patch10772: 0772-dts-add-milkv-jupiter-board-of-M1.patch
+Patch10773: 0773-dts-add-SiPEED-LPi3A-board-support.patch
+Patch10774: 0774-at24-clean-compile-warning.patch
+Patch10775: 0775-defconfig-update-defconfig.patch
+Patch10776: 0776-defconfig-support-some-cpufreq-governor.patch
+Patch10777: 0777-pm-pinctrl-support-edge-detect-wakeup-functoin.patch
+Patch10778: 0778-spacemit-rf-support-wlan-irq-hostwake.patch
+Patch10779: 0779-k1-modify-wlan-hostwake-to-pinctl.patch
+Patch10780: 0780-deconfig-disable-kasan-debug.patch
+Patch10781: 0781-k1-set-USB0-to-host-mode-for-MUSE-Book.patch
+Patch10782: 0782-k1-add-wlan-hostwake-config-for-MINI-PC-and-milkv-ju.patch
+Patch10783: 0783-display-fix-dsi-dphy-hs-prepare-and-hs-zero-cycle.patch
+Patch10784: 0784-display-reserve-hdmi-compatibility-config-for-chips-.patch
+Patch10785: 0785-display-modify-the-method-for-obtaining-hdmi-edid.patch
+Patch10786: 0786-display-support-lt9711-for-mipi-dsi-to-dp.patch
+Patch10787: 0787-display-remove-debug-log.patch
+Patch10788: 0788-display-remove-useless-codes-and-fix-edp-driver.patch
+Patch10789: 0789-display-support-dp-panel.patch
+Patch10790: 0790-display-modify-edp-brightness-levels.patch
+Patch10791: 0791-display-support-256-bytes-edid-data-for-hdmi.patch
+Patch10792: 0792-display-detect-dp-plug-in-and-plug-out.patch
+Patch10793: 0793-display-modify-the-order-of-the-backlight-for-the-lt.patch
+Patch10794: 0794-display-do-not-operate-clock-during-the-pm-runtime.patch
+Patch10795: 0795-display-modify-the-minimum-backlight-brightness-valu.patch
+Patch10796: 0796-keep-bootloader-logo-on-and-release-backlight-first.patch
+Patch10797: 0797-display-trun-off-lcd-power-domain-after-the-probe-fu.patch
+Patch10798: 0798-ccu-fix-rpwm-clk-sel.patch
+Patch10799: 0799-crypto-reset-and-clock-is-shared-between-crypto-engi.patch
+Patch10800: 0800-efuse-add-spacemit-efuse-driver.patch
+Patch10801: 0801-socinfo-add-spacemit-soc-information-driver.patch
+Patch10802: 0802-dts-support-efuse-and-cpuinfo-module.patch
+Patch10803: 0803-defconfig-enable-efuse-and-socinfo-module.patch
+Patch10804: 0804-k1x-adjust-ddr-master-devices-dram_range.patch
+Patch10805: 0805-dts-modify-pcie-bar-area-layout.patch
+Patch10806: 0806-ccu-add-pll3-clk-frequency.patch
+Patch10807: 0807-scripts-package-mkdebian.patch
+Patch10808: 0808-efuse-add-nvmem-cells-according-to-the-dts.patch
+Patch10809: 0809-dts-fix-the-error-of-cache-sets-number.patch
+Patch10810: 0810-gpu-fix-workqueue-warning.patch
+Patch10811: 0811-k1-support-mult-frequency-table-and-using-one-policy.patch
+Patch10812: 0812-hdmiaudio-fix-no-sound-issue-on-some-hdmi-display-du.patch
+Patch10813: 0813-pinctrl-fix-compile-warning.patch
+Patch10814: 0814-mipi-fix-compile-warninng.patch
+Patch10815: 0815-i2c-fix-warn_on-when-system-power-off.patch
+Patch10816: 0816-aud-fix-can-not-play-record-issue-after-suspend-resu.patch
+Patch10817: 0817-display-release-reserved-memory-for-bootlogo.patch
+Patch10818: 0818-fs-enable-ubifs-jffs2-and-squashfs.patch
+Patch10819: 0819-k1-thermal-separate-the-thermal-configuration-and-re.patch
+Patch10820: 0820-k1x-add-MUSE-Card-dts-support.patch
+Patch10821: 0821-k1x-add-MUSE-Paper-dts-support.patch
+Patch10822: 0822-usb-dwc3-support-remote-wakeup.patch
+Patch10823: 0823-usb-ehci-support-remote-wakeup.patch
+Patch10824: 0824-usb-dwc3-enable-irqwake-in-dwc3_suspend-instead-of-s.patch
+Patch10825: 0825-usb-dwc3-enable-linestate1-wakeup-mask.patch
+Patch10826: 0826-usb-disable-remote-wakeup-default.patch
+Patch10827: 0827-phy-k1x-ci-otg-adjust-Makefile-order.patch
+Patch10828: 0828-bluetooth-use-kernel-btrtl-for-8852bu-instead-of-rtk.patch
+Patch10829: 0829-phy-spacemit-k1x-combphy-add-suspend-term-quirk.patch
+Patch10830: 0830-k1x-adjust-crypto-alloc-buffer-and-set-mask-turns.patch
+Patch10831: 0831-riscv-dts-spacemit-fix-PCIe-lane-number-for-deb1.patch
+Patch10832: 0832-pinctrl-modify-some-pins-pull-configurations.patch
+Patch10833: 0833-spacemit-rf-modify-default-value-of-poweron-delay.patch
+Patch10834: 0834-k1-MUSE-Pi-update-sdio-tx-delaycode.patch
+Patch10835: 0835-mmc-sdhci-of-k1x-fix-cpufreq-while-execute-sw-tuning.patch
+Patch10836: 0836-m1-milkv-jupiter-specify-cpufreq-during-sdio-rx-tuni.patch
+Patch10837: 0837-camera-move-spacemit-bifmode-enable-from-dtsi-to-dts.patch
+Patch10838: 0838-MUSE-Paper-remove-hdmiaudio-support.patch
+Patch10839: 0839-k1-MUSE-Pi-update-sdio-tx-delaycode-to-0x30.patch
+Patch10840: 0840-uart0-dts-add-uart-controller-configuration-for-open.patch
+Patch10841: 0841-k1-cpufreq-using-the-default-vf-table-of-we-did-not-.patch
+Patch10842: 0842-k1x-adjust-buck4-ldo1-7-suspend-voltage-to-0V.patch
+Patch10843: 0843-k1x-MINIPC-adjust-ldo1-to-always-on-for-secjtag-TRST.patch
+Patch10844: 0844-uart-clean-debug-info.patch
+Patch10845: 0845-jpu-clean-debug-info.patch
+Patch10846: 0846-pcie-clean-debug-info.patch
+Patch10847: 0847-sound-clean-debug-info.patch
+Patch10848: 0848-k1x-fix-dldo1-always-on-to-aldo1-always-on.patch
+Patch10849: 0849-change-error-to-warning-when-frequency-table-is-full.patch
+Patch10850: 0850-Add-support-for-ICM42607-sensor.patch
+Patch10851: 0851-camera-sync-code-from-linux-6.1.patch
+Patch10852: 0852-k1-pm-domain-disable-wakeup5-by-default.patch
+Patch10853: 0853-k1-pm-close-some-dcdc-ldo-to-optimize-sleep-power-co.patch
+Patch10854: 0854-Linux-Open-jffs2-and-squash-support.patch
+Patch10855: 0855-Linux-For-the-Power-button-shutdown-add-support-for-.patch
+Patch10856: 0856-To-ensure-a-better-user-experience-set-the-battery-l.patch
+Patch10857: 0857-To-add-hall-sensor-support-for-Muse-Paper-report-SW_.patch
+Patch10858: 0858-k1-hotplug-close-the-SCMI-configuration.patch
+Patch10859: 0859-pcie-supporting-PCIe-interface-power-management.patch
+Patch10860: 0860-clock-add-rcpu-i2c-clock.patch
+Patch10861: 0861-reset-add-rcpu-i2c-reset.patch
+Patch10862: 0862-gmac-supporting-ptp-with-hardware-timestamp.patch
+Patch10863: 0863-display-modify-panel-backlight-level.patch
+Patch10864: 0864-display-add-panel-notifier-event-for-spacemit.patch
+Patch10865: 0865-display-add-mipi-lcd-icnl9951r.patch
+Patch10866: 0866-display-support-mipi-lcd-avee-and-avdd.patch
+Patch10867: 0867-display-add-resume-and-suspend-for-lt9711-driver.patch
+Patch10868: 0868-k1-cpufreq-Support-dynamic-switching-of-1.6G-and-1.8.patch
+Patch10869: 0869-k1-pm-domain-improve-the-detach-operation-of-the-pow.patch
+Patch10870: 0870-gmac-fixed-the-bug-that-Ethernet-phy-cannot-enter-lo.patch
+Patch10871: 0871-k1x-add-MUSE-Paper-mini-4g-dts-support.patch
+Patch10872: 0872-clock-fix-can-not-get-correct-rate-issue.patch
+Patch10873: 0873-pcie-modify-the-phy-initialization-for-pcie-controll.patch
+Patch10874: 0874-k1-x_MUSE-Book-not-reset-usb-during-suspend.patch
+Patch10875: 0875-k1-MUSE-Paper-update-dts-enable-usb-and-wifi.patch
+Patch10876: 0876-k1-MUSE-Paper-enable-uart2-for-bluetooth.patch
+Patch10877: 0877-k1-MUSE-Paper-update-card-detection-logic.patch
+Patch10878: 0878-ehci-k1x-ci-fix-multiple-instance-debugfs-conflict.patch
+Patch10879: 0879-mingo-change-u3-role-switch-default-mode-to-host.patch
+Patch10880: 0880-spi-nor-supporting-FM25Q64AI3-spi-nor-flash.patch
+Patch10881: 0881-k1x-i2c1-i2c6-apply-for-the-same-pin-delete-i2c1.patch
+Patch10882: 0882-k1x-fix-crypto-buffer-data-copy-method.patch
+Patch10883: 0883-dts-adding-the-power-switch-of-wifi-and-bt-on-kx312.patch
+Patch10884: 0884-dts-adding-the-power-switch-of-wifi-and-bt-on-MUSE-B.patch
+Patch10885: 0885-this-is-not-pcie-patch-Revert-pcie-clean-debug-info.patch
+Patch10886: 0886-pcie-clean-debug-info.patch
+Patch10887: 0887-pcie-fix-the-bug-that-Samsung-nvme-ssd-link-establis.patch
+Patch10888: 0888-k1x-disable-watchdog.patch
+Patch10889: 0889-arch-riscv-boot-dts-Enable-MUSE-Book-eeprom-by-defau.patch
+Patch10890: 0890-k1-x_lpi3a.dts-change-usb2.0otg-port-to-device-mode.patch
+Patch10891: 0891-k1-x_lpi3a.dts-fix-no-interrupt-of-ctp.patch
+Patch10892: 0892-k1_deconfig-add-i2c-gpio-expander-PCA953X-driver.patch
+Patch10893: 0893-codec-add-es7210-driver.patch
+Patch10894: 0894-codec-add-es8156-driver.patch
+Patch10895: 0895-dts-fix-JD9365DA-10.1-inch-lcd-cann-t-display-for-lp.patch
+Patch10896: 0896-as1911-change-file-mode-to-0644.patch
+Patch10897: 0897-k1-pm-rproc-put-the-de-assert-of-rproc-s-clock-into-.patch
+Patch10898: 0898-dtsi-k1-add-otg1-support-add-wakeup_reg-reg.patch
+Patch10899: 0899-k1x_udc_core-fix-global-variable-and-extcon.patch
+Patch10900: 0900-phy-k1x-ci-otg-refactor-otg-logic-to-support-more-us.patch
+Patch10901: 0901-ehci-k1x-ci-fix-otg-suspend-resume-and-pm_runtime.patch
+Patch10902: 0902-k1_defconfig-enable-otg-support.patch
+Patch10903: 0903-k1-milkv-jupiter-update-sdio-tx-delaycode-to-0x30.patch
+Patch10904: 0904-Linux-Add-a-virtual-charger-driver.This-resolves-the.patch
+Patch10905: 0905-display-fix-the-issue-of-bootlogo-flashing-screen.patch
+Patch10906: 0906-gmac-set-mac_managed_pm-to-true-to-fix-mdio-resume-w.patch
+Patch10907: 0907-MUSE-N1-u3-set-the-default-mode-to-host-1.so-2.5G-et.patch
+Patch10908: 0908-adma-fix-compile-warning.patch
+Patch10909: 0909-k1x-flexcan-do-ram-init-by-iowrite32-instead-of-mems.patch
+Patch10910: 0910-thermal-add-hwmon-sysfs-node-for-some-debug-tools.patch
+Patch10911: 0911-thermal-fix-compile-error-because-of-sysfs-register-.patch
+Patch10912: 0912-k1x-support-cw2015-driver.patch
+Patch10913: 0913-defconfig-update-kernel-default-configuration.patch
+Patch10914: 0914-clock-add-rcpu-ir-uart0-uart1-ssp-clocks.patch
+Patch10915: 0915-reset-add-rcpu-ir-uart0-uart1-ssp-resets.patch
+Patch10916: 0916-display-fix-compile-warning.patch
+Patch10917: 0917-camera-fix-compile-warning.patch
+Patch10918: 0918-crypto-fix-compile-warning.patch
+Patch10919: 0919-vpu-fix-compile-warning.patch
+Patch10920: 0920-reset-fix-compile-warning.patch
+Patch10921: 0921-cpufreq-fix-compile-warning.patch
+Patch10922: 0922-spi-fix-compile-warning.patch
+Patch10923: 0923-usb-fix-compiler-warning.patch
+Patch10924: 0924-clock-fix-compile-warning.patch
+Patch10925: 0925-gmac-fix-compiler-warning.patch
+Patch10926: 0926-codec-fix-compile-warning.patch
+Patch10927: 0927-k1-muse_book-support-hall-to-wakeup-system.patch
+Patch10928: 0928-usb-typec-husb239-support-hynetek-husb239.patch
+Patch10929: 0929-k1-defconfig-support-husb239-typec-controller.patch
+Patch10930: 0930-k1x-x60-can-and-rcpu-can-separate.patch
+Patch10931: 0931-k1-MUSE-Paper-support-husb239-typec-controller.patch
+Patch10932: 0932-ai-fix-error-in-bind-ai-task-to-ai-core.patch
+Patch10933: 0933-phy-k1x-ci-usb2-add-set_suspend-op.patch
+Patch10934: 0934-phy-k1x-ci-otg-set-role-to-default-role-in-probe.patch
+Patch10935: 0935-k1-x_MUSE-Pi-enable-otg1-and-set-dwc3-to-drd-mode.patch
+Patch10936: 0936-k1-x_MUSE-Book-enable-otg-for-usb0.patch
+Patch10937: 0937-k1x-support-rcpu-uart1-function-through-x60.patch
+Patch10938: 0938-k1-i2c-support-i2c-driver-of-rcpu-domain.patch
+Patch10939: 0939-spacemit_onboard_hub-add-pm-domain-support.patch
+Patch10940: 0940-dwc3-spacemit-add-pm-domain-support.patch
+Patch10941: 0941-dtsi-k1-update-usb-power-domain-settings.patch
+Patch10942: 0942-display-fix-the-issue-while-the-i2c-communication-is.patch
+Patch10943: 0943-insmod-simplify-section-header-process-for-optimize-.patch
+Patch10944: 0944-k1-pinctrl-we-d-better-clean-the-edge-detect-pending.patch
+Patch10945: 0945-k1x-i2c-add-one-callback-of-power-off.patch
+Patch10946: 0946-k1-x_MUSE-Paper-mini-4g-camera-verify-ok.patch
+Patch10947: 0947-display-add-mipi-lcd-jd9365dah3.patch
+Patch10948: 0948-display-add-hdmi-notifier-event-for-spacemit.patch
+Patch10949: 0949-k1-power-key-don-t-report-the-event-of-power-key-whe.patch
+Patch10950: 0950-k1-MUSE-Paper-mini-4g-update-dts-enable-typec-and-wi.patch
+Patch10951: 0951-usb-typec-husb239-fix-possible-NULL-pointer-derefere.patch
+Patch10952: 0952-k1-serial-register-freeze-restore-callback-for-hiber.patch
+Patch10953: 0953-MUSE-Paper-mini-4g-enable-codec-snd-card-support.patch
+Patch10954: 0954-clear-some-boot-error-without-including-these-dtsi.patch
+Patch10955: 0955-pcie-Add-request-operation-before-gpio-operation.patch
+Patch10956: 0956-k1x-flexcan-fix-clock-frequency-config-and-clk-set.patch
+Patch10957: 0957-arch-riscv-configs-Update-k1_defconfig.patch
+Patch10958: 0958-k1x-support-rcpu-ir.patch
+Patch10959: 0959-asix_usb-fix-netdev-dev_addr_shadow-not-set.patch
+Patch10960: 0960-k1-MUSE-Paper-mini-4g-update-modules_usrload.patch
+Patch10961: 0961-mmc-sdhci-of-k1x-use-remove_new-instead-of-remove.patch
+Patch10962: 0962-phy-k1x-ci-otg-fix-shared-reset-assert-warning.patch
+Patch10963: 0963-spacemit-rf-introduce-spacemit-rfkill-driver.patch
+Patch10964: 0964-k1-x_MUSE-Paper-mini-4g-add-4g-module-support.patch
+Patch10965: 0965-pcie-Set-the-vendor-id-and-device-id-of-k1x-pcie-rc.patch
+Patch10966: 0966-qmi_wwan_f-add-fibocom-qmi-modem-driver.patch
+Patch10967: 0967-k1_defconfig-enable-qmi_wwan_f-as-module.patch
+Patch10968: 0968-defconfig-enable-CONFIG_MTD_CMDLINE_PARTS.patch
+Patch10969: 0969-k1x-turn-on-ir-spacemit-defconfig.patch
+Patch10970: 0970-sbs-charger-change-file-mode-0755-0644.patch
+Patch10971: 0971-k1-cpufreq-using-on-v-f-table-to-support-k1-m1-chip.patch
+Patch10972: 0972-k1-cpufreq-delete-the-boost-related-node-for-k1.patch
+Patch10973: 0973-k1-thermal-using-one-thermal-table-for-both-m1-k1.patch
+Patch10974: 0974-k1_defconfig-add-USB-Audio-UAC-devices-support.patch
+Patch10975: 0975-k1-alsa-alsa-driver-adds-audio-data-dump.patch
+Patch10976: 0976-spacemit_onboard_hub-fix-Kconfig-dependancy.patch
+Patch10977: 0977-gpu-Fix-building-error-with-FORTIFY_SOURCE-enabled.patch
+Patch10978: 0978-k1-thermal-fix-the-issue-where-the-frequency-cannot-.patch
+Patch10979: 0979-pcie-print-MSIX_AFIFO_FULL-information-once.patch
+Patch10980: 0980-deconfig-enable-spinlock_debug.patch
+Patch10981: 0981-MUSE-Paper-mini-support-battery-profile.patch
+Patch10982: 0982-MUSE-Paper-mini-support-some-sensor.patch
+Patch10983: 0983-k1x_udc_core-fix-missing-STATUS-IN-in-control-out-tr.patch
+Patch10984: 0984-k1x_udc_core-fix-enable-after-disable-may-fail.patch
+Patch10985: 0985-k1x_udc_core-fix-high-bandwidth-isoc-endpoint-transf.patch
+Patch10986: 0986-k1x_udc_core-cleanup-info-print.patch
+Patch10987: 0987-usb-typec-husb239-support-mic-switch.patch
+Patch10988: 0988-usb-typec-husb239-update-pd-contract.patch
+Patch10989: 0989-display-reduce-panel-lt8911exb-resume-time.patch
+Patch10990: 0990-lpi3a-add-aic8800-wifi-support.patch
+Patch10991: 0991-camera-fix-unknown-type-compile-error-and-comment-sl.patch
+Patch10992: 0992-spacemit-rf-use-gpiod_set_value_cansleep-instead-of-.patch
+Patch10993: 0993-display-fix-the-issue-of-bootlogo-flashing-screen.patch
+Patch10994: 0994-k1-pm_domain-lcd-don-t-open-the-power-switch-again-i.patch
+Patch10995: 0995-camera-perfect-open-close-node-in-pinmulti-mode.patch
+Patch10996: 0996-k1-update-sd-sdio-tx-delaycode.patch
+Patch10997: 0997-usb-f_uvc-use-GFP_DMA32-for-vb2_queue-at-spacemit-k1.patch
+Patch10998: 0998-k1x-adc-p1-supprt-adc-driver-for-k1x.patch
+Patch10999: 0999-display-add-plane-cursor-type-and-support-crop.patch
+Patch11000: 1000-add-baton-camera-solution.patch
+Patch11001: 1001-dts-add-k1-x_FusionOne-for-eli-NAS.patch
+Patch11002: 1002-k1-suspend-skip-system-sync-in-kernel.patch
+Patch11003: 1003-k1x-support-touchscreen-chipone-tddi.patch
+Patch11004: 1004-k1x-support-sgm41515-charger-driver.patch
+Patch11005: 1005-k1-reboot-add-a-flag-indicating-whether-to-shutdown-.patch
+Patch11006: 1006-MUSE-Paper-support-volume-up-dowm-key-event.patch
+Patch11007: 1007-hung-task-set-hung-timeout-120s.patch
+Patch11008: 1008-add-new-pinctrl-node-for-FusionOne-to-support-wifi-s.patch
+Patch11009: 1009-soc-support-notifier-among-modules.patch
+Patch11010: 1010-usb-typec-husb239-add-notifier-event-for-typec-heads.patch
+Patch11011: 1011-cpuidle-delete-the-dts-node-for-cpuidle.patch
+Patch11012: 1012-clock-add-dpll-and-ddr-clocks.patch
+Patch11013: 1013-usb-typec-husb239-add-vdd-supply-and-usb2-switch.patch
+Patch11014: 1014-mmc-sdhci-of-k1x-avoid-recovery-sdr104-while-dts-dis.patch
+Patch11015: 1015-enable-typec-for-FusionOne.patch
+Patch11016: 1016-muse-paper-sync-camera-draw-dts-configuration.patch
+Patch11017: 1017-k1-dts-add-all-disabled-usb-nodes.patch
+Patch11018: 1018-blk-add-request-completion-flags-for-debug.patch
+Patch11019: 1019-deconfig-enable-CONFIG_LOCKDEP-for-debug.patch
+Patch11020: 1020-display-fix-the-issue-of-trace-during-system-sleep-a.patch
+Patch11021: 1021-sound-support-build-module.patch
+Patch11022: 1022-defconfig-add-audio-config.patch
+Patch11023: 1023-Bluetooth-btrtl-fix-oops-in-btrtl_vendor_read_reg16.patch
+Patch11024: 1024-k1-pm_domain-fix-bug-when-device-detach-from-pm-doma.patch
+Patch11025: 1025-serial-fix-lockdep_assert-warning.patch
+Patch11026: 1026-nvme-expose-allocation-or-mapping-failure-reports.patch
+Patch11027: 1027-Fix-dma_buf-warning-with-enabled-lockdep.patch
+Patch11028: 1028-camera-Fix-dma_buf-warning-with-enabled-lockdep.patch
+Patch11029: 1029-vpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
+Patch11030: 1030-jpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
+Patch11031: 1031-v2d-fix-dmabuf-warning-with-enabled-lockdep.patch
+Patch11032: 1032-display-modify-the-initcall-sequence-of-the-hdmi-dri.patch
+Patch11033: 1033-dts-modify-hdmiaudio-config.patch
+Patch11034: 1034-sound-change-from-late_initcall_sync-to-late_initcal.patch
+Patch11035: 1035-hdmiaudio-support-hot-plug.patch
+Patch11036: 1036-display-adjust-resolution-to-60Hz.patch
+Patch11037: 1037-ir-fix-global-out-of-bounds-when-KASAN-enable.patch
+Patch11038: 1038-k1x-chipone-tddi-reduce-init-log-level.patch
+Patch11039: 1039-disable-the-function-that-auto-switch-usb-mode-at-Fu.patch
+Patch11040: 1040-dts-add-orangepi-rv2-solution.patch
+Patch11041: 1041-orangepi-rv2-add-usb-ctl-adaptation.patch
+Patch11042: 1042-k1-hall-support-separating-wake-up-interrupts-from-n.patch
+Patch11043: 1043-k1-pwr-key-support-wakeup-count.patch
+Patch11044: 1044-k1x-fix-xts-aes-key2-error.patch
+Patch11045: 1045-mmc-sdhci-of-k1x-support-MMC1-debug-as-uart0.patch
+Patch11046: 1046-k1-MUSE-Paper-add-SD-debug-pinctrl.patch
+Patch11047: 1047-stacktrace-delect-KASAN-warning.patch
+Patch11048: 1048-gpu-fix-slab-use-after-free-err.patch
+Patch11049: 1049-k1x-support-ddr-bandwidth-tool-driver.patch
+Patch11050: 1050-dts-MUSE-Pi-remove-cd-inverted-of-sdhci0.patch
+Patch11051: 1051-k1x-clean-uart-useless-info.patch
+Patch11052: 1052-add-ili9881c-mipi-to-orangepi-rv2.patch
+Patch11053: 1053-camera-verify-camera-success.patch
+Patch11054: 1054-orangepi-rv2-add-es8323-config-and-modify-sound-code.patch
+Patch11055: 1055-defconfig-support-codec-es8323.patch
+Patch11056: 1056-usb-typec-husb239-enable-Try.SNK-mechanism.patch
+Patch11057: 1057-display-fix-mmu-configuration-error-while-tbu-id-is-.patch
+Patch11058: 1058-k1x-stop-watchdog-before-the-system-suspend-and-reco.patch
+Patch11059: 1059-k1x-remove-cw2015-useless-info.patch
+Patch11060: 1060-k1-MUSE-Paper-fix-the-mistake-about-sd-sdio-tx-delay.patch
+Patch11061: 1061-camera-sync-V5.7-code-and-verify-single_online_test.patch
+Patch11062: 1062-k1x-update-MUSE-Paper-cw2015-profile.patch
+Patch11063: 1063-k1x-add-ZT001H-dts-support.patch
+Patch11064: 1064-vpu-Fix-circular-lock-warning-with-enabled-lockdep.patch
+Patch11065: 1065-vpu-Fix-amvx-build-error-when-building-amvx-as-modul.patch
+Patch11066: 1066-k1-add-fanghang-k1-x_uav-dts.patch
+Patch11067: 1067-riscv-Flush-the-icache-of-all-cores-related-to-the-c.patch
+Patch11068: 1068-clock-reset-add-rcpu-pwm-clocks-and-resets.patch
+Patch11069: 1069-k1x-1.fix-gpio74-function2-pwm9-rpwm9-2.add-rpwm0-9-.patch
+Patch11070: 1070-dts-modify-the-address-space-allocation-of-pcie2_rc.patch
+Patch11071: 1071-PCI-Add-arch_can_pci_mmap_wc-macro-on-spacemit-k1-so.patch
+Patch11072: 1072-k1x-support-chsc5xxx-touchpad-driver.patch
+Patch11073: 1073-k1x-MUSE-Paper-mini-4g-support-charger.patch
+Patch11074: 1074-k1-x_uav-camera-verify-imx415-okay.patch
+Patch11075: 1075-defconfig-add-real-time-linux-defconfig.patch
+Patch11076: 1076-k1_uav-enable-uart-ports.patch
+Patch11077: 1077-drm-radeon-mask-MSI-on-K1x.patch
+Patch11078: 1078-radeon-amdgpu-force-32-bit-dma.patch
+Patch11079: 1079-Radeon-modify-cached-mapping-to-writecombine.patch
+Patch11080: 1080-k1-add-radeon-module-in-k1_defconfig.patch
+Patch11081: 1081-camera-Fix-isp-and-cpp-build-error-when-building-the.patch
+Patch11082: 1082-defconfig-disable-LOCKDEP-config.patch
+Patch11083: 1083-rt-defconfig-config-CONFIG_PREEMPT_RT.patch
+Patch11084: 1084-mmc-sdhci-of-k1x-fix-bug-about-get-invalid-cpufreq_p.patch
+Patch11085: 1085-dts-update-k1-x_uav-disabled-some-no-used-moduels-fi.patch
+Patch11086: 1086-k1-support-decompression-of-zstd-format-file.patch
+Patch11087: 1087-1.add-clk-reset-to-i2c3-2.enable-rpwm9.patch
+Patch11088: 1088-cpuinfo-add-uarch-information.patch
+Patch11089: 1089-k1x-clear-charger-useless-info.patch
+Patch11090: 1090-es8326-support-headphone-notifier-call-chain.patch
+Patch11091: 1091-es8326-fix-es8326-no-sound-due-to-data-length-settin.patch
+Patch11092: 1092-es8326-fix-no-sound-issue-after-suspend-resume.patch
+Patch11093: 1093-es8326-cleanup-unused-code.patch
+Patch11094: 1094-es8326-reset-jack-status-when-suspend.patch
+Patch11095: 1095-riscv-rwonce-add-__READ_ONCE-implementation-for-risc.patch
+Patch11096: 1096-riscv-spackemit-add-of-node-get-for-process-cpuinfo-.patch
+Patch11097: 1097-sound-adapt-linux-kernel-new-vision.patch
+Patch11098: 1098-usb-phy-modify-prototype-of-device-remove-function.patch
+Patch11099: 1099-usb-dwc3-modify-prototype-of-device-remove-function.patch
+Patch11100: 1100-usb-udc-modify-prototype-of-device-remove-function.patch
+Patch11101: 1101-usb-host-modify-prototype-of-device-remove-function.patch
+Patch11102: 1102-usb-misc-modify-prototype-of-device-remove-function.patch
+Patch11103: 1103-spi-spacemit-modify-prototype-of-device-remove-funct.patch
+Patch11104: 1104-qspi-spacemit-modify-prototype-of-device-remove-func.patch
+Patch11105: 1105-crypto-spacemit-replace-strlcpy-with-strscpy.patch
+Patch11106: 1106-dma-spacemit-adma-modify-prototype-of-device-remove-.patch
+Patch11107: 1107-dma-spacemit-modify-prototype-of-device-remove-funct.patch
+Patch11108: 1108-spacemit-v2d-modify-prototype-of-device-remove-funct.patch
+Patch11109: 1109-soc-spacemit-modify-prototype-of-device-remove-funct.patch
+Patch11110: 1110-soc-spacemit-pm-fix-error-when-save-context-for-lowp.patch
+Patch11111: 1111-spacemit-jpu-modify-prototype-of-device-remove-funct.patch
+Patch11112: 1112-spacemit-ddrbw-clear-compile-warnings.patch
+Patch11113: 1113-remoteproc-spacemit-modify-prototype-of-device-remov.patch
+Patch11114: 1114-i2c-k1x-modify-prototype-of-device-remove-function.patch
+Patch11115: 1115-plic-fix-error-on-some-offset-macro-definition.patch
+Patch11116: 1116-mailbox-spacemit-modify-prototype-of-device-remove-f.patch
+Patch11117: 1117-extcon-k1x-modify-prototype-of-device-remove-functio.patch
+Patch11118: 1118-camera-spacemit-modify-prototype-of-device-remove-fu.patch
+Patch11119: 1119-vpu-spacemit-modify-prototype-of-device-remove-funct.patch
+Patch11120: 1120-ir-spacemit-modify-prototype-of-device-remove-functi.patch
+Patch11121: 1121-wdt-k1x-modify-prototype-of-device-remove-function.patch
+Patch11122: 1122-thermal-k1x-modify-prototype-of-device-remove-functi.patch
+Patch11123: 1123-phy-combphy-clean-compile-warning-because-of-prototy.patch
+Patch11124: 1124-pxa-k1x-adapt-to-linux-kernel-new-version.patch
+Patch11125: 1125-power-supply-sbs-modify-prototype-of-device-remove-f.patch
+Patch11126: 1126-pcie-k1x-porting-to-linux-6.12.patch
+Patch11127: 1127-nvme-remove-segment-buffer-size-limit.patch
+Patch11128: 1128-tcm-spacemit-modify-prototype-of-device-remove-funct.patch
+Patch11129: 1129-flexcan-fix-error-in-flexcan-core-probe-function.patch
+Patch11130: 1130-emac-k1x-fix-compile-warning-on-function-prototype.patch
+Patch11131: 1131-stmmac-modify-prototype-of-device-remove-function.patch
+Patch11132: 1132-ax88179a-porting-to-linux-6.12.patch
+Patch11133: 1133-usb-qmi_wwan_f-replace-strlcpy-by-strscpy.patch
+Patch11134: 1134-spi-nor-porting-fmsh-device-driver-to-linux-6.12.patch
+Patch11135: 1135-drm-spacemit-porting-drm-driver-to-linux-6.12.patch
+Patch11136: 1136-gpio-k1x-porting-gpio-driver-to-linux-6.12.patch
+Patch11137: 1137-build-disable-character-output-display-during-the-ke.patch
+Patch11138: 1138-riscv-restore-vmlinux-target-building-command.patch
+Patch11139: 1139-wireless-rtl8852be-porting-to-linux-6.12.patch
+Patch11140: 1140-wireless-rtl8852bs-porting-to-linux-6.12.patch
+Patch11141: 1141-defconfig-disable-some-modules-which-not-ready.patch
+Patch11142: 1142-k1-mainline-update-head-files-for-compile-errors.patch
+Patch11143: 1143-k1-mainline-defconfig-enable-spacemit-ir-driver.patch
+Patch11144: 1144-k1-mainline-defconfig-enable-codec-es8326-support.patch
+Patch11145: 1145-k1-mainline-es8326-fix-es8326-compile-and-work-issue.patch
+Patch11146: 1146-k1-regulator-enable-the-driver-of-regulator.patch
+Patch11147: 1147-display-resolve-the-issue-of-no-display-on-HDMI.patch
+Patch11148: 1148-i2c-spacemit-k1-fix-strcpy-func-in-i2c-driver.patch
+Patch11149: 1149-riscv-k1-defconfig-support-i2c-driver.patch
+Patch11150: 1150-plic-spacemit-k1-declare-irqchip-of-plic-riscv0.patch
+Patch11151: 1151-watchdog-spacemit-k1-fix-suspend-enable-judge.patch
+Patch11152: 1152-gpu-upgrade-to-24.2.patch
+Patch11153: 1153-gpu-img-rogue-add-judgment-of-linux-version-and-keep.patch
+Patch11154: 1154-gpu-make-sure-gpu-probe-before-display.patch
+Patch11155: 1155-drm-img-rogue-porting-gpu-driver-to-linux-6.12.patch
+Patch11156: 1156-gpu-img-rogue-update-to-linux-6.12-fix-pvr_drm_fops.patch
+Patch11157: 1157-soc-spacemit-add-prototype-define-for-multi-modules.patch
+Patch11158: 1158-clk-spacemit-clean-compile-warnings.patch
+Patch11159: 1159-pinctrl-spacemit-p1-support-pmic-pins.patch
+Patch11160: 1160-spi-k1-spi-porting-to-linux-6.12.patch
+Patch11161: 1161-spi-k1-qspi-porting-to-linux-6.12.patch
+Patch11162: 1162-dwc3-spacemit-fix-compile-warning.patch
+Patch11163: 1163-usb-gadget-fix-compile-warning.patch
+Patch11164: 1164-usb-xhci-hub-fix-compile-warnings.patch
+Patch11165: 1165-wdt-k1-fix-compile-warning.patch
+Patch11166: 1166-wireless-rtl8852bs-porting-to-linux-6.12.patch
+Patch11167: 1167-cpufreq-k1-fix-compile-warning.patch
+Patch11168: 1168-crypto-k1-fix-compile-warning.patch
+Patch11169: 1169-usbnet-fix-compile-warning.patch
+Patch11170: 1170-mmc-k1x-fix-compile-warning.patch
+Patch11171: 1171-v2d-spacemit-fix-compile-warning.patch
+Patch11172: 1172-power-sgm4154x-reshape-file-style.patch
+Patch11173: 1173-media-k1x-vpu-porting-to-linux-6.12.patch
+Patch11174: 1174-media-k1x-camera-porting-to-linux-6.12.patch
+Patch11175: 1175-drm-k1x-fix-compile-warning.patch
+Patch11176: 1176-drm-k1x-gpu-fix-compile-warning.patch
+Patch11177: 1177-riscv-k1-kconfig-update-kernel-configuration.patch
+Patch11178: 1178-media-k1-vpu-fix-error-on-MODULE_IMPORT_NS-using.patch
+Patch11179: 1179-mmc-k1-fix-error-of-driver.remove.patch
+Patch11180: 1180-soc-spacemit-v2d-fix-error-on-MODULE_IMPORT_NS-using.patch
+Patch11181: 1181-usb-spacemit-k1-fix-compile-error.patch
+Patch11182: 1182-sound-k1-fix-compile-error.patch
+Patch11183: 1183-opp-k1-fix-compile-error.patch
+Patch11184: 1184-can-k1-flexcan-fix-error-on-driver.remove.patch
+Patch11185: 1185-wireless-rtl8852bs-porting-to-linux-6.13.patch
+Patch11186: 1186-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
+Patch11187: 1187-drm-spacemit-porting-to-linux-6.13.patch
+Patch11188: 1188-camera-fix-compilation-problems-and-run-imx415-in-de.patch
+Patch11189: 1189-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
+Patch11190: 1190-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
+Patch11191: 1191-thermal-k1-Correct-a-typo-in-the-code.patch
+Patch11192: 1192-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
+Patch11193: 1193-media-k1-camera-fix-some-compile-warnings.patch
+Patch11194: 1194-riscv-k1-dts-remove-some-reserved-memory-region.patch
+Patch11195: 1195-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+Patch11196: 1196-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+Patch11197: 1197-fix-module-dma_buf-ns.patch
+Patch11198: 1198-fix-wrong-style-comments.patch
+Patch11199: 1199-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+Patch11200: 1200-remove-trace_printk.patch
+Patch11201: 1201-remove-unused-var.patch
+Patch11202: 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+Patch11203: 1203-fix-includes-for-timestamp.patch
+Patch11204: 1204-remove-debug-rdinit-from-m1-bpi.patch
+Patch11205: 1205-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
+Patch11206: 1206-Add-bit-brick-k1-devicetree-from-bianbu.patch
+Patch11207: 1207-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+Patch11208: 1208-6.15-fixes.patch
+Patch11209: 1209-Add-distinct-compatibles-for-boards-currently-used-f.patch
+Patch11210: 1210-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+Patch11211: 1211-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
+Patch11212: 1212-Revert-insmod-simplify-section-header-process-for-op.patch
+Patch11213: 1213-6.16-fixes.patch
+Patch11214: 1214-RTL8852-6.15-fixes.patch
+Patch11215: 1215-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 
 
 
@@ -2342,21 +2373,24 @@ Patch999999: linux-kernel-test.patch
 # END OF PATCH DEFINITIONS
 
 %description
-The kernel meta package
+The %{package_name} meta package
 
-#
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
 #	%%kernel_reqprovconf [-o] <subpackage>
 # It uses any kernel_<subpackage>_conflicts and kernel_<subpackage>_obsoletes
 # macros defined above.
+# -o: Skips main "Provides" that would satisfy general kernel requirements that
+#     special-purpose kernels shouldn't include.
+#     For example, used for zfcpdump-core to *not* provide kernel-core. (BZ 2027654)
 #
 %define kernel_reqprovconf(o) \
 %if %{-o:0}%{!-o:1}\
 Provides: kernel = %{specversion}-%{pkg_release}\
+Provides: %{name} = %{specversion}-%{pkg_release}\
 %endif\
-Provides: kernel-%{_target_cpu} = %{specrpmversion}-%{pkg_release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-%{_target_cpu} = %{specrpmversion}-%{pkg_release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): ((linux-firmware >= 20150904-56.git6ebf5d57) if linux-firmware)\
@@ -2386,13 +2420,13 @@ device drivers shipped with it are documented in these files.
 You'll want to install this package if you need a reference to the
 options that can be passed to Linux kernel modules at load time.
 
-
+%if %{with_headers}
 %package headers
 Summary: Header files for the Linux kernel for use by glibc
 Obsoletes: glibc-kernheaders < 3.0-46
 Provides: glibc-kernheaders = 3.0-46
 %if 0%{?gemini}
-Provides: kernel-headers = %{specversion}-%{release}
+Provides: %{name}-headers = %{specversion}-%{release}
 Obsoletes: kernel-headers < %{specversion}
 %endif
 %description headers
@@ -2401,11 +2435,13 @@ between the Linux kernel and userspace libraries and programs.  The
 header files define structures and constants that are needed for
 building most standard programs and are also needed for rebuilding the
 glibc package.
+%endif
 
+%if %{with_cross_headers}
 %package cross-headers
 Summary: Header files for the Linux kernel for use by cross-glibc
 %if 0%{?gemini}
-Provides: kernel-cross-headers = %{specversion}-%{release}
+Provides: %{name}-cross-headers = %{specversion}-%{release}
 Obsoletes: kernel-cross-headers < %{specversion}
 %endif
 %description cross-headers
@@ -2414,6 +2450,7 @@ between the Linux kernel and userspace libraries and programs.  The
 header files define structures and constants that are needed for
 building most standard programs and are also needed for rebuilding the
 cross-glibc package.
+%endif
 
 %package debuginfo-common-%{_target_cpu}
 Summary: Kernel source files used by %{name}-debuginfo packages
@@ -2610,6 +2647,7 @@ Summary: gcov graph and source files for coverage data collection.\
 %{?1:%{1}-}gcov includes the gcov graph and source files for gcov coverage collection.\
 %{nil}
 
+%if %{with_kernel_abi_stablelists}
 %package -n %{package_name}-abi-stablelists
 Summary: The Red Hat Enterprise Linux kernel ABI symbol stablelists
 AutoReqProv: no
@@ -2617,6 +2655,7 @@ AutoReqProv: no
 The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
+%endif
 
 %if %{with_kabidw_base}
 %package kernel-kabidw-base-internal
@@ -2657,9 +2696,10 @@ This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
 %define kernel_devel_package(m) \
 %package %{?1:%{1}-}devel\
 Summary: Development package for building kernel modules to match the %{?2:%{2} }kernel\
-Provides: kernel%{?1:-%{1}}-devel-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel-devel-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-devel-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}-devel-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: kernel-devel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-devel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 Requires(pre): findutils\
@@ -2672,7 +2712,7 @@ Requires: flex\
 Requires: make\
 Requires: gcc\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-devel-uname-r = %{KVERREL}%{uname_variant %{?1:%{1}}}\
+Requires: %{name}-devel-uname-r = %{KVERREL}%{uname_variant %{?1:%{1}}}\
 %endif\
 %description %{?1:%{1}-}devel\
 This package provides kernel headers and makefiles sufficient to build modules\
@@ -2708,14 +2748,14 @@ This meta package provides a single reference that other packages can Require to
 %package %{?1:%{1}-}modules-internal\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
-Provides: kernel%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel%{?1:-%{1}}-modules-internal = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-internal-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 AutoReq: no\
 AutoProv: yes\
 %description %{?1:%{1}-}modules-internal\
@@ -2729,16 +2769,16 @@ This package provides kernel modules for the %{?2:%{2} }kernel package for Red H
 %define kernel_modules_extra_package(m) \
 %package %{?1:%{1}-}modules-extra\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
-Provides: kernel%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel%{?1:-%{1}}-modules-extra = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-modules-extra-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
+Requires: %{name}-modules-extra-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
 %endif\
 AutoReq: no\
 AutoProv: yes\
@@ -2753,15 +2793,15 @@ This package provides less commonly used kernel modules for the %{?2:%{2} }kerne
 %define kernel_modules_package(m) \
 %package %{?1:%{1}-}modules\
 Summary: kernel modules to match the %{?2:%{2}-}core kernel\
-Provides: kernel%{?1:-%{1}}-modules-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel-modules-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel-modules = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}-modules-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-modules = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-modules-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
+Requires: %{name}-modules-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
 %endif\
 AutoReq: no\
 AutoProv: yes\
@@ -2776,14 +2816,14 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 %define kernel_modules_core_package(m) \
 %package %{?1:%{1}-}modules-core\
 Summary: Core kernel modules to match the %{?2:%{2}-}core kernel\
-Provides: kernel%{?1:-%{1}}-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel-modules-core = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-modules-core = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-modules-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
+Requires: %{name}-modules-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
 %endif\
 AutoReq: no\
 AutoProv: yes\
@@ -2798,10 +2838,10 @@ This package provides essential kernel modules for the %{?2:%{2}-}core kernel pa
 %define kernel_meta_package() \
 %package %{1}\
 summary: kernel meta-package for the %{1} kernel\
-Requires: kernel-%{1}-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
-Requires: kernel-%{1}-modules-uname-r = %{KVERREL}%{uname_suffix %{1}}\
-Requires: kernel-%{1}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
-Requires: ((kernel-%{1}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{1}}) if kernel-modules-extra-matched)\
+Requires: %{name}-%{1}-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
+Requires: %{name}-%{1}-modules-uname-r = %{KVERREL}%{uname_suffix %{1}}\
+Requires: %{name}-%{1}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
+Requires: ((%{name}-%{1}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{1}}) if %{name}-modules-extra-matched)\
 %if "%{1}" == "rt" || "%{1}" == "rt-debug" || "%{1}" == "rt-64k" || "%{1}" == "rt-64k-debug"\
 Requires: realtime-setup\
 %endif\
@@ -2814,15 +2854,19 @@ The meta-package for the %{1} kernel\
 # This macro creates a kernel-<subpackage> and its -devel and -debuginfo too.
 #	%%define variant_summary The Linux kernel compiled for <configuration>
 #	%%kernel_variant_package [-n <pretty-name>] [-m] [-o] <subpackage>
+# -m: Used with debugbuildsenabled==0 to create a "meta" debug variant that
+#     depends on base variant and skips debug/internal/partner packages.
+# -o: Skips main "Provides" that would satisfy general kernel requirements that
+#     special-purpose kernels shouldn't include.
 #
 %define kernel_variant_package(n:mo) \
 %package %{?1:%{1}-}core\
 Summary: %{variant_summary}\
-Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-%{?1:%{1}-}core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel)\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
-Requires: kernel-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
+Requires: %{name}-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
+Requires: %{name}-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %{?1:+%{1}}}\
 %endif\
 %{expand:%%kernel_reqprovconf %{?1:%{1}} %{-o:%{-o}}}\
 %if %{?1:1} %{!?1:0} \
@@ -2844,15 +2888,15 @@ Requires: kernel-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %{
 %package %{?1:%{1}-}uki-virt\
 Summary: %{variant_summary} unified kernel image for virtual machines\
 Provides: installonlypkg(kernel)\
-Provides: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): systemd >= 254-1\
 Recommends: uki-direct\
 %package %{?1:%{1}-}uki-virt-addons\
 Summary: %{variant_summary} unified kernel image addons for virtual machines\
 Provides: installonlypkg(kernel)\
-Requires: kernel%{?1:-%{1}}-uki-virt = %{specrpmversion}-%{release}\
+Requires: %{name}%{?1:-%{1}}-uki-virt = %{specrpmversion}-%{release}\
 Requires(pre): systemd >= 254-1\
 %endif\
 %if %{with_gcov}\
@@ -2868,14 +2912,14 @@ Requires(pre): systemd >= 254-1\
 %package %{?1:%{1}-}modules-partner\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
-Provides: kernel%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}\
-Provides: kernel%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
-Provides: kernel%{?1:-%{1}}-modules-partner = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner = %{specrpmversion}-%{release}%{uname_suffix %{?1:+%{1}}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-partner-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
-Requires: kernel%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
+Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1:+%{1}}}\
 AutoReq: no\
 AutoProv: yes\
 %description %{?1:%{1}-}modules-partner\
@@ -2983,7 +3027,7 @@ It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
 %endif
 
-%if %{with_debug} && %{with_automotive}
+%if %{with_debug} && %{with_automotive} && !%{with_automotive_build}
 %define variant_summary The Linux Automotive kernel compiled with extra debugging enabled
 %kernel_variant_package automotive-debug
 %description automotive-debug-core
@@ -3082,7 +3126,9 @@ Prebuilt 64k unified kernel image for virtual machines.
 Prebuilt 64k unified kernel image addons for virtual machines.
 %endif
 
+%ifnarch noarch %{nobuildarches}
 %kernel_modules_extra_matched_package
+%endif
 
 %define log_msg() \
 	{ set +x; } 2>/dev/null \
@@ -3099,6 +3145,13 @@ Prebuilt 64k unified kernel image addons for virtual machines.
 %if %{with_baseonly}
 %if !%{with_up}
 %{log_msg "Cannot build --with baseonly, up build is disabled"}
+exit 1
+%endif
+%endif
+
+%if %{with_automotive}
+%if 0%{?fedora}
+%{log_msg "Cannot build automotive with a fedora baseline, must be rhel/centos/eln"}
 exit 1
 %endif
 %endif
@@ -3166,1217 +3219,1221 @@ ApplyOptionalPatch patch-%{patchversion}-redhat.patch
 
 
 
-ApplyOptionalPatch 0001-add-k1-pro-base-platform-support.patch
-ApplyOptionalPatch 0002-media-support-a-new-vpu-driver-which-use-V4L2-standa.patch
-ApplyOptionalPatch 0003-add-SOC_SPACEMIT_K1-for-spacemit-k1-serial-SOCs.patch
-ApplyOptionalPatch 0004-update-kernel-configuration-for-qemu-board.patch
-ApplyOptionalPatch 0005-kernel-config-add-SOC_SPACEMIT_K1_FPGA-option-for-fp.patch
-ApplyOptionalPatch 0006-fpga-kconfig-update-kernel-configuration-for-k1-pro-.patch
-ApplyOptionalPatch 0007-qemu-kconfig-update-kernel-configuration-for-k1-pro-.patch
-ApplyOptionalPatch 0008-sim-kconfig-update-kernel-configuration-for-k1-pro-s.patch
-ApplyOptionalPatch 0009-add-k1pro-ccu-driver-and-config.patch
-ApplyOptionalPatch 0010-add-k1pro-reset-controller-driver-and-config.patch
-ApplyOptionalPatch 0011-update-kernel-config-add-FPGA-label-and-enable-debug.patch
-ApplyOptionalPatch 0012-dtsi-enable-zicbom.patch
-ApplyOptionalPatch 0013-change-dtb-configuration-to-k1-pro-SOC-1.-ddr-uart-p.patch
-ApplyOptionalPatch 0014-dts-add-tcm-node-kernel-add-tcm-driver.patch
-ApplyOptionalPatch 0015-add-.h-for-clock-reset-and-change-reg.patch
-ApplyOptionalPatch 0016-pwm-dwc-driver-loaded-by-platform-changes-in-Makefil.patch
-ApplyOptionalPatch 0017-sync-clk-reset-V1.1-spec-and-use-CLK_OF_DECLARE-for-.patch
-ApplyOptionalPatch 0018-spi-adding-the-driver-for-Designware-enhanced-spi-co.patch
-ApplyOptionalPatch 0019-riscv-support-svpbmt.patch
-ApplyOptionalPatch 0020-usb-dwc3-support-spacemit-platform.patch
-ApplyOptionalPatch 0021-dts-dwc3-add-dts-config-for-k1-pro.patch
-ApplyOptionalPatch 0022-usb-update-usb-kernel-configuration.patch
-ApplyOptionalPatch 0023-usb-dwc3-avoid-suspend-phy.patch
-ApplyOptionalPatch 0024-riscv-mm-fix-reserve-cma-for-platform-not-having-ZON.patch
-ApplyOptionalPatch 0025-kconfig-enable-cma-for-k1-pro-board.patch
-ApplyOptionalPatch 0026-ethernet-adding-the-driver-of-the-Designware-gmac-co.patch
-ApplyOptionalPatch 0027-reset-reset-driver-handle-all-global-soft-reset-sing.patch
-ApplyOptionalPatch 0028-dma-dw-axi-dma-support-handshake-num-more-than-16.patch
-ApplyOptionalPatch 0029-usb-dwc3-modify-reset-control-for-usb31.patch
-ApplyOptionalPatch 0030-usb-dwc3-modify-DMA-capability.patch
-ApplyOptionalPatch 0031-dma-fix-an-error-burst_trans_len-undeclare-in-dma-dr.patch
-ApplyOptionalPatch 0032-mmc-support-spacemit-k1-pro-platform.patch
-ApplyOptionalPatch 0033-mmc-dts-support-emmc-and-sdcard.patch
-ApplyOptionalPatch 0034-reset-add-spinlock-for-timing-issue.patch
-ApplyOptionalPatch 0035-mmc-modify-reset-card-only-once.patch
-ApplyOptionalPatch 0036-reshape-dtsi-format-use-table-to-replace-space.patch
-ApplyOptionalPatch 0037-k1-pro.dtsi-add-pmu-configs.patch
-ApplyOptionalPatch 0038-pcie-support-spacemit-k1-pro-pcie-controller-RC-mode.patch
-ApplyOptionalPatch 0039-usb-xhci-modify-DMA-capability-for-k1-pro-platform.patch
-ApplyOptionalPatch 0040-change-dts-for-I2C-support.patch
-ApplyOptionalPatch 0041-can-add-can-device-driver-and-kernel-config.patch
-ApplyOptionalPatch 0042-ccu-add-mcu-clocks.patch
-ApplyOptionalPatch 0043-fs-support-nfs.patch
-ApplyOptionalPatch 0044-spi-support-spi-nor-and-correct-the-params-of-the-sp.patch
-ApplyOptionalPatch 0045-mmc-enable-host-version-4-mode.patch
-ApplyOptionalPatch 0046-mmc-deattach-clk-400k-during-mmc_rescan.patch
-ApplyOptionalPatch 0047-add-script-for-extract-generate-rootfs.cpio.gz.patch
-ApplyOptionalPatch 0048-mmc-increase-date-timeout-counter-value-to-max.patch
-ApplyOptionalPatch 0049-remoteproc-support-bringup-esos-for-spacemit-k1-pro_.patch
-ApplyOptionalPatch 0050-media-support-usb-media-enable-uvc-and-f_uvc.patch
-ApplyOptionalPatch 0051-vpu-fix-vpu-compile-error-for-linux6.1.patch
-ApplyOptionalPatch 0052-vpu-add-vpu-dts-config.patch
-ApplyOptionalPatch 0053-can-update-kernel-defconfig-IPMS_CAN-y.patch
-ApplyOptionalPatch 0054-clk-add-spinlock-and-mailbox-clock-for-mcu-system.patch
-ApplyOptionalPatch 0055-reset-add-spinlock-and-mailbox-reset-for-mcu-system.patch
-ApplyOptionalPatch 0056-mailbox-enable-spacemit-mailbox-driver.patch
-ApplyOptionalPatch 0057-scmi-support-arm-s-scmi-protocol-for-spacemit-platfo.patch
-ApplyOptionalPatch 0058-rproc-change-compatible-name-for-rproc-driver.patch
-ApplyOptionalPatch 0059-pinctrl-support-the-driver-of-spacemit-pinctrl-contr.patch
-ApplyOptionalPatch 0060-dts-add-the-table-of-pin-functions.patch
-ApplyOptionalPatch 0061-vpu-add-reset-control-logic.patch
-ApplyOptionalPatch 0062-vpu-add-device-caps-config.patch
-ApplyOptionalPatch 0063-vpu-remove-severity-and-drain-file-node-for-probe-er.patch
-ApplyOptionalPatch 0064-vpu-enable-debug-mode.patch
-ApplyOptionalPatch 0065-arm_scmi-regulator-enable-an-dummy-regulator-using-s.patch
-ApplyOptionalPatch 0066-dts-disable-vpu-as-some-bitfiles-have-no-vpu.patch
-ApplyOptionalPatch 0067-ethernet-support-ethernet-qos.patch
-ApplyOptionalPatch 0068-scmi-enable-scmi-power-domain-protocol.patch
-ApplyOptionalPatch 0069-scmi-voltage_domain-add-vlittle-vgpu-nodes-in-scmi-d.patch
-ApplyOptionalPatch 0070-cpufreq-support-scmi-cpufreq-driver-spacemit-platfor.patch
-ApplyOptionalPatch 0071-wifi-cfg80211-enable-wireless-LAN-configuration-API.patch
-ApplyOptionalPatch 0072-mmc-dts-support-sdio-interface.patch
-ApplyOptionalPatch 0073-GMAC-support-IEEE_1588-hwtimestamp.patch
-ApplyOptionalPatch 0074-usb-dts-add-dwc2-dts-for-k1-pro-fpga.patch
-ApplyOptionalPatch 0075-usb-kconfig-enable-dwc2-configuration.patch
-ApplyOptionalPatch 0076-usb-dwc2-add-params-for-k1-pro-fpga.patch
-ApplyOptionalPatch 0077-pinctrl-change-the-format-of-pin-config.patch
-ApplyOptionalPatch 0078-spi-nand-support-2x-4x-8x-for-spi-nand-tx-and-rx.patch
-ApplyOptionalPatch 0079-ubi-kconfig-enable-ubi-configuration.patch
-ApplyOptionalPatch 0080-usb-dwc2-modify-gadget-DMA-capability.patch
-ApplyOptionalPatch 0081-add-k1-x-device-support.patch
-ApplyOptionalPatch 0082-update-vpu-driver.patch
-ApplyOptionalPatch 0083-cpu-support-cpu-hotplug.patch
-ApplyOptionalPatch 0084-pinctrl-modify-the-format-of-the-pinctrl-group-name.patch
-ApplyOptionalPatch 0085-update-dts-for-k1-x-platform.patch
-ApplyOptionalPatch 0086-add-pxa_k1x-driver-for-k1x-platform.patch
-ApplyOptionalPatch 0087-k1pro-enable-first-can-use-version-of-cpuidle.patch
-ApplyOptionalPatch 0088-k1x-multi-core-modify-the-configurations-related-to-.patch
-ApplyOptionalPatch 0089-k1pro-add-i2c-configuration.patch
-ApplyOptionalPatch 0090-disable-pm-power-management-is-not-support-now.patch
-ApplyOptionalPatch 0091-k1-x-add-mmp_pdma-driver-support.patch
-ApplyOptionalPatch 0092-k1x-add-k1-x_fpga-1x4-2x2-proj.patch
-ApplyOptionalPatch 0093-k1-x-support-pxa-uart-driver-dts-configs-pm-amend-in.patch
-ApplyOptionalPatch 0094-ethernet-adding-gmac-driver-for-k1-x.patch
-ApplyOptionalPatch 0095-mmc-support-spacemit-k1x-platform.patch
-ApplyOptionalPatch 0096-ethernet-change-the-phy-mode-config-from-device-tree.patch
-ApplyOptionalPatch 0097-hotplug-we-d-better-flush-the-local-l2-cache-when-on.patch
-ApplyOptionalPatch 0098-mmc-update-dts-remove-axi-node.patch
-ApplyOptionalPatch 0099-turn-off-CONFIG_PM-for-debug.patch
-ApplyOptionalPatch 0100-config-support-gmac-driver-for-k1-x-1x4-and-2x2.patch
-ApplyOptionalPatch 0101-support-tcm-for-k1x.patch
-ApplyOptionalPatch 0102-add-udma-driver-for-userspace.patch
-ApplyOptionalPatch 0103-dma-copy-use-vaddr.patch
-ApplyOptionalPatch 0104-rm-udma-log.patch
-ApplyOptionalPatch 0105-update-defconfig-for-support-sdmmc-udma.patch
-ApplyOptionalPatch 0106-add-mutex-va2pa-fix-tcm_discontinuous_malloc.patch
-ApplyOptionalPatch 0107-update-for-support-tcm.patch
-ApplyOptionalPatch 0108-usb-gadget-support-k1x-udc.patch
-ApplyOptionalPatch 0109-pcie-adding-pcie-driver-for-k1x.patch
-ApplyOptionalPatch 0110-usb-dwc3-support-k1x-platform.patch
-ApplyOptionalPatch 0111-k1x-add-pwm-pxa-driver-support.patch
-ApplyOptionalPatch 0112-update-vpu-driver.patch
-ApplyOptionalPatch 0113-k1pro-adjust-pwm-driver-config-name.patch
-ApplyOptionalPatch 0114-k1x-add-soc-timer-driver-support.patch
-ApplyOptionalPatch 0115-k1pro-deconfig-axi-dma-driver-Y.patch
-ApplyOptionalPatch 0116-support-I2C-for-k1x.patch
-ApplyOptionalPatch 0117-media-k1x-vpu-reshape-file-style.patch
-ApplyOptionalPatch 0118-update-kernel-default-config.patch
-ApplyOptionalPatch 0119-reset-update-reset-controller-driver.patch
-ApplyOptionalPatch 0120-ccu-update-clock-controller-driver.patch
-ApplyOptionalPatch 0121-fix-config-PCIE_SPACEMIT-depends-on-CONFIG_SOC_SPACE.patch
-ApplyOptionalPatch 0122-k1x-switch-pwm-deconfig-Y-on-1x4-2x2-board.patch
-ApplyOptionalPatch 0123-k1pro-cpuidle-support-cpuidle.patch
-ApplyOptionalPatch 0124-k1pro-add-k1pro-fpga_1x4-k1pro-fpga_2x2-proj.patch
-ApplyOptionalPatch 0125-k1-x-add-k1x-gpio-driver-support.patch
-ApplyOptionalPatch 0126-riscv-spacemit-remove-k1pro-configuration-it-is-just.patch
-ApplyOptionalPatch 0127-yk1x-add-the-first-version-of-pm-domain.patch
-ApplyOptionalPatch 0128-k1-x-add-gmac-PTP-support.patch
-ApplyOptionalPatch 0129-usb-dwc2-update-fifo-and-reset-config-for-k1-pro.patch
-ApplyOptionalPatch 0130-k1x-enable-dmabuf.patch
-ApplyOptionalPatch 0131-qspi-adding-driver-for-k1x-qspi-controller.patch
-ApplyOptionalPatch 0132-qspi-fix-typo-cause-compilation-errors.patch
-ApplyOptionalPatch 0133-add-spacemit-ir-rx-driver.patch
-ApplyOptionalPatch 0134-k1x-dts-modify-the-actual-reference-clock-for-sdhci.patch
-ApplyOptionalPatch 0135-k1pro-cpuidle-support-cpu0-cluster0-go-deepidle.patch
-ApplyOptionalPatch 0136-cpuidle-adapt-code-for-CPUidle-functionality.patch
-ApplyOptionalPatch 0137-update-k1x-vpu-driver.patch
-ApplyOptionalPatch 0138-k1x-cpuidle-synchronize-relevant-patches-from-k1pro.patch
-ApplyOptionalPatch 0139-k1x-support-cpufreq-driver.patch
-ApplyOptionalPatch 0140-reset-add-reset-controller-driver-for-k1x.patch
-ApplyOptionalPatch 0141-clock-add-clock-controller-driver-for-k1x.patch
-ApplyOptionalPatch 0142-dts-fix-worng-and-warning-for-k1x-clk-reset.patch
-ApplyOptionalPatch 0143-clock-fix-k1x-clock-id.patch
-ApplyOptionalPatch 0144-pinctrl-adding-pinctrl-config-for-k1x-soc.patch
-ApplyOptionalPatch 0145-reset-modify-reset-driver-file-name-of-k1pro.patch
-ApplyOptionalPatch 0146-clock-modify-clock-driver-file-name-of-k1pro.patch
-ApplyOptionalPatch 0147-pm_domain-move-the-pm_domain-driver-to-the-directy-s.patch
-ApplyOptionalPatch 0148-v2d-Add-v2d-driver.patch
-ApplyOptionalPatch 0149-add-tcm_cfg_save-restore.patch
-ApplyOptionalPatch 0150-add-tcm-sync-malloc-code-clean.patch
-ApplyOptionalPatch 0151-update-k1-x_fpga.dts-with-device-k1-x-board.dts.patch
-ApplyOptionalPatch 0152-mmc-sdhci-of-k1x-support-configure-reset-and-clk-fro.patch
-ApplyOptionalPatch 0153-usb-add-reset-and-clk-configurations.patch
-ApplyOptionalPatch 0154-pinctrl-supports-the-allocation-of-GPIOs-with-the-sa.patch
-ApplyOptionalPatch 0155-pcie-update-the-operations-of-clk-and-reset.patch
-ApplyOptionalPatch 0156-display-Add-spacemit-drm-driver.patch
-ApplyOptionalPatch 0157-gpu-Add-spacemit-gpu-driver.patch
-ApplyOptionalPatch 0158-gpio-update-the-operation-of-clk-for-gpio.patch
-ApplyOptionalPatch 0159-pmic-add-the-first-version-of-pmic-driver.patch
-ApplyOptionalPatch 0160-pmic-spm8821-pinctrl-first-version-to-support-pinctr.patch
-ApplyOptionalPatch 0161-fix-some-warning-when-building-dts.patch
-ApplyOptionalPatch 0162-add-configurations-for-k1-x-evb-board.patch
-ApplyOptionalPatch 0163-ethernet-update-driver-of-k1x-emac-driver.patch
-ApplyOptionalPatch 0164-pm-domain-correction-of-previous-driver-errors-and-a.patch
-ApplyOptionalPatch 0165-add-ranges-property-for-some-nodes-which-contain-som.patch
-ApplyOptionalPatch 0166-qspi-update-the-opertions-of-clk-and-reset-for-k1x-q.patch
-ApplyOptionalPatch 0167-pm_domain-improve-the-execution-process-of-this-driv.patch
-ApplyOptionalPatch 0168-pm_domain-move-the-pm-domain-dts-node-to-k1-x.dtsi-f.patch
-ApplyOptionalPatch 0169-gpu-Compatible-with-gpu-umd-driver.patch
-ApplyOptionalPatch 0170-camera-init-version-of-camera-driver-on-k1.patch
-ApplyOptionalPatch 0171-display-Add-spacemit-drm-debugfs-node.patch
-ApplyOptionalPatch 0172-k1x-dma-add-clk-reset-control-in-dma-driver.patch
-ApplyOptionalPatch 0173-qspi-adding-resets-for-k1-x-qspi.patch
-ApplyOptionalPatch 0174-fix-cpu-node-properties-defined-by-linux-6.x.y.patch
-ApplyOptionalPatch 0175-spi-add-the-driver-for-k1x-spi-controller.patch
-ApplyOptionalPatch 0176-pmic-pm853-support-regulator-driver-and-compatible-w.patch
-ApplyOptionalPatch 0177-k1x-uart-add-clock-reset-in-uart-driver.patch
-ApplyOptionalPatch 0178-clock-fix-clock-driver-issues-of-k1x.patch
-ApplyOptionalPatch 0179-pm-domain-add-new-feature.patch
-ApplyOptionalPatch 0180-update-dts-for-support-i2c0.patch
-ApplyOptionalPatch 0181-k1x-pwm-driver-adds-clk-reset-control.patch
-ApplyOptionalPatch 0182-update-kconfig-to-support-spacemit-k1x-timer-configu.patch
-ApplyOptionalPatch 0183-fix-uart-board-configuration-for-asic.patch
-ApplyOptionalPatch 0184-clock-reset-fix-pwm-clk-reset-reg-bit.patch
-ApplyOptionalPatch 0185-pm853-support-the-regulator-func-in-asic.patch
-ApplyOptionalPatch 0186-pmic-open-the-configuration-of-pmic-driver.patch
-ApplyOptionalPatch 0187-update-dts-for-i2c-to-support-clk-operation.patch
-ApplyOptionalPatch 0188-k1x-i2c-driver-add-clk-reset.patch
-ApplyOptionalPatch 0189-k1x-pm-domain-add-gnss-domain.patch
-ApplyOptionalPatch 0190-gmac-modify-the-config-for-k1x-gmac-controller.patch
-ApplyOptionalPatch 0191-usb-udc-k1x_udc-fix-udc-disconnect.patch
-ApplyOptionalPatch 0192-k1x-usb-fix-reset-and-clk-configuration.patch
-ApplyOptionalPatch 0193-update-evb-board-dts.patch
-ApplyOptionalPatch 0194-remove-some-unused-kernel-module.patch
-ApplyOptionalPatch 0195-k1-x-pinctrl-add-fast-config-for-sdcard.patch
-ApplyOptionalPatch 0196-update-board-dts-for-evb-and-fpga-boards.patch
-ApplyOptionalPatch 0197-display-Add-lcd-gc9503v_mipi.patch
-ApplyOptionalPatch 0198-support-jpu-driver-for-k1x.patch
-ApplyOptionalPatch 0199-clock-fix-the-result-of-set_rate-is-not-the-closest-.patch
-ApplyOptionalPatch 0200-clock-enable-some-clocks.patch
-ApplyOptionalPatch 0201-remove-clint-timer.patch
-ApplyOptionalPatch 0202-update-dtsi-for-k1-x-platform.patch
-ApplyOptionalPatch 0203-config-adding-spacemit-k1x-spi-driver.patch
-ApplyOptionalPatch 0204-qspi-fix-the-bus_num-for-k1x-qspi-controller.patch
-ApplyOptionalPatch 0205-k1x-vpu-update-driver.patch
-ApplyOptionalPatch 0206-k1x-dtsi-linlon-vpu-update-config.patch
-ApplyOptionalPatch 0207-usb-k1x_udc-deassert-reset-before-phy-init.patch
-ApplyOptionalPatch 0208-k1x-dma-1.add-pm-func-in-dma-driver-2.modify-dma-Kco.patch
-ApplyOptionalPatch 0209-k1x-uart-driver-add-pm-func.patch
-ApplyOptionalPatch 0210-k1x-i2c-driver-add-pm-domains-revision.patch
-ApplyOptionalPatch 0211-qspi-support-pm-runtime-for-qspi-driver.patch
-ApplyOptionalPatch 0212-dts-adding-power-domains-for-k1x-qspi.patch
-ApplyOptionalPatch 0213-k1x-pm-open-the-configuration-of-pm-domain-driver.patch
-ApplyOptionalPatch 0214-k1x-dtsi-jpu-update-config.patch
-ApplyOptionalPatch 0215-k1x-evb-defconfig-enable-CHIP_MEDIA_JPU.patch
-ApplyOptionalPatch 0216-add-some-debug-configuration.patch
-ApplyOptionalPatch 0217-feat-gpu-Support-gpu-for-k1x-evb-board.patch
-ApplyOptionalPatch 0218-mmc-k1x-add-host-capability-MMC_CAP_NEED_RSP_BUSY.patch
-ApplyOptionalPatch 0219-k1x-dtsi-jpu-add-reset-config.patch
-ApplyOptionalPatch 0220-k1x-uart-add-reference-to-pm-domain.patch
-ApplyOptionalPatch 0221-k1x-dma-add-reference-to-pm-domain.patch
-ApplyOptionalPatch 0222-k1x-cpufreq-support-cpufreq-function.patch
-ApplyOptionalPatch 0223-usb-phy-k1x-ci-usb2-update-phy-init-parameters-fix-h.patch
-ApplyOptionalPatch 0224-usb-ehci-add-support-for-k1-x-ehci-driver.patch
-ApplyOptionalPatch 0225-dts-k1-x-add-ehci-usb-host-support.patch
-ApplyOptionalPatch 0226-config-enable-k1x-ehci-host-driver.patch
-ApplyOptionalPatch 0227-update-evb-board-dts.patch
-ApplyOptionalPatch 0228-disable-cpufreq-it-will-crash-kernel.patch
-ApplyOptionalPatch 0229-config-k1-x-enable-more-usb-functions.patch
-ApplyOptionalPatch 0230-clock-fix-camm2-no-clock-issue-change-enable-bit.patch
-ApplyOptionalPatch 0231-clock-fix-set_rate-function-it-change-rate-by-div-an.patch
-ApplyOptionalPatch 0232-clock-enable-some-clocks-for-cpu-remove-cpu-core-clk.patch
-ApplyOptionalPatch 0233-k1x-cpufreq-don-t-need-to-set-parent-when-set-the-fr.patch
-ApplyOptionalPatch 0234-display-Support-lcd-icnl9911c-mipi.patch
-ApplyOptionalPatch 0235-sync-dts-with-device-board.dts.patch
-ApplyOptionalPatch 0236-usb-hid-enable-raw-HID-device-support.patch
-ApplyOptionalPatch 0237-clock-fix-qspi_clk-issue-only-set-fc-bit-when-settin.patch
-ApplyOptionalPatch 0238-k1x-pm-domain-change-the-log-level-of-debug-info.patch
-ApplyOptionalPatch 0239-display-fix-dpu-reset-control.patch
-ApplyOptionalPatch 0240-config-k1x-enable-usb-webcam-support.patch
-ApplyOptionalPatch 0241-k1x-add-watchdog-driver-support.patch
-ApplyOptionalPatch 0242-k1x-add-reboot-with-args-support.patch
-ApplyOptionalPatch 0243-fix-gpu-move-loading-firmware-later.patch
-ApplyOptionalPatch 0244-k1x-spacemit-timer-driver-add-clk-reset-interface.patch
-ApplyOptionalPatch 0245-k1x-timer-clk-reset-dts-config.patch
-ApplyOptionalPatch 0246-mmc-sdhci-of-k1x-add-quirks2-SDHCI_QUIRK2_BROKEN_64_.patch
-ApplyOptionalPatch 0247-reserved-2GB-4GB-area-from-memory-space-it-should-be.patch
-ApplyOptionalPatch 0248-k1x-pm_domain-using-hw-mode-to-power-on-off-audio-s-.patch
-ApplyOptionalPatch 0249-k1x-add-k1x-soc-rtc-driver-and-clk-reset-interface.patch
-ApplyOptionalPatch 0250-sync-evb-board-dts-from-device-k1x-evb-board.dts.patch
-ApplyOptionalPatch 0251-clean-compile-warning-in-arch-riscv-mm-init.c.patch
-ApplyOptionalPatch 0252-clean-compile-warning-in-display-driver.patch
-ApplyOptionalPatch 0253-clean-compile-warning-in-pcie-driver.patch
-ApplyOptionalPatch 0254-k1x-wdt-update-watchdog-driver.patch
-ApplyOptionalPatch 0255-clock-twsi8-clk-reset-reg-is-write-only-don-t-read-i.patch
-ApplyOptionalPatch 0256-k1x-reboot-fix-reboot-into-fastboot-mode-with-no-arg.patch
-ApplyOptionalPatch 0257-add-pwm-control-backlight.patch
-ApplyOptionalPatch 0258-k1x-pinctrl.dtsi-fix-some-pinctrl-error.patch
-ApplyOptionalPatch 0259-k1x-update-DTS-automatically-based-on-env.patch
-ApplyOptionalPatch 0260-mmc-sdhci-of-k1x-update-sdio-scan-interface.patch
-ApplyOptionalPatch 0261-add-tcm_override_readl-writel-for-access-tcm-overrid.patch
-ApplyOptionalPatch 0262-k1x-unique-mac-address-in-eeprom.patch
-ApplyOptionalPatch 0263-modify-compile-optimize-from-O2-to-Os.patch
-ApplyOptionalPatch 0264-clean-compile-waring-in-vpu-driver.patch
-ApplyOptionalPatch 0265-dts-add-apbc2-reg-base-for-clock-and-reset.patch
-ApplyOptionalPatch 0266-clock-add-apbc2-reg-base-clocks.patch
-ApplyOptionalPatch 0267-reset-add-apb2-reg-base-resets.patch
-ApplyOptionalPatch 0268-clock-add-CLK_IGNORE_UNUSED-flag-for-some-clocks.patch
-ApplyOptionalPatch 0269-vpu-can-use-when-RAM-2GB.patch
-ApplyOptionalPatch 0270-support-non-uniform-address-mapping-between-peripher.patch
-ApplyOptionalPatch 0271-add-nfsd-support.patch
-ApplyOptionalPatch 0272-add-exfat-fs-support.patch
-ApplyOptionalPatch 0273-add-xfs-support.patch
-ApplyOptionalPatch 0274-add-btrfs-support.patch
-ApplyOptionalPatch 0275-add-f2fs-support.patch
-ApplyOptionalPatch 0276-add-quota-used-by-ext4-support.patch
-ApplyOptionalPatch 0277-add-device-mapper-used-by-RAID-and-FS-crypto.patch
-ApplyOptionalPatch 0278-add-bridge-and-vlan-support-used-by-docker-vm.patch
-ApplyOptionalPatch 0279-add-ipv6-support.patch
-ApplyOptionalPatch 0280-add-ntfs-v3.1-same-with-win10-s-native-fs-support.patch
-ApplyOptionalPatch 0281-yk1x-thermal-support-thermal-driver.patch
-ApplyOptionalPatch 0282-k1x-dma-close-some-unnecessary-config.patch
-ApplyOptionalPatch 0283-k1x-dma-range-add-a-driver-for-devices-node-dram_ran.patch
-ApplyOptionalPatch 0284-k1x-dma-fix-compile-error-in-include-k1x-dmac.h.-def.patch
-ApplyOptionalPatch 0285-k1x-support-aes-crypto-engine.patch
-ApplyOptionalPatch 0286-k1x-kernel-support-afalg-engine.patch
-ApplyOptionalPatch 0287-support-camera-to-draw-when-use-2GB-DDR-dtsi-and-def.patch
-ApplyOptionalPatch 0288-clear-compile-warning.patch
-ApplyOptionalPatch 0289-clear-compile-warning.patch
-ApplyOptionalPatch 0290-sync-evb-board.dts-from-devices-k1x-evb.patch
-ApplyOptionalPatch 0291-camera-self-managed-ldo.patch
-ApplyOptionalPatch 0292-k1x-pm-domain-add-hdmi-domiain.patch
-ApplyOptionalPatch 0293-v2d-support-use-memory-2GB.patch
-ApplyOptionalPatch 0294-k1x-pmic-refine-some-code.patch
-ApplyOptionalPatch 0295-support-camera-to-draw-when-use-4GB-DDR.patch
-ApplyOptionalPatch 0296-display-phy-driver-has-been-registered-in-another-fu.patch
-ApplyOptionalPatch 0297-pci-add-initialization-phy-of-pcie-for-k1x.patch
-ApplyOptionalPatch 0298-k1x-pm-domain-the-IO-size-too-small-to-cover-the-HDM.patch
-ApplyOptionalPatch 0299-pcie-adding-dram_range1-for-pcie0-pcie1-pci2.patch
-ApplyOptionalPatch 0300-add-dts-and-config-for-deb2-board.patch
-ApplyOptionalPatch 0301-display-Support-spacemit-hdmi-driver.patch
-ApplyOptionalPatch 0302-target-add-task-management-values-and-overlapped-res.patch
-ApplyOptionalPatch 0303-usb-f_tcm-support-mutltiple-cmds-enhance-performance.patch
-ApplyOptionalPatch 0304-k1x-support-reboot-to-uboot-shell.patch
-ApplyOptionalPatch 0305-sync-evb-deb2-board-dts-from-devices.patch
-ApplyOptionalPatch 0306-fix-cpp-clk-timeout.patch
-ApplyOptionalPatch 0307-fix-gpu-memory-leak-when-launch-weston.patch
-ApplyOptionalPatch 0308-k1x-cpufreq-support-adjust-the-ace-tcm-s-frequency-a.patch
-ApplyOptionalPatch 0309-fix-dead-lock-bug-between-reset-and-clk.patch
-ApplyOptionalPatch 0310-k1x-cpu-cooling-support-cpu-cooling-device.patch
-ApplyOptionalPatch 0311-extcon-add-extcon-k1xci-driver-for-usb2.0-otg.patch
-ApplyOptionalPatch 0312-usb-otg-add-k1x-ci-otg-driver.patch
-ApplyOptionalPatch 0313-dtsi-k1-x-add-usb2-otg-support.patch
-ApplyOptionalPatch 0314-clock-add-apb-clk-enable-apb-axi-clk-when-init.patch
-ApplyOptionalPatch 0315-k1x-pmic-refine-the-pmic-code.patch
-ApplyOptionalPatch 0316-display-Support-hdmi-1080p.patch
-ApplyOptionalPatch 0317-clock-dead-lock-issue-may-happen.patch
-ApplyOptionalPatch 0318-mmc-dts-support-power-domain.patch
-ApplyOptionalPatch 0319-mmc-sdhci-of-k1x-add-pm_runtime_get_sync-during-prob.patch
-ApplyOptionalPatch 0320-pcie-Optimize-phy-initialization-code-for-k1x-pcie-d.patch
-ApplyOptionalPatch 0321-dts-modify-the-domain-id-of-pcie1-to-1.patch
-ApplyOptionalPatch 0322-k1x-pmic-support-power-key-driver.patch
-ApplyOptionalPatch 0323-k1x-pmic-rtc-support-spm8821-rtc-driver.patch
-ApplyOptionalPatch 0324-reshape-pinctrl-dtsi-and-platform-dtsi.patch
-ApplyOptionalPatch 0325-display-Fix-reset-control-deassert-and-assert.patch
-ApplyOptionalPatch 0326-clean-clk-driver-debug-info.patch
-ApplyOptionalPatch 0327-clean-drm-driver-debug-info.patch
-ApplyOptionalPatch 0328-clean-camera-driver-debug-info.patch
-ApplyOptionalPatch 0329-clean-dma-driver-debug-info.patch
-ApplyOptionalPatch 0330-clean-usb-driver-debug-info.patch
-ApplyOptionalPatch 0331-clean-tcm-driver-debug-info.patch
-ApplyOptionalPatch 0332-clean-qspi-driver-debug-info.patch
-ApplyOptionalPatch 0333-clean-crypto-driver-debug-info.patch
-ApplyOptionalPatch 0334-clean-i2c-driver-debug-info.patch
-ApplyOptionalPatch 0335-clean-reset-driver-debug-info.patch
-ApplyOptionalPatch 0336-clean-gmac-driver-debug-info.patch
-ApplyOptionalPatch 0337-clean-some-unused-driver-module.patch
-ApplyOptionalPatch 0338-add-gx09inx101-mipi-lcd-configuration.patch
-ApplyOptionalPatch 0339-k1x-crypto-1.handle-memleak-in-probe-2.ture-down-sel.patch
-ApplyOptionalPatch 0340-k1x-pmic-refactoring-code-to-support-new-dcdc.patch
-ApplyOptionalPatch 0341-defconfig-add-usb3.0-support-for-k1-x-evb2.patch
-ApplyOptionalPatch 0342-usb-misc-add-spacemit-onboard-hub-driver.patch
-ApplyOptionalPatch 0343-dtsi-k1-x-add-usb3.0-support.patch
-ApplyOptionalPatch 0344-usb-add-spacemit-k1x-dma-mask-setting.patch
-ApplyOptionalPatch 0345-phy-add-spacemit-pcie-usb3-combphy-driver.patch
-ApplyOptionalPatch 0346-spacemit-rf-add-wifi-platform-driver.patch
-ApplyOptionalPatch 0347-spacemit-rf-dts-enable-spacemit-rf-pwrseq.patch
-ApplyOptionalPatch 0348-k1x-cpuidle-support-cpu-power-down-only.patch
-ApplyOptionalPatch 0349-wireless-rtl8852bs-add-rtl8852bs-sdio-wifi-driver.patch
-ApplyOptionalPatch 0350-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
-ApplyOptionalPatch 0351-k1x-cpufreq-support-adjust-the-voltage-when-the-cpu-.patch
-ApplyOptionalPatch 0352-display-Fix-hdmi-qos-control.patch
-ApplyOptionalPatch 0353-mmc-dts-alloc-index-from-alias-id.patch
-ApplyOptionalPatch 0354-disable-rtl8852bs-wifi-driver-there-is-too-much-warn.patch
-ApplyOptionalPatch 0355-update-evb-board-dts.patch
-ApplyOptionalPatch 0356-update-deb2-board-dts.patch
-ApplyOptionalPatch 0357-update-deb2-kernel-config.patch
-ApplyOptionalPatch 0358-sync-deb2-board-dts.patch
-ApplyOptionalPatch 0359-wifi-k1x-deb2-enable-aic8800dc-wifi-defconfig.patch
-ApplyOptionalPatch 0360-wifi-k1x-evb-enable-aic8800dc-wifi-defconfig.patch
-ApplyOptionalPatch 0361-audio-add-audio-driver.patch
-ApplyOptionalPatch 0362-dts-add-audio-snd-card-support.patch
-ApplyOptionalPatch 0363-enable-audio-driver-for-evb-board.patch
-ApplyOptionalPatch 0364-enable-audio-driver-for-deb2.patch
-ApplyOptionalPatch 0365-clear-compile-warning.patch
-ApplyOptionalPatch 0366-support-dvfs-for-evb-performance.patch
-ApplyOptionalPatch 0367-use-performance-governor-as-default.patch
-ApplyOptionalPatch 0368-audio-change-pcm-hw_params.patch
-ApplyOptionalPatch 0369-display-Support-kernel-logo.patch
-ApplyOptionalPatch 0370-display-update-kernel-logo.patch
-ApplyOptionalPatch 0371-disable-audio-and-adsp-driver.patch
-ApplyOptionalPatch 0372-disable-audio-and-adsp-driver.patch
-ApplyOptionalPatch 0373-display-fix-kernel-logo.patch
-ApplyOptionalPatch 0374-k1x-can-add-clk-reset-control-in-dma-driver.patch
-ApplyOptionalPatch 0375-clock-fix-can-func-clk-incorrect-issue.patch
-ApplyOptionalPatch 0376-reset-fix-reset-bit-of-aes.patch
-ApplyOptionalPatch 0377-k1x-deb1-support-deb1-project.patch
-ApplyOptionalPatch 0378-k1x-deb1-add-k1-x_deb1.dts-to-fix-compiling-error-wh.patch
-ApplyOptionalPatch 0379-k1x-pmic-support-pwr-key-rtc-pinctrl-function.patch
-ApplyOptionalPatch 0380-spacemit-rf-add-bluetooth-platform-driver.patch
-ApplyOptionalPatch 0381-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
-ApplyOptionalPatch 0382-sync-board-dts-from-devices.patch
-ApplyOptionalPatch 0383-add-k1-universal-config-for-all-board.patch
-ApplyOptionalPatch 0384-fix-disable-CONFIG_INITRAMFS_SOURCE-which-may-overla.patch
-ApplyOptionalPatch 0385-wifi-k1x-deb1-enable-rtl8852bs-wifi-defconfig.patch
-ApplyOptionalPatch 0386-k1-x-crypto-speed-up-expand-single-encrypt-decrypt-s.patch
-ApplyOptionalPatch 0387-sync-board-dts-from-devices.patch
-ApplyOptionalPatch 0388-wireless-rtl8852be-add-wifi-driver.patch
-ApplyOptionalPatch 0389-k1x-cpu-cooling-add-the-cpuidle-cooling-function.patch
-ApplyOptionalPatch 0390-clock-reset-fix-pwm0-clk-reset-reg-bit.patch
-ApplyOptionalPatch 0391-add-cpu-model-name-showed-in-proc-cpuinfo.patch
-ApplyOptionalPatch 0392-k1x-adjust-i2c-driver-strength.patch
-ApplyOptionalPatch 0393-add-docker-required-configurations-1.-bridge-and-vla.patch
-ApplyOptionalPatch 0394-k1x-deb1-support-power-off-system.patch
-ApplyOptionalPatch 0395-display-Fix-dpu-reset-issue.patch
-ApplyOptionalPatch 0396-sync-board-dts-from-devices.patch
-ApplyOptionalPatch 0397-tools-perf-pmu-events-add-SpacemiT-X60-JSON-files.patch
-ApplyOptionalPatch 0398-k1x-add-zicboz-and-zicbop-to-dts.patch
-ApplyOptionalPatch 0399-modify-compile-optimize-from-size-to-performance.patch
-ApplyOptionalPatch 0400-display-disable-kernel-logo.patch
-ApplyOptionalPatch 0401-set-cma-alloc-range-from-0x40000000.patch
-ApplyOptionalPatch 0402-sync-board-dts-from-devices-configuration.patch
-ApplyOptionalPatch 0403-qspi-Correct-the-setting-clk-rate-of-k1x-qspi.patch
-ApplyOptionalPatch 0404-performance-optimize.patch
-ApplyOptionalPatch 0405-k1x-support-PCIE-SATA-JMB585-board.patch
-ApplyOptionalPatch 0406-Bluetooth-enable-bluez-stack.patch
-ApplyOptionalPatch 0407-uart-disable-bluesleep-hostwake-detect.patch
-ApplyOptionalPatch 0408-clock-uart-source-48M-and-14.7M-have-same-gate-bit-i.patch
-ApplyOptionalPatch 0409-k1x-uart-add-uart-parent-clk-gate-function.patch
-ApplyOptionalPatch 0410-sync-board-dts-with-devices.patch
-ApplyOptionalPatch 0411-display-Update-hdmi-phy-config.patch
-ApplyOptionalPatch 0412-k1-x-aes-prevent-writing-buffer-requests-in-the-mean.patch
-ApplyOptionalPatch 0413-k1x-aes-add-xts-cipher.patch
-ApplyOptionalPatch 0414-display-Support-dsi-and-hdmi-double-screens.patch
-ApplyOptionalPatch 0415-use-the-unified-defconfig-for-k1-5-5.patch
-ApplyOptionalPatch 0416-add-ramdisk-for-develop-branch.patch
-ApplyOptionalPatch 0417-k1-enable-usb-serial.patch
-ApplyOptionalPatch 0418-mmc-sdhci-of-k1x-improve-the-sd-tuning-process.patch
-ApplyOptionalPatch 0419-scatterlist-mask-out-GFP_DMA32-flag-when-call-kmallo.patch
-ApplyOptionalPatch 0420-target-alloc-scatterlist-with-GFP_DMA32-flag-on-spac.patch
-ApplyOptionalPatch 0421-k1-x-enable-ehci-for-deb1-and-deb2.patch
-ApplyOptionalPatch 0422-display-Remove-error-logs.patch
-ApplyOptionalPatch 0423-k1x-support-mailbox-driver.patch
-ApplyOptionalPatch 0424-k1x-remoteproc-support-remoteproc-driver.patch
-ApplyOptionalPatch 0425-k1x-rproc-launching-rcpu-during-the-system-startup-p.patch
-ApplyOptionalPatch 0426-k1x-defconfig-enable-mailbox-rproc-rpmsg_virtio-defc.patch
-ApplyOptionalPatch 0427-k1-rcpu-ipc-reserved-memory-for-rcpu-and-ipc.patch
-ApplyOptionalPatch 0428-k1x-adma-add-adma-driver-for-sspa.patch
-ApplyOptionalPatch 0429-audio-add-hdmi-audio-driver-and-remove-unused-code.patch
-ApplyOptionalPatch 0430-deconfig-enable-sound-support.patch
-ApplyOptionalPatch 0431-dts-add-hdmi-audio-config.patch
-ApplyOptionalPatch 0432-dts-modify-audio-config.patch
-ApplyOptionalPatch 0433-k1x-rporc-add-the-reference-of-mailbox-memory-region.patch
-ApplyOptionalPatch 0434-audio-modify-hdmi-audio-params-set-enable-ctrl-reg.patch
-ApplyOptionalPatch 0435-k1-support-CTP-driver.patch
-ApplyOptionalPatch 0436-display-Fixed-dtsi-warning.patch
-ApplyOptionalPatch 0437-dtb-adding-the-dts-of-linux-for-hs450-board.patch
-ApplyOptionalPatch 0438-k1-defconfig-enable-support-for-r8152.patch
-ApplyOptionalPatch 0439-disp-adjust-gpu-and-drm-initcall-sequence-for-fixed-.patch
-ApplyOptionalPatch 0440-gitignore-add-user_headers-generated-by-openwrt-to-g.patch
-ApplyOptionalPatch 0441-k1x-snd-fix-compile-warning-in-spacemit-snd-card.c.patch
-ApplyOptionalPatch 0442-img-rogue-fix-compile-warning.patch
-ApplyOptionalPatch 0443-k1x-display-fix-compile-warning.patch
-ApplyOptionalPatch 0444-gt9xx-fix-compile-warning.patch
-ApplyOptionalPatch 0445-eeprom-at24-fix-compile-warning.patch
-ApplyOptionalPatch 0446-k1x-hdmi-fix-compile-warning-because-of-unused-varia.patch
-ApplyOptionalPatch 0447-brtfs-fix-compile-warning.patch
-ApplyOptionalPatch 0448-sync-camera-code-from-Release-JINDIE-V3.8.patch
-ApplyOptionalPatch 0449-sync-camera-code-from-Release-JINDIE-V4.0.patch
-ApplyOptionalPatch 0450-mmc-sdhci-of-k1x-update-phy-dll-config.patch
-ApplyOptionalPatch 0451-aud-modify-hdmi-audio-period_size-fix-coding-issue.patch
-ApplyOptionalPatch 0452-k1-gpio-support-irq-controller-mode.patch
-ApplyOptionalPatch 0453-k1-open-hid-configs.patch
-ApplyOptionalPatch 0454-k1-support-touchpad-for-hs450-board.patch
-ApplyOptionalPatch 0455-aud-add-spi-i2s-driver.patch
-ApplyOptionalPatch 0456-dts-add-i2s-support.patch
-ApplyOptionalPatch 0457-dts-add-codec-es8326-support-i2s-pin-config.patch
-ApplyOptionalPatch 0458-config-enable-codec-es8326.patch
-ApplyOptionalPatch 0459-aud-add-es8326-sound-card-support.patch
-ApplyOptionalPatch 0460-k1_defconfig-enable-USB_NET_QMI_WWAN.patch
-ApplyOptionalPatch 0461-udma-open-failed-when-dma_dev-NULL.patch
-ApplyOptionalPatch 0462-k1x-dma-support-console-tx-rx-dma-mode.patch
-ApplyOptionalPatch 0463-dtb-adding-the-dts-of-linux-for-kx312-board.patch
-ApplyOptionalPatch 0464-Bluetooth-defconfig-support-hid-and-pan-profile.patch
-ApplyOptionalPatch 0465-gmac-Modify-gmac-pin-configuration-in-order-to-impro.patch
-ApplyOptionalPatch 0466-usb-misc-spacemit_onboard_hub-use-gpio-array.patch
-ApplyOptionalPatch 0467-dts-k1-x_kx312-enable-usbdrd3-and-usb3hub.patch
-ApplyOptionalPatch 0468-dtb-adding-the-dts-of-linux-for-MINI-PC-board.patch
-ApplyOptionalPatch 0469-add-kernel-image-itb-build-support.patch
-ApplyOptionalPatch 0470-perfect-camera-dts-gpio-config.patch
-ApplyOptionalPatch 0471-display-Fix-dpu-irqs-timeout.patch
-ApplyOptionalPatch 0472-k1-align-initial-state-for-audio.patch
-ApplyOptionalPatch 0473-k1-rpoc-using-a-RT-thread-to-process-the-virtio-msg.patch
-ApplyOptionalPatch 0474-k1-delete-undefined-pm-function.patch
-ApplyOptionalPatch 0475-dtb-adding-the-dts-of-linux-for-mingo-board.patch
-ApplyOptionalPatch 0476-kx312-fix-the-compile-error-that-it-can-t-find-dpu_o.patch
-ApplyOptionalPatch 0477-k1x-uart-fix-uart9-dts-config.patch
-ApplyOptionalPatch 0478-k1x-serial-fix-bug-of-pm-runtime-feature.patch
-ApplyOptionalPatch 0479-k1x-system_suspend-support-pmic-wakeup-source.patch
-ApplyOptionalPatch 0480-mmc-sdhci-of-k1x-optimize-sdcard-tuning-procedure.patch
-ApplyOptionalPatch 0481-k1-dts-update-dts.patch
-ApplyOptionalPatch 0482-vpu-update-vpu-driver-version-to-Release-JINDIE-V4.2.patch
-ApplyOptionalPatch 0483-v2d-mv-v2d-from-drivers-media-platform-spacemit-v2d-.patch
-ApplyOptionalPatch 0484-add-kernel-image-offset-configuration-which-would-be.patch
-ApplyOptionalPatch 0485-more-flexable-configuration-for-image-itb-build.patch
-ApplyOptionalPatch 0486-k1x-dts-enable-sdio-sdr104-mode.patch
-ApplyOptionalPatch 0487-mmc-sdhci-of-k1x-support-disable-caps.patch
-ApplyOptionalPatch 0488-add-compressed-gzip-kernel-itb-build.patch
-ApplyOptionalPatch 0489-k1-dts-disable-mipi-dsi-for-deb1.patch
-ApplyOptionalPatch 0490-display-Fix-dpu-irqs-error.patch
-ApplyOptionalPatch 0491-arch-riscv-Changed-default-target-to-Image.gz.itb-wh.patch
-ApplyOptionalPatch 0492-update-evb-dts.patch
-ApplyOptionalPatch 0493-display-add-hdmi-edid.patch
-ApplyOptionalPatch 0494-dts-dpu_reserved-move-dpu-reserved-memory-to-0x2ff40.patch
-ApplyOptionalPatch 0495-wireless-build-rtl8852be-module-into-kernel.patch
-ApplyOptionalPatch 0496-aud-limit-i2s-audio-params.patch
-ApplyOptionalPatch 0497-dts-config-codec-snd-card-support.patch
-ApplyOptionalPatch 0498-k1-system_suspend-enable-cpuidle-configuration-for-s.patch
-ApplyOptionalPatch 0499-k1-dma-add-suspend-resume-callback-for-dma-module.patch
-ApplyOptionalPatch 0500-display-Fix-read-hdmi-edid-data-error.patch
-ApplyOptionalPatch 0501-vpu-sync-Release-JINDIE-V4.3.1-on-2024-03-19-06-08.patch
-ApplyOptionalPatch 0502-mmc-sdhci-of-k1x-avoid-scan-sdio-during-start-host.patch
-ApplyOptionalPatch 0503-k1-cpufreq-fix-bug-that-the-system-do-not-update-the.patch
-ApplyOptionalPatch 0504-k1-cpu_cooling_device-add-the-mechanism-for-cpu-cool.patch
-ApplyOptionalPatch 0505-k1-cpu_cooling-add-the-function-that-hotpluging-core.patch
-ApplyOptionalPatch 0506-k1-thermal-enable-cpufreq-cooling-device.patch
-ApplyOptionalPatch 0507-mmc-sdhci-of-k1x-improve-the-tuning-window-select.patch
-ApplyOptionalPatch 0508-k1x-adjust-i2s-driver-strength.patch
-ApplyOptionalPatch 0509-dts-config-es8326-ADC-src-to-dmic.patch
-ApplyOptionalPatch 0510-eth-changing-the-dma-range-and-setting-dma-coherent-.patch
-ApplyOptionalPatch 0511-display-Fix-hdmi-read-edid-data-code-error.patch
-ApplyOptionalPatch 0512-phy-spacemit-k1x-combphy-get-shared-reset.patch
-ApplyOptionalPatch 0513-MINIPC-fix-pcie2-lane-config.patch
-ApplyOptionalPatch 0514-k1x-dts-update-mmc-tuning-config.patch
-ApplyOptionalPatch 0515-aud-fix-i2s-capture-issue.patch
-ApplyOptionalPatch 0516-mmc-sdhci-of-k1x-add-tx-delaycode-attr-for-sd-sdio.patch
-ApplyOptionalPatch 0517-leds-Support-hearbeat.patch
-ApplyOptionalPatch 0518-phy-k1x-ci-usb2-add-notify-callbacks-remove-unused-c.patch
-ApplyOptionalPatch 0519-usb-xhci-fix-spacemit-k1x-phy-disconnect-detect.patch
-ApplyOptionalPatch 0520-phy-spacemit-k1x-combphy-don-t-assert-when-use-share.patch
-ApplyOptionalPatch 0521-eth-change-the-range-of-dma-to-range1.patch
-ApplyOptionalPatch 0522-eth-improve-the-through-of-gmac.patch
-ApplyOptionalPatch 0523-display-Modify-hdmi-and-mipi-dsi-qos.patch
-ApplyOptionalPatch 0524-k1-kx312-add-touchpad-dts.patch
-ApplyOptionalPatch 0525-kx312-enable-es8326-sound-card-support.patch
-ApplyOptionalPatch 0526-clk-add-pll2-support-2800MHz.patch
-ApplyOptionalPatch 0527-eth-change-the-num-of-tx-rx-desc-buffer-to-1024-for-.patch
-ApplyOptionalPatch 0528-k1-sys-reboot-using-the-reset-function-of-pmic-rathe.patch
-ApplyOptionalPatch 0529-display-modify-mipi-dsi-dpu-bit-clock.patch
-ApplyOptionalPatch 0530-display-support-lt8911exb-driver.patch
-ApplyOptionalPatch 0531-pcie-getting-the-num-lanes-of-pcie-controller-in-phy.patch
-ApplyOptionalPatch 0532-pcie-change-the-dma-ranges-of-pcie-to-drma_range2.patch
-ApplyOptionalPatch 0533-kx312-modify-pcie1-to-1-lane.patch
-ApplyOptionalPatch 0534-scripts-Added-build_kernel.sh.patch
-ApplyOptionalPatch 0535-aud-fix-the-first-buffer-data-loss-issue.patch
-ApplyOptionalPatch 0536-i2s-fix-LR-channel-mapping-incorrect-issue.patch
-ApplyOptionalPatch 0537-usb-spacemit_onboard_hub-fix-bug-caused-by-no-delay-.patch
-ApplyOptionalPatch 0538-pcie-change-the-get_reset-method-of-pcie0-to-shared.patch
-ApplyOptionalPatch 0539-scripts-Fixed-build_kernel.sh-error.patch
-ApplyOptionalPatch 0540-config-enable-needed-config-checked-by-check-config..patch
-ApplyOptionalPatch 0541-k1x-i2c-update-i2c-driver.patch
-ApplyOptionalPatch 0542-display-Support-hdmi-hot-plug-detection.patch
-ApplyOptionalPatch 0543-display-Fix-pm-runtime-status.patch
-ApplyOptionalPatch 0544-dts-Enable-kx312-hdmi.patch
-ApplyOptionalPatch 0545-k1x-wdt-fix-timeout-setting-bug.patch
-ApplyOptionalPatch 0546-k1-cpufreq-cooling-refine-some-code-for-cpu-cooling.patch
-ApplyOptionalPatch 0547-plic-clear-irq-pending-when-init-plic.patch
-ApplyOptionalPatch 0548-k1-i2c-let-the-system-framework-dealing-with-suspend.patch
-ApplyOptionalPatch 0549-k1-spi-jion-the-pm-domain-framework-to-achieve-power.patch
-ApplyOptionalPatch 0550-k1-qspi-support-pm-runtime-system-suspend.patch
-ApplyOptionalPatch 0551-k1-rproc-support-system-suspend-callback-for-rcpu.patch
-ApplyOptionalPatch 0552-k1x-aes-add-aes-clk-reset-and-suspend-resume-callbac.patch
-ApplyOptionalPatch 0553-eth-support-suspend-and-resume-for-pm.patch
-ApplyOptionalPatch 0554-k1x-MINIPC-support-kernel-hdmi.patch
-ApplyOptionalPatch 0555-k1x-rcpu-support-suspend-resume-function-for-rcpu.patch
-ApplyOptionalPatch 0556-clock-add-audio-clocks.patch
-ApplyOptionalPatch 0557-display-Do-not-set-clock-rate-in-dts.patch
-ApplyOptionalPatch 0558-reset-add-audio-resets.patch
-ApplyOptionalPatch 0559-hdmiaudio-add-pm-runtime-and-reset.patch
-ApplyOptionalPatch 0560-i2s-add-pm-runtime-and-suspend-resume.patch
-ApplyOptionalPatch 0561-vpu-support-suspend-and-resume.patch
-ApplyOptionalPatch 0562-jpu-support-suspend-and-resume.patch
-ApplyOptionalPatch 0563-display-Fix-the-minimum-brightness-for-the-lcd.patch
-ApplyOptionalPatch 0564-vpu-remove-some-unuseful-log.patch
-ApplyOptionalPatch 0565-dtsi-k1-x-add-interconnects-to-ehci.patch
-ApplyOptionalPatch 0566-dts-k1-x_MINI-PC-change-usb0-mode-from-udc-to-ehci.patch
-ApplyOptionalPatch 0567-display-Support-no-edid-panel.patch
-ApplyOptionalPatch 0568-pcie-support-suspend-and-resume-for-pm.patch
-ApplyOptionalPatch 0569-dts-k1-x_MINI-PC-add-usb2hub-node.patch
-ApplyOptionalPatch 0570-k1_defconfig-enable-usb-serial-drivers-as-modules.patch
-ApplyOptionalPatch 0571-drm-fix-the-buffer-allocation-failed.patch
-ApplyOptionalPatch 0572-delete-camera-debug-code.patch
-ApplyOptionalPatch 0573-k1-pmic-increase-initialization-level-for-other-modu.patch
-ApplyOptionalPatch 0574-MINI-PC-Disable-mipi-dsi.patch
-ApplyOptionalPatch 0575-fix-gpu_clk-clock-setting-timeout.patch
-ApplyOptionalPatch 0576-k1_defconfig-change-dummy-device-default-to-module.patch
-ApplyOptionalPatch 0577-dts-k1-x_deb1-use-PAD_1V8_DS0-for-DVL1-and-GPIO_123.patch
-ApplyOptionalPatch 0578-dts-adding-module_usrload-for-loading-wifi-driver.patch
-ApplyOptionalPatch 0579-k1x-pinctrl-adjust-uart2-driver-strength.patch
-ApplyOptionalPatch 0580-usb-spacemit_onboard_hub-use-devm_gpiod_get_array_op.patch
-ApplyOptionalPatch 0581-swiotlb-Adjust-the-size-of-swiotlb-to-128M.patch
-ApplyOptionalPatch 0582-dram_range-change-the-mapping-range-for-dram_range2.patch
-ApplyOptionalPatch 0583-swiotlb-adjust-the-size-and-segsize-of-io-tlb.patch
-ApplyOptionalPatch 0584-display-Fix-card-order-for-mipi-dsi-and-hdmi.patch
-ApplyOptionalPatch 0585-fix-wdt-timeout-setting-use-max-timeout-if-timeout-o.patch
-ApplyOptionalPatch 0586-mmc-sdhci-of-k1x-add-get-aib-clk-avoid-disable-as-cl.patch
-ApplyOptionalPatch 0587-clock-fix-emac-ptp-clk-source.patch
-ApplyOptionalPatch 0588-k1x-rtc-fix-the-bug-that-setting-rtc-time-failed.patch
-ApplyOptionalPatch 0589-aud-support-snd-card-config-in-dts.patch
-ApplyOptionalPatch 0590-dts-change-hdmi-es8326-snd-card-config.patch
-ApplyOptionalPatch 0591-k1x-rproc-fix-bug-of-rproc-driver.patch
-ApplyOptionalPatch 0592-dtb-adding-the-dts-of-linux-for-MUSE-N1-board.patch
-ApplyOptionalPatch 0593-clear-compile-warning.patch
-ApplyOptionalPatch 0594-clean-compile-warning.patch
-ApplyOptionalPatch 0595-clean-compile-warning.patch
+ApplyOptionalPatch 0001-Revert-clk-spacemit-k1-Add-TWSI8-bus-and-function-cl.patch
+ApplyOptionalPatch 0002-Revert-clk-spacemit-Add-clock-support-for-SpacemiT-K.patch
+ApplyOptionalPatch 0003-add-k1-pro-base-platform-support.patch
+ApplyOptionalPatch 0004-media-support-a-new-vpu-driver-which-use-V4L2-standa.patch
+ApplyOptionalPatch 0005-add-SOC_SPACEMIT_K1-for-spacemit-k1-serial-SOCs.patch
+ApplyOptionalPatch 0006-update-kernel-configuration-for-qemu-board.patch
+ApplyOptionalPatch 0007-kernel-config-add-SOC_SPACEMIT_K1_FPGA-option-for-fp.patch
+ApplyOptionalPatch 0008-fpga-kconfig-update-kernel-configuration-for-k1-pro-.patch
+ApplyOptionalPatch 0009-qemu-kconfig-update-kernel-configuration-for-k1-pro-.patch
+ApplyOptionalPatch 0010-sim-kconfig-update-kernel-configuration-for-k1-pro-s.patch
+ApplyOptionalPatch 0011-add-k1pro-ccu-driver-and-config.patch
+ApplyOptionalPatch 0012-add-k1pro-reset-controller-driver-and-config.patch
+ApplyOptionalPatch 0013-update-kernel-config-add-FPGA-label-and-enable-debug.patch
+ApplyOptionalPatch 0014-dtsi-enable-zicbom.patch
+ApplyOptionalPatch 0015-change-dtb-configuration-to-k1-pro-SOC-1.-ddr-uart-p.patch
+ApplyOptionalPatch 0016-dts-add-tcm-node-kernel-add-tcm-driver.patch
+ApplyOptionalPatch 0017-add-.h-for-clock-reset-and-change-reg.patch
+ApplyOptionalPatch 0018-pwm-dwc-driver-loaded-by-platform-changes-in-Makefil.patch
+ApplyOptionalPatch 0019-sync-clk-reset-V1.1-spec-and-use-CLK_OF_DECLARE-for-.patch
+ApplyOptionalPatch 0020-spi-adding-the-driver-for-Designware-enhanced-spi-co.patch
+ApplyOptionalPatch 0021-riscv-support-svpbmt.patch
+ApplyOptionalPatch 0022-usb-dwc3-support-spacemit-platform.patch
+ApplyOptionalPatch 0023-dts-dwc3-add-dts-config-for-k1-pro.patch
+ApplyOptionalPatch 0024-usb-update-usb-kernel-configuration.patch
+ApplyOptionalPatch 0025-usb-dwc3-avoid-suspend-phy.patch
+ApplyOptionalPatch 0026-riscv-mm-fix-reserve-cma-for-platform-not-having-ZON.patch
+ApplyOptionalPatch 0027-kconfig-enable-cma-for-k1-pro-board.patch
+ApplyOptionalPatch 0028-ethernet-adding-the-driver-of-the-Designware-gmac-co.patch
+ApplyOptionalPatch 0029-reset-reset-driver-handle-all-global-soft-reset-sing.patch
+ApplyOptionalPatch 0030-dma-dw-axi-dma-support-handshake-num-more-than-16.patch
+ApplyOptionalPatch 0031-usb-dwc3-modify-reset-control-for-usb31.patch
+ApplyOptionalPatch 0032-usb-dwc3-modify-DMA-capability.patch
+ApplyOptionalPatch 0033-dma-fix-an-error-burst_trans_len-undeclare-in-dma-dr.patch
+ApplyOptionalPatch 0034-mmc-support-spacemit-k1-pro-platform.patch
+ApplyOptionalPatch 0035-mmc-dts-support-emmc-and-sdcard.patch
+ApplyOptionalPatch 0036-reset-add-spinlock-for-timing-issue.patch
+ApplyOptionalPatch 0037-mmc-modify-reset-card-only-once.patch
+ApplyOptionalPatch 0038-reshape-dtsi-format-use-table-to-replace-space.patch
+ApplyOptionalPatch 0039-k1-pro.dtsi-add-pmu-configs.patch
+ApplyOptionalPatch 0040-pcie-support-spacemit-k1-pro-pcie-controller-RC-mode.patch
+ApplyOptionalPatch 0041-usb-xhci-modify-DMA-capability-for-k1-pro-platform.patch
+ApplyOptionalPatch 0042-change-dts-for-I2C-support.patch
+ApplyOptionalPatch 0043-can-add-can-device-driver-and-kernel-config.patch
+ApplyOptionalPatch 0044-ccu-add-mcu-clocks.patch
+ApplyOptionalPatch 0045-fs-support-nfs.patch
+ApplyOptionalPatch 0046-spi-support-spi-nor-and-correct-the-params-of-the-sp.patch
+ApplyOptionalPatch 0047-mmc-enable-host-version-4-mode.patch
+ApplyOptionalPatch 0048-mmc-deattach-clk-400k-during-mmc_rescan.patch
+ApplyOptionalPatch 0049-add-script-for-extract-generate-rootfs.cpio.gz.patch
+ApplyOptionalPatch 0050-mmc-increase-date-timeout-counter-value-to-max.patch
+ApplyOptionalPatch 0051-remoteproc-support-bringup-esos-for-spacemit-k1-pro_.patch
+ApplyOptionalPatch 0052-media-support-usb-media-enable-uvc-and-f_uvc.patch
+ApplyOptionalPatch 0053-vpu-fix-vpu-compile-error-for-linux6.1.patch
+ApplyOptionalPatch 0054-vpu-add-vpu-dts-config.patch
+ApplyOptionalPatch 0055-can-update-kernel-defconfig-IPMS_CAN-y.patch
+ApplyOptionalPatch 0056-clk-add-spinlock-and-mailbox-clock-for-mcu-system.patch
+ApplyOptionalPatch 0057-reset-add-spinlock-and-mailbox-reset-for-mcu-system.patch
+ApplyOptionalPatch 0058-mailbox-enable-spacemit-mailbox-driver.patch
+ApplyOptionalPatch 0059-scmi-support-arm-s-scmi-protocol-for-spacemit-platfo.patch
+ApplyOptionalPatch 0060-rproc-change-compatible-name-for-rproc-driver.patch
+ApplyOptionalPatch 0061-pinctrl-support-the-driver-of-spacemit-pinctrl-contr.patch
+ApplyOptionalPatch 0062-dts-add-the-table-of-pin-functions.patch
+ApplyOptionalPatch 0063-vpu-add-reset-control-logic.patch
+ApplyOptionalPatch 0064-vpu-add-device-caps-config.patch
+ApplyOptionalPatch 0065-vpu-remove-severity-and-drain-file-node-for-probe-er.patch
+ApplyOptionalPatch 0066-vpu-enable-debug-mode.patch
+ApplyOptionalPatch 0067-arm_scmi-regulator-enable-an-dummy-regulator-using-s.patch
+ApplyOptionalPatch 0068-dts-disable-vpu-as-some-bitfiles-have-no-vpu.patch
+ApplyOptionalPatch 0069-ethernet-support-ethernet-qos.patch
+ApplyOptionalPatch 0070-scmi-enable-scmi-power-domain-protocol.patch
+ApplyOptionalPatch 0071-scmi-voltage_domain-add-vlittle-vgpu-nodes-in-scmi-d.patch
+ApplyOptionalPatch 0072-cpufreq-support-scmi-cpufreq-driver-spacemit-platfor.patch
+ApplyOptionalPatch 0073-wifi-cfg80211-enable-wireless-LAN-configuration-API.patch
+ApplyOptionalPatch 0074-mmc-dts-support-sdio-interface.patch
+ApplyOptionalPatch 0075-GMAC-support-IEEE_1588-hwtimestamp.patch
+ApplyOptionalPatch 0076-usb-dts-add-dwc2-dts-for-k1-pro-fpga.patch
+ApplyOptionalPatch 0077-usb-kconfig-enable-dwc2-configuration.patch
+ApplyOptionalPatch 0078-usb-dwc2-add-params-for-k1-pro-fpga.patch
+ApplyOptionalPatch 0079-pinctrl-change-the-format-of-pin-config.patch
+ApplyOptionalPatch 0080-spi-nand-support-2x-4x-8x-for-spi-nand-tx-and-rx.patch
+ApplyOptionalPatch 0081-ubi-kconfig-enable-ubi-configuration.patch
+ApplyOptionalPatch 0082-usb-dwc2-modify-gadget-DMA-capability.patch
+ApplyOptionalPatch 0083-add-k1-x-device-support.patch
+ApplyOptionalPatch 0084-update-vpu-driver.patch
+ApplyOptionalPatch 0085-cpu-support-cpu-hotplug.patch
+ApplyOptionalPatch 0086-pinctrl-modify-the-format-of-the-pinctrl-group-name.patch
+ApplyOptionalPatch 0087-update-dts-for-k1-x-platform.patch
+ApplyOptionalPatch 0088-add-pxa_k1x-driver-for-k1x-platform.patch
+ApplyOptionalPatch 0089-k1pro-enable-first-can-use-version-of-cpuidle.patch
+ApplyOptionalPatch 0090-k1x-multi-core-modify-the-configurations-related-to-.patch
+ApplyOptionalPatch 0091-k1pro-add-i2c-configuration.patch
+ApplyOptionalPatch 0092-disable-pm-power-management-is-not-support-now.patch
+ApplyOptionalPatch 0093-k1-x-add-mmp_pdma-driver-support.patch
+ApplyOptionalPatch 0094-k1x-add-k1-x_fpga-1x4-2x2-proj.patch
+ApplyOptionalPatch 0095-k1-x-support-pxa-uart-driver-dts-configs-pm-amend-in.patch
+ApplyOptionalPatch 0096-ethernet-adding-gmac-driver-for-k1-x.patch
+ApplyOptionalPatch 0097-mmc-support-spacemit-k1x-platform.patch
+ApplyOptionalPatch 0098-ethernet-change-the-phy-mode-config-from-device-tree.patch
+ApplyOptionalPatch 0099-hotplug-we-d-better-flush-the-local-l2-cache-when-on.patch
+ApplyOptionalPatch 0100-mmc-update-dts-remove-axi-node.patch
+ApplyOptionalPatch 0101-turn-off-CONFIG_PM-for-debug.patch
+ApplyOptionalPatch 0102-config-support-gmac-driver-for-k1-x-1x4-and-2x2.patch
+ApplyOptionalPatch 0103-support-tcm-for-k1x.patch
+ApplyOptionalPatch 0104-add-udma-driver-for-userspace.patch
+ApplyOptionalPatch 0105-dma-copy-use-vaddr.patch
+ApplyOptionalPatch 0106-rm-udma-log.patch
+ApplyOptionalPatch 0107-update-defconfig-for-support-sdmmc-udma.patch
+ApplyOptionalPatch 0108-add-mutex-va2pa-fix-tcm_discontinuous_malloc.patch
+ApplyOptionalPatch 0109-update-for-support-tcm.patch
+ApplyOptionalPatch 0110-usb-gadget-support-k1x-udc.patch
+ApplyOptionalPatch 0111-pcie-adding-pcie-driver-for-k1x.patch
+ApplyOptionalPatch 0112-usb-dwc3-support-k1x-platform.patch
+ApplyOptionalPatch 0113-k1x-add-pwm-pxa-driver-support.patch
+ApplyOptionalPatch 0114-update-vpu-driver.patch
+ApplyOptionalPatch 0115-k1pro-adjust-pwm-driver-config-name.patch
+ApplyOptionalPatch 0116-k1x-add-soc-timer-driver-support.patch
+ApplyOptionalPatch 0117-k1pro-deconfig-axi-dma-driver-Y.patch
+ApplyOptionalPatch 0118-support-I2C-for-k1x.patch
+ApplyOptionalPatch 0119-media-k1x-vpu-reshape-file-style.patch
+ApplyOptionalPatch 0120-update-kernel-default-config.patch
+ApplyOptionalPatch 0121-reset-update-reset-controller-driver.patch
+ApplyOptionalPatch 0122-ccu-update-clock-controller-driver.patch
+ApplyOptionalPatch 0123-fix-config-PCIE_SPACEMIT-depends-on-CONFIG_SOC_SPACE.patch
+ApplyOptionalPatch 0124-k1x-switch-pwm-deconfig-Y-on-1x4-2x2-board.patch
+ApplyOptionalPatch 0125-k1pro-cpuidle-support-cpuidle.patch
+ApplyOptionalPatch 0126-k1pro-add-k1pro-fpga_1x4-k1pro-fpga_2x2-proj.patch
+ApplyOptionalPatch 0127-k1-x-add-k1x-gpio-driver-support.patch
+ApplyOptionalPatch 0128-riscv-spacemit-remove-k1pro-configuration-it-is-just.patch
+ApplyOptionalPatch 0129-yk1x-add-the-first-version-of-pm-domain.patch
+ApplyOptionalPatch 0130-k1-x-add-gmac-PTP-support.patch
+ApplyOptionalPatch 0131-usb-dwc2-update-fifo-and-reset-config-for-k1-pro.patch
+ApplyOptionalPatch 0132-k1x-enable-dmabuf.patch
+ApplyOptionalPatch 0133-qspi-adding-driver-for-k1x-qspi-controller.patch
+ApplyOptionalPatch 0134-qspi-fix-typo-cause-compilation-errors.patch
+ApplyOptionalPatch 0135-add-spacemit-ir-rx-driver.patch
+ApplyOptionalPatch 0136-k1x-dts-modify-the-actual-reference-clock-for-sdhci.patch
+ApplyOptionalPatch 0137-k1pro-cpuidle-support-cpu0-cluster0-go-deepidle.patch
+ApplyOptionalPatch 0138-cpuidle-adapt-code-for-CPUidle-functionality.patch
+ApplyOptionalPatch 0139-update-k1x-vpu-driver.patch
+ApplyOptionalPatch 0140-k1x-cpuidle-synchronize-relevant-patches-from-k1pro.patch
+ApplyOptionalPatch 0141-k1x-support-cpufreq-driver.patch
+ApplyOptionalPatch 0142-reset-add-reset-controller-driver-for-k1x.patch
+ApplyOptionalPatch 0143-clock-add-clock-controller-driver-for-k1x.patch
+ApplyOptionalPatch 0144-dts-fix-worng-and-warning-for-k1x-clk-reset.patch
+ApplyOptionalPatch 0145-clock-fix-k1x-clock-id.patch
+ApplyOptionalPatch 0146-pinctrl-adding-pinctrl-config-for-k1x-soc.patch
+ApplyOptionalPatch 0147-reset-modify-reset-driver-file-name-of-k1pro.patch
+ApplyOptionalPatch 0148-clock-modify-clock-driver-file-name-of-k1pro.patch
+ApplyOptionalPatch 0149-pm_domain-move-the-pm_domain-driver-to-the-directy-s.patch
+ApplyOptionalPatch 0150-v2d-Add-v2d-driver.patch
+ApplyOptionalPatch 0151-add-tcm_cfg_save-restore.patch
+ApplyOptionalPatch 0152-add-tcm-sync-malloc-code-clean.patch
+ApplyOptionalPatch 0153-update-k1-x_fpga.dts-with-device-k1-x-board.dts.patch
+ApplyOptionalPatch 0154-mmc-sdhci-of-k1x-support-configure-reset-and-clk-fro.patch
+ApplyOptionalPatch 0155-usb-add-reset-and-clk-configurations.patch
+ApplyOptionalPatch 0156-pinctrl-supports-the-allocation-of-GPIOs-with-the-sa.patch
+ApplyOptionalPatch 0157-pcie-update-the-operations-of-clk-and-reset.patch
+ApplyOptionalPatch 0158-display-Add-spacemit-drm-driver.patch
+ApplyOptionalPatch 0159-gpu-Add-spacemit-gpu-driver.patch
+ApplyOptionalPatch 0160-gpio-update-the-operation-of-clk-for-gpio.patch
+ApplyOptionalPatch 0161-pmic-add-the-first-version-of-pmic-driver.patch
+ApplyOptionalPatch 0162-pmic-spm8821-pinctrl-first-version-to-support-pinctr.patch
+ApplyOptionalPatch 0163-fix-some-warning-when-building-dts.patch
+ApplyOptionalPatch 0164-add-configurations-for-k1-x-evb-board.patch
+ApplyOptionalPatch 0165-ethernet-update-driver-of-k1x-emac-driver.patch
+ApplyOptionalPatch 0166-pm-domain-correction-of-previous-driver-errors-and-a.patch
+ApplyOptionalPatch 0167-add-ranges-property-for-some-nodes-which-contain-som.patch
+ApplyOptionalPatch 0168-qspi-update-the-opertions-of-clk-and-reset-for-k1x-q.patch
+ApplyOptionalPatch 0169-pm_domain-improve-the-execution-process-of-this-driv.patch
+ApplyOptionalPatch 0170-pm_domain-move-the-pm-domain-dts-node-to-k1-x.dtsi-f.patch
+ApplyOptionalPatch 0171-gpu-Compatible-with-gpu-umd-driver.patch
+ApplyOptionalPatch 0172-camera-init-version-of-camera-driver-on-k1.patch
+ApplyOptionalPatch 0173-display-Add-spacemit-drm-debugfs-node.patch
+ApplyOptionalPatch 0174-k1x-dma-add-clk-reset-control-in-dma-driver.patch
+ApplyOptionalPatch 0175-qspi-adding-resets-for-k1-x-qspi.patch
+ApplyOptionalPatch 0176-fix-cpu-node-properties-defined-by-linux-6.x.y.patch
+ApplyOptionalPatch 0177-spi-add-the-driver-for-k1x-spi-controller.patch
+ApplyOptionalPatch 0178-pmic-pm853-support-regulator-driver-and-compatible-w.patch
+ApplyOptionalPatch 0179-k1x-uart-add-clock-reset-in-uart-driver.patch
+ApplyOptionalPatch 0180-clock-fix-clock-driver-issues-of-k1x.patch
+ApplyOptionalPatch 0181-pm-domain-add-new-feature.patch
+ApplyOptionalPatch 0182-update-dts-for-support-i2c0.patch
+ApplyOptionalPatch 0183-k1x-pwm-driver-adds-clk-reset-control.patch
+ApplyOptionalPatch 0184-update-kconfig-to-support-spacemit-k1x-timer-configu.patch
+ApplyOptionalPatch 0185-fix-uart-board-configuration-for-asic.patch
+ApplyOptionalPatch 0186-clock-reset-fix-pwm-clk-reset-reg-bit.patch
+ApplyOptionalPatch 0187-pm853-support-the-regulator-func-in-asic.patch
+ApplyOptionalPatch 0188-pmic-open-the-configuration-of-pmic-driver.patch
+ApplyOptionalPatch 0189-update-dts-for-i2c-to-support-clk-operation.patch
+ApplyOptionalPatch 0190-k1x-i2c-driver-add-clk-reset.patch
+ApplyOptionalPatch 0191-k1x-pm-domain-add-gnss-domain.patch
+ApplyOptionalPatch 0192-gmac-modify-the-config-for-k1x-gmac-controller.patch
+ApplyOptionalPatch 0193-usb-udc-k1x_udc-fix-udc-disconnect.patch
+ApplyOptionalPatch 0194-k1x-usb-fix-reset-and-clk-configuration.patch
+ApplyOptionalPatch 0195-update-evb-board-dts.patch
+ApplyOptionalPatch 0196-remove-some-unused-kernel-module.patch
+ApplyOptionalPatch 0197-k1-x-pinctrl-add-fast-config-for-sdcard.patch
+ApplyOptionalPatch 0198-update-board-dts-for-evb-and-fpga-boards.patch
+ApplyOptionalPatch 0199-display-Add-lcd-gc9503v_mipi.patch
+ApplyOptionalPatch 0200-support-jpu-driver-for-k1x.patch
+ApplyOptionalPatch 0201-clock-fix-the-result-of-set_rate-is-not-the-closest-.patch
+ApplyOptionalPatch 0202-clock-enable-some-clocks.patch
+ApplyOptionalPatch 0203-remove-clint-timer.patch
+ApplyOptionalPatch 0204-update-dtsi-for-k1-x-platform.patch
+ApplyOptionalPatch 0205-config-adding-spacemit-k1x-spi-driver.patch
+ApplyOptionalPatch 0206-qspi-fix-the-bus_num-for-k1x-qspi-controller.patch
+ApplyOptionalPatch 0207-k1x-vpu-update-driver.patch
+ApplyOptionalPatch 0208-k1x-dtsi-linlon-vpu-update-config.patch
+ApplyOptionalPatch 0209-usb-k1x_udc-deassert-reset-before-phy-init.patch
+ApplyOptionalPatch 0210-k1x-dma-1.add-pm-func-in-dma-driver-2.modify-dma-Kco.patch
+ApplyOptionalPatch 0211-k1x-uart-driver-add-pm-func.patch
+ApplyOptionalPatch 0212-k1x-i2c-driver-add-pm-domains-revision.patch
+ApplyOptionalPatch 0213-qspi-support-pm-runtime-for-qspi-driver.patch
+ApplyOptionalPatch 0214-dts-adding-power-domains-for-k1x-qspi.patch
+ApplyOptionalPatch 0215-k1x-pm-open-the-configuration-of-pm-domain-driver.patch
+ApplyOptionalPatch 0216-k1x-dtsi-jpu-update-config.patch
+ApplyOptionalPatch 0217-k1x-evb-defconfig-enable-CHIP_MEDIA_JPU.patch
+ApplyOptionalPatch 0218-add-some-debug-configuration.patch
+ApplyOptionalPatch 0219-feat-gpu-Support-gpu-for-k1x-evb-board.patch
+ApplyOptionalPatch 0220-mmc-k1x-add-host-capability-MMC_CAP_NEED_RSP_BUSY.patch
+ApplyOptionalPatch 0221-k1x-dtsi-jpu-add-reset-config.patch
+ApplyOptionalPatch 0222-k1x-uart-add-reference-to-pm-domain.patch
+ApplyOptionalPatch 0223-k1x-dma-add-reference-to-pm-domain.patch
+ApplyOptionalPatch 0224-k1x-cpufreq-support-cpufreq-function.patch
+ApplyOptionalPatch 0225-usb-phy-k1x-ci-usb2-update-phy-init-parameters-fix-h.patch
+ApplyOptionalPatch 0226-usb-ehci-add-support-for-k1-x-ehci-driver.patch
+ApplyOptionalPatch 0227-dts-k1-x-add-ehci-usb-host-support.patch
+ApplyOptionalPatch 0228-config-enable-k1x-ehci-host-driver.patch
+ApplyOptionalPatch 0229-update-evb-board-dts.patch
+ApplyOptionalPatch 0230-disable-cpufreq-it-will-crash-kernel.patch
+ApplyOptionalPatch 0231-config-k1-x-enable-more-usb-functions.patch
+ApplyOptionalPatch 0232-clock-fix-camm2-no-clock-issue-change-enable-bit.patch
+ApplyOptionalPatch 0233-clock-fix-set_rate-function-it-change-rate-by-div-an.patch
+ApplyOptionalPatch 0234-clock-enable-some-clocks-for-cpu-remove-cpu-core-clk.patch
+ApplyOptionalPatch 0235-k1x-cpufreq-don-t-need-to-set-parent-when-set-the-fr.patch
+ApplyOptionalPatch 0236-display-Support-lcd-icnl9911c-mipi.patch
+ApplyOptionalPatch 0237-sync-dts-with-device-board.dts.patch
+ApplyOptionalPatch 0238-usb-hid-enable-raw-HID-device-support.patch
+ApplyOptionalPatch 0239-clock-fix-qspi_clk-issue-only-set-fc-bit-when-settin.patch
+ApplyOptionalPatch 0240-k1x-pm-domain-change-the-log-level-of-debug-info.patch
+ApplyOptionalPatch 0241-display-fix-dpu-reset-control.patch
+ApplyOptionalPatch 0242-config-k1x-enable-usb-webcam-support.patch
+ApplyOptionalPatch 0243-k1x-add-watchdog-driver-support.patch
+ApplyOptionalPatch 0244-k1x-add-reboot-with-args-support.patch
+ApplyOptionalPatch 0245-fix-gpu-move-loading-firmware-later.patch
+ApplyOptionalPatch 0246-k1x-spacemit-timer-driver-add-clk-reset-interface.patch
+ApplyOptionalPatch 0247-k1x-timer-clk-reset-dts-config.patch
+ApplyOptionalPatch 0248-mmc-sdhci-of-k1x-add-quirks2-SDHCI_QUIRK2_BROKEN_64_.patch
+ApplyOptionalPatch 0249-reserved-2GB-4GB-area-from-memory-space-it-should-be.patch
+ApplyOptionalPatch 0250-k1x-pm_domain-using-hw-mode-to-power-on-off-audio-s-.patch
+ApplyOptionalPatch 0251-k1x-add-k1x-soc-rtc-driver-and-clk-reset-interface.patch
+ApplyOptionalPatch 0252-sync-evb-board-dts-from-device-k1x-evb-board.dts.patch
+ApplyOptionalPatch 0253-clean-compile-warning-in-arch-riscv-mm-init.c.patch
+ApplyOptionalPatch 0254-clean-compile-warning-in-display-driver.patch
+ApplyOptionalPatch 0255-clean-compile-warning-in-pcie-driver.patch
+ApplyOptionalPatch 0256-k1x-wdt-update-watchdog-driver.patch
+ApplyOptionalPatch 0257-clock-twsi8-clk-reset-reg-is-write-only-don-t-read-i.patch
+ApplyOptionalPatch 0258-k1x-reboot-fix-reboot-into-fastboot-mode-with-no-arg.patch
+ApplyOptionalPatch 0259-add-pwm-control-backlight.patch
+ApplyOptionalPatch 0260-k1x-pinctrl.dtsi-fix-some-pinctrl-error.patch
+ApplyOptionalPatch 0261-k1x-update-DTS-automatically-based-on-env.patch
+ApplyOptionalPatch 0262-mmc-sdhci-of-k1x-update-sdio-scan-interface.patch
+ApplyOptionalPatch 0263-add-tcm_override_readl-writel-for-access-tcm-overrid.patch
+ApplyOptionalPatch 0264-k1x-unique-mac-address-in-eeprom.patch
+ApplyOptionalPatch 0265-modify-compile-optimize-from-O2-to-Os.patch
+ApplyOptionalPatch 0266-clean-compile-waring-in-vpu-driver.patch
+ApplyOptionalPatch 0267-dts-add-apbc2-reg-base-for-clock-and-reset.patch
+ApplyOptionalPatch 0268-clock-add-apbc2-reg-base-clocks.patch
+ApplyOptionalPatch 0269-reset-add-apb2-reg-base-resets.patch
+ApplyOptionalPatch 0270-clock-add-CLK_IGNORE_UNUSED-flag-for-some-clocks.patch
+ApplyOptionalPatch 0271-vpu-can-use-when-RAM-2GB.patch
+ApplyOptionalPatch 0272-support-non-uniform-address-mapping-between-peripher.patch
+ApplyOptionalPatch 0273-add-nfsd-support.patch
+ApplyOptionalPatch 0274-add-exfat-fs-support.patch
+ApplyOptionalPatch 0275-add-xfs-support.patch
+ApplyOptionalPatch 0276-add-btrfs-support.patch
+ApplyOptionalPatch 0277-add-f2fs-support.patch
+ApplyOptionalPatch 0278-add-quota-used-by-ext4-support.patch
+ApplyOptionalPatch 0279-add-device-mapper-used-by-RAID-and-FS-crypto.patch
+ApplyOptionalPatch 0280-add-bridge-and-vlan-support-used-by-docker-vm.patch
+ApplyOptionalPatch 0281-add-ipv6-support.patch
+ApplyOptionalPatch 0282-add-ntfs-v3.1-same-with-win10-s-native-fs-support.patch
+ApplyOptionalPatch 0283-yk1x-thermal-support-thermal-driver.patch
+ApplyOptionalPatch 0284-k1x-dma-close-some-unnecessary-config.patch
+ApplyOptionalPatch 0285-k1x-dma-range-add-a-driver-for-devices-node-dram_ran.patch
+ApplyOptionalPatch 0286-k1x-dma-fix-compile-error-in-include-k1x-dmac.h.-def.patch
+ApplyOptionalPatch 0287-k1x-support-aes-crypto-engine.patch
+ApplyOptionalPatch 0288-k1x-kernel-support-afalg-engine.patch
+ApplyOptionalPatch 0289-support-camera-to-draw-when-use-2GB-DDR-dtsi-and-def.patch
+ApplyOptionalPatch 0290-clear-compile-warning.patch
+ApplyOptionalPatch 0291-clear-compile-warning.patch
+ApplyOptionalPatch 0292-sync-evb-board.dts-from-devices-k1x-evb.patch
+ApplyOptionalPatch 0293-camera-self-managed-ldo.patch
+ApplyOptionalPatch 0294-k1x-pm-domain-add-hdmi-domiain.patch
+ApplyOptionalPatch 0295-v2d-support-use-memory-2GB.patch
+ApplyOptionalPatch 0296-k1x-pmic-refine-some-code.patch
+ApplyOptionalPatch 0297-support-camera-to-draw-when-use-4GB-DDR.patch
+ApplyOptionalPatch 0298-display-phy-driver-has-been-registered-in-another-fu.patch
+ApplyOptionalPatch 0299-pci-add-initialization-phy-of-pcie-for-k1x.patch
+ApplyOptionalPatch 0300-k1x-pm-domain-the-IO-size-too-small-to-cover-the-HDM.patch
+ApplyOptionalPatch 0301-pcie-adding-dram_range1-for-pcie0-pcie1-pci2.patch
+ApplyOptionalPatch 0302-add-dts-and-config-for-deb2-board.patch
+ApplyOptionalPatch 0303-display-Support-spacemit-hdmi-driver.patch
+ApplyOptionalPatch 0304-target-add-task-management-values-and-overlapped-res.patch
+ApplyOptionalPatch 0305-usb-f_tcm-support-mutltiple-cmds-enhance-performance.patch
+ApplyOptionalPatch 0306-k1x-support-reboot-to-uboot-shell.patch
+ApplyOptionalPatch 0307-sync-evb-deb2-board-dts-from-devices.patch
+ApplyOptionalPatch 0308-fix-cpp-clk-timeout.patch
+ApplyOptionalPatch 0309-fix-gpu-memory-leak-when-launch-weston.patch
+ApplyOptionalPatch 0310-k1x-cpufreq-support-adjust-the-ace-tcm-s-frequency-a.patch
+ApplyOptionalPatch 0311-fix-dead-lock-bug-between-reset-and-clk.patch
+ApplyOptionalPatch 0312-k1x-cpu-cooling-support-cpu-cooling-device.patch
+ApplyOptionalPatch 0313-extcon-add-extcon-k1xci-driver-for-usb2.0-otg.patch
+ApplyOptionalPatch 0314-usb-otg-add-k1x-ci-otg-driver.patch
+ApplyOptionalPatch 0315-dtsi-k1-x-add-usb2-otg-support.patch
+ApplyOptionalPatch 0316-clock-add-apb-clk-enable-apb-axi-clk-when-init.patch
+ApplyOptionalPatch 0317-k1x-pmic-refine-the-pmic-code.patch
+ApplyOptionalPatch 0318-display-Support-hdmi-1080p.patch
+ApplyOptionalPatch 0319-clock-dead-lock-issue-may-happen.patch
+ApplyOptionalPatch 0320-mmc-dts-support-power-domain.patch
+ApplyOptionalPatch 0321-mmc-sdhci-of-k1x-add-pm_runtime_get_sync-during-prob.patch
+ApplyOptionalPatch 0322-pcie-Optimize-phy-initialization-code-for-k1x-pcie-d.patch
+ApplyOptionalPatch 0323-dts-modify-the-domain-id-of-pcie1-to-1.patch
+ApplyOptionalPatch 0324-k1x-pmic-support-power-key-driver.patch
+ApplyOptionalPatch 0325-k1x-pmic-rtc-support-spm8821-rtc-driver.patch
+ApplyOptionalPatch 0326-reshape-pinctrl-dtsi-and-platform-dtsi.patch
+ApplyOptionalPatch 0327-display-Fix-reset-control-deassert-and-assert.patch
+ApplyOptionalPatch 0328-clean-clk-driver-debug-info.patch
+ApplyOptionalPatch 0329-clean-drm-driver-debug-info.patch
+ApplyOptionalPatch 0330-clean-camera-driver-debug-info.patch
+ApplyOptionalPatch 0331-clean-dma-driver-debug-info.patch
+ApplyOptionalPatch 0332-clean-usb-driver-debug-info.patch
+ApplyOptionalPatch 0333-clean-tcm-driver-debug-info.patch
+ApplyOptionalPatch 0334-clean-qspi-driver-debug-info.patch
+ApplyOptionalPatch 0335-clean-crypto-driver-debug-info.patch
+ApplyOptionalPatch 0336-clean-i2c-driver-debug-info.patch
+ApplyOptionalPatch 0337-clean-reset-driver-debug-info.patch
+ApplyOptionalPatch 0338-clean-gmac-driver-debug-info.patch
+ApplyOptionalPatch 0339-clean-some-unused-driver-module.patch
+ApplyOptionalPatch 0340-add-gx09inx101-mipi-lcd-configuration.patch
+ApplyOptionalPatch 0341-k1x-crypto-1.handle-memleak-in-probe-2.ture-down-sel.patch
+ApplyOptionalPatch 0342-k1x-pmic-refactoring-code-to-support-new-dcdc.patch
+ApplyOptionalPatch 0343-defconfig-add-usb3.0-support-for-k1-x-evb2.patch
+ApplyOptionalPatch 0344-usb-misc-add-spacemit-onboard-hub-driver.patch
+ApplyOptionalPatch 0345-dtsi-k1-x-add-usb3.0-support.patch
+ApplyOptionalPatch 0346-usb-add-spacemit-k1x-dma-mask-setting.patch
+ApplyOptionalPatch 0347-phy-add-spacemit-pcie-usb3-combphy-driver.patch
+ApplyOptionalPatch 0348-spacemit-rf-add-wifi-platform-driver.patch
+ApplyOptionalPatch 0349-spacemit-rf-dts-enable-spacemit-rf-pwrseq.patch
+ApplyOptionalPatch 0350-k1x-cpuidle-support-cpu-power-down-only.patch
+ApplyOptionalPatch 0351-wireless-rtl8852bs-add-rtl8852bs-sdio-wifi-driver.patch
+ApplyOptionalPatch 0352-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
+ApplyOptionalPatch 0353-k1x-cpufreq-support-adjust-the-voltage-when-the-cpu-.patch
+ApplyOptionalPatch 0354-display-Fix-hdmi-qos-control.patch
+ApplyOptionalPatch 0355-mmc-dts-alloc-index-from-alias-id.patch
+ApplyOptionalPatch 0356-disable-rtl8852bs-wifi-driver-there-is-too-much-warn.patch
+ApplyOptionalPatch 0357-update-evb-board-dts.patch
+ApplyOptionalPatch 0358-update-deb2-board-dts.patch
+ApplyOptionalPatch 0359-update-deb2-kernel-config.patch
+ApplyOptionalPatch 0360-sync-deb2-board-dts.patch
+ApplyOptionalPatch 0361-wifi-k1x-deb2-enable-aic8800dc-wifi-defconfig.patch
+ApplyOptionalPatch 0362-wifi-k1x-evb-enable-aic8800dc-wifi-defconfig.patch
+ApplyOptionalPatch 0363-audio-add-audio-driver.patch
+ApplyOptionalPatch 0364-dts-add-audio-snd-card-support.patch
+ApplyOptionalPatch 0365-enable-audio-driver-for-evb-board.patch
+ApplyOptionalPatch 0366-enable-audio-driver-for-deb2.patch
+ApplyOptionalPatch 0367-clear-compile-warning.patch
+ApplyOptionalPatch 0368-support-dvfs-for-evb-performance.patch
+ApplyOptionalPatch 0369-use-performance-governor-as-default.patch
+ApplyOptionalPatch 0370-audio-change-pcm-hw_params.patch
+ApplyOptionalPatch 0371-display-Support-kernel-logo.patch
+ApplyOptionalPatch 0372-display-update-kernel-logo.patch
+ApplyOptionalPatch 0373-disable-audio-and-adsp-driver.patch
+ApplyOptionalPatch 0374-disable-audio-and-adsp-driver.patch
+ApplyOptionalPatch 0375-display-fix-kernel-logo.patch
+ApplyOptionalPatch 0376-k1x-can-add-clk-reset-control-in-dma-driver.patch
+ApplyOptionalPatch 0377-clock-fix-can-func-clk-incorrect-issue.patch
+ApplyOptionalPatch 0378-reset-fix-reset-bit-of-aes.patch
+ApplyOptionalPatch 0379-k1x-deb1-support-deb1-project.patch
+ApplyOptionalPatch 0380-k1x-deb1-add-k1-x_deb1.dts-to-fix-compiling-error-wh.patch
+ApplyOptionalPatch 0381-k1x-pmic-support-pwr-key-rtc-pinctrl-function.patch
+ApplyOptionalPatch 0382-spacemit-rf-add-bluetooth-platform-driver.patch
+ApplyOptionalPatch 0383-wifi-k1x-deb2-enable-rtl8852bs-wifi-defconfig.patch
+ApplyOptionalPatch 0384-sync-board-dts-from-devices.patch
+ApplyOptionalPatch 0385-add-k1-universal-config-for-all-board.patch
+ApplyOptionalPatch 0386-fix-disable-CONFIG_INITRAMFS_SOURCE-which-may-overla.patch
+ApplyOptionalPatch 0387-wifi-k1x-deb1-enable-rtl8852bs-wifi-defconfig.patch
+ApplyOptionalPatch 0388-k1-x-crypto-speed-up-expand-single-encrypt-decrypt-s.patch
+ApplyOptionalPatch 0389-sync-board-dts-from-devices.patch
+ApplyOptionalPatch 0390-wireless-rtl8852be-add-wifi-driver.patch
+ApplyOptionalPatch 0391-k1x-cpu-cooling-add-the-cpuidle-cooling-function.patch
+ApplyOptionalPatch 0392-clock-reset-fix-pwm0-clk-reset-reg-bit.patch
+ApplyOptionalPatch 0393-add-cpu-model-name-showed-in-proc-cpuinfo.patch
+ApplyOptionalPatch 0394-k1x-adjust-i2c-driver-strength.patch
+ApplyOptionalPatch 0395-add-docker-required-configurations-1.-bridge-and-vla.patch
+ApplyOptionalPatch 0396-k1x-deb1-support-power-off-system.patch
+ApplyOptionalPatch 0397-display-Fix-dpu-reset-issue.patch
+ApplyOptionalPatch 0398-sync-board-dts-from-devices.patch
+ApplyOptionalPatch 0399-tools-perf-pmu-events-add-SpacemiT-X60-JSON-files.patch
+ApplyOptionalPatch 0400-k1x-add-zicboz-and-zicbop-to-dts.patch
+ApplyOptionalPatch 0401-modify-compile-optimize-from-size-to-performance.patch
+ApplyOptionalPatch 0402-display-disable-kernel-logo.patch
+ApplyOptionalPatch 0403-set-cma-alloc-range-from-0x40000000.patch
+ApplyOptionalPatch 0404-sync-board-dts-from-devices-configuration.patch
+ApplyOptionalPatch 0405-qspi-Correct-the-setting-clk-rate-of-k1x-qspi.patch
+ApplyOptionalPatch 0406-performance-optimize.patch
+ApplyOptionalPatch 0407-k1x-support-PCIE-SATA-JMB585-board.patch
+ApplyOptionalPatch 0408-Bluetooth-enable-bluez-stack.patch
+ApplyOptionalPatch 0409-uart-disable-bluesleep-hostwake-detect.patch
+ApplyOptionalPatch 0410-clock-uart-source-48M-and-14.7M-have-same-gate-bit-i.patch
+ApplyOptionalPatch 0411-k1x-uart-add-uart-parent-clk-gate-function.patch
+ApplyOptionalPatch 0412-sync-board-dts-with-devices.patch
+ApplyOptionalPatch 0413-display-Update-hdmi-phy-config.patch
+ApplyOptionalPatch 0414-k1-x-aes-prevent-writing-buffer-requests-in-the-mean.patch
+ApplyOptionalPatch 0415-k1x-aes-add-xts-cipher.patch
+ApplyOptionalPatch 0416-display-Support-dsi-and-hdmi-double-screens.patch
+ApplyOptionalPatch 0417-use-the-unified-defconfig-for-k1-5-5.patch
+ApplyOptionalPatch 0418-add-ramdisk-for-develop-branch.patch
+ApplyOptionalPatch 0419-k1-enable-usb-serial.patch
+ApplyOptionalPatch 0420-mmc-sdhci-of-k1x-improve-the-sd-tuning-process.patch
+ApplyOptionalPatch 0421-scatterlist-mask-out-GFP_DMA32-flag-when-call-kmallo.patch
+ApplyOptionalPatch 0422-target-alloc-scatterlist-with-GFP_DMA32-flag-on-spac.patch
+ApplyOptionalPatch 0423-k1-x-enable-ehci-for-deb1-and-deb2.patch
+ApplyOptionalPatch 0424-display-Remove-error-logs.patch
+ApplyOptionalPatch 0425-k1x-support-mailbox-driver.patch
+ApplyOptionalPatch 0426-k1x-remoteproc-support-remoteproc-driver.patch
+ApplyOptionalPatch 0427-k1x-rproc-launching-rcpu-during-the-system-startup-p.patch
+ApplyOptionalPatch 0428-k1x-defconfig-enable-mailbox-rproc-rpmsg_virtio-defc.patch
+ApplyOptionalPatch 0429-k1-rcpu-ipc-reserved-memory-for-rcpu-and-ipc.patch
+ApplyOptionalPatch 0430-k1x-adma-add-adma-driver-for-sspa.patch
+ApplyOptionalPatch 0431-audio-add-hdmi-audio-driver-and-remove-unused-code.patch
+ApplyOptionalPatch 0432-deconfig-enable-sound-support.patch
+ApplyOptionalPatch 0433-dts-add-hdmi-audio-config.patch
+ApplyOptionalPatch 0434-dts-modify-audio-config.patch
+ApplyOptionalPatch 0435-k1x-rporc-add-the-reference-of-mailbox-memory-region.patch
+ApplyOptionalPatch 0436-audio-modify-hdmi-audio-params-set-enable-ctrl-reg.patch
+ApplyOptionalPatch 0437-k1-support-CTP-driver.patch
+ApplyOptionalPatch 0438-display-Fixed-dtsi-warning.patch
+ApplyOptionalPatch 0439-dtb-adding-the-dts-of-linux-for-hs450-board.patch
+ApplyOptionalPatch 0440-k1-defconfig-enable-support-for-r8152.patch
+ApplyOptionalPatch 0441-disp-adjust-gpu-and-drm-initcall-sequence-for-fixed-.patch
+ApplyOptionalPatch 0442-gitignore-add-user_headers-generated-by-openwrt-to-g.patch
+ApplyOptionalPatch 0443-k1x-snd-fix-compile-warning-in-spacemit-snd-card.c.patch
+ApplyOptionalPatch 0444-img-rogue-fix-compile-warning.patch
+ApplyOptionalPatch 0445-k1x-display-fix-compile-warning.patch
+ApplyOptionalPatch 0446-gt9xx-fix-compile-warning.patch
+ApplyOptionalPatch 0447-eeprom-at24-fix-compile-warning.patch
+ApplyOptionalPatch 0448-k1x-hdmi-fix-compile-warning-because-of-unused-varia.patch
+ApplyOptionalPatch 0449-brtfs-fix-compile-warning.patch
+ApplyOptionalPatch 0450-sync-camera-code-from-Release-JINDIE-V3.8.patch
+ApplyOptionalPatch 0451-sync-camera-code-from-Release-JINDIE-V4.0.patch
+ApplyOptionalPatch 0452-mmc-sdhci-of-k1x-update-phy-dll-config.patch
+ApplyOptionalPatch 0453-aud-modify-hdmi-audio-period_size-fix-coding-issue.patch
+ApplyOptionalPatch 0454-k1-gpio-support-irq-controller-mode.patch
+ApplyOptionalPatch 0455-k1-open-hid-configs.patch
+ApplyOptionalPatch 0456-k1-support-touchpad-for-hs450-board.patch
+ApplyOptionalPatch 0457-aud-add-spi-i2s-driver.patch
+ApplyOptionalPatch 0458-dts-add-i2s-support.patch
+ApplyOptionalPatch 0459-dts-add-codec-es8326-support-i2s-pin-config.patch
+ApplyOptionalPatch 0460-config-enable-codec-es8326.patch
+ApplyOptionalPatch 0461-aud-add-es8326-sound-card-support.patch
+ApplyOptionalPatch 0462-k1_defconfig-enable-USB_NET_QMI_WWAN.patch
+ApplyOptionalPatch 0463-udma-open-failed-when-dma_dev-NULL.patch
+ApplyOptionalPatch 0464-k1x-dma-support-console-tx-rx-dma-mode.patch
+ApplyOptionalPatch 0465-dtb-adding-the-dts-of-linux-for-kx312-board.patch
+ApplyOptionalPatch 0466-Bluetooth-defconfig-support-hid-and-pan-profile.patch
+ApplyOptionalPatch 0467-gmac-Modify-gmac-pin-configuration-in-order-to-impro.patch
+ApplyOptionalPatch 0468-usb-misc-spacemit_onboard_hub-use-gpio-array.patch
+ApplyOptionalPatch 0469-dts-k1-x_kx312-enable-usbdrd3-and-usb3hub.patch
+ApplyOptionalPatch 0470-dtb-adding-the-dts-of-linux-for-MINI-PC-board.patch
+ApplyOptionalPatch 0471-add-kernel-image-itb-build-support.patch
+ApplyOptionalPatch 0472-perfect-camera-dts-gpio-config.patch
+ApplyOptionalPatch 0473-display-Fix-dpu-irqs-timeout.patch
+ApplyOptionalPatch 0474-k1-align-initial-state-for-audio.patch
+ApplyOptionalPatch 0475-k1-rpoc-using-a-RT-thread-to-process-the-virtio-msg.patch
+ApplyOptionalPatch 0476-k1-delete-undefined-pm-function.patch
+ApplyOptionalPatch 0477-dtb-adding-the-dts-of-linux-for-mingo-board.patch
+ApplyOptionalPatch 0478-kx312-fix-the-compile-error-that-it-can-t-find-dpu_o.patch
+ApplyOptionalPatch 0479-k1x-uart-fix-uart9-dts-config.patch
+ApplyOptionalPatch 0480-k1x-serial-fix-bug-of-pm-runtime-feature.patch
+ApplyOptionalPatch 0481-k1x-system_suspend-support-pmic-wakeup-source.patch
+ApplyOptionalPatch 0482-mmc-sdhci-of-k1x-optimize-sdcard-tuning-procedure.patch
+ApplyOptionalPatch 0483-k1-dts-update-dts.patch
+ApplyOptionalPatch 0484-vpu-update-vpu-driver-version-to-Release-JINDIE-V4.2.patch
+ApplyOptionalPatch 0485-v2d-mv-v2d-from-drivers-media-platform-spacemit-v2d-.patch
+ApplyOptionalPatch 0486-add-kernel-image-offset-configuration-which-would-be.patch
+ApplyOptionalPatch 0487-more-flexable-configuration-for-image-itb-build.patch
+ApplyOptionalPatch 0488-k1x-dts-enable-sdio-sdr104-mode.patch
+ApplyOptionalPatch 0489-mmc-sdhci-of-k1x-support-disable-caps.patch
+ApplyOptionalPatch 0490-add-compressed-gzip-kernel-itb-build.patch
+ApplyOptionalPatch 0491-k1-dts-disable-mipi-dsi-for-deb1.patch
+ApplyOptionalPatch 0492-display-Fix-dpu-irqs-error.patch
+ApplyOptionalPatch 0493-arch-riscv-Changed-default-target-to-Image.gz.itb-wh.patch
+ApplyOptionalPatch 0494-update-evb-dts.patch
+ApplyOptionalPatch 0495-display-add-hdmi-edid.patch
+ApplyOptionalPatch 0496-dts-dpu_reserved-move-dpu-reserved-memory-to-0x2ff40.patch
+ApplyOptionalPatch 0497-wireless-build-rtl8852be-module-into-kernel.patch
+ApplyOptionalPatch 0498-aud-limit-i2s-audio-params.patch
+ApplyOptionalPatch 0499-dts-config-codec-snd-card-support.patch
+ApplyOptionalPatch 0500-k1-system_suspend-enable-cpuidle-configuration-for-s.patch
+ApplyOptionalPatch 0501-k1-dma-add-suspend-resume-callback-for-dma-module.patch
+ApplyOptionalPatch 0502-display-Fix-read-hdmi-edid-data-error.patch
+ApplyOptionalPatch 0503-vpu-sync-Release-JINDIE-V4.3.1-on-2024-03-19-06-08.patch
+ApplyOptionalPatch 0504-mmc-sdhci-of-k1x-avoid-scan-sdio-during-start-host.patch
+ApplyOptionalPatch 0505-k1-cpufreq-fix-bug-that-the-system-do-not-update-the.patch
+ApplyOptionalPatch 0506-k1-cpu_cooling_device-add-the-mechanism-for-cpu-cool.patch
+ApplyOptionalPatch 0507-k1-cpu_cooling-add-the-function-that-hotpluging-core.patch
+ApplyOptionalPatch 0508-k1-thermal-enable-cpufreq-cooling-device.patch
+ApplyOptionalPatch 0509-mmc-sdhci-of-k1x-improve-the-tuning-window-select.patch
+ApplyOptionalPatch 0510-k1x-adjust-i2s-driver-strength.patch
+ApplyOptionalPatch 0511-dts-config-es8326-ADC-src-to-dmic.patch
+ApplyOptionalPatch 0512-eth-changing-the-dma-range-and-setting-dma-coherent-.patch
+ApplyOptionalPatch 0513-display-Fix-hdmi-read-edid-data-code-error.patch
+ApplyOptionalPatch 0514-phy-spacemit-k1x-combphy-get-shared-reset.patch
+ApplyOptionalPatch 0515-MINIPC-fix-pcie2-lane-config.patch
+ApplyOptionalPatch 0516-k1x-dts-update-mmc-tuning-config.patch
+ApplyOptionalPatch 0517-aud-fix-i2s-capture-issue.patch
+ApplyOptionalPatch 0518-mmc-sdhci-of-k1x-add-tx-delaycode-attr-for-sd-sdio.patch
+ApplyOptionalPatch 0519-leds-Support-hearbeat.patch
+ApplyOptionalPatch 0520-phy-k1x-ci-usb2-add-notify-callbacks-remove-unused-c.patch
+ApplyOptionalPatch 0521-usb-xhci-fix-spacemit-k1x-phy-disconnect-detect.patch
+ApplyOptionalPatch 0522-phy-spacemit-k1x-combphy-don-t-assert-when-use-share.patch
+ApplyOptionalPatch 0523-eth-change-the-range-of-dma-to-range1.patch
+ApplyOptionalPatch 0524-eth-improve-the-through-of-gmac.patch
+ApplyOptionalPatch 0525-display-Modify-hdmi-and-mipi-dsi-qos.patch
+ApplyOptionalPatch 0526-k1-kx312-add-touchpad-dts.patch
+ApplyOptionalPatch 0527-kx312-enable-es8326-sound-card-support.patch
+ApplyOptionalPatch 0528-clk-add-pll2-support-2800MHz.patch
+ApplyOptionalPatch 0529-eth-change-the-num-of-tx-rx-desc-buffer-to-1024-for-.patch
+ApplyOptionalPatch 0530-k1-sys-reboot-using-the-reset-function-of-pmic-rathe.patch
+ApplyOptionalPatch 0531-display-modify-mipi-dsi-dpu-bit-clock.patch
+ApplyOptionalPatch 0532-display-support-lt8911exb-driver.patch
+ApplyOptionalPatch 0533-pcie-getting-the-num-lanes-of-pcie-controller-in-phy.patch
+ApplyOptionalPatch 0534-pcie-change-the-dma-ranges-of-pcie-to-drma_range2.patch
+ApplyOptionalPatch 0535-kx312-modify-pcie1-to-1-lane.patch
+ApplyOptionalPatch 0536-scripts-Added-build_kernel.sh.patch
+ApplyOptionalPatch 0537-aud-fix-the-first-buffer-data-loss-issue.patch
+ApplyOptionalPatch 0538-i2s-fix-LR-channel-mapping-incorrect-issue.patch
+ApplyOptionalPatch 0539-usb-spacemit_onboard_hub-fix-bug-caused-by-no-delay-.patch
+ApplyOptionalPatch 0540-pcie-change-the-get_reset-method-of-pcie0-to-shared.patch
+ApplyOptionalPatch 0541-scripts-Fixed-build_kernel.sh-error.patch
+ApplyOptionalPatch 0542-config-enable-needed-config-checked-by-check-config..patch
+ApplyOptionalPatch 0543-k1x-i2c-update-i2c-driver.patch
+ApplyOptionalPatch 0544-display-Support-hdmi-hot-plug-detection.patch
+ApplyOptionalPatch 0545-display-Fix-pm-runtime-status.patch
+ApplyOptionalPatch 0546-dts-Enable-kx312-hdmi.patch
+ApplyOptionalPatch 0547-k1x-wdt-fix-timeout-setting-bug.patch
+ApplyOptionalPatch 0548-k1-cpufreq-cooling-refine-some-code-for-cpu-cooling.patch
+ApplyOptionalPatch 0549-plic-clear-irq-pending-when-init-plic.patch
+ApplyOptionalPatch 0550-k1-i2c-let-the-system-framework-dealing-with-suspend.patch
+ApplyOptionalPatch 0551-k1-spi-jion-the-pm-domain-framework-to-achieve-power.patch
+ApplyOptionalPatch 0552-k1-qspi-support-pm-runtime-system-suspend.patch
+ApplyOptionalPatch 0553-k1-rproc-support-system-suspend-callback-for-rcpu.patch
+ApplyOptionalPatch 0554-k1x-aes-add-aes-clk-reset-and-suspend-resume-callbac.patch
+ApplyOptionalPatch 0555-eth-support-suspend-and-resume-for-pm.patch
+ApplyOptionalPatch 0556-k1x-MINIPC-support-kernel-hdmi.patch
+ApplyOptionalPatch 0557-k1x-rcpu-support-suspend-resume-function-for-rcpu.patch
+ApplyOptionalPatch 0558-clock-add-audio-clocks.patch
+ApplyOptionalPatch 0559-display-Do-not-set-clock-rate-in-dts.patch
+ApplyOptionalPatch 0560-reset-add-audio-resets.patch
+ApplyOptionalPatch 0561-hdmiaudio-add-pm-runtime-and-reset.patch
+ApplyOptionalPatch 0562-i2s-add-pm-runtime-and-suspend-resume.patch
+ApplyOptionalPatch 0563-vpu-support-suspend-and-resume.patch
+ApplyOptionalPatch 0564-jpu-support-suspend-and-resume.patch
+ApplyOptionalPatch 0565-display-Fix-the-minimum-brightness-for-the-lcd.patch
+ApplyOptionalPatch 0566-vpu-remove-some-unuseful-log.patch
+ApplyOptionalPatch 0567-dtsi-k1-x-add-interconnects-to-ehci.patch
+ApplyOptionalPatch 0568-dts-k1-x_MINI-PC-change-usb0-mode-from-udc-to-ehci.patch
+ApplyOptionalPatch 0569-display-Support-no-edid-panel.patch
+ApplyOptionalPatch 0570-pcie-support-suspend-and-resume-for-pm.patch
+ApplyOptionalPatch 0571-dts-k1-x_MINI-PC-add-usb2hub-node.patch
+ApplyOptionalPatch 0572-k1_defconfig-enable-usb-serial-drivers-as-modules.patch
+ApplyOptionalPatch 0573-drm-fix-the-buffer-allocation-failed.patch
+ApplyOptionalPatch 0574-delete-camera-debug-code.patch
+ApplyOptionalPatch 0575-k1-pmic-increase-initialization-level-for-other-modu.patch
+ApplyOptionalPatch 0576-MINI-PC-Disable-mipi-dsi.patch
+ApplyOptionalPatch 0577-fix-gpu_clk-clock-setting-timeout.patch
+ApplyOptionalPatch 0578-k1_defconfig-change-dummy-device-default-to-module.patch
+ApplyOptionalPatch 0579-dts-k1-x_deb1-use-PAD_1V8_DS0-for-DVL1-and-GPIO_123.patch
+ApplyOptionalPatch 0580-dts-adding-module_usrload-for-loading-wifi-driver.patch
+ApplyOptionalPatch 0581-k1x-pinctrl-adjust-uart2-driver-strength.patch
+ApplyOptionalPatch 0582-usb-spacemit_onboard_hub-use-devm_gpiod_get_array_op.patch
+ApplyOptionalPatch 0583-swiotlb-Adjust-the-size-of-swiotlb-to-128M.patch
+ApplyOptionalPatch 0584-dram_range-change-the-mapping-range-for-dram_range2.patch
+ApplyOptionalPatch 0585-swiotlb-adjust-the-size-and-segsize-of-io-tlb.patch
+ApplyOptionalPatch 0586-display-Fix-card-order-for-mipi-dsi-and-hdmi.patch
+ApplyOptionalPatch 0587-fix-wdt-timeout-setting-use-max-timeout-if-timeout-o.patch
+ApplyOptionalPatch 0588-mmc-sdhci-of-k1x-add-get-aib-clk-avoid-disable-as-cl.patch
+ApplyOptionalPatch 0589-clock-fix-emac-ptp-clk-source.patch
+ApplyOptionalPatch 0590-k1x-rtc-fix-the-bug-that-setting-rtc-time-failed.patch
+ApplyOptionalPatch 0591-aud-support-snd-card-config-in-dts.patch
+ApplyOptionalPatch 0592-dts-change-hdmi-es8326-snd-card-config.patch
+ApplyOptionalPatch 0593-k1x-rproc-fix-bug-of-rproc-driver.patch
+ApplyOptionalPatch 0594-dtb-adding-the-dts-of-linux-for-MUSE-N1-board.patch
+ApplyOptionalPatch 0595-clear-compile-warning.patch
 ApplyOptionalPatch 0596-clean-compile-warning.patch
-ApplyOptionalPatch 0597-clear-compile-warning.patch
-ApplyOptionalPatch 0598-usb-ehci-k1x-ci-support-power-management.patch
-ApplyOptionalPatch 0599-usb-spacemit_onboard_hub-support-power-management.patch
-ApplyOptionalPatch 0600-display-Fix-the-issue-caused-by-alloc-pages-failed.patch
-ApplyOptionalPatch 0601-support-2lane-camera-to-draw-when-okay-frontsensor-n.patch
-ApplyOptionalPatch 0602-k1-add-kernel-dts-config-for-MUSE-Pi.patch
-ApplyOptionalPatch 0603-k1-rproc-fix-bug-in-system-shutdown-process.patch
-ApplyOptionalPatch 0604-spi-fix-the-bug-of-accessing-illegal-pointers-when-t.patch
-ApplyOptionalPatch 0605-clock-add-rcpu-can-clock.patch
-ApplyOptionalPatch 0606-reset-add-rcpu-can-reset.patch
-ApplyOptionalPatch 0607-k1-MUSE-Pi-update-card-detection-logic.patch
-ApplyOptionalPatch 0608-spi-adding-the-device-node-of-spi2-controller.patch
-ApplyOptionalPatch 0609-aud-fix-codec-persistent-noise-issue-when-switch-hdm.patch
-ApplyOptionalPatch 0610-v2d-fix-set-clock-rate-timeout.patch
-ApplyOptionalPatch 0611-display-fix-hdmi-compatibility-issues.patch
-ApplyOptionalPatch 0612-Move-GPU-alloc-page-from-DMA32-to-Normal-zone.patch
-ApplyOptionalPatch 0613-k1-pull-up-gpio70-71-for-SATA.patch
-ApplyOptionalPatch 0614-k1x-uart-check-uart-dma-function-before-release-uart.patch
-ApplyOptionalPatch 0615-nvme-change-the-segment-size-of-io-request-queue-for.patch
-ApplyOptionalPatch 0616-wirless-don-t-show-error-when-load-regulatory.db-fai.patch
-ApplyOptionalPatch 0617-clock-add-rcpu2-pwm-clock.patch
-ApplyOptionalPatch 0618-display-fix-dpu-under-run-issues.patch
-ApplyOptionalPatch 0619-reset-add-rcpu2-pwm-reset.patch
-ApplyOptionalPatch 0620-i2s-change-log-level.patch
-ApplyOptionalPatch 0621-display-clear-dpu-irq-and-status-after-bootlogo.patch
-ApplyOptionalPatch 0622-k1x-support-x60-operate-can-controller-in-rcpu.patch
-ApplyOptionalPatch 0623-k1x-deb1-support-rpwm2-for-fan.patch
-ApplyOptionalPatch 0624-dtb-k1-x_MUSE-N1-set-otg-mode-for-dwc3.patch
-ApplyOptionalPatch 0625-1.increase-command-line-buffer-size-to-2KB.patch
-ApplyOptionalPatch 0626-k1x-uart3-fix-compatible-error-in-dts.patch
-ApplyOptionalPatch 0627-k1x-wdt-adjust-reboot-handler-timeout.patch
-ApplyOptionalPatch 0628-display-add-drm-resume-and-suspend.patch
-ApplyOptionalPatch 0629-riscv-dts-correct-isa-string-for-Spacemit-K1.patch
-ApplyOptionalPatch 0630-pcie-modify-suspend_noirq-and-resume_noirq-of-k1-pci.patch
-ApplyOptionalPatch 0631-k1x-rtc-fix-the-issue-of-probabilistic-failure-on-se.patch
-ApplyOptionalPatch 0632-dtb-k1-x-update-quirks-for-usbdrd3.patch
-ApplyOptionalPatch 0633-k1-rtc-fix-stack-out-of-bounds-when-open-KASAN.patch
-ApplyOptionalPatch 0634-camera-switch-unknow-ioctl-print-level-to-warning.patch
-ApplyOptionalPatch 0635-Linux-Integrate-Battery-Driver.patch
-ApplyOptionalPatch 0636-USB-xhci-plat-fix-legacy-PHY-double-init.patch
-ApplyOptionalPatch 0637-display-add-hdmi-resume-and-suspend.patch
-ApplyOptionalPatch 0638-display-fix-hdmi-compatibility-issues.patch
-ApplyOptionalPatch 0639-1.change-license-statement-to-GPL-2.0-WITH-Linux-sys.patch
-ApplyOptionalPatch 0640-usb-k1x_udc_core-remove-req-from-queue-even-it-s-alr.patch
-ApplyOptionalPatch 0641-display-fix-build-warning.patch
-ApplyOptionalPatch 0642-display-fix-hdmi-compatibility-issues.patch
-ApplyOptionalPatch 0643-pcie-fix-the-compiler-warning.patch
-ApplyOptionalPatch 0644-aud-fix-hdmi-sound-card-create-fail-issue.patch
-ApplyOptionalPatch 0645-MUSE-N1-pull-down-GPIO-118-and-119-default-for-toggl.patch
-ApplyOptionalPatch 0646-add-reboot-mode-select-support-while-P1-reset-will-p.patch
-ApplyOptionalPatch 0647-aud-fix-global-out-of-bounds-when-open-KASAN.patch
-ApplyOptionalPatch 0648-k1x_MUSE-Pi-add-spi3-pinctrl-config.patch
-ApplyOptionalPatch 0649-qspi-fix-the-bug-the-actual-clk-frequency-not-equal-.patch
-ApplyOptionalPatch 0650-clock-remove-qspi_clk-fc-bit-setting.patch
-ApplyOptionalPatch 0651-rtc-fix-read-rtc-error-when-the-registers-of-pmic-ar.patch
-ApplyOptionalPatch 0652-k1-dts-rproc-delete-the-dma-range-property-which-wil.patch
-ApplyOptionalPatch 0653-pcie-modify-the-enable-phy-function-for-pcie-resume.patch
-ApplyOptionalPatch 0654-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timeout.patch
-ApplyOptionalPatch 0655-k1-rproc-increase-initialization-level-of-rproc-driv.patch
-ApplyOptionalPatch 0656-pcie-supporting-the-link-enters-l2-state-when-suspen.patch
-ApplyOptionalPatch 0657-pcie-Add-a-timeout-to-do-while-to-prevent-an-infinit.patch
-ApplyOptionalPatch 0658-Linux-Separate-the-I2C-configuration-between-the-boa.patch
-ApplyOptionalPatch 0659-dts-enable-hdmi-sound-card-for-deb2-MINI-PC.patch
-ApplyOptionalPatch 0660-k1x-dma-fix-dma-tasklet-schedule-bug.patch
-ApplyOptionalPatch 0661-Linux-The-integration-of-the-laptop-lid-switch-drive.patch
-ApplyOptionalPatch 0662-display-fix-dpu-resume-and-suspend-issues.patch
-ApplyOptionalPatch 0663-1.change-kernel-entry-addr-to-0x20_0000.patch
-ApplyOptionalPatch 0664-audio-remove-SNDRV_PCM_INFO_PAUSE-support.patch
-ApplyOptionalPatch 0665-k1-wireless-disable-power-always-on.patch
-ApplyOptionalPatch 0666-display-modify-lcd-gx09inx101-pixel-clock.patch
-ApplyOptionalPatch 0667-gpu-fix-failed-to-import-external-image-from-highmem.patch
-ApplyOptionalPatch 0668-net-usb-add-asix-usb-nic-driver-ver-v3.1.0.patch
-ApplyOptionalPatch 0669-k1-usb-enable-parkmode_disable_ss_quirk-on-DWC3-cont.patch
-ApplyOptionalPatch 0670-k1-usb-update-quirks-for-usbdrd3-in-k1-x_MINI-PC.patch
-ApplyOptionalPatch 0671-k1-use-ax_usb_nic-instead-of-ax88179_178a.patch
-ApplyOptionalPatch 0672-k1-modify-sdio-rx-dline-configuration.patch
-ApplyOptionalPatch 0673-audio-fix-hdmiaudio-can-not-playback-after-suspend-r.patch
-ApplyOptionalPatch 0674-asix_usb-fix-compile-error.patch
-ApplyOptionalPatch 0675-do_trap_insn_illegal-bind-ai-cores-when-use-ai-instr.patch
-ApplyOptionalPatch 0676-k1-sync-k1-dtsi-from-linux6.1-dts.patch
-ApplyOptionalPatch 0677-k1-cpu-fix-compilation-errs.patch
-ApplyOptionalPatch 0678-k1-ccu-add-determine_rate-func.patch
-ApplyOptionalPatch 0679-k1-gt9xx-delete-i2c_device_id-args.patch
-ApplyOptionalPatch 0680-k1-camera-adjust-class_create.patch
-ApplyOptionalPatch 0681-k1-pmic-delect-i2c_device_id-agrs.patch
-ApplyOptionalPatch 0682-k1-dma-adjust-vm_flags_set-and-class_create-func.patch
-ApplyOptionalPatch 0683-k1-gpio-adjust-struct-gpio_chip.fwnode.patch
-ApplyOptionalPatch 0684-k1-usb-goto-valid-identifier.patch
-ApplyOptionalPatch 0685-k1-update-k1_defconfig-to-linux-6.6-bringup.patch
-ApplyOptionalPatch 0686-emac-change-the-function-of-adjusting-hardware-time-.patch
-ApplyOptionalPatch 0687-display-update-config-for-hdmi-compatibility.patch
-ApplyOptionalPatch 0688-display-drm-alloc-pages-from-highuser-zone.patch
-ApplyOptionalPatch 0689-usb-xhci-plat-read-reset-on-resume-from-device-prope.patch
-ApplyOptionalPatch 0690-usb-ehci-k1x-ci-support-reset-on-resume.patch
-ApplyOptionalPatch 0691-usb-dwc3-spacemit-add-reset-operation-at-standby-set.patch
-ApplyOptionalPatch 0692-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timout.patch
-ApplyOptionalPatch 0693-k1-udma-add-pte_unmap-to-avoid-sleeping-function-cal.patch
-ApplyOptionalPatch 0694-k1-deassert-rpwm-reset-in-resume-ops.patch
-ApplyOptionalPatch 0695-pcie-change-the-dependence-of-PCI_K1X_HOST-to-PCI_MS.patch
-ApplyOptionalPatch 0696-k1-rproc-enable-rproc-module-to-avoid-bus-hangs-dead.patch
-ApplyOptionalPatch 0697-k1-vpu-fix-clk-warning-when-kernel-boot.patch
-ApplyOptionalPatch 0698-k1-jpu-fix-compile-error-on-6.6.patch
-ApplyOptionalPatch 0699-k1-jpu-enable-jpu.patch
-ApplyOptionalPatch 0700-es8326-support-hp-mic-detect-process.patch
-ApplyOptionalPatch 0701-sound-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0702-pm-rproc-adjusting-the-sleep-process-level-of-rproc.patch
-ApplyOptionalPatch 0703-pm-regulator-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
-ApplyOptionalPatch 0704-rproc-do-not-automatically-load-and-start-rcpu.patch
-ApplyOptionalPatch 0705-k1-pm-domain-fix-error-in-deleting-qos-nodes-when-di.patch
-ApplyOptionalPatch 0706-k1-pm-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
-ApplyOptionalPatch 0707-qspi-Fix-the-bug-of-data-transmission-failure-with-a.patch
-ApplyOptionalPatch 0708-k1_defconfig-build-cdc_ncm-as-module.patch
-ApplyOptionalPatch 0709-phy-k1x-ci-usb2-update-phy-init-sequence-report-erro.patch
-ApplyOptionalPatch 0710-usb-dwc3-spacemit-support-phy-setup.patch
-ApplyOptionalPatch 0711-k1-usb-setup-phy-in-dwc3-spacemit-instead-of-dwc3.patch
-ApplyOptionalPatch 0712-usb-xhci-add-clear-disconnect-for-spacemit-k1x-phy.patch
-ApplyOptionalPatch 0713-net-usb-promote-the-priority-of-ax_usb_nic-driver.patch
-ApplyOptionalPatch 0714-camera-fix-call_get_fmt-EINVAL-return-to-support-dra.patch
-ApplyOptionalPatch 0715-config-enable-kasan-to-memory-debug.patch
-ApplyOptionalPatch 0716-k1-ce-fix-ce-compile-errs-and-enable-ce-config.patch
-ApplyOptionalPatch 0717-gpu-enable-gpu-in-linux6.6.patch
-ApplyOptionalPatch 0718-spacemit-rf-add-missing-includes.patch
-ApplyOptionalPatch 0719-k1-enable-RTL8852BS-and-SPACEMIT_RFKILL.patch
-ApplyOptionalPatch 0720-mmc-sdhci-of-k1x-add-tuning-windows-type-configurati.patch
-ApplyOptionalPatch 0721-k1-change-sdio-max-clock-frequency-to-187MHz.patch
-ApplyOptionalPatch 0722-deconfig-enable-aes-engine-to-full-disk-encryption.patch
-ApplyOptionalPatch 0723-dts-modify-codec-card-name-config-and-add-mclk_fs-co.patch
-ApplyOptionalPatch 0724-muse-book-add-muse-book-board-dts-support.patch
-ApplyOptionalPatch 0725-k1-enable-USB_RTL8152.patch
-ApplyOptionalPatch 0726-k1-ce-fix-slab-out-of-bounds-by-KASAN-report.patch
-ApplyOptionalPatch 0727-display-Update-spacemit-drm-to-linux6.6.patch
-ApplyOptionalPatch 0728-v2d-Enable-v2d.patch
-ApplyOptionalPatch 0729-ax88179-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0730-clk-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0731-gmac-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0732-rf-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0733-usb-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0734-pinctrl-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0735-crypto-change-file-mode-0755-to-0644.patch
-ApplyOptionalPatch 0736-input-change-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0737-spi-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0738-pci-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0739-reset-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0740-adma-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0741-ir-chagne-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0742-pwm-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0743-wdt-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0744-reboot-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0745-dts-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0746-camera-change-file-mode-from-0755-to-0644.patch
-ApplyOptionalPatch 0747-k1-spm8821-enable-mask_unmask_non_inverted-property-.patch
-ApplyOptionalPatch 0748-dts-set-iomem-the-nomap-propertiers.patch
-ApplyOptionalPatch 0749-wireless-support-pcie-wifi-rtl8852be.patch
-ApplyOptionalPatch 0750-hdmiaudio-fix-no-sound-after-suspend-resume.patch
-ApplyOptionalPatch 0751-dts-change-i2s-target-rate.patch
-ApplyOptionalPatch 0752-clock-change-i2s-clock-parent-and-rate.patch
-ApplyOptionalPatch 0753-audio-add-mclk-config-flow.patch
-ApplyOptionalPatch 0754-dts-add-es8326-snd-card-support-for-MINI-PC.patch
-ApplyOptionalPatch 0755-audio-fix-audio-compile-error.patch
-ApplyOptionalPatch 0756-k1x-enable-audio-support.patch
-ApplyOptionalPatch 0757-audio-fix-i2s-audio-noise-due-to-dmabuffer-is-cached.patch
-ApplyOptionalPatch 0758-fix-regulator-do-not-load-the-driver-asynchronously-.patch
-ApplyOptionalPatch 0759-kconfig-add-config-ARCH_FORCE_MAX_ORDER-to-fix-defau.patch
-ApplyOptionalPatch 0760-riscv-show-reason-of-unaligned-access-speed-are-diff.patch
-ApplyOptionalPatch 0761-isa-modify-riscv-isa-format-definition.patch
-ApplyOptionalPatch 0762-deconfig-enable-CONFIG_DEBUG-to-more-debug-log.patch
-ApplyOptionalPatch 0763-aud-fix-i2s-pointer-pos-to-integer-multiple-of-perio.patch
-ApplyOptionalPatch 0764-arch-riscv-boot-dts-Fixed-MUSE-Book-model-to-M1-MUSE.patch
-ApplyOptionalPatch 0765-dts-add-orisetech-ota7290b-lcd-panel-1920-1200.patch
-ApplyOptionalPatch 0766-qspi-fix-the-warning-when-disable-the-clk-and-bus-cl.patch
-ApplyOptionalPatch 0767-k1x-6.6-support-flexcan-on-k1x-platform.patch
-ApplyOptionalPatch 0768-arch-riscv-k1_deb1-Added-pwm-fan.patch
-ApplyOptionalPatch 0769-dts-sync-the-k1-x_deb1-modify-to-the-k1-x_milkv-jupi.patch
-ApplyOptionalPatch 0770-dts-add-milkv-jupiter-board-of-M1.patch
-ApplyOptionalPatch 0771-dts-add-SiPEED-LPi3A-board-support.patch
-ApplyOptionalPatch 0772-at24-clean-compile-warning.patch
-ApplyOptionalPatch 0773-defconfig-update-defconfig.patch
-ApplyOptionalPatch 0774-defconfig-support-some-cpufreq-governor.patch
-ApplyOptionalPatch 0775-pm-pinctrl-support-edge-detect-wakeup-functoin.patch
-ApplyOptionalPatch 0776-spacemit-rf-support-wlan-irq-hostwake.patch
-ApplyOptionalPatch 0777-k1-modify-wlan-hostwake-to-pinctl.patch
-ApplyOptionalPatch 0778-deconfig-disable-kasan-debug.patch
-ApplyOptionalPatch 0779-k1-set-USB0-to-host-mode-for-MUSE-Book.patch
-ApplyOptionalPatch 0780-k1-add-wlan-hostwake-config-for-MINI-PC-and-milkv-ju.patch
-ApplyOptionalPatch 0781-display-fix-dsi-dphy-hs-prepare-and-hs-zero-cycle.patch
-ApplyOptionalPatch 0782-display-reserve-hdmi-compatibility-config-for-chips-.patch
-ApplyOptionalPatch 0783-display-modify-the-method-for-obtaining-hdmi-edid.patch
-ApplyOptionalPatch 0784-display-support-lt9711-for-mipi-dsi-to-dp.patch
-ApplyOptionalPatch 0785-display-remove-debug-log.patch
-ApplyOptionalPatch 0786-display-remove-useless-codes-and-fix-edp-driver.patch
-ApplyOptionalPatch 0787-display-support-dp-panel.patch
-ApplyOptionalPatch 0788-display-modify-edp-brightness-levels.patch
-ApplyOptionalPatch 0789-display-support-256-bytes-edid-data-for-hdmi.patch
-ApplyOptionalPatch 0790-display-detect-dp-plug-in-and-plug-out.patch
-ApplyOptionalPatch 0791-display-modify-the-order-of-the-backlight-for-the-lt.patch
-ApplyOptionalPatch 0792-display-do-not-operate-clock-during-the-pm-runtime.patch
-ApplyOptionalPatch 0793-display-modify-the-minimum-backlight-brightness-valu.patch
-ApplyOptionalPatch 0794-keep-bootloader-logo-on-and-release-backlight-first.patch
-ApplyOptionalPatch 0795-display-trun-off-lcd-power-domain-after-the-probe-fu.patch
-ApplyOptionalPatch 0796-ccu-fix-rpwm-clk-sel.patch
-ApplyOptionalPatch 0797-crypto-reset-and-clock-is-shared-between-crypto-engi.patch
-ApplyOptionalPatch 0798-efuse-add-spacemit-efuse-driver.patch
-ApplyOptionalPatch 0799-socinfo-add-spacemit-soc-information-driver.patch
-ApplyOptionalPatch 0800-dts-support-efuse-and-cpuinfo-module.patch
-ApplyOptionalPatch 0801-defconfig-enable-efuse-and-socinfo-module.patch
-ApplyOptionalPatch 0802-k1x-adjust-ddr-master-devices-dram_range.patch
-ApplyOptionalPatch 0803-dts-modify-pcie-bar-area-layout.patch
-ApplyOptionalPatch 0804-ccu-add-pll3-clk-frequency.patch
-ApplyOptionalPatch 0805-scripts-package-mkdebian.patch
-ApplyOptionalPatch 0806-efuse-add-nvmem-cells-according-to-the-dts.patch
-ApplyOptionalPatch 0807-dts-fix-the-error-of-cache-sets-number.patch
-ApplyOptionalPatch 0808-gpu-fix-workqueue-warning.patch
-ApplyOptionalPatch 0809-k1-support-mult-frequency-table-and-using-one-policy.patch
-ApplyOptionalPatch 0810-hdmiaudio-fix-no-sound-issue-on-some-hdmi-display-du.patch
-ApplyOptionalPatch 0811-pinctrl-fix-compile-warning.patch
-ApplyOptionalPatch 0812-mipi-fix-compile-warninng.patch
-ApplyOptionalPatch 0813-i2c-fix-warn_on-when-system-power-off.patch
-ApplyOptionalPatch 0814-aud-fix-can-not-play-record-issue-after-suspend-resu.patch
-ApplyOptionalPatch 0815-display-release-reserved-memory-for-bootlogo.patch
-ApplyOptionalPatch 0816-fs-enable-ubifs-jffs2-and-squashfs.patch
-ApplyOptionalPatch 0817-k1-thermal-separate-the-thermal-configuration-and-re.patch
-ApplyOptionalPatch 0818-k1x-add-MUSE-Card-dts-support.patch
-ApplyOptionalPatch 0819-k1x-add-MUSE-Paper-dts-support.patch
-ApplyOptionalPatch 0820-usb-dwc3-support-remote-wakeup.patch
-ApplyOptionalPatch 0821-usb-ehci-support-remote-wakeup.patch
-ApplyOptionalPatch 0822-usb-dwc3-enable-irqwake-in-dwc3_suspend-instead-of-s.patch
-ApplyOptionalPatch 0823-usb-dwc3-enable-linestate1-wakeup-mask.patch
-ApplyOptionalPatch 0824-usb-disable-remote-wakeup-default.patch
-ApplyOptionalPatch 0825-phy-k1x-ci-otg-adjust-Makefile-order.patch
-ApplyOptionalPatch 0826-bluetooth-use-kernel-btrtl-for-8852bu-instead-of-rtk.patch
-ApplyOptionalPatch 0827-phy-spacemit-k1x-combphy-add-suspend-term-quirk.patch
-ApplyOptionalPatch 0828-k1x-adjust-crypto-alloc-buffer-and-set-mask-turns.patch
-ApplyOptionalPatch 0829-riscv-dts-spacemit-fix-PCIe-lane-number-for-deb1.patch
-ApplyOptionalPatch 0830-pinctrl-modify-some-pins-pull-configurations.patch
-ApplyOptionalPatch 0831-spacemit-rf-modify-default-value-of-poweron-delay.patch
-ApplyOptionalPatch 0832-k1-MUSE-Pi-update-sdio-tx-delaycode.patch
-ApplyOptionalPatch 0833-mmc-sdhci-of-k1x-fix-cpufreq-while-execute-sw-tuning.patch
-ApplyOptionalPatch 0834-m1-milkv-jupiter-specify-cpufreq-during-sdio-rx-tuni.patch
-ApplyOptionalPatch 0835-camera-move-spacemit-bifmode-enable-from-dtsi-to-dts.patch
-ApplyOptionalPatch 0836-MUSE-Paper-remove-hdmiaudio-support.patch
-ApplyOptionalPatch 0837-k1-MUSE-Pi-update-sdio-tx-delaycode-to-0x30.patch
-ApplyOptionalPatch 0838-uart0-dts-add-uart-controller-configuration-for-open.patch
-ApplyOptionalPatch 0839-k1-cpufreq-using-the-default-vf-table-of-we-did-not-.patch
-ApplyOptionalPatch 0840-k1x-adjust-buck4-ldo1-7-suspend-voltage-to-0V.patch
-ApplyOptionalPatch 0841-k1x-MINIPC-adjust-ldo1-to-always-on-for-secjtag-TRST.patch
-ApplyOptionalPatch 0842-uart-clean-debug-info.patch
-ApplyOptionalPatch 0843-jpu-clean-debug-info.patch
-ApplyOptionalPatch 0844-pcie-clean-debug-info.patch
-ApplyOptionalPatch 0845-sound-clean-debug-info.patch
-ApplyOptionalPatch 0846-k1x-fix-dldo1-always-on-to-aldo1-always-on.patch
-ApplyOptionalPatch 0847-change-error-to-warning-when-frequency-table-is-full.patch
-ApplyOptionalPatch 0848-Add-support-for-ICM42607-sensor.patch
-ApplyOptionalPatch 0849-camera-sync-code-from-linux-6.1.patch
-ApplyOptionalPatch 0850-k1-pm-domain-disable-wakeup5-by-default.patch
-ApplyOptionalPatch 0851-k1-pm-close-some-dcdc-ldo-to-optimize-sleep-power-co.patch
-ApplyOptionalPatch 0852-Linux-Open-jffs2-and-squash-support.patch
-ApplyOptionalPatch 0853-Linux-For-the-Power-button-shutdown-add-support-for-.patch
-ApplyOptionalPatch 0854-To-ensure-a-better-user-experience-set-the-battery-l.patch
-ApplyOptionalPatch 0855-To-add-hall-sensor-support-for-Muse-Paper-report-SW_.patch
-ApplyOptionalPatch 0856-k1-hotplug-close-the-SCMI-configuration.patch
-ApplyOptionalPatch 0857-pcie-supporting-PCIe-interface-power-management.patch
-ApplyOptionalPatch 0858-clock-add-rcpu-i2c-clock.patch
-ApplyOptionalPatch 0859-reset-add-rcpu-i2c-reset.patch
-ApplyOptionalPatch 0860-gmac-supporting-ptp-with-hardware-timestamp.patch
-ApplyOptionalPatch 0861-display-modify-panel-backlight-level.patch
-ApplyOptionalPatch 0862-display-add-panel-notifier-event-for-spacemit.patch
-ApplyOptionalPatch 0863-display-add-mipi-lcd-icnl9951r.patch
-ApplyOptionalPatch 0864-display-support-mipi-lcd-avee-and-avdd.patch
-ApplyOptionalPatch 0865-display-add-resume-and-suspend-for-lt9711-driver.patch
-ApplyOptionalPatch 0866-k1-cpufreq-Support-dynamic-switching-of-1.6G-and-1.8.patch
-ApplyOptionalPatch 0867-k1-pm-domain-improve-the-detach-operation-of-the-pow.patch
-ApplyOptionalPatch 0868-gmac-fixed-the-bug-that-Ethernet-phy-cannot-enter-lo.patch
-ApplyOptionalPatch 0869-k1x-add-MUSE-Paper-mini-4g-dts-support.patch
-ApplyOptionalPatch 0870-clock-fix-can-not-get-correct-rate-issue.patch
-ApplyOptionalPatch 0871-pcie-modify-the-phy-initialization-for-pcie-controll.patch
-ApplyOptionalPatch 0872-k1-x_MUSE-Book-not-reset-usb-during-suspend.patch
-ApplyOptionalPatch 0873-k1-MUSE-Paper-update-dts-enable-usb-and-wifi.patch
-ApplyOptionalPatch 0874-k1-MUSE-Paper-enable-uart2-for-bluetooth.patch
-ApplyOptionalPatch 0875-k1-MUSE-Paper-update-card-detection-logic.patch
-ApplyOptionalPatch 0876-ehci-k1x-ci-fix-multiple-instance-debugfs-conflict.patch
-ApplyOptionalPatch 0877-mingo-change-u3-role-switch-default-mode-to-host.patch
-ApplyOptionalPatch 0878-spi-nor-supporting-FM25Q64AI3-spi-nor-flash.patch
-ApplyOptionalPatch 0879-k1x-i2c1-i2c6-apply-for-the-same-pin-delete-i2c1.patch
-ApplyOptionalPatch 0880-k1x-fix-crypto-buffer-data-copy-method.patch
-ApplyOptionalPatch 0881-dts-adding-the-power-switch-of-wifi-and-bt-on-kx312.patch
-ApplyOptionalPatch 0882-dts-adding-the-power-switch-of-wifi-and-bt-on-MUSE-B.patch
-ApplyOptionalPatch 0883-this-is-not-pcie-patch-Revert-pcie-clean-debug-info.patch
-ApplyOptionalPatch 0884-pcie-clean-debug-info.patch
-ApplyOptionalPatch 0885-pcie-fix-the-bug-that-Samsung-nvme-ssd-link-establis.patch
-ApplyOptionalPatch 0886-k1x-disable-watchdog.patch
-ApplyOptionalPatch 0887-arch-riscv-boot-dts-Enable-MUSE-Book-eeprom-by-defau.patch
-ApplyOptionalPatch 0888-k1-x_lpi3a.dts-change-usb2.0otg-port-to-device-mode.patch
-ApplyOptionalPatch 0889-k1-x_lpi3a.dts-fix-no-interrupt-of-ctp.patch
-ApplyOptionalPatch 0890-k1_deconfig-add-i2c-gpio-expander-PCA953X-driver.patch
-ApplyOptionalPatch 0891-codec-add-es7210-driver.patch
-ApplyOptionalPatch 0892-codec-add-es8156-driver.patch
-ApplyOptionalPatch 0893-dts-fix-JD9365DA-10.1-inch-lcd-cann-t-display-for-lp.patch
-ApplyOptionalPatch 0894-as1911-change-file-mode-to-0644.patch
-ApplyOptionalPatch 0895-k1-pm-rproc-put-the-de-assert-of-rproc-s-clock-into-.patch
-ApplyOptionalPatch 0896-dtsi-k1-add-otg1-support-add-wakeup_reg-reg.patch
-ApplyOptionalPatch 0897-k1x_udc_core-fix-global-variable-and-extcon.patch
-ApplyOptionalPatch 0898-phy-k1x-ci-otg-refactor-otg-logic-to-support-more-us.patch
-ApplyOptionalPatch 0899-ehci-k1x-ci-fix-otg-suspend-resume-and-pm_runtime.patch
-ApplyOptionalPatch 0900-k1_defconfig-enable-otg-support.patch
-ApplyOptionalPatch 0901-k1-milkv-jupiter-update-sdio-tx-delaycode-to-0x30.patch
-ApplyOptionalPatch 0902-Linux-Add-a-virtual-charger-driver.This-resolves-the.patch
-ApplyOptionalPatch 0903-display-fix-the-issue-of-bootlogo-flashing-screen.patch
-ApplyOptionalPatch 0904-gmac-set-mac_managed_pm-to-true-to-fix-mdio-resume-w.patch
-ApplyOptionalPatch 0905-MUSE-N1-u3-set-the-default-mode-to-host-1.so-2.5G-et.patch
-ApplyOptionalPatch 0906-adma-fix-compile-warning.patch
-ApplyOptionalPatch 0907-k1x-flexcan-do-ram-init-by-iowrite32-instead-of-mems.patch
-ApplyOptionalPatch 0908-thermal-add-hwmon-sysfs-node-for-some-debug-tools.patch
-ApplyOptionalPatch 0909-thermal-fix-compile-error-because-of-sysfs-register-.patch
-ApplyOptionalPatch 0910-k1x-support-cw2015-driver.patch
-ApplyOptionalPatch 0911-defconfig-update-kernel-default-configuration.patch
-ApplyOptionalPatch 0912-clock-add-rcpu-ir-uart0-uart1-ssp-clocks.patch
-ApplyOptionalPatch 0913-reset-add-rcpu-ir-uart0-uart1-ssp-resets.patch
-ApplyOptionalPatch 0914-display-fix-compile-warning.patch
-ApplyOptionalPatch 0915-camera-fix-compile-warning.patch
-ApplyOptionalPatch 0916-crypto-fix-compile-warning.patch
-ApplyOptionalPatch 0917-vpu-fix-compile-warning.patch
-ApplyOptionalPatch 0918-reset-fix-compile-warning.patch
-ApplyOptionalPatch 0919-cpufreq-fix-compile-warning.patch
-ApplyOptionalPatch 0920-spi-fix-compile-warning.patch
-ApplyOptionalPatch 0921-usb-fix-compiler-warning.patch
-ApplyOptionalPatch 0922-clock-fix-compile-warning.patch
-ApplyOptionalPatch 0923-gmac-fix-compiler-warning.patch
-ApplyOptionalPatch 0924-codec-fix-compile-warning.patch
-ApplyOptionalPatch 0925-k1-muse_book-support-hall-to-wakeup-system.patch
-ApplyOptionalPatch 0926-usb-typec-husb239-support-hynetek-husb239.patch
-ApplyOptionalPatch 0927-k1-defconfig-support-husb239-typec-controller.patch
-ApplyOptionalPatch 0928-k1x-x60-can-and-rcpu-can-separate.patch
-ApplyOptionalPatch 0929-k1-MUSE-Paper-support-husb239-typec-controller.patch
-ApplyOptionalPatch 0930-ai-fix-error-in-bind-ai-task-to-ai-core.patch
-ApplyOptionalPatch 0931-phy-k1x-ci-usb2-add-set_suspend-op.patch
-ApplyOptionalPatch 0932-phy-k1x-ci-otg-set-role-to-default-role-in-probe.patch
-ApplyOptionalPatch 0933-k1-x_MUSE-Pi-enable-otg1-and-set-dwc3-to-drd-mode.patch
-ApplyOptionalPatch 0934-k1-x_MUSE-Book-enable-otg-for-usb0.patch
-ApplyOptionalPatch 0935-k1x-support-rcpu-uart1-function-through-x60.patch
-ApplyOptionalPatch 0936-k1-i2c-support-i2c-driver-of-rcpu-domain.patch
-ApplyOptionalPatch 0937-spacemit_onboard_hub-add-pm-domain-support.patch
-ApplyOptionalPatch 0938-dwc3-spacemit-add-pm-domain-support.patch
-ApplyOptionalPatch 0939-dtsi-k1-update-usb-power-domain-settings.patch
-ApplyOptionalPatch 0940-display-fix-the-issue-while-the-i2c-communication-is.patch
-ApplyOptionalPatch 0941-insmod-simplify-section-header-process-for-optimize-.patch
-ApplyOptionalPatch 0942-k1-pinctrl-we-d-better-clean-the-edge-detect-pending.patch
-ApplyOptionalPatch 0943-k1x-i2c-add-one-callback-of-power-off.patch
-ApplyOptionalPatch 0944-k1-x_MUSE-Paper-mini-4g-camera-verify-ok.patch
-ApplyOptionalPatch 0945-display-add-mipi-lcd-jd9365dah3.patch
-ApplyOptionalPatch 0946-display-add-hdmi-notifier-event-for-spacemit.patch
-ApplyOptionalPatch 0947-k1-power-key-don-t-report-the-event-of-power-key-whe.patch
-ApplyOptionalPatch 0948-k1-MUSE-Paper-mini-4g-update-dts-enable-typec-and-wi.patch
-ApplyOptionalPatch 0949-usb-typec-husb239-fix-possible-NULL-pointer-derefere.patch
-ApplyOptionalPatch 0950-k1-serial-register-freeze-restore-callback-for-hiber.patch
-ApplyOptionalPatch 0951-MUSE-Paper-mini-4g-enable-codec-snd-card-support.patch
-ApplyOptionalPatch 0952-clear-some-boot-error-without-including-these-dtsi.patch
-ApplyOptionalPatch 0953-pcie-Add-request-operation-before-gpio-operation.patch
-ApplyOptionalPatch 0954-k1x-flexcan-fix-clock-frequency-config-and-clk-set.patch
-ApplyOptionalPatch 0955-arch-riscv-configs-Update-k1_defconfig.patch
-ApplyOptionalPatch 0956-k1x-support-rcpu-ir.patch
-ApplyOptionalPatch 0957-asix_usb-fix-netdev-dev_addr_shadow-not-set.patch
-ApplyOptionalPatch 0958-k1-MUSE-Paper-mini-4g-update-modules_usrload.patch
-ApplyOptionalPatch 0959-mmc-sdhci-of-k1x-use-remove_new-instead-of-remove.patch
-ApplyOptionalPatch 0960-phy-k1x-ci-otg-fix-shared-reset-assert-warning.patch
-ApplyOptionalPatch 0961-spacemit-rf-introduce-spacemit-rfkill-driver.patch
-ApplyOptionalPatch 0962-k1-x_MUSE-Paper-mini-4g-add-4g-module-support.patch
-ApplyOptionalPatch 0963-pcie-Set-the-vendor-id-and-device-id-of-k1x-pcie-rc.patch
-ApplyOptionalPatch 0964-qmi_wwan_f-add-fibocom-qmi-modem-driver.patch
-ApplyOptionalPatch 0965-k1_defconfig-enable-qmi_wwan_f-as-module.patch
-ApplyOptionalPatch 0966-defconfig-enable-CONFIG_MTD_CMDLINE_PARTS.patch
-ApplyOptionalPatch 0967-k1x-turn-on-ir-spacemit-defconfig.patch
-ApplyOptionalPatch 0968-sbs-charger-change-file-mode-0755-0644.patch
-ApplyOptionalPatch 0969-k1-cpufreq-using-on-v-f-table-to-support-k1-m1-chip.patch
-ApplyOptionalPatch 0970-k1-cpufreq-delete-the-boost-related-node-for-k1.patch
-ApplyOptionalPatch 0971-k1-thermal-using-one-thermal-table-for-both-m1-k1.patch
-ApplyOptionalPatch 0972-k1_defconfig-add-USB-Audio-UAC-devices-support.patch
-ApplyOptionalPatch 0973-k1-alsa-alsa-driver-adds-audio-data-dump.patch
-ApplyOptionalPatch 0974-spacemit_onboard_hub-fix-Kconfig-dependancy.patch
-ApplyOptionalPatch 0975-gpu-Fix-building-error-with-FORTIFY_SOURCE-enabled.patch
-ApplyOptionalPatch 0976-k1-thermal-fix-the-issue-where-the-frequency-cannot-.patch
-ApplyOptionalPatch 0977-pcie-print-MSIX_AFIFO_FULL-information-once.patch
-ApplyOptionalPatch 0978-deconfig-enable-spinlock_debug.patch
-ApplyOptionalPatch 0979-MUSE-Paper-mini-support-battery-profile.patch
-ApplyOptionalPatch 0980-MUSE-Paper-mini-support-some-sensor.patch
-ApplyOptionalPatch 0981-k1x_udc_core-fix-missing-STATUS-IN-in-control-out-tr.patch
-ApplyOptionalPatch 0982-k1x_udc_core-fix-enable-after-disable-may-fail.patch
-ApplyOptionalPatch 0983-k1x_udc_core-fix-high-bandwidth-isoc-endpoint-transf.patch
-ApplyOptionalPatch 0984-k1x_udc_core-cleanup-info-print.patch
-ApplyOptionalPatch 0985-usb-typec-husb239-support-mic-switch.patch
-ApplyOptionalPatch 0986-usb-typec-husb239-update-pd-contract.patch
-ApplyOptionalPatch 0987-display-reduce-panel-lt8911exb-resume-time.patch
-ApplyOptionalPatch 0988-lpi3a-add-aic8800-wifi-support.patch
-ApplyOptionalPatch 0989-camera-fix-unknown-type-compile-error-and-comment-sl.patch
-ApplyOptionalPatch 0990-spacemit-rf-use-gpiod_set_value_cansleep-instead-of-.patch
-ApplyOptionalPatch 0991-display-fix-the-issue-of-bootlogo-flashing-screen.patch
-ApplyOptionalPatch 0992-k1-pm_domain-lcd-don-t-open-the-power-switch-again-i.patch
-ApplyOptionalPatch 0993-camera-perfect-open-close-node-in-pinmulti-mode.patch
-ApplyOptionalPatch 0994-k1-update-sd-sdio-tx-delaycode.patch
-ApplyOptionalPatch 0995-usb-f_uvc-use-GFP_DMA32-for-vb2_queue-at-spacemit-k1.patch
-ApplyOptionalPatch 0996-k1x-adc-p1-supprt-adc-driver-for-k1x.patch
-ApplyOptionalPatch 0997-display-add-plane-cursor-type-and-support-crop.patch
-ApplyOptionalPatch 0998-add-baton-camera-solution.patch
-ApplyOptionalPatch 0999-dts-add-k1-x_FusionOne-for-eli-NAS.patch
-ApplyOptionalPatch 1000-k1-suspend-skip-system-sync-in-kernel.patch
-ApplyOptionalPatch 1001-k1x-support-touchscreen-chipone-tddi.patch
-ApplyOptionalPatch 1002-k1x-support-sgm41515-charger-driver.patch
-ApplyOptionalPatch 1003-k1-reboot-add-a-flag-indicating-whether-to-shutdown-.patch
-ApplyOptionalPatch 1004-MUSE-Paper-support-volume-up-dowm-key-event.patch
-ApplyOptionalPatch 1005-hung-task-set-hung-timeout-120s.patch
-ApplyOptionalPatch 1006-add-new-pinctrl-node-for-FusionOne-to-support-wifi-s.patch
-ApplyOptionalPatch 1007-soc-support-notifier-among-modules.patch
-ApplyOptionalPatch 1008-usb-typec-husb239-add-notifier-event-for-typec-heads.patch
-ApplyOptionalPatch 1009-cpuidle-delete-the-dts-node-for-cpuidle.patch
-ApplyOptionalPatch 1010-clock-add-dpll-and-ddr-clocks.patch
-ApplyOptionalPatch 1011-usb-typec-husb239-add-vdd-supply-and-usb2-switch.patch
-ApplyOptionalPatch 1012-mmc-sdhci-of-k1x-avoid-recovery-sdr104-while-dts-dis.patch
-ApplyOptionalPatch 1013-enable-typec-for-FusionOne.patch
-ApplyOptionalPatch 1014-muse-paper-sync-camera-draw-dts-configuration.patch
-ApplyOptionalPatch 1015-k1-dts-add-all-disabled-usb-nodes.patch
-ApplyOptionalPatch 1016-blk-add-request-completion-flags-for-debug.patch
-ApplyOptionalPatch 1017-deconfig-enable-CONFIG_LOCKDEP-for-debug.patch
-ApplyOptionalPatch 1018-display-fix-the-issue-of-trace-during-system-sleep-a.patch
-ApplyOptionalPatch 1019-sound-support-build-module.patch
-ApplyOptionalPatch 1020-defconfig-add-audio-config.patch
-ApplyOptionalPatch 1021-Bluetooth-btrtl-fix-oops-in-btrtl_vendor_read_reg16.patch
-ApplyOptionalPatch 1022-k1-pm_domain-fix-bug-when-device-detach-from-pm-doma.patch
-ApplyOptionalPatch 1023-serial-fix-lockdep_assert-warning.patch
-ApplyOptionalPatch 1024-nvme-expose-allocation-or-mapping-failure-reports.patch
-ApplyOptionalPatch 1025-Fix-dma_buf-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1026-camera-Fix-dma_buf-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1027-vpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1028-jpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1029-v2d-fix-dmabuf-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1030-display-modify-the-initcall-sequence-of-the-hdmi-dri.patch
-ApplyOptionalPatch 1031-dts-modify-hdmiaudio-config.patch
-ApplyOptionalPatch 1032-sound-change-from-late_initcall_sync-to-late_initcal.patch
-ApplyOptionalPatch 1033-hdmiaudio-support-hot-plug.patch
-ApplyOptionalPatch 1034-display-adjust-resolution-to-60Hz.patch
-ApplyOptionalPatch 1035-ir-fix-global-out-of-bounds-when-KASAN-enable.patch
-ApplyOptionalPatch 1036-k1x-chipone-tddi-reduce-init-log-level.patch
-ApplyOptionalPatch 1037-disable-the-function-that-auto-switch-usb-mode-at-Fu.patch
-ApplyOptionalPatch 1038-dts-add-orangepi-rv2-solution.patch
-ApplyOptionalPatch 1039-orangepi-rv2-add-usb-ctl-adaptation.patch
-ApplyOptionalPatch 1040-k1-hall-support-separating-wake-up-interrupts-from-n.patch
-ApplyOptionalPatch 1041-k1-pwr-key-support-wakeup-count.patch
-ApplyOptionalPatch 1042-k1x-fix-xts-aes-key2-error.patch
-ApplyOptionalPatch 1043-mmc-sdhci-of-k1x-support-MMC1-debug-as-uart0.patch
-ApplyOptionalPatch 1044-k1-MUSE-Paper-add-SD-debug-pinctrl.patch
-ApplyOptionalPatch 1045-stacktrace-delect-KASAN-warning.patch
-ApplyOptionalPatch 1046-gpu-fix-slab-use-after-free-err.patch
-ApplyOptionalPatch 1047-k1x-support-ddr-bandwidth-tool-driver.patch
-ApplyOptionalPatch 1048-dts-MUSE-Pi-remove-cd-inverted-of-sdhci0.patch
-ApplyOptionalPatch 1049-k1x-clean-uart-useless-info.patch
-ApplyOptionalPatch 1050-add-ili9881c-mipi-to-orangepi-rv2.patch
-ApplyOptionalPatch 1051-camera-verify-camera-success.patch
-ApplyOptionalPatch 1052-orangepi-rv2-add-es8323-config-and-modify-sound-code.patch
-ApplyOptionalPatch 1053-defconfig-support-codec-es8323.patch
-ApplyOptionalPatch 1054-usb-typec-husb239-enable-Try.SNK-mechanism.patch
-ApplyOptionalPatch 1055-display-fix-mmu-configuration-error-while-tbu-id-is-.patch
-ApplyOptionalPatch 1056-k1x-stop-watchdog-before-the-system-suspend-and-reco.patch
-ApplyOptionalPatch 1057-k1x-remove-cw2015-useless-info.patch
-ApplyOptionalPatch 1058-k1-MUSE-Paper-fix-the-mistake-about-sd-sdio-tx-delay.patch
-ApplyOptionalPatch 1059-camera-sync-V5.7-code-and-verify-single_online_test.patch
-ApplyOptionalPatch 1060-k1x-update-MUSE-Paper-cw2015-profile.patch
-ApplyOptionalPatch 1061-k1x-add-ZT001H-dts-support.patch
-ApplyOptionalPatch 1062-vpu-Fix-circular-lock-warning-with-enabled-lockdep.patch
-ApplyOptionalPatch 1063-vpu-Fix-amvx-build-error-when-building-amvx-as-modul.patch
-ApplyOptionalPatch 1064-k1-add-fanghang-k1-x_uav-dts.patch
-ApplyOptionalPatch 1065-riscv-Flush-the-icache-of-all-cores-related-to-the-c.patch
-ApplyOptionalPatch 1066-clock-reset-add-rcpu-pwm-clocks-and-resets.patch
-ApplyOptionalPatch 1067-k1x-1.fix-gpio74-function2-pwm9-rpwm9-2.add-rpwm0-9-.patch
-ApplyOptionalPatch 1068-dts-modify-the-address-space-allocation-of-pcie2_rc.patch
-ApplyOptionalPatch 1069-PCI-Add-arch_can_pci_mmap_wc-macro-on-spacemit-k1-so.patch
-ApplyOptionalPatch 1070-k1x-support-chsc5xxx-touchpad-driver.patch
-ApplyOptionalPatch 1071-k1x-MUSE-Paper-mini-4g-support-charger.patch
-ApplyOptionalPatch 1072-k1-x_uav-camera-verify-imx415-okay.patch
-ApplyOptionalPatch 1073-defconfig-add-real-time-linux-defconfig.patch
-ApplyOptionalPatch 1074-k1_uav-enable-uart-ports.patch
-ApplyOptionalPatch 1075-drm-radeon-mask-MSI-on-K1x.patch
-ApplyOptionalPatch 1076-radeon-amdgpu-force-32-bit-dma.patch
-ApplyOptionalPatch 1077-Radeon-modify-cached-mapping-to-writecombine.patch
-ApplyOptionalPatch 1078-k1-add-radeon-module-in-k1_defconfig.patch
-ApplyOptionalPatch 1079-camera-Fix-isp-and-cpp-build-error-when-building-the.patch
-ApplyOptionalPatch 1080-defconfig-disable-LOCKDEP-config.patch
-ApplyOptionalPatch 1081-rt-defconfig-config-CONFIG_PREEMPT_RT.patch
-ApplyOptionalPatch 1082-mmc-sdhci-of-k1x-fix-bug-about-get-invalid-cpufreq_p.patch
-ApplyOptionalPatch 1083-dts-update-k1-x_uav-disabled-some-no-used-moduels-fi.patch
-ApplyOptionalPatch 1084-k1-support-decompression-of-zstd-format-file.patch
-ApplyOptionalPatch 1085-1.add-clk-reset-to-i2c3-2.enable-rpwm9.patch
-ApplyOptionalPatch 1086-cpuinfo-add-uarch-information.patch
-ApplyOptionalPatch 1087-k1x-clear-charger-useless-info.patch
-ApplyOptionalPatch 1088-es8326-support-headphone-notifier-call-chain.patch
-ApplyOptionalPatch 1089-es8326-fix-es8326-no-sound-due-to-data-length-settin.patch
-ApplyOptionalPatch 1090-es8326-fix-no-sound-issue-after-suspend-resume.patch
-ApplyOptionalPatch 1091-es8326-cleanup-unused-code.patch
-ApplyOptionalPatch 1092-es8326-reset-jack-status-when-suspend.patch
-ApplyOptionalPatch 1093-riscv-rwonce-add-__READ_ONCE-implementation-for-risc.patch
-ApplyOptionalPatch 1094-riscv-spackemit-add-of-node-get-for-process-cpuinfo-.patch
-ApplyOptionalPatch 1095-sound-adapt-linux-kernel-new-vision.patch
-ApplyOptionalPatch 1096-usb-phy-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1097-usb-dwc3-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1098-usb-udc-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1099-usb-host-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1100-usb-misc-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1101-spi-spacemit-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1102-qspi-spacemit-modify-prototype-of-device-remove-func.patch
-ApplyOptionalPatch 1103-crypto-spacemit-replace-strlcpy-with-strscpy.patch
-ApplyOptionalPatch 1104-dma-spacemit-adma-modify-prototype-of-device-remove-.patch
-ApplyOptionalPatch 1105-dma-spacemit-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1106-spacemit-v2d-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1107-soc-spacemit-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1108-soc-spacemit-pm-fix-error-when-save-context-for-lowp.patch
-ApplyOptionalPatch 1109-spacemit-jpu-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1110-spacemit-ddrbw-clear-compile-warnings.patch
-ApplyOptionalPatch 1111-remoteproc-spacemit-modify-prototype-of-device-remov.patch
-ApplyOptionalPatch 1112-i2c-k1x-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1113-plic-fix-error-on-some-offset-macro-definition.patch
-ApplyOptionalPatch 1114-mailbox-spacemit-modify-prototype-of-device-remove-f.patch
-ApplyOptionalPatch 1115-extcon-k1x-modify-prototype-of-device-remove-functio.patch
-ApplyOptionalPatch 1116-camera-spacemit-modify-prototype-of-device-remove-fu.patch
-ApplyOptionalPatch 1117-vpu-spacemit-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1118-ir-spacemit-modify-prototype-of-device-remove-functi.patch
-ApplyOptionalPatch 1119-wdt-k1x-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1120-thermal-k1x-modify-prototype-of-device-remove-functi.patch
-ApplyOptionalPatch 1121-phy-combphy-clean-compile-warning-because-of-prototy.patch
-ApplyOptionalPatch 1122-pxa-k1x-adapt-to-linux-kernel-new-version.patch
-ApplyOptionalPatch 1123-power-supply-sbs-modify-prototype-of-device-remove-f.patch
-ApplyOptionalPatch 1124-pcie-k1x-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1125-nvme-remove-segment-buffer-size-limit.patch
-ApplyOptionalPatch 1126-tcm-spacemit-modify-prototype-of-device-remove-funct.patch
-ApplyOptionalPatch 1127-flexcan-fix-error-in-flexcan-core-probe-function.patch
-ApplyOptionalPatch 1128-emac-k1x-fix-compile-warning-on-function-prototype.patch
-ApplyOptionalPatch 1129-stmmac-modify-prototype-of-device-remove-function.patch
-ApplyOptionalPatch 1130-ax88179a-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1131-usb-qmi_wwan_f-replace-strlcpy-by-strscpy.patch
-ApplyOptionalPatch 1132-spi-nor-porting-fmsh-device-driver-to-linux-6.12.patch
-ApplyOptionalPatch 1133-drm-spacemit-porting-drm-driver-to-linux-6.12.patch
-ApplyOptionalPatch 1134-gpio-k1x-porting-gpio-driver-to-linux-6.12.patch
-ApplyOptionalPatch 1135-build-disable-character-output-display-during-the-ke.patch
-ApplyOptionalPatch 1136-riscv-restore-vmlinux-target-building-command.patch
-ApplyOptionalPatch 1137-wireless-rtl8852be-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1138-wireless-rtl8852bs-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1139-defconfig-disable-some-modules-which-not-ready.patch
-ApplyOptionalPatch 1140-k1-mainline-update-head-files-for-compile-errors.patch
-ApplyOptionalPatch 1141-k1-mainline-defconfig-enable-spacemit-ir-driver.patch
-ApplyOptionalPatch 1142-k1-mainline-defconfig-enable-codec-es8326-support.patch
-ApplyOptionalPatch 1143-k1-mainline-es8326-fix-es8326-compile-and-work-issue.patch
-ApplyOptionalPatch 1144-k1-regulator-enable-the-driver-of-regulator.patch
-ApplyOptionalPatch 1145-display-resolve-the-issue-of-no-display-on-HDMI.patch
-ApplyOptionalPatch 1146-i2c-spacemit-k1-fix-strcpy-func-in-i2c-driver.patch
-ApplyOptionalPatch 1147-riscv-k1-defconfig-support-i2c-driver.patch
-ApplyOptionalPatch 1148-plic-spacemit-k1-declare-irqchip-of-plic-riscv0.patch
-ApplyOptionalPatch 1149-watchdog-spacemit-k1-fix-suspend-enable-judge.patch
-ApplyOptionalPatch 1150-gpu-upgrade-to-24.2.patch
-ApplyOptionalPatch 1151-gpu-img-rogue-add-judgment-of-linux-version-and-keep.patch
-ApplyOptionalPatch 1152-gpu-make-sure-gpu-probe-before-display.patch
-ApplyOptionalPatch 1153-drm-img-rogue-porting-gpu-driver-to-linux-6.12.patch
-ApplyOptionalPatch 1154-gpu-img-rogue-update-to-linux-6.12-fix-pvr_drm_fops.patch
-ApplyOptionalPatch 1155-soc-spacemit-add-prototype-define-for-multi-modules.patch
-ApplyOptionalPatch 1156-clk-spacemit-clean-compile-warnings.patch
-ApplyOptionalPatch 1157-pinctrl-spacemit-p1-support-pmic-pins.patch
-ApplyOptionalPatch 1158-spi-k1-spi-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1159-spi-k1-qspi-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1160-dwc3-spacemit-fix-compile-warning.patch
-ApplyOptionalPatch 1161-usb-gadget-fix-compile-warning.patch
-ApplyOptionalPatch 1162-usb-xhci-hub-fix-compile-warnings.patch
-ApplyOptionalPatch 1163-wdt-k1-fix-compile-warning.patch
-ApplyOptionalPatch 1164-wireless-rtl8852bs-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1165-cpufreq-k1-fix-compile-warning.patch
-ApplyOptionalPatch 1166-crypto-k1-fix-compile-warning.patch
-ApplyOptionalPatch 1167-usbnet-fix-compile-warning.patch
-ApplyOptionalPatch 1168-mmc-k1x-fix-compile-warning.patch
-ApplyOptionalPatch 1169-v2d-spacemit-fix-compile-warning.patch
-ApplyOptionalPatch 1170-power-sgm4154x-reshape-file-style.patch
-ApplyOptionalPatch 1171-media-k1x-vpu-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1172-media-k1x-camera-porting-to-linux-6.12.patch
-ApplyOptionalPatch 1173-drm-k1x-fix-compile-warning.patch
-ApplyOptionalPatch 1174-drm-k1x-gpu-fix-compile-warning.patch
-ApplyOptionalPatch 1175-riscv-k1-kconfig-update-kernel-configuration.patch
-ApplyOptionalPatch 1176-media-k1-vpu-fix-error-on-MODULE_IMPORT_NS-using.patch
-ApplyOptionalPatch 1177-mmc-k1-fix-error-of-driver.remove.patch
-ApplyOptionalPatch 1178-soc-spacemit-v2d-fix-error-on-MODULE_IMPORT_NS-using.patch
-ApplyOptionalPatch 1179-usb-spacemit-k1-fix-compile-error.patch
-ApplyOptionalPatch 1180-sound-k1-fix-compile-error.patch
-ApplyOptionalPatch 1181-opp-k1-fix-compile-error.patch
-ApplyOptionalPatch 1182-can-k1-flexcan-fix-error-on-driver.remove.patch
-ApplyOptionalPatch 1183-wireless-rtl8852bs-porting-to-linux-6.13.patch
-ApplyOptionalPatch 1184-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
-ApplyOptionalPatch 1185-drm-spacemit-porting-to-linux-6.13.patch
-ApplyOptionalPatch 1186-camera-fix-compilation-problems-and-run-imx415-in-de.patch
-ApplyOptionalPatch 1187-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
-ApplyOptionalPatch 1188-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
-ApplyOptionalPatch 1189-thermal-k1-Correct-a-typo-in-the-code.patch
-ApplyOptionalPatch 1190-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
-ApplyOptionalPatch 1191-media-k1-camera-fix-some-compile-warnings.patch
-ApplyOptionalPatch 1192-riscv-k1-dts-remove-some-reserved-memory-region.patch
-ApplyOptionalPatch 1193-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
-ApplyOptionalPatch 1194-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
-ApplyOptionalPatch 1195-fix-module-dma_buf-ns.patch
-ApplyOptionalPatch 1196-fix-wrong-style-comments.patch
-ApplyOptionalPatch 1197-Remove-depends-so-PWM_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1198-remove-trace_printk.patch
-ApplyOptionalPatch 1199-remove-unused-var.patch
-ApplyOptionalPatch 1200-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
-ApplyOptionalPatch 1201-fix-includes-for-timestamp.patch
-ApplyOptionalPatch 1202-remove-debug-rdinit-from-m1-bpi.patch
-ApplyOptionalPatch 1203-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
-ApplyOptionalPatch 1204-Add-bit-brick-k1-devicetree-from-bianbu.patch
-ApplyOptionalPatch 1205-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
-ApplyOptionalPatch 1206-6.15-fixes.patch
-ApplyOptionalPatch 1207-Add-distinct-compatibles-for-boards-currently-used-f.patch
-ApplyOptionalPatch 1208-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
-ApplyOptionalPatch 1209-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
-ApplyOptionalPatch 1210-RTL8852-6.15-fixes.patch
-ApplyOptionalPatch 1211-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
+ApplyOptionalPatch 0597-clean-compile-warning.patch
+ApplyOptionalPatch 0598-clean-compile-warning.patch
+ApplyOptionalPatch 0599-clear-compile-warning.patch
+ApplyOptionalPatch 0600-usb-ehci-k1x-ci-support-power-management.patch
+ApplyOptionalPatch 0601-usb-spacemit_onboard_hub-support-power-management.patch
+ApplyOptionalPatch 0602-display-Fix-the-issue-caused-by-alloc-pages-failed.patch
+ApplyOptionalPatch 0603-support-2lane-camera-to-draw-when-okay-frontsensor-n.patch
+ApplyOptionalPatch 0604-k1-add-kernel-dts-config-for-MUSE-Pi.patch
+ApplyOptionalPatch 0605-k1-rproc-fix-bug-in-system-shutdown-process.patch
+ApplyOptionalPatch 0606-spi-fix-the-bug-of-accessing-illegal-pointers-when-t.patch
+ApplyOptionalPatch 0607-clock-add-rcpu-can-clock.patch
+ApplyOptionalPatch 0608-reset-add-rcpu-can-reset.patch
+ApplyOptionalPatch 0609-k1-MUSE-Pi-update-card-detection-logic.patch
+ApplyOptionalPatch 0610-spi-adding-the-device-node-of-spi2-controller.patch
+ApplyOptionalPatch 0611-aud-fix-codec-persistent-noise-issue-when-switch-hdm.patch
+ApplyOptionalPatch 0612-v2d-fix-set-clock-rate-timeout.patch
+ApplyOptionalPatch 0613-display-fix-hdmi-compatibility-issues.patch
+ApplyOptionalPatch 0614-Move-GPU-alloc-page-from-DMA32-to-Normal-zone.patch
+ApplyOptionalPatch 0615-k1-pull-up-gpio70-71-for-SATA.patch
+ApplyOptionalPatch 0616-k1x-uart-check-uart-dma-function-before-release-uart.patch
+ApplyOptionalPatch 0617-nvme-change-the-segment-size-of-io-request-queue-for.patch
+ApplyOptionalPatch 0618-wirless-don-t-show-error-when-load-regulatory.db-fai.patch
+ApplyOptionalPatch 0619-clock-add-rcpu2-pwm-clock.patch
+ApplyOptionalPatch 0620-display-fix-dpu-under-run-issues.patch
+ApplyOptionalPatch 0621-reset-add-rcpu2-pwm-reset.patch
+ApplyOptionalPatch 0622-i2s-change-log-level.patch
+ApplyOptionalPatch 0623-display-clear-dpu-irq-and-status-after-bootlogo.patch
+ApplyOptionalPatch 0624-k1x-support-x60-operate-can-controller-in-rcpu.patch
+ApplyOptionalPatch 0625-k1x-deb1-support-rpwm2-for-fan.patch
+ApplyOptionalPatch 0626-dtb-k1-x_MUSE-N1-set-otg-mode-for-dwc3.patch
+ApplyOptionalPatch 0627-1.increase-command-line-buffer-size-to-2KB.patch
+ApplyOptionalPatch 0628-k1x-uart3-fix-compatible-error-in-dts.patch
+ApplyOptionalPatch 0629-k1x-wdt-adjust-reboot-handler-timeout.patch
+ApplyOptionalPatch 0630-display-add-drm-resume-and-suspend.patch
+ApplyOptionalPatch 0631-riscv-dts-correct-isa-string-for-Spacemit-K1.patch
+ApplyOptionalPatch 0632-pcie-modify-suspend_noirq-and-resume_noirq-of-k1-pci.patch
+ApplyOptionalPatch 0633-k1x-rtc-fix-the-issue-of-probabilistic-failure-on-se.patch
+ApplyOptionalPatch 0634-dtb-k1-x-update-quirks-for-usbdrd3.patch
+ApplyOptionalPatch 0635-k1-rtc-fix-stack-out-of-bounds-when-open-KASAN.patch
+ApplyOptionalPatch 0636-camera-switch-unknow-ioctl-print-level-to-warning.patch
+ApplyOptionalPatch 0637-Linux-Integrate-Battery-Driver.patch
+ApplyOptionalPatch 0638-USB-xhci-plat-fix-legacy-PHY-double-init.patch
+ApplyOptionalPatch 0639-display-add-hdmi-resume-and-suspend.patch
+ApplyOptionalPatch 0640-display-fix-hdmi-compatibility-issues.patch
+ApplyOptionalPatch 0641-1.change-license-statement-to-GPL-2.0-WITH-Linux-sys.patch
+ApplyOptionalPatch 0642-usb-k1x_udc_core-remove-req-from-queue-even-it-s-alr.patch
+ApplyOptionalPatch 0643-display-fix-build-warning.patch
+ApplyOptionalPatch 0644-display-fix-hdmi-compatibility-issues.patch
+ApplyOptionalPatch 0645-pcie-fix-the-compiler-warning.patch
+ApplyOptionalPatch 0646-aud-fix-hdmi-sound-card-create-fail-issue.patch
+ApplyOptionalPatch 0647-MUSE-N1-pull-down-GPIO-118-and-119-default-for-toggl.patch
+ApplyOptionalPatch 0648-add-reboot-mode-select-support-while-P1-reset-will-p.patch
+ApplyOptionalPatch 0649-aud-fix-global-out-of-bounds-when-open-KASAN.patch
+ApplyOptionalPatch 0650-k1x_MUSE-Pi-add-spi3-pinctrl-config.patch
+ApplyOptionalPatch 0651-qspi-fix-the-bug-the-actual-clk-frequency-not-equal-.patch
+ApplyOptionalPatch 0652-clock-remove-qspi_clk-fc-bit-setting.patch
+ApplyOptionalPatch 0653-rtc-fix-read-rtc-error-when-the-registers-of-pmic-ar.patch
+ApplyOptionalPatch 0654-k1-dts-rproc-delete-the-dma-range-property-which-wil.patch
+ApplyOptionalPatch 0655-pcie-modify-the-enable-phy-function-for-pcie-resume.patch
+ApplyOptionalPatch 0656-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timeout.patch
+ApplyOptionalPatch 0657-k1-rproc-increase-initialization-level-of-rproc-driv.patch
+ApplyOptionalPatch 0658-pcie-supporting-the-link-enters-l2-state-when-suspen.patch
+ApplyOptionalPatch 0659-pcie-Add-a-timeout-to-do-while-to-prevent-an-infinit.patch
+ApplyOptionalPatch 0660-Linux-Separate-the-I2C-configuration-between-the-boa.patch
+ApplyOptionalPatch 0661-dts-enable-hdmi-sound-card-for-deb2-MINI-PC.patch
+ApplyOptionalPatch 0662-k1x-dma-fix-dma-tasklet-schedule-bug.patch
+ApplyOptionalPatch 0663-Linux-The-integration-of-the-laptop-lid-switch-drive.patch
+ApplyOptionalPatch 0664-display-fix-dpu-resume-and-suspend-issues.patch
+ApplyOptionalPatch 0665-1.change-kernel-entry-addr-to-0x20_0000.patch
+ApplyOptionalPatch 0666-audio-remove-SNDRV_PCM_INFO_PAUSE-support.patch
+ApplyOptionalPatch 0667-k1-wireless-disable-power-always-on.patch
+ApplyOptionalPatch 0668-display-modify-lcd-gx09inx101-pixel-clock.patch
+ApplyOptionalPatch 0669-gpu-fix-failed-to-import-external-image-from-highmem.patch
+ApplyOptionalPatch 0670-net-usb-add-asix-usb-nic-driver-ver-v3.1.0.patch
+ApplyOptionalPatch 0671-k1-usb-enable-parkmode_disable_ss_quirk-on-DWC3-cont.patch
+ApplyOptionalPatch 0672-k1-usb-update-quirks-for-usbdrd3-in-k1-x_MINI-PC.patch
+ApplyOptionalPatch 0673-k1-use-ax_usb_nic-instead-of-ax88179_178a.patch
+ApplyOptionalPatch 0674-k1-modify-sdio-rx-dline-configuration.patch
+ApplyOptionalPatch 0675-audio-fix-hdmiaudio-can-not-playback-after-suspend-r.patch
+ApplyOptionalPatch 0676-asix_usb-fix-compile-error.patch
+ApplyOptionalPatch 0677-do_trap_insn_illegal-bind-ai-cores-when-use-ai-instr.patch
+ApplyOptionalPatch 0678-k1-sync-k1-dtsi-from-linux6.1-dts.patch
+ApplyOptionalPatch 0679-k1-cpu-fix-compilation-errs.patch
+ApplyOptionalPatch 0680-k1-ccu-add-determine_rate-func.patch
+ApplyOptionalPatch 0681-k1-gt9xx-delete-i2c_device_id-args.patch
+ApplyOptionalPatch 0682-k1-camera-adjust-class_create.patch
+ApplyOptionalPatch 0683-k1-pmic-delect-i2c_device_id-agrs.patch
+ApplyOptionalPatch 0684-k1-dma-adjust-vm_flags_set-and-class_create-func.patch
+ApplyOptionalPatch 0685-k1-gpio-adjust-struct-gpio_chip.fwnode.patch
+ApplyOptionalPatch 0686-k1-usb-goto-valid-identifier.patch
+ApplyOptionalPatch 0687-k1-update-k1_defconfig-to-linux-6.6-bringup.patch
+ApplyOptionalPatch 0688-emac-change-the-function-of-adjusting-hardware-time-.patch
+ApplyOptionalPatch 0689-display-update-config-for-hdmi-compatibility.patch
+ApplyOptionalPatch 0690-display-drm-alloc-pages-from-highuser-zone.patch
+ApplyOptionalPatch 0691-usb-xhci-plat-read-reset-on-resume-from-device-prope.patch
+ApplyOptionalPatch 0692-usb-ehci-k1x-ci-support-reset-on-resume.patch
+ApplyOptionalPatch 0693-usb-dwc3-spacemit-add-reset-operation-at-standby-set.patch
+ApplyOptionalPatch 0694-k1-i2c-fix-i2c-irq-mask-when-i2c-transfer-timout.patch
+ApplyOptionalPatch 0695-k1-udma-add-pte_unmap-to-avoid-sleeping-function-cal.patch
+ApplyOptionalPatch 0696-k1-deassert-rpwm-reset-in-resume-ops.patch
+ApplyOptionalPatch 0697-pcie-change-the-dependence-of-PCI_K1X_HOST-to-PCI_MS.patch
+ApplyOptionalPatch 0698-k1-rproc-enable-rproc-module-to-avoid-bus-hangs-dead.patch
+ApplyOptionalPatch 0699-k1-vpu-fix-clk-warning-when-kernel-boot.patch
+ApplyOptionalPatch 0700-k1-jpu-fix-compile-error-on-6.6.patch
+ApplyOptionalPatch 0701-k1-jpu-enable-jpu.patch
+ApplyOptionalPatch 0702-es8326-support-hp-mic-detect-process.patch
+ApplyOptionalPatch 0703-sound-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0704-pm-rproc-adjusting-the-sleep-process-level-of-rproc.patch
+ApplyOptionalPatch 0705-pm-regulator-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
+ApplyOptionalPatch 0706-rproc-do-not-automatically-load-and-start-rcpu.patch
+ApplyOptionalPatch 0707-k1-pm-domain-fix-error-in-deleting-qos-nodes-when-di.patch
+ApplyOptionalPatch 0708-k1-pm-set-the-sleep-voltage-of-DCDC1-to-650mv.patch
+ApplyOptionalPatch 0709-qspi-Fix-the-bug-of-data-transmission-failure-with-a.patch
+ApplyOptionalPatch 0710-k1_defconfig-build-cdc_ncm-as-module.patch
+ApplyOptionalPatch 0711-phy-k1x-ci-usb2-update-phy-init-sequence-report-erro.patch
+ApplyOptionalPatch 0712-usb-dwc3-spacemit-support-phy-setup.patch
+ApplyOptionalPatch 0713-k1-usb-setup-phy-in-dwc3-spacemit-instead-of-dwc3.patch
+ApplyOptionalPatch 0714-usb-xhci-add-clear-disconnect-for-spacemit-k1x-phy.patch
+ApplyOptionalPatch 0715-net-usb-promote-the-priority-of-ax_usb_nic-driver.patch
+ApplyOptionalPatch 0716-camera-fix-call_get_fmt-EINVAL-return-to-support-dra.patch
+ApplyOptionalPatch 0717-config-enable-kasan-to-memory-debug.patch
+ApplyOptionalPatch 0718-k1-ce-fix-ce-compile-errs-and-enable-ce-config.patch
+ApplyOptionalPatch 0719-gpu-enable-gpu-in-linux6.6.patch
+ApplyOptionalPatch 0720-spacemit-rf-add-missing-includes.patch
+ApplyOptionalPatch 0721-k1-enable-RTL8852BS-and-SPACEMIT_RFKILL.patch
+ApplyOptionalPatch 0722-mmc-sdhci-of-k1x-add-tuning-windows-type-configurati.patch
+ApplyOptionalPatch 0723-k1-change-sdio-max-clock-frequency-to-187MHz.patch
+ApplyOptionalPatch 0724-deconfig-enable-aes-engine-to-full-disk-encryption.patch
+ApplyOptionalPatch 0725-dts-modify-codec-card-name-config-and-add-mclk_fs-co.patch
+ApplyOptionalPatch 0726-muse-book-add-muse-book-board-dts-support.patch
+ApplyOptionalPatch 0727-k1-enable-USB_RTL8152.patch
+ApplyOptionalPatch 0728-k1-ce-fix-slab-out-of-bounds-by-KASAN-report.patch
+ApplyOptionalPatch 0729-display-Update-spacemit-drm-to-linux6.6.patch
+ApplyOptionalPatch 0730-v2d-Enable-v2d.patch
+ApplyOptionalPatch 0731-ax88179-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0732-clk-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0733-gmac-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0734-rf-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0735-usb-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0736-pinctrl-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0737-crypto-change-file-mode-0755-to-0644.patch
+ApplyOptionalPatch 0738-input-change-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0739-spi-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0740-pci-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0741-reset-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0742-adma-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0743-ir-chagne-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0744-pwm-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0745-wdt-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0746-reboot-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0747-dts-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0748-camera-change-file-mode-from-0755-to-0644.patch
+ApplyOptionalPatch 0749-k1-spm8821-enable-mask_unmask_non_inverted-property-.patch
+ApplyOptionalPatch 0750-dts-set-iomem-the-nomap-propertiers.patch
+ApplyOptionalPatch 0751-wireless-support-pcie-wifi-rtl8852be.patch
+ApplyOptionalPatch 0752-hdmiaudio-fix-no-sound-after-suspend-resume.patch
+ApplyOptionalPatch 0753-dts-change-i2s-target-rate.patch
+ApplyOptionalPatch 0754-clock-change-i2s-clock-parent-and-rate.patch
+ApplyOptionalPatch 0755-audio-add-mclk-config-flow.patch
+ApplyOptionalPatch 0756-dts-add-es8326-snd-card-support-for-MINI-PC.patch
+ApplyOptionalPatch 0757-audio-fix-audio-compile-error.patch
+ApplyOptionalPatch 0758-k1x-enable-audio-support.patch
+ApplyOptionalPatch 0759-audio-fix-i2s-audio-noise-due-to-dmabuffer-is-cached.patch
+ApplyOptionalPatch 0760-fix-regulator-do-not-load-the-driver-asynchronously-.patch
+ApplyOptionalPatch 0761-kconfig-add-config-ARCH_FORCE_MAX_ORDER-to-fix-defau.patch
+ApplyOptionalPatch 0762-riscv-show-reason-of-unaligned-access-speed-are-diff.patch
+ApplyOptionalPatch 0763-isa-modify-riscv-isa-format-definition.patch
+ApplyOptionalPatch 0764-deconfig-enable-CONFIG_DEBUG-to-more-debug-log.patch
+ApplyOptionalPatch 0765-aud-fix-i2s-pointer-pos-to-integer-multiple-of-perio.patch
+ApplyOptionalPatch 0766-arch-riscv-boot-dts-Fixed-MUSE-Book-model-to-M1-MUSE.patch
+ApplyOptionalPatch 0767-dts-add-orisetech-ota7290b-lcd-panel-1920-1200.patch
+ApplyOptionalPatch 0768-qspi-fix-the-warning-when-disable-the-clk-and-bus-cl.patch
+ApplyOptionalPatch 0769-k1x-6.6-support-flexcan-on-k1x-platform.patch
+ApplyOptionalPatch 0770-arch-riscv-k1_deb1-Added-pwm-fan.patch
+ApplyOptionalPatch 0771-dts-sync-the-k1-x_deb1-modify-to-the-k1-x_milkv-jupi.patch
+ApplyOptionalPatch 0772-dts-add-milkv-jupiter-board-of-M1.patch
+ApplyOptionalPatch 0773-dts-add-SiPEED-LPi3A-board-support.patch
+ApplyOptionalPatch 0774-at24-clean-compile-warning.patch
+ApplyOptionalPatch 0775-defconfig-update-defconfig.patch
+ApplyOptionalPatch 0776-defconfig-support-some-cpufreq-governor.patch
+ApplyOptionalPatch 0777-pm-pinctrl-support-edge-detect-wakeup-functoin.patch
+ApplyOptionalPatch 0778-spacemit-rf-support-wlan-irq-hostwake.patch
+ApplyOptionalPatch 0779-k1-modify-wlan-hostwake-to-pinctl.patch
+ApplyOptionalPatch 0780-deconfig-disable-kasan-debug.patch
+ApplyOptionalPatch 0781-k1-set-USB0-to-host-mode-for-MUSE-Book.patch
+ApplyOptionalPatch 0782-k1-add-wlan-hostwake-config-for-MINI-PC-and-milkv-ju.patch
+ApplyOptionalPatch 0783-display-fix-dsi-dphy-hs-prepare-and-hs-zero-cycle.patch
+ApplyOptionalPatch 0784-display-reserve-hdmi-compatibility-config-for-chips-.patch
+ApplyOptionalPatch 0785-display-modify-the-method-for-obtaining-hdmi-edid.patch
+ApplyOptionalPatch 0786-display-support-lt9711-for-mipi-dsi-to-dp.patch
+ApplyOptionalPatch 0787-display-remove-debug-log.patch
+ApplyOptionalPatch 0788-display-remove-useless-codes-and-fix-edp-driver.patch
+ApplyOptionalPatch 0789-display-support-dp-panel.patch
+ApplyOptionalPatch 0790-display-modify-edp-brightness-levels.patch
+ApplyOptionalPatch 0791-display-support-256-bytes-edid-data-for-hdmi.patch
+ApplyOptionalPatch 0792-display-detect-dp-plug-in-and-plug-out.patch
+ApplyOptionalPatch 0793-display-modify-the-order-of-the-backlight-for-the-lt.patch
+ApplyOptionalPatch 0794-display-do-not-operate-clock-during-the-pm-runtime.patch
+ApplyOptionalPatch 0795-display-modify-the-minimum-backlight-brightness-valu.patch
+ApplyOptionalPatch 0796-keep-bootloader-logo-on-and-release-backlight-first.patch
+ApplyOptionalPatch 0797-display-trun-off-lcd-power-domain-after-the-probe-fu.patch
+ApplyOptionalPatch 0798-ccu-fix-rpwm-clk-sel.patch
+ApplyOptionalPatch 0799-crypto-reset-and-clock-is-shared-between-crypto-engi.patch
+ApplyOptionalPatch 0800-efuse-add-spacemit-efuse-driver.patch
+ApplyOptionalPatch 0801-socinfo-add-spacemit-soc-information-driver.patch
+ApplyOptionalPatch 0802-dts-support-efuse-and-cpuinfo-module.patch
+ApplyOptionalPatch 0803-defconfig-enable-efuse-and-socinfo-module.patch
+ApplyOptionalPatch 0804-k1x-adjust-ddr-master-devices-dram_range.patch
+ApplyOptionalPatch 0805-dts-modify-pcie-bar-area-layout.patch
+ApplyOptionalPatch 0806-ccu-add-pll3-clk-frequency.patch
+ApplyOptionalPatch 0807-scripts-package-mkdebian.patch
+ApplyOptionalPatch 0808-efuse-add-nvmem-cells-according-to-the-dts.patch
+ApplyOptionalPatch 0809-dts-fix-the-error-of-cache-sets-number.patch
+ApplyOptionalPatch 0810-gpu-fix-workqueue-warning.patch
+ApplyOptionalPatch 0811-k1-support-mult-frequency-table-and-using-one-policy.patch
+ApplyOptionalPatch 0812-hdmiaudio-fix-no-sound-issue-on-some-hdmi-display-du.patch
+ApplyOptionalPatch 0813-pinctrl-fix-compile-warning.patch
+ApplyOptionalPatch 0814-mipi-fix-compile-warninng.patch
+ApplyOptionalPatch 0815-i2c-fix-warn_on-when-system-power-off.patch
+ApplyOptionalPatch 0816-aud-fix-can-not-play-record-issue-after-suspend-resu.patch
+ApplyOptionalPatch 0817-display-release-reserved-memory-for-bootlogo.patch
+ApplyOptionalPatch 0818-fs-enable-ubifs-jffs2-and-squashfs.patch
+ApplyOptionalPatch 0819-k1-thermal-separate-the-thermal-configuration-and-re.patch
+ApplyOptionalPatch 0820-k1x-add-MUSE-Card-dts-support.patch
+ApplyOptionalPatch 0821-k1x-add-MUSE-Paper-dts-support.patch
+ApplyOptionalPatch 0822-usb-dwc3-support-remote-wakeup.patch
+ApplyOptionalPatch 0823-usb-ehci-support-remote-wakeup.patch
+ApplyOptionalPatch 0824-usb-dwc3-enable-irqwake-in-dwc3_suspend-instead-of-s.patch
+ApplyOptionalPatch 0825-usb-dwc3-enable-linestate1-wakeup-mask.patch
+ApplyOptionalPatch 0826-usb-disable-remote-wakeup-default.patch
+ApplyOptionalPatch 0827-phy-k1x-ci-otg-adjust-Makefile-order.patch
+ApplyOptionalPatch 0828-bluetooth-use-kernel-btrtl-for-8852bu-instead-of-rtk.patch
+ApplyOptionalPatch 0829-phy-spacemit-k1x-combphy-add-suspend-term-quirk.patch
+ApplyOptionalPatch 0830-k1x-adjust-crypto-alloc-buffer-and-set-mask-turns.patch
+ApplyOptionalPatch 0831-riscv-dts-spacemit-fix-PCIe-lane-number-for-deb1.patch
+ApplyOptionalPatch 0832-pinctrl-modify-some-pins-pull-configurations.patch
+ApplyOptionalPatch 0833-spacemit-rf-modify-default-value-of-poweron-delay.patch
+ApplyOptionalPatch 0834-k1-MUSE-Pi-update-sdio-tx-delaycode.patch
+ApplyOptionalPatch 0835-mmc-sdhci-of-k1x-fix-cpufreq-while-execute-sw-tuning.patch
+ApplyOptionalPatch 0836-m1-milkv-jupiter-specify-cpufreq-during-sdio-rx-tuni.patch
+ApplyOptionalPatch 0837-camera-move-spacemit-bifmode-enable-from-dtsi-to-dts.patch
+ApplyOptionalPatch 0838-MUSE-Paper-remove-hdmiaudio-support.patch
+ApplyOptionalPatch 0839-k1-MUSE-Pi-update-sdio-tx-delaycode-to-0x30.patch
+ApplyOptionalPatch 0840-uart0-dts-add-uart-controller-configuration-for-open.patch
+ApplyOptionalPatch 0841-k1-cpufreq-using-the-default-vf-table-of-we-did-not-.patch
+ApplyOptionalPatch 0842-k1x-adjust-buck4-ldo1-7-suspend-voltage-to-0V.patch
+ApplyOptionalPatch 0843-k1x-MINIPC-adjust-ldo1-to-always-on-for-secjtag-TRST.patch
+ApplyOptionalPatch 0844-uart-clean-debug-info.patch
+ApplyOptionalPatch 0845-jpu-clean-debug-info.patch
+ApplyOptionalPatch 0846-pcie-clean-debug-info.patch
+ApplyOptionalPatch 0847-sound-clean-debug-info.patch
+ApplyOptionalPatch 0848-k1x-fix-dldo1-always-on-to-aldo1-always-on.patch
+ApplyOptionalPatch 0849-change-error-to-warning-when-frequency-table-is-full.patch
+ApplyOptionalPatch 0850-Add-support-for-ICM42607-sensor.patch
+ApplyOptionalPatch 0851-camera-sync-code-from-linux-6.1.patch
+ApplyOptionalPatch 0852-k1-pm-domain-disable-wakeup5-by-default.patch
+ApplyOptionalPatch 0853-k1-pm-close-some-dcdc-ldo-to-optimize-sleep-power-co.patch
+ApplyOptionalPatch 0854-Linux-Open-jffs2-and-squash-support.patch
+ApplyOptionalPatch 0855-Linux-For-the-Power-button-shutdown-add-support-for-.patch
+ApplyOptionalPatch 0856-To-ensure-a-better-user-experience-set-the-battery-l.patch
+ApplyOptionalPatch 0857-To-add-hall-sensor-support-for-Muse-Paper-report-SW_.patch
+ApplyOptionalPatch 0858-k1-hotplug-close-the-SCMI-configuration.patch
+ApplyOptionalPatch 0859-pcie-supporting-PCIe-interface-power-management.patch
+ApplyOptionalPatch 0860-clock-add-rcpu-i2c-clock.patch
+ApplyOptionalPatch 0861-reset-add-rcpu-i2c-reset.patch
+ApplyOptionalPatch 0862-gmac-supporting-ptp-with-hardware-timestamp.patch
+ApplyOptionalPatch 0863-display-modify-panel-backlight-level.patch
+ApplyOptionalPatch 0864-display-add-panel-notifier-event-for-spacemit.patch
+ApplyOptionalPatch 0865-display-add-mipi-lcd-icnl9951r.patch
+ApplyOptionalPatch 0866-display-support-mipi-lcd-avee-and-avdd.patch
+ApplyOptionalPatch 0867-display-add-resume-and-suspend-for-lt9711-driver.patch
+ApplyOptionalPatch 0868-k1-cpufreq-Support-dynamic-switching-of-1.6G-and-1.8.patch
+ApplyOptionalPatch 0869-k1-pm-domain-improve-the-detach-operation-of-the-pow.patch
+ApplyOptionalPatch 0870-gmac-fixed-the-bug-that-Ethernet-phy-cannot-enter-lo.patch
+ApplyOptionalPatch 0871-k1x-add-MUSE-Paper-mini-4g-dts-support.patch
+ApplyOptionalPatch 0872-clock-fix-can-not-get-correct-rate-issue.patch
+ApplyOptionalPatch 0873-pcie-modify-the-phy-initialization-for-pcie-controll.patch
+ApplyOptionalPatch 0874-k1-x_MUSE-Book-not-reset-usb-during-suspend.patch
+ApplyOptionalPatch 0875-k1-MUSE-Paper-update-dts-enable-usb-and-wifi.patch
+ApplyOptionalPatch 0876-k1-MUSE-Paper-enable-uart2-for-bluetooth.patch
+ApplyOptionalPatch 0877-k1-MUSE-Paper-update-card-detection-logic.patch
+ApplyOptionalPatch 0878-ehci-k1x-ci-fix-multiple-instance-debugfs-conflict.patch
+ApplyOptionalPatch 0879-mingo-change-u3-role-switch-default-mode-to-host.patch
+ApplyOptionalPatch 0880-spi-nor-supporting-FM25Q64AI3-spi-nor-flash.patch
+ApplyOptionalPatch 0881-k1x-i2c1-i2c6-apply-for-the-same-pin-delete-i2c1.patch
+ApplyOptionalPatch 0882-k1x-fix-crypto-buffer-data-copy-method.patch
+ApplyOptionalPatch 0883-dts-adding-the-power-switch-of-wifi-and-bt-on-kx312.patch
+ApplyOptionalPatch 0884-dts-adding-the-power-switch-of-wifi-and-bt-on-MUSE-B.patch
+ApplyOptionalPatch 0885-this-is-not-pcie-patch-Revert-pcie-clean-debug-info.patch
+ApplyOptionalPatch 0886-pcie-clean-debug-info.patch
+ApplyOptionalPatch 0887-pcie-fix-the-bug-that-Samsung-nvme-ssd-link-establis.patch
+ApplyOptionalPatch 0888-k1x-disable-watchdog.patch
+ApplyOptionalPatch 0889-arch-riscv-boot-dts-Enable-MUSE-Book-eeprom-by-defau.patch
+ApplyOptionalPatch 0890-k1-x_lpi3a.dts-change-usb2.0otg-port-to-device-mode.patch
+ApplyOptionalPatch 0891-k1-x_lpi3a.dts-fix-no-interrupt-of-ctp.patch
+ApplyOptionalPatch 0892-k1_deconfig-add-i2c-gpio-expander-PCA953X-driver.patch
+ApplyOptionalPatch 0893-codec-add-es7210-driver.patch
+ApplyOptionalPatch 0894-codec-add-es8156-driver.patch
+ApplyOptionalPatch 0895-dts-fix-JD9365DA-10.1-inch-lcd-cann-t-display-for-lp.patch
+ApplyOptionalPatch 0896-as1911-change-file-mode-to-0644.patch
+ApplyOptionalPatch 0897-k1-pm-rproc-put-the-de-assert-of-rproc-s-clock-into-.patch
+ApplyOptionalPatch 0898-dtsi-k1-add-otg1-support-add-wakeup_reg-reg.patch
+ApplyOptionalPatch 0899-k1x_udc_core-fix-global-variable-and-extcon.patch
+ApplyOptionalPatch 0900-phy-k1x-ci-otg-refactor-otg-logic-to-support-more-us.patch
+ApplyOptionalPatch 0901-ehci-k1x-ci-fix-otg-suspend-resume-and-pm_runtime.patch
+ApplyOptionalPatch 0902-k1_defconfig-enable-otg-support.patch
+ApplyOptionalPatch 0903-k1-milkv-jupiter-update-sdio-tx-delaycode-to-0x30.patch
+ApplyOptionalPatch 0904-Linux-Add-a-virtual-charger-driver.This-resolves-the.patch
+ApplyOptionalPatch 0905-display-fix-the-issue-of-bootlogo-flashing-screen.patch
+ApplyOptionalPatch 0906-gmac-set-mac_managed_pm-to-true-to-fix-mdio-resume-w.patch
+ApplyOptionalPatch 0907-MUSE-N1-u3-set-the-default-mode-to-host-1.so-2.5G-et.patch
+ApplyOptionalPatch 0908-adma-fix-compile-warning.patch
+ApplyOptionalPatch 0909-k1x-flexcan-do-ram-init-by-iowrite32-instead-of-mems.patch
+ApplyOptionalPatch 0910-thermal-add-hwmon-sysfs-node-for-some-debug-tools.patch
+ApplyOptionalPatch 0911-thermal-fix-compile-error-because-of-sysfs-register-.patch
+ApplyOptionalPatch 0912-k1x-support-cw2015-driver.patch
+ApplyOptionalPatch 0913-defconfig-update-kernel-default-configuration.patch
+ApplyOptionalPatch 0914-clock-add-rcpu-ir-uart0-uart1-ssp-clocks.patch
+ApplyOptionalPatch 0915-reset-add-rcpu-ir-uart0-uart1-ssp-resets.patch
+ApplyOptionalPatch 0916-display-fix-compile-warning.patch
+ApplyOptionalPatch 0917-camera-fix-compile-warning.patch
+ApplyOptionalPatch 0918-crypto-fix-compile-warning.patch
+ApplyOptionalPatch 0919-vpu-fix-compile-warning.patch
+ApplyOptionalPatch 0920-reset-fix-compile-warning.patch
+ApplyOptionalPatch 0921-cpufreq-fix-compile-warning.patch
+ApplyOptionalPatch 0922-spi-fix-compile-warning.patch
+ApplyOptionalPatch 0923-usb-fix-compiler-warning.patch
+ApplyOptionalPatch 0924-clock-fix-compile-warning.patch
+ApplyOptionalPatch 0925-gmac-fix-compiler-warning.patch
+ApplyOptionalPatch 0926-codec-fix-compile-warning.patch
+ApplyOptionalPatch 0927-k1-muse_book-support-hall-to-wakeup-system.patch
+ApplyOptionalPatch 0928-usb-typec-husb239-support-hynetek-husb239.patch
+ApplyOptionalPatch 0929-k1-defconfig-support-husb239-typec-controller.patch
+ApplyOptionalPatch 0930-k1x-x60-can-and-rcpu-can-separate.patch
+ApplyOptionalPatch 0931-k1-MUSE-Paper-support-husb239-typec-controller.patch
+ApplyOptionalPatch 0932-ai-fix-error-in-bind-ai-task-to-ai-core.patch
+ApplyOptionalPatch 0933-phy-k1x-ci-usb2-add-set_suspend-op.patch
+ApplyOptionalPatch 0934-phy-k1x-ci-otg-set-role-to-default-role-in-probe.patch
+ApplyOptionalPatch 0935-k1-x_MUSE-Pi-enable-otg1-and-set-dwc3-to-drd-mode.patch
+ApplyOptionalPatch 0936-k1-x_MUSE-Book-enable-otg-for-usb0.patch
+ApplyOptionalPatch 0937-k1x-support-rcpu-uart1-function-through-x60.patch
+ApplyOptionalPatch 0938-k1-i2c-support-i2c-driver-of-rcpu-domain.patch
+ApplyOptionalPatch 0939-spacemit_onboard_hub-add-pm-domain-support.patch
+ApplyOptionalPatch 0940-dwc3-spacemit-add-pm-domain-support.patch
+ApplyOptionalPatch 0941-dtsi-k1-update-usb-power-domain-settings.patch
+ApplyOptionalPatch 0942-display-fix-the-issue-while-the-i2c-communication-is.patch
+ApplyOptionalPatch 0943-insmod-simplify-section-header-process-for-optimize-.patch
+ApplyOptionalPatch 0944-k1-pinctrl-we-d-better-clean-the-edge-detect-pending.patch
+ApplyOptionalPatch 0945-k1x-i2c-add-one-callback-of-power-off.patch
+ApplyOptionalPatch 0946-k1-x_MUSE-Paper-mini-4g-camera-verify-ok.patch
+ApplyOptionalPatch 0947-display-add-mipi-lcd-jd9365dah3.patch
+ApplyOptionalPatch 0948-display-add-hdmi-notifier-event-for-spacemit.patch
+ApplyOptionalPatch 0949-k1-power-key-don-t-report-the-event-of-power-key-whe.patch
+ApplyOptionalPatch 0950-k1-MUSE-Paper-mini-4g-update-dts-enable-typec-and-wi.patch
+ApplyOptionalPatch 0951-usb-typec-husb239-fix-possible-NULL-pointer-derefere.patch
+ApplyOptionalPatch 0952-k1-serial-register-freeze-restore-callback-for-hiber.patch
+ApplyOptionalPatch 0953-MUSE-Paper-mini-4g-enable-codec-snd-card-support.patch
+ApplyOptionalPatch 0954-clear-some-boot-error-without-including-these-dtsi.patch
+ApplyOptionalPatch 0955-pcie-Add-request-operation-before-gpio-operation.patch
+ApplyOptionalPatch 0956-k1x-flexcan-fix-clock-frequency-config-and-clk-set.patch
+ApplyOptionalPatch 0957-arch-riscv-configs-Update-k1_defconfig.patch
+ApplyOptionalPatch 0958-k1x-support-rcpu-ir.patch
+ApplyOptionalPatch 0959-asix_usb-fix-netdev-dev_addr_shadow-not-set.patch
+ApplyOptionalPatch 0960-k1-MUSE-Paper-mini-4g-update-modules_usrload.patch
+ApplyOptionalPatch 0961-mmc-sdhci-of-k1x-use-remove_new-instead-of-remove.patch
+ApplyOptionalPatch 0962-phy-k1x-ci-otg-fix-shared-reset-assert-warning.patch
+ApplyOptionalPatch 0963-spacemit-rf-introduce-spacemit-rfkill-driver.patch
+ApplyOptionalPatch 0964-k1-x_MUSE-Paper-mini-4g-add-4g-module-support.patch
+ApplyOptionalPatch 0965-pcie-Set-the-vendor-id-and-device-id-of-k1x-pcie-rc.patch
+ApplyOptionalPatch 0966-qmi_wwan_f-add-fibocom-qmi-modem-driver.patch
+ApplyOptionalPatch 0967-k1_defconfig-enable-qmi_wwan_f-as-module.patch
+ApplyOptionalPatch 0968-defconfig-enable-CONFIG_MTD_CMDLINE_PARTS.patch
+ApplyOptionalPatch 0969-k1x-turn-on-ir-spacemit-defconfig.patch
+ApplyOptionalPatch 0970-sbs-charger-change-file-mode-0755-0644.patch
+ApplyOptionalPatch 0971-k1-cpufreq-using-on-v-f-table-to-support-k1-m1-chip.patch
+ApplyOptionalPatch 0972-k1-cpufreq-delete-the-boost-related-node-for-k1.patch
+ApplyOptionalPatch 0973-k1-thermal-using-one-thermal-table-for-both-m1-k1.patch
+ApplyOptionalPatch 0974-k1_defconfig-add-USB-Audio-UAC-devices-support.patch
+ApplyOptionalPatch 0975-k1-alsa-alsa-driver-adds-audio-data-dump.patch
+ApplyOptionalPatch 0976-spacemit_onboard_hub-fix-Kconfig-dependancy.patch
+ApplyOptionalPatch 0977-gpu-Fix-building-error-with-FORTIFY_SOURCE-enabled.patch
+ApplyOptionalPatch 0978-k1-thermal-fix-the-issue-where-the-frequency-cannot-.patch
+ApplyOptionalPatch 0979-pcie-print-MSIX_AFIFO_FULL-information-once.patch
+ApplyOptionalPatch 0980-deconfig-enable-spinlock_debug.patch
+ApplyOptionalPatch 0981-MUSE-Paper-mini-support-battery-profile.patch
+ApplyOptionalPatch 0982-MUSE-Paper-mini-support-some-sensor.patch
+ApplyOptionalPatch 0983-k1x_udc_core-fix-missing-STATUS-IN-in-control-out-tr.patch
+ApplyOptionalPatch 0984-k1x_udc_core-fix-enable-after-disable-may-fail.patch
+ApplyOptionalPatch 0985-k1x_udc_core-fix-high-bandwidth-isoc-endpoint-transf.patch
+ApplyOptionalPatch 0986-k1x_udc_core-cleanup-info-print.patch
+ApplyOptionalPatch 0987-usb-typec-husb239-support-mic-switch.patch
+ApplyOptionalPatch 0988-usb-typec-husb239-update-pd-contract.patch
+ApplyOptionalPatch 0989-display-reduce-panel-lt8911exb-resume-time.patch
+ApplyOptionalPatch 0990-lpi3a-add-aic8800-wifi-support.patch
+ApplyOptionalPatch 0991-camera-fix-unknown-type-compile-error-and-comment-sl.patch
+ApplyOptionalPatch 0992-spacemit-rf-use-gpiod_set_value_cansleep-instead-of-.patch
+ApplyOptionalPatch 0993-display-fix-the-issue-of-bootlogo-flashing-screen.patch
+ApplyOptionalPatch 0994-k1-pm_domain-lcd-don-t-open-the-power-switch-again-i.patch
+ApplyOptionalPatch 0995-camera-perfect-open-close-node-in-pinmulti-mode.patch
+ApplyOptionalPatch 0996-k1-update-sd-sdio-tx-delaycode.patch
+ApplyOptionalPatch 0997-usb-f_uvc-use-GFP_DMA32-for-vb2_queue-at-spacemit-k1.patch
+ApplyOptionalPatch 0998-k1x-adc-p1-supprt-adc-driver-for-k1x.patch
+ApplyOptionalPatch 0999-display-add-plane-cursor-type-and-support-crop.patch
+ApplyOptionalPatch 1000-add-baton-camera-solution.patch
+ApplyOptionalPatch 1001-dts-add-k1-x_FusionOne-for-eli-NAS.patch
+ApplyOptionalPatch 1002-k1-suspend-skip-system-sync-in-kernel.patch
+ApplyOptionalPatch 1003-k1x-support-touchscreen-chipone-tddi.patch
+ApplyOptionalPatch 1004-k1x-support-sgm41515-charger-driver.patch
+ApplyOptionalPatch 1005-k1-reboot-add-a-flag-indicating-whether-to-shutdown-.patch
+ApplyOptionalPatch 1006-MUSE-Paper-support-volume-up-dowm-key-event.patch
+ApplyOptionalPatch 1007-hung-task-set-hung-timeout-120s.patch
+ApplyOptionalPatch 1008-add-new-pinctrl-node-for-FusionOne-to-support-wifi-s.patch
+ApplyOptionalPatch 1009-soc-support-notifier-among-modules.patch
+ApplyOptionalPatch 1010-usb-typec-husb239-add-notifier-event-for-typec-heads.patch
+ApplyOptionalPatch 1011-cpuidle-delete-the-dts-node-for-cpuidle.patch
+ApplyOptionalPatch 1012-clock-add-dpll-and-ddr-clocks.patch
+ApplyOptionalPatch 1013-usb-typec-husb239-add-vdd-supply-and-usb2-switch.patch
+ApplyOptionalPatch 1014-mmc-sdhci-of-k1x-avoid-recovery-sdr104-while-dts-dis.patch
+ApplyOptionalPatch 1015-enable-typec-for-FusionOne.patch
+ApplyOptionalPatch 1016-muse-paper-sync-camera-draw-dts-configuration.patch
+ApplyOptionalPatch 1017-k1-dts-add-all-disabled-usb-nodes.patch
+ApplyOptionalPatch 1018-blk-add-request-completion-flags-for-debug.patch
+ApplyOptionalPatch 1019-deconfig-enable-CONFIG_LOCKDEP-for-debug.patch
+ApplyOptionalPatch 1020-display-fix-the-issue-of-trace-during-system-sleep-a.patch
+ApplyOptionalPatch 1021-sound-support-build-module.patch
+ApplyOptionalPatch 1022-defconfig-add-audio-config.patch
+ApplyOptionalPatch 1023-Bluetooth-btrtl-fix-oops-in-btrtl_vendor_read_reg16.patch
+ApplyOptionalPatch 1024-k1-pm_domain-fix-bug-when-device-detach-from-pm-doma.patch
+ApplyOptionalPatch 1025-serial-fix-lockdep_assert-warning.patch
+ApplyOptionalPatch 1026-nvme-expose-allocation-or-mapping-failure-reports.patch
+ApplyOptionalPatch 1027-Fix-dma_buf-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1028-camera-Fix-dma_buf-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1029-vpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1030-jpu-Fix-dma_buf-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1031-v2d-fix-dmabuf-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1032-display-modify-the-initcall-sequence-of-the-hdmi-dri.patch
+ApplyOptionalPatch 1033-dts-modify-hdmiaudio-config.patch
+ApplyOptionalPatch 1034-sound-change-from-late_initcall_sync-to-late_initcal.patch
+ApplyOptionalPatch 1035-hdmiaudio-support-hot-plug.patch
+ApplyOptionalPatch 1036-display-adjust-resolution-to-60Hz.patch
+ApplyOptionalPatch 1037-ir-fix-global-out-of-bounds-when-KASAN-enable.patch
+ApplyOptionalPatch 1038-k1x-chipone-tddi-reduce-init-log-level.patch
+ApplyOptionalPatch 1039-disable-the-function-that-auto-switch-usb-mode-at-Fu.patch
+ApplyOptionalPatch 1040-dts-add-orangepi-rv2-solution.patch
+ApplyOptionalPatch 1041-orangepi-rv2-add-usb-ctl-adaptation.patch
+ApplyOptionalPatch 1042-k1-hall-support-separating-wake-up-interrupts-from-n.patch
+ApplyOptionalPatch 1043-k1-pwr-key-support-wakeup-count.patch
+ApplyOptionalPatch 1044-k1x-fix-xts-aes-key2-error.patch
+ApplyOptionalPatch 1045-mmc-sdhci-of-k1x-support-MMC1-debug-as-uart0.patch
+ApplyOptionalPatch 1046-k1-MUSE-Paper-add-SD-debug-pinctrl.patch
+ApplyOptionalPatch 1047-stacktrace-delect-KASAN-warning.patch
+ApplyOptionalPatch 1048-gpu-fix-slab-use-after-free-err.patch
+ApplyOptionalPatch 1049-k1x-support-ddr-bandwidth-tool-driver.patch
+ApplyOptionalPatch 1050-dts-MUSE-Pi-remove-cd-inverted-of-sdhci0.patch
+ApplyOptionalPatch 1051-k1x-clean-uart-useless-info.patch
+ApplyOptionalPatch 1052-add-ili9881c-mipi-to-orangepi-rv2.patch
+ApplyOptionalPatch 1053-camera-verify-camera-success.patch
+ApplyOptionalPatch 1054-orangepi-rv2-add-es8323-config-and-modify-sound-code.patch
+ApplyOptionalPatch 1055-defconfig-support-codec-es8323.patch
+ApplyOptionalPatch 1056-usb-typec-husb239-enable-Try.SNK-mechanism.patch
+ApplyOptionalPatch 1057-display-fix-mmu-configuration-error-while-tbu-id-is-.patch
+ApplyOptionalPatch 1058-k1x-stop-watchdog-before-the-system-suspend-and-reco.patch
+ApplyOptionalPatch 1059-k1x-remove-cw2015-useless-info.patch
+ApplyOptionalPatch 1060-k1-MUSE-Paper-fix-the-mistake-about-sd-sdio-tx-delay.patch
+ApplyOptionalPatch 1061-camera-sync-V5.7-code-and-verify-single_online_test.patch
+ApplyOptionalPatch 1062-k1x-update-MUSE-Paper-cw2015-profile.patch
+ApplyOptionalPatch 1063-k1x-add-ZT001H-dts-support.patch
+ApplyOptionalPatch 1064-vpu-Fix-circular-lock-warning-with-enabled-lockdep.patch
+ApplyOptionalPatch 1065-vpu-Fix-amvx-build-error-when-building-amvx-as-modul.patch
+ApplyOptionalPatch 1066-k1-add-fanghang-k1-x_uav-dts.patch
+ApplyOptionalPatch 1067-riscv-Flush-the-icache-of-all-cores-related-to-the-c.patch
+ApplyOptionalPatch 1068-clock-reset-add-rcpu-pwm-clocks-and-resets.patch
+ApplyOptionalPatch 1069-k1x-1.fix-gpio74-function2-pwm9-rpwm9-2.add-rpwm0-9-.patch
+ApplyOptionalPatch 1070-dts-modify-the-address-space-allocation-of-pcie2_rc.patch
+ApplyOptionalPatch 1071-PCI-Add-arch_can_pci_mmap_wc-macro-on-spacemit-k1-so.patch
+ApplyOptionalPatch 1072-k1x-support-chsc5xxx-touchpad-driver.patch
+ApplyOptionalPatch 1073-k1x-MUSE-Paper-mini-4g-support-charger.patch
+ApplyOptionalPatch 1074-k1-x_uav-camera-verify-imx415-okay.patch
+ApplyOptionalPatch 1075-defconfig-add-real-time-linux-defconfig.patch
+ApplyOptionalPatch 1076-k1_uav-enable-uart-ports.patch
+ApplyOptionalPatch 1077-drm-radeon-mask-MSI-on-K1x.patch
+ApplyOptionalPatch 1078-radeon-amdgpu-force-32-bit-dma.patch
+ApplyOptionalPatch 1079-Radeon-modify-cached-mapping-to-writecombine.patch
+ApplyOptionalPatch 1080-k1-add-radeon-module-in-k1_defconfig.patch
+ApplyOptionalPatch 1081-camera-Fix-isp-and-cpp-build-error-when-building-the.patch
+ApplyOptionalPatch 1082-defconfig-disable-LOCKDEP-config.patch
+ApplyOptionalPatch 1083-rt-defconfig-config-CONFIG_PREEMPT_RT.patch
+ApplyOptionalPatch 1084-mmc-sdhci-of-k1x-fix-bug-about-get-invalid-cpufreq_p.patch
+ApplyOptionalPatch 1085-dts-update-k1-x_uav-disabled-some-no-used-moduels-fi.patch
+ApplyOptionalPatch 1086-k1-support-decompression-of-zstd-format-file.patch
+ApplyOptionalPatch 1087-1.add-clk-reset-to-i2c3-2.enable-rpwm9.patch
+ApplyOptionalPatch 1088-cpuinfo-add-uarch-information.patch
+ApplyOptionalPatch 1089-k1x-clear-charger-useless-info.patch
+ApplyOptionalPatch 1090-es8326-support-headphone-notifier-call-chain.patch
+ApplyOptionalPatch 1091-es8326-fix-es8326-no-sound-due-to-data-length-settin.patch
+ApplyOptionalPatch 1092-es8326-fix-no-sound-issue-after-suspend-resume.patch
+ApplyOptionalPatch 1093-es8326-cleanup-unused-code.patch
+ApplyOptionalPatch 1094-es8326-reset-jack-status-when-suspend.patch
+ApplyOptionalPatch 1095-riscv-rwonce-add-__READ_ONCE-implementation-for-risc.patch
+ApplyOptionalPatch 1096-riscv-spackemit-add-of-node-get-for-process-cpuinfo-.patch
+ApplyOptionalPatch 1097-sound-adapt-linux-kernel-new-vision.patch
+ApplyOptionalPatch 1098-usb-phy-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1099-usb-dwc3-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1100-usb-udc-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1101-usb-host-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1102-usb-misc-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1103-spi-spacemit-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1104-qspi-spacemit-modify-prototype-of-device-remove-func.patch
+ApplyOptionalPatch 1105-crypto-spacemit-replace-strlcpy-with-strscpy.patch
+ApplyOptionalPatch 1106-dma-spacemit-adma-modify-prototype-of-device-remove-.patch
+ApplyOptionalPatch 1107-dma-spacemit-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1108-spacemit-v2d-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1109-soc-spacemit-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1110-soc-spacemit-pm-fix-error-when-save-context-for-lowp.patch
+ApplyOptionalPatch 1111-spacemit-jpu-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1112-spacemit-ddrbw-clear-compile-warnings.patch
+ApplyOptionalPatch 1113-remoteproc-spacemit-modify-prototype-of-device-remov.patch
+ApplyOptionalPatch 1114-i2c-k1x-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1115-plic-fix-error-on-some-offset-macro-definition.patch
+ApplyOptionalPatch 1116-mailbox-spacemit-modify-prototype-of-device-remove-f.patch
+ApplyOptionalPatch 1117-extcon-k1x-modify-prototype-of-device-remove-functio.patch
+ApplyOptionalPatch 1118-camera-spacemit-modify-prototype-of-device-remove-fu.patch
+ApplyOptionalPatch 1119-vpu-spacemit-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1120-ir-spacemit-modify-prototype-of-device-remove-functi.patch
+ApplyOptionalPatch 1121-wdt-k1x-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1122-thermal-k1x-modify-prototype-of-device-remove-functi.patch
+ApplyOptionalPatch 1123-phy-combphy-clean-compile-warning-because-of-prototy.patch
+ApplyOptionalPatch 1124-pxa-k1x-adapt-to-linux-kernel-new-version.patch
+ApplyOptionalPatch 1125-power-supply-sbs-modify-prototype-of-device-remove-f.patch
+ApplyOptionalPatch 1126-pcie-k1x-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1127-nvme-remove-segment-buffer-size-limit.patch
+ApplyOptionalPatch 1128-tcm-spacemit-modify-prototype-of-device-remove-funct.patch
+ApplyOptionalPatch 1129-flexcan-fix-error-in-flexcan-core-probe-function.patch
+ApplyOptionalPatch 1130-emac-k1x-fix-compile-warning-on-function-prototype.patch
+ApplyOptionalPatch 1131-stmmac-modify-prototype-of-device-remove-function.patch
+ApplyOptionalPatch 1132-ax88179a-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1133-usb-qmi_wwan_f-replace-strlcpy-by-strscpy.patch
+ApplyOptionalPatch 1134-spi-nor-porting-fmsh-device-driver-to-linux-6.12.patch
+ApplyOptionalPatch 1135-drm-spacemit-porting-drm-driver-to-linux-6.12.patch
+ApplyOptionalPatch 1136-gpio-k1x-porting-gpio-driver-to-linux-6.12.patch
+ApplyOptionalPatch 1137-build-disable-character-output-display-during-the-ke.patch
+ApplyOptionalPatch 1138-riscv-restore-vmlinux-target-building-command.patch
+ApplyOptionalPatch 1139-wireless-rtl8852be-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1140-wireless-rtl8852bs-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1141-defconfig-disable-some-modules-which-not-ready.patch
+ApplyOptionalPatch 1142-k1-mainline-update-head-files-for-compile-errors.patch
+ApplyOptionalPatch 1143-k1-mainline-defconfig-enable-spacemit-ir-driver.patch
+ApplyOptionalPatch 1144-k1-mainline-defconfig-enable-codec-es8326-support.patch
+ApplyOptionalPatch 1145-k1-mainline-es8326-fix-es8326-compile-and-work-issue.patch
+ApplyOptionalPatch 1146-k1-regulator-enable-the-driver-of-regulator.patch
+ApplyOptionalPatch 1147-display-resolve-the-issue-of-no-display-on-HDMI.patch
+ApplyOptionalPatch 1148-i2c-spacemit-k1-fix-strcpy-func-in-i2c-driver.patch
+ApplyOptionalPatch 1149-riscv-k1-defconfig-support-i2c-driver.patch
+ApplyOptionalPatch 1150-plic-spacemit-k1-declare-irqchip-of-plic-riscv0.patch
+ApplyOptionalPatch 1151-watchdog-spacemit-k1-fix-suspend-enable-judge.patch
+ApplyOptionalPatch 1152-gpu-upgrade-to-24.2.patch
+ApplyOptionalPatch 1153-gpu-img-rogue-add-judgment-of-linux-version-and-keep.patch
+ApplyOptionalPatch 1154-gpu-make-sure-gpu-probe-before-display.patch
+ApplyOptionalPatch 1155-drm-img-rogue-porting-gpu-driver-to-linux-6.12.patch
+ApplyOptionalPatch 1156-gpu-img-rogue-update-to-linux-6.12-fix-pvr_drm_fops.patch
+ApplyOptionalPatch 1157-soc-spacemit-add-prototype-define-for-multi-modules.patch
+ApplyOptionalPatch 1158-clk-spacemit-clean-compile-warnings.patch
+ApplyOptionalPatch 1159-pinctrl-spacemit-p1-support-pmic-pins.patch
+ApplyOptionalPatch 1160-spi-k1-spi-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1161-spi-k1-qspi-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1162-dwc3-spacemit-fix-compile-warning.patch
+ApplyOptionalPatch 1163-usb-gadget-fix-compile-warning.patch
+ApplyOptionalPatch 1164-usb-xhci-hub-fix-compile-warnings.patch
+ApplyOptionalPatch 1165-wdt-k1-fix-compile-warning.patch
+ApplyOptionalPatch 1166-wireless-rtl8852bs-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1167-cpufreq-k1-fix-compile-warning.patch
+ApplyOptionalPatch 1168-crypto-k1-fix-compile-warning.patch
+ApplyOptionalPatch 1169-usbnet-fix-compile-warning.patch
+ApplyOptionalPatch 1170-mmc-k1x-fix-compile-warning.patch
+ApplyOptionalPatch 1171-v2d-spacemit-fix-compile-warning.patch
+ApplyOptionalPatch 1172-power-sgm4154x-reshape-file-style.patch
+ApplyOptionalPatch 1173-media-k1x-vpu-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1174-media-k1x-camera-porting-to-linux-6.12.patch
+ApplyOptionalPatch 1175-drm-k1x-fix-compile-warning.patch
+ApplyOptionalPatch 1176-drm-k1x-gpu-fix-compile-warning.patch
+ApplyOptionalPatch 1177-riscv-k1-kconfig-update-kernel-configuration.patch
+ApplyOptionalPatch 1178-media-k1-vpu-fix-error-on-MODULE_IMPORT_NS-using.patch
+ApplyOptionalPatch 1179-mmc-k1-fix-error-of-driver.remove.patch
+ApplyOptionalPatch 1180-soc-spacemit-v2d-fix-error-on-MODULE_IMPORT_NS-using.patch
+ApplyOptionalPatch 1181-usb-spacemit-k1-fix-compile-error.patch
+ApplyOptionalPatch 1182-sound-k1-fix-compile-error.patch
+ApplyOptionalPatch 1183-opp-k1-fix-compile-error.patch
+ApplyOptionalPatch 1184-can-k1-flexcan-fix-error-on-driver.remove.patch
+ApplyOptionalPatch 1185-wireless-rtl8852bs-porting-to-linux-6.13.patch
+ApplyOptionalPatch 1186-drm-img-rogue-fix-error-on-MODULE_IMPORT_NS-using.patch
+ApplyOptionalPatch 1187-drm-spacemit-porting-to-linux-6.13.patch
+ApplyOptionalPatch 1188-camera-fix-compilation-problems-and-run-imx415-in-de.patch
+ApplyOptionalPatch 1189-wdt-k1x-fix-MODULE_LICENSE-announce-error.patch
+ApplyOptionalPatch 1190-soc-k1-jpu-fix-MODULE_LICENSE-announce-error.patch
+ApplyOptionalPatch 1191-thermal-k1-Correct-a-typo-in-the-code.patch
+ApplyOptionalPatch 1192-dma-dw-axi-dmac-Correct-a-typo-in-the-code.patch
+ApplyOptionalPatch 1193-media-k1-camera-fix-some-compile-warnings.patch
+ApplyOptionalPatch 1194-riscv-k1-dts-remove-some-reserved-memory-region.patch
+ApplyOptionalPatch 1195-Revert-riscv-Fix-IPIs-usage-in-kfence_protect_page.patch
+ApplyOptionalPatch 1196-k1x_rproc-avoid-creating-busy-looping-mailbox-thread.patch
+ApplyOptionalPatch 1197-fix-module-dma_buf-ns.patch
+ApplyOptionalPatch 1198-fix-wrong-style-comments.patch
+ApplyOptionalPatch 1199-Remove-depends-so-PWM_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1200-remove-trace_printk.patch
+ApplyOptionalPatch 1201-remove-unused-var.patch
+ApplyOptionalPatch 1202-Remove-depends-so-SERIAL_8250_PXA-can-be-enabled.patch
+ApplyOptionalPatch 1203-fix-includes-for-timestamp.patch
+ApplyOptionalPatch 1204-remove-debug-rdinit-from-m1-bpi.patch
+ApplyOptionalPatch 1205-6.14-fixes-to-spacemit_drm-and-pvr_drm.patch
+ApplyOptionalPatch 1206-Add-bit-brick-k1-devicetree-from-bianbu.patch
+ApplyOptionalPatch 1207-Add-minimal-hacked-up-OrangePI-RV2-devicetree.patch
+ApplyOptionalPatch 1208-6.15-fixes.patch
+ApplyOptionalPatch 1209-Add-distinct-compatibles-for-boards-currently-used-f.patch
+ApplyOptionalPatch 1210-fix-build-issue-k1x_cpp.c-1453-18-error-expected-or-.patch
+ApplyOptionalPatch 1211-fix-issue-https-github.com-jmontleon-linux-bianbu-is.patch
+ApplyOptionalPatch 1212-Revert-insmod-simplify-section-header-process-for-op.patch
+ApplyOptionalPatch 1213-6.16-fixes.patch
+ApplyOptionalPatch 1214-RTL8852-6.15-fixes.patch
+ApplyOptionalPatch 1215-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 
 
 
@@ -4490,12 +4547,16 @@ done
 %if %{signkernel}%{signmodules}
 
 # Add DUP and kpatch certificates to system trusted keys for RHEL
+truncate -s0 ../certs/rhel.pem
 %if 0%{?rhel}
+%if %{rhelkeys}
 %{log_msg "Add DUP and kpatch certificates to system trusted keys for RHEL"}
 openssl x509 -inform der -in %{SOURCE100} -out rheldup3.pem
 openssl x509 -inform der -in %{SOURCE101} -out rhelkpatch1.pem
 openssl x509 -inform der -in %{SOURCE102} -out nvidiagpuoot001.pem
-cat rheldup3.pem rhelkpatch1.pem nvidiagpuoot001.pem > ../certs/rhel.pem
+cat rheldup3.pem rhelkpatch1.pem nvidiagpuoot001.pem >> ../certs/rhel.pem
+# rhelkeys
+%endif
 %if %{signkernel}
 %ifarch s390x ppc64le
 openssl x509 -inform der -in %{secureboot_ca_0} -out secureboot.pem
@@ -4514,11 +4575,19 @@ for i in *.config; do
 done
 %endif
 
+# Adjust FIPS module name for RHEL
+%if 0%{?rhel}
+%{log_msg "Adjust FIPS module name for RHEL"}
+for i in *.config; do
+  sed -i 's/CONFIG_CRYPTO_FIPS_NAME=.*/CONFIG_CRYPTO_FIPS_NAME="Red Hat Enterprise Linux %{rhel} - Kernel Cryptographic API"/' $i
+done
+%endif
+
 %{log_msg "Set process_configs.sh $OPTS"}
 cp %{SOURCE81} .
-OPTS=""
-%if %{with_configchecks}
-	OPTS="$OPTS -w -n -c"
+OPTS="-w -n -c"
+%if !%{with_configchecks}
+	OPTS="$OPTS -i"
 %endif
 %if %{with clang_lto}
 for opt in %{clang_make_opts}; do
@@ -4704,6 +4773,7 @@ BuildKernel() {
 
 %ifarch aarch64 riscv64
     %{log_msg "Build dtb kernel"}
+    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     %{make} ARCH=$Arch dtbs INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     %{make} ARCH=$Arch dtbs_install INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     cp -r $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer $RPM_BUILD_ROOT/lib/modules/$KernelVer/dtb
@@ -5450,7 +5520,7 @@ BuildKernel %make_target %kernel_image %{_use_vdso} rt-debug
 BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k-debug
 %endif
 
-%if %{with_automotive}
+%if %{with_automotive} && !%{with_automotive_build}
 BuildKernel %make_target %kernel_image %{_use_vdso} automotive-debug
 %endif
 
@@ -5657,14 +5727,7 @@ pushd tools/testing/selftests
 %endif
 
 %{log_msg "main selftests compile"}
-%{make} %{?_smp_mflags} ARCH=$Arch V=1 TARGETS="bpf cgroup mm net net/forwarding net/mptcp net/netfilter net/packetdrill tc-testing memfd drivers/net/bonding iommu cachestat pid_namespace rlimits" SKIP_TARGETS="" $force_targets INSTALL_PATH=%{buildroot}%{_libexecdir}/kselftests VMLINUX_H="${RPM_VMLINUX_H}" install
-
-%ifarch %{klptestarches}
-	# kernel livepatching selftest test_modules will build against
-	# /lib/modules/$(shell uname -r)/build tree unless KDIR is set
-	export KDIR=$(realpath $(pwd)/../../..)
-	%{make} %{?_smp_mflags} ARCH=$Arch V=1 TARGETS="livepatch" SKIP_TARGETS="" $force_targets INSTALL_PATH=%{buildroot}%{_libexecdir}/kselftests VMLINUX_H="${RPM_VMLINUX_H}" install || true
-%endif
+%{make} %{?_smp_mflags} ARCH=$Arch V=1 TARGETS="bpf cgroup kmod mm net net/forwarding net/mptcp net/netfilter net/packetdrill tc-testing memfd drivers/net drivers/net/hw iommu cachestat pid_namespace rlimits timens pidfd" SKIP_TARGETS="" $force_targets INSTALL_PATH=%{buildroot}%{_libexecdir}/kselftests VMLINUX_H="${RPM_VMLINUX_H}" install
 
 # 'make install' for bpf is broken and upstream refuses to fix it.
 # Install the needed files manually.
@@ -5881,7 +5944,7 @@ rm -rf %{buildroot}%{_libdir}/libperf.a
 
 %if %{with_tools}
 %ifarch %{cpupowerarchs}
-%{make} -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFREQ_BENCH=false install
+%{make} -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} libexecdir=%{_libexecdir} mandir=%{_mandir} unitdir=%{_unitdir} CPUFREQ_BENCH=false install
 %find_lang cpupower
 mv cpupower.lang ../
 %ifarch x86_64
@@ -5980,11 +6043,23 @@ find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/cgroup/{} \;
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/cgroup/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/cgroup/{} \;
 popd
+# install drivers/net selftests
+pushd tools/testing/selftests/drivers/net
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/drivers/net/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/{} \;
+popd
 # install drivers/net/mlxsw selftests
 pushd tools/testing/selftests/drivers/net/mlxsw
 find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/drivers/net/mlxsw/{} \;
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/mlxsw/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/mlxsw/{} \;
+popd
+# install drivers/net/hw selftests
+pushd tools/testing/selftests/drivers/net/hw
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/drivers/net/hw/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/hw/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/drivers/net/hw/{} \;
 popd
 # install drivers/net/netdevsim selftests
 pushd tools/testing/selftests/drivers/net/netdevsim
@@ -6015,12 +6090,6 @@ pushd tools/testing/selftests/tc-testing
 find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/tc-testing/{} \;
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/tc-testing/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/tc-testing/{} \;
-popd
-# install livepatch selftests
-pushd tools/testing/selftests/livepatch
-find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/livepatch/{} \;
-find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/livepatch/{} \;
-find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/livepatch/{} \;
 popd
 # install net/netfilter selftests
 pushd tools/testing/selftests/net/netfilter
@@ -6058,6 +6127,18 @@ pushd tools/testing/selftests/pid_namespace
 find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
 find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
 find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/pid_namespace/{} \;
+popd
+# install timens selftests
+pushd tools/testing/selftests/timens
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/timens/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/timens/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/timens/{} \;
+popd
+# install pidfd selftests
+pushd tools/testing/selftests/pidfd
+find -type d -exec install -d %{buildroot}%{_libexecdir}/kselftests/pidfd/{} \;
+find -type f -executable -exec install -D -m755 {} %{buildroot}%{_libexecdir}/kselftests/pidfd/{} \;
+find -type f ! -executable -exec install -D -m644 {} %{buildroot}%{_libexecdir}/kselftests/pidfd/{} \;
 popd
 %endif
 
@@ -6337,7 +6418,7 @@ fi\
 %kernel_kvm_post rt-64k-debug
 %endif
 
-%if %{with_automotive} && %{with_debug}
+%if %{with_automotive} && %{with_debug} && !%{with_automotive_build}
 %kernel_variant_preun -v automotive-debug
 %kernel_variant_post -v automotive-debug
 %endif
@@ -6350,7 +6431,9 @@ fi\
 %files headers
 /usr/include/*
 %exclude %{_includedir}/cpufreq.h
+%if %{with_ynl}
 %exclude %{_includedir}/ynl
+%endif
 %endif
 
 %if %{with_cross_headers}
@@ -6444,6 +6527,9 @@ fi\
 %else
 %files -n %{package_name}-tools -f cpupower.lang
 %{_bindir}/cpupower
+%{_libexecdir}/cpupower
+%{_unitdir}/cpupower.service
+%config(noreplace) %{_sysconfdir}/cpupower-service.conf
 %{_datadir}/bash-completion/completions/cpupower
 %ifarch x86_64
 %{_bindir}/centrino-decode
@@ -6660,9 +6746,10 @@ fi\
 %kernel_variant_files %{_use_vdso} %{with_debug} rt-debug
 %endif
 %kernel_variant_files %{_use_vdso} %{with_automotive_base} automotive
-%if %{with_automotive}
+%if %{with_automotive} && !%{with_automotive_build}
 %kernel_variant_files %{_use_vdso} %{with_debug} automotive-debug
 %endif
+
 %if %{with_debug_meta}
 %files debug
 %files debug-core
@@ -6696,88 +6783,267 @@ fi\
 %kernel_variant_files %{_use_vdso} %{with_debug} rt-64k-debug
 %endif
 
+%ifnarch noarch %{nobuildarches}
 %files modules-extra-matched
+%endif
 
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
 #
 %changelog
-* Thu Jul 17 2025 Augusto Caringi <acaringi@redhat.com> [6.15.7-0]
-- Linux v6.15.7
+* Wed Jul 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc7.60]
+- redhat/configs: clang_lto: disable CONFIG_FORTIFY_KUNIT_TEST (Scott Weaver)
 
-* Thu Jul 10 2025 Augusto Caringi <acaringi@redhat.com> [6.15.6-0]
-- Turn on MITIGATION_TSA for RHEL configs (Augusto Caringi)
+* Wed Jul 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc7.59]
+- fedora: minor cleanups (Peter Robinson)
+- fedora: aarch64: enable a couple of brcmstb reset drivers (Peter Robinson)
+
+* Tue Jul 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc7.58]
+- rhel/aarch64: enable CONFIG_TCG_ARM_CRB_FFA as a module (Marcin Juszkiewicz)
+- redhat/configs: Move CONFIG_MITIGATION_TSA under common/generic/x86 (Waiman Long)
+- Set CONFIG_TEST_VMALLOC to off for s390 zfcpdump (Justin M. Forbes)
+- Revert "redhat/configs: automotive: Turn off ACPI Processor package for aarch64" (Enric Balletbo i Serra)
+- redhat/configs: automotive: Disable CONFIG_NUMA config (Dorinda Bassey)
+- Consolidate configs to common for 6.16 (Justin M. Forbes)
+
+* Mon Jul 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc7.57]
+- Linux v6.16.0-0.rc7
+
+* Sun Jul 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.f4a40a4282f4.56]
+- Linux v6.16.0-0.rc6.f4a40a4282f4
+
+* Sat Jul 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.4871b7cb27f4.55]
+- arm64: enable SND_HDA_ACPI as a module (Marcin Juszkiewicz)
+- Linux v6.16.0-0.rc6.4871b7cb27f4
+
+* Fri Jul 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.6832a9317eee.54]
+- kernel.spec: always provide kernel-devel-uname-r (Scott Weaver)
+- kernel.spec: always provide kernel (Scott Weaver)
+- kernel.spec: dynamically set provides/requires name (Scott Weaver)
+- Linux v6.16.0-0.rc6.6832a9317eee
+
+* Thu Jul 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.e2291551827f.53]
+- Linux v6.16.0-0.rc6.e2291551827f
+
+* Tue Jul 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.155a3c003e55.52]
+- Linux v6.16.0-0.rc6.155a3c003e55
+
+* Mon Jul 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc6.51]
+- kernel.spec: use %%{name} in partner/internal modules (Scott Weaver)
+- kernel.spec: introduce with_automotive_build (Scott Weaver)
+- kernel.spec: fix kernel-automotive packaging (Scott Weaver)
+- kernel.spec: add a few macro option comments (Scott Weaver)
+- kernel.spec: add conditional to include rhel trusted certificates (Eric Chanudet)
+- kernel.spec: Always BuildRequire openssl-devel (Eric Chanudet)
+- kernel.spec: automotive: disable kernel signature by default (Eric Chanudet)
+- redhat/configs: automotive: enable extra system cert (Eric Chanudet)
+- redhat/configs: automotive: Disable module signature with modules_install (Eric Chanudet)
+- Linux v6.16.0-0.rc6
+
+* Sun Jul 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.3f31a806a62e.50]
+- Linux v6.16.0-0.rc5.3f31a806a62e
+
+* Sat Jul 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.379f604cc3dc.49]
+- Linux v6.16.0-0.rc5.379f604cc3dc
+
+* Fri Jul 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.bc9ff192a6c9.48]
+- kernel.spec: honor packaging flags (Scott Weaver)
+- Fix FIPS mode for Fedora (Justin M. Forbes)
+- Linux v6.16.0-0.rc5.bc9ff192a6c9
+
+* Thu Jul 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.8c2e52ebbe88.47]
+- Linux v6.16.0-0.rc5.8c2e52ebbe88
+
+* Wed Jul 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.733923397fd9.46]
+- Linux v6.16.0-0.rc5.733923397fd9
+
+* Tue Jul 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.d006330be3f7.45]
 - Turn on TSA Mitigation for Fedora (Justin M. Forbes)
-- Linux v6.15.6
+- Linux v6.16.0-0.rc5.d006330be3f7
 
-* Sun Jul 06 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.5-0]
-- io_uring: gate REQ_F_ISREG on !S_ANON_INODE as well (Jens Axboe)
-- Linux v6.15.5
+* Mon Jul 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc5.44]
+- Linux v6.16.0-0.rc5
 
-* Fri Jun 27 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.4-0]
+* Sun Jul 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.1f988d0788f5.43]
+- Linux v6.16.0-0.rc4.1f988d0788f5
+
+* Sat Jul 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.a79a588fc176.42]
+- Linux v6.16.0-0.rc4.a79a588fc176
+
+* Fri Jul 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.4c06e63b9203.41]
+- redhat/configs: Enable CONFIG_AMD_HSMP_ACPI and CONFIG_AMD_HSMP_PLAT on RHEL (David Arcari)
+- Linux v6.16.0-0.rc4.4c06e63b9203
+
+* Thu Jul 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.b4911fb0b060.40]
+- redhat/configs: CONFIG_WWAN enough as a module (Jose Ignacio Tornos Martinez)
+- redhat/configs: Enable CONFIG_NET_SCH_BPF on RHEL (Viktor Malik)
+- config: new config in drivers/phy (Izabela Bakollari)
+- Linux v6.16.0-0.rc4.b4911fb0b060
+
+* Wed Jul 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.66701750d556.39]
+- livepatch: no need to build kselftests with kernel (Radomir Vrbovsky)
 - redhat: Restore the status quo wrt memory onlining (Vitaly Kuznetsov) [2375049]
-- Linux v6.15.4
+- redhat/spec: Disable gdb index for riscv cross-compile (Jennifer Berringer)
+- gitlab-ci: Enable CI for riscv64 on centos/eln (Jennifer Berringer)
+- redhat: Enable RISC-V arch for centos/eln (Jennifer Berringer)
 
-* Thu Jun 19 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.3-0]
-- ACPICA: Refuse to evaluate a method if arguments are missing (Rafael J. Wysocki)
-- Linux v6.15.3
+* Tue Jul 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.66701750d556.38]
+- Linux v6.16.0-0.rc4.66701750d556
 
-* Fri Jun 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
-- wifi: ath12k: support MLO as well if single_chip_mlo_support flag is set (Baochen Qiang)
-- wifi: ath12k: use fw_features only when it is valid (Baochen Qiang)
-- wifi: ath12k: introduce ath12k_fw_feature_supported() (Baochen Qiang)
+* Mon Jun 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc4.37]
+- Linux v6.16.0-0.rc4
+
+* Sun Jun 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.dfba48a70cb6.36]
+- Linux v6.16.0-0.rc3.dfba48a70cb6
+
+* Sat Jun 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.aaf724ed6926.35]
+- Linux v6.16.0-0.rc3.aaf724ed6926
+
+* Fri Jun 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.67a993863163.34]
+- redhat/kernel.spec.template: add drivers/net and drivers/net/hw selftest (Hangbin Liu)
+- uki: enable FIPS mode (Vitaly Kuznetsov)
+- Linux v6.16.0-0.rc3.67a993863163
+
+* Thu Jun 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.ee88bddf7f2f.33]
+- Linux v6.16.0-0.rc3.ee88bddf7f2f
+
+* Wed Jun 25 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.7595b66ae9de.32]
+- redhat/configs: Move CONFIG_MITIGATION_ITS to common/generic/x86 (Waiman Long)
+- Linux v6.16.0-0.rc3.7595b66ae9de
+
+* Tue Jun 24 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.78f4e737a53e.31]
+- redhat/configs: enable fwctl for RHEL (Michal Schmidt) [RHEL-96987]
+- Linux v6.16.0-0.rc3.78f4e737a53e
+
+* Mon Jun 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc3.30]
+- Linux v6.16.0-0.rc3
+
+* Sun Jun 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.739a6c93cc75.29]
+- Linux v6.16.0-0.rc2.739a6c93cc75
+
+* Sat Jun 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.3f75bfff44be.28]
+- Fedora configs for 6.16 (Justin M. Forbes)
+- Linux v6.16.0-0.rc2.3f75bfff44be
+
+* Fri Jun 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.75f5f23f8787.27]
 - aarch64: Switch TI_SCI_CLK and TI_SCI_PM_DOMAINS symbols to built-in (Peter Robinson)
+- Linux v6.16.0-0.rc2.75f5f23f8787
+
+* Thu Jun 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.fb4d33ab452e.26]
+- redhat/configs: enable CONFIG_TCG_SVSM (Stefano Garzarella)
+- redhat: enable CONFIG_CRASH_DM_CRYPT and CONFIG_KEXEC_HANDOVER for all (Coiby Xu)
+- Simplify include Makefile.rhelver (Don Zickus)
+- Linux v6.16.0-0.rc2.fb4d33ab452e
+
+* Wed Jun 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.52da431bf03b.25]
+- redhat/configs/common/generic: enable vgem module via CONFIG_DRM_VGEM (Alexander Kanavin)
+- Linux v6.16.0-0.rc2.52da431bf03b
+
+* Tue Jun 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.9afe652958c3.24]
+- Linux v6.16.0-0.rc2.9afe652958c3
+
+* Mon Jun 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc2.23]
+- Linux v6.16.0-0.rc2
+
+* Sun Jun 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.8c6bc74c7f89.22]
+- Linux v6.16.0-0.rc1.8c6bc74c7f89
+
+* Sat Jun 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.4774cfe3543a.21]
+- redhat/configs: enable IWLMLD for rhel (Jose Ignacio Tornos Martinez)
+- Linux v6.16.0-0.rc1.4774cfe3543a
+
+* Fri Jun 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.27605c8c0f69.20]
+- kernel.spec: fedora automotive build is not supported (Scott Weaver)
+- gitignore: kernel-automotive generated files (Scott Weaver)
+- gitlab-ci: use AUTOMOTIVE_BUILD with dist-srpm (Scott Weaver)
+- redhat/self-test: update for new automotive variables (Scott Weaver)
+- redhat/Makefile: introduce AUTOMOTIVE_BUILD (Scott Weaver)
+- kernel.spec: updates for automotive-only build (Scott Weaver)
+- fedora: Updates for the 6.16 merge window (Peter Robinson)
+- Linux v6.16.0-0.rc1.27605c8c0f69
+
+* Thu Jun 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.2c4a1f3fe03e.19]
+- redhat/kernel.spec: drop modules-extra-matched for noarch (Jan Stancek)
 - redhat/configs: fedora: set some qcom clk, icc, and pinctrl drivers to built in (Brian Masney)
+- fedora: disable SND_OSSEMUL (Peter Robinson)
+- fedora: disable OSS sound for real HW (Peter Robinson)
+- Linux v6.16.0-0.rc1.2c4a1f3fe03e
 
-* Tue Jun 10 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.2-0]
-- Revert "drm/amd/display: more liberal vmin/vmax update for freesync" (Justin M. Forbes)
-- Linux v6.15.2
+* Wed Jun 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.aef17cb3d3c4.18]
+- gitlab-ci: disable merge-rt-automotive (Scott Weaver)
+- redhat/configs: automotive: enable j784s4evm DSP remoteproc configs (Jared Kangas) [RHEL-95436]
+- Linux v6.16.0-0.rc1.aef17cb3d3c4
 
-* Wed Jun 04 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.1-0]
-- arm64: dts: rockchip: Drop assigned-clock* from cpu nodes on rk3588 (Diederik de Haas)
-- arm64: dts: rockchip: Improve LED config for NanoPi R5S (Diederik de Haas)
-- arm64: dts: rockchip: Move rk3568 PCIe3 MSI to use GIC ITS (Chukun Pan)
-- arm64: dts: rockchip: Update eMMC for NanoPi R5 series (Peter Robinson)
-- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-rock3c (Peter Robinson)
-- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-quartz64-b (Diederik de Haas)
-- arm64: dts: rockchip: Add phy-supply to gmac0 on NanoPi R5S (Diederik de Haas)
-- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3588-rock-5b (Diederik de Haas)
-- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3399-rockpro64 (Diederik de Haas)
-- arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3328-rock64 (Diederik de Haas)
-- arm64: dts: rockchip: Move SHMEM memory to reserved memory on rk3588 (Chukun Pan)
-- arm64: dts: rockchip: Add gmac phy reset GPIO to QNAP TS433 (Uwe Kleine-König)
-- arm64: dts: rockchip: Correct gmac phy address on QNAP TS433 (Uwe Kleine-König)
-- Reset build id for fedora-srpm script (Justin M. Forbes)
-- redhat/configs: Add configs for new ov02c10 and ov02e10 drivers (Hans de Goede)
-- media: i2c: Add Omnivision OV02C10 sensor driver (Heimir Thor Sverrisson)
-- media: i2c: ov02e10: add OV02E10 image sensor driver (Jingjing Xiong)
-- platform/x86: int3472: Debug log when remapping pins (Hans de Goede)
-- platform/x86: int3472: Add handshake pin support (Hans de Goede)
-- platform/x86: int3472: Prepare for registering more than 1 GPIO regulator (Hans de Goede)
-- platform/x86: int3472: Avoid GPIO regulator spikes (Hans de Goede)
-- platform/x86: int3472: Make regulator supply name configurable (Hans de Goede)
-- platform/x86: int3472: Rework AVDD second sensor quirk handling (Hans de Goede)
-- platform/x86: int3472: Drop unused gpio field from struct int3472_gpio_regulator (Hans de Goede)
-- platform/x86: int3472: Stop setting a supply-name for GPIO regulators (Hans de Goede)
-- platform/x86: int3472: Add skl_int3472_register_clock() helper (Hans de Goede)
-- powerpc: Fix struct termio related ioctl macros (Madhavan Srinivasan)
-- Initial setup for stable Fedora releases (Justin M. Forbes)
+* Tue Jun 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.f09079bd04a9.17]
+- redhat/configs: add LED kernel configs (Rupinderjit Singh)
+- Linux v6.16.0-0.rc1.f09079bd04a9
+
+* Mon Jun 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc1.16]
+- redhat: enable test_kmod, test_module and install kmod selftests (Herton R. Krzesinski)
+- package the newly added cpupower.service (Thorsten Leemhuis)
+- process_configs: always print errors (Thorsten Leemhuis)
+- Linux v6.16.0-0.rc1
+
+* Sun Jun 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.8630c59e9936.15]
+- Linux v6.16.0-0.rc0.8630c59e9936
+
+* Sat Jun 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.bdc7f8c5adad.14]
+- redhat/configs: disable RZ/V2N in automotive (Eric Chanudet)
+- redhat/configs: Move RZ/G3E config to automotive (Eric Chanudet)
+- redhat: add more namespace selftests to kernel-modules-internal package (Joel Savitz) [RHEL-94503]
+- Linux v6.16.0-0.rc0.bdc7f8c5adad
+
+* Fri Jun 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.e271ed52b344.13]
+- Linux v6.16.0-0.rc0.e271ed52b344
+
+* Thu Jun 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.ec7714e49479.12]
+- redhat/configs: Enable CONFIG_PCIE_TPH (Ivan Vecera)
+- spec: fix spec warning for /usr/include/ynl (Jan Stancek)
+- redhat/configs: Move CONFIG_PPC_FTRACE_OUT_OF_LINE_NUM_RESERVE to powerpc (Viktor Malik)
+- Linux v6.16.0-0.rc0.ec7714e49479
+
+* Wed Jun 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.5abc7438f1e9.11]
+- Linux v6.16.0-0.rc0.5abc7438f1e9
+
+* Tue Jun 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.546b1c9e93c2.10]
+- Fix up powerpc mismatch (Justin M. Forbes)
+- Linux v6.16.0-0.rc0.546b1c9e93c2
+
+* Mon Jun 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.cd2e103d57e5.9]
+- Linux v6.16.0-0.rc0.cd2e103d57e5
+
+* Sun Jun 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.7d4e49a77d99.8]
+- Fix another mismatch for 6.16 (Justin M. Forbes)
+- Linux v6.16.0-0.rc0.7d4e49a77d99
+
+* Sat May 31 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.4cb6c8af8591.7]
+- Fix up a mismatch for Fedora aarch64 (Justin M. Forbes)
+- Linux v6.16.0-0.rc0.4cb6c8af8591
+
+* Fri May 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.f66bc387efbe.6]
+- Linux v6.16.0-0.rc0.f66bc387efbe
+
+* Thu May 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.90b83efa6701.5]
+- Fix up mismatches for RHEL s390 zfpcdump (Justin M. Forbes)
+- More mismatch fixes for 6.16 (Justin M. Forbes)
+- Linux v6.16.0-0.rc0.90b83efa6701
+
+* Wed May 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.feacb1774bd5.4]
+- Turn CROS_EC_PROTO to m for Fedora to avoid mismatch (Justin M. Forbes)
+- Linux v6.16.0-0.rc0.feacb1774bd5
+
+* Wed May 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.914873bc7df9.3]
+- Reset changelog for 6.16 cycle (Justin M. Forbes)
+
+* Tue May 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.16.0-0.rc0.914873bc7df9.2]
+- Fix up CRYPTO_SHA256 configs for mismatch (Justin M. Forbes)
 - Reset RHEL_RELEASE for the 6.16 cycle (Justin M. Forbes)
 - fedora: add 'fedora' SBAT suffix for UKI addons (Li Tian)
 - redhat: add downstream SBAT for UKI addons (Emanuele Giuseppe Esposito)
 - uki_addons: provide custom SBAT as input parameter (Emanuele Giuseppe Esposito)
 - uki_addons: remove completely sbat/sbat.conf (Emanuele Giuseppe Esposito)
-- Linux v6.15.1
-
-* Mon May 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-60]
 - Consolidate configs to common for 6.15 (Justin M. Forbes)
-- Linux v6.15.0
-
-* Thu May 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.d608703fcdd9.59]
-- Linux v6.15.0-0.rc7.d608703fcdd9
-
-* Wed May 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.4a95bc121ccd.58]
 - redhat/configs: automotive: enable MHI_BUS_EP (Eric Chanudet)
 - Fix PHYSICAL_ALIGN for x86 Fedora (Justin M. Forbes)
 - Switch ZSWAP_ZPOOL_DEFAULT to ZSMALLOC as ZBUD has been removed (Justin M. Forbes)
@@ -6785,208 +7051,2889 @@ fi\
 - configs: add redhat/configs/common/generic/CONFIG_OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
 - redhat: make ENABLE_WERROR also enable OBJTOOL_WERROR (Ryan Sullivan) [RHEL-85301]
 - redhat/configs: Enable CONFIG_X86_POSTED_MSI (Jerry Snitselaar)
-- Linux v6.15.0-0.rc7.4a95bc121ccd
-
-* Mon May 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc7.57]
 - redhat/configs: remove CRC16 config files (Scott Weaver)
-- Linux v6.15.0-0.rc7
-
-* Sun May 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.5723cc3450bc.56]
 - Revert CONFIG_GENKSYMS in pending for x86 (Justin M. Forbes)
-- Linux v6.15.0-0.rc6.5723cc3450bc
-
-* Sat May 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.172a9d94339c.55]
-- Linux v6.15.0-0.rc6.172a9d94339c
-
-* Fri May 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.fee3e843b309.54]
-- Linux v6.15.0-0.rc6.fee3e843b309
-
-* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.088d13246a46.53]
 - Flip GENKSYMS for RHEL (Justin M. Forbes)
-- Linux v6.15.0-0.rc6.088d13246a46
-
-* Thu May 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.52]
 - Move MITIGATION_ITS to the x86 directory (Justin M. Forbes)
 - Set MITIGATION_ITS for Fedora (Justin M. Forbes)
 - Fedora: arm: Updates for QCom devices (Souradeep Chowdhury)
-
-* Wed May 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.9f35e33144ae.51]
 - redhat/configs: Explicitly disable CONFIG_VIRTIO_MEM on powerpc in RHEL (Thomas Huth)
 - redhat/configs: Consolidate the CONFIG_AP_DEBUG config switch (Thomas Huth)
-- Linux v6.15.0-0.rc6.9f35e33144ae
-
-* Tue May 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.e9565e23cd89.50]
 - Set Fedora configs for 6.15 (Justin M. Forbes)
-- Linux v6.15.0-0.rc6.e9565e23cd89
-
-* Mon May 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc6.49]
 - Shorten the uname for git snapshots (Justin M. Forbes)
-- Linux v6.15.0-0.rc6
-
-* Sun May 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.3ce9925823c7.48]
-- Linux v6.15.0-0.rc5.3ce9925823c7
-
-* Sat May 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.1a33418a69cc.47]
 - nvme: explicitly enable the nvme keyring (Maurizio Lombardi)
-- Linux v6.15.0-0.rc5.1a33418a69cc
-
-* Fri May 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.9c69f8884904.46]
 - Enable the gs_usb CAN bus driver in RHEL (Radu Rendec)
 - Stop disabling some modules needed to run on Azure (Pierre-Yves Chibon)
 - redhat/configs: enable ACPI_DEBUG on non-debug kernels (Mark Langsdorf)
 - specfile:  add with_toolsonly variable to build only tools packages (Clark Williams)
 - redhat/configs: Enable CONFIG_TYPEC_TBT_ALTMODE in RHEL (Desnes Nunes) [RHEL-78931]
-- Linux v6.15.0-0.rc5.9c69f8884904
-
-* Thu May 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.d76bb1ebb558.45]
-- Linux v6.15.0-0.rc5.d76bb1ebb558
-
-* Wed May 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.0d8d44db295c.44]
-- Linux v6.15.0-0.rc5.0d8d44db295c
-
-* Tue May 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.01f95500a162.43]
-- Linux v6.15.0-0.rc5.01f95500a162
-
-* Mon May 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc5.42]
-- Linux v6.15.0-0.rc5
-
-* Sun May 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.e8ab83e34bdc.41]
-- Linux v6.15.0-0.rc4.e8ab83e34bdc
-
-* Sat May 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.95d3481af6dc.40]
 - Turn on ACPI_DEBUG for Fedora (Justin M. Forbes)
 - redhat: fix kernel-rt-kvm package removal for Fedora (Thorsten Leemhuis)
-- Linux v6.15.0-0.rc4.95d3481af6dc
-
-* Fri May 02 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ebd297a2affa.39]
 - redhat/configs: aarch64: Enable Apple touchbar display driver for Fedora (Neal Gompa)
-- Linux v6.15.0-0.rc4.ebd297a2affa
-
-* Thu May 01 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.4f79eaa2ceac.38]
 - redhat: remove kernel-rt-kvm package (Clark Williams)
 - redhat: introduce modules-extra-matched meta package (Jan Stancek)
 - Fix up some Netfilter configs for Fedora (Justin M. Forbes)
 - Turn NF_CT_NETLINK_TIMEOUT for Fedora (Justin M. Forbes)
 - Turn on NF_CONNTRACK_TIMEOUT for Fedora (Justin M. Forbes)
-- Linux v6.15.0-0.rc4.4f79eaa2ceac
-
-* Wed Apr 30 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.b6ea1680d0ac.37]
 - redhat/configs: Adjust CONFIG_TUNE for s390x (Mete Durlu)
-- Linux v6.15.0-0.rc4.b6ea1680d0ac
-
-* Tue Apr 29 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.ca91b9500108.36]
 - redhat/spec: fix selftests dependencies (Gregory Bell) [RHEL-88228]
 - redhat: add namespace selftests to kernel-modules-internal package (Joel Savitz) [RHEL-88635]
 - Turn off CONFIG_PCI_REALLOC_ENABLE_AUTO for Fedora (Justin M. Forbes)
-- Linux v6.15.0-0.rc4.ca91b9500108
-
-* Mon Apr 28 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc4.35]
-- Linux v6.15.0-0.rc4
-
-* Sun Apr 27 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.5bc1018675ec.34]
-- Linux v6.15.0-0.rc3.5bc1018675ec
-
-* Sat Apr 26 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.f1a3944c860b.33]
-- Linux v6.15.0-0.rc3.f1a3944c860b
-
-* Fri Apr 25 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.02ddfb981de8.32]
 - gitlab-ci: enable pipelines for rt-64k (Clark Williams)
 - rt-64k:  Enable building 64k page-size RT kernel (Clark Williams)
-- Linux v6.15.0-0.rc3.02ddfb981de8
-
-* Thu Apr 24 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a79be02bba5c.31]
 - redhat: drop Y issues from changelog (Jan Stancek)
 - redhat/configs: Update the CONFIG_KERNEL_IMAGE_BASE kernel config option (Thomas Huth)
 - redhat/configs: Remove the obsolete CONFIG_ZCRYPT_DEBUG switches (Thomas Huth)
 - redhat/configs: Consolidate the CONFIG_AP switch (Thomas Huth)
-- Linux v6.15.0-0.rc3.a79be02bba5c
-
-* Wed Apr 23 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.bc3372351d0c.30]
-- Linux v6.15.0-0.rc3.bc3372351d0c
-
-* Tue Apr 22 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.a33b5a08cbbd.29]
 - fedora: updates for 6.15 (Peter Robinson)
 - redhat/configs: Disable CONFIG_COMPAT option on s390 (Mete Durlu) [RHEL-24047]
-- Linux v6.15.0-0.rc3.a33b5a08cbbd
-
-* Mon Apr 21 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc3.9d7a0577c9db.28]
-- Linux v6.15.0-0.rc3.9d7a0577c9db
-
-* Sun Apr 20 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.6fea5fabd332.27]
-- Linux v6.15.0-0.rc2.6fea5fabd332
-
-* Sat Apr 19 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.8560697b23dc.26]
 - uki: Add weak dependency on 'uki-direct' (Vitaly Kuznetsov)
 - redhat/kernel.spec: fix duplicate packaging of ynl headers (Jan Stancek)
 - Enable FunctionFS on aarch64 + x86 (Sam Day)
-- Linux v6.15.0-0.rc2.8560697b23dc
-
-* Fri Apr 18 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.fc96b232f8e7.25]
 - Turn on USB Gadget for Fedora x86 (Justin M. Forbes)
-- Linux v6.15.0-0.rc2.fc96b232f8e7
-
-* Thu Apr 17 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.cfb2e2c57aef.24]
 - redhat: enable drm panic screen with a QR code (Scott Weaver)
 - redhat: enable Rust code in ELN (Scott Weaver)
 - redhat: strip leading '(' in dist-get-buildreqs (Jan Stancek)
-- Linux v6.15.0-0.rc2.cfb2e2c57aef
-
-* Wed Apr 16 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.1a1d569a75f3.23]
-- Linux v6.15.0-0.rc2.1a1d569a75f3
-
-* Tue Apr 15 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.834a4a689699.22]
-- Linux v6.15.0-0.rc2.834a4a689699
-
-* Mon Apr 14 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc2.21]
-- Linux v6.15.0-0.rc2
-
-* Sun Apr 13 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.7cdabafc0012.20]
-- Linux v6.15.0-0.rc1.7cdabafc0012
-
-* Sat Apr 12 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3bde70a2c827.19]
-- Linux v6.15.0-0.rc1.3bde70a2c827
-
-* Fri Apr 11 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.900241a5cc15.18]
-- Linux v6.15.0-0.rc1.900241a5cc15
-
-* Thu Apr 10 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.3b07108ada81.17]
-- Linux v6.15.0-0.rc1.3b07108ada81
-
-* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.a24588245776.16]
 - Fix up CONFIG_CRC_ITU_T mismatch (Scott Weaver)
 - Fix up CONFIG_CRC16 mismatch (Scott Weaver)
-- Linux v6.15.0-0.rc1.a24588245776
-
-* Wed Apr 09 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.15]
 - redhat: remove kernel-ipaclones-internal package (Joe Lawrence)
 - redhat/kernel.spec.template: add net packetdrill selftests (Hangbin Liu)
 - redhat/kernel.spec.template: Build rtla with BPF sample collection (Tomas Glozar)
-
-* Tue Apr 08 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.14]
 - redhat/configs: automotive: Enable CONFIG_BOOTPARAM_HUNG_TASK_PANIC config (Dorinda Bassey)
 - samples/bpf: fix build (Gregory Bell)
 - redhat: create 'systemd-volatile-overlay' addon for UKI (Emanuele Giuseppe Esposito)
-
-* Mon Apr 07 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc1.13]
 - fedora: arm64: move some TI drivers to modular (Peter Robinson)
 - fedora: minor cleanups for 6.14 (Peter Robinson)
 - redhat/configs: enable CONFIG_I2C_MUX_PCA954x on x86 (Michal Schmidt)
-- Linux v6.15.0-0.rc1
-
-* Sun Apr 06 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc0.f4d2ef48250a.12]
-- Linux v6.15.0-0.rc0.f4d2ef48250a
-
-* Sat Apr 05 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc0.a8662bcd2ff1.11]
-- Linux v6.15.0-0.rc0.a8662bcd2ff1
-
-* Fri Apr 04 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc0.e48e99b6edf4.10]
-- Linux v6.15.0-0.rc0.e48e99b6edf4
-
-* Thu Apr 03 2025 Fedora Kernel Team <kernel-team@fedoraproject.org> [6.15.0-0.rc0.a2cc6ff5ec8f.9]
 - redhat: bump RHEL_MAJOR (Jan Stancek)
 - redhat/configs: enable CONFIG_AMD_3D_VCACHE for x86 on RHEL (David Arcari)
-- Linux v6.15.0-0.rc0.a2cc6ff5ec8f
-
+- Switch ZSWAP_ZPOOL_DEFAULT to ZSMALLOC as ZBUD has been removed (Justin M. Forbes)
+- redhat/kernel.spec: list python3-wheel explicitly for Fedora<42 (Jan Stancek)
+- handle man-page for rv-mon-sched in redhat/kernel.spec.template (Thorsten Leemhuis)
+- redhat: find-debuginfo workaround is no longer needed on F42 (Jan Stancek)
+- redhat/kernel.spec: use target versions of tools for debugedit and gdb-add-index (Jan Stancek)
+- redhat: make ENABLE_WERROR enable also KVM_WERROR (Jan Stancek)
+- kernel.spec.template: cpupower: adjust lib versioning (Thorsten Leemhuis)
+- redhat/configs: automotive: builtin virtio-mmio (Eric Chanudet)
+- Fix up mismatches in the 6.15 merge window (Scott Weaver)
+- Reset log for 6.15 cycle (Justin M. Forbes)
+- Reset RHEL_RELEASE for 6.15 cycle (Justin M. Forbes)
+- arm64: cleanup and de-dupe erratum (Peter Robinson)
+- arm64: cleanup and de-dupe configs (Peter Robinson)
+- cleanup: x86: cleanup some x86_32 leftovers (Peter Robinson)
+- all: cleanup CAN_ROCKCHIP_CANFD (Peter Robinson)
+- aarch64: Options required for UEFI HTTP boot on SystemReady-DT (Peter Robinson)
+- common: Move ZONE_DEVICE to generic (Peter Robinson)
+- common: Cleanup BTT (Peter Robinson)
+- cleanup: move DEV_DAX_PMEM to common/generic (Peter Robinson)
+- generic: cleanup the NVDIMM options (Peter Robinson)
+- cleanup: move OF_PMEM to common/generic (Peter Robinson)
+- cleanup: Remove DEV_DAX_PMEM_COMPAT option (Peter Robinson)
+- Consolidate configs into common for 6.14 (Justin M. Forbes)
+- Turn VIRTIO_BLK and VIRTIO_CONSOLE inline for Fedora (Justin M. Forbes)
+- redhat: configs: fedora: enable CONFIG_I2C_HID_OF=m on x86 (Hans de Goede)
+- redhat: move dist-relase-check behind new variable (Jan Stancek)
+- Set last minute config item for 6.14 for Fedora (Justin M. Forbes)
+- redhat/configs: automotive: Disable CONFIG_USERFAULTFD config (Dorinda Bassey)
+- Revert "be2iscsi: remove unsupported device IDs" (Scott Weaver)
+- Revert "megaraid_sas: remove deprecated pci-ids" (Scott Weaver)
+- Revert "[scsi] megaraid_sas: re-add certain pci-ids" (Scott Weaver)
+- media: ov08x40: Extend sleep after reset to 5 ms (Hans de Goede)
+- redhat/configs: automotive: Disable VLAN_8021Q_GVRP config (Dorinda Bassey)
+- redhat/configs: automotive: Disable DCB and MPLS configs (Dorinda Bassey)
+- redhat/configs: automotive: Disable IEEE 802.15.4 config (Dorinda Bassey)
+- redhat/configs: automotive: Disable various network classification features (Dorinda Bassey)
+- redhat/configs: automotive: Disable the SMBFS file system (Dorinda Bassey)
+- redhat/configs: automotive: Disable Myricom network adapters (Dorinda Bassey)
+- redhat/configs: automotive: Disable USB4 Ethernet config (Dorinda Bassey)
+- redhat/configs: automotive: Disable the Mellanox SwitchX core driver (Dorinda Bassey)
+- redhat/configs: automotive: Disable network storage related protocols (Dorinda Bassey)
+- redhat/configs: automotive: Disable lightweight tunneling with BPF (Dorinda Bassey)
+- redhat/configs: automotive: Disable RADOS block device configs (Dorinda Bassey)
+- redhat/configs: automotive: Disable switchdev driver framework (Dorinda Bassey)
+- redhat/configs: automotive: Disable network packet generator (Dorinda Bassey)
+- redhat/configs: automotive: Disable NET_CLS_ACT and PSAMPLE configs (Dorinda Bassey)
+- redhat/configs: automotive: Disable BPF STREAM_PARSER (Dorinda Bassey)
+- redhat/configs: automotive: Disable Open vSwitch and NET_NSH configs (Dorinda Bassey)
+- redhat/configs: automotive: Disable IP Virtual Server configs (Dorinda Bassey)
+- redhat/configs: automotive: Disable IP set support (Dorinda Bassey)
+- redhat/configs: automotive: Disable NetLabel subsystem support (Dorinda Bassey)
+- redhat/configs: automotive: Disable TLS Protocol (Dorinda Bassey)
+- redhat/configs: automotive: Disable Advanced TCP Congestion Control (Dorinda Bassey)
+- redhat/configs: automotive: Disable XDP Socket Protocol (Dorinda Bassey)
+- redhat/configs: delete CONFIG_USB_ONBOARD_HUB and use CONFIG_USB_ONBOARD_DEV instead (Desnes Nunes)
+- redhat: check release commit is present for dist-{release-tag,git} (Jan Stancek)
+- Revert "qla4xxx: Remove deprecated PCI IDs from RHEL 8" (Scott Weaver)
+- Re-enable vxcan (CONFIG_CAN_VXCAN) for automotive (Radu Rendec)
+- Revert "mpt*: remove certain deprecated pci-ids" (Scott Weaver)
+- Turn on CONFIG_PACKING for RHEL (Justin M. Forbes)
+- main.c: fix initcall blacklisted (Tomas Henzl)
+- redhat/configs: automotive: Disable IPsec Protocols and XFRM (Dorinda Bassey)
+- redhat: Update CONFIG_STRICT_DEVMEM settings (enable it on s390x) (Thomas Huth)
+- redhat: Consolidate CONFIG_VIRTIO_MEM and enable it also for s390x (Thomas Huth)
+- Remove no longer necessary pending entry (Justin M. Forbes)
+- Fedora configs for 6.14 (Justin M. Forbes)
+- redhat/configs: Disable rest of the CONFIG_PKEY_ options on s390 (Mete Durlu) [RHEL-78341]
+- Fix up some debug module loading issues due to BTF mismatch (Justin M. Forbes)
+- Revert "redhat/configs: automotive: disable CONFIG_AIO" (Davide Caratti)
+- redhat/configs: automotive disable ARCH_TEGRA_241_SOC (Eric Chanudet)
+- rhel_files: ensure all qdiscs are in modules-core (Davide Caratti) [RHEL-79818]
+- redhat/configs: automotive: Disable MRP/8021Q_MVRP Protocol (Dorinda Bassey)
+- redhat/configs: enable CONFIG_ARM_SMMU_MMU_500_CPRE_ERRATA (Jerry Snitselaar)
+- redhat/configs: enable CONFIG_ARM_SMMU_V3_IOMMUFD (Jerry Snitselaar)
+- redhat: configs: remove CONFIG_DMA_API_DEBUG_SG (Kate Hsuan)
+- kernel.spec: add missing tools-libs on s390x (Jan Stancek)
+- arch/x86/kernel/setup.c: fix rh_check_supported (Tomas Henzl)
+- kernel.spec: add minimum version of setuptools for ynl (Jan Stancek)
+- Revert "Merge: redhat/configs: automotive: Disable POSIX_MQUEUE config (Dorinda Bassey)
+- redhat/configs: enable in kernel compression/decompression of compressed modules (Herton R. Krzesinski)
+- redhat: change compression flags for xz (Herton R. Krzesinski)
+- redhat/configs: automotive: Turn off ACPI Processor package for aarch64 (Enric Balletbo i Serra)
+- redhat/configs: automotive: Disable L2TP Protocol (Dorinda Bassey)
+- redhat/configs: automotive: Disable TIPC Protocol (Dorinda Bassey)
+- redhat/configs: Enable Mediatek Bluetooth USB drivers (Bastien Nocera)
+- redhat/configs: Disable CONFIG_PKEY for zfcpdump configs (Mete Durlu) [RHEL-78341]
+- redhat/configs: automotive: disable VFIO_PLATFORM (Eric Chanudet)
+- Revert "Merge: redhat/configs: automotive: Disable SYSIPC config" (Dorinda Bassey)
+- redhat/configs: Enable CONFIG_KASAN_INLINE for RT debug kernel (Waiman Long)
+- redhat/configs: Move CONFIG_PROVE_RAW_LOCK_NESTING to common/debug (Waiman Long)
+- redhat/configs: Move all the lock debugging Kconfig's to common (Waiman Long)
+- redhat/configs: Enable CONFIG_BLK_CGROUP_PUNT_BIO for RHEL (Neal Gompa) [RHEL-79711]
+- fedora: pending: drop USB_ONBOARD_DEV_USB5744 (Peter Robinson)
+- efi,lockdown: fix kernel lockdown on Secure Boot (Ondrej Mosnacek) {CVE-2025-1272}
+- fedora: Update vbox drivers (Peter Robinson)
+- Drop the s390x CONFIG_REGMAP from RHEL pending as upstream removed the dep (Justin M. Forbes)
+- fedora: arm64: enable RT5616 codec (Marcin Juszkiewicz)
+- Revert "nvme: Return BLK_STS_TARGET if the DNR bit is set" (Benjamin Marzinski)
+- Revert "nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT" (Benjamin Marzinski)
+- Revert "nvme: decouple basic ANA log page re-read support from native multipathing" (Benjamin Marzinski)
+- Revert "nvme: nvme_mpath_init remove multipath check" (Benjamin Marzinski)
+- redhat/configs: automotive: Disable CONFIG_FS_DAX config (Dorinda Bassey)
+- config: update CONFIG_LSM to match upstream (Ryan Sullivan)
+- redhat: configs: enable CONFIG_INTEL_ISH_FIRMWARE_DOWNLOADER for RHEL (David Arcari)
+- redhat/Makefile: Add help text for target dist-dump-variables (Eder Zulian)
+- redhat: update self-test-data for new default RHJOBS value (Patrick Talbert)
+- set a more reasonable default for number of jobs (Thorsten Leemhuis)
+- redhat: automotive: define CONFIG_RH_AUTOMOTIVE (Scott Weaver)
+- redhat/configs: disable CONFIG_TCP_AO on RHEL (Sabrina Dubroca)
+- redhat/configs: amend USB_ONBOARD_DEV_USB5744 (Eric Chanudet)
+- redhat/configs: automotive: Disable SYSIPC and MQUEUE configs (Dorinda Bassey)
+- redhat: kernel.spec: add ynl to kernel-tools (Jan Stancek)
+- fedora: enable USB device USB5744 (Peter Robinson)
+- rhel: enable FW_CACHE on RHEL (Dave Airlie)
+- redhat/configs: automotive: Disable the SCTP Protocol (Dorinda Bassey)
+- redhat: generalize rule for kunit and test kmod placement (Jan Stancek)
+- Move CONFIG_PCI_REALLOC_ENABLE_AUTO out of common as they have diverged (Justin M. Forbes)
+- fedora: arm64: enable Silicon Mitus SM5502 Extcon driver (Sam Day)
+- fedora: arm64: enable Richtek RT5033 MFD+charger+regulator modules (Sam Day)
+- configs/fedora: Enable CONFIG_PCI_REALLOC_ENABLE_AUTO (Yanko Kaneti)
+- Enable CONFIG_INTEL_MEI_PXP and CONFIG_DRM_I915_PXP on rhel (Jocelyn Falempe)
+- Enable Intel Xe Graphics (Mika Penttilä)
+- Turn on CONFIG_DRM_ACCEL_AMDXDNA for Fedora (Justin M. Forbes)
+- redhat/configs: disable CONFIG_AF_UNIX_OOB on RHEL (Marcelo Ricardo Leitner)
+- redhat/configs: automotive: Disable wireless network and it's dependencies (Dorinda Bassey)
+- redhat/kernel.spec: work around find-debuginfo aborting cross builds (Jan Stancek)
+- redhat/configs: Default to batched invalidation on s390 (Jerry Snitselaar)
+- redhat/configs: automotive: set CONFIG_TIMEOUT_PANIC (Enric Balletbo i Serra)
+- drop %%{_datadir}/perf-core/* from kernel.spec (Thorsten Leemhuis)
+- put new misc_minor_kunit in modules-internal (Thorsten Leemhuis)
+- put new cirrus kunit tests in modules-internal (Thorsten Leemhuis)
+- redhat/configs: enable iBFT parsing on aarch64 (Chris Leech)
+- redhat: kernel.spec: fix build with merged-sbin (Zbigniew Jędrzejewski-Szmek)
+- Fix up CONFIG_REGMAP mismatch (Scott Weaver)
+- redhat: fix modules.order target (Scott Weaver)
+- Fix up CONFIG_CRC_T10DIF_IMPL_GENERIC mismatch (Justin M. Forbes)
+- Fix mismatches for 6.13 merge window (Justin M. Forbes)
+- Reset rhelver and trim changelog for 6.14 (Justin M. Forbes)
+- Turn off CONFIG_ARM_TIMER_SP804 for automotive (Justin M. Forbes)
+- Set ARM_TIMER_SP804 (Justin M. Forbes)
+- redhat/configs: enable addtional sa8775 related Kconfigs (Brian Masney)
+- redhat: Add rustfmt to deps (Peter Robinson)
+- redhat/configs: Disable deprecated CONFIG_LCS option on s390 (Mete Durlu) [RHEL-68296]
+- redhat/configs: make modular/disable NFS support (Dorinda Bassey)
+- redhat/configs: Disable unsafe queuing disciplines (Dorinda Bassey)
+- configs: move pending RT configs into rhel/rt/generic (Clark Williams)
+- Turn on PROVE_RAW_LOCK_NESTING for RHEL debug builds (Justin M. Forbes)
+- redhat/Makefile: Fix long dist-full-help execution time (Prarit Bhargava)
+- redhat/self-test: Update data to add HELP_TYPES variable (Prarit Bhargava)
+- redhat/Makefile: Add new dist-help functionality (Prarit Bhargava)
+- Makefile: Do not output LOCALVERSION message for help commands (Prarit Bhargava)
+- Fedora 6.13 configs part 2 (Justin M. Forbes)
+- Fedora 6.13 configs part 1 (Justin M. Forbes)
+- redhat/configs: enable CONFIG_VFAT_FS as a module (Dorinda Bassey)
+- redhat: create 'debug' addon for UKI (Li Tian)
+- kernel.spec: Build cpupower on riscv64 (Yanko Kaneti)
+- RHEL: Set correct config option for CRYPTO_HMAC_S390 (Mete Durlu) [RHEL-24137]
+- redhat/kernel.spec: add iputils to the requires list for selftests-internal (Brian Masney)
+- redhat/kernel.spec.template: Require kernel-tools-libs in rtla (Tomas Glozar)
+- redhat: make kernel-debug-uki-virt installable without kernel-debug-core (Vitaly Kuznetsov)
+- redhat/configs: enable CONFIG_USB_XHCI_PCI_RENESAS on RHEL (Desnes Nunes) [RHEL-72093]
+- redhat/configs: Re-enable ZRAM backends and unify configuration (Neal Gompa)
+- redhat/configs: automotive: disable CONFIG_AIO (Davide Caratti)
+- redhat/configs: Re-enable CONFIG_INFINIBAND_VMWARE_PVRDMA (Vitaly Kuznetsov)
+- redhat/configs: PREEMPT_NOTIFIERS does not need to be explicitly listed (Michal Schmidt)
+- redhat/configs: delete all CONFIG_PREEMPT_*BEHAVIOUR (Michal Schmidt)
+- redhat/configs: automotive: disable CONFIG_NET_DROP_MONITOR (Davide Caratti)
+- redhat/configs: Enable the CS42L84 driver on Fedora (Neal Gompa)
+- generic: Remove and cleanups from staging 6.13 (Peter Robinson)
+- redhat: configs: Clean up DVB settings in RHEL (Kate Hsuan)
+- Move CONFIG_ARCH_TEGRA_241_SOC config/common so that it is enabled for RHEL as well as Fedora. Get rid of uneeded CONFIG_TEGRA241_CMDQV in configs/fedora while we're at it. (Mark Salter)
+- fedora: arm64: Enable the rockchip HDMI QP support (Peter Robinson)
+- crypto: rng - Fix extrng EFAULT handling (Herbert Xu)
+- redhat: configs: rhel: aarch64: Support NV Jetson MIPI camera (Kate Hsuan)
+- gitlab-ci: disable clang CI pipelines (Scott Weaver)
+- redhat/configs: Remove obsolete arch64/64k/CONFIG_FORCE_MAX_ZONEORDER (Waiman Long)
+- Fix up QCOM_EMAC config for Fedora (Justin M. Forbes)
+- redhat/configs: automotive: disable CONFIG_IO_URING (Ian Mullins)
+- redhat/kernel.spec.template: Link rtla against in-tree libcpupower (Tomas Glozar)
+- redhat: configs: enable INTEL_PLR_TPMI for RHEL (David Arcari)
+- configs: Enable CONFIG_NETKIT for RHEL (Toke Høiland-Jørgensen)
+- redhat: fix build/install targets in netfilter kselftest (Davide Caratti)
+- RHEL: disable the btt driver (Jeff Moyer)
+- redhat/configs: default to PREEMPT_LAZY on x86, riscv (Michal Schmidt)
+- redhat/configs: New config CONFIG_PREEMPT_LAZY (Michal Schmidt)
+- crypto: sig - Disable signing (Herbert Xu)
+- redhat/configs: enable SERIAL_AMBA_PL011 for automotive (Radu Rendec)
+- c10s: disable tests in CKI pipelines (Michael Hofmann)
+- redhat: Drop bpftool from kernel spec (Viktor Malik)
+- Better fixes for the fedora mismatch (Justin M. Forbes)
+- Mismatch fix ups for Fedora (Justin M. Forbes)
+- redhat/configs: Enable Intel Bluetooth PCIE drivers (Bastien Nocera)
+- One more pending to fix a mismatch (Justin M. Forbes)
+- redhat: fix RT PREEMPT configs for Fedora and RHEL (Clark Williams)
+- Pending fixes to avoid mismatch for 6.13 (Justin M. Forbes)
+- Reset changelog for 6.13 (Justin M. Forbes)
+- Reset RHEL_RELEASE for 6.13 (Justin M. Forbes)
+- redhat: Move perf_dlfilter.h from libperf-devel to perf (Akihiko Odaki)
+- Consolidate configs to common for 6.12 (Justin M. Forbes)
+- redhat/configs: cleanup CONFIG_DEV_DAX (David Hildenbrand)
+- redhat/configs: cleanup CONFIG_TRANSPARENT_HUGEPAGE_MADVISE for Fedora (David Hildenbrand)
+- redhat/configs: cleanup CONFIG_TRANSPARENT_HUGEPAGE (David Hildenbrand)
+- redhat/configs: enable CONFIG_TRANSPARENT_HUGEPAGE on s390x in Fedora (David Hildenbrand)
+- redhat/configs: automotive: Enable j784s4evm am3359 tscadc configs (Joel Slebodnick)
+- redhat/configs: delete renamed CONFIG_MLX5_EN_MACSEC (Michal Schmidt)
+- rhel: disable DELL_RBU and cleanup related deps (Peter Robinson)
+- crypto: rng - Ensure stdrng is tested before user-space starts (Herbert Xu)
+- gitlab-ci: Add CKI_RETRIGGER_PIPELINE (Tales da Aparecida)
+- redhat: configs: disable the qla4xxx iSCSI driver (Chris Leech) [RHEL-1242]
+- Remove duplicated CONFIGs between automotive and RHEL (Julio Faracco)
+- redhat: update self-test data for addition of automotive (Scott Weaver)
+- gitlab-ci: enable automotive pipeline (Scott Weaver)
+- automotive: move pending configs to automotive/generic (Scott Weaver)
+- redhat/configs: change Renesas eMMC driver and dependencies to built-in (Radu Rendec)
+- redhat/configs: automotive: Remove automotive specific override CONFIG_OMAP2PLUS_MBOX By removing this automotive-specific override, the configuration will default to the common configuration (CONFIG_OMAP2PLUS_MBOX=m), which enables the driver as a module. (Martin McConnell)
+- Config enablement of the Renesas R-Car S4 SoC (Radu Rendec) [RHEL-44306]
+- redhat/configs: automotive: Enable USB_CDNS3_TI for TI platforms (Andrew Halaney)
+- redhat/configs: automotive: Enable j784s4evm SPI configs (Joel Slebodnick)
+- redhat/configs: automotive: Enable TPS6594 MFD (Joel Slebodnick)
+- redhat/configs: automotive: stop overriding CRYPTO_ECDH (Andrew Halaney)
+- redhat/configs: automotive: Enable PCI_J721E (Andrew Halaney)
+- redhat/configs: change some TI platform drivers to built-in (Enric Balletbo i Serra)
+- redhat/configs: automotive: Enable TI j784s4evm display dependencies (Andrew Halaney)
+- redhat/configs: automotive: match ark configs to cs9 main-automotive (Shawn Doherty) [RHEL-35995]
+- redhat/configs: automotive: Enable TI's watchdog driver (Andrew Halaney)
+- redhat/configs: automotive: Enable TI's UFS controller (Andrew Halaney)
+- redhat/configs: automotive: Enable networking on the J784S4EVM (Andrew Halaney) [RHEL-29245]
+- Disable unsupported kernel variants for automotive (Don Zickus)
+- Disable CONFIG_RTW88_22BU (Don Zickus)
+- redhat: Delete CONFIG_EFI_ZBOOT to use the common CONFIG (Julio Faracco)
+- redhat: Update automotive SPEC file with new standards (Julio Faracco)
+- redhat: Disable WERROR for automotive temporarily (Julio Faracco)
+- redhat: Update spec file with automotive macros (Julio Faracco)
+- redhat: Add automotive CONFIGs (Julio Faracco)
+- Fedora configs for 6.12 (Justin M. Forbes)
+- redhat/configs: Add CONFIG_CRYPTO_HMAC_S390 config (Mete Durlu) [RHEL-50799]
+- redhat: configs: common: generic: Clean up EM28XX that are masked behind CONFIG_VIDEO_EM28XX (Kate Hsuan)
+- redhat/configs: Update powerpc NR_CPUS config (Mamatha Inamdar)
+- redhat: use stricter rule for kunit.ko (Jan Stancek)
+- filtermod: fix clk kunit test and kunit location (Nico Pache)
+- redhat/configs: enable xr_serial on rhel (Desnes Nunes)
+- redhat/configs: enable ATH12K for rhel (Jose Ignacio Tornos Martinez)
+- redhat: configs: rhel: generic: x86: Enable IPU6 based MIPI cameras (Kate Hsuan)
+- os-build: enable CONFIG_SCHED_CLASS_EXT for RHEL (Phil Auld)
+- Fedora 6.12 configs part 1 (Justin M. Forbes)
+- redhat: set new gcov configs (Jan Stancek)
+- Don't ignore gitkeep files for ark-infra (Don Zickus)
+- redhat/kernel.spec: don't clear entire libdir when building tools (Jan Stancek)
+- redhat/configs: enable usbip for rhel (Jose Ignacio Tornos Martinez)
+- redhat: create 'crashkernel=' addons for UKI (Vitaly Kuznetsov)
+- redhat: avoid superfluous quotes in UKI cmdline addones (Vitaly Kuznetsov)
+- fedora: arm: updates for 6.12 (Peter Robinson)
+- redhat/configs: add bootconfig to kernel-tools package (Brian Masney)
+- Enable CONFIG_SECURITY_LANDLOCK for RHEL (Zbigniew Jędrzejewski-Szmek) [RHEL-8810]
+- redhat: configs: Drop CONFIG_MEMSTICK_REALTEK_PCI config option (Desnes Nunes)
+- Update the RHEL_DIFFERENCES help string (Don Zickus)
+- Put build framework for RT kernel in place for Fedora (Clark Williams)
+- generic: enable RPMB for all configs that enable MMC (Peter Robinson)
+- fedora: riscv: Don't override MMC platform defaults (Peter Robinson)
+- common: only enable on MMC_DW_BLUEFIELD (Peter Robinson)
+- fedora: aarch64: Stop overriding CONFIG_MMC defaults (Peter Robinson)
+- commong: The KS7010 driver has been removed (Peter Robinson)
+- Trim Changelog for 6.12 (Justin M. Forbes)
+- Enable CONFIG_SECURITY_IPE for Fedora (Zbigniew Jędrzejewski-Szmek)
+- redhat: allow to override VERSION_ON_UPSTREAM from command line (Jan Stancek)
+- redhat: configs: Enable CONFIG_SECURITY_TOMOYO in Fedora kernels (Tetsuo Handa)
+- Revert "Merge branch 'enablement/gpio-expander' into 'os-build'" (Justin M. Forbes)
+- redhat: configs: decrease CONFIG_PCP_BATCH_SCALE_MAX (Rafael Aquini)
+- redhat/configs: Enable CONFIG_RCU_TRACE in Fedora/REHL kernels (Waiman Long)
+- fedora: distable RTL8192E wifi driver (Peter Robinson)
+- common: arm64: Fixup and cleanup some SCMI options (Peter Robinson)
+- common: Cleanup ARM_SCMI_TRANSPORT options (Peter Robinson)
+- configs: fedora/x86: Set CONFIG_CRYPTO_DEV_CCP_DD=y (Hans de Goede)
+- Turn on ZRAM_WRITEBACK for Fedora (Justin M. Forbes)
+- configs: rhel: Fix designware I2C controllers related config settings (Hans de Goede)
+- Enable CONFIG_DMA_NUMA_CMA for x86_64 and aarch64 (Chris von Recklinghausen)
+- new config in drivers/phy (Izabela Bakollari)
+- configs: fedora: Unset CONFIG_I2C_DESIGNWARE_CORE on s390x (Hans de Goede)
+- configs: fedora: Drop duplicate CONFIG_I2C_DESIGNWARE_CORE for x86_64 and aarch64 (Hans de Goede)
+- Enable DESIGNWARE_CORE for ppc as well (Justin M. Forbes)
+- Fix up I2C_DESIGNWARE_CORE config for Fedora (Justin M. Forbes)
+- configs for RT deps (Clark Williams)
+- CONFIG_OF_OVERLAY: enable for aarch64 and powerpc (Scott Weaver)
+- redhat: enable changes to build rt variants (Clark Williams)
+- redhat: clean up pending-rhel (Patrick Talbert)
+- Enable CONFIG_SCHED_CLASS_EXT for Fedora (Jose Fernandez)
+- redhat/configs: new config in arch/s390 (Izabela Bakollari)
+- redhat: ignore rpminspect runpath report on selftests/bpf/cpuv4/urandom_read (Viktor Malik)
+- [fedora] configs: add end of file newline to CONFIG_DMADEVICES_VDEBUG (Patrick Talbert)
+- unset CONFIG_DMADEVICES_VDEBUG (cmurf)
+- stop installing tools/build/Build, gone with ea974028a049f (Thorsten Leemhuis)
+- redhat/configs: Update LOCKDEP configs (Waiman Long)
+- uki-virt: Add i18n module (Vitaly Kuznetsov)
+- uki-virt: Drop DBUS support from initramfs (Vitaly Kuznetsov)
+- uki-virt: Drop redundant modules from dracut-virt.conf (Vitaly Kuznetsov)
+- uki-virt: Drop usrmount dracut module (Vitaly Kuznetsov)
+- redhat: new AMCC_QT2025_PHY config in drivers/net/phy (Patrick Talbert)
+- redhat: change schedule jobs image from cki-tools to builder-rawhide (Patrick Talbert)
+- Add CONFIG_SND_SOC_RT1320_SDW to pending-rhel for mismatch (Justin M. Forbes)
+- Turn on CONFIG_SND_SOC_RT1320_SDW in pending rhel (Justin M. Forbes)
+- configs: disable CONFIG_AMCC_QT2025_PHY in pending (Patrick Talbert)
+- fedora: turn on CONFIG_FDMA for powerpc (Patrick Talbert)
+- Turn on CONFIG_FDMA in pending for Fedora arm and riscv to avoid a mismatch (Justin M. Forbes)
+- Reset RHEL_RELEASE for 6.12 (Justin M. Forbes)
+- Consolidate configs into common for 6.11 kernels (Justin M. Forbes)
+- uki-virt: add systemd-cryptsetup module (Vitaly Kuznetsov)
+- redhat/docs: fix command to install missing build dependencies (Davide Cavalca)
+- spec: Respect rpmbuild --without debuginfo (Orgad Shaneh)
+- fedora/configs: enable GPIO expander drivers (Rupinderjit Singh)
+- redhat/configs: Switch to the Rust implementation of AX88796B_PHY driver for Fedora (Neal Gompa)
+- redhat: Turn on support for Rust code in Fedora (Neal Gompa)
+- Turn off RUST for risc-v (Justin M. Forbes)
+- gitlab-ci: allow failure of clang LTO pipelines (Michael Hofmann)
+- redhat/configs: Consolidate the CONFIG_KVM_BOOK3S_HV_P*_TIMING switches (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_KVM_SW_PROTECTED_VM switch (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_KVM_HYPERV switch (Thomas Huth)
+- redhat/configs: Consolidate the CONFIG_KVM_AMD_SEV switch (Thomas Huth)
+- Cleanup some riscv CONFIG locations (Justin M. Forbes)
+- Fix up pending riscv Fedora configs post merge (Justin M. Forbes)
+- fedora/configs: Enable SCMI configuration (Rupinderjit Singh)
+- Remove S390 special config for PHYLIB (Justin M. Forbes)
+- Disable ELN for riscv64 (Isaiah Stapleton)
+- redhat: add checks to ensure only building riscv64 on fedora (Isaiah Stapleton)
+- redhat: Add missing riscv fedora configs (Isaiah Stapleton)
+- Add riscv64 to the CI pipelines (Isaiah Stapleton)
+- redhat: Regenerate dist-self-test-data for riscv64 (Isaiah Stapleton)
+- redhat: Add riscv config changes for fedora (David Abdurachmanov)
+- redhat: Add support for riscv (David Abdurachmanov)
+- redhat: Do not include UKI addons twice (Vitaly Kuznetsov)
+- redhat: update gating.yml (Michael Hofmann)
+- Remove CONFIG_FSCACHE_DEBUG as it has been renamed (Justin M. Forbes)
+- Set Fedora configs for 6.11 (Justin M. Forbes)
+- redhat/configs: Microchip lan743x driver (Izabela Bakollari)
+- redhat: include resolve_btfids in kernel-devel (Jan Stancek)
+- redhat: workaround CKI cross compilation for scripts (Jan Stancek)
+- spec: fix "unexpected argument to non-parametric macro" warnings (Jan Stancek)
+- Add weakdep support to the kernel spec (Justin M. Forbes)
+- redhat: configs: disable PF_KEY in RHEL (Sabrina Dubroca)
+- crypto: akcipher - Disable signing and decryption (Vladis Dronov) [RHEL-54183] {CVE-2023-6240}
+- crypto: dh - implement FIPS PCT (Vladis Dronov) [RHEL-54183]
+- crypto: ecdh - disallow plain "ecdh" usage in FIPS mode (Vladis Dronov) [RHEL-54183]
+- crypto: seqiv - flag instantiations as FIPS compliant (Vladis Dronov) [RHEL-54183]
+- [kernel] bpf: set default value for bpf_jit_harden (Artem Savkov) [RHEL-51896]
+- fedora: disable CONFIG_DRM_WERROR (Patrick Talbert)
+- redhat/configs: Disable dlm in rhel configs (Andrew Price)
+- rhel: aarch64: enable required PSCI configs (Peter Robinson)
+- fedora: Enable AF8133J Magnetometer driver (Peter Robinson)
+- redhat: spec: add cachestat kselftest (Eric Chanudet)
+- redhat: hmac sign the UKI for FIPS (Vitaly Kuznetsov)
+- not upstream: Disable vdso getrandom when FIPS is enabled (Herbert Xu)
+- kernel: config: enable erofs lzma compression (Ian Kent)
+- fedora: disable RTL8192CU in Fedora (Peter Robinson)
+- redhat: Fix the ownership of /lib/modules/<kversion> directory (Vitaly Kuznetsov)
+- new configs in drivers/phy (Izabela Bakollari)
+- Add support to rh_waived cmdline boot parameter (Ricardo Robaina) [RHEL-26170]
+- redhat/configs: Disable gfs2 in rhel configs (Andrew Price)
+- redhat/uki_addons/virt: add common FIPS addon (Emanuele Giuseppe Esposito)
+- redhat/kernel.spec: add uki_addons to create UKI kernel cmdline addons (Emanuele Giuseppe Esposito)
+- rh_flags: fix failed when register_sysctl_sz rh_flags_table to kernel (Ricardo Robaina) [RHEL-52629]
+- redhat/dracut-virt.conf: add systemd-veritysetup module (Emanuele Giuseppe Esposito)
+- redhat/configs: enable CONFIG_LOCK_STAT on the debug kernels for aarch64 (Brian Masney)
+- redhat/configs: enable CONFIG_KEYBOARD_GPIO_POLLED for RHEL on aarch64 (Luiz Capitulino)
+- redhat/configs: fedora: Enable new Qualcomm configs (Andrew Halaney)
+- redhat/configs/fedora: set CONFIG_CRYPTO_CURVE25519_PPC64 (Dan Horák)
+- fedora: Updates for 6.11 merge (Peter Robinson)
+- fedora: enable new mipi sensors and devices (Peter Robinson)
+- arm64: enable CRYPTO_DEV_TEGRA on RHEL (Peter Robinson)
+- redhat/kernel.spec: fix file listed twice warning for "kernel" subdir (Jan Stancek)
+- redhat/configs: Double MAX_LOCKDEP_ENTRIES for RT debug kernels (Waiman Long) [RHEL-43425]
+- Support the first day after a rebase (Don Zickus)
+- Support 2 digit versions properly (Don Zickus)
+- Automation cleanups for rebasing rt-devel and automotive-devel (Don Zickus)
+- fedora: set CONFIG_REGULATOR_RZG2L_VBCTRL as a module for arm64 (Patrick Talbert)
+- gitlab-ci: restore bot pipeline behavior (Michael Hofmann)
+- redhat/kernel.spec: drop extra right curly bracket in kernel_kvm_package (Jan Stancek)
+- redhat/configs: enable gpio_keys driver for RHEL on aarch64 (Luiz Capitulino)
+- Move NET_VENDOR_MICROCHIP from common to rhel (Justin M. Forbes)
+- redhat/configs: enable some RTCs for RHEL on aarch64 (Luiz Capitulino)
+- redhat/configs: enable some regulators for RHEL (Luiz Capitulino)
+- redhat/config: disable CXL and CXLFLASH drivers (Dan Horák)
+- Fix up config mismatches in pending (Justin M. Forbes)
+- redhat/configs: Enable watchdog devices modelled by qemu (Richard W.M. Jones) [RHEL-40937]
+- rhel: cleanup unused media tuner configs (Peter Robinson)
+- all: cleanup MEDIA_CONTROLLER options (Peter Robinson)
+- redhat: kernel.spec: add s390x to livepatching kselftest builds (Joe Lawrence)
+- Flip CONFIG_DIMLIB back to inline (Justin M. Forbes)
+- Add vfio/nvgrace-gpu driver CONFIG to RHEL-9.5 ARM64 (Donald Dutile)
+- Enable CONFIG_RTC_DRV_TEGRA for RHEL (Luiz Capitulino)
+- redhat: rh_flags: declare proper static methods when !CONFIG_RHEL_DIFFERENCES (Rafael Aquini)
+- redhat: configs: enable CONFIG_TMPFS_QUOTA for both Fedora and RHEL (Rafael Aquini)
+- Fix up mismatches in the 6.11 merge window. (Justin M. Forbes)
+- Reset Changelog after rebase (Justin M. Forbes)
+- Reset RHEL_RELEASE for the 6.11 cycle (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_VMWARE_VMCI/CONFIG_VMWARE_VMCI_VSOCKETS for RHEL (Vitaly Kuznetsov)
+- Consolidate configs to common for 6.10 (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_PTP_1588_CLOCK_MOCK in kernel-modules-internal (Davide Caratti)
+- fedora: enabled XE GPU drivers on all arches (Peter Robinson)
+- Flip SND_SOC_CS35L56_SPI from off to module for RHEL (Justin M. Forbes)
+- Flip DIMLIB from built-in to module for RHEL (Justin M. Forbes)
+- Also remove the zfcpdump BASE_SMALL config (Justin M. Forbes)
+- redhat: Add cgroup kselftests to kernel-selftests-internal (Waiman Long) [RHEL-43556]
+- Revert "redhat/configs: Disable CONFIG_INFINIBAND_HFI1 and CONFIG_INFINIBAND_RDMAVT" (Kamal Heib)
+- Remove new for GITLAB_TOKEN (Don Zickus)
+- Set Fedora configs for 6.10 (Justin M. Forbes)
+- Fedora: minor driver updates (Peter Robinson)
+- redhat/configs: Remove obsolete x86 CPU mitigations config files (Waiman Long)
+- redhat/configs: increase CONFIG_DEFAULT_MMAP_MIN_ADDR from 32K to 64K for aarch64 (Brian Masney)
+- redhat/configs: Re-enable CONFIG_KEXEC for Fedora (Philipp Rudo)
+- disable LR_WPAN for RHEL10 (Chris von Recklinghausen) [RHEL-40251]
+- Turn on USB_SERIAL_F81232 for Fedora (Justin M. Forbes)
+- redhat/scripts/filtermods.py: show all parent/child kmods in report (Jan Stancek)
+- redhat/kernel.spec: capture filtermods.py return code (Jan Stancek)
+- redhat/kernel.spec: fix run of mod-denylist (Jan Stancek)
+- gitlab-ci: remove unused RHMAINTAINERS variable (Michael Hofmann)
+- gitlab-ci: use environments for jobs that need access to push/gitlab secrets (Michael Hofmann)
+- gitlab-ci: default to os-build for all maintenance jobs (Michael Hofmann)
+- gitlab-ci: use the common git repo setup cki-gating as well (Michael Hofmann)
+- gitlab-ci: help maintenance jobs to cope with missing private key (Michael Hofmann)
+- gitlab-ci: use a common git repo setup for all maintenance jobs (Michael Hofmann)
+- gitlab-ci: move repo setup script into script template holder (Michael Hofmann)
+- gitlab-ci: move maintenance job DIST variable into common template (Michael Hofmann)
+- gitlab-ci: move maintenance job rules into common template (Michael Hofmann)
+- gitlab-ci: move maintenance job retry field into common template (Michael Hofmann)
+- gitlab-ci: provide common non-secret schedule trigger variables (Michael Hofmann)
+- gitlab-ci: rename .scheduled_setup to .git_setup (Michael Hofmann)
+- gitlab-ci: move script snippets into separate template (Michael Hofmann)
+- gitlab-ci: rename maintenance jobs (Michael Hofmann)
+- gitlab-ci: introduce job template for maintenance jobs (Michael Hofmann)
+- Turn on KASAN_HW_TAGS for Fedora aarch64 debug kernels (Justin M. Forbes)
+- redhat: kernel.spec: add missing sound/soc/sof/sof-audio.h to kernel-devel package (Jaroslav Kysela)
+- redhat/kernel.spec: fix attributes of symvers file (Jan Stancek)
+- redhat: add filtermods rule for iommu tests (Jan Stancek)
+- fedora: arm: Enable basic support for S32G-VNP-RDB3 board (Enric Balletbo i Serra)
+- redhat: make bnx2xx drivers unmaintained in rhel-10 (John Meneghini) [RHEL-36646 RHEL-41231]
+- redhat/configs: Disable CONFIG_NFP (Kamal Heib) [RHEL-36647]
+- Enable CONFIG_PWRSEQ_{SIMPLIE,EMMC} on aarch64 (Charles Mirabile)
+- Fix SERIAL_SC16IS7XX configs for Fedora (Justin M. Forbes)
+- Enable ALSA (CONFIG_SND) on aarch64 (Charles Mirabile) [RHEL-40411]
+- redhat: Remove DIST_BRANCH variable (Eder Zulian)
+- gitlab-ci: merge ark-latest before tagging cki-gating (Michael Hofmann)
+- gitlab-ci: do not merge ark-latest for gating pipelines for Rawhide (Michael Hofmann)
+- disable CONFIG_KVM_INTEL_PROVE_VE (Paolo Bonzini)
+- redhat: remove the merge subtrees script (Derek Barbosa)
+- redhat: rhdocs: delete .get_maintainer.conf (Derek Barbosa)
+- redhat: rhdocs: Remove the rhdocs directory (Derek Barbosa)
+- redhat/configs: Disable CONFIG_QLA3XXX (Kamal Heib) [RHEL-36646]
+- redhat/configs: fedora: Enable some drivers for IPU6 support (Hans de Goede)
+- redhat: add missing UKI_secureboot_cert hunk (Patrick Talbert)
+- redhat/kernel.spec: keep extra modules in original directories (Jan Stancek)
+- redhat/configs: Move CONFIG_BLK_CGROUP_IOCOST=y to common/generic (Waiman Long)
+- Turn on CONFIG_MFD_QCOM_PM8008 for Fedora aarch64 (Justin M. Forbes)
+- redhat: Build IMA CA certificate into the Fedora kernel (Coiby Xu)
+- Move CONFIG_RAS_FMPM to the proper location (Aristeu Rozanski)
+- redhat/configs: Remove CONFIG_NET_ACT_IPT (Ivan Vecera)
+- gitlab-ci: add kernel-automotive pipelines (Michael Hofmann)
+- Enable CEC support for TC358743 (Peter Robinson)
+- fedora: arm: Enable ARCH_R9A09G057 (Peter Robinson)
+- fedora: updates for the 6.10 kernel (Peter Robinson)
+- fedora: arm: Enable the MAX96706 GMSL module (Peter Robinson)
+- redhat: Switch UKI to using its own SecureBoot cert (from system-sb-certs) (Jan Stancek)
+- redhat: Add RHEL specifc .sbat section to UKI (Jan Stancek)
+- kernel.spec: add iommu selftests to kernel-selftests-internal (Eder Zulian) [RHEL-32895]
+- redhat/configs: fedora: aarch64: Re-enable CUSE (Neal Gompa)
+- redhat: pass correct RPM_VMLINUX_H to bpftool install (Jan Stancek)
+- rh_flags: Rename rh_features to rh_flags (Ricardo Robaina) [RHEL-32987]
+- kernel: rh_features: fix reading empty feature list from /proc (Ricardo Robaina) [RHEL-32987]
+- rh_features: move rh_features entry to sys/kernel (Ricardo Robaina) [RHEL-32987]
+- rh_features: convert to atomic allocation (Ricardo Robaina) [RHEL-32987]
+- add rh_features to /proc (Ricardo Robaina) [RHEL-32987]
+- add support for rh_features (Ricardo Robaina) [RHEL-32987]
+- Drop kexec_load syscall support (Baoquan He)
+- New configs in lib/kunit (Fedora Kernel Team)
+- Turn off KUNIT_FAULT_TEST as it causes problems for CI (Justin M. Forbes)
+- Add a config entry in pending for CONFIG_DRM_MSM_VALIDATE_XML (Justin M. Forbes)
+- Flip CONFIG_SND_SOC_CS35L56_SPI in pending to avoid a mismatch (Justin M. Forbes)
+- Fix up a mismatch for RHEL (Justin M. Forbes)
+- Reset changelog after rebase (Justin M. Forbes)
+- Reset RHEL_RELEASE to 0 for 6.10 (Justin M. Forbes)
+- configs: move CONFIG_BLK_DEV_UBLK into rhel/configs/generic (Ming Lei)
+- configs: move CONFIG_BLK_SED_OPAL into redhat/configs/common/generic (Ming Lei)
+- RHEL-21097: rhel: aarch64 stop blocking a number of HW sensors (Peter Robinson)
+- redhat/configs: enable RTL8822BU for rhel (Jose Ignacio Tornos Martinez)
+- redhat/configs: remove CONFIG_DMA_PERNUMA_CMA and switch CONFIG_DMA_NUMA_CMA off (Jerry Snitselaar)
+- redhat: add IMA certificates (Jan Stancek)
+- redhat/kernel.spec: fix typo in move_kmod_list() variable (Jan Stancek)
+- redhat: make filtermods.py less verbose by default (Jan Stancek)
+- scsi: sd: condition probe_type under RHEL_DIFFERENCES (Eric Chanudet)
+- scsi: sd: remove unused sd_probe_types (Eric Chanudet)
+- Turn on INIT_ON_ALLOC_DEFAULT_ON for Fedora (Justin M. Forbes)
+- Consolidate configs to common for 6.9 (Justin M. Forbes)
+- redhat/rhel_files: move tipc.ko and tipc_diag.ko to modules-extra (Xin Long) [RHEL-23931]
+- redhat: move amd-pstate-ut.ko to modules-internal (Jan Stancek)
+- redhat/configs: enable CONFIG_LEDS_TRIGGER_NETDEV also for RHEL (Michal Schmidt) [RHEL-32110]
+- redhat/configs: Remove CONFIG_AMD_IOMMU_V2 (Jerry Snitselaar)
+- Set DEBUG_INFO_BTF_MODULES for Fedora (Justin M. Forbes)
+- redhat: Use redhatsecureboot701 for ppc64le (Jan Stancek)
+- redhat: switch the kernel package to use certs from system-sb-certs (Jan Stancek)
+- redhat: replace redhatsecureboot303 signing key with redhatsecureboot601 (Jan Stancek)
+- redhat: drop certificates that were deprecated after GRUB's BootHole flaw (Jan Stancek)
+- redhat: correct file name of redhatsecurebootca1 (Jan Stancek)
+- redhat: align file names with names of signing keys for ppc and s390 (Jan Stancek)
+- redhat/configs: Enable CONFIG_DM_VDO in RHEL (Benjamin Marzinski)
+- redhat/configs: Enable DRM_NOUVEAU_GSP_DEFAULT everywhere (Neal Gompa)
+- kernel.spec: adjust for livepatching kselftests (Joe Lawrence)
+- redhat/configs: remove CONFIG_TEST_LIVEPATCH (Joe Lawrence)
+- Turn on CONFIG_RANDOM_KMALLOC_CACHES for Fedora (Justin M. Forbes)
+- Set Fedora configs for 6.9 (Justin M. Forbes)
+- gitlab-ci: enable pipelines with c10s buildroot (Michael Hofmann)
+- Turn on ISM for Fedora (Justin M. Forbes)
+- redhat/configs: enable CONFIG_TEST_LOCKUP for non-debug kernels (Čestmír Kalina)
+- redhat/rhel_files: add test_lockup.ko to modules-extra (Čestmír Kalina)
+- Turn off some Fedora UBSAN options to avoid false positives (Justin M. Forbes)
+- fedora: aarch64: Enable a QCom Robotics platforms requirements (Peter Robinson)
+- fedora: updates for 6.9 merge window (Peter Robinson)
+- gitlab-ci: rename GitLab jobs ark -> rawhide (Michael Hofmann)
+- gitlab-ci: harmonize DataWarehouse tree names (Michael Hofmann)
+- redhat/configs: Enable CONFIG_INTEL_IOMMU_SCALABLE_MODE_DEFAULT_ON for rhel (Jerry Snitselaar)
+- spec: make sure posttrans script doesn't fail if /boot is non-POSIX (glb)
+- Turn on UBSAN for Fedora (Justin M. Forbes)
+- Turn on XEN_BALLOON_MEMORY_HOTPLUG for Fedora (Justin M. Forbes)
+- docs: point out that python3-pyyaml is now required (Thorsten Leemhuis)
+- Use LLVM=1 for clang_lto build (Nikita Popov)
+- redhat: fix def_variants.yaml check (Jan Stancek)
+- redhat: sanity check yaml files (Jan Stancek)
+- spec: rework filter-mods and mod-denylist (Jan Stancek)
+- redhat/configs: remove CONFIG_INTEL_MENLOW as it is obsolete. (David Arcari)
+- arch/x86: Fix XSAVE check for x86_64-v2 check (Prarit Bhargava)
+- redhat/Makefile.variables: unquote a variable (Thorsten Leemhuis)
+- redhat/configs: build in Tegra210 SPI driver (Mark Salter)
+- redhat/configs: aarch64: Enable ARM_FFA driver (Mark Salter)
+- Base automotive-devel on rt-devel (Don Zickus)
+- redhat/configs: Enable CONFIG_AMDTEE for x86 (David Arcari)
+- redhat/configs: enable CONFIG_TEST_LOCKUP for debug kernel (Čestmír Kalina)
+- kernel.spec: fix libperf-debuginfo content (Jan Stancek)
+- Turn on DM_VDO for Fedora (Justin M. Forbes)
+- redhat: make libperf-devel require libperf %%{version}-%%{release} (Jan Stancek)
+- kernel.spec: drop custom mode also for System.map ghost entry (Jan Stancek)
+- Octopus merges are too conservative, serialize instead (Don Zickus)
+- Add tracking branches for rt-devel (Don Zickus)
+- all: clean-up i915 (Peter Robinson)
+- Turn on CONFIG_READ_ONLY_THP_FOR_FS for Fedora (Justin M. Forbes)
+- redhat/kernel.spec.template: fix rtonly build (Jan Stancek)
+- redhat/kernel.spec.template: add extra flags for tools build (Scott Weaver)
+- Add iio-test-gts to mod-internal.list (Thorsten Leemhuis)
+- redhat/kernel.spec.template: update license (Scott Weaver)
+- Fix typo in maintaining.rst file (Augusto Caringi)
+- Enable DRM_CDNS_DSI_J721E for fedora (Andrew Halaney)
+- gitlab-ci: do not merge ark-latest for gating pipelines (Michael Hofmann)
+- fedora: Enable MCP9600 (Peter Robinson)
+- redhat/configs: Enable & consolidate BF-3 drivers config (Luiz Capitulino)
+- redhat: Fix RT kernel kvm subpackage requires (Juri Lelli)
+- Add new of_test module to mod-internal.list (Thorsten Leemhuis)
+- Add new string kunit modules to mod-internal.list (Thorsten Leemhuis)
+- redhat/kernel.spec.template: enable cross for base/RT (Peter Robinson)
+- redhat/kernel.spec.template: Fix cross compiling (Peter Robinson)
+- arch/x86/kernel/setup.c: fixup rh_check_supported (Scott Weaver)
+- Enable CONFIG_USB_ONBOARD_HUB for RHEL (Charles Mirabile)
+- redhat/Makefile.cross: Add CROSS_BASEONLY (Prarit Bhargava)
+- gitlab-ci: fix ark-latest merging for parent pipelines running in forks (Michael Hofmann)
+- lsm: update security_lock_kernel_down (Scott Weaver)
+- Fix changelog after rebase (Augusto Caringi)
+- redhat: remove "END OF CHANGELOG" marker from kernel.changelog (Herton R. Krzesinski)
+- gitlab-ci: enable all variants for rawhide/eln builder image gating (Michael Hofmann)
+- Fedora: enable Microchip and their useful drivers (Peter Robinson)
+- spec: suppress "set +x" output (Jan Stancek)
+- redhat/configs: Disable CONFIG_RDMA_SIW (Kamal Heib)
+- redhat/configs: Disable CONFIG_RDMA_RXE (Kamal Heib)
+- redhat/configs: Disable CONFIG_MLX4 (Kamal Heib)
+- redhat/configs: Disable CONFIG_INFINIBAND_HFI1 and CONFIG_INFINIBAND_RDMAVT (Kamal Heib)
+- Consolidate 6.8 configs to common (Justin M. Forbes)
+- Remove rt-automated and master-rt-devel logic (Don Zickus)
+- Add support for CI octopus merging (Don Zickus)
+- redhat/configs: Disable CONFIG_INFINIBAND_VMWARE_PVRDMA (Kamal Heib)
+- gitlab-ci: fix merge tree URL for gating pipelines (Michael Hofmann)
+- Revert "net: bump CONFIG_MAX_SKB_FRAGS to 45" (Marcelo Ricardo Leitner)
+- uki: use systemd-pcrphase dracut module (Gerd Hoffmann)
+- Add libperf-debuginfo subpackage (Justin M. Forbes)
+- redhat/kernel.spec.template: Add log_msg macro (Prarit Bhargava)
+- redhat/configs: Disable CONFIG_INFINIBAND_USNIC (Kamal Heib)
+- Enable CONFIG_BMI323_I2C=m for Fedora x86_64 builds (Hans de Goede)
+- gitlab-ci: drop test_makefile job (Scott Weaver)
+- Enable merge-rt pipeline (Don Zickus)
+- kernel.spec: include the GDB plugin in kernel-debuginfo (Ondrej Mosnacek)
+- Turn on DRM_NOUVEAU_GSP_DEFAULT for Fedora (Justin M. Forbes)
+- Set late new config HDC3020 for Fedora (Justin M. Forbes)
+- redhat/self-test: Update CROSS_DISABLED_PACKAGES (Prarit Bhargava)
+- redhat: Do not build libperf with cross builds (Prarit Bhargava)
+- redhat/configs: enable CONFIG_PINCTRL_INTEL_PLATFORM for RHEL (David Arcari)
+- redhat/configs: enable CONFIG_PINCTRL_METEORPOINT for RHEL (David Arcari)
+- redhat/configs: intel pinctrl config cleanup (David Arcari)
+- redhat/configs: For aarch64/RT, default kstack randomization off (Jeremy Linton)
+- redhat/Makefile: remove an unused target (Ondrej Mosnacek)
+- redhat/Makefile: fix setup-source and document its caveat (Ondrej Mosnacek)
+- redhat/Makefile: fix race condition when making the KABI tarball (Ondrej Mosnacek)
+- redhat/Makefile: refactor KABI tarball creation (Ondrej Mosnacek)
+- Turn XFS_SUPPORT_V4 back on for Fedora (Justin M. Forbes)
+- Add xe to drm module filters (Justin M. Forbes)
+- Turn off the DRM_XE_KUNIT_TEST for Fedora (Justin M. Forbes)
+- Flip secureboot signature order (Justin M. Forbes)
+- all: clean up some removed configs (Peter Robinson)
+- redhat: add nvidia oot signing key (Dave Airlie)
+- gitlab-ci: support CI for zfcpdump kernel on ELN (Michael Hofmann)
+- Fedora configs for 6.8 (Justin M. Forbes)
+- Turn off CONFIG_INTEL_VSC for Fedora (Justin M. Forbes)
+- redhat/configs: rhel wireless requests (Jose Ignacio Tornos Martinez)
+- spec: Set EXTRA_CXXFLAGS for perf demangle-cxx.o (Josh Stone) [2233269]
+- Flip values for FSCACHE and NETFS_SUPPORT to avoid mismatch (Justin M. Forbes)
+- Turn on SECURITY_DMESG_RESTRICT (Justin M. Forbes)
+- redhat: forward-port genlog.py updates from c9s (Jan Stancek)
+- arch/x86: mark x86_64-v1 and x86_64-v2 processors as deprecated (Prarit Bhargava)
+- fedora: Enable more Renesas RZ platform drivers (Peter Robinson)
+- fedora: a few aarch64 drivers and cleanups (Peter Robinson)
+- fedora: cavium nitrox cnn55xx (Peter Robinson)
+- Fix dist-get-buildreqs breakage around perl(ExtUtils::Embed) (Don Zickus)
+- gitlab-ci: merge ark-latest fixes when running ELN pipelines (Michael Hofmann)
+- gitlab-ci: use all arches for container image gating (Michael Hofmann)
+- Add new os-build targets: rt-devel and automotive-devel (Don Zickus)
+- Remove defines forcing tools on, they override cmdline (Justin M. Forbes)
+- Remove separate license tag for libperf (Justin M. Forbes)
+- Don't use upstream bpftool version for Fedora package (Justin M. Forbes)
+- Don't ship libperf.a in libperf-devel (Justin M. Forbes)
+- add libperf packages and enable perf, libperf, tools and bpftool packages (Thorsten Leemhuis)
+- Add scaffolding to build the kernel-headers package for Fedora (Justin M. Forbes)
+- redhat/spec: use distro CFLAGS when building bootstrap bpftool (Artem Savkov)
+- spec: use just-built bpftool for vmlinux.h generation (Yauheni Kaliuta) [2120968]
+- gitlab-ci: enable native tools for Rawhide CI (Michael Hofmann)
+- Revert "Merge branch 'fix-kabi-build-race' into 'os-build'" (Justin M. Forbes)
+- redhat: configs: fedora: Enable sii902x bridge chip driver (Erico Nunes)
+- Enable CONFIG_TCP_CONG_ILLINOIS for RHEL (Davide Caratti)
+- redhat/Makefile: fix setup-source and document its caveat (Ondrej Mosnacek)
+- redhat/Makefile: fix race condition when making the KABI tarball (Ondrej Mosnacek)
+- redhat/Makefile: refactor KABI tarball creation (Ondrej Mosnacek)
+- redhat/configs: Remove HOTPLUG_CPU0 configs (Prarit Bhargava)
+- gitlab-ci: merge ark-latest before building in MR pipelines (Michael Hofmann)
+- CI: include aarch64 in CKI container image gating (Tales Aparecida)
+- redhat: spec: Fix update_scripts run for CentOS builds (Neal Gompa)
+- New configs in drivers/crypto (Fedora Kernel Team)
+- net: bump CONFIG_MAX_SKB_FRAGS to 45 (Marcelo Ricardo Leitner)
+- Enable CONFIG_MARVELL_88Q2XXX_PHY (Izabela Bakollari)
+- Remove CONFIG_NET_EMATCH_STACK file for RHEL (Justin M. Forbes)
+- CONFIG_NETFS_SUPPORT should be m after the merge (Justin M. Forbes)
+- Turn FSCACHE and NETFS from m to y in pending (Justin M. Forbes)
+- Turn on CONFIG_TCP_AO for Fedora (Justin M. Forbes)
+- Turn on IAA_CRYPTO_STATS for Fedora (Justin M. Forbes)
+- fedora: new drivers and cleanups (Peter Robinson)
+- Turn on Renesas RZ for Fedora IOT rhbz2257913 (Justin M. Forbes)
+- redhat: filter-modules.sh.rhel: add dell-smm-hwmon (Scott Weaver)
+- Add CONFIG_INTEL_MEI_GSC_PROXY=m for DRM 9.4 stable backport (Mika Penttilä)
+- Set configs for ZRAM_TRACK_ENTRY_ACTIME (Justin M. Forbes)
+- Add python3-pyyaml to buildreqs for kernel-docs (Justin M. Forbes)
+- Add nb7vpq904m to singlemods for ppc64le (Thorsten Leemhuis)
+- include drm bridge helpers in kernel-core package (Thorsten Leemhuis)
+- Add dell-smm-hwmon to singlemods (Thorsten Leemhuis)
+- Add drm_gem_shmem_test to mod-internal.list (Thorsten Leemhuis)
+- redhat: kABI: add missing RH_KABI_SIZE_ALIGN_CHECKS Kconfig option (Sabrina Dubroca)
+- redhat: rh_kabi: introduce RH_KABI_EXCLUDE_WITH_SIZE (Sabrina Dubroca)
+- redhat: rh_kabi: move semicolon inside __RH_KABI_CHECK_SIZE (Sabrina Dubroca)
+- Fix up ZRAM_TRACK_ENTRY_ACTIME in pending (Justin M. Forbes)
+- random: replace import_single_range() with import_ubuf() (Justin M. Forbes)
+- Flip CONFIG_INTEL_PMC_CORE to m for Fedora (Justin M. Forbes)
+- Add CONFIG_ZRAM_TRACK_ENTRY_ACTIME=y to avoid a mismatch (Justin M. Forbes)
+- common: cleanup MX3_IPU (Peter Robinson)
+- all: The Octeon MDIO driver is aarch64/mips (Peter Robinson)
+- common: rtc: remove bq4802 config (Peter Robinson)
+- common: de-dupe MARVELL_GTI_WDT (Peter Robinson)
+- all: Remove CAN_BXCAN (Peter Robinson)
+- common: cleanup SND_SOC_ROCKCHIP (Peter Robinson)
+- common: move RHEL DP83867_PHY to common (Peter Robinson)
+- common: Make ASYMMETRIC_KEY_TYPE enable explicit (Peter Robinson)
+- common: Disable aarch64 ARCH_MA35 universally (Peter Robinson)
+- common: arm64: enable Tegra234 pinctrl driver (Peter Robinson)
+- rhel: arm64: Enable qoriq thermal driver (Peter Robinson)
+- common: aarch64: Cleanup some i.MX8 config options (Peter Robinson)
+- all: EEPROM_LEGACY has been removed (Peter Robinson)
+- all: rmeove AppleTalk hardware configs (Peter Robinson)
+- all: cleanup: remove references to SLOB (Peter Robinson)
+- all: cleanup: Drop unnessary BRCMSTB configs (Peter Robinson)
+- all: net: remove retired network schedulers (Peter Robinson)
+- all: cleanup removed CONFIG_IMA_TRUSTED_KEYRING (Peter Robinson)
+- BuildRequires: lld for build with selftests for x86 (Jan Stancek)
+- spec: add keyutils to selftest-internal subpackage requirements (Artem Savkov) [2166911]
+- redhat/spec: exclude liburandom_read.so from requires (Artem Savkov) [2120968]
+- rtla: sync summary text with upstream and update Requires (Jan Stancek)
+- uki-virt: add systemd-sysext dracut module (Gerd Hoffmann)
+- uki-virt: add virtiofs dracut module (Gerd Hoffmann)
+- common: disable the FB device creation (Peter Robinson)
+- s390x: There's no FB on Z-series (Peter Robinson)
+- fedora: aarch64: enable SM_VIDEOCC_8350 (Peter Robinson)
+- fedora: arm64: enable ethernet on newer TI industrial (Peter Robinson)
+- fedora: arm64: Disable VIDEO_IMX_MEDIA (Peter Robinson)
+- fedora: use common config for Siemens Simatic IPC (Peter Robinson)
+- fedora: arm: enable Rockchip SPI flash (Peter Robinson)
+- fedora: arm64: enable DRM_TI_SN65DSI83 (Peter Robinson)
+- kernel.spec: remove kernel-smp reference from scripts (Jan Stancek)
+- redhat: do not compress the full kernel changelog in the src.rpm (Herton R. Krzesinski)
+- Auto consolidate configs for the 6.7 cycle (Justin M. Forbes)
+- Enable sound for a line of Huawei laptops (TomZanna)
+- fedora: a few cleanups and driver enablements (Peter Robinson)
+- fedora: arm64: cleanup Allwinner Pinctrl drivers (Peter Robinson)
+- fedora: aarch64: Enable some DW drivers (Peter Robinson)
+- redhat: ship all the changelog from source git into kernel-doc (Herton R. Krzesinski)
+- redhat: create an empty changelog file when changing its name (Herton R. Krzesinski)
+- redhat/self-test: Remove --all from git query (Prarit Bhargava)
+- Disable accel drivers for Fedora x86 (Kate Hsuan)
+- redhat: scripts: An automation script for disabling unused driver for x86 (Kate Hsuan)
+- Fix up Fedora LJCA configs and filters (Justin M. Forbes)
+- Fedora configs for 6.7 (Justin M. Forbes)
+- Some Fedora config updates for MLX5 (Justin M. Forbes)
+- Turn on DRM_ACCEL drivers for Fedora (Justin M. Forbes)
+- redhat: enable the kfence test (Nico Pache)
+- redhat/configs: Enable UCLAMP_TASK for PipeWire and WirePlumber (Neal Gompa)
+- Turn on CONFIG_SECURITY_DMESG_RESTRICT for Fedora (Justin M. Forbes)
+- Turn off shellcheck for the fedora-stable-release script (Justin M. Forbes)
+- Add some initial Fedora stable branch script to redhat/scripts/fedora/ (Justin M. Forbes)
+- redhat: disable iptables-legacy compatibility layer (Florian Westphal)
+- redhat: disable dccp conntrack support (Florian Westphal)
+- configs: enable netfilter_netlink_hook in fedora too (Florian Westphal)
+- ext4: Mark mounting fs-verity filesystems as tech-preview (Alexander Larsson)
+- erofs: Add tech preview markers at mount (Alexander Larsson)
+- Enable fs-verity (Alexander Larsson)
+- Enable erofs (Alexander Larsson)
+- aarch64: enable uki (Gerd Hoffmann)
+- redhat: enable CONFIG_SND_SOC_INTEL_SOF_DA7219_MACH as a module for x86 (Patrick Talbert)
+- Turn CONFIG_MFD_CS42L43_SDW on for RHEL (Justin M. Forbes)
+- Enable cryptographic acceleration config flags for PowerPC (Mamatha Inamdar)
+- Also make vmlinuz-virt.efi world readable (Zbigniew Jędrzejewski-Szmek)
+- Drop custom mode for System.map file (Zbigniew Jędrzejewski-Szmek)
+- Add drm_exec_test to mod-internal.list for depmod to succeed (Mika Penttilä)
+- RHEL 9.4 DRM backport (upto v6.6 kernel), sync Kconfigs (Mika Penttilä)
+- Turn on USB_DWC3 for Fedora (rhbz 2250955) (Justin M. Forbes)
+- redhat/configs: Move IOMMUFD to common (Alex Williamson)
+- redhat: Really remove cpupower files (Prarit Bhargava)
+- redhat: remove update_scripts.sh (Prarit Bhargava)
+- Fix s390 zfcpfdump bpf build failures for cgroups (Don Zickus)
+- Flip CONFIG_NVME_AUTH to m in pending (Justin M. Forbes)
+- Turn CONFIG_SND_SOC_INTEL_AVS_MACH_RT5514 on for Fedora x86 (Jason Montleon)
+- kernel/rh_messages.c: Mark functions as possibly unused (Prarit Bhargava)
+- Add snd-hda-cirrus-scodec-test to mod-internal.list (Scott Weaver)
+- Turn off BPF_SYSCALL in pending for zfcpdump (Justin M. Forbes)
+- Add mean_and_variance_test to mod-internal.list (Justin M. Forbes)
+- Add cfg80211-tests and mac80211-tests to mod-internal.list (Justin M. Forbes)
+- Turn on CONFIG_MFD_CS42L43_SDW for RHEL in pending (Justin M. Forbes)
+- Turn on bcachefs for Fedora (Justin M. Forbes)
+- redhat: configs: fedora: Enable QSEECOM and friends (Andrew Halaney)
+- Add clk-fractional-divider_test to mod-internal.list (Thorsten Leemhuis)
+- Add gso_test to mod-internal.list (Thorsten Leemhuis)
+- Add property-entry-test to mod-internal.list (Thorsten Leemhuis)
+- Fedora 6.7 configs part 1 (Justin M. Forbes)
+- [Scheduled job] Catch config mismatches early during upstream merge (Don Zickus)
+- redhat/self-test: Update data for KABI xz change (Prarit Bhargava)
+- redhat/scripts: Switch KABI tarballs to xz (Prarit Bhargava)
+- redhat/kernel.spec.template: Switch KABI compression to xz (Prarit Bhargava)
+- redhat: self-test: Use a more complete SRPM file suffix (Andrew Halaney)
+- redhat: makefile: remove stray rpmbuild --without (Eric Chanudet)
+- Consolidate configs into common for 6.6 (Justin M. Forbes)
+- Updated Fedora configs (Justin M. Forbes)
+- Turn on UFSHCD for Fedora x86 (Justin M. Forbes)
+- redhat: configs: generic: x86: Disable CONFIG_VIDEO_OV01A10 for x86 platform (Hans de Goede)
+- redhat: remove pending-rhel CONFIG_XFS_ASSERT_FATAL file (Patrick Talbert)
+- New configs in fs/xfs (Fedora Kernel Team)
+- crypto: rng - Override drivers/char/random in FIPS mode (Herbert Xu)
+- random: Add hook to override device reads and getrandom(2) (Herbert Xu)
+- redhat/configs: share CONFIG_ARM64_ERRATUM_2966298 between rhel and fedora (Mark Salter)
+- configs: Remove S390 IOMMU config options that no longer exist (Jerry Snitselaar)
+- redhat: docs: clarify where bugs and issues are created (Scott Weaver)
+- redhat/scripts/rh-dist-git.sh does not take any arguments: fix error message (Denys Vlasenko)
+- Add target_branch for gen_config_patches.sh (Don Zickus)
+- redhat: disable kunit by default (Nico Pache)
+- redhat/configs: enable the AMD_PMF driver for RHEL (David Arcari)
+- Make CONFIG_ADDRESS_MASKING consistent between fedora and rhel (Chris von Recklinghausen)
+- CI: add ark-latest baseline job to tag cki-gating for successful pipelines (Michael Hofmann)
+- CI: provide child pipelines for CKI container image gating (Michael Hofmann)
+- CI: allow to run as child pipeline (Michael Hofmann)
+- CI: provide descriptive pipeline name for scheduled pipelines (Michael Hofmann)
+- CI: use job templates for variant variables (Michael Hofmann)
+- redhat/kernel.spec.template: simplify __modsign_install_post (Jan Stancek)
+- Fedora filter updates after configs (Justin M. Forbes)
+- Fedora configs for 6.6 (Justin M. Forbes)
+- redhat/configs: Freescale Layerscape SoC family (Steve Best)
+- Add clang MR/baseline pipelines (Michael Hofmann)
+- CI: Remove unused kpet_tree_family (Nikolai Kondrashov)
+- Add clang config framework (Don Zickus)
+- Apply partial snippet configs to all configs (Don Zickus)
+- Remove unpackaged kgcov config files (Don Zickus)
+- redhat/configs: enable missing Kconfig options for Qualcomm RideSX4 (Brian Masney)
+- enable CONFIG_ADDRESS_MASKING for x86_64 (Chris von Recklinghausen)
+- common: aarch64: enable NXP Flex SPI (Peter Robinson)
+- fedora: Switch TI_SCI_CLK and TI_SCI_PM_DOMAINS symbols to built-in (Javier Martinez Canillas)
+- kernel.spec: adjust build option comment (Michael Hofmann)
+- kernel.spec: allow to enable arm64_16k variant (Michael Hofmann)
+- gitlab-ci: enable build-only pipelines for Rawhide/16k/aarch64 (Michael Hofmann)
+- kernel.spec.template: Fix --without bpftool (Prarit Bhargava)
+- redhat/configs: NXP BBNSM Power Key Driver (Steve Best)
+- redhat/self-test: Update data for cross compile fields (Prarit Bhargava)
+- redhat/Makefile.cross: Add message for disabled subpackages (Prarit Bhargava)
+- redhat/Makefile.cross: Update cross targets with disabled subpackages (Prarit Bhargava)
+- Remove XFS_ASSERT_FATAL from pending-fedora (Justin M. Forbes)
+- Change default pending for XFS_ONLINE_SCRUB_STATSas it now selects XFS_DEBUG (Justin M. Forbes)
+- gitlab-ci: use --with debug/base to select kernel variants (Michael Hofmann)
+- kernel.spec: add rpmbuild --without base option (Michael Hofmann)
+- redhat: spec: Fix typo for kernel_variant_preun for 16k-debug flavor (Neal Gompa)
+- Turn off appletalk for fedora (Justin M. Forbes)
+- New configs in drivers/media (Fedora Kernel Team)
+- redhat/docs: Add a mention of bugzilla for bugs (Prarit Bhargava)
+- Fix the fixup of Fedora release (Don Zickus)
+- Fix Fedora release scheduled job (Don Zickus)
+- Move squashfs to kernel-modules-core (Justin M. Forbes)
+- redhat: Explicitly disable CONFIG_COPS (Vitaly Kuznetsov)
+- redhat: Add dist-check-licenses target (Vitaly Kuznetsov)
+- redhat: Introduce "Verify SPDX-License-Identifier tags" selftest (Vitaly Kuznetsov)
+- redhat: Use kspdx-tool output for the License: field (Vitaly Kuznetsov)
+- Rename pipeline repo branch and DW tree names (Michael Hofmann)
+- Adjust comments that refer to ARK in a Rawhide context (Michael Hofmann)
+- Rename variable names starting with ark- to rawhide- (Michael Hofmann)
+- Rename trigger-ark to trigger-rawhide (Michael Hofmann)
+- Fix up config mismatches for Fedora (Justin M. Forbes)
+- redhat/configs: Texas Instruments Inc. K3 multicore SoC architecture (Steve Best)
+- Flip CONFIG_VIDEO_V4L2_SUBDEV_API in pending RHEL due to mismatch (Justin M. Forbes)
+- CONFIG_HW_RANDOM_HISI: move to common and set to m (Scott Weaver)
+- Turn off CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE for Fedora s390x (Justin M. Forbes)
+- Disable tests for ELN realtime pipelines (Michael Hofmann)
+- New configs in mm/Kconfig (Fedora Kernel Team)
+- Flip CONFIG_SND_SOC_CS35L56_SDW to m and clean up (Justin M. Forbes)
+- Add drm_exec_test to mod-internal.list (Thorsten Leemhuis)
+- Add new pending entry for CONFIG_SND_SOC_CS35L56_SDW to fix mismatch (Justin M. Forbes)
+- Fix tarball creation logic (Don Zickus)
+- redhat: bump libcpupower soname to match upstream (Patrick Talbert)
+- Turn on MEMFD_CREATE in pending as it is selected by CONFIG_TMPFS (Justin M. Forbes)
+- redhat: drop unneeded build-time dependency gcc-plugin-devel (Coiby Xu)
+- all: x86: move wayward x86 specific config home (Peter Robinson)
+- all: de-dupe non standard config options (Peter Robinson)
+- all: x86: clean up microcode loading options (Peter Robinson)
+- common: remove unnessary CONFIG_SND_MESON_AXG* (Peter Robinson)
+- redhat: Fix UKI install with systemd >= 254 (Vitaly Kuznetsov)
+- redhat: Use named parameters for kernel_variant_posttrans()/kernel_variant_preun() (Vitaly Kuznetsov)
+- redhat/kernel.spec.template: update compression variables to support zstd (Brian Masney)
+- Consolidate configs to common for 6.5 (Justin M. Forbes)
+- Remove unused config entry for Fedora (Justin M. Forbes)
+- redhat/self-test: Remove rpmlint test (Prarit Bhargava)
+- Remove the armv7 config directory from Fedora again (Justin M. Forbes)
+- Enable CONFIG_EXPERT for both RHEL and Fedora (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_DEVICE_PRIVATE on aarch64 (David Hildenbrand) [2231407]
+- redhat/configs: disable CONFIG_ROCKCHIP_ERRATUM_3588001 for RHEL (Mark Salter)
+- redhat: shellcheck fixes (Prarit Bhargava)
+- redhat/configs: enable tegra114 SPI (Mark Salter)
+- all: properly cleanup firewire once and for all (Peter Robinson)
+- Fix up filters for Fedora (Justin M. Forbes)
+- New configs in arch/x86 (Fedora Kernel Team)
+- Add an armv7 directory back for the Fedora configs (Justin M. Forbes)
+- Fedora 6.5 config updates (Justin M. Forbes)
+- Turn off DMABUF_SYSFS_STATS (Justin M. Forbes)
+- CI: rawhide_release: switch to using script to push (Don Zickus)
+- redhat/self-test: Update self-test data (Prarit Bhargava)
+- redhat/scripts/cross-compile: Update download_cross.sh (Prarit Bhargava)
+- redhat/Makefile.cross: Remove ARCH selection code (Prarit Bhargava)
+- redhat/Makefile.cross: Update script (Prarit Bhargava)
+- Fix interruptible non MR jobs (Michael Hofmann)
+- all: run evaluate_configs to de-dupe merged aarch64 (Peter Robinson)
+- all: arm: merge the arm and arm/aarch64 (Peter Robinson)
+- fedora: remove ARMv7 AKA armhfp configurations (Peter Robinson)
+- fedora: remove ARMv7 AKA armhfp support (Peter Robinson)
+- redhat/configs: enable CONFIG_VIRTIO_MEM on aarch64 (David Hildenbrand) [2044155]
+- redhat/configs: enable CONFIG_MEMORY_HOTREMOVE aarch64 (David Hildenbrand) [2062054]
+- redhat: Add arm64-16k kernel flavor scaffold for 16K page-size'd AArch64 (Neal Gompa)
+- fedora: enable i3c on aarch64 (Peter Robinson)
+- redhat/configs: Remove `CONFIG_HZ_1000 is not set` for aarch64 (Enric Balletbo i Serra)
+- redhat/configs: turn on the framework for SPI NOR for ARM (Steve Best)
+- configs: add new ChromeOS UART driver (Mark Langsdorf)
+- configs: add new ChromeOS Human Presence Sensor (Mark Langsdorf)
+- redhat/configs: Enable CONFIG_NVIDIA_WMI_EC_BACKLIGHT for both Fedora and RHEL (Kate Hsuan)
+- redhat/configs: Texas Instruments INA3221 driver (Steve Best)
+- arm: i.MX: Some minor NXP i.MX cleanups (Peter Robinson)
+- Description: Set config for Tegra234 pinctrl driver (Joel Slebodnick)
+- Update RPM Scriptlet for kernel-install Changes (Jonathan Steffan)
+- [CI] add exit 0 to the end of CI scripts (Don Zickus)
+- redhat: configs: Disable CONFIG_CRYPTO_STATS since performance issue for storage (Kate Hsuan) [2227793]
+- Remove obsolete variable from gitlab-ci.yml (Ondrej Kinst)
+- redhat/configs: Move GVT-g to Fedora only (Alex Williamson)
+- [CI] Make sure we are on correct branch before running script (Don Zickus)
+- CI: ark-update-configs: sync push command and output (Don Zickus)
+- CI: ark-update-configs: misc changes (Don Zickus)
+- CI: sync ark-create-release push commands with output (Don Zickus)
+- CI: ark-create-release: Add a robust check if nothing changed (Don Zickus)
+- CI: Remove legacy tag check cruft (Don Zickus)
+- CI: Introduce simple environment script (Don Zickus)
+- redhat/configs: Disable FIREWIRE for RHEL (Prarit Bhargava)
+- redhat/scripts/rh-dist-git.sh: print list of uploaded files (Denys Vlasenko)
+- redhat/scripts/expand_srpm.sh: add missing function, robustify (Denys Vlasenko)
+- redhat: Enable HSR and PRP (Felix Maurer)
+- redhat/scripts/rh-dist-git.sh: fix outdated message and comment (Denys Vlasenko)
+- redhat/configs: Disable CONFIG_I8K (Prarit Bhargava)
+- Make sure posttrans script doesn't fail if restorecon is not installed (Daan De Meyer)
+- Update filters for new config items (Justin M. Forbes)
+- More Fedora 6.5 configs (Justin M. Forbes)
+- redhat/configs: disable pre-UVC cameras for RHEL on aarch64 (Dean Nelson)
+- redhat/configs: enable CONFIG_MEDIA_SUPPORT for RHEL on aarch64 (Dean Nelson)
+- move ownership of /lib/modules/<ver>/ to kernel-core (Thorsten Leemhuis)
+- Let kernel-modules-core own the files depmod generates. (Thorsten Leemhuis)
+- redhat: configs: Enable CONFIG_TYPEC_STUSB160X for rhel on aarch64 (Desnes Nunes)
+- Add filters for ptp_dfl_tod on Fedora (Justin M. Forbes)
+- Fedora 6.5 configs part 1 (Justin M. Forbes)
+- fedora: enable CONFIG_ZYNQMP_IPI_MBOX as a builtin in pending-fedora (Patrick Talbert)
+- fedora: arm: some minor updates (Peter Robinson)
+- fedora: bluetooth: enable AOSP extensions (Peter Robinson)
+- fedora: wifi: tweak ZYDAS WiFI config options (Peter Robinson)
+- scsi: sd: Add "probe_type" module parameter to allow synchronous probing (Ewan D. Milne) [2140017]
+- redhat/configs: allow IMA to use MOK keys (Coiby Xu)
+- Simplify documentation jobs (Michael Hofmann)
+- Auto-cancel pipelines only on MRs (Michael Hofmann)
+- CI: Call script directly (Don Zickus)
+- CI: Remove stale TAG and Makefile cruft (Don Zickus)
+- CI: Move os-build tracking to common area (Don Zickus)
+- redhat: use the eln builder for daily jobs (Patrick Talbert)
+- redhat: set CONFIG_XILINX_WINDOW_WATCHDOG as disabled in pending (Patrick Talbert)
+- Add baseline ARK/ELN pipelines (Michael Hofmann)
+- Simplify job rules (Michael Hofmann)
+- Build ELN srpm for bot changes (Michael Hofmann)
+- Run RH selftests for ELN (Michael Hofmann)
+- Simplify job templates (Michael Hofmann)
+- Extract rules to allow orthogonal configuration (Michael Hofmann)
+- Require ELN pipelines if started automatically (Michael Hofmann)
+- Add ARK debug pipeline (Michael Hofmann)
+- Extract common parts of child pipeline job (Michael Hofmann)
+- Move ARK pipeline variables into job template (Michael Hofmann)
+- Simplify ARK pipeline rules (Michael Hofmann)
+- Change pathfix.py to %%py3_shebang_fix (Justin M. Forbes)
+- Turn on NET_VENDOR_QUALCOMM for Fedora to enable rmnet (Justin M. Forbes)
+- redhat: add intel-m10-bmc-hwmon to filter-modules singlemods list (Patrick Talbert)
+- fedira: enable pending-fedora CONFIG_CPUFREQ_DT_PLATDEV as a module (Patrick Talbert)
+- redhat: fix the 'eln BUILD_TARGET' self-test (Patrick Talbert)
+- redhat: update the self-test-data (Patrick Talbert)
+- redhat: remove trailing space in dist-dump-variables output (Patrick Talbert)
+- Allow ELN pipelines failures (Michael Hofmann)
+- Enable cs-like CI (Michael Hofmann)
+- Allow to auto-cancel redundant pipelines (Michael Hofmann)
+- Remove obsolete unused trigger variable (Michael Hofmann)
+- Fix linter warnings in .gitlab-ci.yml (Michael Hofmann)
+- config: wifi: debug options for ath11k, brcm80211 and iwlwifi (Íñigo Huguet)
+- redhat: allow dbgonly cross builds (Jan Stancek)
+- redhat/configs: Clean up x86-64 call depth tracking configs (Waiman Long)
+- redhat: move SND configs from pending-rhel to rhel (Patrick Talbert)
+- Fix up armv7 configs for Fedora (Justin M. Forbes)
+- redhat: Set pending-rhel x86 values for various SND configs (Patrick Talbert)
+- redhat: update self-test data (Patrick Talbert)
+- redhat: ignore SPECBPFTOOLVERSION/bpftoolversion in self-test create-data.sh (Patrick Talbert)
+- fedora/rhel: Move I2C_DESIGNWARE_PLATFORM, I2C_SLAVE, & GPIOLIB from pending (Patrick Talbert)
+- redhat/filter-modules.sh.rhel: add needed deps for intel_rapl_tpmi (Jan Stancek)
+- fedora: Enable CONFIG_SPI_SLAVE (Patrick Talbert)
+- fedora/rhel: enable I2C_DESIGNWARE_PLATFORM, I2C_SLAVE, and GPIOLIB (Patrick Talbert)
+- fedora: Enable CONFIG_SPI_SLAVE in fedora-pending (Patrick Talbert)
+- redhat: remove extra + (plus) from meta package Requires definitions (Patrick Talbert)
+- Add intel-m10-bmc-hwmon to singlemods (Thorsten Leemhuis)
+- Add hid-uclogic-test to mod-internal.list (Thorsten Leemhuis)
+- Add checksum_kunit.ko to mod-internal.list (Thorsten Leemhuis)
+- Add strcat_kunit to mod-internal.list (Thorsten Leemhuis)
+- Add input_test to mod-intenal.list (Thorsten Leemhuis)
+- Revert "Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64" (Justin M. Forbes)
+- Fix up rebase issue with CONFIG_ARCH_FORCE_MAX_ORDER (Justin M. Forbes)
+- redhat/kernel.spec.template: Disable 'extracting debug info' messages (Prarit Bhargava)
+- kernel/rh_messages.c: Another gcc12 warning on redundant NULL test (Florian Weimer) [2216678]
+- redhat: fix signing for realtime and arm64_64k non-debug variants (Jan Stancek)
+- redhat: treat with_up consistently (Jan Stancek)
+- redhat: make with_realtime opt-in (Jan Stancek)
+- redhat/configs: Disable qcom armv7 drippings in the aarch64 tree (Jeremy Linton)
+- kernel.spec: drop obsolete ldconfig (Jan Stancek)
+- Consolidate config items to common for 6.4 cycle (Justin M. Forbes)
+- Turn on CO?NFIg_RMNET for Fedora (Justin M. Forbes)
+- redhat/configs: enable CONFIG_MANA_INFINIBAND=m for ARK (Vitaly Kuznetsov)
+- redhat/config: common: Enable CONFIG_GPIO_SIM for software development (Kate Hsuan)
+- redhat: fix problem with RT kvm modules listed twice in rpm generation (Clark Williams)
+- redhat: turn off 64k kernel builds with rtonly (Clark Williams)
+- redhat: turn off zfcpdump for rtonly (Clark Williams)
+- redhat: don't allow with_rtonly to turn on unsupported arches (Clark Williams)
+- redhat: update self-test data for addition of RT and 64k-page variants (Clark Williams)
+- redhat: fix realtime and efiuki build conflict (Jan Stancek)
+- arm64-64k: Add new kernel variant to RHEL9/CS9 for 64K page-size'd ARM64 (Donald Dutile) [2153073]
+- redhat: TEMPORARY set configs to deal with PREEMPT_RT not available (Clark Williams)
+- redhat: TEMPORARY default realtime to off (Clark Williams)
+- redhat: moved ARM errata configs to arm dir (Clark Williams)
+- redhat: RT packaging changes (Clark Williams)
+- redhat: miscellaneous commits needed due to CONFIG_EXPERT (Clark Williams)
+- redhat: realtime config entries (Clark Williams)
+- common: remove deleted USB PCCARD drivers (Peter Robinson)
+- fedora: further cleanup of pccard/cardbus subsystem (Peter Robinson)
+- common: properly disable PCCARD subsystem (Peter Robinson)
+- redhat/configs: arm: enable SERIAL_TEGRA UART for RHEL (Mark Salter)
+- redhat/configs: enable CONFIG_X86_AMD_PSTATE_UT (David Arcari)
+- redhat/configs: Enable CONFIG_TCG_VTPM_PROXY for RHEL (Štěpán Horáček)
+- redhat: do not package *.mod.c generated files (Denys Vlasenko)
+- ALSA configuration changes for ARK/RHEL 9.3 (Jaroslav Kysela)
+- spec: remove resolve_btfids from kernel-devel (Viktor Malik)
+- Fix typo in filter-modules (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_INIT_STACK_ALL_ZERO for RHEL (Josh Poimboeuf)
+- Remove CONFIG_ARCH_FORCE_MAX_ORDER for aarch64 (Justin M. Forbes)
+- Fix up config and filter for PTP_DFL_TOD (Justin M. Forbes)
+- redhat/configs: IMX8ULP pinctrl driver (Steve Best)
+- redhat/configs: increase CONFIG_FRAME_WARN for Fedora on aarch64 (Brian Masney)
+- redhat/configs: add two missing Kconfig options for the Thinkpad x13s (Brian Masney)
+- Fedora configs for 6.4 (Justin M. Forbes)
+- Change aarch64 CONFIG_ARCH_FORCE_MAX_ORDER to 10 for 4K pages (Justin M. Forbes)
+- kernel.spec: remove "RPM_VMLINUX_H=$DevelDir/vmlinux.h" code chunk in %%install (Denys Vlasenko)
+- redhat/configs: aarch64: Turn on Display for OnePlus 6 (Eric Curtin)
+- redhat/configs: NXP i.MX93 pinctrl, clk, analog to digital converters (Steve Best)
+- redhat/configs: Enable CONFIG_SC_GPUCC_8280XP for fedora (Andrew Halaney)
+- redhat/configs: Enable CONFIG_QCOM_IPCC for fedora (Andrew Halaney)
+- Add rv subpackage for kernel-tools (John Kacur) [2188441]
+- redhat/configs: NXP i.MX9 family (Steve Best)
+- redhat/genlog.py: add support to list/process zstream Jira tickets (Herton R. Krzesinski)
+- redhat: fix duplicate jira issues in the resolves line (Herton R. Krzesinski)
+- redhat: add support for Jira issues in changelog (Herton R. Krzesinski)
+- redhat/configs: turn on IMX8ULP CCM Clock Driver (Steve Best)
+- redhat: update filter-modules fsdrvs list to reference smb instead of cifs (Patrick Talbert)
+- Turn off some debug options found to impact performance (Justin M. Forbes)
+- wifi: rtw89: enable RTL8852BE card in RHEL (Íñigo Huguet)
+- redhat/configs: enable TEGRA186_GPC_DMA for RHEL (Mark Salter)
+- Move imx8m configs from fedora to common (Mark Salter)
+- redhat/configs: turn on lpuart serial port support Driver (Steve Best) [2208834]
+- Turn off DEBUG_VM for non debug Fedora kernels (Justin M. Forbes)
+- Enable CONFIG_BT on aarch64 (Charles Mirabile)
+- redhat/configs: turn on CONFIG_MARVELL_CN10K_TAD_PMU (Michal Schmidt) [2042240]
+- redhat/configs: Fix enabling MANA Infiniband (Kamal Heib)
+- Fix file listing for symvers in uki (Justin M. Forbes)
+- Fix up some Fedora config items (Justin M. Forbes)
+- enable efifb for Nvidia (Justin M. Forbes)
+- kernel.spec: package unstripped test_progs-no_alu32 (Felix Maurer)
+- Turn on NFT_CONNLIMIT for Fedora (Justin M. Forbes)
+- Include the information about builtin symbols into kernel-uki-virt package too (Vitaly Kuznetsov)
+- redhat/configs: Fix incorrect configs location and content (Vladis Dronov)
+- redhat/configs: turn on CONFIG_MARVELL_CN10K_DDR_PMU (Michal Schmidt) [2042241]
+- redhat: configs: generic: x86: Disable CONFIG_VIDEO_OV2740 for x86 platform (Kate Hsuan)
+- Enable IO_URING for RHEL (Justin M. Forbes)
+- Turn on IO_URING for RHEL in pending (Justin M. Forbes)
+- redhat: Remove editconfig (Prarit Bhargava)
+- redhat: configs: fix CONFIG_WERROR replace in build_configs (Jan Stancek)
+- redhat/configs: enable Maxim MAX77620 PMIC for RHEL (Mark Salter)
+- kernel.spec: skip kernel meta package when building without up (Jan Stancek)
+- redhat/configs: enable RDMA_RXE for RHEL (Kamal Heib) [2022578]
+- redhat/configs: update RPCSEC_GSS_KRB5 configs (Scott Mayhew)
+- redhat/Makefile: Support building linux-next (Thorsten Leemhuis)
+- redhat/Makefile: support building stable-rc versions (Thorsten Leemhuis)
+- redhat/Makefile: Add target to print DISTRELEASETAG (Thorsten Leemhuis)
+- Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64 (Justin M. Forbes)
+- Revert "Merge branch 'unstripped-no_alu32' into 'os-build'" (Patrick Talbert)
+- configs: Enable CONFIG_PAGE_POOL_STATS for common/generic (Patrick Talbert)
+- redhat/configs: enable CONFIG_DELL_WMI_PRIVACY for both RHEL and Fedora (David Arcari)
+- kernel.spec: package unstripped test_progs-no_alu32 (Felix Maurer)
+- bpf/selftests: fix bpf selftests install (Jerome Marchand)
+- kernel.spec: add bonding selftest (Hangbin Liu)
+- Change FORCE_MAX_ORDER for ppc64 to be 8 (Justin M. Forbes)
+- kernel.spec.template: Add global compression variables (Prarit Bhargava)
+- kernel.spec.template: Use xz for KABI (Prarit Bhargava)
+- kernel.spec.template: Remove gzip related aarch64 code (Prarit Bhargava)
+- Add apple_bl to filter-modules (Justin M. Forbes)
+- Add handshake-test to mod-intenal.list (Justin M. Forbes)
+- Add regmap-kunit to mod-internal.list (Justin M. Forbes)
+- configs: set CONFIG_PAGE_POOL_STATS (Patrick Talbert)
+- Add apple_bl to fedora module_filter (Justin M. Forbes)
+- Fix up some config mismatches in new Fedora config items (Justin M. Forbes)
+- redhat/configs: disable CONFIG_USB_NET_SR9700 for aarch64 (Jose Ignacio Tornos Martinez)
+- Fix up the RHEL configs for xtables and ipset (Justin M. Forbes)
+- ark: enable wifi on aarch64 (Íñigo Huguet)
+- fedora: wifi: hermes: disable 802.11b driver (Peter Robinson)
+- fedora: wifi: libertas: use the LIBERTAS_THINFIRM driver (Peter Robinson)
+- fedora: wifi: disable Zydas vendor (Peter Robinson)
+- redhat: fix python ValueError in error path of merge.py (Clark Williams)
+- fedora: arm: minor updates (Peter Robinson)
+- kernel.spec: Fix UKI naming to comply with BLS (Philipp Rudo)
+- redhat/kernel.spec.template: Suppress 'extracting debug info' noise in build log (Prarit Bhargava)
+- Fedora 6.3 configs part 2 (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_X86_KERNEL_IBT for Fedora and ARK (Josh Poimboeuf)
+- kernel.spec: gcov: make gcov subpackages per variant (Jan Stancek)
+- kernel.spec: Gemini: add Epoch to perf and rtla subpackages (Jan Stancek)
+- kernel.spec: Gemini: fix header provides for upgrade path (Jan Stancek)
+- redhat: introduce Gemini versioning (Jan Stancek)
+- redhat: separate RPM version from uname version (Jan Stancek)
+- redhat: introduce GEMINI and RHEL_REBASE_NUM variable (Jan Stancek)
+- ipmi: ssif_bmc: Add SSIF BMC driver (Tony Camuso)
+- common: minor de-dupe of parallel port configs (Peter Robinson)
+- Fedora 6.3 configs part 1 (Justin M. Forbes)
+- redhat: configs: Enable CONFIG_MEMTEST to enable memory test (Kate Hsuan)
+- Update Fedora arm filters after config updates (Nicolas Chauvet)
+- redhat/kernel.spec.template: Fix kernel-tools-libs-devel dependency (Prarit Bhargava)
+- redhat: fix the check for the n option (Patrick Talbert)
+- common: de-dupe some options that are the same (Peter Robinson)
+- generic: remove deleted options (Peter Robinson)
+- redhat/configs: enable CONFIG_INTEL_TCC_COOLING for RHEL (David Arcari)
+- Update Fedora ppc filters after config updates (Justin M. Forbes)
+- Update Fedora aarch64 filters after config updates (Justin M. Forbes)
+- fedora: arm: Updates for 6.3 (Peter Robinson)
+- redhat: kunit: cleanup NITRO config and enable rescale test (Nico Pache)
+- kernel.spec: use %%{package_name} to fix kernel-devel-matched Requires (Jan Stancek)
+- kernel.spec: use %%{package_name} also for abi-stablelist subpackages (Jan Stancek)
+- kernel.spec: use %%{package_name} also for tools subpackages (Jan Stancek)
+- generic: common: Parport and paride/ata cleanups (Peter Robinson)
+- CONFIG_SND_SOC_CS42L83 is no longer common (Justin M. Forbes)
+- configs: arm: bring some configs in line with rhel configs in c9s (Mark Salter)
+- arm64/configs: Put some arm64 configs in the right place (Mark Salter)
+- cleanup removed R8188EU config (Peter Robinson)
+- Make RHJOBS container friendly (Don Zickus)
+- Remove scmversion from kernel.spec.template (Don Zickus)
+- redhat/configs: Enable CONFIG_SND_SOC_CS42L83 (Neal Gompa)
+- Use RHJOBS for create-tarball (Don Zickus)
+- Enable CONFIG_NET_SCH_FQ_PIE for Fedora (Justin M. Forbes)
+- Make Fedora debug configs more useful for debug (Justin M. Forbes)
+- redhat/configs: enable Octeon TX2 network drivers for RHEL (Michal Schmidt) [2040643]
+- redhat/kernel.spec.template: fix installonlypkg for meta package (Jan Stancek)
+- redhat: version two of Makefile.rhelver tweaks (Clark Williams)
+- redhat/configs: Disable CONFIG_GCC_PLUGINS (Prarit Bhargava)
+- redhat/kernel.spec.template: Fix typo for process_configs.sh call (Neal Gompa)
+- redhat/configs: CONFIG_CRYPTO_SM3_AVX_X86_64 is x86 only (Vladis Dronov)
+- redhat/configs: Enable CONFIG_PINCTRL_METEORLAKE in RHEL (Prarit Bhargava)
+- fedora: enable new image sensors (Peter Robinson)
+- redhat/self-test: Update self-test data (Prarit Bhargava)
+- redhat/kernel.spec.template: Fix hardcoded "kernel" (Prarit Bhargava)
+- redhat/configs/generate_all_configs.sh: Fix config naming (Prarit Bhargava)
+- redhat/kernel.spec.template: Pass SPECPACKAGE_NAME to generate_all_configs.sh (Prarit Bhargava)
+- kernel.spec.template: Use SPECPACKAGE_NAME (Prarit Bhargava)
+- redhat/Makefile: Copy spec file (Prarit Bhargava)
+- redhat: Change PACKAGE_NAME to SPECPACKAGE_NAME (Prarit Bhargava)
+- redhat/configs: Support the virtio_mmio.device parameter in Fedora (David Michael)
+- Revert "Merge branch 'systemd-boot-unsigned' into 'os-build'" (Patrick Talbert)
+- redhat/Makefile: fix default values for dist-brew's DISTRO and DIST (Íñigo Huguet)
+- Remove cc lines from automatic configs (Don Zickus)
+- Add rtla-hwnoise files (Justin M. Forbes)
+- redhat/kernel.spec.template: Mark it as a non-executable file (Neal Gompa)
+- fedora: arm: Enable DRM_PANEL_HIMAX_HX8394 (Javier Martinez Canillas)
+- redhat/configs: CONFIG_HP_ILO location fix (Vladis Dronov)
+- redhat: Fix build for kselftests mm (Nico Pache)
+- fix tools build after vm to mm rename (Justin M. Forbes)
+- redhat/spec: Update bpftool versioning scheme (Viktor Malik)
+- redhat/configs: CONFIG_CRYPTO_SM4_AESNI_AVX*_X86_64 is x86 only (Prarit Bhargava)
+- redhat:  adapt to upstream Makefile change (Clark Williams)
+- redhat:  modify efiuki specfile changes to use variants convention (Clark Williams)
+- Turn off DEBUG_INFO_COMPRESSED_ZLIB for Fedora (Justin M. Forbes)
+- redhat/kernel.spec.template: Fix RHEL systemd-boot-unsigned dependency (Prarit Bhargava)
+- Add hashtable_test to mod-internal.list (Justin M. Forbes)
+- Add more kunit tests to mod-internal.list for 6.3 (Justin M. Forbes)
+- Flip CONFIG_I2C_ALGOBIT to m (Justin M. Forbes)
+- Flip I2C_ALGOBIT to m to avoid mismatch (Justin M. Forbes)
+- kernel.spec: move modules.builtin to kernel-core (Jan Stancek)
+- Turn on IDLE_INJECT for x86 (Justin M. Forbes)
+- Flip CONFIG_IDLE_INJECT in pending (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_V4L_TEST_DRIVERS related drivers (Enric Balletbo i Serra)
+- redhat/configs: Enable UCSI_CCG support (David Marlin)
+- Fix underline mark-up after text change (Justin M. Forbes)
+- Turn on CONFIG_XFS_RT for Fedora (Justin M. Forbes)
+- Consolidate common configs for 6.2 (Justin M. Forbes)
+- aarch64: enable zboot (Gerd Hoffmann)
+- redhat: remove duplicate pending-rhel config items (Patrick Talbert)
+- Disable frame pointers (Justin M. Forbes)
+- redhat/configs: update scripts and docs for ark -> rhel rename (Clark Williams)
+- redhat/configs: rename ark configs dir to rhel (Clark Williams)
+- Turn off CONFIG_DEBUG_INFO_COMPRESSED_ZLIB for ppc64le (Justin M. Forbes)
+- kernel.spec: package unstripped kselftests/bpf/test_progs (Jan Stancek)
+- kernel.spec: allow to package some binaries as unstripped (Jan Stancek)
+- redhat/configs: Make merge.py portable for older python (Desnes Nunes)
+- Fedora configs for 6.2 (Justin M. Forbes)
+- redhat: Repair ELN build broken by the recent UKI changes (Vitaly Kuznetsov)
+- redhat/configs: enable CONFIG_INET_DIAG_DESTROY (Andrea Claudi)
+- Enable TDX Guest driver (Vitaly Kuznetsov)
+- redhat/configs: Enable CONFIG_PCIE_PTM generically (Corinna Vinschen)
+- redhat: Add sub-RPM with a EFI unified kernel image for virtual machines (Vitaly Kuznetsov)
+- redhat/Makefile: Remove GIT deprecated message (Prarit Bhargava)
+- Revert "redhat: configs: Disable xtables and ipset" (Phil Sutter)
+- redhat/configs: Enable CONFIG_SENSORS_LM90 for RHEL (Mark Salter)
+- Fix up SQUASHFS decompression configs (Justin M. Forbes)
+- redhat/configs: enable CONFIG_OCTEON_EP as a module in ARK (Michal Schmidt) [2041990]
+- redhat: ignore rpminspect runpath report on urandom_read selftest binaries (Herton R. Krzesinski)
+- kernel.spec: add llvm-devel build requirement (Scott Weaver)
+- Update self-test data to not expect debugbuildsenabled 0 (Justin M. Forbes)
+- Turn off forced debug builds (Justin M. Forbes)
+- Turn on debug builds for aarch64 Fedora (Justin M. Forbes)
+- redhat/configs:  modify merge.py to match old overrides input (Clark Williams)
+- redhat:  fixup pylint complaints (Clark Williams)
+- redhat: remove merge.pl and references to it (Clark Williams)
+- redhat: update merge.py to handle merge.pl corner cases (Clark Williams)
+- Revert "redhat: fix elf got hardening for vm tools" (Don Zickus)
+- Update rebase notes for Fedora (Justin M. Forbes)
+- Update CONFIG_LOCKDEP_CHAINS_BITS to 19 (cmurf)
+- redhat/configs: Turn on CONFIG_SPI_TEGRA210_QUAD for RHEL (Mark Salter)
+- ark: aarch64: drop CONFIG_SMC911X (Peter Robinson)
+- all: cleanup and de-dupe CDROM_PKTCDVD options. (Peter Robinson)
+- all: remove CRYPTO_GF128MUL (Peter Robinson)
+- all: cleanup UEFI options (Peter Robinson)
+- common: arm64: Enable Ampere Altra SMpro Hardware Monitoring (Peter Robinson)
+- fedora: enable STACKPROTECTOR_STRONG (Peter Robinson)
+- fedora: enable STACKPROTECTOR on arm platforms (Peter Robinson)
+- redhat/self-test: Update data with ENABLE_WERROR (Prarit Bhargava)
+- redhat/Makefile.variables: Add ENABLE_WERROR (Prarit Bhargava)
+- makefile: Add -Werror support for RHEL (Prarit Bhargava)
+- redhat/Makefile.variables: Remove mention of Makefile.rhpkg (Prarit Bhargava)
+- redhat/Makefile.variables: Alphabetize variables (Prarit Bhargava)
+- gitlab-ci: use CI templates from production branch (Michael Hofmann)
+- redhat/kernel.spec.template: Fix internal "File listed twice" errors (Prarit Bhargava)
+- redhat: Remove stale .tmp_versions code and comments (Prarit Bhargava)
+- redhat/kernel.spec.template: Fix vmlinux_decompressor on !s390x (Prarit Bhargava)
+- redhat/kernel.spec.template: Remove unnecessary output from pathfix.py (Prarit Bhargava)
+- Modularize CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU (Mark Salter)
+- redhat/kernel.spec.template: Parallelize compression (Prarit Bhargava)
+- config: Enable Security Path (Ricardo Robaina)
+- redhat/self-test/data: Regenerate self-test data for make change (Prarit Bhargava)
+- Update module filters for nvmem_u-boot-env (Justin M. Forbes)
+- fedora: Updates for 6.2 merge (Peter Robinson)
+- fedora: Updates for 6.1 merge (Peter Robinson)
+- modules-core: use %%posttrans (Gerd Hoffmann)
+- split sub-rpm kernel-modules-core from kernel-core (Gerd Hoffmann)
+- Turn off CONFIG_MTK_T7XX for S390x (Justin M. Forbes)
+- CI: add variable for variant handling (Veronika Kabatova)
+- Fix up configs with SND_SOC_NAU8315 mismatch (Justin M. Forbes)
+- CI: Do a full build for non-bot runs (Veronika Kabatova)
+- Fix up configs with SND_SOC_NAU8315 mismatch (Justin M. Forbes)
+- kernel/rh_messages.c: gcc12 warning on redundant NULL test (Eric Chanudet) [2142658]
+- redhat/configs: Enable CRYPTO_CURVE25519 in ark (Prarit Bhargava)
+- general: arm: cleanup ASPEED options (Peter Robinson)
+- redhat/configs: ALSA - cleanups for the AMD Pink Sardine DMIC driver (Jaroslav Kysela)
+- redhat/docs: Add FAQ entry for booting between Fedora & ELN/RHEL kernels (Prarit Bhargava)
+- spec: add missing BuildRequires: python3-docutils for tools (Ondrej Mosnacek)
+- config: enable RCU_TRACE for debug kernels (Wander Lairson Costa)
+- Add siphash_kunit and strscpy_kunit to mod-internal.list (Justin M. Forbes)
+- Add drm_kunit_helpers to mod-internal.list (Justin M. Forbes)
+- Fix up configs for Fedora so we don't have a mismatch (Justin M. Forbes)
+- Turn on CONFIG_SQUASHFS_DECOMP_SINGLE in pending (Justin M. Forbes)
+- redhat/kernel.spec.template: Fix cpupower file error (Prarit Bhargava)
+- redhat/configs: aarhc64: clean up some erratum configs (Mark Salter)
+- More Fedora configs for 6.1 as deps were switched on (Justin M. Forbes)
+- redhat/configs: make SOC_TEGRA_CBB a module (Mark Salter)
+- redhat/configs: aarch64: reorganize tegra configs to common dir (Mark Salter)
+- Enforces buildroot if cross_arm (Nicolas Chauvet)
+- Handle automated case when config generation works correctly (Don Zickus)
+- Turn off CONFIG_CRYPTO_ARIA_AESNI_AVX_X86_64 (Justin M. Forbes)
+- Turn off CONFIG_EFI_ZBOOT as it makes CKI choke (Justin M. Forbes)
+- Fedora config updates for 6.1 (Justin M. Forbes)
+- redhat: Remove cpupower files (Prarit Bhargava)
+- redhat/configs: update CXL-related options to match what RHEL will use (John W. Linville)
+- Clean up the config for the Tegra186 timer (Al Stone)
+- redhat/configs: move CONFIG_TEGRA186_GPC_DMA config (Mark Salter)
+- Check for kernel config git-push failures (Don Zickus)
+- redhat: genlog.sh failures should interrupt the recipe (Patrick Talbert)
+- Turn CONFIG_GNSS back on for Fedora (Justin M. Forbes)
+- redhat/configs: enable CONFIG_GNSS for RHEL (Michal Schmidt)
+- Turn off NVMEM_U_BOOT_ENV for fedora (Justin M. Forbes)
+- Consolidate matching fedora and ark entries to common (Justin M. Forbes)
+- Empty out redhat/configs/common (Justin M. Forbes)
+- Adjust path to compressed vmlinux kernel image for s390x (Justin M. Forbes) [2149273]
+- Fedora config updates for 6.1 (Justin M. Forbes)
+- redhat: genlog.sh should expect genlog.py in the current directory (Patrick Talbert)
+- redhat/configs: consolidate CONFIG_TEST_LIVEPATCH=m (Joe Lawrence)
+- redhat/configs: enable CONFIG_TEST_LIVEPATCH=m for s390x (Julia Denham)
+- Revert "Merge branch 'ark-make-help' into 'os-build'" (Scott Weaver)
+- Remove recommendation to use 'common' for config changes. (Don Zickus)
+- Update config to add i3c support for AArch64 (Mark Charlebois)
+- redhat: Move cross-compile scripts into their own directory (Prarit Bhargava)
+- redhat: Move yaml files into their own directory (Prarit Bhargava)
+- redhat: Move update_scripts.sh into redhat/scripts (Prarit Bhargava)
+- redhat: Move kernel-tools scripts into their own directory (Prarit Bhargava)
+- redhat: Move gen-* scripts into their own directory (Prarit Bhargava)
+- redhat: Move mod-* scripts into their own directory (Prarit Bhargava)
+- redhat/Makefile: Fix RHJOBS grep warning (Prarit Bhargava)
+- redhat: Force remove tmp file (Prarit Bhargava)
+- redhat/configs: ALSA - cleanups for the CentOS 9.2 update (Jaroslav Kysela)
+- CI: Use CKI container images from quay.io (Veronika Kabatova)
+- redhat: clean up the partial-kgcov-snip.config file (Patrick Talbert)
+- redhat: avoid picking up stray editor backups when processing configs (Clark Williams)
+- CI: Remove old configs (Veronika Kabatova)
+- redhat: override `make help` to include dist-help (Jonathan Toppins)
+- redhat: make RHTEST stricter (Jonathan Toppins)
+- redhat: Enable support for SN2201 system (Ivan Vecera)
+- redhat/docs/index.rst: Add FLAVOR information to generate configs for local builds (Enric Balletbo i Serra)
+- redhat: fix selftest git command so it picks the right commit (Patrick Talbert)
+- redhat/configs: enable HP_WATCHDOG for aarch64 (Mark Salter)
+- redhat: disable Kfence Kunit Test (Nico Pache)
+- configs: enable CONFIG_LRU_GEN_ENABLED everywhere (Patrick Talbert)
+- redhat: Enable WWAN feature and support for Intel, Qualcomm and Mediatek devices (Jose Ignacio Tornos Martinez)
+- Turn on dln2 support (RHBZ 2110372) (Justin M. Forbes)
+- Enable configs for imx8m PHYs (Al Stone)
+- configs/fedora: Build some SC7180 clock controllers as modules (Javier Martinez Canillas)
+- redhat/configs: Disable fbdev drivers and use simpledrm everywhere (Javier Martinez Canillas) [1986223]
+- redhat: fix the branch we pull from the documentation tree (Herton R. Krzesinski)
+- redhat/configs: change so watchdog is module versus builtin (Steve Best)
+- redhat/configs: move CONFIG_ACPI_VIDEO to common/generic (Mark Langsdorf)
+- enable imx8xm I2C configs properly (Al Stone)
+- configs/fedora: Enable a few more drivers needed by the HP X2 Chromebook (Javier Martinez Canillas)
+- enable the rtc-rv8803 driver on RHEL and Fedora (David Arcari)
+- redhat/Makefile: Remove BUILD_SCRATCH_TARGET (Prarit Bhargava)
+- configs: move CONFIG_INTEL_TDX_GUEST to common directory (Wander Lairson Costa)
+- redhat/Makefile: Use new BUILD_TARGET for RHEL dist[g]-brew target (Prarit Bhargava)
+- redhat: method.py: change the output loop to use 'values' method (Patrick Talbert)
+- redhat: use 'update' method in merge.py (Patrick Talbert)
+- redhat: Use a context manager in merge.py for opening the config file for reading (Patrick Talbert)
+- redhat: automatically strip newlines in merge.py (Clark Williams)
+- redhat: python replacement for merge.pl (Clark Williams)
+- redhat/docs: Update with DISTLOCALVERSION (Prarit Bhargava)
+- redhat/Makefile: Rename LOCALVERSION to DISTLOCALVERSION (Akihiko Odaki)
+- Adjust FIPS module name in RHEL (Vladis Dronov)
+- spec: prevent git apply from searching for the .git directory (Ondrej Mosnacek)
+- redhat: Remove parallel_xz.sh (Prarit Bhargava)
+- Turn on Multi-Gen LRU for Fedora (Justin M. Forbes)
+- Add kasan_test to mod-internal.list (Justin M. Forbes)
+- redhat/Makefile.variables: Fix typo with RHDISTGIT_TMP (Prarit Bhargava)
+- spec: fix path to `installing_core` stamp file for subpackages (Jonathan Lebon)
+- Remove unused ci scripts (Don Zickus)
+- Rename rename FORCE_MAX_ZONEORDER to ARCH_FORCE_MAX_ORDER in configs (Justin M. Forbes)
+- redhat: Add new fortify_kunit & is_signed_type_kunit to mod-internal.list (Patrick Talbert)
+- Rename rename FORCE_MAX_ZONEORDER to ARCH_FORCE_MAX_ORDER in pending (Justin M. Forbes)
+- Add acpi video to the filter_modules.sh for rhel (Justin M. Forbes)
+- Change acpi_bus_get_acpi_device to acpi_get_acpi_dev (Justin M. Forbes)
+- Turn on ACPI_VIDEO for arm (Justin M. Forbes)
+- Turn on CONFIG_PRIME_NUMBERS as a module (Justin M. Forbes)
+- Add new drm kunit tests to mod-internal.list (Justin M. Forbes)
+- redhat: fix elf got hardening for vm tools (Frantisek Hrbata)
+- kernel.spec.template: remove some temporary files early (Ondrej Mosnacek)
+- kernel.spec.template: avoid keeping two copies of vmlinux (Ondrej Mosnacek)
+- Add fortify_kunit to mod-internal.list (Justin M. Forbes)
+- Add module filters for Fedora as acpi video has new deps (Justin M. Forbes)
+- One more mismatch (Justin M. Forbes)
+- Fix up pending for mismatches (Justin M. Forbes)
+- Forgot too remove this from pending, it is set properly in ark (Justin M. Forbes)
+- redhat/Makefile: Add DIST to git tags for RHEL (Prarit Bhargava)
+- redhat/configs: Move CONFIG_ARM_SMMU_QCOM_DEBUG to common (Jerry Snitselaar)
+- Common config cleanup for 6.0 (Justin M. Forbes)
+- Allow selftests to fail without killing the build (Justin M. Forbes)
+- redhat: Remove redhat/Makefile.rhpkg (Prarit Bhargava)
+- redhat/Makefile: Move RHDISTGIT_CACHE and RHDISTGIT_TMP (Prarit Bhargava)
+- redhat/Makefile.rhpkg: Remove RHDISTGIT_USER (Prarit Bhargava)
+- redhat/Makefile: Move RHPKG_BIN to redhat/Makefile (Prarit Bhargava)
+- common: clean up Android option with removal of CONFIG_ANDROID (Peter Robinson)
+- redhat/configs: Remove x86_64 from priority files (Prarit Bhargava)
+- redhat/configs/pending-ark: Remove x86_64 directory (Prarit Bhargava)
+- redhat/configs/pending-fedora: Remove x86_64 directory (Prarit Bhargava)
+- redhat/configs/fedora: Remove x86_64 directory (Prarit Bhargava)
+- redhat/configs/common: Remove x86_64 directory (Prarit Bhargava)
+- redhat/configs/ark: Remove x86_64 directory (Prarit Bhargava)
+- redhat/configs/custom-overrides: Remove x86_64 directory (Prarit Bhargava)
+- configs: use common CONFIG_ARM64_SME for ark and fedora (Mark Salter)
+- redhat/configs: Add a warning message to priority.common (Prarit Bhargava)
+- redhat/configs: Enable INIT_STACK_ALL_ZERO for Fedora (Miko Larsson)
+- redhat: Set CONFIG_MAXLINEAR_GPHY to =m (Petr Oros)
+- redhat/configs enable CONFIG_INTEL_IFS (David Arcari)
+- redhat: Remove filter-i686.sh.rhel (Prarit Bhargava)
+- redhat/Makefile: Set PATCHLIST_URL to none for RHEL/cs9 (Prarit Bhargava)
+- redhat: remove GL_DISTGIT_USER, RHDISTGIT and unify dist-git cloning (Prarit Bhargava)
+- redhat/Makefile.variables: Add ADD_COMMITID_TO_VERSION (Prarit Bhargava)
+- kernel.spec: disable vmlinux.h generation for s390 zfcpdump config (Prarit Bhargava)
+- perf: Require libbpf 0.6.0 or newer (Prarit Bhargava)
+- kabi: add stablelist helpers (Prarit Bhargava)
+- Makefile: add kabi targets (Prarit Bhargava)
+- kabi: add support for symbol namespaces into check-kabi (Prarit Bhargava)
+- kabi: ignore new stablelist metadata in show-kabi (Prarit Bhargava)
+- redhat/Makefile: add dist-assert-tree-clean target (Prarit Bhargava)
+- redhat/kernel.spec.template: Specify vmlinux.h path when building samples/bpf (Prarit Bhargava) [2041365]
+- spec: Fix separate tools build (Prarit Bhargava) [2054579]
+- redhat/scripts: Update merge-subtrees.sh with new subtree location (Prarit Bhargava)
+- redhat/kernel.spec.template: enable dependencies generation (Prarit Bhargava)
+- redhat: build and include memfd to kernel-selftests-internal (Prarit Bhargava) [2027506]
+- redhat/kernel.spec.template: Link perf with --export-dynamic (Prarit Bhargava)
+- redhat: kernel.spec: selftests: abort on build failure (Prarit Bhargava)
+- redhat: configs: move CONFIG_SERIAL_MULTI_INSTANTIATE=m settings to common/x86 (Jaroslav Kysela)
+- configs: enable CONFIG_HP_ILO for aarch64 (Mark Salter)
+- all: cleanup dell config options (Peter Robinson)
+- redhat: Include more kunit tests (Nico Pache)
+- common: some minor cleanups/de-dupe (Peter Robinson)
+- common: enable INTEGRITY_MACHINE_KEYRING on all configuraitons (Peter Robinson)
+- Fedora 6.0 configs update (Justin M. Forbes)
+- redhat/self-test: Ignore .rhpkg.mk files (Prarit Bhargava)
+- redhat/configs: Enable CONFIG_PRINTK_INDEX on Fedora (Prarit Bhargava)
+- redhat/configs: Cleanup CONFIG_X86_KERNEL_IBT (Prarit Bhargava)
+- Fix up SND_CTL debug options (Justin M. Forbes)
+- redhat: create /boot symvers link if it doesn't exist (Jan Stancek)
+- redhat: remove duplicate kunit tests in mod-internal.list (Nico Pache)
+- configs/fedora: Make Fedora work with HNS3 network adapter (Zamir SUN)
+- redhat/configs/fedora/generic: Enable CONFIG_BLK_DEV_UBLK on Fedora (Richard W.M. Jones) [2122595]
+- fedora: disable IWLMEI (Peter Robinson)
+- redhat/configs: enable UINPUT on aarch64 (Benjamin Tissoires)
+- Fedora 6.0 configs part 1 (Justin M. Forbes)
+- redhat/Makefile: Always set UPSTREAM (Prarit Bhargava)
+- redhat/configs: aarch64: Turn on Apple Silicon configs for Fedora (Eric Curtin)
+- Add cpumask_kunit to mod-internal.list (Justin M. Forbes)
+- config - consolidate disabled MARCH options on s390x (Dan Horák)
+- move the baseline arch to z13 for s390x in F-37+ (Dan Horák)
+- redhat/scripts/rh-dist-git.sh: Fix outdated cvs reference (Prarit Bhargava)
+- redhat/scripts/expand_srpm.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/scripts/clone_tree.sh: Use Makefile variables (Prarit Bhargava)
+- Fedora: arm changes for 6.0, part 1, with some ACPI (Peter Robinson)
+- redhat/self-test: Fix shellcheck errors (Prarit Bhargava)
+- redhat/docs: Add dist-brew BUILD_FLAGS information (Prarit Bhargava)
+- redhat: change the changelog item for upstream merges (Herton R. Krzesinski)
+- redhat: fix dist-release build number test (Herton R. Krzesinski)
+- redhat: fix release number bump when dist-release-changed runs (Herton R. Krzesinski)
+- redhat: use new genlog.sh script to detect changes for dist-release (Herton R. Krzesinski)
+- redhat: move changelog addition to the spec file back into genspec.sh (Herton R. Krzesinski)
+- redhat: always add a rebase entry when ark merges from upstream (Herton R. Krzesinski)
+- redhat: drop merge ark patches hack (Herton R. Krzesinski)
+- redhat: don't hardcode temporary changelog file (Herton R. Krzesinski)
+- redhat: split changelog generation from genspec.sh (Herton R. Krzesinski)
+- redhat: configs: Disable FIE on arm (Jeremy Linton) [2012226]
+- redhat/Makefile: Clean linux tarballs (Prarit Bhargava)
+- redhat/configs: Cleanup CONFIG_ACPI_AGDI (Prarit Bhargava)
+- spec: add cpupower daemon reload on install/upgrade (Jarod Wilson)
+- redhat: properly handle binary files in patches (Ondrej Mosnacek)
+- Add python3-setuptools buildreq for perf (Justin M. Forbes)
+- Add cros_kunit to mod-internal.list (Justin M. Forbes)
+- Add new tests to mod-internal.list (Justin M. Forbes)
+- Turn off some Kunit tests in pending (Justin M. Forbes)
+- Clean up a mismatch in Fedora configs (Justin M. Forbes)
+- redhat/configs: Sync up Retbleed configs with centos-stream (Waiman Long)
+- Change CRYPTO_BLAKE2S_X86 from m to y (Justin M. Forbes)
+- Leave CONFIG_ACPI_VIDEO on for x86 only (Justin M. Forbes)
+- Fix BLAKE2S_ARM and BLAKE2S_X86 configs in pending (Justin M. Forbes)
+- Fix pending for ACPI_VIDEO (Justin M. Forbes)
+- redhat/configs: Fix rm warning on config warnings (Eric Chanudet)
+- redhat/Makefile: Deprecate PREBUILD_GIT_ONLY variable (Prarit Bhargava)
+- redhat/Makefile: Deprecate SINGLE_TARBALL variable (Prarit Bhargava)
+- redhat/Makefile: Deprecate GIT variable (Prarit Bhargava)
+- Update CONFIG_LOCKDEP_CHAINS_BITS to 18 (cmurf)
+- Add new FIPS module name and version configs (Vladis Dronov)
+- redhat/configs/fedora: Make PowerPC's nx-gzip buildin (Jakub Čajka)
+- omit unused Provides (Dan Horák)
+- self-test: Add test for DIST=".eln" (Prarit Bhargava)
+- redhat: Enable CONFIG_LZ4_COMPRESS on Fedora (Prarit Bhargava)
+- fedora: armv7: enable MMC_STM32_SDMMC (Peter Robinson)
+- .gitlab-ci.yaml: Add test for dist-get-buildreqs target (Prarit Bhargava)
+- redhat/docs: Add information on build dependencies (Prarit Bhargava)
+- redhat/Makefile: Add better pass message for dist-get-buildreqs (Prarit Bhargava)
+- redhat/Makefile: Provide a better message for system-sb-certs (Prarit Bhargava)
+- redhat/Makefile: Change dist-buildreq-check to a non-blocking target (Prarit Bhargava)
+- create-data: Parallelize spec file data (Prarit Bhargava)
+- create-data.sh: Store SOURCES Makefile variable (Prarit Bhargava)
+- redhat/Makefile: Split up setup-source target (Prarit Bhargava)
+- create-data.sh: Redefine varfilename (Prarit Bhargava)
+- create-data.sh: Parallelize variable file creation (Prarit Bhargava)
+- redhat/configs: Enable CONFIG_LZ4_COMPRESS (Prarit Bhargava)
+- redhat/docs: Update brew information (Prarit Bhargava)
+- redhat/Makefile: Fix eln BUILD_TARGET (Prarit Bhargava)
+- redhat/Makefile: Set BUILD_TARGET for dist-brew (Prarit Bhargava)
+- kernel.spec.template: update (s390x) expoline.o path (Joe Lawrence)
+- fedora: enable BCM_NET_PHYPTP (Peter Robinson)
+- Fedora 5.19 configs update part 2 (Justin M. Forbes)
+- redhat/Makefile: Change fedora BUILD_TARGET (Prarit Bhargava)
+- New configs in security/keys (Fedora Kernel Team)
+- Fedora: arm: enable a pair of drivers (Peter Robinson)
+- redhat: make kernel-zfcpdump-core to not provide kernel-core/kernel (Herton R. Krzesinski)
+- redhat/configs: Enable QAT devices for arches other than x86 (Vladis Dronov)
+- Fedora 5.19 configs pt 1 (Justin M. Forbes)
+- redhat: Exclude cpufreq.h from kernel-headers (Patrick Talbert)
+- Add rtla subpackage for kernel-tools (Justin M. Forbes)
+- fedora: arm: enable a couple of QCom drivers (Peter Robinson)
+- redhat/Makefile: Deprecate BUILD_SCRATCH_TARGET (Prarit Bhargava)
+- redhat: enable CONFIG_DEVTMPFS_SAFE (Mark Langsdorf)
+- redhat/Makefile: Remove deprecated variables and targets (Prarit Bhargava)
+- Split partner modules into a sub-package (Alice Mitchell)
+- Enable kAFS and it's dependancies in RHEL (Alice Mitchell)
+- Enable Marvell OcteonTX2 crypto device in ARK (Vladis Dronov)
+- redhat/Makefile: Remove --scratch from BUILD_TARGET (Prarit Bhargava)
+- redhat/Makefile: Fix dist-brew and distg-brew targets (Prarit Bhargava)
+- fedora: arm64: Initial support for TI Keystone 3 (ARCH_K3) (Peter Robinson)
+- fedora: arm: enable Hardware Timestamping Engine support (Peter Robinson)
+- fedora: wireless: disable SiLabs and PureLiFi (Peter Robinson)
+- fedora: updates for 5.19 (Peter Robinson)
+- fedora: minor updates for Fedora configs (Peter Robinson)
+- configs/fedora: Enable the pinctrl SC7180 driver built-in (Enric Balletbo i Serra)
+- redhat/configs: enable CONFIG_DEBUG_NET for debug kernel (Hangbin Liu)
+- redhat/Makefile: Add SPECKABIVERSION variable (Prarit Bhargava)
+- redhat/self-test: Provide better failure output (Prarit Bhargava)
+- redhat/self-test: Reformat tests to kernel standard (Prarit Bhargava)
+- redhat/self-test: Add purpose and header to each test (Prarit Bhargava)
+- Drop outdated CRYPTO_ECDH configs (Vladis Dronov)
+- Brush up crypto SHA512 and USER configs (Vladis Dronov)
+- Brush up crypto ECDH and ECDSA configs (Vladis Dronov)
+- redhat/self-test: Update data set (Prarit Bhargava)
+- create-data.sh: Reduce specfile data output (Prarit Bhargava)
+- redhat/configs: restore/fix core INTEL_LPSS configs to be builtin again (Hans de Goede)
+- Enable CKI on os-build MRs only (Don Zickus)
+- self-test: Fixup Makefile contents test (Prarit Bhargava)
+- redhat/self-test: self-test data update (Prarit Bhargava)
+- redhat/self-test: Fix up create-data.sh to not report local variables (Prarit Bhargava)
+- redhat/configs/fedora: Enable a set of modules used on some x86 tablets (Hans de Goede)
+- redhat/configs: Make INTEL_SOC_PMIC_CHTDC_TI builtin (Hans de Goede)
+- redhat/configs/fedora: enable missing modules modules for Intel IPU3 camera support (Hans de Goede)
+- Common: minor cleanups (Peter Robinson)
+- fedora: some minor Fedora cleanups (Peter Robinson)
+- fedora: drop X86_PLATFORM_DRIVERS_DELL dupe (Peter Robinson)
+- redhat: change tools_make macro to avoid full override of variables in Makefile (Herton R. Krzesinski)
+- Fix typo in Makefile for Fedora Stable Versioning (Justin M. Forbes)
+- Remove duplicates from ark/generic/s390x/zfcpdump/ (Vladis Dronov)
+- Move common/debug/s390x/zfcpdump/ configs to ark/debug/s390x/zfcpdump/ (Vladis Dronov)
+- Move common/generic/s390x/zfcpdump/ configs to ark/generic/s390x/zfcpdump/ (Vladis Dronov)
+- Drop RCU_EXP_CPU_STALL_TIMEOUT to 0, we are not really android (Justin M. Forbes)
+- redhat/configs/README: Update the README (Prarit Bhargava)
+- redhat/docs: fix hyperlink typo (Patrick Talbert)
+- all: net: remove old NIC/ATM drivers that use virt_to_bus() (Peter Robinson)
+- Explicitly turn off CONFIG_KASAN_INLINE for ppc (Justin M. Forbes)
+- redhat/docs: Add a description of kernel naming (Prarit Bhargava)
+- Change CRYPTO_CHACHA_S390 from m to y (Justin M. Forbes)
+- enable CONFIG_NET_ACT_CTINFO in ark (Davide Caratti)
+- redhat/configs: enable CONFIG_SP5100_TCO (David Arcari)
+- redhat/configs: Set CONFIG_VIRTIO_IOMMU on x86_64 (Eric Auger) [2089765]
+- Turn off KASAN_INLINE for RHEL ppc in pending (Justin M. Forbes)
+- redhat/kernel.spec.template: update selftest data via "make dist-self-test-data" (Denys Vlasenko)
+- redhat/kernel.spec.template: remove stray *.hardlink-temporary files, if any (Denys Vlasenko)
+- Fix up ZSMALLOC config for s390 (Justin M. Forbes)
+- Turn on KASAN_OUTLINE for ppc debug (Justin M. Forbes)
+- Turn on KASAN_OUTLINE for PPC debug to avoid mismatch (Justin M. Forbes)
+- Fix up crypto config mistmatches (Justin M. Forbes)
+- Fix up config mismatches (Justin M. Forbes)
+- generic/fedora: cleanup and disable Lightning Moutain SoC (Peter Robinson)
+- redhat: Set SND_SOC_SOF_HDA_PROBES to =m (Patrick Talbert)
+- Fix versioning on stable Fedora (Justin M. Forbes)
+- Enable PAGE_POOL_STATS for arm only (Justin M. Forbes)
+- Revert "Merge branch 'fix-ci-20220523' into 'os-build'" (Patrick Talbert)
+- Flip CONFIG_RADIO_ADAPTERS to module for Fedora (Justin M. Forbes)
+- redhat/Makefile: Drop quotation marks around string definitions (Prarit Bhargava)
+- Fedora: arm: Updates for QCom devices (Peter Robinson)
+- Fedora arm and generic updates for 5.17 (Peter Robinson)
+- enable COMMON_CLK_SI5341 for Xilinx ZYNQ-MP (Peter Robinson)
+- Turn on CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING for Fedora (Justin M. Forbes)
+- redhat/self-test/data: Update data set (Prarit Bhargava)
+- Revert variable switch for lasttag (Justin M. Forbes)
+- redhat: Add self-tests to .gitlab-ci.yml (Prarit Bhargava)
+- redhat/self-test: Update data (Prarit Bhargava)
+- redhat/self-test: Unset Makefile variables (Prarit Bhargava)
+- redhat/self-test: Omit SHELL variable from test data (Prarit Bhargava)
+- Add CONFIG_EFI_DXE_MEM_ATTRIBUTES (Justin M. Forbes)
+- Update filter-modules for mlx5-vfio-pci (Justin M. Forbes)
+- Fedora configs for 5.18 (Justin M. Forbes)
+- self-test/data/create-data.sh: Avoid SINGLE_TARBALL warning (Prarit Bhargava)
+- redhat/Makefile: Rename PREBUILD to UPSTREAMBUILD (Prarit Bhargava)
+- redhat/Makefile: Rename BUILDID to LOCALVERSION (Prarit Bhargava)
+- redhat/Makefile: Fix dist-brew & distg-brew targets (Prarit Bhargava)
+- redhat/Makefile: Reorganize MARKER code (Prarit Bhargava)
+- redhat/scripts/new_release.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/Makefile: Rename __YSTREAM and __ZSTREAM (Prarit Bhargava)
+- redhat/genspec.sh: Add comment about SPECBUILDID variable (Prarit Bhargava)
+- redhat/kernel.spec.template: Move genspec variables into one section (Prarit Bhargava)
+- redhat/kernel.spec.template: Remove kversion (Prarit Bhargava)
+- redhat/Makefile: Add SPECTARFILE_RELEASE comment (Prarit Bhargava)
+- redhat/Makefile: Rename RPMVERSION to BASEVERSION (Prarit Bhargava)
+- redhat/Makefile: Target whitespace cleanup (Prarit Bhargava)
+- redhat/Makefile: Move SPECRELEASE to genspec.sh (Prarit Bhargava)
+- redhat/Makefile: Add kernel-NVR comment (Prarit Bhargava)
+- redhat/Makefile: Use SPECFILE variable (Prarit Bhargava)
+- redhat/Makefile: Remove KEXTRAVERSION (Prarit Bhargava)
+- redhat: Enable VM kselftests (Nico Pache) [1978539]
+- redhat: enable CONFIG_TEST_VMALLOC for vm selftests (Nico Pache)
+- redhat: Enable HMM test to be used by the kselftest test suite (Nico Pache)
+- redhat/Makefile.variables: Change git hash length to default (Prarit Bhargava)
+- redhat/Makefile: Drop quotation marks around string definitions (Prarit Bhargava)
+- Turn on INTEGRITY_MACHINE_KEYRING for Fedora (Justin M. Forbes)
+- redhat/configs: fix CONFIG_INTEL_ISHTP_ECLITE (David Arcari)
+- redhat/configs: Fix rm warning on error (Prarit Bhargava)
+- Fix nightly merge CI (Don Zickus)
+- redhat/kernel.spec.template: fix standalone tools build (Jan Stancek)
+- Add system-sb-certs for RHEL-9 (Don Zickus)
+- Fix dist-buildcheck-reqs (Don Zickus)
+- move DAMON configs to correct directory (Chris von Recklinghausen)
+- redhat: indicate HEAD state in tarball/rpm name (Jarod Wilson)
+- Fedora 5.18 config set part 1 (Justin M. Forbes)
+- fedora: arm: Enable new Rockchip 356x series drivers (Peter Robinson)
+- fedora: arm: enable DRM_I2C_NXP_TDA998X on aarch64 (Peter Robinson)
+- redhat/self-test: Add test to verify Makefile declarations. (Prarit Bhargava)
+- redhat/Makefile: Add RHTEST (Prarit Bhargava)
+- redhat: shellcheck cleanup (Prarit Bhargava)
+- redhat/self-test/data: Cleanup data (Prarit Bhargava)
+- redhat/self-test: Add test to verify SPEC variables (Prarit Bhargava)
+- redhat/Makefile: Add 'duplicate' SPEC entries for user set variables (Prarit Bhargava)
+- redhat/Makefile: Rename TARFILE_RELEASE to SPECTARFILE_RELEASE (Prarit Bhargava)
+- redhat/genspec: Rename PATCHLIST_CHANGELOG to SPECPATCHLIST_CHANGELOG (Prarit Bhargava)
+- redhat/genspec: Rename DEBUG_BUILDS_ENABLED to SPECDEBUG_BUILDS_ENABLED (Prarit Bhargava)
+- redhat/Makefile: Rename PKGRELEASE to SPECBUILD (Prarit Bhargava)
+- redhat/genspec: Rename BUILDID_DEFINE to SPECBUILDID (Prarit Bhargava)
+- redhat/Makefile: Rename CHANGELOG to SPECCHANGELOG (Prarit Bhargava)
+- redhat/Makefile: Rename RPMKEXTRAVERSION to SPECKEXTRAVERSION (Prarit Bhargava)
+- redhat/Makefile: Rename RPMKSUBLEVEL to SPECKSUBLEVEL (Prarit Bhargava)
+- redhat/Makefile: Rename RPMKPATCHLEVEL to SPECKPATCHLEVEL (Prarit Bhargava)
+- redhat/Makefile: Rename RPMKVERSION to SPECKVERSION (Prarit Bhargava)
+- redhat/Makefile: Rename KVERSION to SPECVERSION (Prarit Bhargava)
+- redhat/Makefile: Deprecate some simple targets (Prarit Bhargava)
+- redhat/Makefile: Use KVERSION (Prarit Bhargava)
+- redhat/configs: Set GUP_TEST in debug kernel (Joel Savitz)
+- enable DAMON configs (Chris von Recklinghausen) [2004233]
+- redhat: add zstream switch for zstream release numbering (Herton R. Krzesinski)
+- redhat: change kabi tarballs to use the package release (Herton R. Krzesinski)
+- redhat: generate distgit changelog in genspec.sh as well (Herton R. Krzesinski)
+- redhat: make genspec prefer metadata from git notes (Herton R. Krzesinski)
+- redhat: use tags from git notes for zstream to generate changelog (Herton R. Krzesinski)
+- ARK: Remove code marking devices unmaintained (Peter Georg)
+- rh_message: Fix function name (Peter Georg) [2019377]
+- Turn on CONFIG_RANDOM_TRUST_BOOTLOADER (Justin M. Forbes)
+- redhat/configs: aarch64: enable CPU_FREQ_GOV_SCHEDUTIL (Mark Salter)
+- Move CONFIG_HW_RANDOM_CN10K to a proper place (Vladis Dronov)
+- redhat/self-test: Clean up data set (Prarit Bhargava)
+- redhat/Makefile.rhpkg: Remove quotes for RHDISTGIT (Prarit Bhargava)
+- redhat/scripts/create-tarball.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/Makefile: Deprecate SINGLE_TARBALL (Prarit Bhargava)
+- redhat/Makefile: Move SINGLE_TARBALL to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Use RPMVERSION (Prarit Bhargava)
+- redhat/scripts/rh-dist-git.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/configs/build_configs.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/kernel.spec.template: Use RPM_BUILD_NCPUS (Prarit Bhargava)
+- redhat/configs/generate_all_configs.sh: Use Makefile variables (Prarit Bhargava)
+- redhat/configs: enable nf_tables SYNPROXY extension on ark (Davide Caratti)
+- fedora: Disable fbdev drivers missed before (Javier Martinez Canillas)
+- Redhat: enable Kfence on production servers (Nico Pache)
+- redhat: ignore known empty patches on the patches rpminspect test (Herton R. Krzesinski)
+- kernel-ark: arch_hw Update CONFIG_MOUSE_VSXXXAA=m (Tony Camuso) [2062909]
+- spec: keep .BTF section in modules for s390 (Yauheni Kaliuta) [2071969]
+- kernel.spec.template: Ship arch/s390/lib/expoline.o in kernel-devel (Ondrej Mosnacek)
+- redhat: disable tv/radio media device infrastructure (Jarod Wilson)
+- redhat/configs: clean up INTEL_LPSS configuration (David Arcari)
+- Have to rename the actual contents too (Justin M. Forbes)
+- The CONFIG_SATA_MOBILE_LPM_POLICY rebane was reverted (Justin M. Forbes)
+- redhat: Enable KASAN on all ELN debug kernels (Nico Pache)
+- redhat: configs: Enable INTEL_IOMMU_DEBUGFS for debug builds (Jerry Snitselaar)
+- generic: can: disable CAN_SOFTING everywhere (Peter Robinson)
+- redhat/configs: Enable CONFIG_DM_ERA=m for all (Yanko Kaneti)
+- redhat/configs: enable CONFIG_SAMPLE_VFIO_MDEV_MTTY (Patrick Talbert)
+- Build intel_sdsi with %%{tools_make} (Justin M. Forbes)
+- configs: remove redundant Fedora config for INTEL_IDXD_COMPAT (Jerry Snitselaar)
+- redhat/configs: enable CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT (Joel Savitz) [2026319]
+- configs: enable CONFIG_RMI4_F3A (Benjamin Tissoires)
+- redhat: configs: Disable TPM 1.2 specific drivers (Jerry Snitselaar)
+- redhat/configs: Enable cr50 I2C TPM interface (Akihiko Odaki)
+- spec: make HMAC file encode relative path (Jonathan Lebon)
+- redhat/kernel.spec.template: Add intel_sdsi utility (Prarit Bhargava)
+- Spec fixes for intel-speed-select (Justin M. Forbes)
+- Add Partner Supported taint flag to kAFS (Alice Mitchell) [2038999]
+- Add Partner Supported taint flag (Alice Mitchell) [2038999]
+- Enabled INTEGRITY_MACHINE_KEYRING for all configs. (Peter Robinson)
+- redhat/configs: Enable CONFIG_RCU_SCALE_TEST & CONFIG_RCU_REF_SCALE_TEST (Waiman Long)
+- Add clk_test and clk-gate_test to mod-internal.list (Justin M. Forbes)
+- redhat/self-tests: Ignore UPSTREAM (Prarit Bhargava)
+- redhat/self-tests: Ignore RHGITURL (Prarit Bhargava)
+- redhat/Makefile.variables: Extend git hash length to 15 (Prarit Bhargava)
+- redhat/self-test: Remove changelog from spec files (Prarit Bhargava)
+- redhat/genspec.sh: Rearrange genspec.sh (Prarit Bhargava)
+- redhat/self-test: Add spec file data (Prarit Bhargava)
+- redhat/self-test: Add better dist-dump-variables test (Prarit Bhargava)
+- redhat/self-test: Add variable test data (Prarit Bhargava)
+- redhat/config: Remove obsolete CONFIG_MFD_INTEL_PMT (David Arcari)
+- redhat/configs: enable CONFIG_INTEL_ISHTP_ECLITE (David Arcari)
+- Avoid creating files in $RPM_SOURCE_DIR (Nicolas Chauvet)
+- Flip CRC64 from off to y (Justin M. Forbes)
+- New configs in lib/Kconfig (Fedora Kernel Team)
+- disable redundant assignment of CONFIG_BQL on ARK (Davide Caratti)
+- redhat/configs: remove unnecessary GPIO options for aarch64 (Brian Masney)
+- redhat/configs: remove viperboard related Kconfig options (Brian Masney)
+- redhat/configs/process_configs.sh: Avoid race with find (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Remove CONTINUEONERROR (Prarit Bhargava)
+- Remove i686 configs and filters (Justin M. Forbes)
+- redhat/configs: Set CONFIG_X86_AMD_PSTATE built-in on Fedora (Prarit Bhargava)
+- Fix up mismatch with CRC64 (Justin M. Forbes)
+- Fedora config updates to fix process_configs (Justin M. Forbes)
+- redhat: Fix release tagging (Prarit Bhargava)
+- redhat/self-test: Fix version tag test (Prarit Bhargava)
+- redhat/self-test: Fix BUILD verification test (Prarit Bhargava)
+- redhat/self-test: Cleanup SRPM related self-tests (Prarit Bhargava)
+- redhat/self-test: Fix shellcheck test (Prarit Bhargava)
+- redhat/configs: Disable watchdog components (Prarit Bhargava)
+- redhat/README.Makefile: Add a Makefile README file (Prarit Bhargava)
+- redhat/Makefile: Remove duplicated code (Prarit Bhargava)
+- Add BuildRequires libnl3-devel for intel-speed-select (Justin M. Forbes)
+- Add new kunit tests for 5.18 to mod-internal.list (Justin M. Forbes)
+- Fix RHDISTGIT for Fedora (Justin M. Forbes)
+- redhat/configs/process_configs.sh: Fix race with tools generation (Prarit Bhargava)
+- New configs in drivers/dax (Fedora Kernel Team)
+- Fix up CONFIG_SND_AMD_ACP_CONFIG files (Patrick Talbert)
+- Remove CONFIG_SND_SOC_SOF_DEBUG_PROBES files (Patrick Talbert)
+- SATA_MOBILE_LPM_POLICY is now SATA_LPM_POLICY (Justin M. Forbes)
+- Define SNAPSHOT correctly when VERSION_ON_UPSTREAM is 0 (Justin M. Forbes)
+- redhat/Makefile: Fix dist-git (Prarit Bhargava)
+- Change the pending-ark CONFIG_DAX to y due to mismatch (Justin M. Forbes)
+- Enable net reference count trackers in all debug kernels (Jiri Benc)
+- redhat/Makefile: Reorganize variables (Prarit Bhargava)
+- redhat/Makefile: Add some descriptions (Prarit Bhargava)
+- redhat/Makefile: Move SNAPSHOT check (Prarit Bhargava)
+- redhat/Makefile: Deprecate BREW_FLAGS, KOJI_FLAGS, and TEST_FLAGS (Prarit Bhargava)
+- redhat/genspec.sh: Rework RPMVERSION variable (Prarit Bhargava)
+- redhat/Makefile: Remove dead comment (Prarit Bhargava)
+- redhat/Makefile: Cleanup KABI* variables. (Prarit Bhargava)
+- redhat/Makefile.variables: Default RHGITCOMMIT to HEAD (Prarit Bhargava)
+- redhat/scripts/create-tarball.sh: Use Makefile TARBALL variable (Prarit Bhargava)
+- redhat/Makefile: Remove extra DIST_BRANCH (Prarit Bhargava)
+- redhat/Makefile: Remove STAMP_VERSION (Prarit Bhargava)
+- redhat/Makefile: Move NO_CONFIGCHECKS to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move RHJOBS to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move RHGIT* variables to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move PREBUILD_GIT_ONLY to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move BUILD to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move BUILD_FLAGS to Makefile.variables. (Prarit Bhargava)
+- redhat/Makefile: Move BUILD_PROFILE to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Move BUILD_TARGET and BUILD_SCRATCH_TARGET to Makefile.variables (Prarit Bhargava)
+- redhat/Makefile: Remove RHPRODUCT variable (Prarit Bhargava)
+- redhat/Makefile: Cleanup DISTRO variable (Prarit Bhargava)
+- redhat/Makefile: Move HEAD to Makefile.variables. (Prarit Bhargava)
+- redhat: Combine Makefile and Makefile.common (Prarit Bhargava)
+- redhat/koji/Makefile: Decouple koji Makefile from Makefile.common (Prarit Bhargava)
+- Set CONFIG_SND_SOC_SOF_MT8195 for Fedora and turn on VDPA_SIM_BLOCK (Justin M. Forbes)
+- Add asus_wmi_sensors modules to filters for Fedora (Justin M. Forbes)
+- redhat: spec: trigger dracut when modules are installed separately (Jan Stancek)
+- Last of the Fedora 5.17 configs initial pass (Justin M. Forbes)
+- redhat/Makefile: Silence dist-clean-configs output (Prarit Bhargava)
+- Fedora 5.17 config updates (Justin M. Forbes)
+- Setting CONFIG_I2C_SMBUS to "m" for ark (Gopal Tiwari)
+- Print arch with process_configs errors (Justin M. Forbes)
+- Pass RHJOBS to process_configs for dist-configs-check as well (Justin M. Forbes)
+- redhat/configs/process_configs.sh: Fix issue with old error files (Prarit Bhargava)
+- redhat/configs/build_configs.sh: Parallelize execution (Prarit Bhargava)
+- redhat/configs/build_configs.sh: Provide better messages (Prarit Bhargava)
+- redhat/configs/build_configs.sh: Create unique output files (Prarit Bhargava)
+- redhat/configs/build_configs.sh: Add local variables (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Parallelize execution (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Provide better messages (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Create unique output files (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Add processing config function (Prarit Bhargava)
+- redhat: Unify genspec.sh and kernel.spec variable names (Prarit Bhargava)
+- redhat/genspec.sh: Remove options and use Makefile variables (Prarit Bhargava)
+- Add rebase note for 5.17 on Fedora stable (Justin M. Forbes)
+- More Fedora config updates for 5.17 (Justin M. Forbes)
+- redhat/configs: Disable CONFIG_MACINTOSH_DRIVERS in RHEL. (Prarit Bhargava)
+- redhat: Fix "make dist-release-finish" to use the correct NVR variables (Neal Gompa) [2053836]
+- Build CROS_EC Modules (Jason Montleon)
+- redhat: configs: change aarch64 default dma domain to lazy (Jerry Snitselaar)
+- redhat: configs: disable ATM protocols (Davide Caratti)
+- configs/fedora: Enable the interconnect SC7180 driver built-in (Enric Balletbo i Serra)
+- configs: clean up CONFIG_PAGE_TABLE_ISOLATION files (Ondrej Mosnacek)
+- redhat: configs: enable CONFIG_INTEL_PCH_THERMAL for RHEL x86 (David Arcari)
+- redhat/Makefile: Fix dist-dump-variables target (Prarit Bhargava)
+- redhat/configs: Enable DEV_DAX and DEV_DAX_PMEM modules on aarch64 for fedora (D Scott Phillips)
+- redhat/configs: Enable CONFIG_TRANSPARENT_HUGEPAGE on aarch64 for fedora (D Scott Phillips)
+- configs/process_configs.sh: Remove orig files (Prarit Bhargava)
+- redhat: configs: Disable CONFIG_MPLS for s390x/zfcpdump (Guillaume Nault)
+- Fedora 5.17 configs round 1 (Justin M. Forbes)
+- redhat: configs: disable the surface platform (David Arcari)
+- redhat: configs: Disable team driver (Hangbin Liu) [1945477]
+- configs: enable LOGITECH_FF for RHEL/CentOS too (Benjamin Tissoires)
+- redhat/configs: Disable CONFIG_SENSORS_NCT6683 in RHEL for arm/aarch64 (Dean Nelson) [2041186]
+- redhat: fix make {distg-brew,distg-koji} (Andrea Claudi)
+- [fedora] Turn on CONFIG_VIDEO_OV5693 for sensor support (Dave Olsthoorn)
+- Cleanup 'disabled' config options for RHEL (Prarit Bhargava)
+- redhat: move CONFIG_ARM64_MTE to aarch64 config directory (Herton R. Krzesinski)
+- Change CONFIG_TEST_BPF to a module (Justin M. Forbes)
+- Change CONFIG_TEST_BPF to module in pending MR coming for proper review (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_TEST_BPF (Viktor Malik)
+- Enable KUNIT tests for testing (Nico Pache)
+- Makefile: Check PKGRELEASE size on dist-brew targets (Prarit Bhargava)
+- kernel.spec: Add glibc-static build requirement (Prarit Bhargava)
+- Enable iSER on s390x (Stefan Schulze Frielinghaus)
+- redhat/configs: Enable CONFIG_ACER_WIRELESS (Peter Georg) [2025985]
+- kabi: Add kABI macros for enum type (Čestmír Kalina) [2024595]
+- kabi: expand and clarify documentation of aux structs (Čestmír Kalina) [2024595]
+- kabi: introduce RH_KABI_USE_AUX_PTR (Čestmír Kalina) [2024595]
+- kabi: rename RH_KABI_SIZE_AND_EXTEND to AUX (Čestmír Kalina) [2024595]
+- kabi: more consistent _RH_KABI_SIZE_AND_EXTEND (Čestmír Kalina) [2024595]
+- kabi: use fixed field name for extended part (Čestmír Kalina) [2024595]
+- kabi: fix dereference in RH_KABI_CHECK_EXT (Čestmír Kalina) [2024595]
+- kabi: fix RH_KABI_SET_SIZE macro (Čestmír Kalina) [2024595]
+- kabi: expand and clarify documentation (Čestmír Kalina) [2024595]
+- kabi: make RH_KABI_USE replace any number of reserved fields (Čestmír Kalina) [2024595]
+- kabi: rename RH_KABI_USE2 to RH_KABI_USE_SPLIT (Čestmír Kalina) [2024595]
+- kabi: change RH_KABI_REPLACE2 to RH_KABI_REPLACE_SPLIT (Čestmír Kalina) [2024595]
+- kabi: change RH_KABI_REPLACE_UNSAFE to RH_KABI_BROKEN_REPLACE (Čestmír Kalina) [2024595]
+- kabi: introduce RH_KABI_ADD_MODIFIER (Čestmír Kalina) [2024595]
+- kabi: Include kconfig.h (Čestmír Kalina) [2024595]
+- kabi: macros for intentional kABI breakage (Čestmír Kalina) [2024595]
+- kabi: fix the note about terminating semicolon (Čestmír Kalina) [2024595]
+- kabi: introduce RH_KABI_HIDE_INCLUDE and RH_KABI_FAKE_INCLUDE (Čestmír Kalina) [2024595]
+- spec: don't overwrite auto.conf with .config (Ondrej Mosnacek)
+- New configs in drivers/crypto (Fedora Kernel Team)
+- Add test_hash to the mod-internal.list (Justin M. Forbes)
+- configs: disable CONFIG_CRAMFS (Abhi Das) [2041184]
+- spec: speed up "cp -r" when it overwrites existing files. (Denys Vlasenko)
+- redhat: use centos x509.genkey file if building under centos (Herton R. Krzesinski)
+- Revert "[redhat] Generate a crashkernel.default for each kernel build" (Coiby Xu)
+- spec: make linux-firmware weak(er) dependency (Jan Stancek)
+- rtw89: enable new driver rtw89 and device RTK8852AE (Íñigo Huguet)
+- Config consolidation into common (Justin M. Forbes)
+- Add packaged but empty /lib/modules/<kver>/systemtap/ (Justin M. Forbes)
+- filter-modules.sh.rhel: Add ntc_thermistor to singlemods (Prarit Bhargava)
+- Move CONFIG_SND_SOC_TLV320AIC31XX as it is now selected by CONFIG_SND_SOC_FSL_ASOC_CARD (Justin M. Forbes)
+- Add dev_addr_lists_test to mod-internal.list (Justin M. Forbes)
+- configs/fedora: Enable CONFIG_NFC_PN532_UART for use PN532 NFC module (Ziqian SUN (Zamir))
+- redhat: ignore ksamples and kselftests on the badfuncs rpminspect test (Herton R. Krzesinski)
+- redhat: disable upstream check for rpminspect (Herton R. Krzesinski)
+- redhat: switch the vsyscall config to CONFIG_LEGACY_VSYSCALL_XONLY=y (Herton R. Krzesinski) [1876977]
+- redhat: configs: increase CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE (Rafael Aquini)
+- move CONFIG_STRICT_SIGALTSTACK_SIZE to the appropriate directory (David Arcari)
+- redhat/configs: Enable CONFIG_DM_MULTIPATH_IOA for fedora (Benjamin Marzinski)
+- redhat/configs: Enable CONFIG_DM_MULTIPATH_HST (Benjamin Marzinski) [2000835]
+- redhat: Pull in openssl-devel as a build dependency correctly (Neal Gompa) [2034670]
+- redhat/configs: Migrate ZRAM_DEF_* configs to common/ (Neal Gompa)
+- redhat/configs: Enable CONFIG_CRYPTO_ZSTD (Neal Gompa) [2032758]
+- Turn CONFIG_DEVMEM back off for aarch64 (Justin M. Forbes)
+- Clean up excess text in Fedora config files (Justin M. Forbes)
+- Fedora config updates for 5.16 (Justin M. Forbes)
+- redhat/configs: enable CONFIG_INPUT_KEYBOARD for AARCH64 (Vitaly Kuznetsov)
+- Fedora configs for 5.16 pt 1 (Justin M. Forbes)
+- redhat/configs: NFS: disable UDP, insecure enctypes (Benjamin Coddington) [1952863]
+- Update rebase-notes with dracut 5.17 information (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_CRYPTO_BLAKE2B (Neal Gompa) [2031547]
+- Enable CONFIG_BPF_SYSCALL for zfcpdump (Jiri Olsa)
+- Enable CONFIG_CIFS_SMB_DIRECT for ARK (Ronnie Sahlberg)
+- mt76: enable new device MT7921E in CentOs/RHEL (Íñigo Huguet) [2004821]
+- Disable CONFIG_DEBUG_PREEMPT on normal builds (Phil Auld)
+- redhat/configs: Enable CONFIG_PCI_P2PDMA for ark (Myron Stowe)
+- pci.h: Fix static include (Prarit Bhargava)
+- Enable CONFIG_VFIO_NOIOMMU for Fedora (Justin M. Forbes)
+- redhat/configs: enable CONFIG_NTB_NETDEV for ark (John W. Linville)
+- drivers/pci/pci-driver.c: Fix if/ifdef typo (Prarit Bhargava)
+- common: arm64: ensure all the required arm64 errata are enabled (Peter Robinson)
+- kernel/rh_taint.c: Update to new messaging (Prarit Bhargava) [2019377]
+- redhat/configs: enable CONFIG_AMD_PTDMA for ark (John W. Linville)
+- redhat/configs: enable CONFIG_RD_ZSTD for rhel (Tao Liu) [2020132]
+- fedora: build TEE as a module for all arches (Peter Robinson)
+- common: build TRUSTED_KEYS in everywhere (Peter Robinson)
+- redhat: make Patchlist.changelog generation conditional (Herton R. Krzesinski)
+- redhat/configs: Add two new CONFIGs (Prarit Bhargava)
+- redhat/configs: Remove dead CONFIG files (Prarit Bhargava)
+- redhat/configs/evaluate_configs: Add find dead configs option (Prarit Bhargava)
+- Add more rebase notes for Fedora 5.16 (Justin M. Forbes)
+- Fedora: Feature: Retire wireless Extensions (Peter Robinson)
+- fedora: arm: some SoC enablement pieces (Peter Robinson)
+- fedora: arm: enable PCIE_ROCKCHIP_DW for rk35xx series (Peter Robinson)
+- fedora: enable RTW89 802.11 WiFi driver (Peter Robinson)
+- fedora: arm: Enable DRM_PANEL_EDP (Peter Robinson)
+- fedora: sound: enable new sound drivers (Peter Robinson)
+- redhat/configs: unset KEXEC_SIG for s390x zfcpdump (Coiby Xu)
+- spec: Keep .BTF section in modules (Jiri Olsa)
+- Fix up PREEMPT configs (Justin M. Forbes)
+- New configs in drivers/media (Fedora Kernel Team)
+- New configs in drivers/net/ethernet/litex (Fedora Kernel Team)
+- spec: add bpf_testmod.ko to kselftests/bpf (Viktor Malik)
+- New configs in drivers/net/wwan (Fedora Kernel Team)
+- New configs in drivers/i2c (Fedora Kernel Team)
+- redhat/docs/index.rst: Add local build information. (Prarit Bhargava)
+- Fix up preempt configs (Justin M. Forbes)
+- Turn on CONFIG_HID_NINTENDO for controller support (Dave Olsthoorn)
+- Fedora: Enable MediaTek bluetooth pieces (Peter Robinson)
+- Add rebase notes to check for PCI patches (Justin M. Forbes)
+- redhat: configs: move CONFIG_ACCESSIBILITY from fedora to common (John W. Linville)
+- Filter updates for hid-playstation on Fedora (Justin M. Forbes)
+- Enable CONFIG_VIRT_DRIVERS for ARK (Vitaly Kuznetsov)
+- redhat/configs: Enable Nitro Enclaves on aarch64 (Vitaly Kuznetsov)
+- Enable e1000 in rhel9 as unsupported (Ken Cox) [2002344]
+- Turn on COMMON_CLK_AXG_AUDIO for Fedora rhbz 2020481 (Justin M. Forbes)
+- Fix up fedora config options from mismatch (Justin M. Forbes)
+- Add nct6775 to filter-modules.sh.rhel (Justin M. Forbes)
+- Enable PREEMPT_DYNAMIC for all but s390x (Justin M. Forbes)
+- Add memcpy_kunit to mod-internal.list (Justin M. Forbes)
+- New configs in fs/ksmbd (Fedora Kernel Team)
+- Add nct6775 to Fedora filter-modules.sh (Justin M. Forbes)
+- New configs in fs/ntfs3 (Fedora Kernel Team)
+- Make CONFIG_IOMMU_DEFAULT_DMA_STRICT default for all but x86 (Justin M. Forbes)
+- redhat/configs: enable  KEXEC_IMAGE_VERIFY_SIG for RHEL (Coiby Xu)
+- redhat/configs: enable KEXEC_SIG for aarch64 RHEL (Coiby Xu) [1994858]
+- Fix up fedora and pending configs for PREEMPT to end mismatch (Justin M. Forbes)
+- Enable binder for fedora (Justin M. Forbes)
+- redhat: configs: Update configs for vmware (Kamal Heib)
+- Fedora configs for 5.15 (Justin M. Forbes)
+- redhat/kernel.spec.template: don't hardcode gcov arches (Jan Stancek)
+- redhat/configs: create a separate config for gcov options (Jan Stancek)
+- Update documentation with FAQ and update frequency (Don Zickus)
+- Document force pull option for mirroring (Don Zickus)
+- Ignore the rhel9 kabi files (Don Zickus)
+- Remove legacy elrdy cruft (Don Zickus)
+- redhat/configs/evaluate_configs: walk cfgvariants line by line (Jan Stancek)
+- redhat/configs/evaluate_configs: insert EMPTY tags at correct place (Jan Stancek)
+- redhat: make dist-srpm-gcov add to BUILDOPTS (Jan Stancek)
+- Build CONFIG_SPI_PXA2XX as a module on x86 (Justin M. Forbes)
+- redhat/configs: enable CONFIG_BCMGENET as module (Joel Savitz)
+- Fedora config updates (Justin M. Forbes)
+- Enable CONFIG_FAIL_SUNRPC for debug builds (Justin M. Forbes)
+- fedora: Disable fbdev drivers and use simpledrm instead (Javier Martinez Canillas)
+- spec: Don't fail spec build if ksamples fails (Jiri Olsa)
+- Enable CONFIG_QCOM_SCM for arm (Justin M. Forbes)
+- redhat: Disable clang's integrated assembler on ppc64le and s390x (Tom Stellard)
+- redhat/configs: enable CONFIG_IMA_WRITE_POLICY (Bruno Meneguele)
+- Fix dist-srpm-gcov (Don Zickus)
+- redhat: configs: add CONFIG_NTB and related items (John W. Linville)
+- Add kfence_test to mod-internal.list (Justin M. Forbes)
+- Enable KUNIT tests for redhat kernel-modules-internal (Nico Pache)
+- redhat: add *-matched meta packages to rpminspect emptyrpm config (Herton R. Krzesinski)
+- Use common config for NODES_SHIFT (Mark Salter)
+- redhat: fix typo and make the output more silent for dist-git sync (Herton R. Krzesinski)
+- Fedora NTFS config updates (Justin M. Forbes)
+- Fedora 5.15 configs part 1 (Justin M. Forbes)
+- Fix ordering in genspec args (Justin M. Forbes)
+- redhat/configs: Enable Hyper-V guests on ARM64 (Vitaly Kuznetsov) [2007430]
+- redhat: configs: Enable CONFIG_THINKPAD_LMI (Hans de Goede)
+- redhat/docs: update Koji link to avoid redirect (Joel Savitz)
+- redhat: add support for different profiles with dist*-brew (Herton R. Krzesinski)
+- redhat: configs: Disable xtables and ipset (Phil Sutter) [1945179]
+- redhat: Add mark_driver_deprecated() (Phil Sutter) [1945179]
+- Change s390x CONFIG_NODES_SHIFT from 4 to 1 (Justin M. Forbes)
+- Build CRYPTO_SHA3_*_S390 inline for s390 zfcpdump (Justin M. Forbes)
+- redhat: move the DIST variable setting to Makefile.variables (Herton R. Krzesinski)
+- redhat/kernel.spec.template: Cleanup source numbering (Prarit Bhargava)
+- redhat/kernel.spec.template: Reorganize RHEL and Fedora specific files (Prarit Bhargava)
+- redhat/kernel.spec.template: Add include_fedora and include_rhel variables (Prarit Bhargava)
+- redhat/Makefile: Make kernel-local global (Prarit Bhargava)
+- redhat/Makefile: Use flavors file (Prarit Bhargava)
+- Turn on CONFIG_CPU_FREQ_GOV_SCHEDUTIL for x86 (Justin M. Forbes)
+- redhat/configs: Remove CONFIG_INFINIBAND_I40IW (Kamal Heib)
+- cleanup CONFIG_X86_PLATFORM_DRIVERS_INTEL (David Arcari)
+- redhat: rename usage of .rhel8git.mk to .rhpkg.mk (Herton R. Krzesinski)
+- Manually add pending items that need to be set due to mismatch (Justin M. Forbes)
+- Clean up pending common (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_BLK_CGROUP_IOLATENCY & CONFIG_BLK_CGROUP_FC_APPID (Waiman Long) [2006813]
+- redhat: remove kernel.changelog-8.99 file (Herton R. Krzesinski)
+- redhat/configs: enable CONFIG_SQUASHFS_ZSTD which is already enabled in Fedora 34 (Tao Liu) [1998953]
+- redhat: bump RHEL_MAJOR and add the changelog file for it (Herton R. Krzesinski)
+- redhat: add documentation about the os-build rebase process (Herton R. Krzesinski)
+- redhat/configs: enable SYSTEM_BLACKLIST_KEYRING which is already enabled in rhel8 and Fedora 34 (Coiby Xu)
+- Build kernel-doc for Fedora (Justin M. Forbes)
+- x86_64: Enable Elkhart Lake Quadrature Encoder Peripheral support (Prarit Bhargava)
+- Update CONFIG_WERROR to disabled as it can cause issue with out of tree modules. (Justin M. Forbes)
+- Fixup IOMMU configs in pending so that configs are sane again (Justin M. Forbes)
+- Some initial Fedora config items for 5.15 (Justin M. Forbes)
+- arm64: use common CONFIG_MAX_ZONEORDER for arm kernel (Mark Salter)
+- Create Makefile.variables for a single point of configuration change (Justin M. Forbes)
+- rpmspec: drop traceevent files instead of just excluding them from files list (Herton R. Krzesinski) [1967640]
+- redhat/config: Enablement of CONFIG_PAPR_SCM for PowerPC (Gustavo Walbon) [1962936]
+- Attempt to fix Intel PMT code (David Arcari)
+- CI: Enable realtime branch testing (Veronika Kabatova)
+- CI: Enable realtime checks for c9s and RHEL9 (Veronika Kabatova)
+- ark: wireless: enable all rtw88 pcie wirless variants (Peter Robinson)
+- wireless: rtw88: move debug options to common/debug (Peter Robinson)
+- fedora: minor PTP clock driver cleanups (Peter Robinson)
+- common: x86: enable VMware PTP support on ark (Peter Robinson)
+- [scsi] megaraid_sas: re-add certain pci-ids (Tomas Henzl)
+- Disable liquidio driver on ark/rhel (Herton R. Krzesinski) [1993393]
+- More Fedora config updates (Justin M. Forbes)
+- Fedora config updates for 5.14 (Justin M. Forbes)
+- CI: Rename ARK CI pipeline type (Veronika Kabatova)
+- CI: Finish up c9s config (Veronika Kabatova)
+- CI: Update ppc64le config (Veronika Kabatova)
+- CI: use more templates (Veronika Kabatova)
+- Filter updates for aarch64 (Justin M. Forbes)
+- increase CONFIG_NODES_SHIFT for aarch64 (Chris von Recklinghausen) [1890304]
+- redhat: configs: Enable CONFIG_WIRELESS_HOTKEY (Hans de Goede)
+- redhat/configs: Update CONFIG_NVRAM (Desnes A. Nunes do Rosario) [1988254]
+- common: serial: build in SERIAL_8250_LPSS for x86 (Peter Robinson)
+- powerpc: enable CONFIG_FUNCTION_PROFILER (Diego Domingos) [1831065]
+- redhat/configs: Disable Soft-RoCE driver (Kamal Heib)
+- redhat/configs/evaluate_configs: Update help output (Prarit Bhargava)
+- redhat/configs: Double MAX_LOCKDEP_CHAINS (Justin M. Forbes)
+- fedora: configs: Fix WM5102 Kconfig (Hans de Goede)
+- powerpc: enable CONFIG_POWER9_CPU (Diego Domingos) [1876436]
+- redhat/configs: Fix CONFIG_VIRTIO_IOMMU to 'y' on aarch64 (Eric Auger) [1972795]
+- filter-modules.sh: add more sound modules to filter (Jaroslav Kysela)
+- redhat/configs: sound configuration cleanups and updates (Jaroslav Kysela)
+- common: Update for CXL (Compute Express Link) configs (Peter Robinson)
+- redhat: configs: disable CRYPTO_SM modules (Herton R. Krzesinski) [1990040]
+- Remove fedora version of the LOCKDEP_BITS, we should use common (Justin M. Forbes)
+- Re-enable sermouse for x86 (rhbz 1974002) (Justin M. Forbes)
+- Fedora 5.14 configs round 1 (Justin M. Forbes)
+- redhat: add gating configuration for centos stream/rhel9 (Herton R. Krzesinski)
+- x86: configs: Enable CONFIG_TEST_FPU for debug kernels (Vitaly Kuznetsov) [1988384]
+- redhat/configs: Move CHACHA and POLY1305 to core kernel to allow BIG_KEYS=y (root) [1983298]
+- kernel.spec: fix build of samples/bpf (Jiri Benc)
+- Enable OSNOISE_TRACER and TIMERLAT_TRACER (Jerome Marchand) [1979379]
+- rpmspec: switch iio and gpio tools to use tools_make (Herton R. Krzesinski) [1956988]
+- configs/process_configs.sh: Handle config items with no help text (Patrick Talbert)
+- fedora: sound config updates for 5.14 (Peter Robinson)
+- fedora: Only enable FSI drivers on POWER platform (Peter Robinson)
+- The CONFIG_RAW_DRIVER has been removed from upstream (Peter Robinson)
+- fedora: updates for 5.14 with a few disables for common from pending (Peter Robinson)
+- fedora: migrate from MFD_TPS68470 -> INTEL_SKL_INT3472 (Peter Robinson)
+- fedora: Remove STAGING_GASKET_FRAMEWORK (Peter Robinson)
+- Fedora: move DRM_VMWGFX configs from ark -> common (Peter Robinson)
+- fedora: arm: disabled unused FB drivers (Peter Robinson)
+- fedora: don't enable FB_VIRTUAL (Peter Robinson)
+- redhat/configs: Double MAX_LOCKDEP_ENTRIES (Waiman Long) [1940075]
+- rpmspec: fix verbose output on kernel-devel installation (Herton R. Krzesinski) [1981406]
+- Build Fedora x86s kernels with bytcr-wm5102 (Marius Hoch)
+- Deleted redhat/configs/fedora/generic/x86/CONFIG_FB_HYPERV (Patrick Lang)
+- rpmspec: correct the ghost initramfs attributes (Herton R. Krzesinski) [1977056]
+- rpmspec: amend removal of depmod created files to include modules.builtin.alias.bin (Herton R. Krzesinski) [1977056]
+- configs: remove duplicate CONFIG_DRM_HYPERV file (Patrick Talbert)
+- CI: use common code for merge and release (Don Zickus)
+- rpmspec: add release string to kernel doc directory name (Jan Stancek)
+- redhat/configs: Add CONFIG_INTEL_PMT_CRASHLOG (Michael Petlan) [1880486]
+- redhat/configs: Add CONFIG_INTEL_PMT_TELEMETRY (Michael Petlan) [1880486]
+- redhat/configs: Add CONFIG_MFD_INTEL_PMT (Michael Petlan) [1880486]
+- redhat/configs: enable CONFIG_BLK_DEV_ZONED (Ming Lei) [1638087]
+- Add --with clang_lto option to build the kernel with Link Time Optimizations (Tom Stellard)
+- common: disable DVB_AV7110 and associated pieces (Peter Robinson)
+- Fix fedora-only config updates (Don Zickus)
+- Fedor config update for new option (Justin M. Forbes)
+- redhat/configs: Enable stmmac NIC for x86_64 (Mark Salter)
+- all: hyperv: use the DRM driver rather than FB (Peter Robinson)
+- all: hyperv: unify the Microsoft HyperV configs (Peter Robinson)
+- all: VMWare: clean up VMWare configs (Peter Robinson)
+- Update CONFIG_ARM_FFA_TRANSPORT (Patrick Talbert)
+- CI: Handle all mirrors (Veronika Kabatova)
+- Turn on CONFIG_STACKTRACE for s390x zfpcdump kernels (Justin M. Forbes)
+- arm64: switch ark kernel to 4K pagesize (Mark Salter)
+- Disable AMIGA_PARTITION and KARMA_PARTITION (Prarit Bhargava) [1802694]
+- all: unify and cleanup i2c TPM2 modules (Peter Robinson)
+- redhat/configs: Set CONFIG_VIRTIO_IOMMU on aarch64 (Eric Auger) [1972795]
+- redhat/configs: Disable CONFIG_RT_GROUP_SCHED in rhel config (Phil Auld)
+- redhat/configs: enable KEXEC_SIG which is already enabled in RHEL8 for s390x and x86_64 (Coiby Xu) [1976835]
+- rpmspec: do not BuildRequires bpftool on noarch (Herton R. Krzesinski)
+- redhat/configs: disable {IMA,EVM}_LOAD_X509 (Bruno Meneguele) [1977529]
+- redhat: add secureboot CA certificate to trusted kernel keyring (Bruno Meneguele)
+- redhat/configs: enable IMA_ARCH_POLICY for aarch64 and s390x (Bruno Meneguele)
+- redhat/configs: Enable CONFIG_MLXBF_GIGE on aarch64 (Alaa Hleihel) [1858599]
+- common: enable STRICT_MODULE_RWX everywhere (Peter Robinson)
+- COMMON_CLK_STM32MP157_SCMI is bool and selects COMMON_CLK_SCMI (Justin M. Forbes)
+- kernel.spec: Add kernel{,-debug}-devel-matched meta packages (Timothée Ravier)
+- Turn off with_selftests for Fedora (Justin M. Forbes)
+- Don't build bpftool on Fedora (Justin M. Forbes)
+- Fix location of syscall scripts for kernel-devel (Justin M. Forbes)
+- fedora: arm: Enable some i.MX8 options (Peter Robinson)
+- Enable Landlock for Fedora (Justin M. Forbes)
+- Filter update for Fedora aarch64 (Justin M. Forbes)
+- rpmspec: only build debug meta packages where we build debug ones (Herton R. Krzesinski)
+- rpmspec: do not BuildRequires bpftool on nobuildarches (Herton R. Krzesinski)
+- redhat/configs: Consolidate CONFIG_HMC_DRV in the common s390x folder (Thomas Huth) [1976270]
+- redhat/configs: Consolidate CONFIG_EXPOLINE_OFF in the common folder (Thomas Huth) [1976270]
+- redhat/configs: Move CONFIG_HW_RANDOM_S390 into the s390x/ subfolder (Thomas Huth) [1976270]
+- redhat/configs: Disable CONFIG_HOTPLUG_PCI_SHPC in the Fedora settings (Thomas Huth) [1976270]
+- redhat/configs: Remove the non-existent CONFIG_NO_BOOTMEM switch (Thomas Huth) [1976270]
+- redhat/configs: Compile the virtio-console as a module on s390x (Thomas Huth) [1976270]
+- redhat/configs: Enable CONFIG_S390_CCW_IOMMU and CONFIG_VFIO_CCW for ARK, too (Thomas Huth) [1976270]
+- Revert "Merge branch 'ec_fips' into 'os-build'" (Vladis Dronov) [1947240]
+- Fix typos in fedora filters (Justin M. Forbes)
+- More filtering for Fedora (Justin M. Forbes)
+- Fix Fedora module filtering for spi-altera-dfl (Justin M. Forbes)
+- Fedora 5.13 config updates (Justin M. Forbes)
+- fedora: cleanup TCG_TIS_I2C_CR50 (Peter Robinson)
+- fedora: drop duplicate configs (Peter Robinson)
+- More Fedora config updates for 5.13 (Justin M. Forbes)
+- redhat/configs: Enable needed drivers for BlueField SoC on aarch64 (Alaa Hleihel) [1858592 1858594 1858596]
+- redhat: Rename mod-blacklist.sh to mod-denylist.sh (Prarit Bhargava)
+- redhat/configs: enable CONFIG_NET_ACT_MPLS (Marcelo Ricardo Leitner)
+- configs: Enable CONFIG_DEBUG_KERNEL for zfcpdump (Jiri Olsa)
+- kernel.spec: Add support to use vmlinux.h (Don Zickus)
+- spec: Add vmlinux.h to kernel-devel package (Jiri Olsa)
+- Turn off DRM_XEN_FRONTEND for Fedora as we had DRM_XEN off already (Justin M. Forbes)
+- Fedora 5.13 config updates pt 3 (Justin M. Forbes)
+- all: enable ath11k wireless modules (Peter Robinson)
+- all: Enable WWAN and associated MHI bus pieces (Peter Robinson)
+- spec: Enable sefltests rpm build (Jiri Olsa)
+- spec: Allow bpf selftest/samples to fail (Jiri Olsa)
+- kvm: Add kvm_stat.service file and kvm_stat logrotate config to the tools (Jiri Benc)
+- kernel.spec: Add missing source files to kernel-selftests-internal (Jiri Benc)
+- kernel.spec: selftests: add net/forwarding to TARGETS list (Jiri Benc)
+- kernel.spec: selftests: add build requirement on libmnl-devel (Jiri Benc)
+- kernel.spec: add action.o to kernel-selftests-internal (Jiri Benc)
+- kernel.spec: avoid building bpftool repeatedly (Jiri Benc)
+- kernel.spec: selftests require python3 (Jiri Benc)
+- kernel.spec: skip selftests that failed to build (Jiri Benc)
+- kernel.spec: fix installation of bpf selftests (Jiri Benc)
+- redhat: fix samples and selftests make options (Jiri Benc)
+- kernel.spec: enable mptcp selftests for kernel-selftests-internal (Jiri Benc)
+- kernel.spec: Do not export shared objects from libexecdir to RPM Provides (Jiri Benc)
+- kernel.spec: add missing dependency for the which package (Jiri Benc)
+- kernel.spec: add netfilter selftests to kernel-selftests-internal (Jiri Benc)
+- kernel.spec: move slabinfo and page_owner_sort debuginfo to tools-debuginfo (Jiri Benc)
+- kernel.spec: package and ship VM tools (Jiri Benc)
+- configs: enable CONFIG_PAGE_OWNER (Jiri Benc)
+- kernel.spec: add coreutils (Jiri Benc)
+- kernel.spec: add netdevsim driver selftests to kernel-selftests-internal (Jiri Benc)
+- redhat/Makefile: Clean out the --without flags from the baseonly rule (Jiri Benc)
+- kernel.spec: Stop building unnecessary rpms for baseonly builds (Jiri Benc)
+- kernel.spec: disable more kabi switches for gcov build (Jiri Benc)
+- kernel.spec: Rename kabi-dw base (Jiri Benc)
+- kernel.spec: Fix error messages during build of zfcpdump kernel (Jiri Benc)
+- kernel.spec: perf: remove bpf examples (Jiri Benc)
+- kernel.spec: selftests should not depend on modules-internal (Jiri Benc)
+- kernel.spec: build samples (Jiri Benc)
+- kernel.spec: tools: sync missing options with RHEL 8 (Jiri Benc)
+- redhat/configs: nftables: Enable extra flowtable symbols (Phil Sutter)
+- redhat/configs: Sync netfilter options with RHEL8 (Phil Sutter)
+- Fedora 5.13 config updates pt 2 (Justin M. Forbes)
+- Move CONFIG_ARCH_INTEL_SOCFPGA up a level for Fedora (Justin M. Forbes)
+- fedora: enable the Rockchip rk3399 pcie drivers (Peter Robinson)
+- Fedora 5.13 config updates pt 1 (Justin M. Forbes)
+- Fix version requirement from opencsd-devel buildreq (Justin M. Forbes)
+- configs/ark/s390: set CONFIG_MARCH_Z14 and CONFIG_TUNE_Z15 (Philipp Rudo) [1876435]
+- configs/common/s390: Clean up CONFIG_{MARCH,TUNE}_Z* (Philipp Rudo)
+- configs/process_configs.sh: make use of dummy-tools (Philipp Rudo)
+- configs/common: disable CONFIG_INIT_STACK_ALL_{PATTERN,ZERO} (Philipp Rudo)
+- configs/common/aarch64: disable CONFIG_RELR (Philipp Rudo)
+- redhat/config: enable STMICRO nic for RHEL (Mark Salter)
+- redhat/configs: Enable ARCH_TEGRA on RHEL (Mark Salter)
+- redhat/configs: enable IMA_KEXEC for supported arches (Bruno Meneguele)
+- redhat/configs: enable INTEGRITY_SIGNATURE to all arches (Bruno Meneguele)
+- configs: enable CONFIG_LEDS_BRIGHTNESS_HW_CHANGED (Benjamin Tissoires)
+- RHEL: disable io_uring support (Jeff Moyer) [1964537]
+- all: Changing CONFIG_UV_SYSFS to build uv_sysfs.ko as a loadable module. (Frank Ramsay)
+- Enable NITRO_ENCLAVES on RHEL (Vitaly Kuznetsov)
+- Update the Quick Start documentation (David Ward)
+- redhat/configs: Set PVPANIC_MMIO for x86 and PVPANIC_PCI for aarch64 (Eric Auger) [1961178]
+- bpf: Fix unprivileged_bpf_disabled setup (Jiri Olsa)
+- Enable CONFIG_BPF_UNPRIV_DEFAULT_OFF (Jiri Olsa)
+- configs/common/s390: disable CONFIG_QETH_{OSN,OSX} (Philipp Rudo) [1903201]
+- nvme: nvme_mpath_init remove multipath check (Mike Snitzer)
+- Make CRYPTO_EC also builtin (Simo Sorce) [1947240]
+- Do not hard-code a default value for DIST (David Ward)
+- Override %%{debugbuildsenabled} if the --with-release option is used (David Ward)
+- Improve comments in SPEC file, and move some option tests and macros (David Ward)
+- configs: enable CONFIG_EXFAT_FS (Pavel Reichl) [1943423]
+- Revert s390x/zfcpdump part of a9d179c40281 and ecbfddd98621 (Vladis Dronov)
+- Embed crypto algos, modes and templates needed in the FIPS mode (Vladis Dronov) [1947240]
+- configs: Add and enable CONFIG_HYPERV_TESTING for debug kernels (Mohammed Gamal)
+- configs: enable CONFIG_CMA on x86_64 in ARK (David Hildenbrand) [1945002]
+- rpmspec: build debug-* meta-packages if debug builds are disabled (Herton R. Krzesinski)
+- UIO: disable unused config options (Aristeu Rozanski) [1957819]
+- ARK-config: Make amd_pinctrl module builtin (Hans de Goede)
+- rpmspec: revert/drop content hash for kernel-headers (Herton R. Krzesinski)
+- rpmspec: fix check that calls InitBuildVars (Herton R. Krzesinski)
+- fedora: enable zonefs (Damien Le Moal)
+- redhat: load specific ARCH keys to INTEGRITY_PLATFORM_KEYRING (Bruno Meneguele)
+- redhat: enable INTEGRITY_TRUSTED_KEYRING across all variants (Bruno Meneguele)
+- redhat: enable SYSTEM_BLACKLIST_KEYRING across all variants (Bruno Meneguele)
+- redhat: enable INTEGRITY_ASYMMETRIC_KEYS across all variants (Bruno Meneguele)
+- Remove unused boot loader specification files (David Ward)
+- redhat/configs: Enable mlx5 IPsec and TLS offloads (Alaa Hleihel) [1869674 1957636]
+- common: disable Apple Silicon generally (Peter Robinson)
+- cleanup Intel's FPGA configs (Peter Robinson)
+- common: move PTP KVM support from ark to common (Peter Robinson)
+- Enable CONFIG_DRM_AMDGPU_USERPTR for everyone (Justin M. Forbes)
+- redhat: add initial rpminspect configuration (Herton R. Krzesinski)
+- fedora: arm updates for 5.13 (Peter Robinson)
+- fedora: Enable WWAN and associated MHI bits (Peter Robinson)
+- Update CONFIG_MODPROBE_PATH to /usr/sbin (Justin Forbes)
+- Fedora set modprobe path (Justin M. Forbes)
+- Keep sctp and l2tp modules in modules-extra (Don Zickus)
+- Fix ppc64le cross build packaging (Don Zickus)
+- Fedora: Make amd_pinctrl module builtin (Hans de Goede)
+- Keep CONFIG_KASAN_HW_TAGS off for aarch64 debug configs (Justin M. Forbes)
+- New configs in drivers/bus (Fedora Kernel Team)
+- RHEL: Don't build KVM PR module on ppc64 (David Gibson) [1930649]
+- Flip CONFIG_USB_ROLE_SWITCH from m to y (Justin M. Forbes)
+- Set valid options for CONFIG_FW_LOADER_USER_HELPER (Justin M. Forbes)
+- Clean up CONFIG_FB_MODE_HELPERS (Justin M. Forbes)
+- Turn off CONFIG_VFIO for the s390x zfcpdump kernel (Justin M. Forbes)
+- Delete unused CONFIG_SND_SOC_MAX98390 pending-common (Justin M. Forbes)
+- Update pending-common configs, preparing to set correctly (Justin M. Forbes)
+- Update fedora filters for surface (Justin M. Forbes)
+- Build CONFIG_CRYPTO_ECDSA inline for s390x zfcpdump (Justin M. Forbes)
+- Replace "flavour" where "variant" is meant instead (David Ward)
+- Drop the %%{variant} macro and fix --with-vanilla (David Ward)
+- Fix syntax of %%kernel_variant_files (David Ward)
+- Change description of --without-vdso-install to fix typo (David Ward)
+- Config updates to work around mismatches (Justin M. Forbes)
+- CONFIG_SND_SOC_FSL_ASOC_CARD selects CONFIG_MFD_WM8994 now (Justin M. Forbes)
+- wireguard: disable in FIPS mode (Hangbin Liu) [1940794]
+- Enable mtdram for fedora (rhbz 1955916) (Justin M. Forbes)
+- Remove reference to bpf-helpers man page (Justin M. Forbes)
+- Fedora: enable more modules for surface devices (Dave Olsthoorn)
+- Fix Fedora config mismatch for CONFIG_FSL_ENETC_IERB (Justin M. Forbes)
+- hardlink is in /usr/bin/ now (Justin M. Forbes)
+- Ensure CONFIG_KVM_BOOK3S_64_PR stays on in Fedora, even if it is turned off in RHEL (Justin M. Forbes)
+- Set date in package release from repository commit, not system clock (David Ward)
+- Use a better upstream tarball filename for snapshots (David Ward)
+- Don't create empty pending-common files on pending-fedora commits (Don Zickus)
+- nvme: decouple basic ANA log page re-read support from native multipathing (Mike Snitzer)
+- nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT (Mike Snitzer)
+- nvme: Return BLK_STS_TARGET if the DNR bit is set (Mike Snitzer)
+- Add redhat/configs/pending-common/generic/s390x/zfcpdump/CONFIG_NETFS_SUPPORT (Justin M. Forbes)
+- Create ark-latest branch last for CI scripts (Don Zickus)
+- Replace /usr/libexec/platform-python with /usr/bin/python3 (David Ward)
+- Turn off ADI_AXI_ADC and AD9467 which now require CONFIG_OF (Justin M. Forbes)
+- Export ark infrastructure files (Don Zickus)
+- docs: Update docs to reflect newer workflow. (Don Zickus)
+- Use upstream/master for merge-base with fallback to master (Don Zickus)
+- Fedora: Turn off the SND_INTEL_BYT_PREFER_SOF option (Hans de Goede)
+- filter-modules.sh.fedora: clean up "netprots" (Paul Bolle)
+- filter-modules.sh.fedora: clean up "scsidrvs" (Paul Bolle)
+- filter-*.sh.fedora: clean up "ethdrvs" (Paul Bolle)
+- filter-*.sh.fedora: clean up "driverdirs" (Paul Bolle)
+- filter-*.sh.fedora: remove incorrect entries (Paul Bolle)
+- filter-*.sh.fedora: clean up "singlemods" (Paul Bolle)
+- filter-modules.sh.fedora: drop unused list "iiodrvs" (Paul Bolle)
+- Update mod-internal to fix depmod issue (Nico Pache)
+- Turn on CONFIG_VDPA_SIM_NET (rhbz 1942343) (Justin M. Forbes)
+- New configs in drivers/power (Fedora Kernel Team)
+- Turn on CONFIG_NOUVEAU_DEBUG_PUSH for debug configs (Justin M. Forbes)
+- Turn off KFENCE sampling by default for Fedora (Justin M. Forbes)
+- Fedora config updates round 2 (Justin M. Forbes)
+- New configs in drivers/soc (Jeremy Cline)
+- filter-modules.sh: Fix copy/paste error 'input' (Paul Bolle)
+- Update module filtering for 5.12 kernels (Justin M. Forbes)
+- Fix genlog.py to ensure that comments retain "%%" characters. (Mark Mielke)
+- New configs in drivers/leds (Fedora Kernel Team)
+- Limit CONFIG_USB_CDNS_SUPPORT to x86_64 and arm in Fedora (David Ward)
+- Fedora: Enable CHARGER_GPIO on aarch64 too (Peter Robinson)
+- Fedora config updates (Justin M. Forbes)
+- configs: enable CONFIG_WIREGUARD in ARK (Hangbin Liu) [1613522]
+- Remove duplicate configs acroos fedora, ark and common (Don Zickus)
+- Combine duplicate configs across ark and fedora into common (Don Zickus)
+- common/ark: cleanup and unify the parport configs (Peter Robinson)
+- iommu/vt-d: enable INTEL_IDXD_SVM for both fedora and rhel (Jerry Snitselaar)
+- REDHAT: coresight: etm4x: Disable coresight on HPE Apollo 70 (Jeremy Linton)
+- configs/common/generic: disable CONFIG_SLAB_MERGE_DEFAULT (Rafael Aquini)
+- Remove _legacy_common_support (Justin M. Forbes)
+- redhat/mod-blacklist.sh: Fix floppy blacklisting (Hans de Goede)
+- New configs in fs/pstore (CKI@GitLab)
+- New configs in arch/powerpc (Fedora Kernel Team)
+- configs: enable BPF LSM on Fedora and ARK (Ondrej Mosnacek)
+- configs: clean up LSM configs (Ondrej Mosnacek)
+- New configs in drivers/platform (CKI@GitLab)
+- New configs in drivers/firmware (CKI@GitLab)
+- New configs in drivers/mailbox (Fedora Kernel Team)
+- New configs in drivers/net/phy (Justin M. Forbes)
+- Update CONFIG_DM_MULTIPATH_IOA (Augusto Caringi)
+- New configs in mm/Kconfig (CKI@GitLab)
+- New configs in arch/powerpc (Jeremy Cline)
+- New configs in arch/powerpc (Jeremy Cline)
+- New configs in drivers/input (Fedora Kernel Team)
+- New configs in net/bluetooth (Justin M. Forbes)
+- New configs in drivers/clk (Fedora Kernel Team)
+- New configs in init/Kconfig (Jeremy Cline)
+- redhat: allow running fedora-configs and rh-configs targets outside of redhat/ (Herton R. Krzesinski)
+- all: unify the disable of goldfish (android emulation platform) (Peter Robinson)
+- common: minor cleanup/de-dupe of dma/dmabuf debug configs (Peter Robinson)
+- common/ark: these drivers/arches were removed in 5.12 (Peter Robinson)
+- Correct kernel-devel make prepare build for 5.12. (Paulo E. Castro)
+- redhat: add initial support for centos stream dist-git sync on Makefiles (Herton R. Krzesinski)
+- redhat/configs: Enable CONFIG_SCHED_STACK_END_CHECK for Fedora and ARK (Josh Poimboeuf) [1856174]
+- CONFIG_VFIO now selects IOMMU_API instead of depending on it, causing several config mismatches for the zfcpdump kernel (Justin M. Forbes)
+- Turn off weak-modules for Fedora (Justin M. Forbes)
+- redhat: enable CONFIG_FW_LOADER_COMPRESS for ARK (Herton R. Krzesinski) [1939095]
+- Fedora: filters: update to move dfl-emif to modules (Peter Robinson)
+- drop duplicate DEVFREQ_GOV_SIMPLE_ONDEMAND config (Peter Robinson)
+- efi: The EFI_VARS is legacy and now x86 only (Peter Robinson)
+- common: enable RTC_SYSTOHC to supplement update_persistent_clock64 (Peter Robinson)
+- generic: arm: enable SCMI for all options (Peter Robinson)
+- fedora: the PCH_CAN driver is x86-32 only (Peter Robinson)
+- common: disable legacy CAN device support (Peter Robinson)
+- common: Enable Microchip MCP251x/MCP251xFD CAN controllers (Peter Robinson)
+- common: Bosch MCAN support for Intel Elkhart Lake (Peter Robinson)
+- common: enable CAN_PEAK_PCIEFD PCI-E driver (Peter Robinson)
+- common: disable CAN_PEAK_PCIEC PCAN-ExpressCard (Peter Robinson)
+- common: enable common CAN layer 2 protocols (Peter Robinson)
+- ark: disable CAN_LEDS option (Peter Robinson)
+- Fedora: Turn on SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC option (Hans de Goede)
+- Fedora: enable modules for surface devices (Dave Olsthoorn)
+- Turn on SND_SOC_INTEL_SOUNDWIRE_SOF_MACH for Fedora again (Justin M. Forbes)
+- common: fix WM8804 codec dependencies (Peter Robinson)
+- Build SERIO_SERPORT as a module (Peter Robinson)
+- input: touchscreen: move ELO and Wacom serial touchscreens to x86 (Peter Robinson)
+- Sync serio touchscreens for non x86 architectures to the same as ARK (Peter Robinson)
+- Only enable SERIO_LIBPS2 on x86 (Peter Robinson)
+- Only enable PC keyboard controller and associated keyboard on x86 (Peter Robinson)
+- Generic: Mouse: Tweak generic serial mouse options (Peter Robinson)
+- Only enable PS2 Mouse options on x86 (Peter Robinson)
+- Disable bluetooth highspeed by default (Peter Robinson)
+- Fedora: A few more general updates for 5.12 window (Peter Robinson)
+- Fedora: Updates for 5.12 merge window (Peter Robinson)
+- Fedora: remove dead options that were removed upstream (Peter Robinson)
+- redhat: remove CONFIG_DRM_PANEL_XINGBANGDA_XBD599 (Herton R. Krzesinski)
+- New configs in arch/powerpc (Fedora Kernel Team)
+- Turn on CONFIG_PPC_QUEUED_SPINLOCKS as it is default upstream now (Justin M. Forbes)
+- Update pending-common configs to address new upstream config deps (Justin M. Forbes)
+- rpmspec: ship gpio-watch.debug in the proper debuginfo package (Herton R. Krzesinski)
+- Removed description text as a comment confuses the config generation (Justin M. Forbes)
+- New configs in drivers/dma-buf (Jeremy Cline)
+- Fedora: ARMv7: build for 16 CPUs. (Peter Robinson)
+- Fedora: only enable DEBUG_HIGHMEM on debug kernels (Peter Robinson)
+- process_configs.sh: fix find/xargs data flow (Ondrej Mosnacek)
+- Fedora config update (Justin M. Forbes)
+- fedora: minor arm sound config updates (Peter Robinson)
+- Fix trailing white space in redhat/configs/fedora/generic/CONFIG_SND_INTEL_BYT_PREFER_SOF (Justin M. Forbes)
+- Add a redhat/rebase-notes.txt file (Hans de Goede)
+- Turn on SND_INTEL_BYT_PREFER_SOF for Fedora (Hans de Goede)
+- CI: Drop MR ID from the name variable (Veronika Kabatova)
+- redhat: add DUP and kpatch certificates to system trusted keys for RHEL build (Herton R. Krzesinski)
+- The comments in CONFIG_USB_RTL8153_ECM actually turn off CONFIG_USB_RTL8152 (Justin M. Forbes)
+- Update CKI pipeline project (Veronika Kabatova)
+- Turn off additional KASAN options for Fedora (Justin M. Forbes)
+- Rename the master branch to rawhide for Fedora (Justin M. Forbes)
+- Makefile targets for packit integration (Ben Crocker)
+- Turn off KASAN for rawhide debug builds (Justin M. Forbes)
+- New configs in arch/arm64 (Justin Forbes)
+- Remove deprecated Intel MIC config options (Peter Robinson)
+- redhat: replace inline awk script with genlog.py call (Herton R. Krzesinski)
+- redhat: add genlog.py script (Herton R. Krzesinski)
+- kernel.spec.template - fix use_vdso usage (Ben Crocker)
+- redhat: remove remaining references of CONFIG_RH_DISABLE_DEPRECATED (Herton R. Krzesinski)
+- Turn off vdso_install for ppc (Justin M. Forbes)
+- Remove bpf-helpers.7 from bpftool package (Jiri Olsa)
+- New configs in lib/Kconfig.debug (Fedora Kernel Team)
+- Turn off CONFIG_VIRTIO_CONSOLE for s390x zfcpdump (Justin M. Forbes)
+- New configs in drivers/clk (Justin M. Forbes)
+- Keep VIRTIO_CONSOLE on s390x available. (Jakub Čajka)
+- New configs in lib/Kconfig.debug (Jeremy Cline)
+- Fedora 5.11 config updates part 4 (Justin M. Forbes)
+- Fedora 5.11 config updates part 3 (Justin M. Forbes)
+- Fedora 5.11 config updates part 2 (Justin M. Forbes)
+- Update internal (test) module list from RHEL-8 (Joe Lawrence) [1915073]
+- Fix USB_XHCI_PCI regression (Justin M. Forbes)
+- fedora: fixes for ARMv7 build issue by disabling HIGHPTE (Peter Robinson)
+- all: s390x: Increase CONFIG_PCI_NR_FUNCTIONS to 512 (#1888735) (Dan Horák)
+- Fedora 5.11 configs pt 1 (Justin M. Forbes)
+- redhat: avoid conflict with mod-blacklist.sh and released_kernel defined (Herton R. Krzesinski)
+- redhat: handle certificate files conditionally as done for src.rpm (Herton R. Krzesinski)
+- specfile: add %%{?_smp_mflags} to "make headers_install" in tools/testing/selftests (Denys Vlasenko)
+- specfile: add %%{?_smp_mflags} to "make samples/bpf/" (Denys Vlasenko)
+- Run MR testing in CKI pipeline (Veronika Kabatova)
+- Reword comment (Nicolas Chauvet)
+- Add with_cross_arm conditional (Nicolas Chauvet)
+- Redefines __strip if with_cross (Nicolas Chauvet)
+- fedora: only enable ACPI_CONFIGFS, ACPI_CUSTOM_METHOD in debug kernels (Peter Robinson)
+- fedora: User the same EFI_CUSTOM_SSDT_OVERLAYS as ARK (Peter Robinson)
+- all: all arches/kernels enable the same DMI options (Peter Robinson)
+- all: move SENSORS_ACPI_POWER to common/generic (Peter Robinson)
+- fedora: PCIE_HISI_ERR is already in common (Peter Robinson)
+- all: all ACPI platforms enable ATA_ACPI so move it to common (Peter Robinson)
+- all: x86: move shared x86 acpi config options to generic (Peter Robinson)
+- All: x86: Move ACPI_VIDEO to common/x86 (Peter Robinson)
+- All: x86: Enable ACPI_DPTF (Intel DPTF) (Peter Robinson)
+- All: enable ACPI_BGRT for all ACPI platforms. (Peter Robinson)
+- All: Only build ACPI_EC_DEBUGFS for debug kernels (Peter Robinson)
+- All: Disable Intel Classmate PC ACPI_CMPC option (Peter Robinson)
+- cleanup: ACPI_PROCFS_POWER was removed upstream (Peter Robinson)
+- All: ACPI: De-dupe the ACPI options that are the same across ark/fedora on x86/arm (Peter Robinson)
+- Enable the vkms module in Fedora (Jeremy Cline)
+- Fedora: arm updates for 5.11 and general cross Fedora cleanups (Peter Robinson)
+- Add gcc-c++ to BuildRequires (Justin M. Forbes)
+- Update CONFIG_KASAN_HW_TAGS (Justin M. Forbes)
+- fedora: arm: move generic power off/reset to all arm (Peter Robinson)
+- fedora: ARMv7: build in DEVFREQ_GOV_SIMPLE_ONDEMAND until I work out why it's changed (Peter Robinson)
+- fedora: cleanup joystick_adc (Peter Robinson)
+- fedora: update some display options (Peter Robinson)
+- fedora: arm: enable TI PRU options (Peter Robinson)
+- fedora: arm: minor exynos plaform updates (Peter Robinson)
+- arm: SoC: disable Toshiba Visconti SoC (Peter Robinson)
+- common: disable ARCH_BCM4908 (NFC) (Peter Robinson)
+- fedora: minor arm config updates (Peter Robinson)
+- fedora: enable Tegra 234 SoC (Peter Robinson)
+- fedora: arm: enable new Hikey 3xx options (Peter Robinson)
+- Fedora: USB updates (Peter Robinson)
+- fedora: enable the GNSS receiver subsystem (Peter Robinson)
+- Remove POWER_AVS as no longer upstream (Peter Robinson)
+- Cleanup RESET_RASPBERRYPI (Peter Robinson)
+- Cleanup GPIO_CDEV_V1 options. (Peter Robinson)
+- fedora: arm crypto updates (Peter Robinson)
+- CONFIG_KASAN_HW_TAGS for aarch64 (Justin M. Forbes)
+- Fedora: cleanup PCMCIA configs, move to x86 (Peter Robinson)
+- New configs in drivers/rtc (Fedora Kernel Team)
+- redhat/configs: Enable CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL (Josh Poimboeuf) [1856176]
+- redhat/configs: Enable CONFIG_GCC_PLUGIN_STRUCTLEAK (Josh Poimboeuf) [1856176]
+- redhat/configs: Enable CONFIG_GCC_PLUGINS on ARK (Josh Poimboeuf) [1856176]
+- redhat/configs: Enable CONFIG_KASAN on Fedora (Josh Poimboeuf) [1856176]
+- New configs in init/Kconfig (Fedora Kernel Team)
+- build_configs.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- genspec.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- mod-blacklist.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- Enable Speakup accessibility driver (Justin M. Forbes)
+- New configs in init/Kconfig (Fedora Kernel Team)
+- Fix fedora config mismatch due to dep changes (Justin M. Forbes)
+- New configs in drivers/crypto (Jeremy Cline)
+- Remove duplicate ENERGY_MODEL configs (Peter Robinson)
+- This is selected by PCIE_QCOM so must match (Justin M. Forbes)
+- drop unused BACKLIGHT_GENERIC (Peter Robinson)
+- Remove cp instruction already handled in instruction below. (Paulo E. Castro)
+- Add all the dependencies gleaned from running `make prepare` on a bloated devel kernel. (Paulo E. Castro)
+- Add tools to path mangling script. (Paulo E. Castro)
+- Remove duplicate cp statement which is also not specific to x86. (Paulo E. Castro)
+- Correct orc_types failure whilst running `make prepare` https://bugzilla.redhat.com/show_bug.cgi?id=1882854 (Paulo E. Castro)
+- redhat: ark: enable CONFIG_IKHEADERS (Jiri Olsa)
+- Add missing '$' sign to (GIT) in redhat/Makefile (Augusto Caringi)
+- Remove filterdiff and use native git instead (Don Zickus)
+- New configs in net/sched (Justin M. Forbes)
+- New configs in drivers/mfd (CKI@GitLab)
+- New configs in drivers/mfd (Fedora Kernel Team)
+- New configs in drivers/firmware (Fedora Kernel Team)
+- Temporarily backout parallel xz script (Justin M. Forbes)
+- redhat: explicitly disable CONFIG_IMA_APPRAISE_SIGNED_INIT (Bruno Meneguele)
+- redhat: enable CONFIG_EVM_LOAD_X509 on ARK (Bruno Meneguele)
+- redhat: enable CONFIG_EVM_ATTR_FSUUID on ARK (Bruno Meneguele)
+- redhat: enable CONFIG_EVM in all arches and flavors (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_LOAD_X509 on ARK (Bruno Meneguele)
+- redhat: set CONFIG_IMA_DEFAULT_HASH to SHA256 (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_READ_POLICY on ARK (Bruno Meneguele)
+- redhat: set default IMA template for all ARK arches (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_DEFAULT_HASH_SHA256 for all flavors (Bruno Meneguele)
+- redhat: disable CONFIG_IMA_DEFAULT_HASH_SHA1 (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_ARCH_POLICY for ppc and x86 (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_APPRAISE_MODSIG (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_APPRAISE_BOOTPARAM (Bruno Meneguele)
+- redhat: enable CONFIG_IMA_APPRAISE (Bruno Meneguele)
+- redhat: enable CONFIG_INTEGRITY for aarch64 (Bruno Meneguele)
+- kernel: Update some missing KASAN/KCSAN options (Jeremy Linton)
+- kernel: Enable coresight on aarch64 (Jeremy Linton)
+- Update CONFIG_INET6_ESPINTCP (Justin Forbes)
+- New configs in net/ipv6 (Justin M. Forbes)
+- fedora: move CONFIG_RTC_NVMEM options from ark to common (Peter Robinson)
+- configs: Enable CONFIG_DEBUG_INFO_BTF (Don Zickus)
+- fedora: some minor arm audio config tweaks (Peter Robinson)
+- Ship xpad with default modules on Fedora and RHEL (Bastien Nocera)
+- Fedora: Only enable legacy serial/game port joysticks on x86 (Peter Robinson)
+- Fedora: Enable the options required for the Librem 5 Phone (Peter Robinson)
+- Fedora config update (Justin M. Forbes)
+- Fedora config change because CONFIG_FSL_DPAA2_ETH now selects CONFIG_FSL_XGMAC_MDIO (Justin M. Forbes)
+- redhat: generic  enable CONFIG_INET_MPTCP_DIAG (Davide Caratti)
+- Fedora config update (Justin M. Forbes)
+- Enable NANDSIM for Fedora (Justin M. Forbes)
+- Re-enable CONFIG_ACPI_TABLE_UPGRADE for Fedora since upstream disables this if secureboot is active (Justin M. Forbes)
+- Ath11k related config updates (Justin M. Forbes)
+- Fedora config updates for ath11k (Justin M. Forbes)
+- Turn on ATH11K for Fedora (Justin M. Forbes)
+- redhat: enable CONFIG_INTEL_IOMMU_SVM (Jerry Snitselaar)
+- More Fedora config fixes (Justin M. Forbes)
+- Fedora 5.10 config updates (Justin M. Forbes)
+- Fedora 5.10 configs round 1 (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Allow kernel-tools to build without selftests (Don Zickus)
+- Allow building of kernel-tools standalone (Don Zickus)
+- redhat: ark: disable CONFIG_NET_ACT_CTINFO (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_TEQL (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_SFB (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_QFQ (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_PLUG (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_PIE (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_HHF (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_DSMARK (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_DRR (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_CODEL (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_CHOKE (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_CBQ (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_SCH_ATM (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_EMATCH and sub-targets (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_CLS_TCINDEX (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_CLS_RSVP6 (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_CLS_RSVP (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_CLS_ROUTE4 (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_CLS_BASIC (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_ACT_SKBMOD (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_ACT_SIMP (Davide Caratti)
+- redhat: ark: disable CONFIG_NET_ACT_NAT (Davide Caratti)
+- arm64/defconfig: Enable CONFIG_KEXEC_FILE (Bhupesh Sharma) [1821565]
+- redhat/configs: Cleanup CONFIG_CRYPTO_SHA512 (Prarit Bhargava)
+- New configs in drivers/mfd (Fedora Kernel Team)
+- Fix LTO issues with kernel-tools (Don Zickus)
+- Point pathfix to the new location for gen_compile_commands.py (Justin M. Forbes)
+- configs: Disable CONFIG_SECURITY_SELINUX_DISABLE (Ondrej Mosnacek)
+- [Automatic] Handle config dependency changes (Don Zickus)
+- configs/iommu: Add config comment to empty CONFIG_SUN50I_IOMMU file (Jerry Snitselaar)
+- New configs in kernel/trace (Fedora Kernel Team)
+- Fix Fedora config locations (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- configs: enable CONFIG_CRYPTO_CTS=y so cts(cbc(aes)) is available in FIPS mode (Vladis Dronov) [1855161]
+- Partial revert: Add master merge check (Don Zickus)
+- Update Maintainers doc to reflect workflow changes (Don Zickus)
+- WIP: redhat/docs: Update documentation for single branch workflow (Prarit Bhargava)
+- Add CONFIG_ARM64_MTE which is not picked up by the config scripts for some reason (Justin M. Forbes)
+- Disable Speakup synth DECEXT (Justin M. Forbes)
+- Enable Speakup for Fedora since it is out of staging (Justin M. Forbes)
+- Modify patchlist changelog output (Don Zickus)
+- process_configs.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- generate_all_configs.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- redhat/self-test: Initial commit (Ben Crocker)
+- arch/x86: Remove vendor specific CPU ID checks (Prarit Bhargava)
+- redhat: Replace hardware.redhat.com link in Unsupported message (Prarit Bhargava) [1810301]
+- x86: Fix compile issues with rh_check_supported() (Don Zickus)
+- KEYS: Make use of platform keyring for module signature verify (Robert Holmes)
+- Input: rmi4 - remove the need for artificial IRQ in case of HID (Benjamin Tissoires)
+- ARM: tegra: usb no reset (Peter Robinson)
+- arm: make CONFIG_HIGHPTE optional without CONFIG_EXPERT (Jon Masters)
+- redhat: rh_kabi: deduplication friendly structs (Jiri Benc)
+- redhat: rh_kabi add a comment with warning about RH_KABI_EXCLUDE usage (Jiri Benc)
+- redhat: rh_kabi: introduce RH_KABI_EXTEND_WITH_SIZE (Jiri Benc)
+- redhat: rh_kabi: Indirect EXTEND macros so nesting of other macros will resolve. (Don Dutile)
+- redhat: rh_kabi: Fix RH_KABI_SET_SIZE to use dereference operator (Tony Camuso)
+- redhat: rh_kabi: Add macros to size and extend structs (Prarit Bhargava)
+- Removing Obsolete hba pci-ids from rhel8 (Dick Kennedy) [1572321]
+- mptsas: pci-id table changes (Laura Abbott)
+- mptspi: pci-id table changes (Laura Abbott)
+- qla2xxx: Remove PCI IDs of deprecated adapter (Jeremy Cline)
+- be2iscsi: remove unsupported device IDs (Chris Leech) [1574502 1598366]
+- hpsa: remove old cciss-based smartarray pci ids (Joseph Szczypek) [1471185]
+- qla4xxx: Remove deprecated PCI IDs from RHEL 8 (Chad Dupuis) [1518874]
+- aacraid: Remove depreciated device and vendor PCI id's (Raghava Aditya Renukunta) [1495307]
+- megaraid_sas: remove deprecated pci-ids (Tomas Henzl) [1509329]
+- mpt*: remove certain deprecated pci-ids (Jeremy Cline)
+- kernel: add SUPPORT_REMOVED kernel taint (Tomas Henzl) [1602033]
+- Rename RH_DISABLE_DEPRECATED to RHEL_DIFFERENCES (Don Zickus)
+- s390: Lock down the kernel when the IPL secure flag is set (Jeremy Cline)
+- efi: Lock down the kernel if booted in secure boot mode (David Howells)
+- efi: Add an EFI_SECURE_BOOT flag to indicate secure boot mode (David Howells)
+- security: lockdown: expose a hook to lock the kernel down (Jeremy Cline)
+- Make get_cert_list() use efi_status_to_str() to print error messages. (Peter Jones)
+- Add efi_status_to_str() and rework efi_status_to_err(). (Peter Jones)
+- Add support for deprecating processors (Laura Abbott) [1565717 1595918 1609604 1610493]
+- arm: aarch64: Drop the EXPERT setting from ARM64_FORCE_52BIT (Jeremy Cline)
+- iommu/arm-smmu: workaround DMA mode issues (Laura Abbott)
+- rh_kabi: introduce RH_KABI_EXCLUDE (Jakub Racek) [1652256]
+- ipmi: do not configure ipmi for HPE m400 (Laura Abbott) [1670017]
+- kABI: Add generic kABI macros to use for kABI workarounds (Myron Stowe) [1546831]
+- add pci_hw_vendor_status() (Maurizio Lombardi) [1590829]
+- ahci: thunderx2: Fix for errata that affects stop engine (Robert Richter) [1563590]
+- Vulcan: AHCI PCI bar fix for Broadcom Vulcan early silicon (Robert Richter) [1563590]
+- bpf: set unprivileged_bpf_disabled to 1 by default, add a boot parameter (Eugene Syromiatnikov) [1561171]
+- add Red Hat-specific taint flags (Eugene Syromiatnikov) [1559877]
+- tags.sh: Ignore redhat/rpm (Jeremy Cline)
+- put RHEL info into generated headers (Laura Abbott) [1663728]
+- aarch64: acpi scan: Fix regression related to X-Gene UARTs (Mark Salter) [1519554]
+- ACPI / irq: Workaround firmware issue on X-Gene based m400 (Mark Salter) [1519554]
+- modules: add rhelversion MODULE_INFO tag (Laura Abbott)
+- ACPI: APEI: arm64: Ignore broken HPE moonshot APEI support (Al Stone) [1518076]
+- Add Red Hat tainting (Laura Abbott) [1565704 1652266]
+- Introduce CONFIG_RH_DISABLE_DEPRECATED (Laura Abbott)
+- Stop merging ark-patches for release (Don Zickus)
+- Fix path location for ark-update-configs.sh (Don Zickus)
+- Combine Red Hat patches into single patch (Don Zickus)
+- New configs in drivers/misc (Jeremy Cline)
+- New configs in drivers/net/wireless (Justin M. Forbes)
+- New configs in drivers/phy (Fedora Kernel Team)
+- New configs in drivers/tty (Fedora Kernel Team)
+- Set SquashFS decompression options for all flavors to match RHEL (Bohdan Khomutskyi)
+- configs: Enable CONFIG_ENERGY_MODEL (Phil Auld)
+- New configs in drivers/pinctrl (Fedora Kernel Team)
+- Update CONFIG_THERMAL_NETLINK (Justin Forbes)
+- Separate merge-upstream and release stages (Don Zickus)
+- Re-enable CONFIG_IR_SERIAL on Fedora (Prarit Bhargava)
+- Create Patchlist.changelog file (Don Zickus)
+- Filter out upstream commits from changelog (Don Zickus)
+- Merge Upstream script fixes (Don Zickus)
+- kernel.spec: Remove kernel-keys directory on rpm erase (Prarit Bhargava)
+- Add mlx5_vdpa to module filter for Fedora (Justin M. Forbes)
+- Add python3-sphinx_rtd_theme buildreq for docs (Justin M. Forbes)
+- redhat/configs/process_configs.sh: Remove *.config.orig files (Prarit Bhargava)
+- redhat/configs/process_configs.sh: Add process_configs_known_broken flag (Prarit Bhargava)
+- redhat/Makefile: Fix '*-configs' targets (Prarit Bhargava)
+- dist-merge-upstream: Checkout known branch for ci scripts (Don Zickus)
+- kernel.spec: don't override upstream compiler flags for ppc64le (Dan Horák)
+- Fedora config updates (Justin M. Forbes)
+- Fedora confi gupdate (Justin M. Forbes)
+- mod-sign.sh: Fix syntax flagged by shellcheck (Ben Crocker)
+- Swap how ark-latest is built (Don Zickus)
+- Add extra version bump to os-build branch (Don Zickus)
+- dist-release: Avoid needless version bump. (Don Zickus)
+- Add dist-fedora-release target (Don Zickus)
+- Remove redundant code in dist-release (Don Zickus)
+- Makefile.common rename TAG to _TAG (Don Zickus)
+- Fedora config change (Justin M. Forbes)
+- Fedora filter update (Justin M. Forbes)
+- Config update for Fedora (Justin M. Forbes)
+- enable PROTECTED_VIRTUALIZATION_GUEST for all s390x kernels (Dan Horák)
+- redhat: ark: enable CONFIG_NET_SCH_TAPRIO (Davide Caratti)
+- redhat: ark: enable CONFIG_NET_SCH_ETF (Davide Caratti)
+- More Fedora config updates (Justin M. Forbes)
+- New config deps (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- First half of config updates for Fedora (Justin M. Forbes)
+- Updates for Fedora arm architectures for the 5.9 window (Peter Robinson)
+- Merge 5.9 config changes from Peter Robinson (Justin M. Forbes)
+- Add config options that only show up when we prep on arm (Justin M. Forbes)
+- Config updates for Fedora (Justin M. Forbes)
+- fedora: enable enery model (Peter Robinson)
+- Use the configs/generic config for SND_HDA_INTEL everywhere (Peter Robinson)
+- Enable ZSTD compression algorithm on all kernels (Peter Robinson)
+- Enable ARM_SMCCC_SOC_ID on all aarch64 kernels (Peter Robinson)
+- iio: enable LTR-559 light and proximity sensor (Peter Robinson)
+- iio: chemical: enable some popular chemical and partical sensors (Peter Robinson)
+- More mismatches (Justin M. Forbes)
+- Fedora config change due to deps (Justin M. Forbes)
+- CONFIG_SND_SOC_MAX98390 is now selected by SND_SOC_INTEL_DA7219_MAX98357A_GENERIC (Justin M. Forbes)
+- Config change required for build part 2 (Justin M. Forbes)
+- Config change required for build (Justin M. Forbes)
+- Fedora config update (Justin M. Forbes)
+- Add ability to sync upstream through Makefile (Don Zickus)
+- Add master merge check (Don Zickus)
+- Replace hardcoded values 'os-build' and project id with variables (Don Zickus)
+- redhat/Makefile.common: Fix MARKER (Prarit Bhargava)
+- gitattributes: Remove unnecesary export restrictions (Prarit Bhargava)
+- Add new certs for dual signing with boothole (Justin M. Forbes)
+- Update secureboot signing for dual keys (Justin M. Forbes)
+- fedora: enable LEDS_SGM3140 for arm configs (Peter Robinson)
+- Enable CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG (Justin M. Forbes)
+- redhat/configs: Fix common CONFIGs (Prarit Bhargava)
+- redhat/configs: General CONFIG cleanups (Prarit Bhargava)
+- redhat/configs: Update & generalize evaluate_configs (Prarit Bhargava)
+- fedora: arm: Update some meson config options (Peter Robinson)
+- redhat/docs: Add Fedora RPM tagging date (Prarit Bhargava)
+- Update config for renamed panel driver. (Peter Robinson)
+- Enable SERIAL_SC16IS7XX for SPI interfaces (Peter Robinson)
+- s390x-zfcpdump: Handle missing Module.symvers file (Don Zickus)
+- Fedora config updates (Justin M. Forbes)
+- redhat/configs: Add .tmp files to .gitignore (Prarit Bhargava)
+- disable uncommon TCP congestion control algorithms (Davide Caratti)
+- Add new bpf man pages (Justin M. Forbes)
+- Add default option for CONFIG_ARM64_BTI_KERNEL to pending-common so that eln kernels build (Justin M. Forbes)
+- redhat/Makefile: Add fedora-configs and rh-configs make targets (Prarit Bhargava)
+- redhat/configs: Use SHA512 for module signing (Prarit Bhargava)
+- genspec.sh: 'touch' empty Patchlist file for single tarball (Don Zickus)
+- Fedora config update for rc1 (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- redhat/Makefile.common: fix RPMKSUBLEVEL condition (Ondrej Mosnacek)
+- redhat/Makefile: silence KABI tar output (Ondrej Mosnacek)
+- One more Fedora config update (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fix PATCHLEVEL for merge window (Justin M. Forbes)
+- Change ark CONFIG_COMMON_CLK to yes, it is selected already by other options (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- More module filtering for Fedora (Justin M. Forbes)
+- Update filters for rnbd in Fedora (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fix up module filtering for 5.8 (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- More Fedora config work (Justin M. Forbes)
+- RTW88BE and CE have been extracted to their own modules (Justin M. Forbes)
+- Set CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK for Fedora (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Arm64 Use Branch Target Identification for kernel (Justin M. Forbes)
+- Change value of CONFIG_SECURITY_SELINUX_CHECKREQPROT_VALUE (Justin M. Forbes)
+- Fedora config updates (Justin M. Forbes)
+- Fix configs for Fedora (Justin M. Forbes)
+- Add zero-commit to format-patch options (Justin M. Forbes)
+- Copy Makefile.rhelver as a source file rather than a patch (Jeremy Cline)
+- Move the sed to clear the patch templating outside of conditionals (Justin M. Forbes)
+- Match template format in kernel.spec.template (Justin M. Forbes)
+- Break out the Patches into individual files for dist-git (Justin M. Forbes)
+- Break the Red Hat patch into individual commits (Jeremy Cline)
+- Fix update_scripts.sh unselective pattern sub (David Howells)
+- Add cec to the filter overrides (Justin M. Forbes)
+- Add overrides to filter-modules.sh (Justin M. Forbes)
+- redhat/configs: Enable CONFIG_SMC91X and disable CONFIG_SMC911X (Prarit Bhargava) [1722136]
+- Include bpftool-struct_ops man page in the bpftool package (Jeremy Cline)
+- Add sharedbuffer_configuration.py to the pathfix.py script (Jeremy Cline)
+- Use __make macro instead of make (Tom Stellard)
+- Sign off generated configuration patches (Jeremy Cline)
+- Drop the static path configuration for the Sphinx docs (Jeremy Cline)
+- redhat: Add dummy-module kernel module (Prarit Bhargava)
+- redhat: enable CONFIG_LWTUNNEL_BPF (Jiri Benc)
+- Remove typoed config file aarch64CONFIG_SM_GCC_8150 (Justin M. Forbes)
+- Add Documentation back to kernel-devel as it has Kconfig now (Justin M. Forbes)
+- Copy distro files rather than moving them (Jeremy Cline)
+- kernel.spec: fix 'make scripts' for kernel-devel package (Brian Masney)
+- Makefile: correct help text for dist-cross-<arch>-rpms (Brian Masney)
+- redhat/Makefile: Fix RHEL8 python warning (Prarit Bhargava)
+- redhat: Change Makefile target names to dist- (Prarit Bhargava)
+- configs: Disable Serial IR driver (Prarit Bhargava)
+- Fix "multiple %%files for package kernel-tools" (Pablo Greco)
+- Introduce a Sphinx documentation project (Jeremy Cline)
+- Build ARK against ELN (Don Zickus)
+- Drop the requirement to have a remote called linus (Jeremy Cline)
+- Rename 'internal' branch to 'os-build' (Don Zickus)
+- Only include open merge requests with "Include in Releases" label (Jeremy Cline)
+- Package gpio-watch in kernel-tools (Jeremy Cline)
+- Exit non-zero if the tag already exists for a release (Jeremy Cline)
+- Adjust the changelog update script to not push anything (Jeremy Cline)
+- Drop --target noarch from the rh-rpms make target (Jeremy Cline)
+- Add a script to generate release tags and branches (Jeremy Cline)
+- Set CONFIG_VDPA for fedora (Justin M. Forbes)
+- Add a README to the dist-git repository (Jeremy Cline)
+- Provide defaults in ark-rebase-patches.sh (Jeremy Cline)
+- Default ark-rebase-patches.sh to not report issues (Jeremy Cline)
+- Drop DIST from release commits and tags (Jeremy Cline)
+- Place the buildid before the dist in the release (Jeremy Cline)
+- Sync up with Fedora arm configuration prior to merging (Jeremy Cline)
+- Disable CONFIG_PROTECTED_VIRTUALIZATION_GUEST for zfcpdump (Jeremy Cline)
+- Add RHMAINTAINERS file and supporting conf (Don Zickus)
+- Add a script to test if all commits are signed off (Jeremy Cline)
+- Fix make rh-configs-arch (Don Zickus)
+- Drop RH_FEDORA in favor of the now-merged RHEL_DIFFERENCES (Jeremy Cline)
+- Sync up Fedora configs from the first week of the merge window (Jeremy Cline)
+- Migrate blacklisting floppy.ko to mod-blacklist.sh (Don Zickus)
+- kernel packaging: Combine mod-blacklist.sh and mod-extra-blacklist.sh (Don Zickus)
+- kernel packaging: Fix extra namespace collision (Don Zickus)
+- mod-extra.sh: Rename to mod-blacklist.sh (Don Zickus)
+- mod-extra.sh: Make file generic (Don Zickus)
+- Fix a painfully obvious YAML syntax error in .gitlab-ci.yml (Jeremy Cline)
+- Add in armv7hl kernel header support (Don Zickus)
+- Disable all BuildKernel commands when only building headers (Don Zickus)
+- Drop any gitlab-ci patches from ark-patches (Jeremy Cline)
+- Build the srpm for internal branch CI using the vanilla tree (Jeremy Cline)
+- Pull in the latest ARM configurations for Fedora (Jeremy Cline)
+- Fix xz memory usage issue (Neil Horman)
+- Use ark-latest instead of master for update script (Jeremy Cline)
+- Move the CI jobs back into the ARK repository (Jeremy Cline)
+- Sync up ARK's Fedora config with the dist-git repository (Jeremy Cline)
+- Pull in the latest configuration changes from Fedora (Jeremy Cline)
+- configs: enable CONFIG_NET_SCH_CBS (Marcelo Ricardo Leitner)
+- Drop configuration options in fedora/ that no longer exist (Jeremy Cline)
+- Set RH_FEDORA for ARK and Fedora (Jeremy Cline)
+- redhat/kernel.spec: Include the release in the kernel COPYING file (Jeremy Cline)
+- redhat/kernel.spec: add scripts/jobserver-exec to py3_shbang_opts list (Jeremy Cline)
+- redhat/kernel.spec: package bpftool-gen man page (Jeremy Cline)
+- distgit-changelog: handle multiple y-stream BZ numbers (Bruno Meneguele)
+- redhat/kernel.spec: remove all inline comments (Bruno Meneguele)
+- redhat/genspec: awk unknown whitespace regex pattern (Bruno Meneguele)
+- Improve the readability of gen_config_patches.sh (Jeremy Cline)
+- Fix some awkward edge cases in gen_config_patches.sh (Jeremy Cline)
+- Update the CI environment to use Fedora 31 (Jeremy Cline)
+- redhat: drop whitespace from with_gcov macro (Jan Stancek)
+- configs: Enable CONFIG_KEY_DH_OPERATIONS on ARK (Ondrej Mosnacek)
+- configs: Adjust CONFIG_MPLS_ROUTING and CONFIG_MPLS_IPTUNNEL (Laura Abbott)
+- New configs in lib/crypto (Jeremy Cline)
+- New configs in drivers/char (Jeremy Cline)
+- Turn on BLAKE2B for Fedora (Jeremy Cline)
+- kernel.spec.template: Clean up stray *.h.s files (Laura Abbott)
+- Build the SRPM in the CI job (Jeremy Cline)
+- New configs in net/tls (Jeremy Cline)
+- New configs in net/tipc (Jeremy Cline)
+- New configs in lib/kunit (Jeremy Cline)
+- Fix up released_kernel case (Laura Abbott)
+- New configs in lib/Kconfig.debug (Jeremy Cline)
+- New configs in drivers/ptp (Jeremy Cline)
+- New configs in drivers/nvme (Jeremy Cline)
+- New configs in drivers/net/phy (Jeremy Cline)
+- New configs in arch/arm64 (Jeremy Cline)
+- New configs in drivers/crypto (Jeremy Cline)
+- New configs in crypto/Kconfig (Jeremy Cline)
+- Add label so the Gitlab to email bridge ignores the changelog (Jeremy Cline)
+- Temporarily switch TUNE_DEFAULT to y (Jeremy Cline)
+- Run config test for merge requests and internal (Jeremy Cline)
+- Add missing licensedir line (Laura Abbott)
+- redhat/scripts: Remove redhat/scripts/rh_get_maintainer.pl (Prarit Bhargava)
+- configs: Take CONFIG_DEFAULT_MMAP_MIN_ADDR from Fedra (Laura Abbott)
+- configs: Turn off ISDN (Laura Abbott)
+- Add a script to generate configuration patches (Laura Abbott)
+- Introduce rh-configs-commit (Laura Abbott)
+- kernel-packaging: Remove kernel files from kernel-modules-extra package (Prarit Bhargava)
+- configs: Enable CONFIG_DEBUG_WX (Laura Abbott)
+- configs: Disable wireless USB (Laura Abbott)
+- Clean up some temporary config files (Laura Abbott)
+- configs: New config in drivers/gpu for v5.4-rc1 (Jeremy Cline)
+- configs: New config in arch/powerpc for v5.4-rc1 (Jeremy Cline)
+- configs: New config in crypto for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/usb for v5.4-rc1 (Jeremy Cline)
+- AUTOMATIC: New configs (Jeremy Cline)
+- Skip ksamples for bpf, they are broken (Jeremy Cline)
+- configs: New config in fs/erofs for v5.4-rc1 (Jeremy Cline)
+- configs: New config in mm for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/md for v5.4-rc1 (Jeremy Cline)
+- configs: New config in init for v5.4-rc1 (Jeremy Cline)
+- configs: New config in fs/fuse for v5.4-rc1 (Jeremy Cline)
+- merge.pl: Avoid comments but do not skip them (Don Zickus)
+- configs: New config in drivers/net/ethernet/pensando for v5.4-rc1 (Jeremy Cline)
+- Update a comment about what released kernel means (Laura Abbott)
+- Provide both Fedora and RHEL files in the SRPM (Laura Abbott)
+- kernel.spec.template: Trim EXTRAVERSION in the Makefile (Laura Abbott)
+- kernel.spec.template: Add macros for building with nopatches (Laura Abbott)
+- kernel.spec.template: Add some macros for Fedora differences (Laura Abbott)
+- kernel.spec.template: Consolodate the options (Laura Abbott)
+- configs: Add pending direcory to Fedora (Laura Abbott)
+- kernel.spec.template: Don't run hardlink if rpm-ostree is in use (Laura Abbott)
+- configs: New config in net/can for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/net/phy for v5.4-rc1 (Jeremy Cline)
+- configs: Increase x86_64 NR_UARTS to 64 (Prarit Bhargava) [1730649]
+- configs: turn on ARM64_FORCE_52BIT for debug builds (Jeremy Cline)
+- kernel.spec.template: Tweak the python3 mangling (Laura Abbott)
+- kernel.spec.template: Add --with verbose option (Laura Abbott)
+- kernel.spec.template: Switch to using %%install instead of %%__install (Laura Abbott)
+- kernel.spec.template: Make the kernel.org URL https (Laura Abbott)
+- kernel.spec.template: Update message about secure boot signing (Laura Abbott)
+- kernel.spec.template: Move some with flags definitions up (Laura Abbott)
+- kernel.spec.template: Update some BuildRequires (Laura Abbott)
+- kernel.spec.template: Get rid of %%clean (Laura Abbott)
+- configs: New config in drivers/char for v5.4-rc1 (Jeremy Cline)
+- configs: New config in net/sched for v5.4-rc1 (Jeremy Cline)
+- configs: New config in lib for v5.4-rc1 (Jeremy Cline)
+- configs: New config in fs/verity for v5.4-rc1 (Jeremy Cline)
+- configs: New config in arch/aarch64 for v5.4-rc4 (Jeremy Cline)
+- configs: New config in arch/arm64 for v5.4-rc1 (Jeremy Cline)
+- Flip off CONFIG_ARM64_VA_BITS_52 so the bundle that turns it on applies (Jeremy Cline)
+- New configuration options for v5.4-rc4 (Jeremy Cline)
+- Correctly name tarball for single tarball builds (Laura Abbott)
+- configs: New config in drivers/pci for v5.4-rc1 (Jeremy Cline)
+- Allow overriding the dist tag on the command line (Laura Abbott)
+- Allow scratch branch target to be overridden (Laura Abbott)
+- Remove long dead BUILD_DEFAULT_TARGET (Laura Abbott)
+- Amend the changelog when rebasing (Laura Abbott)
+- configs: New config in drivers/platform for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/pinctrl for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/net/wireless for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/net/ethernet/mellanox for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/net/can for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/hid for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/dma-buf for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/crypto for v5.4-rc1 (Jeremy Cline)
+- configs: New config in arch/s390 for v5.4-rc1 (Jeremy Cline)
+- configs: New config in block for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/cpuidle for v5.4-rc1 (Jeremy Cline)
+- redhat: configs: Split CONFIG_CRYPTO_SHA512 (Laura Abbott)
+- redhat: Set Fedora options (Laura Abbott)
+- Set CRYPTO_SHA3_*_S390 to builtin on zfcpdump (Jeremy Cline)
+- configs: New config in drivers/edac for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/firmware for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/hwmon for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/iio for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/mmc for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/tty for v5.4-rc1 (Jeremy Cline)
+- configs: New config in arch/s390 for v5.4-rc1 (Jeremy Cline)
+- configs: New config in drivers/bus for v5.4-rc1 (Jeremy Cline)
+- Add option to allow mismatched configs on the command line (Laura Abbott)
+- configs: New config in drivers/crypto for v5.4-rc1 (Jeremy Cline)
+- configs: New config in sound/pci for v5.4-rc1 (Jeremy Cline)
+- configs: New config in sound/soc for v5.4-rc1 (Jeremy Cline)
+- gitlab: Add CI job for packaging scripts (Major Hayden)
+- Speed up CI with CKI image (Major Hayden)
+- Disable e1000 driver in ARK (Neil Horman)
+- configs: Fix the pending default for CONFIG_ARM64_VA_BITS_52 (Jeremy Cline)
+- configs: Turn on OPTIMIZE_INLINING for everything (Jeremy Cline)
+- configs: Set valid pending defaults for CRYPTO_ESSIV (Jeremy Cline)
+- Add an initial CI configuration for the internal branch (Jeremy Cline)
+- New drop of configuration options for v5.4-rc1 (Jeremy Cline)
+- New drop of configuration options for v5.4-rc1 (Jeremy Cline)
+- Pull the RHEL version defines out of the Makefile (Jeremy Cline)
+- Sync up the ARK build scripts (Jeremy Cline)
+- Sync up the Fedora Rawhide configs (Jeremy Cline)
+- Sync up the ARK config files (Jeremy Cline)
+- configs: Adjust CONFIG_FORCE_MAX_ZONEORDER for Fedora (Laura Abbott)
+- configs: Add README for some other arches (Laura Abbott)
+- configs: Sync up Fedora configs (Laura Abbott)
+- [initial commit] Add structure for building with git (Laura Abbott)
+- [initial commit] Add Red Hat variables in the top level makefile (Laura Abbott)
+- [initial commit] Red Hat gitignore and attributes (Laura Abbott)
+- [initial commit] Add changelog (Laura Abbott)
+- [initial commit] Add makefile (Laura Abbott)
+- [initial commit] Add files for generating the kernel.spec (Laura Abbott)
+- [initial commit] Add rpm directory (Laura Abbott)
+- [initial commit] Add files for packaging (Laura Abbott)
+- [initial commit] Add kabi files (Laura Abbott)
+- [initial commit] Add scripts (Laura Abbott)
+- [initial commit] Add configs (Laura Abbott)
+- [initial commit] Add Makefiles (Laura Abbott)
+- Linux v6.16.0-0.rc0.914873bc7df9
 
 ###
 # The following Emacs magic makes C-c C-e use UTC dates.

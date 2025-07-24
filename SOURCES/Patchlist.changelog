@@ -1,227 +1,479 @@
-https://gitlab.com/cki-project/kernel-ark/-/commit/232170214b6517d57aa403732d63425d1073e6ba
- 232170214b6517d57aa403732d63425d1073e6ba io_uring: gate REQ_F_ISREG on !S_ANON_INODE as well
+https://gitlab.com/cki-project/kernel-ark/-/commit/8fa39ad0e51091a6e5236725ec959abb7177772f
+ 8fa39ad0e51091a6e5236725ec959abb7177772f Simplify include Makefile.rhelver
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/234ddcee89f2497d498147dc73aee776c9c205bd
- 234ddcee89f2497d498147dc73aee776c9c205bd ACPICA: Refuse to evaluate a method if arguments are missing
+https://gitlab.com/cki-project/kernel-ark/-/commit/a66ceecaa34b5524a42617d289f3d2fe7b7702d5
+ a66ceecaa34b5524a42617d289f3d2fe7b7702d5 redhat: make ENABLE_WERROR also enable OBJTOOL_WERROR
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b78918ec98de6f613fa637f316a52e876c7a5129
- b78918ec98de6f613fa637f316a52e876c7a5129 wifi: ath12k: support MLO as well if single_chip_mlo_support flag is set
+https://gitlab.com/cki-project/kernel-ark/-/commit/c71a87c88017cebb112b39ffa0d13fc9b33760c3
+ c71a87c88017cebb112b39ffa0d13fc9b33760c3 Revert "be2iscsi: remove unsupported device IDs"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/2b999e5f25214ae45082748a74e2ff38fa9d7a36
- 2b999e5f25214ae45082748a74e2ff38fa9d7a36 wifi: ath12k: use fw_features only when it is valid
+https://gitlab.com/cki-project/kernel-ark/-/commit/d7b7558c382f601696e255105423300840c3bd67
+ d7b7558c382f601696e255105423300840c3bd67 Revert "megaraid_sas: remove deprecated pci-ids"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/12cc0da62614ef79a61cad2447f628e5afeeebc6
- 12cc0da62614ef79a61cad2447f628e5afeeebc6 wifi: ath12k: introduce ath12k_fw_feature_supported()
+https://gitlab.com/cki-project/kernel-ark/-/commit/58a93909a0f1f2e2df5595160860fc5ff28dff80
+ 58a93909a0f1f2e2df5595160860fc5ff28dff80 Revert "[scsi] megaraid_sas: re-add certain pci-ids"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/fed56a38083dbd26bde4eba51ea6878797b01376
- fed56a38083dbd26bde4eba51ea6878797b01376 Revert "drm/amd/display: more liberal vmin/vmax update for freesync"
+https://gitlab.com/cki-project/kernel-ark/-/commit/c414c188032060b5650f4ca180b058731cf45e4b
+ c414c188032060b5650f4ca180b058731cf45e4b media: ov08x40: Extend sleep after reset to 5 ms
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/d7909c16c62ed14251352afd2ac6a17246533c14
- d7909c16c62ed14251352afd2ac6a17246533c14 arm64: dts: rockchip: Drop assigned-clock* from cpu nodes on rk3588
+https://gitlab.com/cki-project/kernel-ark/-/commit/5fe007a847e2c7c6a7494188826aa6ee4816fa7c
+ 5fe007a847e2c7c6a7494188826aa6ee4816fa7c Revert "qla4xxx: Remove deprecated PCI IDs from RHEL 8"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f6fe2f2da41fd014a8d4a1b7275527706b9038e1
- f6fe2f2da41fd014a8d4a1b7275527706b9038e1 arm64: dts: rockchip: Improve LED config for NanoPi R5S
+https://gitlab.com/cki-project/kernel-ark/-/commit/981cb3b5a544f3727bfaeabd7e25d50252342e2a
+ 981cb3b5a544f3727bfaeabd7e25d50252342e2a Revert "mpt*: remove certain deprecated pci-ids"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f47c758ab8faa5cac82fcf47abf030258c0cd130
- f47c758ab8faa5cac82fcf47abf030258c0cd130 arm64: dts: rockchip: Move rk3568 PCIe3 MSI to use GIC ITS
+https://gitlab.com/cki-project/kernel-ark/-/commit/e6954e95fdb0434d74da8bb74d2875ad482da940
+ e6954e95fdb0434d74da8bb74d2875ad482da940 main.c: fix initcall blacklisted
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b6aeff3f14aef90537e7182d613bf386ec5e8786
- b6aeff3f14aef90537e7182d613bf386ec5e8786 arm64: dts: rockchip: Update eMMC for NanoPi R5 series
+https://gitlab.com/cki-project/kernel-ark/-/commit/51fdb806de6328183fb3ba53df4f7a66d6c937c6
+ 51fdb806de6328183fb3ba53df4f7a66d6c937c6 arch/x86/kernel/setup.c: fix rh_check_supported
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/e2eedda3d3f2c4be70753804cf5431f817991772
- e2eedda3d3f2c4be70753804cf5431f817991772 arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-rock3c
+https://gitlab.com/cki-project/kernel-ark/-/commit/8497df3cf21e5502c1771e3cd2e19f9d5a6ed975
+ 8497df3cf21e5502c1771e3cd2e19f9d5a6ed975 efi,lockdown: fix kernel lockdown on Secure Boot
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/af4f01cfac541cdfcdf3ee7a74804249d0a62a1a
- af4f01cfac541cdfcdf3ee7a74804249d0a62a1a arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3566-quartz64-b
+https://gitlab.com/cki-project/kernel-ark/-/commit/5cbe0cf613d0e024d3b1a450c5103e956030e30a
+ 5cbe0cf613d0e024d3b1a450c5103e956030e30a Revert "nvme: Return BLK_STS_TARGET if the DNR bit is set"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/bbf40beb1a9a3729b99101da133ae1ece5ee7ab1
- bbf40beb1a9a3729b99101da133ae1ece5ee7ab1 arm64: dts: rockchip: Add phy-supply to gmac0 on NanoPi R5S
+https://gitlab.com/cki-project/kernel-ark/-/commit/37d7ab8abb7d6ec7f248e7f57f4c8905d9efb6fe
+ 37d7ab8abb7d6ec7f248e7f57f4c8905d9efb6fe Revert "nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/22cebdf881b3d6fb20f2c9e0cc91f80ea359a105
- 22cebdf881b3d6fb20f2c9e0cc91f80ea359a105 arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3588-rock-5b
+https://gitlab.com/cki-project/kernel-ark/-/commit/5a66517a36140807dfa2d31a6230df56fdf9d11a
+ 5a66517a36140807dfa2d31a6230df56fdf9d11a Revert "nvme: decouple basic ANA log page re-read support from native multipathing"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/09864738a9a39780a147c9cb94a8e1320116a712
- 09864738a9a39780a147c9cb94a8e1320116a712 arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3399-rockpro64
+https://gitlab.com/cki-project/kernel-ark/-/commit/051d7f074452380c48913cdf610a3f241b243aee
+ 051d7f074452380c48913cdf610a3f241b243aee Revert "nvme: nvme_mpath_init remove multipath check"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/43438a08982d340ae5e384a02b2bfb99aa22333e
- 43438a08982d340ae5e384a02b2bfb99aa22333e arm64: dts: rockchip: Add vcc-supply to SPI flash on rk3328-rock64
+https://gitlab.com/cki-project/kernel-ark/-/commit/3f8f21e049c2b2160fa6930a1c95824eeffe6777
+ 3f8f21e049c2b2160fa6930a1c95824eeffe6777 redhat: automotive: define CONFIG_RH_AUTOMOTIVE
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/c1f80e194a5d3bbfc66eaa55e65a00349ab15541
- c1f80e194a5d3bbfc66eaa55e65a00349ab15541 arm64: dts: rockchip: Move SHMEM memory to reserved memory on rk3588
+https://gitlab.com/cki-project/kernel-ark/-/commit/eb3ddff9f65ad3d9e9cad941d9f3e8c293148228
+ eb3ddff9f65ad3d9e9cad941d9f3e8c293148228 redhat: fix modules.order target
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f3a28964ec84f5a742a9bf7d68d548370c734dc6
- f3a28964ec84f5a742a9bf7d68d548370c734dc6 arm64: dts: rockchip: Add gmac phy reset GPIO to QNAP TS433
+https://gitlab.com/cki-project/kernel-ark/-/commit/8dcf267126f759d729e54f77813b70f1a608909a
+ 8dcf267126f759d729e54f77813b70f1a608909a [redhat] rh_messages.h: driver and device updates
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f8201d5b071e16b72238977851c23982c8a72114
- f8201d5b071e16b72238977851c23982c8a72114 arm64: dts: rockchip: Correct gmac phy address on QNAP TS433
+https://gitlab.com/cki-project/kernel-ark/-/commit/c5dd4054c5bf0918d321345d21a05d292ae16952
+ c5dd4054c5bf0918d321345d21a05d292ae16952 crypto: rng - Fix extrng EFAULT handling
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/889cf0727884fcc305faed0ff3278555fc63ad02
- 889cf0727884fcc305faed0ff3278555fc63ad02 media: i2c: Add Omnivision OV02C10 sensor driver
+https://gitlab.com/cki-project/kernel-ark/-/commit/89f2063fff02b0f46b3c15245ba0cd8c8b39b83e
+ 89f2063fff02b0f46b3c15245ba0cd8c8b39b83e crypto: sig - Disable signing
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/6c572c58b549d521e186e224087237eb0bd4f53c
- 6c572c58b549d521e186e224087237eb0bd4f53c media: i2c: ov02e10: add OV02E10 image sensor driver
+https://gitlab.com/cki-project/kernel-ark/-/commit/ebb0081d103da2309401cdd9ee2a2d714eaab6c0
+ ebb0081d103da2309401cdd9ee2a2d714eaab6c0 crypto: rng - Ensure stdrng is tested before user-space starts
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b4a3112fbdb8f5d495b38ab686fbd1bd846b233c
- b4a3112fbdb8f5d495b38ab686fbd1bd846b233c platform/x86: int3472: Debug log when remapping pins
+https://gitlab.com/cki-project/kernel-ark/-/commit/ca8236b76447b3a43d6b44e758e240bdf5f1d050
+ ca8236b76447b3a43d6b44e758e240bdf5f1d050 [redhat] rh_messages.h: Mark BlueField-4 as disabled
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/e87e11925aa8d395005978cfa2cf0250aade5463
- e87e11925aa8d395005978cfa2cf0250aade5463 platform/x86: int3472: Add handshake pin support
+https://gitlab.com/cki-project/kernel-ark/-/commit/5ceb358138b2d5de8ae9f6d7ed620add9919704d
+ 5ceb358138b2d5de8ae9f6d7ed620add9919704d Update the RHEL_DIFFERENCES help string
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/042de7ceaa29acfb5aa4aef1111c31e582b6541e
- 042de7ceaa29acfb5aa4aef1111c31e582b6541e platform/x86: int3472: Prepare for registering more than 1 GPIO regulator
+https://gitlab.com/cki-project/kernel-ark/-/commit/f8182e0122e39b9697365c48f6ea4865c3467e27
+ f8182e0122e39b9697365c48f6ea4865c3467e27 redhat: include resolve_btfids in kernel-devel
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/15e8d2a9a0df2ba190c632d807a3873b9ae95a64
- 15e8d2a9a0df2ba190c632d807a3873b9ae95a64 platform/x86: int3472: Avoid GPIO regulator spikes
+https://gitlab.com/cki-project/kernel-ark/-/commit/70cb52c41684348eaacfe5c908c078e611bfd63d
+ 70cb52c41684348eaacfe5c908c078e611bfd63d redhat: workaround CKI cross compilation for scripts
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f0263d904fe248c7da195afd03bd49ea52ad588c
- f0263d904fe248c7da195afd03bd49ea52ad588c platform/x86: int3472: Make regulator supply name configurable
+https://gitlab.com/cki-project/kernel-ark/-/commit/1aff2229954c89ac05f42d12c47e849b82c8fb8a
+ 1aff2229954c89ac05f42d12c47e849b82c8fb8a crypto: akcipher - Disable signing and decryption
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/4374e6396ba1c455cba6e57f2713d8189b95ffc2
- 4374e6396ba1c455cba6e57f2713d8189b95ffc2 platform/x86: int3472: Rework AVDD second sensor quirk handling
+https://gitlab.com/cki-project/kernel-ark/-/commit/0fc76cebd74749c868cd18c711da000a56327785
+ 0fc76cebd74749c868cd18c711da000a56327785 crypto: dh - implement FIPS PCT
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/2af2402e1000be791531bd7bb59605ab35f64d14
- 2af2402e1000be791531bd7bb59605ab35f64d14 platform/x86: int3472: Drop unused gpio field from struct int3472_gpio_regulator
+https://gitlab.com/cki-project/kernel-ark/-/commit/14d09becd98db89a7c19694ca852eb85d63aaad5
+ 14d09becd98db89a7c19694ca852eb85d63aaad5 crypto: ecdh - disallow plain "ecdh" usage in FIPS mode
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/07c74555d4a4ca1ea3e1ab62ae66b8d867ec15eb
- 07c74555d4a4ca1ea3e1ab62ae66b8d867ec15eb platform/x86: int3472: Stop setting a supply-name for GPIO regulators
+https://gitlab.com/cki-project/kernel-ark/-/commit/6c35e638328199ef847336ef2bc908bd79649431
+ 6c35e638328199ef847336ef2bc908bd79649431 crypto: seqiv - flag instantiations as FIPS compliant
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/56631bd935733b99422e2b731b9888f03982ac47
- 56631bd935733b99422e2b731b9888f03982ac47 platform/x86: int3472: Add skl_int3472_register_clock() helper
+https://gitlab.com/cki-project/kernel-ark/-/commit/b432794923349237f6596ae8565bdede54811d77
+ b432794923349237f6596ae8565bdede54811d77 [kernel] bpf: set default value for bpf_jit_harden
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/fae23c85b601444e1e4a61571c7724a21a5b6296
- fae23c85b601444e1e4a61571c7724a21a5b6296 powerpc: Fix struct termio related ioctl macros
+https://gitlab.com/cki-project/kernel-ark/-/commit/07bbeb1c51a90072aabadddcfc36ce6eb06614cb
+ 07bbeb1c51a90072aabadddcfc36ce6eb06614cb not upstream: Disable vdso getrandom when FIPS is enabled
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b7c436a2bb594020c4d3bfa1de1ddcdd4cb44645
- b7c436a2bb594020c4d3bfa1de1ddcdd4cb44645 redhat: make ENABLE_WERROR also enable OBJTOOL_WERROR
+https://gitlab.com/cki-project/kernel-ark/-/commit/1e726e91b43815dd71751450cada7dc6df0b2bd4
+ 1e726e91b43815dd71751450cada7dc6df0b2bd4 Add support to rh_waived cmdline boot parameter
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/13be9be8cf55743df380f5a03e7b3d37cc9c29b5
- 13be9be8cf55743df380f5a03e7b3d37cc9c29b5 media: ov08x40: Extend sleep after reset to 5 ms
+https://gitlab.com/cki-project/kernel-ark/-/commit/e65429911586386aee447506696671aa24ef6be3
+ e65429911586386aee447506696671aa24ef6be3 rh_flags: fix failed when register_sysctl_sz rh_flags_table to kernel
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/0e3d45b69707be2a2abf7be5dfd8804a789d54c5
- 0e3d45b69707be2a2abf7be5dfd8804a789d54c5 efi,lockdown: fix kernel lockdown on Secure Boot
+https://gitlab.com/cki-project/kernel-ark/-/commit/1a35116c77324f48798a0a5ce075b6d600790fe2
+ 1a35116c77324f48798a0a5ce075b6d600790fe2 [redhat] rh_flags: constify the ctl_table argument of proc_handler
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/9042bcead68d4e6e764e4866188ca3a2f19c74c6
- 9042bcead68d4e6e764e4866188ca3a2f19c74c6 Revert "nvme: Return BLK_STS_TARGET if the DNR bit is set"
+https://gitlab.com/cki-project/kernel-ark/-/commit/0564c6a992358ab3ddf74fce9142170248ad2f7e
+ 0564c6a992358ab3ddf74fce9142170248ad2f7e redhat: rh_flags: declare proper static methods when !CONFIG_RHEL_DIFFERENCES
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/2c8843a8709a6d23a4d78da5fec807ab33857761
- 2c8843a8709a6d23a4d78da5fec807ab33857761 Revert "nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT"
+https://gitlab.com/cki-project/kernel-ark/-/commit/8365a0d669a771d1723c854342138ca42d912775
+ 8365a0d669a771d1723c854342138ca42d912775 redhat: make bnx2xx drivers unmaintained in rhel-10
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/4488abaf11d2ba3def4d86a9f91b074de3b246dd
- 4488abaf11d2ba3def4d86a9f91b074de3b246dd Revert "nvme: decouple basic ANA log page re-read support from native multipathing"
+https://gitlab.com/cki-project/kernel-ark/-/commit/dd10fd5c0be916bb505d90e45962258bcbcef30e
+ dd10fd5c0be916bb505d90e45962258bcbcef30e rh_flags: Rename rh_features to rh_flags
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/093ff4be34caaa2b5c1c3f3afd7a8274e5f4b6af
- 093ff4be34caaa2b5c1c3f3afd7a8274e5f4b6af Revert "nvme: nvme_mpath_init remove multipath check"
+https://gitlab.com/cki-project/kernel-ark/-/commit/614e8a3ab3da79451d165a627ea0a5e710fa2bfa
+ 614e8a3ab3da79451d165a627ea0a5e710fa2bfa kernel: rh_features: fix reading empty feature list from /proc
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/6556c1a392284568a0761e7fc1cd5db0d10845f0
- 6556c1a392284568a0761e7fc1cd5db0d10845f0 redhat: fix modules.order target
+https://gitlab.com/cki-project/kernel-ark/-/commit/8db9d92b1f2df1c7d4567bb1e459997fac392797
+ 8db9d92b1f2df1c7d4567bb1e459997fac392797 rh_features: move rh_features entry to sys/kernel
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/1031afffdc28ca2a4b10c5616abc78ed417191df
- 1031afffdc28ca2a4b10c5616abc78ed417191df crypto: sig - Disable signing
+https://gitlab.com/cki-project/kernel-ark/-/commit/1cc2f0c7e254ea21acc35dd3e23bee1449d04296
+ 1cc2f0c7e254ea21acc35dd3e23bee1449d04296 rh_features: convert to atomic allocation
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/52a6b12116f786b3727161bed17d89b588f0a03c
- 52a6b12116f786b3727161bed17d89b588f0a03c redhat: include resolve_btfids in kernel-devel
+https://gitlab.com/cki-project/kernel-ark/-/commit/837c7978f130431a28547407d170009786d31c8b
+ 837c7978f130431a28547407d170009786d31c8b add rh_features to /proc
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/0ba04a64fec792c0f7dc0a8a3108343741408cef
- 0ba04a64fec792c0f7dc0a8a3108343741408cef redhat: workaround CKI cross compilation for scripts
+https://gitlab.com/cki-project/kernel-ark/-/commit/9e98218fbbf6ee5a5cd5a64d0837f8f03d5c5b2f
+ 9e98218fbbf6ee5a5cd5a64d0837f8f03d5c5b2f add support for rh_features
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/f4f0b39a45ba9852bea920f82d5b5876fb6451ea
- f4f0b39a45ba9852bea920f82d5b5876fb6451ea lsm: update security_lock_kernel_down
+https://gitlab.com/cki-project/kernel-ark/-/commit/09f596999a2e37182ec9e9ebd6476e5d92e9142e
+ 09f596999a2e37182ec9e9ebd6476e5d92e9142e [redhat] PCI: Fix pci_rh_check_status() call semantics
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/d59a05304ac3d284ca30a0603f0fd464beee0346
- d59a05304ac3d284ca30a0603f0fd464beee0346 scsi: sd: Add "probe_type" module parameter to allow synchronous probing
+https://gitlab.com/cki-project/kernel-ark/-/commit/112d95fc9f850d8f2c1cdfd4507f01fdfd67a2b0
+ 112d95fc9f850d8f2c1cdfd4507f01fdfd67a2b0 scsi: sd: condition probe_type under RHEL_DIFFERENCES
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/c22ed47fe3096b0668a8af95e8a6f3a66c79e4c3
- c22ed47fe3096b0668a8af95e8a6f3a66c79e4c3 Revert "Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64"
+https://gitlab.com/cki-project/kernel-ark/-/commit/99d92e8f75373c479229e43f24ef3e6c0785e02f
+ 99d92e8f75373c479229e43f24ef3e6c0785e02f scsi: sd: remove unused sd_probe_types
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/0769ed649201617c61b4c07f0d5eaab22568bbd9
- 0769ed649201617c61b4c07f0d5eaab22568bbd9 Enable IO_URING for RHEL
+https://gitlab.com/cki-project/kernel-ark/-/commit/a4478dbd2978af4c134cf7c62b49c7ba19e1f718
+ a4478dbd2978af4c134cf7c62b49c7ba19e1f718 [redhat] rh_messages.h: mark mlx5 on Bluefield-3 as unmaintained
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/4eec5bce24c58fcea8973fcb3f54a08aa1dbaab0
- 4eec5bce24c58fcea8973fcb3f54a08aa1dbaab0 Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64
+https://gitlab.com/cki-project/kernel-ark/-/commit/7596dcb94e1059a4b53756dca49b035e0675a079
+ 7596dcb94e1059a4b53756dca49b035e0675a079 [redhat] rh_messages.h: initial driver and device lists
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/509562d984df96d187c70d9bba9f00a02a8baf3e
- 509562d984df96d187c70d9bba9f00a02a8baf3e redhat: version two of Makefile.rhelver tweaks
+https://gitlab.com/cki-project/kernel-ark/-/commit/5b1ee807b500736a0e98ac70ff2e31d90d65b56a
+ 5b1ee807b500736a0e98ac70ff2e31d90d65b56a arch/x86: Fix XSAVE check for x86_64-v2 check
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/ebd6ac76f78e6cf2fdd6701510a14929af195e49
- ebd6ac76f78e6cf2fdd6701510a14929af195e49 redhat:  adapt to upstream Makefile change
+https://gitlab.com/cki-project/kernel-ark/-/commit/8dee60c7cba62fc8bf9a2ce70f245ebcabcd0f4d
+ 8dee60c7cba62fc8bf9a2ce70f245ebcabcd0f4d arch/x86/kernel/setup.c: fixup rh_check_supported
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/25875e1af9aa60ab70b790238e21fffcec5205ab
- 25875e1af9aa60ab70b790238e21fffcec5205ab Change acpi_bus_get_acpi_device to acpi_get_acpi_dev
+https://gitlab.com/cki-project/kernel-ark/-/commit/571e20bfdd7383dfff97f6c47ca586f30bd8744b
+ 571e20bfdd7383dfff97f6c47ca586f30bd8744b lsm: update security_lock_kernel_down
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b72960ba96f9d2f26c61b1757205dbc5b4462464
- b72960ba96f9d2f26c61b1757205dbc5b4462464 RHEL: disable io_uring support
+https://gitlab.com/cki-project/kernel-ark/-/commit/014d9db20578e205562118a83ec753f38c31119f
+ 014d9db20578e205562118a83ec753f38c31119f arch/x86: mark x86_64-v1 and x86_64-v2 processors as deprecated
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b54fd6edec798af7cec68582643d430bd02a8830
- b54fd6edec798af7cec68582643d430bd02a8830 nvme: nvme_mpath_init remove multipath check
+https://gitlab.com/cki-project/kernel-ark/-/commit/fe45f2c23f825251efe5eb4ba5e85feff33a817c
+ fe45f2c23f825251efe5eb4ba5e85feff33a817c redhat: kABI: add missing RH_KABI_SIZE_ALIGN_CHECKS Kconfig option
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/40fd5f0a95723a7baeb43da7b8474d3c49e3baf6
- 40fd5f0a95723a7baeb43da7b8474d3c49e3baf6 nvme: decouple basic ANA log page re-read support from native multipathing
+https://gitlab.com/cki-project/kernel-ark/-/commit/7b1f5d0d15335b2d9cca320131a2542d1d569f7f
+ 7b1f5d0d15335b2d9cca320131a2542d1d569f7f redhat: rh_kabi: introduce RH_KABI_EXCLUDE_WITH_SIZE
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/35957f8d307cbf70e6d1646fe5bf41a674881c6e
- 35957f8d307cbf70e6d1646fe5bf41a674881c6e nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT
+https://gitlab.com/cki-project/kernel-ark/-/commit/83471abc0741323689f5a11c9cf5b496423fa43e
+ 83471abc0741323689f5a11c9cf5b496423fa43e redhat: rh_kabi: move semicolon inside __RH_KABI_CHECK_SIZE
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/0ba68f8ebd863adda2e9be992e2f7b844d395ef4
- 0ba68f8ebd863adda2e9be992e2f7b844d395ef4 nvme: Return BLK_STS_TARGET if the DNR bit is set
+https://gitlab.com/cki-project/kernel-ark/-/commit/eebd240e5de95c869d3c44b6abc6a3ba62b1e03d
+ eebd240e5de95c869d3c44b6abc6a3ba62b1e03d random: replace import_single_range() with import_ubuf()
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/2f94cafacd73578c54a44336ca5f59175f290a09
- 2f94cafacd73578c54a44336ca5f59175f290a09 REDHAT: coresight: etm4x: Disable coresight on HPE Apollo 70
+https://gitlab.com/cki-project/kernel-ark/-/commit/4d9910692a7dcb3b7beef7ac7cc4f88f4968ef4d
+ 4d9910692a7dcb3b7beef7ac7cc4f88f4968ef4d ext4: Mark mounting fs-verity filesystems as tech-preview
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/2daa815dec1ab4dc04dcf211252a16fc92ae0731
- 2daa815dec1ab4dc04dcf211252a16fc92ae0731 KEYS: Make use of platform keyring for module signature verify
+https://gitlab.com/cki-project/kernel-ark/-/commit/534e3eb3219c928a30f10347c4e71b48dc3d06f5
+ 534e3eb3219c928a30f10347c4e71b48dc3d06f5 erofs: Add tech preview markers at mount
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/1a3b555c5528236c11307840b932ed9fa6f55123
- 1a3b555c5528236c11307840b932ed9fa6f55123 Input: rmi4 - remove the need for artificial IRQ in case of HID
+https://gitlab.com/cki-project/kernel-ark/-/commit/b2a77086f5a81b719ac0913a10dd955a7daaab53
+ b2a77086f5a81b719ac0913a10dd955a7daaab53 kernel/rh_messages.c: Mark functions as possibly unused
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/b0a10478b0d0fc0a4bbe8938dd46e497beaceb79
- b0a10478b0d0fc0a4bbe8938dd46e497beaceb79 ARM: tegra: usb no reset
+https://gitlab.com/cki-project/kernel-ark/-/commit/8b0beca705b3877e24cccdd672422c66bbd75635
+ 8b0beca705b3877e24cccdd672422c66bbd75635 crypto: rng - Override drivers/char/random in FIPS mode
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/44be0c89c321fc74f1b9bd1baf9f43d6bc1cd776
- 44be0c89c321fc74f1b9bd1baf9f43d6bc1cd776 arm: make CONFIG_HIGHPTE optional without CONFIG_EXPERT
+https://gitlab.com/cki-project/kernel-ark/-/commit/3ff5f2c71b6a11b3d083bf2965ac1e21ea47c82c
+ 3ff5f2c71b6a11b3d083bf2965ac1e21ea47c82c random: Add hook to override device reads and getrandom(2)
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/ccd699011cd3433135afd07e7896af50ece8cbd7
- ccd699011cd3433135afd07e7896af50ece8cbd7 s390: Lock down the kernel when the IPL secure flag is set
+https://gitlab.com/cki-project/kernel-ark/-/commit/94a0317ff833fe78c220e792c38dc41d14fec4c0
+ 94a0317ff833fe78c220e792c38dc41d14fec4c0 [redhat] kernel/rh_messages.c: move hardware tables to rh_messages.h
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/efa42371ac33d4362dbf4e5c82093d14f191dd0b
- efa42371ac33d4362dbf4e5c82093d14f191dd0b efi: Lock down the kernel if booted in secure boot mode
+https://gitlab.com/cki-project/kernel-ark/-/commit/665d304c88362d245d43d2a4684a9f30fd66146d
+ 665d304c88362d245d43d2a4684a9f30fd66146d [redhat] kernel/rh_messages.c: Wire up new calls
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/074767caa504f2751c4cc8c056445a5003cebcd1
- 074767caa504f2751c4cc8c056445a5003cebcd1 efi: Add an EFI_SECURE_BOOT flag to indicate secure boot mode
+https://gitlab.com/cki-project/kernel-ark/-/commit/9339d20c2748b545ab17fbf7bab818176ff97947
+ 9339d20c2748b545ab17fbf7bab818176ff97947 [redhat] drivers/pci: Update rh_messages.c
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/e8a71fa04f6f8a23f8ffe28b27790ffe75974238
- e8a71fa04f6f8a23f8ffe28b27790ffe75974238 security: lockdown: expose a hook to lock the kernel down
+https://gitlab.com/cki-project/kernel-ark/-/commit/f0e5f24ac1a669187248370260e31b52d748c4ee
+ f0e5f24ac1a669187248370260e31b52d748c4ee [redhat] drivers/pci: Remove RHEL-only pci_hw_*() functions
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/091e7dcbe0b20a205c13a4c746cc015727b05767
- 091e7dcbe0b20a205c13a4c746cc015727b05767 Make get_cert_list() use efi_status_to_str() to print error messages.
+https://gitlab.com/cki-project/kernel-ark/-/commit/10eee5ce03077d5223fa5dcfeb2f2611e940bd2c
+ 10eee5ce03077d5223fa5dcfeb2f2611e940bd2c scsi: sd: Add "probe_type" module parameter to allow synchronous probing
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/5249e8256654e995920d7f6b18ec8bb240a26e2a
- 5249e8256654e995920d7f6b18ec8bb240a26e2a Add efi_status_to_str() and rework efi_status_to_err().
+https://gitlab.com/cki-project/kernel-ark/-/commit/0d17508acd57142deffe7e436fdf4652c4a1bf43
+ 0d17508acd57142deffe7e436fdf4652c4a1bf43 Revert "Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64"
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/eb22b938f4c4798e95e006be3d67ee3952a0b408
- eb22b938f4c4798e95e006be3d67ee3952a0b408 arm: aarch64: Drop the EXPERT setting from ARM64_FORCE_52BIT
+https://gitlab.com/cki-project/kernel-ark/-/commit/cf757bfbe8f23686242bdcaa04981eb9a2d76d20
+ cf757bfbe8f23686242bdcaa04981eb9a2d76d20 kernel/rh_messages.c: Another gcc12 warning on redundant NULL test
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/ccff744b94bf86b395269eed7cac004d211eeb6f
- ccff744b94bf86b395269eed7cac004d211eeb6f iommu/arm-smmu: workaround DMA mode issues
+https://gitlab.com/cki-project/kernel-ark/-/commit/b55ce63a3aba796edc0ceefe204ba2f7b01ef9fb
+ b55ce63a3aba796edc0ceefe204ba2f7b01ef9fb Enable IO_URING for RHEL
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/c93d2b9f59a6f0cc2fd23cea85e863604215314a
- c93d2b9f59a6f0cc2fd23cea85e863604215314a ipmi: do not configure ipmi for HPE m400
+https://gitlab.com/cki-project/kernel-ark/-/commit/83d460c66da47814c007e274970fdc553cd9be04
+ 83d460c66da47814c007e274970fdc553cd9be04 Remove EXPERT from ARCH_FORCE_MAX_ORDER for aarch64
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/e0027f0fda97f1f2fd458edfc9f50917b645d031
- e0027f0fda97f1f2fd458edfc9f50917b645d031 ahci: thunderx2: Fix for errata that affects stop engine
+https://gitlab.com/cki-project/kernel-ark/-/commit/940cf347330531a7000eb20fb83d38ba497c487b
+ 940cf347330531a7000eb20fb83d38ba497c487b redhat: version two of Makefile.rhelver tweaks
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/a997e7b03ff88b8ff691f222b74aa3f9360159db
- a997e7b03ff88b8ff691f222b74aa3f9360159db Vulcan: AHCI PCI bar fix for Broadcom Vulcan early silicon
+https://gitlab.com/cki-project/kernel-ark/-/commit/3cc558fab377edd0afad1b866c2b67820c7aefab
+ 3cc558fab377edd0afad1b866c2b67820c7aefab redhat:  adapt to upstream Makefile change
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/cb77484a080f103cb63d24562f23385c3638effd
- cb77484a080f103cb63d24562f23385c3638effd tags.sh: Ignore redhat/rpm
+https://gitlab.com/cki-project/kernel-ark/-/commit/9b0eb3256bf0f0400a868a442588a8d6bd510904
+ 9b0eb3256bf0f0400a868a442588a8d6bd510904 kernel/rh_messages.c: gcc12 warning on redundant NULL test
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/964bb1a4496c2abd647260ae51598d9ee0d89e45
- 964bb1a4496c2abd647260ae51598d9ee0d89e45 aarch64: acpi scan: Fix regression related to X-Gene UARTs
+https://gitlab.com/cki-project/kernel-ark/-/commit/aa9f33e1e47653b08d67023d2afeb7383c2d5172
+ aa9f33e1e47653b08d67023d2afeb7383c2d5172 Change acpi_bus_get_acpi_device to acpi_get_acpi_dev
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/a77a71e7e8395c850088f322943c5d0397173563
- a77a71e7e8395c850088f322943c5d0397173563 ACPI / irq: Workaround firmware issue on X-Gene based m400
+https://gitlab.com/cki-project/kernel-ark/-/commit/2e03f36cbd78e0fae8df2f605dbbc31b4145520f
+ 2e03f36cbd78e0fae8df2f605dbbc31b4145520f ARK: Remove code marking devices unmaintained
 
-https://gitlab.com/cki-project/kernel-ark/-/commit/a690b306fe7f02e7bcc100c5e9e8046334f8e9e7
- a690b306fe7f02e7bcc100c5e9e8046334f8e9e7 ACPI: APEI: arm64: Ignore broken HPE moonshot APEI support
+https://gitlab.com/cki-project/kernel-ark/-/commit/0fc0a26b78494a382a090934cdf0010662428249
+ 0fc0a26b78494a382a090934cdf0010662428249 rh_message: Fix function name
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/000bf31206f40cbbce327a7e61580d0309f771ff
+ 000bf31206f40cbbce327a7e61580d0309f771ff Add Partner Supported taint flag to kAFS
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3214a001b810794dfe5480f34e3fbece5531b59a
+ 3214a001b810794dfe5480f34e3fbece5531b59a Add Partner Supported taint flag
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/39a15444671d70b317d001e394bafaaa437d2c96
+ 39a15444671d70b317d001e394bafaaa437d2c96 kabi: Add kABI macros for enum type
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b164294fdd85762b48a6b1d71e6e5c67f27a0682
+ b164294fdd85762b48a6b1d71e6e5c67f27a0682 kabi: expand and clarify documentation of aux structs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5ffe0d054b943a91c87152286b31cf0006d30e59
+ 5ffe0d054b943a91c87152286b31cf0006d30e59 kabi: introduce RH_KABI_USE_AUX_PTR
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bf1230a85427e371ad0f10579950bce1df2db61b
+ bf1230a85427e371ad0f10579950bce1df2db61b kabi: rename RH_KABI_SIZE_AND_EXTEND to AUX
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9e50009130c24c7561d23dbcfee7f75aea8db626
+ 9e50009130c24c7561d23dbcfee7f75aea8db626 kabi: more consistent _RH_KABI_SIZE_AND_EXTEND
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2f31c3f024357f9baf57473c6016d14ccedbad61
+ 2f31c3f024357f9baf57473c6016d14ccedbad61 kabi: use fixed field name for extended part
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6828b16d86da57c6e00daca4e5af4d92e48d1d4f
+ 6828b16d86da57c6e00daca4e5af4d92e48d1d4f kabi: fix dereference in RH_KABI_CHECK_EXT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d1d230a1031564d45858d3dbd31d7439c0cddf89
+ d1d230a1031564d45858d3dbd31d7439c0cddf89 kabi: fix RH_KABI_SET_SIZE macro
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1e94fa3319474ad53f3f31182f022f27156bec3a
+ 1e94fa3319474ad53f3f31182f022f27156bec3a kabi: expand and clarify documentation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e3d798a6f62de8f487006c50f57c0047e6239c11
+ e3d798a6f62de8f487006c50f57c0047e6239c11 kabi: make RH_KABI_USE replace any number of reserved fields
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7904b29a6b1bbc74095ddcc28be9f2e8889db17e
+ 7904b29a6b1bbc74095ddcc28be9f2e8889db17e kabi: rename RH_KABI_USE2 to RH_KABI_USE_SPLIT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3d0f5d9a8b4d2e335f9f0f2fbf756a5e64edf90f
+ 3d0f5d9a8b4d2e335f9f0f2fbf756a5e64edf90f kabi: change RH_KABI_REPLACE2 to RH_KABI_REPLACE_SPLIT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0f8286d8c6c7c265364fe05d817eea5305c8ded1
+ 0f8286d8c6c7c265364fe05d817eea5305c8ded1 kabi: change RH_KABI_REPLACE_UNSAFE to RH_KABI_BROKEN_REPLACE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/700d89de918cc51422858623a0871fb136bdada6
+ 700d89de918cc51422858623a0871fb136bdada6 kabi: introduce RH_KABI_ADD_MODIFIER
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/823c73feb689d212eb59f6c126383c8b1f4882bf
+ 823c73feb689d212eb59f6c126383c8b1f4882bf kabi: Include kconfig.h
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/867be4df2c7d7c4a3ce7575d512b2597c8c56557
+ 867be4df2c7d7c4a3ce7575d512b2597c8c56557 kabi: macros for intentional kABI breakage
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ac0835fe760543b8aa65a29f34369c11ad5deaa1
+ ac0835fe760543b8aa65a29f34369c11ad5deaa1 kabi: fix the note about terminating semicolon
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/798adc3e240ffd9ce0fc8da1632c51315004d65f
+ 798adc3e240ffd9ce0fc8da1632c51315004d65f kabi: introduce RH_KABI_HIDE_INCLUDE and RH_KABI_FAKE_INCLUDE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5aa025e31cc01e4a2f94b2cebf3ab3f5d41ac284
+ 5aa025e31cc01e4a2f94b2cebf3ab3f5d41ac284 pci.h: Fix static include
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ed0a1267b1aa28d5269625db34a2b984711900df
+ ed0a1267b1aa28d5269625db34a2b984711900df drivers/pci/pci-driver.c: Fix if/ifdef typo
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/38eb953e0a006c551a2c24b0d06202ab337a952b
+ 38eb953e0a006c551a2c24b0d06202ab337a952b kernel/rh_taint.c: Update to new messaging
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/29932bb9e52b52e061fa1bed7d6ed1c93499a2b3
+ 29932bb9e52b52e061fa1bed7d6ed1c93499a2b3 redhat: Add mark_driver_deprecated()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6a09634e2d2c8c9671b5bf673cefa7ba4d081a1f
+ 6a09634e2d2c8c9671b5bf673cefa7ba4d081a1f [scsi] megaraid_sas: re-add certain pci-ids
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/322db114d8f1c4ec02c41993f3589e13e237d4c3
+ 322db114d8f1c4ec02c41993f3589e13e237d4c3 RHEL: disable io_uring support
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/653748538ac6f9065d8b6513be940b9ebb8af3c1
+ 653748538ac6f9065d8b6513be940b9ebb8af3c1 bpf: Fix unprivileged_bpf_disabled setup
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f6dbd0aebf497029f0aee4708276f4c47c9c44f7
+ f6dbd0aebf497029f0aee4708276f4c47c9c44f7 nvme: nvme_mpath_init remove multipath check
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/214ca33700a5d80f5958c48989d2f1e10d6d35aa
+ 214ca33700a5d80f5958c48989d2f1e10d6d35aa wireguard: disable in FIPS mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9893956d7b2482f459652e06bad2fac3c807057b
+ 9893956d7b2482f459652e06bad2fac3c807057b nvme: decouple basic ANA log page re-read support from native multipathing
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bbeec0ece2cdc6caf46583c25320716d52120e84
+ bbeec0ece2cdc6caf46583c25320716d52120e84 nvme: allow local retry and proper failover for REQ_FAILFAST_TRANSPORT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4644d930996ac58c7a4e5c80bb4172152b17ceb6
+ 4644d930996ac58c7a4e5c80bb4172152b17ceb6 nvme: Return BLK_STS_TARGET if the DNR bit is set
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f675a262ff45732c93d710c5931694fd82e9e4d5
+ f675a262ff45732c93d710c5931694fd82e9e4d5 REDHAT: coresight: etm4x: Disable coresight on HPE Apollo 70
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/75ce5edbc44ff6748276dec7b3b9d936a0507f06
+ 75ce5edbc44ff6748276dec7b3b9d936a0507f06 redhat: remove remaining references of CONFIG_RH_DISABLE_DEPRECATED
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5b99e56b88c8b0a1b9dcb1e1f0a115c3c0943ab2
+ 5b99e56b88c8b0a1b9dcb1e1f0a115c3c0943ab2 arch/x86: Remove vendor specific CPU ID checks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bf4f328efa649bbebb54f71c409a2ed5f4e4d275
+ bf4f328efa649bbebb54f71c409a2ed5f4e4d275 redhat: Replace hardware.redhat.com link in Unsupported message
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/915c458f966f8b8caf275121d3ec2327e745bdcb
+ 915c458f966f8b8caf275121d3ec2327e745bdcb x86: Fix compile issues with rh_check_supported()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b8b0d2158f018cb1f5e8a84f836c692742f78819
+ b8b0d2158f018cb1f5e8a84f836c692742f78819 KEYS: Make use of platform keyring for module signature verify
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/62bc173da1145606b6eb5938b2cb3bb65fce5339
+ 62bc173da1145606b6eb5938b2cb3bb65fce5339 Input: rmi4 - remove the need for artificial IRQ in case of HID
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6d2c6be4496e896a2c1a607a068f00ce8ae7354a
+ 6d2c6be4496e896a2c1a607a068f00ce8ae7354a ARM: tegra: usb no reset
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6cfc58b5bdc4e1db1311b6473ec2a9daebe3dd7b
+ 6cfc58b5bdc4e1db1311b6473ec2a9daebe3dd7b arm: make CONFIG_HIGHPTE optional without CONFIG_EXPERT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/570d052cdb2b47acfd55e10f84ca78c5070d6968
+ 570d052cdb2b47acfd55e10f84ca78c5070d6968 redhat: rh_kabi: deduplication friendly structs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5ff63c11decbd3d5da8b4d53d5f61f2e8da45725
+ 5ff63c11decbd3d5da8b4d53d5f61f2e8da45725 redhat: rh_kabi add a comment with warning about RH_KABI_EXCLUDE usage
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3a348be8252feeab7aa417bed365e101e74dee6e
+ 3a348be8252feeab7aa417bed365e101e74dee6e redhat: rh_kabi: introduce RH_KABI_EXTEND_WITH_SIZE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/224bee01a49a741e07968b0721211bd0f3bb0f96
+ 224bee01a49a741e07968b0721211bd0f3bb0f96 redhat: rh_kabi: Indirect EXTEND macros so nesting of other macros will resolve.
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1ae1d12d19f3b6ea1ca5cea1bdd2ac3debe8f64c
+ 1ae1d12d19f3b6ea1ca5cea1bdd2ac3debe8f64c redhat: rh_kabi: Fix RH_KABI_SET_SIZE to use dereference operator
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/199f72f629657d01adc708e87daaa9586563a510
+ 199f72f629657d01adc708e87daaa9586563a510 redhat: rh_kabi: Add macros to size and extend structs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cb9234ac6ab9ce9e292c6673c82331f94d1cce30
+ cb9234ac6ab9ce9e292c6673c82331f94d1cce30 Removing Obsolete hba pci-ids from rhel8
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/43a821aca252276f3b234068248bc31a645e694e
+ 43a821aca252276f3b234068248bc31a645e694e mptsas: pci-id table changes
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/022ae019ce7989bfa79ce1303640a0f47c2490c3
+ 022ae019ce7989bfa79ce1303640a0f47c2490c3 mptspi: pci-id table changes
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0c843f68e9c3465424fddde48b73806d0ec2c9d4
+ 0c843f68e9c3465424fddde48b73806d0ec2c9d4 qla2xxx: Remove PCI IDs of deprecated adapter
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/90908ef05a110d0237c99a744eefdf29dccf0522
+ 90908ef05a110d0237c99a744eefdf29dccf0522 be2iscsi: remove unsupported device IDs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8def6ded9632476171e40b9a7b8e0519a1e4ca10
+ 8def6ded9632476171e40b9a7b8e0519a1e4ca10 hpsa: remove old cciss-based smartarray pci ids
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/eb7b992d89abe78ae63ed94f11afad29cbbf718b
+ eb7b992d89abe78ae63ed94f11afad29cbbf718b qla4xxx: Remove deprecated PCI IDs from RHEL 8
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4d7a1e5fd21d7e0111eda656f20669c7ba37d100
+ 4d7a1e5fd21d7e0111eda656f20669c7ba37d100 aacraid: Remove depreciated device and vendor PCI id's
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8eae6047f8bc877b73008c91c7d34cf953a91bfe
+ 8eae6047f8bc877b73008c91c7d34cf953a91bfe megaraid_sas: remove deprecated pci-ids
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/15dc58e91ac976a3dd51a5c329a78f8d7356259e
+ 15dc58e91ac976a3dd51a5c329a78f8d7356259e mpt*: remove certain deprecated pci-ids
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8fd416e14c5bca4d1f24a75c2e87bdfc042888ed
+ 8fd416e14c5bca4d1f24a75c2e87bdfc042888ed kernel: add SUPPORT_REMOVED kernel taint
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e6325c0e697c82f357dafa0e2f6909d5f243d51e
+ e6325c0e697c82f357dafa0e2f6909d5f243d51e Rename RH_DISABLE_DEPRECATED to RHEL_DIFFERENCES
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e1929a73abd87462779a64d86a2199fc479832f2
+ e1929a73abd87462779a64d86a2199fc479832f2 s390: Lock down the kernel when the IPL secure flag is set
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ae3fc072ec0d4c042bdbcdc4721c1b8fbbc161c3
+ ae3fc072ec0d4c042bdbcdc4721c1b8fbbc161c3 efi: Lock down the kernel if booted in secure boot mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8c7841a4b46ca63a0d17aaf6f8bb9e262e513e75
+ 8c7841a4b46ca63a0d17aaf6f8bb9e262e513e75 efi: Add an EFI_SECURE_BOOT flag to indicate secure boot mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9bb7e705ef61027f3cd17f2bae6e1a4b5d7ec5f7
+ 9bb7e705ef61027f3cd17f2bae6e1a4b5d7ec5f7 security: lockdown: expose a hook to lock the kernel down
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7aa61d119c54451e7dbdd329d6eeb38979360ac3
+ 7aa61d119c54451e7dbdd329d6eeb38979360ac3 Make get_cert_list() use efi_status_to_str() to print error messages.
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/106b7f1f0dee32d5bc6087b3e631e9324269dc67
+ 106b7f1f0dee32d5bc6087b3e631e9324269dc67 Add efi_status_to_str() and rework efi_status_to_err().
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1676ca8bfe77be3374ac35eb3fe088d8961b41f1
+ 1676ca8bfe77be3374ac35eb3fe088d8961b41f1 Add support for deprecating processors
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1203904cd4978bee5d5f28f93a019d4604138ccd
+ 1203904cd4978bee5d5f28f93a019d4604138ccd arm: aarch64: Drop the EXPERT setting from ARM64_FORCE_52BIT
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ac4d8dc5834fee957d418299a23a293f74851169
+ ac4d8dc5834fee957d418299a23a293f74851169 iommu/arm-smmu: workaround DMA mode issues
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9d382916d9225a9d7fc898cc70fe42be3b09b969
+ 9d382916d9225a9d7fc898cc70fe42be3b09b969 rh_kabi: introduce RH_KABI_EXCLUDE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/782445302ad82146f03d4140f66ba3d9cc949d89
+ 782445302ad82146f03d4140f66ba3d9cc949d89 ipmi: do not configure ipmi for HPE m400
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2b00bdea859d31d235b184db64359e36af8e27be
+ 2b00bdea859d31d235b184db64359e36af8e27be kABI: Add generic kABI macros to use for kABI workarounds
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/58720c2de21dcc41ad11ba9000f519ce06038aa5
+ 58720c2de21dcc41ad11ba9000f519ce06038aa5 add pci_hw_vendor_status()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4a26d06489c350877afbe8ec9243e8a4dfaf65a2
+ 4a26d06489c350877afbe8ec9243e8a4dfaf65a2 ahci: thunderx2: Fix for errata that affects stop engine
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/71b1a97646561b4a2637dfd896c582367ed823b8
+ 71b1a97646561b4a2637dfd896c582367ed823b8 Vulcan: AHCI PCI bar fix for Broadcom Vulcan early silicon
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2ec29b82543a35ed7623fc8abde7a7d8c7c3b854
+ 2ec29b82543a35ed7623fc8abde7a7d8c7c3b854 bpf: set unprivileged_bpf_disabled to 1 by default, add a boot parameter
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c5017741ac0b481065d27e43dae1515c037edb52
+ c5017741ac0b481065d27e43dae1515c037edb52 add Red Hat-specific taint flags
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4f23a0a67a51deffba5e98d3df41bac32eef603f
+ 4f23a0a67a51deffba5e98d3df41bac32eef603f tags.sh: Ignore redhat/rpm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/608071eeaafc14f11241a04635a9f84d7525b366
+ 608071eeaafc14f11241a04635a9f84d7525b366 put RHEL info into generated headers
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c92536497db3534ad17d9a65ebea529f54142201
+ c92536497db3534ad17d9a65ebea529f54142201 aarch64: acpi scan: Fix regression related to X-Gene UARTs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3c45f9ee051ef9ea5fdf8db51533e7b75320ef1a
+ 3c45f9ee051ef9ea5fdf8db51533e7b75320ef1a ACPI / irq: Workaround firmware issue on X-Gene based m400
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/199ab0b18ae620484da828fd68dd62d4d3052da2
+ 199ab0b18ae620484da828fd68dd62d4d3052da2 modules: add rhelversion MODULE_INFO tag
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0a343971c584da784fa08c96fcc0bc86157802b1
+ 0a343971c584da784fa08c96fcc0bc86157802b1 ACPI: APEI: arm64: Ignore broken HPE moonshot APEI support
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b25946a8590d6fa730dc7ba93df200d8ebd419ed
+ b25946a8590d6fa730dc7ba93df200d8ebd419ed Add Red Hat tainting
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0a6a9df11632730a1174f5b3768fb729f3551720
+ 0a6a9df11632730a1174f5b3768fb729f3551720 Introduce CONFIG_RH_DISABLE_DEPRECATED
 
 https://gitlab.com/cki-project/kernel-ark/-/commit/c7d5cec83ecba2952b86bcf374648ac425bf297e
  c7d5cec83ecba2952b86bcf374648ac425bf297e Pull the RHEL version defines out of the Makefile
