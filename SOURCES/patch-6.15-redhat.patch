@@ -88,7 +88,7 @@ index dd844ac8d910..dab2b4892122 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 8e2d03723368..631695c2ad45 100644
+index d38a669b3ada..84866d3b7452 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -153,7 +153,7 @@ index 8e2d03723368..631695c2ad45 100644
  	@:
  
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 25ed6f1a7c7a..d19fc6d6c134 100644
+index e55a3fee104a..0de457512b0c 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -1232,9 +1232,9 @@ config HIGHMEM
