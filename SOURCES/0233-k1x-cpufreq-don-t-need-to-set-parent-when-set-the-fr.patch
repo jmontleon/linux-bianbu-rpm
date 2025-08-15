@@ -1,4 +1,4 @@
-From 470160fc54832dc873a8a8bcf0f260d0073dc4e3 Mon Sep 17 00:00:00 2001
+From 47fd9f3d1d5d007283c4486cb9673df9e1ee9327 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 22 Dec 2023 09:48:25 +0800
 Subject: [PATCH 0233/1211] k1x:cpufreq: don't need to set parent when set the
@@ -209,10 +209,10 @@ index 685f38af91a0..037c0569f444 100644
  CONFIG_MODULE_UNLOAD=y
  # CONFIG_BLK_DEBUG_FS is not set
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index e1d208476795..22ab45209f9b 100644
+index 4c5ec2bc8832..246f58b496da 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
-@@ -105,4 +105,3 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
+@@ -106,4 +106,3 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
  obj-$(CONFIG_SH_CPU_FREQ)		+= sh-cpufreq.o
  obj-$(CONFIG_SPARC_US2E_CPUFREQ)	+= sparc-us2e-cpufreq.o
  obj-$(CONFIG_SPARC_US3_CPUFREQ)		+= sparc-us3-cpufreq.o

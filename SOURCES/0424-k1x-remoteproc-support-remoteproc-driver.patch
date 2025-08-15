@@ -1,4 +1,4 @@
-From b744ae90b65e5b63d1ba7b3b6c49b8f86f2d5cf9 Mon Sep 17 00:00:00 2001
+From d5c14d8fc32305e26984ea8d47e539d38cebe7a1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Feb 2024 11:12:22 +0800
 Subject: [PATCH 0424/1211] k1x: remoteproc: support remoteproc driver
@@ -41,7 +41,7 @@ index d5b0e1136447..79909049df39 100644
  			compatible = "spacemit,pdma-1.0";
  			reg = <0x0 0xd4000000 0x0 0x4000>;
 diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index af7d89875084..4ccbbe36d589 100644
+index 78c07045122a..efb1a132fcfd 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -161,8 +161,14 @@ config PRU_REMOTEPROC

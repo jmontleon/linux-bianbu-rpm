@@ -14,8 +14,6 @@
  arch/s390/kernel/ipl.c                             |    5 +
  arch/s390/kernel/setup.c                           |    4 +
  arch/x86/kernel/setup.c                            |   22 +-
- crypto/sig.c                                       |    3 +-
- crypto/testmgr.c                                   |    2 +-
  drivers/acpi/apei/hest.c                           |    8 +
  drivers/acpi/irq.c                                 |   17 +-
  drivers/acpi/scan.c                                |    9 +
@@ -47,6 +45,7 @@
  .../platform/x86/intel/int3472/discrete_quirks.c   |   22 +
  drivers/scsi/sd.c                                  |   10 +
  drivers/usb/core/hub.c                             |    7 +
+ fs/btrfs/tree-log.c                                |   45 +-
  include/linux/efi.h                                |   22 +-
  include/linux/lsm_hook_defs.h                      |    1 +
  include/linux/rmi.h                                |    1 +
@@ -57,7 +56,7 @@
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
  security/lockdown/lockdown.c                       |   11 +
- 59 files changed, 2745 insertions(+), 344 deletions(-)
+ 58 files changed, 2772 insertions(+), 357 deletions(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
 index dd844ac8d910..dab2b4892122 100644
@@ -88,7 +87,7 @@ index dd844ac8d910..dab2b4892122 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index d38a669b3ada..84866d3b7452 100644
+index 7831d9cd2e6c..5bf8d4919df8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -428,7 +427,7 @@ index 3b9d9ccfad63..648ac8c7e1fd 100644
 +	return !!ipl_secure_flag;
 +}
 diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index f244c5560e7f..464f915011b8 100644
+index 5c9789804120..daacbe5b8159 100644
 --- a/arch/s390/kernel/setup.c
 +++ b/arch/s390/kernel/setup.c
 @@ -49,6 +49,7 @@
@@ -439,7 +438,7 @@ index f244c5560e7f..464f915011b8 100644
  #include <linux/hugetlb.h>
  #include <linux/kmemleak.h>
  
-@@ -914,6 +915,9 @@ void __init setup_arch(char **cmdline_p)
+@@ -919,6 +920,9 @@ void __init setup_arch(char **cmdline_p)
  
  	log_component_list();
  
@@ -496,33 +495,6 @@ index 9d2a13b37833..770aee4ae9ae 100644
  
  	reserve_initrd();
  
-diff --git a/crypto/sig.c b/crypto/sig.c
-index 53a3dd6fbe3f..2321847d8b45 100644
---- a/crypto/sig.c
-+++ b/crypto/sig.c
-@@ -111,8 +111,7 @@ static int sig_prepare_alg(struct sig_alg *alg)
- {
- 	struct crypto_alg *base = &alg->base;
- 
--	if (!alg->sign)
--		alg->sign = sig_default_sign;
-+	alg->sign = sig_default_sign;
- 	if (!alg->verify)
- 		alg->verify = sig_default_verify;
- 	if (!alg->set_priv_key)
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 82977ea25db3..aeb84a4b5937 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4170,7 +4170,7 @@ static int test_sig_one(struct crypto_sig *tfm, const struct sig_testvec *vecs)
- 	 * Don't invoke sign test (which requires a private key)
- 	 * for vectors with only a public key.
- 	 */
--	if (vecs->public_key_vec)
-+	if (1 || vecs->public_key_vec)
- 		return 0;
- 
- 	sig_size = crypto_sig_maxsize(tfm);
 diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
 index 20d757687e3d..90a13f20f052 100644
 --- a/drivers/acpi/apei/hest.c
@@ -3488,10 +3460,10 @@ index 348dbc81bad8..c5e31b954796 100644
  		   resp.board_id_valid, resp.board_id);
  
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index d0f7b749b9a6..ba74f2d67495 100644
+index 6e29f2b39dce..6a8172a841b8 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -4452,6 +4452,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
+@@ -4454,6 +4454,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9084,
  				quirk_bridge_cavm_thrx2_pcie_root);
  
@@ -4044,7 +4016,7 @@ index 000000000000..bf88863803b2
 +	{ }
 +};
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 89d5c4b17bc4..8cc874715933 100644
+index 2f64caa3b253..c3ec8e7b91fd 100644
 --- a/drivers/scsi/sd.c
 +++ b/drivers/scsi/sd.c
 @@ -121,6 +121,14 @@ static const char *sd_cache_types[] = {
@@ -4062,7 +4034,7 @@ index 89d5c4b17bc4..8cc874715933 100644
  static void sd_set_flush_flag(struct scsi_disk *sdkp,
  		struct queue_limits *lim)
  {
-@@ -4371,6 +4379,8 @@ static int __init init_sd(void)
+@@ -4373,6 +4381,8 @@ static int __init init_sd(void)
  		goto err_out_class;
  	}
  
@@ -4089,6 +4061,79 @@ index 1e0be266e9b2..d5ff94117e0b 100644
  	/* Lock the device, then check to see if we were
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index e05140ce95be..2fb9e7bfc907 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -321,8 +321,7 @@ struct walk_control {
+ 
+ 	/*
+ 	 * Ignore any items from the inode currently being processed. Needs
+-	 * to be set every time we find a BTRFS_INODE_ITEM_KEY and we are in
+-	 * the LOG_WALK_REPLAY_INODES stage.
++	 * to be set every time we find a BTRFS_INODE_ITEM_KEY.
+ 	 */
+ 	bool ignore_cur_inode;
+ 
+@@ -2410,23 +2409,30 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
+ 
+ 	nritems = btrfs_header_nritems(eb);
+ 	for (i = 0; i < nritems; i++) {
+-		btrfs_item_key_to_cpu(eb, &key, i);
++		struct btrfs_inode_item *inode_item;
+ 
+-		/* inode keys are done during the first stage */
+-		if (key.type == BTRFS_INODE_ITEM_KEY &&
+-		    wc->stage == LOG_WALK_REPLAY_INODES) {
+-			struct btrfs_inode_item *inode_item;
+-			u32 mode;
++		btrfs_item_key_to_cpu(eb, &key, i);
+ 
+-			inode_item = btrfs_item_ptr(eb, i,
+-					    struct btrfs_inode_item);
++		if (key.type == BTRFS_INODE_ITEM_KEY) {
++			inode_item = btrfs_item_ptr(eb, i, struct btrfs_inode_item);
+ 			/*
+-			 * If we have a tmpfile (O_TMPFILE) that got fsync'ed
+-			 * and never got linked before the fsync, skip it, as
+-			 * replaying it is pointless since it would be deleted
+-			 * later. We skip logging tmpfiles, but it's always
+-			 * possible we are replaying a log created with a kernel
+-			 * that used to log tmpfiles.
++			 * An inode with no links is either:
++			 *
++			 * 1) A tmpfile (O_TMPFILE) that got fsync'ed and never
++			 *    got linked before the fsync, skip it, as replaying
++			 *    it is pointless since it would be deleted later.
++			 *    We skip logging tmpfiles, but it's always possible
++			 *    we are replaying a log created with a kernel that
++			 *    used to log tmpfiles;
++			 *
++			 * 2) A non-tmpfile which got its last link deleted
++			 *    while holding an open fd on it and later got
++			 *    fsynced through that fd. We always log the
++			 *    parent inodes when inode->last_unlink_trans is
++			 *    set to the current transaction, so ignore all the
++			 *    inode items for this inode. We will delete the
++			 *    inode when processing the parent directory with
++			 *    replay_dir_deletes().
+ 			 */
+ 			if (btrfs_inode_nlink(eb, inode_item) == 0) {
+ 				wc->ignore_cur_inode = true;
+@@ -2434,6 +2440,13 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
+ 			} else {
+ 				wc->ignore_cur_inode = false;
+ 			}
++		}
++
++		/* Inode keys are done during the first stage. */
++		if (key.type == BTRFS_INODE_ITEM_KEY &&
++		    wc->stage == LOG_WALK_REPLAY_INODES) {
++			 u32 mode;
++
+ 			ret = replay_xattr_deletes(wc->trans, root, log,
+ 						   path, key.objectid);
+ 			if (ret)
 diff --git a/include/linux/efi.h b/include/linux/efi.h
 index 7d63d1d75f22..c7481fdedbdd 100644
 --- a/include/linux/efi.h

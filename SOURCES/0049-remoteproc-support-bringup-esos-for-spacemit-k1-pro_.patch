@@ -1,4 +1,4 @@
-From 9d52f8c236cc5def61e59e6a79db89150bb7ee60 Mon Sep 17 00:00:00 2001
+From 7fd2f0c23b05c8c0d1599d80cfd713859168f468 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Jun 2023 15:56:53 +0800
 Subject: [PATCH 0049/1211] remoteproc: support bringup esos for spacemit
@@ -71,7 +71,7 @@ index 54f45049f32d..31382a963683 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 83962a114dc9..af7d89875084 100644
+index 48a0d3a69ed0..78c07045122a 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -161,6 +161,12 @@ config PRU_REMOTEPROC
