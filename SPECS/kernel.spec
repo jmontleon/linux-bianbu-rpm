@@ -159,18 +159,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.15.10
-%define specversion 6.15.10
+%define specrpmversion 6.15.11
+%define specversion 6.15.11
 %define patchversion 6.15
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.15.10
+%define tarfile_release 6.15.11
 # This is needed to do merge window version magic
 %define patchlevel 15
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.15.10
+%define kabiversion 6.15.11
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6703,6 +6703,10 @@ fi\
 #
 #
 %changelog
+* Wed Aug 20 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.11-0]
+- Config updates for stable backports (Justin M. Forbes)
+- Linux v6.15.11
+
 * Fri Aug 15 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.15.10-0]
 - Enable CONFIG_VHOST_ENABLE_FORK_OWNER_CONTROL (Justin M. Forbes)
 - Disable NOVA_CORE (Justin M. Forbes)

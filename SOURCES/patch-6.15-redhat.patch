@@ -45,7 +45,6 @@
  .../platform/x86/intel/int3472/discrete_quirks.c   |   22 +
  drivers/scsi/sd.c                                  |   10 +
  drivers/usb/core/hub.c                             |    7 +
- fs/btrfs/tree-log.c                                |   45 +-
  include/linux/efi.h                                |   22 +-
  include/linux/lsm_hook_defs.h                      |    1 +
  include/linux/rmi.h                                |    1 +
@@ -56,7 +55,7 @@
  security/integrity/platform_certs/load_uefi.c      |    6 +-
  security/lockdown/Kconfig                          |   13 +
  security/lockdown/lockdown.c                       |   11 +
- 58 files changed, 2772 insertions(+), 357 deletions(-)
+ 57 files changed, 2743 insertions(+), 341 deletions(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
 index dd844ac8d910..dab2b4892122 100644
@@ -87,7 +86,7 @@ index dd844ac8d910..dab2b4892122 100644
  M:	Jimmy Su <jimmy.su@intel.com>
  L:	linux-media@vger.kernel.org
 diff --git a/Makefile b/Makefile
-index 7831d9cd2e6c..5bf8d4919df8 100644
+index 3a9650df9bb9..7e984c282ef7 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -22,6 +22,18 @@ $(if $(filter __%, $(MAKECMDGOALS)), \
@@ -578,10 +577,10 @@ index fb1fe9f3b1a3..5a3312fc0ea0 100644
  	acpi_dev_get_resources(device, &resource_list,
  			       acpi_check_serial_bus_slave,
 diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 22afa4ff860d..78eacccaa1ae 100644
+index 9b5b1e4c7148..595f0933771e 100644
 --- a/drivers/ata/libahci.c
 +++ b/drivers/ata/libahci.c
-@@ -730,6 +730,24 @@ int ahci_stop_engine(struct ata_port *ap)
+@@ -731,6 +731,24 @@ int ahci_stop_engine(struct ata_port *ap)
  	tmp &= ~PORT_CMD_START;
  	writel(tmp, port_mmio + PORT_CMD);
  
@@ -633,7 +632,7 @@ index bbf7029e224b..cf7faa970dd6 100644
  		dmi_decode_ipmi((const struct dmi_header *) dev->device_data);
  
 diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 6047c9600e03..bc6063090639 100644
+index 808d0d213509..8051c502d8e9 100644
 --- a/drivers/char/ipmi/ipmi_msghandler.c
 +++ b/drivers/char/ipmi/ipmi_msghandler.c
 @@ -35,6 +35,7 @@
@@ -3343,10 +3342,10 @@ index 261f52b327e8..b768799221c4 100644
  	/* Device index used to identify the devices in a group.
  	 *
 diff --git a/drivers/net/wireless/ath/ath12k/core.h b/drivers/net/wireless/ath/ath12k/core.h
-index f5f1ec796f7c..e0687fb113de 100644
+index 4cff5e42eb34..7ae0c7b1a52f 100644
 --- a/drivers/net/wireless/ath/ath12k/core.h
 +++ b/drivers/net/wireless/ath/ath12k/core.h
-@@ -1061,6 +1061,7 @@ struct ath12k_base {
+@@ -1065,6 +1065,7 @@ struct ath12k_base {
  		size_t m3_len;
  
  		DECLARE_BITMAP(fw_features, ATH12K_FW_FEATURE_COUNT);
@@ -3354,7 +3353,7 @@ index f5f1ec796f7c..e0687fb113de 100644
  	} fw;
  
  	const struct hal_rx_ops *hal_rx_ops;
-@@ -1098,6 +1099,9 @@ struct ath12k_base {
+@@ -1102,6 +1103,9 @@ struct ath12k_base {
  	enum ath12k_firmware_mode fw_mode;
  	struct ath12k_ftm_event_obj ftm_event_obj;
  
@@ -4061,79 +4060,6 @@ index 1e0be266e9b2..d5ff94117e0b 100644
  	/* Lock the device, then check to see if we were
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index e05140ce95be..2fb9e7bfc907 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -321,8 +321,7 @@ struct walk_control {
- 
- 	/*
- 	 * Ignore any items from the inode currently being processed. Needs
--	 * to be set every time we find a BTRFS_INODE_ITEM_KEY and we are in
--	 * the LOG_WALK_REPLAY_INODES stage.
-+	 * to be set every time we find a BTRFS_INODE_ITEM_KEY.
- 	 */
- 	bool ignore_cur_inode;
- 
-@@ -2410,23 +2409,30 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 
- 	nritems = btrfs_header_nritems(eb);
- 	for (i = 0; i < nritems; i++) {
--		btrfs_item_key_to_cpu(eb, &key, i);
-+		struct btrfs_inode_item *inode_item;
- 
--		/* inode keys are done during the first stage */
--		if (key.type == BTRFS_INODE_ITEM_KEY &&
--		    wc->stage == LOG_WALK_REPLAY_INODES) {
--			struct btrfs_inode_item *inode_item;
--			u32 mode;
-+		btrfs_item_key_to_cpu(eb, &key, i);
- 
--			inode_item = btrfs_item_ptr(eb, i,
--					    struct btrfs_inode_item);
-+		if (key.type == BTRFS_INODE_ITEM_KEY) {
-+			inode_item = btrfs_item_ptr(eb, i, struct btrfs_inode_item);
- 			/*
--			 * If we have a tmpfile (O_TMPFILE) that got fsync'ed
--			 * and never got linked before the fsync, skip it, as
--			 * replaying it is pointless since it would be deleted
--			 * later. We skip logging tmpfiles, but it's always
--			 * possible we are replaying a log created with a kernel
--			 * that used to log tmpfiles.
-+			 * An inode with no links is either:
-+			 *
-+			 * 1) A tmpfile (O_TMPFILE) that got fsync'ed and never
-+			 *    got linked before the fsync, skip it, as replaying
-+			 *    it is pointless since it would be deleted later.
-+			 *    We skip logging tmpfiles, but it's always possible
-+			 *    we are replaying a log created with a kernel that
-+			 *    used to log tmpfiles;
-+			 *
-+			 * 2) A non-tmpfile which got its last link deleted
-+			 *    while holding an open fd on it and later got
-+			 *    fsynced through that fd. We always log the
-+			 *    parent inodes when inode->last_unlink_trans is
-+			 *    set to the current transaction, so ignore all the
-+			 *    inode items for this inode. We will delete the
-+			 *    inode when processing the parent directory with
-+			 *    replay_dir_deletes().
- 			 */
- 			if (btrfs_inode_nlink(eb, inode_item) == 0) {
- 				wc->ignore_cur_inode = true;
-@@ -2434,6 +2440,13 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 			} else {
- 				wc->ignore_cur_inode = false;
- 			}
-+		}
-+
-+		/* Inode keys are done during the first stage. */
-+		if (key.type == BTRFS_INODE_ITEM_KEY &&
-+		    wc->stage == LOG_WALK_REPLAY_INODES) {
-+			 u32 mode;
-+
- 			ret = replay_xattr_deletes(wc->trans, root, log,
- 						   path, key.objectid);
- 			if (ret)
 diff --git a/include/linux/efi.h b/include/linux/efi.h
 index 7d63d1d75f22..c7481fdedbdd 100644
 --- a/include/linux/efi.h

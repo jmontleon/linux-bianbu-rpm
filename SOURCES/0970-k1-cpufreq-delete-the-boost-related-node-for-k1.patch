@@ -1,4 +1,4 @@
-From 9ca50f00057855f4f39ff15a590c974323ec762b Mon Sep 17 00:00:00 2001
+From c73c2c30e61d863036558d94183407f354432d96 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 31 Aug 2024 12:46:41 +0800
 Subject: [PATCH 0970/1211] k1:cpufreq: delete the boost related node for k1
@@ -32,10 +32,10 @@ index d6f96fb64001..2c04c05840c2 100644
  	.target_index = set_target,
  	.get = cpufreq_generic_get,
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 5c84d56341e2..1caaf7b0e220 100644
+index 50aff4afb422..40a5dc17570f 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
-@@ -2930,11 +2930,31 @@ static int create_boost_sysfs_file(void)
+@@ -2932,11 +2932,31 @@ static int create_boost_sysfs_file(void)
  	return ret;
  }
  

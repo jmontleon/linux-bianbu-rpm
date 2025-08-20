@@ -1,4 +1,4 @@
-From 6c17a216938bdf5771e1ba0161d0e63c09a9a1d0 Mon Sep 17 00:00:00 2001
+From 79b227d28567cfec3d1c581f04b1353c0e098348 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 30 Mar 2023 17:16:23 +0800
 Subject: [PATCH 0010/1211] add k1pro reset-controller driver and config
@@ -43,7 +43,7 @@ index e0d63ef9c7f7..b933c8d446c0 100644
  			compatible = "riscv,clint0";
  			interrupts-extended = <
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 99f6f9784e68..3c44fa12c552 100644
+index c9bbdc6ac382..5ca9175b1227 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -350,6 +350,12 @@ config RESET_ZYNQMP
