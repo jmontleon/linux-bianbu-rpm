@@ -1,0 +1,64 @@
+From 1b369d6ebe77c7fdbf20b4a93e476f13b95096a7 Mon Sep 17 00:00:00 2001
+From: zhouxl <zhouxl@spacemit.com>
+Date: Fri, 15 Mar 2024 10:18:50 +0800
+Subject: [PATCH 0492/1218] add compressed(gzip) kernel itb build
+
+Change-Id: I5ad336fa1612377306d6f41b3cff6a495e3f9acf
+---
+ arch/riscv/Makefile      |  2 +-
+ arch/riscv/boot/Makefile | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index d1c0937584a6..ea8229fa696a 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -197,7 +197,7 @@ BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zs
+ include $(srctree)/arch/riscv/generic/Platform
+ bootvars-y	= ITS_INPUTS="$(its-y)"
+ 
+-all:	$(notdir $(KBUILD_IMAGE)) Image.itb
++all:	$(notdir $(KBUILD_IMAGE)) Image.itb Image.gz.itb
+ 
+ loader.bin: loader
+ Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst Image.xz loader xipImage vmlinuz.efi: Image
+diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+index 1d6345d4ee87..cae46277fdfb 100644
+--- a/arch/riscv/boot/Makefile
++++ b/arch/riscv/boot/Makefile
+@@ -77,10 +77,7 @@ endif
+ 
+ IMAGE_LOAD_ADDRESS := $(CONFIG_IMAGE_LOAD_OFFSET)
+ IMAGE_ENTRY_ADDRESS := $(CONFIG_IMAGE_LOAD_OFFSET)
+-
+ IMAGE_ALGO := crc32
+-IMAGE_COMPRESS := none
+-IMAGE_SOURCE_FILE := Image
+ 
+ quiet_cmd_its_cat = CAT     $@
+       cmd_its_cat = cat $(real-prereqs) >$@
+@@ -100,7 +97,10 @@ quiet_cmd_cpp_its_S = ITS     $@
+ 		-DADDR_CELLS=$(ADDR_CELLS)
+ 
+ $(obj)/Image.its: $(obj)/Image.its.S $(obj)/Image FORCE
+-	$(call if_changed,cpp_its_S,$(IMAGE_COMPRESS),$(IMAGE_ALGO),$(IMAGE_SOURCE_FILE))
++	$(call if_changed,cpp_its_S,none,$(IMAGE_ALGO),Image)
++
++$(obj)/Image.gz.its: $(obj)/Image.its.S $(obj)/Image.gz FORCE
++	$(call if_changed,cpp_its_S,gzip,$(IMAGE_ALGO),Image.gz)
+ 
+ quiet_cmd_itb-image = ITB     $@
+       cmd_itb-image = \
+@@ -114,6 +114,9 @@ quiet_cmd_itb-image = ITB     $@
+ $(obj)/Image.itb: $(obj)/Image.its $(obj)/Image FORCE
+ 	$(call if_changed,itb-image,$<)
+ 
++$(obj)/Image.%.itb: $(obj)/Image.%.its $(obj)/Image.% FORCE
++	$(call if_changed,itb-image,$<)
++
+ EFI_ZBOOT_PAYLOAD	:= Image
+ EFI_ZBOOT_BFD_TARGET	:= elf$(BITS)-littleriscv
+ EFI_ZBOOT_MACH_TYPE	:= RISCV$(BITS)
+-- 
+2.50.1
+

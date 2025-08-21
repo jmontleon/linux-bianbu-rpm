@@ -1,0 +1,49 @@
+From 91bc1f9ae2c8d4aceeff27070c03830f6ba1b0cd Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Mon, 22 May 2023 11:09:59 +0800
+Subject: [PATCH 0028/1218] riscv: mm: fix reserve cma for platform not having
+ ZONE_DMA32
+
+In case the phys_ram_base is exceeding SZ_4G, zone dma32 is empty,
+and the cma reserve in dma_contiguous_reserve() will fail, to avoid
+this situation, we should modify the limit.
+
+Change-Id: I5504523c5b54a4e9d5582fcdbeb2665efb5292f3
+---
+ arch/riscv/Kconfig   | 1 +
+ arch/riscv/mm/init.c | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 1c5544401530..d3d07c1ad83f 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -228,6 +228,7 @@ config RISCV
+ 	select VDSO_GETRANDOM if HAVE_GENERIC_VDSO
+ 	select USER_STACKTRACE_SUPPORT
+ 	select ZONE_DMA32 if 64BIT
++	select ZONE_DMA32 if 64BIT && !SOC_SPACEMIT_K1PRO
+ 
+ config RUSTC_SUPPORTS_RISCV
+ 	def_bool y
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 8d0374d7ce8e..fb61206ef7ed 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -313,7 +313,12 @@ static void __init setup_bootmem(void)
+ 	if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
+ 		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+ 
+-	dma_contiguous_reserve(dma32_phys_limit);
++#ifdef CONFIG_ZONE_DMA32
++ 	dma_contiguous_reserve(dma32_phys_limit);
++#else
++	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
++#endif
++
+ 	if (IS_ENABLED(CONFIG_64BIT))
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+ }
+-- 
+2.50.1
+

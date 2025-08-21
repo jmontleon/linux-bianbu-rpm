@@ -1,0 +1,30 @@
+From 864f76da61fa0cbf70655dbe9d6bb39f8eb4a06f Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 22 Feb 2024 11:53:23 +0800
+Subject: [PATCH 0423/1218] scatterlist: mask out GFP_DMA32 flag when call
+ kmalloc on spacemit k1x platform
+
+Change-Id: I33222f2906558d36593d26f22c488ac42d34ec56
+---
+ lib/scatterlist.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index 4af1c8b0775a..db6a65d46faa 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -607,7 +607,11 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
+ 		nalloc++;
+ 	}
+ 	sgl = kmalloc_array(nalloc, sizeof(struct scatterlist),
++#if defined(CONFIG_SOC_SPACEMIT_K1X)
++			    gfp & ~(GFP_DMA | GFP_DMA32));
++#else
+ 			    gfp & ~GFP_DMA);
++#endif
+ 	if (!sgl)
+ 		return NULL;
+ 
+-- 
+2.50.1
+
