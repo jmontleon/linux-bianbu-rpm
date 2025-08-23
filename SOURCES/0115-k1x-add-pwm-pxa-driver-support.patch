@@ -1,4 +1,4 @@
-From 358a433a698756233d9ee0d0573a7e7eb5a2da11 Mon Sep 17 00:00:00 2001
+From a529e44afba33c2fd7e63accfc3b687cc56e1a22 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 14 Sep 2023 14:44:23 +0800
 Subject: [PATCH 0115/1218] k1x:add pwm-pxa driver support
@@ -160,5 +160,5 @@ index 8a4a3d2df30d..8adfe86ba1af 100644
  	if (IS_ERR(pc->clk))
  		return dev_err_probe(dev, PTR_ERR(pc->clk), "Failed to get clock\n");
 -- 
-2.50.1
+2.51.0
 

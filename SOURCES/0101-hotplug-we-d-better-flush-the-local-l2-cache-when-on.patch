@@ -1,4 +1,4 @@
-From 205e294d254b76ff754443bbe7b16005483977f3 Mon Sep 17 00:00:00 2001
+From 58020274a4aa9a1170757063a8f91c57baf35df7 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
 Subject: [PATCH 0101/1218] hotplug: we'd better flush the local & l2 cache
@@ -99,5 +99,5 @@ index 4d7cf338824a..4f792d6d7e39 100644
  	error = cpuhp_setup_state(CPUHP_AP_RISCV_TIMER_STARTING,
  			 "clockevents/riscv/timer:starting",
 -- 
-2.50.1
+2.51.0
 

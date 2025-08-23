@@ -1,4 +1,4 @@
-From 8e63fae92a35d7f5f8c535f82561a80b9d29bedb Mon Sep 17 00:00:00 2001
+From feaec9c90bf4ade78f307d9fa0d70593c30c611b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 11 Jan 2024 08:59:44 +0800
 Subject: [PATCH 0352/1218] k1x:cpuidle: support cpu power-down only
@@ -101,5 +101,5 @@ index c66416af37e6..d76803988baf 100644
  		ret = request_irq(evt->ced.irq, timer_interrupt, IRQF_TIMER | IRQF_IRQPOLL | IRQF_ONESHOT, "broadcast-timer", evt->irqa.dev_id);
  		if (ret < 0)
 -- 
-2.50.1
+2.51.0
 

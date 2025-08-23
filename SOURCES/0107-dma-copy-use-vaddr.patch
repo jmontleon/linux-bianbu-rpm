@@ -1,4 +1,4 @@
-From 1fa39bab3ee81f014a7dfe450d6aa5a763a677b7 Mon Sep 17 00:00:00 2001
+From d35ae02d65495300807973e851c8e342c519907f Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 2 Jun 2023 17:51:08 +0800
 Subject: [PATCH 0107/1218] dma copy use vaddr
@@ -279,5 +279,5 @@ index 35845e949fde..ed22b2d30923 100644
  	dma_dev = dma_chan->device;
  	dma_set_mask(dma_dev->dev, DMA_BIT_MASK(32));
 -- 
-2.50.1
+2.51.0
 
