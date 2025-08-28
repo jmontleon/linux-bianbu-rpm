@@ -1,4 +1,4 @@
-From 44bd57854f4b1ff5477641aa93b14edc383f7585 Mon Sep 17 00:00:00 2001
+From 988c45a33fdba551595ba0f76ea4fbde4022e0f5 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
 Subject: [PATCH 0348/1218] usb: add spacemit k1x dma mask setting
@@ -27,10 +27,10 @@ index 92442dbf72f8..a2b29ada6dc0 100644
  	mutex_init(&dwc->mutex);
  
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 334ef2fceea3..230ea4b14e4e 100644
+index b299f2b42981..7881ec700dfb 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
-@@ -5486,6 +5486,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+@@ -5495,6 +5495,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
  		dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
  	}
  

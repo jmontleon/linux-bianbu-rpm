@@ -1,4 +1,4 @@
-From f755abceeb79aca16e23023b32c7661f01744f7a Mon Sep 17 00:00:00 2001
+From 4b911ba4c639c5829310192c59421febed3af8e1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 20 Sep 2024 10:10:13 +0800
 Subject: [PATCH 1000/1218] k1x:adc:p1: supprt adc driver for k1x
@@ -220,7 +220,7 @@ index 559e39fda6c8..f90e68fcc9d0 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index ea3ba1397392..3397295329d6 100644
+index a632c74c1fc5..07d055481bdc 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
 @@ -1778,4 +1778,10 @@ config XILINX_AMS
