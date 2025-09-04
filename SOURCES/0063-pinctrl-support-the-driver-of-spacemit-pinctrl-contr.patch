@@ -1,4 +1,4 @@
-From 16b56b059b68111d4162d289dfebaac9930c92f6 Mon Sep 17 00:00:00 2001
+From 142a91c840e19b0041e485c1fa14cdfc6b77ef20 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 28 Jun 2023 19:17:22 +0800
 Subject: [PATCH 0063/1218] pinctrl: support the driver of spacemit pinctrl
@@ -84,10 +84,10 @@ index 4a2eb68d581e..212eb4aba5c0 100644
  # CONFIG_MEDIA_CEC_SUPPORT is not set
  CONFIG_MEDIA_SUPPORT=y
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 33db9104df17..31a24a1cd78d 100644
+index 3952f77081a3..4c2ad1c6f0aa 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
-@@ -655,5 +655,6 @@ source "drivers/pinctrl/ti/Kconfig"
+@@ -656,5 +656,6 @@ source "drivers/pinctrl/ti/Kconfig"
  source "drivers/pinctrl/uniphier/Kconfig"
  source "drivers/pinctrl/visconti/Kconfig"
  source "drivers/pinctrl/vt8500/Kconfig"

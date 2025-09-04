@@ -1,4 +1,4 @@
-From f9ec891f2992768816eac79ac56348bf0e195ed3 Mon Sep 17 00:00:00 2001
+From a59b5eb80e0ed91f95babbfc6336df2fab190d16 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 22 Nov 2023 17:33:39 +0800
 Subject: [PATCH 0164/1218] pmic:spm8821:pinctrl: first version to support
@@ -16,7 +16,7 @@ Change-Id: I0b0bc49acd314b0a1c8919605326b503272bbc44
  create mode 100644 drivers/pinctrl/spacemit-pmic-pinctrl.c
 
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 31a24a1cd78d..28f1f8bd6d09 100644
+index 4c2ad1c6f0aa..2990d430cdc5 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
 @@ -481,6 +481,17 @@ config PINCTRL_RK805
