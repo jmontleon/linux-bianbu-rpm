@@ -1,4 +1,4 @@
-From fe82a8ef095b68c1056a9578fd159bc034d95915 Mon Sep 17 00:00:00 2001
+From 10fa31ab70dda48f51d4e35f2843c9847ac6220b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
 Subject: [PATCH 0028/1218] riscv: mm: fix reserve cma for platform not having
@@ -15,7 +15,7 @@ Change-Id: I5504523c5b54a4e9d5582fcdbeb2665efb5292f3
  2 files changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 1c5544401530..d3d07c1ad83f 100644
+index b29eff4ace2d..6d2cac48abe1 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
 @@ -228,6 +228,7 @@ config RISCV

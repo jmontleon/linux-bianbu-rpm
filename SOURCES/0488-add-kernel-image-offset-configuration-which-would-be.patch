@@ -1,4 +1,4 @@
-From b707b2f06128ff66fe5d29557d776633932ab0b4 Mon Sep 17 00:00:00 2001
+From 3d915607e8f5841e0c18d3337ab59634d0672c8e Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Wed, 13 Mar 2024 19:21:33 +0800
 Subject: [PATCH 0488/1218] add kernel image offset configuration which would
@@ -11,7 +11,7 @@ Change-Id: I540d5cebb12889628f4efebab5f30c93c08b457b
  2 files changed, 9 insertions(+)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index d3d07c1ad83f..00d0dfcd2432 100644
+index 6d2cac48abe1..f7110f439698 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
 @@ -1353,6 +1353,14 @@ config PORTABLE
