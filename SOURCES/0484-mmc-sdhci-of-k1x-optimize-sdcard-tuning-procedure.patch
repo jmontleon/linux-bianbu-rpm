@@ -1,4 +1,4 @@
-From bc9819e6a49762dfa611788c77e9858cd5a01c0f Mon Sep 17 00:00:00 2001
+From acf7e56576fcb6d55db6bba380ebf2f206f5ebd5 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:12:48 +0800
 Subject: [PATCH 0484/1218] mmc: sdhci-of-k1x: optimize sdcard tuning procedure
@@ -770,7 +770,7 @@ index 1968ec44de57..4abbb4e89b68 100644
  #ifdef CONFIG_SYSFS
  		for (i = 0; i < ARRAY_SIZE(sdhci_sysfs_files); i++) {
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index f7a862047112..28df0612f26e 100644
+index 3a1e5f8588e7..41c28041e920 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,15 +1733,6 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)

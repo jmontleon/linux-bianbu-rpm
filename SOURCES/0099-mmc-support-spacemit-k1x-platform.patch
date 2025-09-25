@@ -1,4 +1,4 @@
-From 422bdfd8dafa8d9dab722f5f85b626630e7f0eb2 Mon Sep 17 00:00:00 2001
+From e263ea4aba87d84eff4a1ef6bab9f41c1c67e964 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
 Subject: [PATCH 0099/1218] mmc: support spacemit k1x platform
@@ -2006,7 +2006,7 @@ index 000000000000..030bc3845fed
 +MODULE_DESCRIPTION("SDHCI platform driver for Spacemit");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index e116f2db34d5..f7a862047112 100644
+index be701eb25fec..3a1e5f8588e7 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,6 +1733,15 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
