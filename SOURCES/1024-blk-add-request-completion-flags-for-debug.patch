@@ -1,0 +1,46 @@
+From b0c60522d2d666d5324da68b2e78e95ff1e102d4 Mon Sep 17 00:00:00 2001
+From: lijuan <juan.li@spacemit.com>
+Date: Mon, 14 Oct 2024 18:10:42 +0800
+Subject: [PATCH 1024/1222] blk: add request completion flags for debug
+
+Change-Id: Ib84003e68d537173a9d550071d43eab587d10fb6
+---
+ block/blk-mq.c         | 2 ++
+ include/linux/blk-mq.h | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index ba3a4b77f578..8d28e43bfdad 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1276,6 +1276,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
+ 	cpu = rq->mq_ctx->cpu;
+ 	if (llist_add(&rq->ipi_list, &per_cpu(blk_cpu_done, cpu)))
+ 		smp_call_function_single_async(cpu, &per_cpu(blk_cpu_csd, cpu));
++	WRITE_ONCE(rq->request_debug_flags, 1);
+ }
+ 
+ static void blk_mq_raise_softirq(struct request *rq)
+@@ -3576,6 +3577,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
+ 	}
+ 
+ 	WRITE_ONCE(rq->state, MQ_RQ_IDLE);
++	WRITE_ONCE(rq->request_debug_flags, 0);
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index 2a5a828f19a0..3d86d0b05eea 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -206,6 +206,7 @@ struct request {
+ 	 */
+ 	rq_end_io_fn *end_io;
+ 	void *end_io_data;
++	int request_debug_flags;
+ };
+ 
+ static inline enum req_op req_op(const struct request *req)
+-- 
+2.51.0
+
