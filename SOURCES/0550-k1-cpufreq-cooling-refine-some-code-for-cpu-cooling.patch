@@ -1,4 +1,4 @@
-From 03bd876cc15ea5e77e8197885e071d6f7604869a Mon Sep 17 00:00:00 2001
+From 990542665434a46d6a807b9ef30794f00bb7bb17 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 3 Apr 2024 19:39:15 +0800
 Subject: [PATCH 0550/1218] k1:cpufreq-cooling: refine some code for cpu
@@ -21,7 +21,7 @@ Change-Id: I402b438b928991a2df8dd1678ba83bca983ae005
  9 files changed, 42 insertions(+), 80 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e2ad8556c0c0..e65dd2188ac8 100644
+index e2ad8556c0c01..e65dd2188ac8d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2033,30 +2033,18 @@ cluster0_thermal {
@@ -175,7 +175,7 @@ index e2ad8556c0c0..e65dd2188ac8 100644
  				};
  			};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 106be807779c..fb00a67666ea 100644
+index 106be807779c4..fb00a67666ea8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -681,11 +681,11 @@ &rcpu {
@@ -193,7 +193,7 @@ index 106be807779c..fb00a67666ea 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index b06526852872..05a475d59b86 100644
+index b065268528726..05a475d59b864 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -953,11 +953,11 @@ &rcpu {
@@ -211,7 +211,7 @@ index b06526852872..05a475d59b86 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index bced90483a40..eace7ed52b34 100644
+index bced90483a40f..eace7ed52b34c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -917,11 +917,11 @@ &rcpu {
@@ -229,7 +229,7 @@ index bced90483a40..eace7ed52b34 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 9b1163279110..4a9919dd2d22 100644
+index 9b1163279110b..4a9919dd2d222 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -854,11 +854,11 @@ &rcpu {
@@ -247,7 +247,7 @@ index 9b1163279110..4a9919dd2d22 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index abff4eca0d9f..92f8dd268bb0 100644
+index abff4eca0d9f5..92f8dd268bb0f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -756,11 +756,11 @@ &rcpu {
@@ -265,7 +265,7 @@ index abff4eca0d9f..92f8dd268bb0 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index a00fe73fae9f..5062ea7bafb3 100644
+index a00fe73fae9fa..5062ea7bafb34 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -725,11 +725,11 @@ &rcpu {
@@ -283,7 +283,7 @@ index a00fe73fae9f..5062ea7bafb3 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 7ec431db70c4..19a10eea0232 100644
+index 7ec431db70c4d..19a10eea0232a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -602,10 +602,10 @@ &rcpu {
@@ -300,7 +300,7 @@ index 7ec431db70c4..19a10eea0232 100644
  	temperature = <115000>;
  };
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index 6d47a155d9d7..5fd734cffa0a 100644
+index 6d47a155d9d7c..5fd734cffa0a9 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -124,13 +124,12 @@ static int spacemit_processor_notifier(struct notifier_block *nb,

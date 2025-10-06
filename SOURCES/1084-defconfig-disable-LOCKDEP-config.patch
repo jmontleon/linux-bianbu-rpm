@@ -1,4 +1,4 @@
-From 04aaac61741fcc3d0ede88d799b9b521540ea78a Mon Sep 17 00:00:00 2001
+From ee259477bdde03ca3a8637007d682a3a0168ffb3 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 8 Nov 2024 15:30:52 +0800
 Subject: [PATCH 1084/1218] defconfig: disable LOCKDEP config
@@ -11,7 +11,7 @@ Change-Id: I62b686d188f09165c0eb113fc270a72060d7bda5
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 7c21c59b72b9..b34aad6eb3f5 100644
+index 7c21c59b72b9a..b34aad6eb3f55 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -44,6 +44,7 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"

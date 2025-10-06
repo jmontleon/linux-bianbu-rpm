@@ -1,4 +1,4 @@
-From c335c5496c277e038dafcb77a03b5c413eaadbe9 Mon Sep 17 00:00:00 2001
+From 3b1d2ad33c5851039faba9155ee0e9b763473417 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 28 Dec 2023 18:07:45 +0800
 Subject: [PATCH 0271/1218] reset: add apb2 reg base resets
@@ -10,7 +10,7 @@ Change-Id: I0032d49baa0084656b286b3beda3fad2f558534c
  2 files changed, 42 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index a4d9ab3848ee..636aeea6cae4 100644
+index a4d9ab3848ee5..636aeea6cae41 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -117,6 +117,16 @@
@@ -95,7 +95,7 @@ index a4d9ab3848ee..636aeea6cae4 100644
  
  	reset->lock = &g_cru_lock;
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index 67bc0ea2563d..d8074e07e619 100644
+index 67bc0ea2563dc..d8074e07e6192 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -103,6 +103,15 @@

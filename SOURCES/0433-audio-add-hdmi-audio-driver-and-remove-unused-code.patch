@@ -1,4 +1,4 @@
-From 9bd23e631d99320a9ae9d924e3f5d05ea1f3a144 Mon Sep 17 00:00:00 2001
+From 74c7ffd0da436ba982da377d677161af87dcc9d2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 22 Feb 2024 22:56:19 +0800
 Subject: [PATCH 0433/1218] audio: add hdmi audio driver and remove unused code
@@ -34,7 +34,7 @@ Change-Id: I26d20cb27de4f755524c9e24f1091c6eb4391e5c
  delete mode 100644 sound/soc/spacemit/spacemit-snd-soc.h
 
 diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
-index 8b06a074bb5d..7dd04de40ea9 100644
+index 8b06a074bb5d0..7dd04de40ea95 100644
 --- a/sound/soc/spacemit/Makefile
 +++ b/sound/soc/spacemit/Makefile
 @@ -1,4 +1,3 @@
@@ -46,7 +46,7 @@ index 8b06a074bb5d..7dd04de40ea9 100644
  obj-$(CONFIG_SND_SOC_SPACEMIT) += snd-soc-spacemit.o
 diff --git a/sound/soc/spacemit/spacemit-snd-adsp.c b/sound/soc/spacemit/spacemit-snd-adsp.c
 deleted file mode 100644
-index 56a8371a7cca..000000000000
+index 56a8371a7ccac..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-adsp.c
 +++ /dev/null
 @@ -1,516 +0,0 @@
@@ -568,7 +568,7 @@ index 56a8371a7cca..000000000000
 -}
 diff --git a/sound/soc/spacemit/spacemit-snd-adsp.h b/sound/soc/spacemit/spacemit-snd-adsp.h
 deleted file mode 100644
-index dc158b1e99d1..000000000000
+index dc158b1e99d1b..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-adsp.h
 +++ /dev/null
 @@ -1,65 +0,0 @@
@@ -638,7 +638,7 @@ index dc158b1e99d1..000000000000
 -#endif
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index ca2c5b1945da..f53bba1ffb02 100644
+index ca2c5b1945da5..f53bba1ffb02b 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -17,29 +17,15 @@
@@ -825,7 +825,7 @@ index ca2c5b1945da..f53bba1ffb02 100644
  MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
 diff --git a/sound/soc/spacemit/spacemit-snd-ipc.c b/sound/soc/spacemit/spacemit-snd-ipc.c
 deleted file mode 100644
-index 87ef4f8d09b2..000000000000
+index 87ef4f8d09b2f..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-ipc.c
 +++ /dev/null
 @@ -1,310 +0,0 @@
@@ -1141,7 +1141,7 @@ index 87ef4f8d09b2..000000000000
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-ipc.h b/sound/soc/spacemit/spacemit-snd-ipc.h
 deleted file mode 100644
-index abb38f96f02f..000000000000
+index abb38f96f02f4..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-ipc.h
 +++ /dev/null
 @@ -1,65 +0,0 @@
@@ -1212,7 +1212,7 @@ index abb38f96f02f..000000000000
 -#endif
 diff --git a/sound/soc/spacemit/spacemit-snd-memory.c b/sound/soc/spacemit/spacemit-snd-memory.c
 deleted file mode 100644
-index 3a64e201a1c4..000000000000
+index 3a64e201a1c40..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-memory.c
 +++ /dev/null
 @@ -1,223 +0,0 @@
@@ -1441,7 +1441,7 @@ index 3a64e201a1c4..000000000000
 -}
 diff --git a/sound/soc/spacemit/spacemit-snd-memory.h b/sound/soc/spacemit/spacemit-snd-memory.h
 deleted file mode 100644
-index 1bde459fa2fc..000000000000
+index 1bde459fa2fc5..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-memory.h
 +++ /dev/null
 @@ -1,38 +0,0 @@
@@ -1485,7 +1485,7 @@ index 1bde459fa2fc..000000000000
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-msgs.h b/sound/soc/spacemit/spacemit-snd-msgs.h
 deleted file mode 100644
-index 1fecda0d3938..000000000000
+index 1fecda0d39381..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-msgs.h
 +++ /dev/null
 @@ -1,244 +0,0 @@
@@ -1735,7 +1735,7 @@ index 1fecda0d3938..000000000000
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 new file mode 100755
-index 000000000000..61e25f3e9f64
+index 0000000000000..61e25f3e9f643
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -0,0 +1,791 @@
@@ -2532,7 +2532,7 @@ index 000000000000..61e25f3e9f64
 +MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm.c b/sound/soc/spacemit/spacemit-snd-pcm.c
 deleted file mode 100644
-index 961535f9901a..000000000000
+index 961535f9901ad..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-pcm.c
 +++ /dev/null
 @@ -1,661 +0,0 @@
@@ -3199,7 +3199,7 @@ index 961535f9901a..000000000000
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-soc.c b/sound/soc/spacemit/spacemit-snd-soc.c
 deleted file mode 100644
-index 7218c7231cce..000000000000
+index 7218c7231cce9..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-soc.c
 +++ /dev/null
 @@ -1,46 +0,0 @@
@@ -3251,7 +3251,7 @@ index 7218c7231cce..000000000000
 -
 diff --git a/sound/soc/spacemit/spacemit-snd-soc.h b/sound/soc/spacemit/spacemit-snd-soc.h
 deleted file mode 100644
-index 015881bdd065..000000000000
+index 015881bdd0657..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd-soc.h
 +++ /dev/null
 @@ -1,12 +0,0 @@
@@ -3268,7 +3268,7 @@ index 015881bdd065..000000000000
 -
 -#endif
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index f3e3ccef2f68..74af804da309 100644
+index f3e3ccef2f686..74af804da309c 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -23,6 +23,129 @@
@@ -3538,7 +3538,7 @@ index f3e3ccef2f68..74af804da309 100644
  
  #ifdef CONFIG_OF
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.h b/sound/soc/spacemit/spacemit-snd-sspa.h
-index 5158bbc31c60..e4d226a0898b 100644
+index 5158bbc31c606..e4d226a0898b0 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.h
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.h
 @@ -77,3 +77,10 @@

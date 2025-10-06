@@ -1,4 +1,4 @@
-From c443b5468c193ad0fd9351af4d4ec2555fca4158 Mon Sep 17 00:00:00 2001
+From e000a8187bae57836245b87795d0b38877b8478b Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:26:12 +0800
 Subject: [PATCH 0470/1218] usb: misc: spacemit_onboard_hub: use gpio array
@@ -11,7 +11,7 @@ Change-Id: I4ce1e584d6be07506ba7561a5498b5b86c10b59f
  3 files changed, 19 insertions(+), 32 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 60e125d35312..fbe38174b6a7 100644
+index 60e125d353122..fbe38174b6a7b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -759,9 +759,9 @@ &combphy {
@@ -28,7 +28,7 @@ index 60e125d35312..fbe38174b6a7 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 5ffd7f348281..46d680c8d75d 100644
+index 5ffd7f348281d..46d680c8d75d3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -741,9 +741,9 @@ &combphy {
@@ -45,7 +45,7 @@ index 5ffd7f348281..46d680c8d75d 100644
  };
  
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
-index 8f0150a53112..fa12fb718bae 100644
+index 8f0150a531128..fa12fb718bae1 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.c
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -18,41 +18,27 @@

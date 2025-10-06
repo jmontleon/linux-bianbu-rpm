@@ -1,4 +1,4 @@
-From 3af10441cfe6992c470312059676abe45a715195 Mon Sep 17 00:00:00 2001
+From c3211f8ba723bc67576cf17ff485a82c2260eb12 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Aug 2024 15:09:01 +0800
 Subject: [PATCH 0965/1218] spacemit-rf: introduce spacemit-rfkill driver
@@ -19,7 +19,7 @@ Change-Id: Ib8465050908b7f08a8304277cc3a0521ba3d1a04
  create mode 100644 drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/Makefile b/drivers/soc/spacemit/spacemit-rf/Makefile
-index c2cb0d17295f..5bd183c2b043 100644
+index c2cb0d17295fe..5bd183c2b043b 100644
 --- a/drivers/soc/spacemit/spacemit-rf/Makefile
 +++ b/drivers/soc/spacemit/spacemit-rf/Makefile
 @@ -3,4 +3,4 @@
@@ -29,7 +29,7 @@ index c2cb0d17295f..5bd183c2b043 100644
 -obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o spacemit-bt.o
 +obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o spacemit-bt.o spacemit-rfkill.o
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
-index 4cd27bbcbfe4..48677d23778d 100644
+index 4cd27bbcbfe48..48677d23778da 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 @@ -27,6 +27,7 @@
@@ -75,7 +75,7 @@ index 4cd27bbcbfe4..48677d23778d 100644
  
  	pwrseq->reset_n = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
-index fe9cd20545ef..eb9afa9bced3 100644
+index fe9cd20545ef3..eb9afa9bced33 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 @@ -24,11 +24,13 @@
@@ -113,7 +113,7 @@ index fe9cd20545ef..eb9afa9bced3 100644
  }
  
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
-index 75cd875d4e67..22ff01890757 100644
+index 75cd875d4e672..22ff018907573 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
 @@ -20,5 +20,5 @@ struct spacemit_pwrseq {
@@ -125,7 +125,7 @@ index 75cd875d4e67..22ff01890757 100644
  #endif
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
 new file mode 100644
-index 000000000000..59e9fa277f3e
+index 0000000000000..59e9fa277f3e9
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
 @@ -0,0 +1,321 @@
@@ -451,7 +451,7 @@ index 000000000000..59e9fa277f3e
 +MODULE_DESCRIPTION("spacemit rfkill pwrseq driver");
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
-index bf02ade21dd4..c7a553ba5f76 100644
+index bf02ade21dd47..c7a553ba5f768 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -26,6 +26,7 @@

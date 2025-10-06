@@ -1,4 +1,4 @@
-From 9629a10f70a26957685cfb79c94cd9d8e7bc7261 Mon Sep 17 00:00:00 2001
+From 335f13f85c65aca06c1dec648da1fe37d2130fb3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 23 Sep 2023 12:38:00 +0800
 Subject: [PATCH 0127/1218] k1pro:cpuidle: support cpuidle
@@ -11,7 +11,7 @@ Change-Id: I586ebcec8e3b03cec44a1845b1bee36b79c14d0e
  3 files changed, 63 insertions(+), 50 deletions(-)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 21a698452f31..c15516658229 100644
+index 21a698452f318..c155166582290 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -119,6 +119,7 @@ choice
@@ -23,7 +23,7 @@ index 21a698452f31..c15516658229 100644
  		  This enables support for Spacemit k1-pro Platform Hardware.
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 847168456ed3..8b8e6fdf1727 100644
+index 847168456ed36..8b8e6fdf17277 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -27,7 +27,7 @@ cpu_0: cpu@0 {
@@ -211,7 +211,7 @@ index 847168456ed3..8b8e6fdf1727 100644
  		uart0: serial@2cea0000 {
  			compatible = "snps,dw-apb-uart";
 diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
-index 3a55ae5fe225..8e53d2362376 100644
+index 3a55ae5fe225a..8e53d23623767 100644
 --- a/drivers/clocksource/dw_apb_timer.c
 +++ b/drivers/clocksource/dw_apb_timer.c
 @@ -75,6 +75,7 @@ static void apbt_eoi(struct dw_apb_timer *timer)

@@ -1,4 +1,4 @@
-From 4677b85b35faed034f5fe9aa27ef8ec80514e270 Mon Sep 17 00:00:00 2001
+From 740933cf1d4ab5ec4e8d69b6d56e0566cc27033a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=9D=8E=E5=A8=9F?= <juan.li@spacemit.com>
 Date: Wed, 7 Aug 2024 10:00:28 +0800
 Subject: [PATCH 0887/1218] this is not pcie patch Revert "pcie: clean debug
@@ -14,7 +14,7 @@ Change-Id: Ic57a6ceb17c32b0881b8522d3ea6dc4531e53a8b
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index a00ef2129710..73be034c3da9 100644
+index a00ef2129710c..73be034c3da93 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -2075,7 +2075,7 @@ static int serial_pxa_probe_dt(struct platform_device *pdev, struct uart_pxa_por

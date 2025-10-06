@@ -1,4 +1,4 @@
-From ea72ec3dda6d5657501f6f901eaffd311914a904 Mon Sep 17 00:00:00 2001
+From 233a82a95aa826a398ca9b6af53ba60fceb053d5 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 25 Dec 2023 15:35:51 +0800
 Subject: [PATCH 0243/1218] display: fix dpu reset control
@@ -10,7 +10,7 @@ Change-Id: Ic1ea591edd0a32a18ce4772459813716271b3b80
  2 files changed, 56 insertions(+), 36 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 224e8c52d10f..1fda1a52f861 100644
+index 224e8c52d10f4..1fda1a52f8618 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -839,11 +839,38 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,
@@ -136,7 +136,7 @@ index 224e8c52d10f..1fda1a52f861 100644
  
  	return component_add(dev, &dpu_component_ops);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 403e120038eb..f12cc6cb9573 100644
+index 403e120038ebd..f12cc6cb95730 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -83,7 +83,7 @@ static void spacemit_dsi_encoder_mode_set(struct drm_encoder *encoder,

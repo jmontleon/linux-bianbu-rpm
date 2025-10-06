@@ -1,4 +1,4 @@
-From 327353283b6c78a88d6c2bf371fa92b47b448e14 Mon Sep 17 00:00:00 2001
+From c3bb39ce5044a4704b77517d152bbd599f1a94e3 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 1 Jul 2024 21:21:01 +0800
 Subject: [PATCH 0783/1218] k1: set USB0 to host mode for MUSE-Book
@@ -9,7 +9,7 @@ Change-Id: I3a9a9e605be8361883c76db68261f524c37c0fbc
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 4aa2c1ce2e85..522ca5c2dbd2 100644
+index 4aa2c1ce2e85c..522ca5c2dbd2b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -664,10 +664,8 @@ &usbphy {

@@ -1,4 +1,4 @@
-From 7dca1aaf657fe3b1d0a2c48ecaf23e8ee1211de9 Mon Sep 17 00:00:00 2001
+From 1b67db9f969944db41f1c2a7575e205a730ac937 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 30 Mar 2023 17:16:23 +0800
 Subject: [PATCH 0014/1218] add k1pro reset-controller driver and config
@@ -15,7 +15,7 @@ Change-Id: I70cdcf14b0b5d3d2cb1b8a21b49caaf3fb671226
  create mode 100755 include/dt-bindings/reset/k1-pro-reset.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index e0d63ef9c7f7..b933c8d446c0 100644
+index e0d63ef9c7f74..b933c8d446c08 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -168,13 +168,22 @@ ccu:clock-controller@2f020000 {
@@ -43,7 +43,7 @@ index e0d63ef9c7f7..b933c8d446c0 100644
  			compatible = "riscv,clint0";
  			interrupts-extended = <
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index ec8c953cb73d..f61ca40ed41b 100644
+index ec8c953cb73d4..f61ca40ed41be 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -367,6 +367,12 @@ config RESET_ZYNQMP
@@ -60,7 +60,7 @@ index ec8c953cb73d..f61ca40ed41b 100644
  source "drivers/reset/starfive/Kconfig"
  source "drivers/reset/sti/Kconfig"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 91e6348e3351..efb8a5f5247c 100644
+index 91e6348e33511..efb8a5f5247c3 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
 @@ -46,3 +46,4 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
@@ -71,7 +71,7 @@ index 91e6348e3351..efb8a5f5247c 100644
 \ No newline at end of file
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
 new file mode 100755
-index 000000000000..c1ccd6e42048
+index 0000000000000..c1ccd6e42048e
 --- /dev/null
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -0,0 +1,274 @@
@@ -351,7 +351,7 @@ index 000000000000..c1ccd6e42048
 +
 diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
 new file mode 100755
-index 000000000000..b95a069e1c68
+index 0000000000000..b95a069e1c682
 --- /dev/null
 +++ b/include/dt-bindings/reset/k1-pro-reset.h
 @@ -0,0 +1,134 @@

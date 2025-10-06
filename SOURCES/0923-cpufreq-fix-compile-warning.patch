@@ -1,4 +1,4 @@
-From 05c4ebb4840ade6a580c7819cb28570c160dee11 Mon Sep 17 00:00:00 2001
+From c556312c2ad382014fe464321ee32bf589fd4beb Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 11:25:20 +0800
 Subject: [PATCH 0923/1218] cpufreq: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I92afde0d9002d35025dae9e89f82ad95f1239e75
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index ee030cb24a43..6636edaf9991 100644
+index ee030cb24a435..6636edaf99917 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -414,7 +414,7 @@ static int spacemit_dt_cpufreq_pre_probe(struct platform_device *pdev)

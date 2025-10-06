@@ -1,4 +1,4 @@
-From c39dfd19cae3a7d72b3ae4739c10790133ef087e Mon Sep 17 00:00:00 2001
+From efe7b21544acff954c3a0488a53d4ccc5ca3dce9 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 26 Dec 2024 20:56:54 +0800
 Subject: [PATCH 1195/1218] media: k1/camera: fix some compile warnings
@@ -13,7 +13,7 @@ Change-Id: I9d9dc1612a00b8be764fdcf133100a33e91e9fb3
  5 files changed, 65 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
-index b029e248b11e..925e78b03974 100644
+index b029e248b11e6..925e78b03974c 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 @@ -562,7 +562,7 @@ static int ccic_clk_set_rate(struct ccic_ctrl *ctrl_dev, int mode)
@@ -95,7 +95,7 @@ index b029e248b11e..925e78b03974 100644
  	platform_driver_unregister(&k1x_ccic_driver);
  	ccic_csiphy_unregister();
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
-index 65bca4112aef..3c69b9f1433e 100644
+index 65bca4112aef8..3c69b9f1433e2 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 @@ -227,7 +227,7 @@ int ccic_dma_set_burst(struct ccic_dev *ccic_dev)
@@ -108,7 +108,7 @@ index 65bca4112aef..3c69b9f1433e 100644
  	if (en) {
  		ccic_reg_set_bit(ccic_dev, REG_IRQMASK, FRAMEIRQS);
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
-index da9ba51b4372..07bbf4c39eda 100644
+index da9ba51b4372a..07bbf4c39eda6 100644
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 @@ -574,7 +574,7 @@ static int cpp_iommu_config_channel(struct cpp_iommu_device *mmu_dev,
@@ -121,7 +121,7 @@ index da9ba51b4372..07bbf4c39eda 100644
  				   uint32_t tid, uint32_t offset)
  {
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
-index 606f8977f55a..9fa8746625d2 100644
+index 606f8977f55a0..9fa8746625d2f 100644
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 @@ -7,6 +7,7 @@
@@ -475,7 +475,7 @@ index 606f8977f55a..9fa8746625d2 100644
  	int ret = 0;
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
-index 36a1ebecabc9..666f44c7d4f7 100644
+index 36a1ebecabc94..666f44c7d4f74 100644
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 @@ -6,6 +6,7 @@

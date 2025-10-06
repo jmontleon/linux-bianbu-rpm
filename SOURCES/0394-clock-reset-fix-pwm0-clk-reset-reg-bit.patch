@@ -1,4 +1,4 @@
-From b18f9eb935a4454cadb96ef51c092a944836b633 Mon Sep 17 00:00:00 2001
+From 32b05400dfdd5aa05c61eeb15ac4946460d2f6d2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 22 Jan 2024 14:40:49 +0800
 Subject: [PATCH 0394/1218] clock/reset: fix pwm0 clk/reset reg bit
@@ -10,7 +10,7 @@ Change-Id: Ied1e282a6c292b57501c54741f325f417e94d4be
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 22c42e63ba94..553dac7784dd 100755
+index 22c42e63ba940..553dac7784ddb 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -486,7 +486,7 @@ static const char *pwm_parent_names[] = {
@@ -23,7 +23,7 @@ index 22c42e63ba94..553dac7784dd 100755
  static SPACEMIT_CCU_MUX_GATE(pwm1_clk, "pwm1_clk", pwm_parent_names,
  	BASE_TYPE_APBC, APBC_PWM1_CLK_RST,
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 91004f711e3e..58780258dc41 100644
+index 91004f711e3ef..58780258dc414 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -175,7 +175,7 @@ static const struct spacemit_reset_signal

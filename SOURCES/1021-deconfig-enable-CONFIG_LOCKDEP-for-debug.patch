@@ -1,4 +1,4 @@
-From 3f27ae24730dab6213e675765011a0a31a9da15e Mon Sep 17 00:00:00 2001
+From 4fe7c662cc964f5f252b2afdbd1036308b02dd34 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 16 Oct 2024 10:51:16 +0800
 Subject: [PATCH 1021/1218] deconfig: enable CONFIG_LOCKDEP for debug
@@ -9,7 +9,7 @@ Change-Id: I4a112225270dff0b8a66352fd030e65058fec820
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index c90211e64dc7..0caa0b6a4dc6 100644
+index c90211e64dc7d..0caa0b6a4dc6e 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -44,7 +44,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"

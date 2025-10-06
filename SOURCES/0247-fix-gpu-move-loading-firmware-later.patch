@@ -1,4 +1,4 @@
-From dc122b88ed0257ad5fc23df143db94644ce5a154 Mon Sep 17 00:00:00 2001
+From 65ddd5d83abd413a95fcdbde29534fad5dba9297 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Mon, 25 Dec 2023 21:18:41 +0800
 Subject: [PATCH 0247/1218] fix/gpu: move loading firmware later
@@ -11,7 +11,7 @@ Change-Id: I06e7d8dbebe7c158fa0650c82bda35b30931cf5d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
-index 04cce39aef3d..a35c16b120bb 100644
+index 04cce39aef3d7..a35c16b120bbf 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.h
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -160,7 +160,7 @@

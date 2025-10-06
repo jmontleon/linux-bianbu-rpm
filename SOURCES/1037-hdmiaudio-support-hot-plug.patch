@@ -1,4 +1,4 @@
-From 09c9098e2a76ab24b2ea7f9ea223ea31d0da8db4 Mon Sep 17 00:00:00 2001
+From c50788c4cc70977cbfef1398b821cdd41d2f4dc3 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 25 Oct 2024 11:06:37 +0800
 Subject: [PATCH 1037/1218] hdmiaudio: support hot plug
@@ -9,7 +9,7 @@ Change-Id: I00d74d13483f42d1435fbb384ed48be13ccd62af
  1 file changed, 111 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 1bc8ed8d0a6d..17d81e22dcfa 100644
+index 1bc8ed8d0a6d1..17d81e22dcfa7 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -23,6 +23,23 @@

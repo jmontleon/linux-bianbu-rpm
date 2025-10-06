@@ -1,4 +1,4 @@
-From c854428b038535e8d2a7c70717c3c925c59afa4d Mon Sep 17 00:00:00 2001
+From 682ffdac5b46b25b6c126287e8640890a67307e8 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 28 May 2024 15:19:16 +0800
 Subject: [PATCH 0786/1218] display: reserve hdmi compatibility config for
@@ -10,7 +10,7 @@ Change-Id: I4b4f5a0a867378fe7ee3360c9daa83ed252c613a
  1 file changed, 35 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index f6e60cbea006..5745275bbb7b 100644
+index f6e60cbea0061..5745275bbb7b6 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -550,11 +550,6 @@ void hdmi_init (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth){

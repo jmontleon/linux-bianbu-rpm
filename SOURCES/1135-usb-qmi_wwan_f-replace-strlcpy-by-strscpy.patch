@@ -1,4 +1,4 @@
-From 7533ffd92e23d48b20ec44f5efbb92b787003b2b Mon Sep 17 00:00:00 2001
+From 271ed28078fa0be6df6905985a3c2d97dd0e915f Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:48:30 +0800
 Subject: [PATCH 1135/1218] usb:qmi_wwan_f: replace strlcpy by strscpy
@@ -9,7 +9,7 @@ Change-Id: I73d6f2e80edc81de7f32852942fe944bc4d28ed4
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
-index 08dd67d30996..3f540f3c0cf8 100644
+index 08dd67d30996c..3f540f3c0cf8e 100644
 --- a/drivers/net/usb/qmi_wwan_f.c
 +++ b/drivers/net/usb/qmi_wwan_f.c
 @@ -1761,8 +1761,8 @@ static void ql_net_get_drvinfo(struct net_device *net, struct ethtool_drvinfo *i

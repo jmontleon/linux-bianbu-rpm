@@ -1,4 +1,4 @@
-From 31d3ac8d141a1d68ce7f442a0f0667e7b8fcfeda Mon Sep 17 00:00:00 2001
+From b5bf12b009ea8bc9e0e7689a6972acc0f524e0fa Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 19 Aug 2024 10:18:14 +0800
 Subject: [PATCH 0939/1218] k1x:support rcpu uart1 function through x60
@@ -11,7 +11,7 @@ Change-Id: I6c10a3b9ff8ea88a5070e68346d100f3a52c5d49
  3 files changed, 163 insertions(+), 10 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index b8f6a1a1021b..98dfbd259a97 100644
+index b8f6a1a1021b1..98dfbd259a977 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -28,6 +28,7 @@ aliases {
@@ -47,7 +47,7 @@ index b8f6a1a1021b..98dfbd259a97 100644
  			compatible = "spacemit,k1-x-mailbox";
  			reg = <0x0 0xd4013400 0x0 0x100>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 33c2a75e00a8..0841ddfdab4b 100644
+index 33c2a75e00a83..0841ddfdab4bb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -233,6 +233,15 @@ K1X_PADCONF(GPIO_55, MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* i2c0_sda
@@ -67,7 +67,7 @@ index 33c2a75e00a8..0841ddfdab4b 100644
  		pinctrl-single,pins =<
  			K1X_PADCONF(GPIO_56, MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))	/* i2c1_scl */
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 73be034c3da9..43fff0b25cd5 100644
+index 73be034c3da93..43fff0b25cd52 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -74,6 +74,20 @@

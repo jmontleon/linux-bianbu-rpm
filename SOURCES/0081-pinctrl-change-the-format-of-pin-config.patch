@@ -1,4 +1,4 @@
-From 801fd88064edd3b7826838919ad2f89f74988cd9 Mon Sep 17 00:00:00 2001
+From b8000c20f229b399e5ac23371b826a6622418487 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 27 Jul 2023 21:16:13 +0800
 Subject: [PATCH 0081/1218] pinctrl: change the format of pin config
@@ -16,7 +16,7 @@ Change-Id: I316614a8a6a3a0c6a2cd1e83985b5a514ff398fa
  5 files changed, 154 insertions(+), 155 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
-index e2ba639196fe..17c77ba3132b 100755
+index e2ba639196fe0..17c77ba3132bf 100755
 --- a/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi
 @@ -4,255 +4,249 @@
@@ -378,7 +378,7 @@ index e2ba639196fe..17c77ba3132b 100755
 \ No newline at end of file
 +};
 diff --git a/drivers/pinctrl/spacemit/pinctrl-k1pro.c b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
-index 52eeeb46f834..70d5e96172d0 100755
+index 52eeeb46f8349..70d5e96172d0a 100755
 --- a/drivers/pinctrl/spacemit/pinctrl-k1pro.c
 +++ b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
 @@ -101,6 +101,8 @@ static const struct spacemit_regs k1pro_regs = {
@@ -391,7 +391,7 @@ index 52eeeb46f834..70d5e96172d0 100755
  	.pe_shift = 8,
  	.pull_shift = 9,
 diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.c b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
-index 2042a486710e..cd3770d82b77 100755
+index 2042a486710e5..cd3770d82b778 100755
 --- a/drivers/pinctrl/spacemit/pinctrl-spacemit.c
 +++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
 @@ -37,7 +37,7 @@ static const char *spacemit_get_group_name(struct pinctrl_dev *pctldev,
@@ -530,7 +530,7 @@ index 2042a486710e..cd3770d82b77 100755
  	struct resource *res;
  	int ret;
 diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.h b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
-index 7df1df7bcdbe..f937ab580528 100755
+index 7df1df7bcdbe9..f937ab5805286 100755
 --- a/drivers/pinctrl/spacemit/pinctrl-spacemit.h
 +++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
 @@ -16,26 +16,31 @@
@@ -608,7 +608,7 @@ index 7df1df7bcdbe..f937ab580528 100755
  	u8  pe_shift;
  	u8  pull_shift;
 diff --git a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
-index 07cda5ef9a1e..084b6fd8013a 100755
+index 07cda5ef9a1e2..084b6fd8013aa 100755
 --- a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
 +++ b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
 @@ -88,15 +88,7 @@

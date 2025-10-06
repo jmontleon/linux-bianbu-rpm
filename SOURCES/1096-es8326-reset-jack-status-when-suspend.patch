@@ -1,4 +1,4 @@
-From 10203d8cdece51e542dd2b8790e31096251202f5 Mon Sep 17 00:00:00 2001
+From c48138dcb1629fee298907eb92e8731caff0856f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 8 Nov 2024 17:53:06 +0800
 Subject: [PATCH 1096/1218] es8326: reset jack status when suspend
@@ -9,7 +9,7 @@ Change-Id: I287ec966efac5601b29ccecccbb55cfc3607a642
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index c264acbba22f..002951250d77 100644
+index c264acbba22fb..002951250d775 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -1306,6 +1306,7 @@ static int es8326_suspend(struct device *dev)

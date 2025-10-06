@@ -1,4 +1,4 @@
-From 6d746969aaf62dfc32646766b83681d8c181a89a Mon Sep 17 00:00:00 2001
+From 53bf7adde6866afa9dbd6e1e0921708a1abd9f65 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 12:09:26 -0400
 Subject: [PATCH 0002/1218] Revert "clk: spacemit: mark K1 pll1_d8 as critical"
@@ -10,7 +10,7 @@ This reverts commit 10948c00e548e9ad2ce9d765baf26dce2d9b806b.
  2 files changed, 4 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index df65009a07bb..cdde37a05235 100644
+index df65009a07bb1..cdde37a052353 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -170,8 +170,7 @@ CCU_FACTOR_GATE_DEFINE(pll1_d4, CCU_PARENT_HW(pll1), APBS_PLL1_SWCR2, BIT(3), 4,
@@ -24,7 +24,7 @@ index df65009a07bb..cdde37a05235 100644
  CCU_FACTOR_GATE_DEFINE(pll1_d13_189, CCU_PARENT_HW(pll1), APBS_PLL1_SWCR2, BIT(16), 13, 1);
  CCU_FACTOR_GATE_DEFINE(pll1_d23_106p8, CCU_PARENT_HW(pll1), APBS_PLL1_SWCR2, BIT(20), 23, 1);
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index 54d40cd39b27..51d19f5d6aac 100644
+index 54d40cd39b275..51d19f5d6aacb 100644
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -101,22 +101,17 @@ static struct ccu_mix _name = {							\

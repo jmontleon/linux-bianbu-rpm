@@ -1,4 +1,4 @@
-From 009260cd81039fcd179781edecf88227a8c1a254 Mon Sep 17 00:00:00 2001
+From ad0a2198039f0752e9be71e658baf2a2d9dca44c Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 11 Jul 2024 11:26:50 +0800
 Subject: [PATCH 0814/1218] hdmiaudio: fix no sound issue on some hdmi display,
@@ -10,7 +10,7 @@ Change-Id: I2ba8cf1253d228b8a86b57911a898d0e5ef8d967
  1 file changed, 54 insertions(+), 90 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index d248f7509686..57764c40652e 100644
+index d248f75096868..57764c40652e9 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -34,32 +34,18 @@

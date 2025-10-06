@@ -1,4 +1,4 @@
-From 2773657d2ee9dc787a39c9dceb2709dabb1e7b69 Mon Sep 17 00:00:00 2001
+From 96b5c777a837dc76b573ee10872e6160362a517c Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Tue, 2 Jan 2024 18:44:38 +0800
 Subject: [PATCH 0299/1218] support camera to draw, when use 4GB DDR
@@ -12,7 +12,7 @@ Change-Id: I36a63d96630c462f93083c169a49cc3c3dbdc194
  4 files changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
-index 2b65726e1314..f5d37c404e35 100755
+index 2b65726e1314a..f5d37c404e35c 100755
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 @@ -623,7 +623,7 @@ static int __iommu_fill_ttb_by_sg(struct sg_table *sgt, uint32_t offset,
@@ -43,7 +43,7 @@ index 2b65726e1314..f5d37c404e35 100755
  	cpp_dev->mmu_dev = NULL;
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
-index a3b4b47f7ffe..89ff5c3c8a1d 100755
+index a3b4b47f7ffe8..89ff5c3c8a1d3 100755
 --- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 @@ -27,6 +27,22 @@ struct plat_cam_device {
@@ -70,7 +70,7 @@ index a3b4b47f7ffe..89ff5c3c8a1d 100755
  			       unsigned int notification, void *arg)
  {
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
-index f9aaf8ca0604..3889c92e30a7 100755
+index f9aaf8ca0604a..3889c92e30a79 100755
 --- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
 @@ -166,6 +166,9 @@ struct ccic_irq_data {
@@ -84,7 +84,7 @@ index f9aaf8ca0604..3889c92e30a7 100755
  
  int plat_cam_unregister_subdev(struct plat_cam_subdev *csd);
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index e4536bdaa26b..bd6158892e0a 100755
+index e4536bdaa26b4..bd6158892e0aa 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -491,6 +491,7 @@ static void fe_isp_set_clk(struct isp_context *isp_ctx, int clk_mode)

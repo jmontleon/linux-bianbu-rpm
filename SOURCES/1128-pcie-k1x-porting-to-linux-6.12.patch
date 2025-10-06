@@ -1,4 +1,4 @@
-From 59f93bdb4c41f03278765718e8db344baccec0af Mon Sep 17 00:00:00 2001
+From a49bb10f48ce7d56d0d6ffb516534ed7d553d471 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:37:22 +0800
 Subject: [PATCH 1128/1218] pcie: k1x: porting to linux-6.12
@@ -9,7 +9,7 @@ Change-Id: I42d918b89d5125da3234d7d9a9390f7a773d90b9
  1 file changed, 15 insertions(+), 72 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 62bf0d95984b..6cc8b0f61faf 100644
+index 62bf0d95984b1..6cc8b0f61faf5 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -262,7 +262,7 @@ static inline void k1x_pcie_phy0_reg_writel(struct k1x_pcie *pcie, u32 offset,

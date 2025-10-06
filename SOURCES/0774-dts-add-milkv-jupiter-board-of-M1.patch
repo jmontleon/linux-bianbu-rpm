@@ -1,4 +1,4 @@
-From 39c61f05a8c275a8568bad175e384e6dfde4c39e Mon Sep 17 00:00:00 2001
+From dbf0238932dba225efee9692a45fc6f8a1a51e8e Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Mon, 24 Jun 2024 20:39:33 +0800
 Subject: [PATCH 0774/1218] dts: add milkv-jupiter board of M1
@@ -12,7 +12,7 @@ Change-Id: I8a67ba5140750fe27264f8fce5dc5857dae730fb
  create mode 100644 arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 933b26960ab8..259c27eb5e72 100644
+index 933b26960ab85..259c27eb5e727 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,5 +5,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
@@ -24,7 +24,7 @@ index 933b26960ab8..259c27eb5e72 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 new file mode 100644
-index 000000000000..b4f1c4ab9ec6
+index 0000000000000..b4f1c4ab9ec66
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -0,0 +1,1137 @@

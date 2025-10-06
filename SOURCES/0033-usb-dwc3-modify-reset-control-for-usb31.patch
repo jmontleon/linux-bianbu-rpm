@@ -1,4 +1,4 @@
-From 1c8936b8935d51142ad9a7df26c12f2205c48c23 Mon Sep 17 00:00:00 2001
+From 6135b5482fcda652449aac922feb5b3b169e4733 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 May 2023 14:48:50 +0800
 Subject: [PATCH 0033/1218] usb: dwc3: modify reset control for usb31
@@ -10,7 +10,7 @@ Change-Id: I89f2c8af045748c612a24ca11bb7d0bcf829663f
  2 files changed, 17 insertions(+), 61 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 593820fb82c1..0a5a5743cab7 100644
+index 593820fb82c1b..0a5a5743cab7d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -298,10 +298,8 @@ usbdrd3: usb3@0 {
@@ -27,7 +27,7 @@ index 593820fb82c1..0a5a5743cab7 100644
  			status = "disabled";
  
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 5fa11489d1b2..0ffec428e9a1 100755
+index 5fa11489d1b2b..0ffec428e9a1d 100755
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -27,6 +27,7 @@ struct dwc3_spacemit_driverdata {

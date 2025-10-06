@@ -1,4 +1,4 @@
-From b1fbe439c4252aba29a402d13f151890bb226a41 Mon Sep 17 00:00:00 2001
+From 7622408706795df7b799ca661aa1a763bca5a5c8 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 10:30:37 +0800
 Subject: [PATCH 1028/1218] nvme: expose allocation or mapping failure reports
@@ -9,7 +9,7 @@ Change-Id: Id61d1a9caaea249c41fce1174c068d417d77e6f4
  1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3ef30c36bf10..e3c52a4fffc1 100644
+index 3ef30c36bf105..e3c52a4fffc14 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
 @@ -881,7 +881,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,

@@ -1,4 +1,4 @@
-From 0651396bbea06f30740257b9e0fc306c1114074f Mon Sep 17 00:00:00 2001
+From a75212ce9bbb91e49f277f266a42494584149466 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 2 Jun 2023 17:51:08 +0800
 Subject: [PATCH 0107/1218] dma copy use vaddr
@@ -9,7 +9,7 @@ Change-Id: Id04f8a2223feae196245c49984897d10f52a3fc4
  1 file changed, 139 insertions(+), 65 deletions(-)
 
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
-index 35845e949fde..ed22b2d30923 100644
+index 35845e949fde9..ed22b2d309230 100644
 --- a/drivers/dma/udma.c
 +++ b/drivers/dma/udma.c
 @@ -53,6 +53,12 @@ typedef struct {

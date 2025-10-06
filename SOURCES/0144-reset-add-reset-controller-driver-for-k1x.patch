@@ -1,4 +1,4 @@
-From 3b8541ef47e52d2c9d5374bd9509856701d0b9b7 Mon Sep 17 00:00:00 2001
+From de46aefcfa838d2db5ff3bf32caa90fe75b0c8b9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 23 Oct 2023 18:06:31 +0800
 Subject: [PATCH 0144/1218] reset: add reset controller driver for k1x
@@ -16,7 +16,7 @@ Change-Id: I7a6aa34da265feb978e86cd141c2f23404204771
  create mode 100644 include/dt-bindings/reset/spacemit-k1x-reset.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 48089048c245..30f0f691eb41 100644
+index 48089048c2452..30f0f691eb41d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -5,6 +5,7 @@
@@ -50,7 +50,7 @@ index 48089048c245..30f0f691eb41 100644
  			#interrupt-cells = <1>;
  			compatible = "riscv,plic0";
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index a6eec5b6c8a3..3b4f1e2e08a5 100644
+index a6eec5b6c8a31..3b4f1e2e08a54 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -326,6 +326,8 @@ CONFIG_CLINT_TIMER=y
@@ -63,7 +63,7 @@ index a6eec5b6c8a3..3b4f1e2e08a5 100644
  # CONFIG_PHY_MVEBU_A3700_UTMI is not set
  # CONFIG_NVMEM is not set
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index f61ca40ed41b..15662ad65e0c 100644
+index f61ca40ed41be..15662ad65e0cf 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -373,6 +373,12 @@ config RESET_K1_PRO_SPACEMIT
@@ -80,7 +80,7 @@ index f61ca40ed41b..15662ad65e0c 100644
  source "drivers/reset/starfive/Kconfig"
  source "drivers/reset/sti/Kconfig"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index efb8a5f5247c..8d5e1df0baf9 100644
+index efb8a5f5247c3..8d5e1df0baf91 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
 @@ -46,4 +46,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
@@ -94,7 +94,7 @@ index efb8a5f5247c..8d5e1df0baf9 100644
 \ No newline at end of file
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
 new file mode 100644
-index 000000000000..6befeaebd4f4
+index 0000000000000..6befeaebd4f4a
 --- /dev/null
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -0,0 +1,464 @@
@@ -564,7 +564,7 @@ index 000000000000..6befeaebd4f4
 +
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
 new file mode 100644
-index 000000000000..67bc0ea2563d
+index 0000000000000..67bc0ea2563dc
 --- /dev/null
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -0,0 +1,108 @@

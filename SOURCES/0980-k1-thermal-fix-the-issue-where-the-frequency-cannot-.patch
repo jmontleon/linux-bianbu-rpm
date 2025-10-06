@@ -1,4 +1,4 @@
-From cb431ea44d2800fd11b71d464757f8ca4b86ef94 Mon Sep 17 00:00:00 2001
+From 21c81dadcf577f65923bb0a5a688dbbd57cb91cb Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 3 Sep 2024 16:32:00 +0800
 Subject: [PATCH 0980/1218] k1:thermal: fix the issue where the frequency
@@ -18,7 +18,7 @@ Change-Id: Ie4ad14e01ab38e662eb9f13d37c15d36aafacea1
  1 file changed, 36 insertions(+), 12 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
-index e2d73dd2f6c3..b11d653af813 100644
+index e2d73dd2f6c3c..b11d653af813f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 @@ -9,24 +9,30 @@ cluster0_thermal {

@@ -1,4 +1,4 @@
-From b76884f43467a8a612b864428171ce679ff14ac5 Mon Sep 17 00:00:00 2001
+From 788d80363ecaa69340806ddf09889b53a084532a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Mar 2024 15:34:21 +0800
 Subject: [PATCH 0519/1218] aud: fix i2s capture issue
@@ -9,7 +9,7 @@ Change-Id: Icd955ea5a1ef7a8c9d9b02be1ccfcedba49a6694
  1 file changed, 189 insertions(+), 27 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index a87c8d612a53..ec7ab403a612 100755
+index a87c8d612a530..ec7ab403a612c 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -19,6 +19,8 @@

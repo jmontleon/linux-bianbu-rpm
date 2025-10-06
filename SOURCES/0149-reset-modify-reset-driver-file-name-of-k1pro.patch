@@ -1,4 +1,4 @@
-From bfba1a0ce8a7b75768e9f09597131a4478bf2950 Mon Sep 17 00:00:00 2001
+From f817bd0f80099eb21af8879add935c6e0ec3bf8a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 7 Nov 2023 17:23:28 +0800
 Subject: [PATCH 0149/1218] reset: modify reset driver file name of k1pro
@@ -15,7 +15,7 @@ Change-Id: I3398cd8c744fdb1c37a2f19651ba90d89a51979a
  rename include/dt-bindings/reset/{k1-pro-reset.h => spacemit-k1pro-reset.h} (100%)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 30538df03356..4c9e7fbcc690 100644
+index 30538df033560..4c9e7fbcc6908 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -6,7 +6,7 @@
@@ -28,7 +28,7 @@ index 30538df03356..4c9e7fbcc690 100644
  
  / {
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 15662ad65e0c..377f5d55f7cf 100644
+index 15662ad65e0cf..377f5d55f7cf4 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -367,11 +367,12 @@ config RESET_ZYNQMP
@@ -48,7 +48,7 @@ index 15662ad65e0c..377f5d55f7cf 100644
  config RESET_K1X_SPACEMIT
          tristate "Reset controller driver for Spacemit K1X SoCs"
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 8d5e1df0baf9..23c11c26d203 100644
+index 8d5e1df0baf91..23c11c26d203d 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
 @@ -46,5 +46,5 @@ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
@@ -63,7 +63,7 @@ diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/reset-spacemit-k1pro.c
 similarity index 99%
 rename from drivers/reset/k1-pro-reset.c
 rename to drivers/reset/reset-spacemit-k1pro.c
-index 026717812959..71f10dc75420 100755
+index 0267178129593..71f10dc754200 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/reset-spacemit-k1pro.c
 @@ -11,7 +11,7 @@

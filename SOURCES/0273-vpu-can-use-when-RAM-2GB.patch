@@ -1,4 +1,4 @@
-From fb0817e75974bd8446aae64ab8f037067fe4fa77 Mon Sep 17 00:00:00 2001
+From 45fee32d8828933cfe841709a48f49bd825cc241 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Fri, 29 Dec 2023 20:20:38 +0800
 Subject: [PATCH 0273/1218] vpu can use when RAM > 2GB
@@ -17,7 +17,7 @@ Signed-off-by: fuqiang <qiang.fu@spacemit.com>
  4 files changed, 69 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
-index e4c2c1d4c57a..83161779fc7b 100644
+index e4c2c1d4c57af..83161779fc7b8 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 @@ -291,7 +291,7 @@ static int read_message(struct mvx_fw *fw,
@@ -156,7 +156,7 @@ index e4c2c1d4c57a..83161779fc7b 100644
  	}
  
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index f3561d57ae2e..b50c19f83ece 100644
+index f3561d57ae2eb..b50c19f83ece2 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -211,13 +211,13 @@ static mvx_mmu_pte *ptw(struct mvx_mmu *mmu,
@@ -295,7 +295,7 @@ index f3561d57ae2e..b50c19f83ece 100644
 +	return phys_addr;
 +}
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
-index ab2311f4f6e5..292a07492977 100644
+index ab2311f4f6e5d..292a074929776 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
 @@ -466,4 +466,27 @@ int mvx_mmu_pages_debugfs_init(struct mvx_mmu_pages *pages,
@@ -327,7 +327,7 @@ index ab2311f4f6e5..292a07492977 100644
 +
  #endif /* _MVX_MMU_H_ */
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
-index 3a86d8b30e68..76739a3b1edc 100644
+index 3a86d8b30e689..76739a3b1edcc 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 @@ -49,6 +49,7 @@

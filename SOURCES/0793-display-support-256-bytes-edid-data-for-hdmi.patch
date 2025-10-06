@@ -1,4 +1,4 @@
-From 85a82dab1963b6d5b2433806078278a7d0cf4455 Mon Sep 17 00:00:00 2001
+From c7592ac4863cfc2bb83f7d168936c2e931d3e5cb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Thu, 20 Jun 2024 20:24:32 +0800
 Subject: [PATCH 0793/1218] display: support 256 bytes edid data for hdmi
@@ -10,7 +10,7 @@ Change-Id: I059536800516e85fb03eea68fa99a86fb8c3a4c1
  2 files changed, 38 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index ac9b221aecfc..6657e2a5104a 100644
+index ac9b221aecfca..6657e2a5104a5 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -594,7 +594,7 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
@@ -23,7 +23,7 @@ index ac9b221aecfc..6657e2a5104a 100644
  		udelay(10);
  	} else {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 16878c0287f4..cde07b9102f0 100644
+index 16878c0287f46..cde07b9102f05 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -40,7 +40,7 @@

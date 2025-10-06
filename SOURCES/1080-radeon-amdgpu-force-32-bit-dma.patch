@@ -1,4 +1,4 @@
-From b05f0914d6252153fd30deabe0b5687278e1f4ed Mon Sep 17 00:00:00 2001
+From ec8f479f13730a9f253ee7229cd5052586dabbed Mon Sep 17 00:00:00 2001
 From: Icenowy Zheng <uwu@icenowy.me>
 Date: Fri, 21 Jun 2024 15:10:31 +0800
 Subject: [PATCH 1080/1218] radeon/amdgpu: force 32-bit dma
@@ -9,7 +9,7 @@ Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
-index 7a3e510327b7..dac34767617d 100644
+index 7a3e510327b79..dac34767617df 100644
 --- a/drivers/gpu/drm/radeon/radeon_device.c
 +++ b/drivers/gpu/drm/radeon/radeon_device.c
 @@ -1358,7 +1358,7 @@ int radeon_device_init(struct radeon_device *rdev,

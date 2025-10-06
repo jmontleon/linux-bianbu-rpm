@@ -1,4 +1,4 @@
-From 14855201c39f70bc243aa84dca43e8892d001dd3 Mon Sep 17 00:00:00 2001
+From b1445f92486b28d62be60c98005422e13c065178 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Fri, 15 Mar 2024 10:18:50 +0800
 Subject: [PATCH 0492/1218] add compressed(gzip) kernel itb build
@@ -10,7 +10,7 @@ Change-Id: I5ad336fa1612377306d6f41b3cff6a495e3f9acf
  2 files changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index d1c0937584a6..ea8229fa696a 100644
+index d1c0937584a6b..ea8229fa696a9 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -197,7 +197,7 @@ BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zs
@@ -23,7 +23,7 @@ index d1c0937584a6..ea8229fa696a 100644
  loader.bin: loader
  Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst Image.xz loader xipImage vmlinuz.efi: Image
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index 1d6345d4ee87..cae46277fdfb 100644
+index 1d6345d4ee87f..cae46277fdfba 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
 @@ -77,10 +77,7 @@ endif

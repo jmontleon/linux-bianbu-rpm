@@ -1,4 +1,4 @@
-From 3fd2878aac5ca45fb692eb52bd34705c566fd830 Mon Sep 17 00:00:00 2001
+From e699637c2a240880ed4e5eb903f5fb558ac5e93e Mon Sep 17 00:00:00 2001
 From: zengyu <yu.zeng@spacemit.com>
 Date: Mon, 5 Aug 2024 17:50:38 +0800
 Subject: [PATCH 0852/1218] Add support for ICM42607 sensor
@@ -20,7 +20,7 @@ Signed-off-by: zengyu <yu.zeng@spacemit.com>
  create mode 100644 drivers/misc/input-polldev.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 695e9cce457f..0492d40ddbd3 100644
+index 695e9cce457fd..0492d40ddbd31 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -247,6 +247,17 @@ &i2c4 {
@@ -42,7 +42,7 @@ index 695e9cce457f..0492d40ddbd3 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_i2c8>;
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index cd5b83dc4878..539adf4cbda1 100644
+index cd5b83dc48781..539adf4cbda1e 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -651,6 +651,12 @@ config SPACEMIT_TCM
@@ -59,7 +59,7 @@ index cd5b83dc4878..539adf4cbda1 100644
  source "drivers/misc/eeprom/Kconfig"
  source "drivers/misc/cb710/Kconfig"
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index a1a2b0c3811d..c76a5ab75eaa 100644
+index a1a2b0c3811dd..c76a5ab75eaaa 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
 @@ -76,3 +76,4 @@ obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
@@ -69,7 +69,7 @@ index a1a2b0c3811d..c76a5ab75eaa 100644
 +obj-$(CONFIG_ICM42607)		+= icm42607.o input-polldev.o
 diff --git a/drivers/misc/icm42607.c b/drivers/misc/icm42607.c
 new file mode 100644
-index 000000000000..8ac65320759a
+index 0000000000000..8ac65320759a6
 --- /dev/null
 +++ b/drivers/misc/icm42607.c
 @@ -0,0 +1,697 @@
@@ -772,7 +772,7 @@ index 000000000000..8ac65320759a
 +
 diff --git a/drivers/misc/icm42607.h b/drivers/misc/icm42607.h
 new file mode 100644
-index 000000000000..3afe1023aba0
+index 0000000000000..3afe1023aba0a
 --- /dev/null
 +++ b/drivers/misc/icm42607.h
 @@ -0,0 +1,48 @@
@@ -826,7 +826,7 @@ index 000000000000..3afe1023aba0
 +
 diff --git a/drivers/misc/input-polldev.c b/drivers/misc/input-polldev.c
 new file mode 100644
-index 000000000000..f294a8a431ba
+index 0000000000000..f294a8a431ba0
 --- /dev/null
 +++ b/drivers/misc/input-polldev.c
 @@ -0,0 +1,182 @@
@@ -1014,7 +1014,7 @@ index 000000000000..f294a8a431ba
 +EXPORT_SYMBOL(input_unregister_polled_device);
 diff --git a/drivers/misc/input-polldev.h b/drivers/misc/input-polldev.h
 new file mode 100644
-index 000000000000..597a0077b3c5
+index 0000000000000..597a0077b3c54
 --- /dev/null
 +++ b/drivers/misc/input-polldev.h
 @@ -0,0 +1,46 @@

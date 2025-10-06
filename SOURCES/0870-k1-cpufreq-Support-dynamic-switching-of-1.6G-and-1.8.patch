@@ -1,4 +1,4 @@
-From cc8f44a500c04881513d20252f92e58785e9e917 Mon Sep 17 00:00:00 2001
+From 8d890fbe695c56e90cda00987e42beef2fd023e8 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 19:45:58 +0800
 Subject: [PATCH 0870/1218] k1:cpufreq: Support dynamic switching of 1.6G and
@@ -12,7 +12,7 @@ Change-Id: Ia34a82f9abed51e54661cca8afab98e54c519777
  3 files changed, 34 insertions(+), 18 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
-index 6672b481625b..6826398e7f23 100644
+index 6672b481625be..6826398e7f23b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 @@ -7,8 +7,8 @@ clst_core_opp_table0: opp_table0 {
@@ -27,7 +27,7 @@ index 6672b481625b..6826398e7f23 100644
  
  		opp1600000000 {
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
-index af2458381b89..fa02fda0ad36 100644
+index af2458381b89a..fa02fda0ad36d 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 @@ -7,8 +7,8 @@ clst_core_opp_table0: opp_table0 {
@@ -64,7 +64,7 @@ index af2458381b89..fa02fda0ad36 100644
  
  		opp1800000000 {
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index bff603076d6e..ee030cb24a43 100644
+index bff603076d6e8..ee030cb24a435 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -34,7 +34,8 @@ extern struct thermal_cooling_device **

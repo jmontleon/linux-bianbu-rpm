@@ -1,4 +1,4 @@
-From c8f0a29432956a1ca647f6bd365cf7404cc61568 Mon Sep 17 00:00:00 2001
+From a760eed570ccbf4c1221f2859c2b7f7d4d5b2763 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 24 May 2023 13:47:02 +0800
 Subject: [PATCH 0032/1218] dma:dw-axi-dma support handshake num more than 16
@@ -13,7 +13,7 @@ Change-Id: I5d0b5143e87308e41048708eb1467ee959aed9c5
  3 files changed, 52 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 028601ce2f6f..593820fb82c1 100644
+index 028601ce2f6f5..593820fb82c1b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -237,6 +237,26 @@ uart0: serial@2cea0000 {
@@ -44,7 +44,7 @@ index 028601ce2f6f..593820fb82c1 100644
  			compatible = "snp,pwm-dwc";
  			reg = <0x0 0x2cfc0000 0x0 0x10000>;
 diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index b23536645ff7..6d6b3febc01a 100644
+index b23536645ff7c..6d6b3febc01ac 100644
 --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
 +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
 @@ -48,7 +48,7 @@
@@ -132,7 +132,7 @@ index b23536645ff7..6d6b3febc01a 100644
  	{}
  };
 diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index b842e6a8d90d..0546483a56cf 100644
+index b842e6a8d90d3..0546483a56cf0 100644
 --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
 +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
 @@ -25,6 +25,7 @@

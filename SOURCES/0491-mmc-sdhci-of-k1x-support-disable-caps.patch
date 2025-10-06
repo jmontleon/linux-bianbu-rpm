@@ -1,4 +1,4 @@
-From 54b13549609d96d9b938a3542c7826f504a8c2e0 Mon Sep 17 00:00:00 2001
+From 12a76c3b9a0bf77efb5aa29a78971671c25072b6 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 14 Mar 2024 18:19:39 +0800
 Subject: [PATCH 0491/1218] mmc: sdhci-of-k1x: support disable caps
@@ -9,7 +9,7 @@ Change-Id: I53e6314b72e6a795463dfff2d2cbfec3fb0f602a
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 4abbb4e89b68..f6789060bb98 100644
+index 4abbb4e89b68f..f6789060bb98e 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -351,7 +351,7 @@ static u32 spacemit_handle_interrupt(struct sdhci_host *host, u32 intmask)

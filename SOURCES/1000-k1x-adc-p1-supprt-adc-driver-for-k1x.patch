@@ -1,4 +1,4 @@
-From 63985a70cd89923a101c4b5c5a3174238d24d755 Mon Sep 17 00:00:00 2001
+From af0cb3f3c07a6a385a7cd713f1bfccea12484222 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 20 Sep 2024 10:10:13 +0800
 Subject: [PATCH 1000/1218] k1x:adc:p1: supprt adc driver for k1x
@@ -28,7 +28,7 @@ Change-Id: I200fe01c6bf351c13cc23876e4effca537ce028e
  create mode 100644 drivers/iio/adc/k1x_adc.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 4f5cbdb670e4..beebf2e03bf4 100644
+index 4f5cbdb670e49..beebf2e03bf49 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -623,6 +623,10 @@ pwr_key: key {
@@ -43,7 +43,7 @@ index 4f5cbdb670e4..beebf2e03bf4 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index ca9951e76802..e5db5f39daac 100644
+index ca9951e768029..e5db5f39daac6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -545,6 +545,10 @@ pwr_key: key {
@@ -58,7 +58,7 @@ index ca9951e76802..e5db5f39daac 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
-index 0d859c1b3525..47158b5da12b 100644
+index 0d859c1b35254..47158b5da12be 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -507,6 +507,10 @@ pwr_key: key {
@@ -73,7 +73,7 @@ index 0d859c1b3525..47158b5da12b 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 5ee252248309..d371a92c9501 100644
+index 5ee2522483092..d371a92c95017 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -380,6 +380,10 @@ pwr_key: key {
@@ -88,7 +88,7 @@ index 5ee252248309..d371a92c9501 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
-index 68fb018652c4..11ee3fdd6d58 100644
+index 68fb018652c47..11ee3fdd6d58c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 @@ -625,6 +625,10 @@ pwr_key: key {
@@ -103,7 +103,7 @@ index 68fb018652c4..11ee3fdd6d58 100644
  
  	sgm4154x: sgm4154x@1a {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 48629d5b35df..347888902ddd 100644
+index 48629d5b35dfd..347888902ddde 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -646,6 +646,10 @@ pwr_key: key {
@@ -118,7 +118,7 @@ index 48629d5b35df..347888902ddd 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 91a1663a1687..116deeedf474 100644
+index 91a1663a16871..116deeedf4741 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -540,6 +540,10 @@ pwr_key: key {
@@ -133,7 +133,7 @@ index 91a1663a1687..116deeedf474 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index b3b9a12a78ad..9d60d242cb58 100644
+index b3b9a12a78adb..9d60d242cb588 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -532,6 +532,10 @@ pwr_key: key {
@@ -148,7 +148,7 @@ index b3b9a12a78ad..9d60d242cb58 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index c3bff62c562f..3b51cafcbff0 100644
+index c3bff62c562fc..3b51cafcbff0c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -548,6 +548,10 @@ pwr_key: key {
@@ -163,7 +163,7 @@ index c3bff62c562f..3b51cafcbff0 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index c7995ad7b922..9a911076d5f5 100644
+index c7995ad7b922c..9a911076d5f5e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -633,6 +633,10 @@ pwr_key: key {
@@ -178,7 +178,7 @@ index c7995ad7b922..9a911076d5f5 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index 5ee17bfae933..4e62ddc0ee51 100644
+index 5ee17bfae9338..4e62ddc0ee518 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -554,6 +554,10 @@ pwr_key: key {
@@ -193,7 +193,7 @@ index 5ee17bfae933..4e62ddc0ee51 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 7fe4b751bf9e..1b420eaf864a 100644
+index 7fe4b751bf9ea..1b420eaf864a2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -361,6 +361,10 @@ pwr_key: key {
@@ -208,7 +208,7 @@ index 7fe4b751bf9e..1b420eaf864a 100644
  };
  
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 559e39fda6c8..f90e68fcc9d0 100644
+index 559e39fda6c86..f90e68fcc9d04 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -1036,6 +1036,7 @@ CONFIG_EXTCON_USB_K1XCI=y
@@ -220,7 +220,7 @@ index 559e39fda6c8..f90e68fcc9d0 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index a632c74c1fc5..07d055481bdc 100644
+index a632c74c1fc51..07d055481bdc5 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
 @@ -1778,4 +1778,10 @@ config XILINX_AMS
@@ -235,7 +235,7 @@ index a632c74c1fc5..07d055481bdc 100644
 +
  endmenu
 diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-index 09ae6edb2650..392c4f47d284 100644
+index 09ae6edb26504..392c4f47d2840 100644
 --- a/drivers/iio/adc/Makefile
 +++ b/drivers/iio/adc/Makefile
 @@ -156,3 +156,4 @@ obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
@@ -246,7 +246,7 @@ index 09ae6edb2650..392c4f47d284 100644
 \ No newline at end of file
 diff --git a/drivers/iio/adc/k1x_adc.c b/drivers/iio/adc/k1x_adc.c
 new file mode 100644
-index 000000000000..1094d1759c5b
+index 0000000000000..1094d1759c5b3
 --- /dev/null
 +++ b/drivers/iio/adc/k1x_adc.c
 @@ -0,0 +1,226 @@
@@ -477,7 +477,7 @@ index 000000000000..1094d1759c5b
 +MODULE_DESCRIPTION("SPACEMIT adc driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 6db7ea67068e..1d009248fd2e 100644
+index 6db7ea67068e5..1d009248fd2eb 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -16,6 +16,7 @@ SPM8821_IRQS_DESC;
@@ -489,7 +489,7 @@ index 6db7ea67068e..1d009248fd2e 100644
  SPM8821_MFD_MATCH_DATA;
  
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index e519487be838..682060d4dadc 100644
+index e519487be838f..682060d4dadc1 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -213,6 +213,12 @@ struct pinctrl_match_data {
@@ -506,7 +506,7 @@ index e519487be838..682060d4dadc 100644
  #define SPM8XX_DESC_COMMON(_id, _match, _supply, _nv, _vr, _vm, _er, _em, _lr, _ops)       \
  	{								\
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 857963217853..ec7de4509768 100644
+index 8579632178530..ec7de4509768a 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -24,6 +24,8 @@ enum SPM8821_reg {

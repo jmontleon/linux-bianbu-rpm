@@ -1,4 +1,4 @@
-From 22733defcf1b0c75fe9d683791ae6eb80fe128a7 Mon Sep 17 00:00:00 2001
+From c088930f518895f1964a9e3ab048c76bab33bd73 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 7 Nov 2023 17:33:33 +0800
 Subject: [PATCH 0150/1218] clock: modify clock driver file name of k1pro
@@ -17,7 +17,7 @@ Change-Id: I27367399d723f0101a89774db32136bd438ce0fa
  rename include/dt-bindings/clock/{k1-pro-ccu-clock.h => spacemit-k1pro-clock.h} (100%)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 4c9e7fbcc690..58ea33fdd940 100644
+index 4c9e7fbcc6908..58ea33fdd9402 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -5,7 +5,7 @@
@@ -30,7 +30,7 @@ index 4c9e7fbcc690..58ea33fdd940 100644
  #include <dt-bindings/pinctrl/k1-pro-pinctrl.h>
  
 diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
-index 8229879bc21f..d6e632d96dcb 100755
+index 8229879bc21f1..d6e632d96dcba 100755
 --- a/drivers/clk/spacemit/Kconfig
 +++ b/drivers/clk/spacemit/Kconfig
 @@ -1,20 +1,11 @@
@@ -59,7 +59,7 @@ index 8229879bc21f..d6e632d96dcb 100755
  config SPACEMIT_K1X_CCU
          tristate "Clock support for Spacemit k1x SoCs"
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
-index f1fad0d5a71c..02efb5f39a26 100755
+index f1fad0d5a71ce..02efb5f39a26d 100755
 --- a/drivers/clk/spacemit/Makefile
 +++ b/drivers/clk/spacemit/Makefile
 @@ -5,4 +5,4 @@
@@ -72,7 +72,7 @@ diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/ccu-spacem
 similarity index 99%
 rename from drivers/clk/spacemit/k1-pro-ccu.c
 rename to drivers/clk/spacemit/ccu-spacemit-k1pro.c
-index cc0b8d7c24cf..542554b8468a 100755
+index cc0b8d7c24cf9..542554b8468ac 100755
 --- a/drivers/clk/spacemit/k1-pro-ccu.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1pro.c
 @@ -4,7 +4,7 @@

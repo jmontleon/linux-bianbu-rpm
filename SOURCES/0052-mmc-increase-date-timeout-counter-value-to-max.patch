@@ -1,4 +1,4 @@
-From c05c8335bb9f504965bfa76fa46736c23bc933d1 Mon Sep 17 00:00:00 2001
+From d89023ee655faf13a326b0144c89ba867841f238 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 20 Jun 2023 11:17:56 +0800
 Subject: [PATCH 0052/1218] mmc: increase date timeout counter value to max
@@ -9,7 +9,7 @@ Change-Id: I6fcb45e0650438342a1bc5fda88337ef69fc1488
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
-index 5de04240403f..d190b996b8be 100644
+index 5de04240403f6..d190b996b8be4 100644
 --- a/drivers/mmc/host/sdhci-of-spacemit.c
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -173,7 +173,8 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {

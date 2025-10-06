@@ -1,4 +1,4 @@
-From 9e6297320cf965ab5af86ad8bd8032ac83d618eb Mon Sep 17 00:00:00 2001
+From 4e7869dcda0e0df9cf614ac5dca54f8f681eb253 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:35:03 +0800
 Subject: [PATCH 0686/1218] k1: dma: adjust vm_flags_set() and class_create()
@@ -11,7 +11,7 @@ Change-Id: I075762b9f769d82ac7e69815f46f74b8fcaec72c
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
-index e3d6b3f22d67..53845e66ae02 100644
+index e3d6b3f22d670..53845e66ae02f 100644
 --- a/drivers/dma/udma.c
 +++ b/drivers/dma/udma.c
 @@ -218,7 +218,7 @@ static int dma_mmap(struct file *file, struct vm_area_struct *vma)

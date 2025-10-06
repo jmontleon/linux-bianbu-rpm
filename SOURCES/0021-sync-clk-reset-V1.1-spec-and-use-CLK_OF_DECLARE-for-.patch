@@ -1,4 +1,4 @@
-From 92115e42803e9f21bcc85ee64e19d30ab52abbef Mon Sep 17 00:00:00 2001
+From 1cc28054cd36d98e5eca0757d5a2e82d32d4dbff Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 27 Apr 2023 19:27:51 +0800
 Subject: [PATCH 0021/1218] sync clk/reset V1.1 spec and use "CLK_OF_DECLARE"
@@ -11,7 +11,7 @@ Change-Id: I7ad6afe36534093fba9c65c78865ad3a6fa9ea23
  2 files changed, 30 insertions(+), 102 deletions(-)
 
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
-index 28048a9eca60..9e0ece5c4e3f 100755
+index 28048a9eca601..9e0ece5c4e3fa 100755
 --- a/drivers/clk/spacemit/k1-pro-ccu.c
 +++ b/drivers/clk/spacemit/k1-pro-ccu.c
 @@ -24,8 +24,6 @@ static struct clk_hw **hws;
@@ -138,7 +138,7 @@ index 28048a9eca60..9e0ece5c4e3f 100755
 +CLK_OF_DECLARE(k1_ccu, "spacemit,k1pro-ccu", ccu_clocks_init);
  
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index c1ccd6e42048..baa7fc0362fd 100755
+index c1ccd6e42048e..baa7fc0362fd0 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -12,6 +12,7 @@

@@ -1,4 +1,4 @@
-From 11282e338f3e30c6bd463ded852f517a883074bb Mon Sep 17 00:00:00 2001
+From 6e7b1437eac49abc95091b9cd4daef5ed50ca772 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Sun, 4 Feb 2024 15:30:41 +0800
 Subject: [PATCH 0418/1218] display: Support dsi and hdmi double screens
@@ -23,7 +23,7 @@ Change-Id: I852ae307b3ef4076fbf2164b2048ef09ff6a15af
  15 files changed, 230 insertions(+), 206 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 86abba08b019..e79540a90689 100644
+index 86abba08b0195..e79540a906894 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2176,14 +2176,19 @@ jpu@c02f8000 {
@@ -225,7 +225,7 @@ index 86abba08b019..e79540a90689 100644
  			};
  		};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index d4d938fa2aa7..d67883295def 100644
+index d4d938fa2aa72..d67883295def3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -104,7 +104,7 @@ linux,cma {
@@ -277,7 +277,7 @@ index d4d938fa2aa7..d67883295def 100644
  
  /* imx315 */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index c85feab7a44d..450659023bd5 100644
+index c85feab7a44da..450659023bd5f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -104,7 +104,7 @@ linux,cma {
@@ -329,7 +329,7 @@ index c85feab7a44d..450659023bd5 100644
  
  /* imx315 */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index bacbc2342a5b..5ab8cc0249e4 100644
+index bacbc2342a5b8..5ab8cc0249e44 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -104,7 +104,7 @@ linux,cma {
@@ -392,7 +392,7 @@ index bacbc2342a5b..5ab8cc0249e4 100644
  
  /* imx315 */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
-index f6f596fd5b90..51d8f1adf3df 100644
+index f6f596fd5b907..51d8f1adf3df0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -94,7 +94,7 @@ chosen {
@@ -405,7 +405,7 @@ index f6f596fd5b90..51d8f1adf3df 100644
  	status = "okay";
  };
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index aceab41a1b3c..e128246cb6e5 100644
+index aceab41a1b3c1..e128246cb6e56 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -617,29 +617,32 @@ void spacemit_update_csc_matrix(struct drm_plane *plane, struct drm_plane_state
@@ -654,7 +654,7 @@ index aceab41a1b3c..e128246cb6e5 100644
  
  		if (spacemit_plane_state->use_scl){
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
-index 9e2e0bbe672e..d759c9ac46dd 100644
+index 9e2e0bbe672e9..d759c9ac46ddc 100644
 --- a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 @@ -172,12 +172,14 @@ void inline saturn_write_fbcmem_regs(struct drm_plane_state *state, u32 rdma_id,
@@ -674,7 +674,7 @@ index 9e2e0bbe672e..d759c9ac46dd 100644
  	return;
  }
 diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.c b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
-index e06c3820e542..266fd2cdf821 100644
+index e06c3820e542f..266fd2cdf8214 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
 @@ -18,9 +18,6 @@
@@ -743,7 +743,7 @@ index e06c3820e542..266fd2cdf821 100644
  }
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.h b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
-index eb649fef2e94..6c2a1d929403 100644
+index eb649fef2e949..6c2a1d929403e 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
 @@ -57,15 +57,12 @@ struct cmdlist_reg {
@@ -767,7 +767,7 @@ index eb649fef2e94..6c2a1d929403 100644
  
  void cmdlist_regs_packing(struct drm_plane *plane);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
-index cceedeaeb8e6..e91853cf0092 100644
+index cceedeaeb8e66..e91853cf0092a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 @@ -52,17 +52,17 @@ int spacemit_dmmu_map(struct drm_framebuffer *fb, struct dpu_mmu_tbl *mmu_tbl, u
@@ -839,7 +839,7 @@ index cceedeaeb8e6..e91853cf0092 100644
  
  	return 0;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.h b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
-index d37d1a30e674..a5998c3565bb 100644
+index d37d1a30e674c..a5998c3565bbd 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 @@ -30,7 +30,7 @@
@@ -895,7 +895,7 @@ index d37d1a30e674..a5998c3565bb 100644
  }
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 521d2cb521fc..912d0840bf3d 100644
+index 521d2cb521fce..912d0840bf3db 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -294,7 +294,7 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
@@ -917,7 +917,7 @@ index 521d2cb521fc..912d0840bf3d 100644
  	spacemit_dpu_sysfs_init(dev);
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index cee729b84120..d57fce633833 100644
+index cee729b841208..d57fce6338337 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -67,7 +67,8 @@
@@ -931,7 +931,7 @@ index cee729b84120..d57fce633833 100644
  #define DPU_MCLK_MIN		40960000
  #define DPU_AXICLK_DEFAULT	409000000
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index e9941fb95ce7..a1bdab63e7b7 100644
+index e9941fb95ce7b..a1bdab63e7b74 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -420,6 +420,11 @@ static int spacemit_drm_probe(struct platform_device *pdev)
@@ -947,7 +947,7 @@ index e9941fb95ce7..a1bdab63e7b7 100644
  			       priv->hwdev->rdma_nums, GFP_KERNEL);
  	if (!priv->cmdlist_groups)
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.h b/drivers/gpu/drm/spacemit/spacemit_drm.h
-index c4d899b5bc9a..f0796bde3030 100644
+index c4d899b5bc9ab..f0796bde30301 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.h
 @@ -40,6 +40,8 @@ struct spacemit_drm_private {

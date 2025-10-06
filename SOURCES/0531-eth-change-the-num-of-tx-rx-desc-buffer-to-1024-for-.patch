@@ -1,4 +1,4 @@
-From d17df6b3fd0b30e4baa379a6d73861525ed38b0d Mon Sep 17 00:00:00 2001
+From 765320bed13aaa14c1b4bed7f28fec54c5cbfd10 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 26 Mar 2024 21:21:21 +0800
 Subject: [PATCH 0531/1218] eth: change the num of tx/rx desc buffer to 1024
@@ -13,7 +13,7 @@ Change-Id: Ieae91d9bc12f93f417fbfe5a95e8363373a8b4f8
  4 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index bb9681a33164..7661c63787d7 100644
+index bb9681a331645..7661c63787d74 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -499,8 +499,8 @@ &eth0 {
@@ -39,7 +39,7 @@ index bb9681a33164..7661c63787d7 100644
  
  	ref-clock-from-phy;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 1014b9943d90..30548c76455a 100644
+index 1014b9943d906..30548c76455a2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -680,8 +680,8 @@ &eth0 {
@@ -65,7 +65,7 @@ index 1014b9943d90..30548c76455a 100644
  
  	ref-clock-from-phy;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index ff4ef03809a3..8a07e22ddfd6 100644
+index ff4ef03809a39..8a07e22ddfd69 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -642,8 +642,8 @@ &eth0 {
@@ -91,7 +91,7 @@ index ff4ef03809a3..8a07e22ddfd6 100644
  
  	ref-clock-from-phy;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index d187c3d71478..d4b715c31f8b 100644
+index d187c3d714780..d4b715c31f8b0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -597,8 +597,8 @@ &eth0 {

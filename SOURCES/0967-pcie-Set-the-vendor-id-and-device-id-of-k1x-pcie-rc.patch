@@ -1,4 +1,4 @@
-From ad738139034bf577540550d27b369255e006c3b0 Mon Sep 17 00:00:00 2001
+From 6293791859ed4cb83385d64ead2654986748bef4 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 22 Aug 2024 21:00:07 +0800
 Subject: [PATCH 0967/1218] pcie: Set the vendor id and device id of k1x pcie
@@ -10,7 +10,7 @@ Change-Id: I1cc2ffef8d94a9c73faddca0e0dbcb07d007b6c0
  1 file changed, 18 insertions(+)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 610e00f95b15..b8cc64d37cac 100644
+index 610e00f95b153..b8cc64d37cac4 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -30,6 +30,11 @@

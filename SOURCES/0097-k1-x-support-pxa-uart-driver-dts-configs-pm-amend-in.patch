@@ -1,4 +1,4 @@
-From 00a559b620828bfc90532c7ab2af703d21ea2f4e Mon Sep 17 00:00:00 2001
+From 7ef761c01b268c35520b4a59bbccf6f2b20cf808 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 28 Aug 2023 21:52:28 +0800
 Subject: [PATCH 0097/1218] k1-x support pxa uart driver(dts configs&pm amend
@@ -13,7 +13,7 @@ Change-Id: I26ded00ba7a3fb6b645d0b7420ac3a513fc039eb
  4 files changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 3e597b6ad54a..5516f0b5f2b8 100644
+index 3e597b6ad54af..5516f0b5f2b85 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -114,6 +114,13 @@ clocks {
@@ -50,7 +50,7 @@ index 3e597b6ad54a..5516f0b5f2b8 100644
  			lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>;
  			edge-wakeup-pin = <54>;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 61fd48715a14..06857d9204c9 100644
+index 61fd48715a144..06857d9204c96 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -71,14 +71,10 @@ CONFIG_INPUT_EVDEV=y
@@ -72,7 +72,7 @@ index 61fd48715a14..06857d9204c9 100644
  # CONFIG_HW_RANDOM is not set
  # CONFIG_HWMON is not set
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 6d0f8ea290df..23f1a8620e9a 100644
+index 6d0f8ea290df6..23f1a8620e9a9 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -415,7 +415,7 @@ config SERIAL_21285_CONSOLE
@@ -85,7 +85,7 @@ index 6d0f8ea290df..23f1a8620e9a 100644
  	select SERIAL_8250_PXA if SERIAL_8250=y
  	help
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index be8ea8b1430e..4bf9343be8ee 100644
+index be8ea8b1430e3..4bf9343be8eeb 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -56,7 +56,7 @@

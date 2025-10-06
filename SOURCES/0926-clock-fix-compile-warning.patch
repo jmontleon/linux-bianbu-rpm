@@ -1,4 +1,4 @@
-From 76521654a037e42b448b801b33d1853d5feb49a2 Mon Sep 17 00:00:00 2001
+From 82b2e46d58e20ba1748114d60fe0deb9fec5b848 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 11:23:33 +0800
 Subject: [PATCH 0926/1218] clock: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I7591677d3d9a2f404614a500be7cf7e9c3177dcb
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index cf6f08326559..2aa5727a6a00 100644
+index cf6f08326559b..2aa5727a6a009 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1575,6 +1575,9 @@ static void spacemit_k1x_ccu_probe(struct device_node *np)

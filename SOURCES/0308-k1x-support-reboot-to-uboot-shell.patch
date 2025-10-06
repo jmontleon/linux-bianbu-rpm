@@ -1,4 +1,4 @@
-From e682bc5ffef8546a727e0f7a24b3453b0f3d1e83 Mon Sep 17 00:00:00 2001
+From 5e9e4052da18b4687d0f47ee52f92432aa5876f7 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Wed, 3 Jan 2024 21:15:03 +0800
 Subject: [PATCH 0308/1218] k1x: support reboot to uboot shell
@@ -9,7 +9,7 @@ Change-Id: I1115df32a17312deac642c9fd2a11ce677481468
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/soc/spacemit/spacemit_reboot.c b/drivers/soc/spacemit/spacemit_reboot.c
-index 21286b4a72b4..7375ec3c387a 100755
+index 21286b4a72b43..7375ec3c387ad 100755
 --- a/drivers/soc/spacemit/spacemit_reboot.c
 +++ b/drivers/soc/spacemit/spacemit_reboot.c
 @@ -13,7 +13,9 @@

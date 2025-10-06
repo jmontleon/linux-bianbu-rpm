@@ -1,4 +1,4 @@
-From ece6efd78ff1f03fffb3aa1efefeb7629eb6f3bc Mon Sep 17 00:00:00 2001
+From 413a97514294c259fe03199f7b9ed9b7aaa6c896 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 6 Jul 2024 13:27:41 +0800
 Subject: [PATCH 0810/1218] efuse: add nvmem cells according to the dts
@@ -9,7 +9,7 @@ Change-Id: Ia3c0d1251dff91039ae7092b7e8fec860dc84146
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/nvmem/spacemit-efuse.c b/drivers/nvmem/spacemit-efuse.c
-index 782dbf02a8ff..282ecc8977c3 100644
+index 782dbf02a8ffa..282ecc8977c36 100644
 --- a/drivers/nvmem/spacemit-efuse.c
 +++ b/drivers/nvmem/spacemit-efuse.c
 @@ -141,6 +141,7 @@ static int spacemit_efuse_probe(struct platform_device *pdev)

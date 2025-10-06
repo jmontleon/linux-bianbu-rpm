@@ -1,4 +1,4 @@
-From be202858e74dc706c159365f691892f9b3e4584d Mon Sep 17 00:00:00 2001
+From c3bced12122a6ba9a8eeaa93eccb3d5089b55030 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 29 Aug 2023 17:43:33 +0800
 Subject: [PATCH 0096/1218] k1x: add k1-x_fpga 1x4 & 2x2 proj
@@ -23,7 +23,7 @@ Change-Id: I457de37335f0bb58f4f7d3ac6b17b17017b2274d
  create mode 100644 arch/riscv/configs/k1-x_fpga_2x2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 023d2a96de4a..b0c33708d515 100644
+index 023d2a96de4a0..b0c33708d5152 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,5 +2,5 @@
@@ -34,7 +34,7 @@ index 023d2a96de4a..b0c33708d515 100644
 +dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.dtb
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 3113c08222e1..3e597b6ad54a 100644
+index 3113c08222e13..3e597b6ad54af 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -25,7 +25,7 @@ cpu_0: cpu@0 {
@@ -101,7 +101,7 @@ index 3113c08222e1..3e597b6ad54a 100644
  	clocks {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
 new file mode 100644
-index 000000000000..3ef9f42c6551
+index 0000000000000..3ef9f42c65513
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
 @@ -0,0 +1,55 @@
@@ -162,7 +162,7 @@ index 000000000000..3ef9f42c6551
 +
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
 new file mode 100644
-index 000000000000..67232c75cf09
+index 0000000000000..67232c75cf099
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
 @@ -0,0 +1,57 @@
@@ -225,7 +225,7 @@ index 000000000000..67232c75cf09
 +
 diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 new file mode 100644
-index 000000000000..f9cb64c8971e
+index 0000000000000..f9cb64c8971ec
 --- /dev/null
 +++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 @@ -0,0 +1,145 @@
@@ -376,7 +376,7 @@ index 000000000000..f9cb64c8971e
 +# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 new file mode 100644
-index 000000000000..f9cb64c8971e
+index 0000000000000..f9cb64c8971ec
 --- /dev/null
 +++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 @@ -0,0 +1,145 @@

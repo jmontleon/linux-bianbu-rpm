@@ -1,4 +1,4 @@
-From 3469eee56eb64b50231116f5fb5c602be9bc5869 Mon Sep 17 00:00:00 2001
+From 37c80325941bd8a24d5cf28600628b911977cd07 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 6 Dec 2024 13:43:13 +0800
 Subject: [PATCH 1185/1218] opp: k1: fix compile error
@@ -9,7 +9,7 @@ Change-Id: I9753ab0487fdc2dec2c65b6f8877c0d7df79e750
  1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index b78b025314e0..7c31c313623f 100644
+index b78b025314e0e..7c31c313623fd 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
 @@ -2632,14 +2632,15 @@ int dev_pm_opp_set_config_indexed(struct device *dev, struct dev_pm_opp_config *

@@ -1,4 +1,4 @@
-From 3ea7d6c072edd9f836a3001f38386da6b11f2d05 Mon Sep 17 00:00:00 2001
+From a3bfbd06d61216f35e2ce3d24f388e243ba92b72 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 11 Sep 2023 16:15:53 +0800
 Subject: [PATCH 0105/1218] support tcm for k1x
@@ -11,7 +11,7 @@ Change-Id: Ib1a2c8a17b74cdc580b81015c8744fbd6b1d6c21
  3 files changed, 35 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index fdf40aa1cfe4..84fbf029e632 100644
+index fdf40aa1cfe48..84fbf029e6327 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -341,6 +341,33 @@ sdhci2: sdh@d4281000 {
@@ -49,7 +49,7 @@ index fdf40aa1cfe4..84fbf029e632 100644
  
  	pmu {
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index b9ca56930003..cd5b83dc4878 100644
+index b9ca56930003b..cd5b83dc48781 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -644,6 +644,13 @@ config MCHP_LAN966X_PCI
@@ -67,7 +67,7 @@ index b9ca56930003..cd5b83dc4878 100644
  source "drivers/misc/eeprom/Kconfig"
  source "drivers/misc/cb710/Kconfig"
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 2e5c84e31733..a1a2b0c3811d 100644
+index 2e5c84e317339..a1a2b0c3811dd 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
 @@ -75,4 +75,4 @@ lan966x-pci-objs		+= lan966x_pci.dtbo.o

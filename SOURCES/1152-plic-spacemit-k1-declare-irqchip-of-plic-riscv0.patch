@@ -1,4 +1,4 @@
-From e6b5c44c904e29419bd13942058e7fe75b6ca861 Mon Sep 17 00:00:00 2001
+From 4421d893db521be0ec27d3b4b63fccf64f205833 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 2 Dec 2024 16:50:19 +0800
 Subject: [PATCH 1152/1218] plic: spacemit/k1: declare irqchip of 'plic,riscv0'
@@ -9,7 +9,7 @@ Change-Id: I605b5b5419d29919dde009e5ec6e2fe9ebeccfed
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index b632031ee6a9..bc5c3bc34912 100644
+index b632031ee6a9f..bc5c3bc349122 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -763,3 +763,4 @@ static int __init plic_early_probe(struct device_node *node,

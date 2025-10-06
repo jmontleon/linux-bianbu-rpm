@@ -1,4 +1,4 @@
-From 47f550837f752660142e4092d33ec6450e79b443 Mon Sep 17 00:00:00 2001
+From 375ca101c818d048fab66931839ae309be7ba84d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 11 Jan 2024 08:59:44 +0800
 Subject: [PATCH 0352/1218] k1x:cpuidle: support cpu power-down only
@@ -12,7 +12,7 @@ Change-Id: I40f51f4dc428f2591f278bc6b1795d363caac95f
  2 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 12c5a4ffc2ef..8c20ba01152e 100644
+index 12c5a4ffc2efc..8c20ba01152ed 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -52,7 +52,7 @@ cpu_0: cpu@0 {
@@ -88,7 +88,7 @@ index 12c5a4ffc2ef..8c20ba01152e 100644
  			#cooling-cells = <2>;
  
 diff --git a/drivers/clocksource/timer-k1x.c b/drivers/clocksource/timer-k1x.c
-index c66416af37e6..d76803988baf 100644
+index c66416af37e6b..d76803988baff 100644
 --- a/drivers/clocksource/timer-k1x.c
 +++ b/drivers/clocksource/timer-k1x.c
 @@ -538,7 +538,7 @@ int __init spacemit_timer_setup(struct spacemit_timer_evt *evt)

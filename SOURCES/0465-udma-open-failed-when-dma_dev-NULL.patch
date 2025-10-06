@@ -1,4 +1,4 @@
-From 8119ec7d238bcfa420a91dbf694b2a01703005e2 Mon Sep 17 00:00:00 2001
+From 3f3f26d050d47d4dc86c79dfb020c153a9b62e9e Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Wed, 6 Mar 2024 17:44:35 +0800
 Subject: [PATCH 0465/1218] udma open failed when (dma_dev == NULL)
@@ -9,7 +9,7 @@ Change-Id: Ida9096c3999e0f08123937a91a349d242beae9da
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
-index 07e7b49554d5..e3d6b3f22d67 100644
+index 07e7b49554d53..e3d6b3f22d670 100644
 --- a/drivers/dma/udma.c
 +++ b/drivers/dma/udma.c
 @@ -90,7 +90,7 @@ static void dma_callback_func(void *priv)

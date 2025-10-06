@@ -1,4 +1,4 @@
-From 74695713aa5a72b230c4a9e91a3cd54076b102c9 Mon Sep 17 00:00:00 2001
+From e937636d04b67cebec5b13f303898b461d6ed55a Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Tue, 20 Feb 2024 10:17:57 +0800
 Subject: [PATCH 0419/1218] use the unified defconfig for k1 (5/5)
@@ -15,7 +15,7 @@ Change-Id: I57dfe31990ee6e9a799c3f1455d500fcad56dc84
 
 diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
 deleted file mode 100644
-index e51870c95b93..000000000000
+index e51870c95b930..0000000000000
 --- a/arch/riscv/configs/k1-x_deb1_defconfig
 +++ /dev/null
 @@ -1,539 +0,0 @@
@@ -560,7 +560,7 @@ index e51870c95b93..000000000000
 -# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
 deleted file mode 100644
-index fe3c9dd2a7f7..000000000000
+index fe3c9dd2a7f7e..0000000000000
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ /dev/null
 @@ -1,535 +0,0 @@
@@ -1101,7 +1101,7 @@ index fe3c9dd2a7f7..000000000000
 -# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
 deleted file mode 100644
-index 78fe0ff1d74f..000000000000
+index 78fe0ff1d74fd..0000000000000
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ /dev/null
 @@ -1,506 +0,0 @@

@@ -1,4 +1,4 @@
-From 1e93b1d25061adaf23f3847410d38f749989cbf4 Mon Sep 17 00:00:00 2001
+From 37e3d42da28651cc41ac433140d49b2eeaca9897 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 28 Dec 2023 18:09:32 +0800
 Subject: [PATCH 0267/1218] modify compile optimize from -O2 to -Os
@@ -9,7 +9,7 @@ Change-Id: I6fc47d985d69e20b266a0e48ea526c37f6f3bf2c
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index dd0c19a0c127..0af23e07777a 100644
+index dd0c19a0c1276..0af23e07777a6 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -20,6 +20,7 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"

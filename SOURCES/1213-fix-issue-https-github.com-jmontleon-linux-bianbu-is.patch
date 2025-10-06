@@ -1,4 +1,4 @@
-From a3e326e4fe40e7988de6117cc42710714ceaed6e Mon Sep 17 00:00:00 2001
+From 6e8349388e5f6608c257477c5972efb13d89c2ca Mon Sep 17 00:00:00 2001
 From: alex stefanov <alexander@mezon.ru>
 Date: Tue, 27 May 2025 13:23:22 +0000
 Subject: [PATCH 1213/1218] fix issue
@@ -10,7 +10,7 @@ Subject: [PATCH 1213/1218] fix issue
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
-index 19e1fa40634b..715671b76672 100644
+index 19e1fa40634b0..715671b766729 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 @@ -4641,6 +4641,9 @@ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,

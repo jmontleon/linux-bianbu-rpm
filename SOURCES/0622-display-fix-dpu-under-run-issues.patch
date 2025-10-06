@@ -1,4 +1,4 @@
-From 0f48b15c252e72c990f57275d7ce9a8de7bd2537 Mon Sep 17 00:00:00 2001
+From d2d2581caf0be854478ea5cf4d1137a530ede4f8 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 29 Apr 2024 17:42:13 +0800
 Subject: [PATCH 0622/1218] display: fix dpu under run issues
@@ -16,7 +16,7 @@ Change-Id: Ie4a498a4ccd958fa0d52ea0dc6ca0d38ff3e4c7a
  8 files changed, 286 insertions(+), 132 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
-index dffc749ef95f..e7ca43a1db36 100644
+index dffc749ef95f4..e7ca43a1db360 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 @@ -20,6 +20,8 @@ dpu_online2_hdmi: port@c0440000 {
@@ -40,7 +40,7 @@ index dffc749ef95f..e7ca43a1db36 100644
  
  		port {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
-index 6c955c0440af..a4000423fd35 100644
+index 6c955c0440aff..a4000423fd353 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 @@ -28,6 +28,8 @@ dpu_online2_dsi: port@c0340000 {
@@ -53,7 +53,7 @@ index 6c955c0440af..a4000423fd35 100644
  
  		dpu_online2_dsi_out: endpoint@0 {
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index c769afdb57f2..9e18561bbd08 100644
+index c769afdb57f2d..9e18561bbd086 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -472,6 +472,29 @@ static int dpu_update_bw(struct spacemit_dpu *dpu, uint64_t bw)
@@ -267,7 +267,7 @@ index c769afdb57f2..9e18561bbd08 100644
  		saturn_ctrl_sw_start(dpu, true);
  	}
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 5213dc3a3fc0..cbb43fbc1f84 100644
+index 5213dc3a3fc02..cbb43fbc1f841 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -293,9 +293,6 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
@@ -594,7 +594,7 @@ index 5213dc3a3fc0..cbb43fbc1f84 100644
  	if (dpu->core && dpu->core->enable_clk)
  		dpu->core->enable_clk(dpu);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index d57fce633833..a7d986d32495 100644
+index d57fce6338337..a7d986d324957 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -125,6 +125,7 @@ struct spacemit_dpu {
@@ -606,7 +606,7 @@ index d57fce633833..a7d986d32495 100644
  	bool enable_dump_fps;
  	bool enable_auto_fc;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 0ddcdea834fd..50c954e1f770 100644
+index 0ddcdea834fdb..50c954e1f7702 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -66,6 +66,9 @@ struct spacemit_hdmi {
@@ -730,7 +730,7 @@ index 0ddcdea834fd..50c954e1f770 100644
  };
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 39acde5f6f57..1a83ecb18275 100644
+index 39acde5f6f578..1a83ecb18275c 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -653,8 +653,6 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)
@@ -743,7 +743,7 @@ index 39acde5f6f57..1a83ecb18275 100644
  	slave->format = panel->info.format;
  	slave->mode_flags = panel->info.mode_flags;
 diff --git a/include/dt-bindings/display/spacemit-dpu.h b/include/dt-bindings/display/spacemit-dpu.h
-index cac81efd508f..e1c51f95a5f2 100644
+index cac81efd508ff..e1c51f95a5f29 100644
 --- a/include/dt-bindings/display/spacemit-dpu.h
 +++ b/include/dt-bindings/display/spacemit-dpu.h
 @@ -3,6 +3,10 @@

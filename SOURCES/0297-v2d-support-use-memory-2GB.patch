@@ -1,4 +1,4 @@
-From f453856abc37f444a9717f1c3a5836b3cd0d4728 Mon Sep 17 00:00:00 2001
+From 635c314ad3ce706c6e544aa44aed0b903d5aa3c6 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 2 Jan 2024 11:06:20 +0800
 Subject: [PATCH 0297/1218] v2d: support use memory > 2GB
@@ -9,7 +9,7 @@ Change-Id: I3c598a06e040b2207a25771ad77771e21a1e5be7
  1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/platform/spacemit/v2d/v2d_iommu.c b/drivers/media/platform/spacemit/v2d/v2d_iommu.c
-index 60d2ba66901e..f26ea816a679 100644
+index 60d2ba66901e9..f26ea816a679d 100644
 --- a/drivers/media/platform/spacemit/v2d/v2d_iommu.c
 +++ b/drivers/media/platform/spacemit/v2d/v2d_iommu.c
 @@ -9,6 +9,14 @@

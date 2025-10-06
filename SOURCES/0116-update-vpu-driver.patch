@@ -1,4 +1,4 @@
-From b29cfb0f3fd0f8718e5c68f634541cafd4672312 Mon Sep 17 00:00:00 2001
+From 46146c9c53e0acebee22fe952835b1d56a0166c8 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 14 Sep 2023 09:58:37 +0800
 Subject: [PATCH 0116/1218] update vpu driver
@@ -158,7 +158,7 @@ Signed-off-by: fuqiang <qiang.fu@spacemit.com>
  delete mode 100755 drivers/media/vpu/modules.builtin
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 4572a6954eb3..0d8bd06cb2af 100644
+index 4572a6954eb32..0d8bd06cb2af3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -578,6 +578,13 @@ core3_tcm@60000 {
@@ -176,7 +176,7 @@ index 4572a6954eb3..0d8bd06cb2af 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 80bac146bf5d..52b62dc1b1e6 100644
+index 80bac146bf5d5..52b62dc1b1e68 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -131,6 +131,9 @@ CONFIG_VIRTIO_CONSOLE=y
@@ -190,7 +190,7 @@ index 80bac146bf5d..52b62dc1b1e6 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-index ec6f7e453de7..6abc9302cd84 100644
+index ec6f7e453de7f..6abc9302cd84d 100644
 --- a/drivers/media/Kconfig
 +++ b/drivers/media/Kconfig
 @@ -262,7 +262,6 @@ source "drivers/media/i2c/Kconfig"
@@ -202,7 +202,7 @@ index ec6f7e453de7..6abc9302cd84 100644
  endmenu
  
 diff --git a/drivers/media/Makefile b/drivers/media/Makefile
-index 9ccd860d3733..20fac24e4f0f 100644
+index 9ccd860d37339..20fac24e4f0f1 100644
 --- a/drivers/media/Makefile
 +++ b/drivers/media/Makefile
 @@ -29,6 +29,6 @@ obj-$(CONFIG_CEC_CORE) += cec/
@@ -214,7 +214,7 @@ index 9ccd860d3733..20fac24e4f0f 100644
  obj-$(CONFIG_VIDEO_DEV) += radio/
  
 diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index 9287faafdce5..23e229c36459 100644
+index 9287faafdce58..23e229c364598 100644
 --- a/drivers/media/platform/Kconfig
 +++ b/drivers/media/platform/Kconfig
 @@ -90,5 +90,6 @@ source "drivers/media/platform/ti/Kconfig"
@@ -225,7 +225,7 @@ index 9287faafdce5..23e229c36459 100644
  
  endif # MEDIA_PLATFORM_DRIVERS
 diff --git a/drivers/media/platform/Makefile b/drivers/media/platform/Makefile
-index 6fd7db0541c7..415663535f48 100644
+index 6fd7db0541c7e..415663535f486 100644
 --- a/drivers/media/platform/Makefile
 +++ b/drivers/media/platform/Makefile
 @@ -33,6 +33,7 @@ obj-y += ti/
@@ -238,7 +238,7 @@ index 6fd7db0541c7..415663535f48 100644
  # Please keep it alphabetically sorted by Kconfig name
 diff --git a/drivers/media/platform/spacemit/Kconfig b/drivers/media/platform/spacemit/Kconfig
 new file mode 100644
-index 000000000000..c1e77d454d37
+index 0000000000000..c1e77d454d37c
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/Kconfig
 @@ -0,0 +1,5 @@
@@ -249,7 +249,7 @@ index 000000000000..c1e77d454d37
 +source "drivers/media/platform/spacemit/vpu_k1x/Kconfig"
 diff --git a/drivers/media/platform/spacemit/Makefile b/drivers/media/platform/spacemit/Makefile
 new file mode 100644
-index 000000000000..be25ea319a80
+index 0000000000000..be25ea319a80b
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/Makefile
 @@ -0,0 +1,2 @@
@@ -259,7 +259,7 @@ diff --git a/drivers/media/vpu/Kbuild b/drivers/media/platform/spacemit/vpu_k1x/
 similarity index 67%
 rename from drivers/media/vpu/Kbuild
 rename to drivers/media/platform/spacemit/vpu_k1x/Kbuild
-index 3f5396ac5b3e..999b1e201602 100755
+index 3f5396ac5b3ed..999b1e2016029 100755
 --- a/drivers/media/vpu/Kbuild
 +++ b/drivers/media/platform/spacemit/vpu_k1x/Kbuild
 @@ -2,9 +2,14 @@
@@ -297,7 +297,7 @@ index 3f5396ac5b3e..999b1e201602 100755
  	  $(if-y) $(dev-y)
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/Kconfig b/drivers/media/platform/spacemit/vpu_k1x/Kconfig
 new file mode 100755
-index 000000000000..4b722305e1f5
+index 0000000000000..4b722305e1f58
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/vpu_k1x/Kconfig
 @@ -0,0 +1,26 @@
@@ -335,7 +335,7 @@ diff --git a/drivers/media/vpu/dev/mvx_dev.c b/drivers/media/platform/spacemit/v
 similarity index 80%
 rename from drivers/media/vpu/dev/mvx_dev.c
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-index 1cf1b96fd823..c3fc1254c4f9 100755
+index 1cf1b96fd823f..c3fc1254c4f97 100755
 --- a/drivers/media/vpu/dev/mvx_dev.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
 @@ -45,16 +45,16 @@
@@ -751,7 +751,7 @@ diff --git a/drivers/media/vpu/dev/mvx_dev.h b/drivers/media/platform/spacemit/v
 similarity index 76%
 rename from drivers/media/vpu/dev/mvx_dev.h
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.h
-index eb8cda687b29..db156f9d6d0e 100755
+index eb8cda687b293..db156f9d6d0e0 100755
 --- a/drivers/media/vpu/dev/mvx_dev.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.h
 @@ -32,6 +32,32 @@
@@ -791,7 +791,7 @@ diff --git a/drivers/media/vpu/dev/mvx_hwreg.c b/drivers/media/platform/spacemit
 similarity index 97%
 rename from drivers/media/vpu/dev/mvx_hwreg.c
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
-index 397e15a0bf6f..3bb9c3434c03 100755
+index 397e15a0bf6f8..3bb9c3434c035 100755
 --- a/drivers/media/vpu/dev/mvx_hwreg.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.c
 @@ -35,6 +35,7 @@
@@ -858,7 +858,7 @@ diff --git a/drivers/media/vpu/dev/mvx_hwreg.h b/drivers/media/platform/spacemit
 similarity index 99%
 rename from drivers/media/vpu/dev/mvx_hwreg.h
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.h
-index de4d1f9cacbc..9ff71619bb8c 100755
+index de4d1f9cacbc9..9ff71619bb8c0 100755
 --- a/drivers/media/vpu/dev/mvx_hwreg.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_hwreg.h
 @@ -96,6 +96,7 @@ enum mvx_hwreg_what {
@@ -905,7 +905,7 @@ diff --git a/drivers/media/vpu/dev/mvx_lsid.c b/drivers/media/platform/spacemit/
 similarity index 98%
 rename from drivers/media/vpu/dev/mvx_lsid.c
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.c
-index f01fa9b91c92..4750eb65f3de 100755
+index f01fa9b91c92b..4750eb65f3de2 100755
 --- a/drivers/media/vpu/dev/mvx_lsid.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_lsid.c
 @@ -10,23 +10,23 @@
@@ -963,7 +963,7 @@ diff --git a/drivers/media/vpu/dev/mvx_scheduler.c b/drivers/media/platform/spac
 similarity index 73%
 rename from drivers/media/vpu/dev/mvx_scheduler.c
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
-index 21c323c6ce74..dfe28ce4379e 100755
+index 21c323c6ce745..dfe28ce4379ed 100755
 --- a/drivers/media/vpu/dev/mvx_scheduler.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
 @@ -10,23 +10,23 @@
@@ -1299,7 +1299,7 @@ diff --git a/drivers/media/vpu/dev/mvx_scheduler.h b/drivers/media/platform/spac
 similarity index 96%
 rename from drivers/media/vpu/dev/mvx_scheduler.h
 rename to drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.h
-index a1b1b1c00c99..e3b8d0ea4f2a 100755
+index a1b1b1c00c992..e3b8d0ea4f2ab 100755
 --- a/drivers/media/vpu/dev/mvx_scheduler.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.h
 @@ -68,6 +68,7 @@ struct mvx_sched {
@@ -1325,7 +1325,7 @@ diff --git a/drivers/media/vpu/external/fw_v2/mve_protocol_def.h b/drivers/media
 similarity index 99%
 rename from drivers/media/vpu/external/fw_v2/mve_protocol_def.h
 rename to drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
-index 37b44bf12aea..57030cece21b 100755
+index 37b44bf12aea5..57030cece21b0 100755
 --- a/drivers/media/vpu/external/fw_v2/mve_protocol_def.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
 @@ -1547,6 +1547,8 @@ struct mve_buffer_param_colour_description
@@ -1349,7 +1349,7 @@ diff --git a/drivers/media/vpu/if/mvx_buffer.c b/drivers/media/platform/spacemit
 similarity index 96%
 rename from drivers/media/vpu/if/mvx_buffer.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
-index bba0ba0d1534..57922a3d91a3 100755
+index bba0ba0d15347..57922a3d91a39 100755
 --- a/drivers/media/vpu/if/mvx_buffer.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
 @@ -10,23 +10,23 @@
@@ -1455,7 +1455,7 @@ diff --git a/drivers/media/vpu/if/mvx_buffer.h b/drivers/media/platform/spacemit
 similarity index 96%
 rename from drivers/media/vpu/if/mvx_buffer.h
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
-index 4f7692ca554a..c035e23bab4c 100755
+index 4f7692ca554a1..c035e23bab4c8 100755
 --- a/drivers/media/vpu/if/mvx_buffer.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
 @@ -10,23 +10,23 @@
@@ -1524,7 +1524,7 @@ diff --git a/drivers/media/vpu/if/mvx_firmware.h b/drivers/media/platform/spacem
 similarity index 99%
 rename from drivers/media/vpu/if/mvx_firmware.h
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
-index ae54a5f49452..0ef9d4172667 100755
+index ae54a5f494526..0ef9d41726677 100755
 --- a/drivers/media/vpu/if/mvx_firmware.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
 @@ -554,7 +554,11 @@ struct mvx_fw_set_option {
@@ -1560,7 +1560,7 @@ diff --git a/drivers/media/vpu/if/mvx_firmware_cache.c b/drivers/media/platform/
 similarity index 99%
 rename from drivers/media/vpu/if/mvx_firmware_cache.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.c
-index 7b656a64cf51..4a607c18a419 100755
+index 7b656a64cf519..4a607c18a4198 100755
 --- a/drivers/media/vpu/if/mvx_firmware_cache.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_cache.c
 @@ -421,13 +421,13 @@ static struct attribute *fw_bin_attrs[] = {
@@ -1611,7 +1611,7 @@ diff --git a/drivers/media/vpu/if/mvx_firmware_v2.c b/drivers/media/platform/spa
 similarity index 94%
 rename from drivers/media/vpu/if/mvx_firmware_v2.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
-index 33e2709f6790..ee83f959729c 100755
+index 33e2709f67908..ee83f959729c7 100755
 --- a/drivers/media/vpu/if/mvx_firmware_v2.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 @@ -10,23 +10,23 @@
@@ -2039,7 +2039,7 @@ diff --git a/drivers/media/vpu/if/mvx_if.h b/drivers/media/platform/spacemit/vpu
 similarity index 99%
 rename from drivers/media/vpu/if/mvx_if.h
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.h
-index 18090f01bb40..bff78e360024 100755
+index 18090f01bb40b..bff78e3600248 100755
 --- a/drivers/media/vpu/if/mvx_if.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_if.h
 @@ -396,6 +396,8 @@ struct mvx_client_ops {
@@ -2055,7 +2055,7 @@ diff --git a/drivers/media/vpu/if/mvx_mmu.c b/drivers/media/platform/spacemit/vp
 similarity index 95%
 rename from drivers/media/vpu/if/mvx_mmu.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index 68ab5bebb774..43733b02b5c7 100755
+index 68ab5bebb7746..43733b02b5c7e 100755
 --- a/drivers/media/vpu/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -10,23 +10,23 @@
@@ -2259,7 +2259,7 @@ diff --git a/drivers/media/vpu/if/mvx_secure.c b/drivers/media/platform/spacemit
 similarity index 95%
 rename from drivers/media/vpu/if/mvx_secure.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.c
-index c9abc98f7e23..9199d0f7703b 100755
+index c9abc98f7e23a..9199d0f7703b2 100755
 --- a/drivers/media/vpu/if/mvx_secure.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_secure.c
 @@ -81,17 +81,20 @@ int mvx_secure_construct(struct mvx_secure *secure,
@@ -2344,7 +2344,7 @@ diff --git a/drivers/media/vpu/if/mvx_session.c b/drivers/media/platform/spacemi
 similarity index 83%
 rename from drivers/media/vpu/if/mvx_session.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
-index 6495ef586e48..aa6a69af4ed3 100755
+index 6495ef586e480..aa6a69af4ed3c 100755
 --- a/drivers/media/vpu/if/mvx_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 @@ -10,23 +10,23 @@
@@ -3287,7 +3287,7 @@ diff --git a/drivers/media/vpu/if/mvx_session.h b/drivers/media/platform/spacemi
 similarity index 94%
 rename from drivers/media/vpu/if/mvx_session.h
 rename to drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.h
-index 163a581a64bb..e46d35e0bcfb 100755
+index 163a581a64bbd..e46d35e0bcfba 100755
 --- a/drivers/media/vpu/if/mvx_session.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.h
 @@ -10,23 +10,23 @@
@@ -3375,7 +3375,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h b/drivers/media/platf
 similarity index 99%
 rename from drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
-index 658248f09ac4..7fd35b8f1f71 100755
+index 658248f09ac42..7fd35b8f1f71f 100755
 --- a/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
 @@ -49,7 +49,7 @@
@@ -3406,7 +3406,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c b/drivers/media/platform/s
 similarity index 91%
 rename from drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c
-index cbf644a6d76f..aa83c6933b9c 100755
+index cbf644a6d76f8..aa83c6933b9ca 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_ext_v4l2.c
 @@ -62,6 +62,9 @@ static const struct v4l2_file_operations mvx_v4l2_fops = {
@@ -3461,7 +3461,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/platfor
 similarity index 85%
 rename from drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
-index a3010dd57622..7d7903c616e2 100755
+index a3010dd576227..7d7903c616e2e 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
 @@ -10,23 +10,23 @@
@@ -3622,7 +3622,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c b/drivers/media/platform
 similarity index 84%
 rename from drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c
-index 3f69d43ad049..46783b304390 100755
+index 3f69d43ad0491..46783b304390e 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_ctrls.c
 @@ -100,6 +100,11 @@ static const uint8_t h264_profile_list[] = {
@@ -3947,7 +3947,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c b/drivers/media/platform/
 similarity index 93%
 rename from drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
-index e3591803bc38..fd07c7c65a27 100755
+index e3591803bc384..fd07c7c65a279 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
 @@ -141,11 +141,8 @@ unsigned int mvx_v4l2_poll(struct file *file,
@@ -3997,7 +3997,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c b/drivers/media/platfo
 similarity index 83%
 rename from drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
-index 9c1a5052aaf3..b48ab0177f76 100755
+index 9c1a5052aaf34..b48ab0177f760 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_session.c
 @@ -192,7 +192,96 @@ static void free_session(struct mvx_session *session)
@@ -4156,7 +4156,7 @@ diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c b/drivers/media/platfor
 similarity index 96%
 rename from drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 rename to drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
-index cfb561ed2c2e..71665d391827 100755
+index cfb561ed2c2ec..71665d3918277 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_vidioc.c
 @@ -10,23 +10,23 @@
@@ -4358,7 +4358,7 @@ rename from drivers/media/vpu/mvx_driver.c
 rename to drivers/media/platform/spacemit/vpu_k1x/mvx_driver.c
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 new file mode 100755
-index 000000000000..fabb9b7a391c
+index 0000000000000..fabb9b7a391cf
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 @@ -0,0 +1,1296 @@
@@ -5660,7 +5660,7 @@ index 000000000000..fabb9b7a391c
 +
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
 new file mode 100755
-index 000000000000..f97b6f04b8bd
+index 0000000000000..f97b6f04b8bdd
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
 @@ -0,0 +1,90 @@
@@ -5758,7 +5758,7 @@ diff --git a/drivers/media/vpu/mvx_log.c b/drivers/media/platform/spacemit/vpu_k
 similarity index 97%
 rename from drivers/media/vpu/mvx_log.c
 rename to drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
-index 6c05ed3fb21f..b4b31728caa3 100755
+index 6c05ed3fb21f7..b4b31728caa32 100755
 --- a/drivers/media/vpu/mvx_log.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
 @@ -564,15 +564,16 @@ static void drain_dmesg_data(struct mvx_log_drain *drain,
@@ -5827,7 +5827,7 @@ diff --git a/drivers/media/vpu/mvx_pm_runtime.c b/drivers/media/platform/spacemi
 similarity index 66%
 rename from drivers/media/vpu/mvx_pm_runtime.c
 rename to drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
-index 8a6c96dea25d..1083c7f91fbb 100755
+index 8a6c96dea25dc..1083c7f91fbbb 100755
 --- a/drivers/media/vpu/mvx_pm_runtime.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_pm_runtime.c
 @@ -30,18 +30,25 @@
@@ -5910,7 +5910,7 @@ rename from drivers/media/vpu/sconscript
 rename to drivers/media/platform/spacemit/vpu_k1x/sconscript
 diff --git a/drivers/media/vpu/Kconfig b/drivers/media/vpu/Kconfig
 deleted file mode 100755
-index f2bc23094530..000000000000
+index f2bc23094530b..0000000000000
 --- a/drivers/media/vpu/Kconfig
 +++ /dev/null
 @@ -1,25 +0,0 @@
@@ -5941,7 +5941,7 @@ index f2bc23094530..000000000000
 -		Append file and line number to kernel space log messages.
 diff --git a/drivers/media/vpu/modules.builtin b/drivers/media/vpu/modules.builtin
 deleted file mode 100755
-index e69de29bb2d1..000000000000
+index e69de29bb2d1d..0000000000000
 -- 
 2.51.0
 

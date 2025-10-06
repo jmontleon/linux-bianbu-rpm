@@ -1,4 +1,4 @@
-From 48f3d627646a48b489aed06b94841ce8c7317594 Mon Sep 17 00:00:00 2001
+From 46a0365748c5179ccdbebdbd80f1a1c0002ef00c Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 14 Sep 2023 10:43:56 +0800
 Subject: [PATCH 0113/1218] pcie: adding pcie driver for k1x
@@ -14,7 +14,7 @@ Change-Id: I1aeff8143a3436ddab9dec489559c25d73a2545a
  create mode 100755 drivers/pci/controller/dwc/pcie-k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c5f7d04451c4..c0c9049af330 100644
+index c5f7d04451c44..c0c9049af3304 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -370,6 +370,126 @@ sdhci2: sdh@d4281000 {
@@ -145,7 +145,7 @@ index c5f7d04451c4..c0c9049af330 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index fef99e1907c0..4706eecbc9b3 100644
+index fef99e1907c05..4706eecbc9b37 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -48,6 +48,10 @@ CONFIG_NETLINK_DIAG=y
@@ -169,7 +169,7 @@ index fef99e1907c0..4706eecbc9b3 100644
  CONFIG_SCSI=y
  CONFIG_BLK_DEV_SD=y
 diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 2759256ee8b0..2429cb9ca23a 100644
+index 2759256ee8b0c..2429cb9ca23a0 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
 @@ -489,4 +489,30 @@ config PCIE_SPACEMIT
@@ -204,7 +204,7 @@ index 2759256ee8b0..2429cb9ca23a 100644
 +
  endmenu
 diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index 43c10f3eb2c8..f81035bc1438 100644
+index 43c10f3eb2c88..f81035bc1438b 100644
 --- a/drivers/pci/controller/dwc/Makefile
 +++ b/drivers/pci/controller/dwc/Makefile
 @@ -31,6 +31,7 @@ obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
@@ -217,7 +217,7 @@ index 43c10f3eb2c8..f81035bc1438 100644
  # pci_root.c driver but don't support standard ECAM config access.
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
 new file mode 100755
-index 000000000000..3ed4bc0c13b9
+index 0000000000000..3ed4bc0c13b92
 --- /dev/null
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -0,0 +1,1244 @@

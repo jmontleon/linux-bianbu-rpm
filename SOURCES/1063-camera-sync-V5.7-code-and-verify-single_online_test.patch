@@ -1,4 +1,4 @@
-From c2ae9aa7f6c1a68b12cf4b6106f897cdb44c98c5 Mon Sep 17 00:00:00 2001
+From b114d1d1b40247b271bcca209398529770fc5609 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Mon, 4 Nov 2024 21:15:20 +0800
 Subject: [PATCH 1063/1218] camera: sync V5.7 code and verify
@@ -22,7 +22,7 @@ Change-Id: I0f894b8b50bcb2cf4ea10d749d9de1b0e11265e2
  create mode 100644 include/uapi/media/k1x/k1x_ccic_uapi.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
-index 2680b7ee92c3..81a35b491131 100644
+index 2680b7ee92c37..81a35b4911317 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 @@ -69,12 +69,14 @@ ccic0: ccic@d420a000 {
@@ -91,7 +91,7 @@ index 2680b7ee92c3..81a35b491131 100644
  		interconnect-names = "dma-mem";
  		status = "okay";
 diff --git a/drivers/media/platform/spacemit/camera/Makefile b/drivers/media/platform/spacemit/camera/Makefile
-index f5e8a1d233b4..ae794b255534 100644
+index f5e8a1d233b40..ae794b255534c 100644
 --- a/drivers/media/platform/spacemit/camera/Makefile
 +++ b/drivers/media/platform/spacemit/camera/Makefile
 @@ -12,6 +12,7 @@ cam_ccic_v2-objs += cam_ccic/ccic_hwreg.o
@@ -103,7 +103,7 @@ index f5e8a1d233b4..ae794b255534 100644
  obj-$(CONFIG_SPACEMIT_K1X_CPP_V2) += cam_cpp_v2.o
  cam_cpp_v2-objs += cam_cpp/k1x_cpp.o
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
-index ff8baf3ac03a..2bcaa1a9f834 100644
+index ff8baf3ac03a6..2bcaa1a9f834d 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 @@ -18,11 +18,13 @@
@@ -788,7 +788,7 @@ index ff8baf3ac03a..2bcaa1a9f834 100644
  
  	/* disable runtime pm */
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
-index e54587c6f0f2..1d9f652816c8 100644
+index e54587c6f0f29..1d9f652816c8c 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
 @@ -48,8 +48,8 @@ struct mipi_csi2 {
@@ -902,7 +902,7 @@ index e54587c6f0f2..1d9f652816c8 100644
  int ccic_dphy_hssettle_set(unsigned int ccic_id, unsigned int dphy_freg);
  #endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
-index 917877aa63ec..65bca4112aef 100644
+index 917877aa63ecf..65bca4112aef8 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 @@ -64,7 +64,7 @@ int ccic_csi2_lanes_enable(struct ccic_dev *ccic_dev, int lanes)
@@ -980,7 +980,7 @@ index 917877aa63ec..65bca4112aef 100644
  	case CCIC_DMA_SEL_REMOTE_MAIN:
  	default:
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
-index 65db3b2711f3..a9e9f533f475 100644
+index 65db3b2711f39..a9e9f533f475a 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
 @@ -8,6 +8,9 @@
@@ -1048,7 +1048,7 @@ index 65db3b2711f3..a9e9f533f475 100644
  void ccic_hw_dump_regs(struct ccic_dev *ccic_dev);
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
 new file mode 100644
-index 000000000000..c60e5cedf46e
+index 0000000000000..c60e5cedf46e6
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
 @@ -0,0 +1,1407 @@
@@ -2461,7 +2461,7 @@ index 000000000000..c60e5cedf46e
 +}
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.h
 new file mode 100644
-index 000000000000..c061d4b0f256
+index 0000000000000..c061d4b0f256d
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.h
 @@ -0,0 +1,174 @@
@@ -2640,7 +2640,7 @@ index 000000000000..c061d4b0f256
 +void spm_cvdev_fill_v4l2_format(struct v4l2_format *f);
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index fadc0631de13..a1bd81c30ee5 100644
+index fadc0631de130..a1bd81c30ee55 100644
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -1185,7 +1185,7 @@ static int csi_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
@@ -2663,7 +2663,7 @@ index fadc0631de13..a1bd81c30ee5 100644
  	}
 diff --git a/include/uapi/media/k1x/k1x_ccic_uapi.h b/include/uapi/media/k1x/k1x_ccic_uapi.h
 new file mode 100644
-index 000000000000..b4ce3de050f2
+index 0000000000000..b4ce3de050f25
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_ccic_uapi.h
 @@ -0,0 +1,37 @@

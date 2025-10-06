@@ -1,4 +1,4 @@
-From 0d6e9045f1bb87e43189d3c29fcd73f0f6f7bbaf Mon Sep 17 00:00:00 2001
+From d60c25445bc8c7ce8c6b12535fef594730b3473d Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 5 Jan 2024 18:21:47 +0800
 Subject: [PATCH 0320/1218] display: Support hdmi 1080p
@@ -10,7 +10,7 @@ Change-Id: I6efa94596170bceb46d3dcbf4cd03de30c949e8d
  2 files changed, 50 insertions(+), 18 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 79dcc0687d64..832cd20b2add 100644
+index 79dcc0687d646..832cd20b2add9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2096,7 +2096,7 @@ dpu_online2: port@c0340000 {
@@ -72,7 +72,7 @@ index 79dcc0687d64..832cd20b2add 100644
  		};
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index aa5987fe4a97..736c901cfaf3 100644
+index aa5987fe4a972..736c901cfaf3b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -154,17 +154,38 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,

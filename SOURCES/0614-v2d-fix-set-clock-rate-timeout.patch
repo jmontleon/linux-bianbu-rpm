@@ -1,4 +1,4 @@
-From 9a38897c1de63ca4711c1c5a1dfa434fdcc52a95 Mon Sep 17 00:00:00 2001
+From 408826cc3b5b741ef9db649e8a830e73e870b804 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 26 Apr 2024 14:38:45 +0800
 Subject: [PATCH 0614/1218] v2d: fix set clock rate timeout
@@ -11,7 +11,7 @@ Change-Id: I982954e91d357daedfb2e90a335f6bca73299754
  3 files changed, 27 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index a1576fa16ea6..01a41b5ec0b2 100644
+index a1576fa16ea6c..01a41b5ec0b2a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2225,6 +2225,8 @@ v2d@c0100000 {
@@ -24,7 +24,7 @@ index a1576fa16ea6..01a41b5ec0b2 100644
  			interrupts = <86>;
  			interconnects = <&dram_range1>;
 diff --git a/drivers/soc/spacemit/v2d/v2d_drv.c b/drivers/soc/spacemit/v2d/v2d_drv.c
-index fc016490509f..529d00f3dae4 100644
+index fc016490509fb..529d00f3dae42 100644
 --- a/drivers/soc/spacemit/v2d/v2d_drv.c
 +++ b/drivers/soc/spacemit/v2d/v2d_drv.c
 @@ -771,6 +771,7 @@ static int v2d_probe(struct platform_device *pdev)
@@ -79,7 +79,7 @@ index fc016490509f..529d00f3dae4 100644
  
  	return 0;
 diff --git a/drivers/soc/spacemit/v2d/v2d_priv.h b/drivers/soc/spacemit/v2d/v2d_priv.h
-index 328a6a062768..6a8860494ef2 100644
+index 328a6a062768b..6a8860494ef2c 100644
 --- a/drivers/soc/spacemit/v2d/v2d_priv.h
 +++ b/drivers/soc/spacemit/v2d/v2d_priv.h
 @@ -20,6 +20,7 @@

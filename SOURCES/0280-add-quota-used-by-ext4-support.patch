@@ -1,4 +1,4 @@
-From 8e0518eb989502e1b4bcc41ddc212f54090de8fe Mon Sep 17 00:00:00 2001
+From a8eaf5d1085d4c763acc359fe19be994d238cb05 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:02:04 +0800
 Subject: [PATCH 0280/1218] add quota used by ext4 support
@@ -9,7 +9,7 @@ Change-Id: Ib837c7513a2e724d831766027d7feac53e0061bf
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index dd9fc84861ac..8d1080112600 100644
+index dd9fc84861acf..8d1080112600c 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -392,6 +392,8 @@ CONFIG_XFS_POSIX_ACL=y

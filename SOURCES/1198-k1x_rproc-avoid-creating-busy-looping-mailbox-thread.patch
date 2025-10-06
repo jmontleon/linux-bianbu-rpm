@@ -1,4 +1,4 @@
-From 5a57d5b1c77f4d0e999634e8fe299e3620ffd47b Mon Sep 17 00:00:00 2001
+From 17045c1fc0db6171653da54c2e2f69f71391fd79 Mon Sep 17 00:00:00 2001
 From: Yanko Kaneti <yaneti@declera.com>
 Date: Wed, 2 Oct 2024 09:35:31 -0400
 Subject: [PATCH 1198/1218] k1x_rproc: avoid creating busy looping mailbox
@@ -9,7 +9,7 @@ Subject: [PATCH 1198/1218] k1x_rproc: avoid creating busy looping mailbox
  1 file changed, 7 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 8d0c318b5a39..36d3d17d4221 100644
+index 8d0c318b5a393..36d3d17d4221b 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -12,7 +12,6 @@

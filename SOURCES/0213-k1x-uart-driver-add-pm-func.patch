@@ -1,4 +1,4 @@
-From 9c6c69bdd21a1a483b87136b1193e6473818c76a Mon Sep 17 00:00:00 2001
+From 493d140a8db3fbb9ac6a93927c051e7872c7d898 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 21 Dec 2023 15:04:49 +0800
 Subject: [PATCH 0213/1218] k1x:uart driver add pm func
@@ -9,7 +9,7 @@ Change-Id: I06c10a6806c854f39b273420ed1106d8b877c8d0
  1 file changed, 19 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 70cff4a88748..06cd340f43d5 100644
+index 70cff4a88748a..06cd340f43d5d 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -29,6 +29,7 @@

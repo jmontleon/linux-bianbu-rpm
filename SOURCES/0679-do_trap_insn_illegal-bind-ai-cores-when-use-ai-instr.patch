@@ -1,4 +1,4 @@
-From 2029485b40783f71549235dd3c3e56e91e5cb13d Mon Sep 17 00:00:00 2001
+From eb7c2c983cc5acc5d0d5d140e325babb548f787b Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Tue, 18 Apr 2023 11:18:33 +0800
 Subject: [PATCH 0679/1218] do_trap_insn_illegal: bind ai cores when use ai
@@ -13,7 +13,7 @@ Change-Id: Ib551054242131f58699015f28fa30ee976fcbc0f
  4 files changed, 56 insertions(+)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index c15516658229..972d76750900 100644
+index c155166582290..972d767509003 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -136,6 +136,13 @@ config SOC_SPACEMIT_K1_FPGA
@@ -31,7 +31,7 @@ index c15516658229..972d76750900 100644
  
  endmenu # "SoC selection"
 diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index 24d3af4d3807..0181515e75c1 100644
+index 24d3af4d3807e..0181515e75c19 100644
 --- a/arch/riscv/include/asm/processor.h
 +++ b/arch/riscv/include/asm/processor.h
 @@ -187,6 +187,7 @@ int riscv_of_parent_hartid(struct device_node *node, unsigned long *hartid);
@@ -43,7 +43,7 @@ index 24d3af4d3807..0181515e75c1 100644
  extern unsigned long signal_minsigstksz __ro_after_init;
  
 diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 743d53415572..311e4627a335 100644
+index 743d53415572e..311e4627a335d 100644
 --- a/arch/riscv/kernel/cpufeature.c
 +++ b/arch/riscv/kernel/cpufeature.c
 @@ -43,8 +43,37 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __read_mostly;
@@ -85,7 +85,7 @@ index 743d53415572..311e4627a335 100644
   * riscv_isa_extension_base() - Get base extension word
   *
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 80230de167de..fca1ac9dcf86 100644
+index 80230de167def..fca1ac9dcf867 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
 @@ -170,10 +170,29 @@ DO_ERROR_INFO(do_trap_insn_misaligned,

@@ -1,4 +1,4 @@
-From 94538087481c650c30f24653ff932aff0cb4c5d2 Mon Sep 17 00:00:00 2001
+From eb5f7ca55cb365d76591e48216674b1ccdd9d858 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 30 Sep 2024 17:37:27 +0800
 Subject: [PATCH 1008/1218] MUSE-Paper support volume up/dowm key event
@@ -10,7 +10,7 @@ Change-Id: Ic62e367778a17c325f951acf61677500d1d709b0
  2 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index a8414b08d88e..4bbdfaa0c0fc 100644
+index a8414b08d88ea..4bbdfaa0c0fcf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -12,6 +12,8 @@
@@ -46,7 +46,7 @@ index a8414b08d88e..4bbdfaa0c0fc 100644
  
  &uart0 {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 8940cc2dcd62..672c5db37091 100644
+index 8940cc2dcd62e..672c5db370917 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -671,7 +671,7 @@ CONFIG_RTL8852BE=m

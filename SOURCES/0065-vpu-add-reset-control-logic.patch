@@ -1,4 +1,4 @@
-From a7bbd4fc705b2c0934094693224522aa034dfea7 Mon Sep 17 00:00:00 2001
+From 9705140e3d837a07a50dcb3fbcdbd6aa8911c3ef Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 29 Jun 2023 20:32:12 +0800
 Subject: [PATCH 0065/1218] vpu: add reset control logic
@@ -9,7 +9,7 @@ Change-Id: I43528487fe213fc4a44a67f6e5014362fe05304c
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/media/vpu/dev/mvx_dev.c b/drivers/media/vpu/dev/mvx_dev.c
-index 7a286d8dbbb8..1cf1b96fd823 100755
+index 7a286d8dbbb82..1cf1b96fd823f 100755
 --- a/drivers/media/vpu/dev/mvx_dev.c
 +++ b/drivers/media/vpu/dev/mvx_dev.c
 @@ -45,6 +45,7 @@

@@ -1,4 +1,4 @@
-From 1a6fb40f11297457987f6aa746d249d62ac5ba82 Mon Sep 17 00:00:00 2001
+From 7dc8aa604ec22efec31c1dc22b5a2802d77944cd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Sat, 3 Aug 2024 12:19:51 +0800
 Subject: [PATCH 0866/1218] display: add panel notifier event for spacemit
@@ -12,7 +12,7 @@ Change-Id: Icb6dacba4f594d325ef7814305dd0b40795c427c
  create mode 100644 include/soc/spacemit/spacemit_panel.h
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index c955c738375b..ada29969a404 100644
+index c955c738375b2..ada29969a404b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -13,7 +13,6 @@
@@ -24,7 +24,7 @@ index c955c738375b..ada29969a404 100644
  #include "spacemit_dsi.h"
  #include "sysfs/sysfs_display.h"
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
-index 76050d2b4f02..c46105a5bae2 100644
+index 76050d2b4f025..c46105a5bae24 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 @@ -4,8 +4,8 @@
@@ -81,7 +81,7 @@ index 76050d2b4f02..c46105a5bae2 100644
  #endif
 diff --git a/include/soc/spacemit/spacemit_panel.h b/include/soc/spacemit/spacemit_panel.h
 new file mode 100644
-index 000000000000..8af7ef84bc20
+index 0000000000000..8af7ef84bc200
 --- /dev/null
 +++ b/include/soc/spacemit/spacemit_panel.h
 @@ -0,0 +1,23 @@

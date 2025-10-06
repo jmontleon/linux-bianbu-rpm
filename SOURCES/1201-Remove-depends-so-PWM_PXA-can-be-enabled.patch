@@ -1,4 +1,4 @@
-From 8c4f23e1d0be24982f2fbb18c5f0a132e6f32b22 Mon Sep 17 00:00:00 2001
+From bc7fdcb1bb13710ac0207a5eb714ce25544e4d8d Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 26 Dec 2024 15:24:04 -0500
 Subject: [PATCH 1201/1218] Remove depends so PWM_PXA can be enabled
@@ -8,7 +8,7 @@ Subject: [PATCH 1201/1218] Remove depends so PWM_PXA can be enabled
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index a62a327ea8fc..904959af2bb7 100644
+index a62a327ea8fc7..904959af2bb78 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
 @@ -525,7 +525,6 @@ config PWM_PCA9685

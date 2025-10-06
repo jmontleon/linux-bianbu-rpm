@@ -1,4 +1,4 @@
-From 267bdd59640b0d3584412b6cfa4de358395e0de7 Mon Sep 17 00:00:00 2001
+From 5f1458eaddc542f1bd315f34ebcc2b14529d34fe Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 12:09:14 -0400
 Subject: [PATCH 0001/1218] Revert "clk: spacemit: ccu_pll: fix error return
@@ -10,7 +10,7 @@ This reverts commit b55178624d2fbb1d99a540ea164850904ffc1abb.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
-index 45f540073a65..4427dcfbbb97 100644
+index 45f540073a656..4427dcfbbb97f 100644
 --- a/drivers/clk/spacemit/ccu_pll.c
 +++ b/drivers/clk/spacemit/ccu_pll.c
 @@ -122,7 +122,7 @@ static unsigned long ccu_pll_recalc_rate(struct clk_hw *hw,

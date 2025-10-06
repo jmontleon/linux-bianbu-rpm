@@ -1,4 +1,4 @@
-From 8bd8d2b8f779a625b80d630ca71d03cfcd1ff84c Mon Sep 17 00:00:00 2001
+From 93dd009f537b54d9cde0e0538e8cf3c88011c983 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 23 Feb 2024 09:10:57 +0800
 Subject: [PATCH 0437/1218] k1x: rporc: add the reference of mailbox &
@@ -12,7 +12,7 @@ Change-Id: I7d7fcd88face6e9d0547b66e23351cb9126b3adb
  3 files changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index ca5b0fd8d717..116b8467407f 100644
+index ca5b0fd8d717a..116b8467407f2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -832,6 +832,11 @@ opp1600000000 {
@@ -28,7 +28,7 @@ index ca5b0fd8d717..116b8467407f 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 3b746d931347..5ffd7f348281 100644
+index 3b746d9313470..5ffd7f348281d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -885,6 +885,11 @@ opp1600000000 {
@@ -44,7 +44,7 @@ index 3b746d931347..5ffd7f348281 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 5ab8cc0249e4..e595359a6014 100644
+index 5ab8cc0249e44..e595359a6014c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -826,9 +826,14 @@ opp1600000000 {

@@ -1,4 +1,4 @@
-From b40a48e065b87755f153e74e09061dc77e9ed0f1 Mon Sep 17 00:00:00 2001
+From e8a429abf0458355e06d989d079a444f05781e35 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:19:33 +0800
 Subject: [PATCH 0281/1218] add device mapper used by RAID and FS crypto
@@ -9,7 +9,7 @@ Change-Id: I9fd3480ff9f1a849986fb5a3e0a45de06305aa30
  1 file changed, 29 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 8d1080112600..d9d7571be914 100644
+index 8d1080112600c..d9d7571be914f 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -82,6 +82,35 @@ CONFIG_SCSI=y

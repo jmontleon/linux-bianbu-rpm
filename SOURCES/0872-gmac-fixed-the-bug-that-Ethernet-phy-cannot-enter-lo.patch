@@ -1,4 +1,4 @@
-From 13a30bfc5a6131808748146b29177ad4d57731bd Mon Sep 17 00:00:00 2001
+From eed202d07a3f821ad950959be07dac6e917011c3 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 23 Jul 2024 09:42:28 +0800
 Subject: [PATCH 0872/1218] gmac: fixed the bug that Ethernet phy cannot enter
@@ -13,7 +13,7 @@ Change-Id: I31ae1dbe91e12bead77cf64857f55533e6002f8c
  1 file changed, 32 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index 4077948874e6..a59f49214dfa 100644
+index 4077948874e61..a59f49214dfa6 100644
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -911,24 +911,11 @@ int emac_up(struct emac_priv *priv)

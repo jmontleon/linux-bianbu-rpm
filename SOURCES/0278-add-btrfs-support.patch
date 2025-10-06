@@ -1,4 +1,4 @@
-From 11d9b80a6785650f00d6a86695906195014227f3 Mon Sep 17 00:00:00 2001
+From cc7c57eec705507ea8ae119a4f3196f727c6c638 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:00:14 +0800
 Subject: [PATCH 0278/1218] add btrfs support
@@ -9,7 +9,7 @@ Change-Id: I559c0282bb25ef3c38e2b1f39caddec8ef97e4cb
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index a488042d919a..9595f091528d 100644
+index a488042d919ad..9595f091528d7 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -389,6 +389,8 @@ CONFIG_EXT4_FS_POSIX_ACL=y

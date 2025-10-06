@@ -1,4 +1,4 @@
-From 592174821ddbe51ad1ffae39c6d01e67be2de877 Mon Sep 17 00:00:00 2001
+From 7f3a4f966b7119e37ce73b566aae184f963245a1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 23 Nov 2023 15:55:22 +0800
 Subject: [PATCH 0166/1218] add configurations for k1-x evb board
@@ -13,7 +13,7 @@ Change-Id: I43beff4428f13381d1cc2a14a6d796733a01e01c
  create mode 100644 arch/riscv/configs/k1-x_evb_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 882d3c7ef2ba..314a14a42e08 100644
+index 882d3c7ef2ba4..314a14a42e088 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,5 +2,5 @@
@@ -25,7 +25,7 @@ index 882d3c7ef2ba..314a14a42e08 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 new file mode 100644
-index 000000000000..0b5c804f30ce
+index 0000000000000..0b5c804f30ce8
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -0,0 +1,202 @@
@@ -233,7 +233,7 @@ index 000000000000..0b5c804f30ce
 +};
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
 new file mode 100644
-index 000000000000..7d0e5a00ced8
+index 0000000000000..7d0e5a00ced82
 --- /dev/null
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -0,0 +1,393 @@

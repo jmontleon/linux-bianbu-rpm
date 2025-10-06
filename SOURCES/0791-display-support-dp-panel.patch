@@ -1,4 +1,4 @@
-From 23446aee0b894b58d2b296d913187277f99014c3 Mon Sep 17 00:00:00 2001
+From 9a30d28509b514db41aea9b12fb254404da7819a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 2 Jul 2024 16:55:08 +0800
 Subject: [PATCH 0791/1218] display: support dp panel
@@ -14,7 +14,7 @@ Change-Id: Id9ecfae9c1123d52e9093ae630d9b40fcb2a9640
  create mode 100644 drivers/gpu/drm/spacemit/lt9711.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index b06d42824108..8fc049e6e802 100644
+index b06d42824108d..8fc049e6e8025 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -285,19 +285,30 @@ &dpu_online2_dsi {
@@ -81,7 +81,7 @@ index b06d42824108..8fc049e6e802 100644
  
  &i2c6 {
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt9711_dp_1920x1080.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt9711_dp_1920x1080.dtsi
-index a4512137fc28..3a86d6445925 100644
+index a4512137fc289..3a86d64459255 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt9711_dp_1920x1080.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt9711_dp_1920x1080.dtsi
 @@ -23,6 +23,7 @@ lcd_lt9711_dp_1920x1080: lcd_lt9711_dp_1920x1080 {
@@ -93,7 +93,7 @@ index a4512137fc28..3a86d6445925 100644
  		eotp-enable = <0>;
  		burst-mode = <2>;
 diff --git a/drivers/gpu/drm/spacemit/Kconfig b/drivers/gpu/drm/spacemit/Kconfig
-index f26186c5ee4e..67de8a3b9f72 100644
+index f26186c5ee4ed..67de8a3b9f72d 100644
 --- a/drivers/gpu/drm/spacemit/Kconfig
 +++ b/drivers/gpu/drm/spacemit/Kconfig
 @@ -37,4 +37,18 @@ config DRM_LT8911EXB
@@ -119,7 +119,7 @@ index f26186c5ee4e..67de8a3b9f72 100644
 +	  Support for Lontium LT9711 DSI to eDP driver.
 \ No newline at end of file
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
-index 35e88b0c87d1..00582f9e6385 100644
+index 35e88b0c87d15..00582f9e63858 100644
 --- a/drivers/gpu/drm/spacemit/Makefile
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -29,3 +29,4 @@ obj-$(CONFIG_DRM_SPACEMIT) += spacemit-drm.o
@@ -129,7 +129,7 @@ index 35e88b0c87d1..00582f9e6385 100644
 +obj-$(CONFIG_DRM_LT9711) += lt9711.o
 diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
 new file mode 100644
-index 000000000000..071678570a56
+index 0000000000000..071678570a56d
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/lt9711.c
 @@ -0,0 +1,405 @@

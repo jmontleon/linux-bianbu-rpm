@@ -1,4 +1,4 @@
-From 27c92c23ab50b745e503a3ed5265e1eed0c7a0a2 Mon Sep 17 00:00:00 2001
+From 232029ea514bb37d2ce18c886cc1b6fce845c45e Mon Sep 17 00:00:00 2001
 From: mengbinghan <binghan.meng@spacemit.com>
 Date: Tue, 5 Nov 2024 10:08:45 +0800
 Subject: [PATCH 1067/1218] vpu: Fix amvx build error when building amvx as
@@ -20,7 +20,7 @@ Change-Id: I63f4a1127deb36e3ba66e20820ed61f7835fdf9a
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index a6d174a03b4f..28c08fe617f9 100644
+index a6d174a03b4fe..28c08fe617f9f 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -44,6 +44,8 @@

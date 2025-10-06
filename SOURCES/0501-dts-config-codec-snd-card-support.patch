@@ -1,4 +1,4 @@
-From 35acd109e6f22a3e8c0045c58a513cc88a8a8cf7 Mon Sep 17 00:00:00 2001
+From 9ae7be098ec180986a41051c64521c615d580541 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Mar 2024 09:49:34 +0800
 Subject: [PATCH 0501/1218] dts: config codec snd-card support
@@ -10,7 +10,7 @@ Change-Id: I390b960030078583c6151976e35f42f43800ba75
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 9820fb6fd7f6..0540bf62f3d5 100644
+index 9820fb6fd7f66..0540bf62f3d5f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2420,6 +2420,6 @@ sound_hdmi: snd-card@0 {
@@ -22,7 +22,7 @@ index 9820fb6fd7f6..0540bf62f3d5 100644
  	};
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 8bcd7a099164..b0b3659ad326 100644
+index 8bcd7a099164f..b0b3659ad3260 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -949,3 +949,7 @@ &spacemit_i2s {

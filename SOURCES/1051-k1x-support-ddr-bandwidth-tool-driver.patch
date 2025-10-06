@@ -1,4 +1,4 @@
-From 75ef29953a47aab24d8bcecb44e8b6775a77c95a Mon Sep 17 00:00:00 2001
+From 41a94f883a48d063eee7b7fc85fdf881d6546098 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 10 Sep 2024 09:23:02 +0800
 Subject: [PATCH 1051/1218] k1x:support ddr bandwidth tool driver
@@ -18,7 +18,7 @@ Change-Id: I4b6c4d76fa0a18dffff14660d3845ebde59553ca
  create mode 100644 drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index bfdaa7862995..7ea166ca6fb0 100644
+index bfdaa7862995f..7ea166ca6fb00 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1647,6 +1647,12 @@ r_ircrx: irc-rx@c088e000 {
@@ -35,7 +35,7 @@ index bfdaa7862995..7ea166ca6fb0 100644
  			compatible = "spacemit,soc-timer";
  			reg = <0x0 0xd4014000 0x0 0xc8>;
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 96b901efef54..3e668aba8b65 100644
+index 96b901efef545..3e668aba8b658 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -1036,6 +1036,7 @@ CONFIG_SPACEMIT_REBOOT_CONTROL=y
@@ -47,7 +47,7 @@ index 96b901efef54..3e668aba8b65 100644
  CONFIG_SPACEMIT_V2D=y
  CONFIG_SPACEMIT_RFKILL=y
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index c1c3536488d8..8f317aeb928a 100644
+index c1c3536488d88..8f317aeb928a8 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -43,6 +43,12 @@ config SPACEMI_SOCINFO
@@ -64,7 +64,7 @@ index c1c3536488d8..8f317aeb928a 100644
  source "drivers/soc/spacemit/v2d/Kconfig"
  source "drivers/soc/spacemit/spacemit-rf/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index 523fe88365b9..cac9938be4c7 100644
+index 523fe88365b9f..cac9938be4c7a 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -7,3 +7,4 @@ obj-$(CONFIG_PM) += pm/
@@ -74,14 +74,14 @@ index 523fe88365b9..cac9938be4c7 100644
 +obj-$(CONFIG_SPACEMIT_DDRBW) += ddr-bw/
 diff --git a/drivers/soc/spacemit/ddr-bw/Makefile b/drivers/soc/spacemit/ddr-bw/Makefile
 new file mode 100644
-index 000000000000..ef9d58fc3cf0
+index 0000000000000..ef9d58fc3cf0b
 --- /dev/null
 +++ b/drivers/soc/spacemit/ddr-bw/Makefile
 @@ -0,0 +1 @@
 +obj-y += spacemit_ddrbw.o
 diff --git a/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c
 new file mode 100644
-index 000000000000..23316490d127
+index 0000000000000..23316490d1272
 --- /dev/null
 +++ b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.c
 @@ -0,0 +1,1214 @@
@@ -1301,7 +1301,7 @@ index 000000000000..23316490d127
 +MODULE_DESCRIPTION("SPACEMIT ddr-axi monitor driver");
 diff --git a/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
 new file mode 100644
-index 000000000000..1bd4bb948c1f
+index 0000000000000..1bd4bb948c1f1
 --- /dev/null
 +++ b/drivers/soc/spacemit/ddr-bw/spacemit_ddrbw.h
 @@ -0,0 +1,363 @@

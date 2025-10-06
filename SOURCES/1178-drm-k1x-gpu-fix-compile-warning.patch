@@ -1,4 +1,4 @@
-From cac676bad85fc66c9e6755b7e026b0caef47946a Mon Sep 17 00:00:00 2001
+From 6def111d3f7d0ac218221a1df699c8ec551c5392 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:29:40 +0800
 Subject: [PATCH 1178/1218] drm: k1x/gpu: fix compile warning
@@ -14,7 +14,7 @@ Change-Id: Id5a0c173537d94f0bd7ffa4341f59e2c32bf131a
  6 files changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/debug_common.c b/drivers/gpu/drm/img-rogue/debug_common.c
-index 16746b5d550a..0c039fe6dc17 100644
+index 16746b5d550ab..0c039fe6dc178 100644
 --- a/drivers/gpu/drm/img-rogue/debug_common.c
 +++ b/drivers/gpu/drm/img-rogue/debug_common.c
 @@ -80,6 +80,7 @@ struct DI_VZ_DATA {
@@ -26,7 +26,7 @@ index 16746b5d550a..0c039fe6dc17 100644
  {
  	IMG_CHAR szBuffer[PVR_MAX_DEBUG_MESSAGE_LEN];
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem.c b/drivers/gpu/drm/img-rogue/physmem_extmem.c
-index d365524f9a9c..4ca2c56903c0 100644
+index d365524f9a9c1..4ca2c56903c0c 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_extmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem.c
 @@ -46,11 +46,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44,7 +44,7 @@ index d365524f9a9c..4ca2c56903c0 100644
  PVRSRV_ERROR
  PhysmemWrapExtMem(CONNECTION_DATA * psConnection,
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge.h b/drivers/gpu/drm/img-rogue/pvr_bridge.h
-index dafc51dd57f0..b113690b4907 100644
+index dafc51dd57f00..b113690b49077 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge.h
 @@ -350,7 +350,7 @@ extern "C" {
@@ -57,7 +57,7 @@ index dafc51dd57f0..b113690b4907 100644
  	| (1U << (PVRSRV_BRIDGE_SRVCORE - PVRSRV_BRIDGE_FIRST))
  	| (1U << (PVRSRV_BRIDGE_SYNC - PVRSRV_BRIDGE_FIRST))
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debug.c b/drivers/gpu/drm/img-rogue/pvr_debug.c
-index a4841505de17..671d15c3a741 100644
+index a4841505de179..671d15c3a7415 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_debug.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_debug.c
 @@ -242,6 +242,7 @@ static IMG_BOOL VBAppend(IMG_CHAR *pszBuf, IMG_UINT32 ui32BufSiz, const IMG_CHAR
@@ -69,7 +69,7 @@ index a4841505de17..671d15c3a741 100644
  {
  	unsigned long ulLockFlags = 0;
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debugfs.c b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
-index 63c557bc8459..c47cdf57bf96 100644
+index 63c557bc84593..c47cdf57bf96e 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 @@ -118,8 +118,8 @@ static void _WriteData(void *pvNativeHandle, const void *pvData,
@@ -84,7 +84,7 @@ index 63c557bc8459..c47cdf57bf96 100644
  	seq_vprintf(pvNativeHandle, pszFmt, pArgs);
  }
 diff --git a/drivers/gpu/drm/img-rogue/rgxcompute.c b/drivers/gpu/drm/img-rogue/rgxcompute.c
-index 119dc69a57c4..7673229d2827 100644
+index 119dc69a57c49..7673229d28271 100644
 --- a/drivers/gpu/drm/img-rogue/rgxcompute.c
 +++ b/drivers/gpu/drm/img-rogue/rgxcompute.c
 @@ -433,7 +433,7 @@ PVRSRV_ERROR PVRSRVRGXKickCDMKM(RGX_SERVER_COMPUTE_CONTEXT	*psComputeContext,

@@ -1,4 +1,4 @@
-From a109590d409a9b8d9936a42976d62ea5a43b2835 Mon Sep 17 00:00:00 2001
+From 54cb7e5339a12d7f53f3ee1b5eb53ae372dc0d2a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 22 Feb 2024 22:16:58 +0800
 Subject: [PATCH 0431/1218] k1: rcpu:ipc: reserved memory for rcpu and ipc
@@ -9,7 +9,7 @@ Change-Id: I693244ac459c6c077a6aed815d55bd8c89bb510f
  1 file changed, 45 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 79909049df39..0764f459fca0 100644
+index 79909049df39c..0764f459fca0d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -519,9 +519,53 @@ reserved-memory {

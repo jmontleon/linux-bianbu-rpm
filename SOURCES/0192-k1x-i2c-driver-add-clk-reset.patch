@@ -1,4 +1,4 @@
-From 6bdaeb0243487824850c7d0eab54e75811d3eda6 Mon Sep 17 00:00:00 2001
+From c6874e52893fdba39a5e90ecd5580b53d28bb23e Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Mon, 18 Dec 2023 09:22:56 +0800
 Subject: [PATCH 0192/1218] k1x: i2c driver add clk&reset
@@ -10,7 +10,7 @@ Change-Id: Ib878ef283ed8876c1be3df8a8f083872c8bd6d8d
  2 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index 4bc3599b8928..d4ca4dc94dfc 100644
+index 4bc3599b89282..d4ca4dc94dfcc 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -7,6 +7,7 @@
@@ -54,7 +54,7 @@ index 4bc3599b8928..d4ca4dc94dfc 100644
  
  	clk_disable_unprepare(spacemit_i2c->clk);
 diff --git a/drivers/i2c/busses/i2c-k1x.h b/drivers/i2c/busses/i2c-k1x.h
-index 8854e352886c..c426c6f3d39f 100644
+index 8854e352886c1..c426c6f3d39fd 100644
 --- a/drivers/i2c/busses/i2c-k1x.h
 +++ b/drivers/i2c/busses/i2c-k1x.h
 @@ -7,6 +7,7 @@

@@ -1,4 +1,4 @@
-From 1ce7f18e381764891cac49daca31b7c8314d89c8 Mon Sep 17 00:00:00 2001
+From ffe77b954b3825ba33c08266d1df7393017de020 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 22 Dec 2023 20:39:59 +0800
 Subject: [PATCH 0235/1218] clock: fix set_rate function, it change rate by div
@@ -12,7 +12,7 @@ Change-Id: Ide3cc6b0b9ab0d31fcfc574be94487dee26ee226
  3 files changed, 223 insertions(+), 114 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
-index 4fb6a2392137..e31dee144bfe 100755
+index 4fb6a2392137a..e31dee144bfeb 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.h
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 @@ -26,6 +26,8 @@ enum {
@@ -25,7 +25,7 @@ index 4fb6a2392137..e31dee144bfe 100755
  
  struct ccu_common {
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 4cedf35a29ae..cda4f714beb7 100755
+index 4cedf35a29ae1..cda4f714beb7b 100755
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -29,20 +29,20 @@ static void ccu_mix_disable(struct clk_hw *hw)
@@ -426,7 +426,7 @@ index 4cedf35a29ae..cda4f714beb7 100755
  	return 0;
  }
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index 920f3509d8a2..6e417f4f56f4 100755
+index 920f3509d8a23..6e417f4f56f4d 100755
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -87,6 +87,7 @@ struct ccu_mix {

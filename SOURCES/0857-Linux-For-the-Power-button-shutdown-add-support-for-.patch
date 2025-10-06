@@ -1,4 +1,4 @@
-From 62be86f99e79ba0274c91ea1610d07c3d6a3c292 Mon Sep 17 00:00:00 2001
+From 70d913dd243aed6ea31d7aa38dca9a27c1e355c6 Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Wed, 5 Jun 2024 16:46:23 +0800
 Subject: [PATCH 0857/1218] Linux:For the Power button shutdown, add support
@@ -10,7 +10,7 @@ Change-Id: Ib9f6cf335155c0cd0ad3387ea37f2d558da3b6c4
  1 file changed, 17 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index ef12ee374d36..c054d3087527 100644
+index ef12ee374d362..c054d3087527d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -156,12 +156,29 @@ spacemit_lid:spacemit_lid {

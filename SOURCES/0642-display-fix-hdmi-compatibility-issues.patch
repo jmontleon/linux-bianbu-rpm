@@ -1,4 +1,4 @@
-From 5fc9f7427604ad79fe4993254c30533bd5aea116 Mon Sep 17 00:00:00 2001
+From 29105fe0a2acc0e76901d5c88dca57e7d217fd76 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 9 May 2024 14:32:14 +0800
 Subject: [PATCH 0642/1218] display: fix hdmi compatibility issues
@@ -9,7 +9,7 @@ Change-Id: Ie0cb67a184c3c8b4ae6a4a999df4ccddfa5643db
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 068131619cf4..0ca0e72e9833 100644
+index 068131619cf4c..0ca0e72e9833b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -583,6 +583,11 @@ static int spacemit_hdmi_setup(struct spacemit_hdmi *hdmi,

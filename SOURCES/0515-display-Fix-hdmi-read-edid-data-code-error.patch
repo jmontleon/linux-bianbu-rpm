@@ -1,4 +1,4 @@
-From 77c621d2497dedef80413509bb965661127dd386 Mon Sep 17 00:00:00 2001
+From d8975fa697d75b21951c881edcc66b85ec1284d6 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 25 Mar 2024 10:55:16 +0800
 Subject: [PATCH 0515/1218] display: Fix hdmi read edid data code error
@@ -9,7 +9,7 @@ Change-Id: I711818645595f833baf01bfcb37c7ed8a008602e
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 1431763bb6f9..17b34c38e6f6 100644
+index 1431763bb6f93..17b34c38e6f64 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -387,7 +387,7 @@ static void hdmi_i2c_read(struct spacemit_hdmi *hdmi, uint8_t addr, uint8_t* mes

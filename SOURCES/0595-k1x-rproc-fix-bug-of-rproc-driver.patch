@@ -1,4 +1,4 @@
-From 101c58283010ae1adc459dfad432c3663b175feb Mon Sep 17 00:00:00 2001
+From 3d1c62ce008f5f2c94b7a748178e490844354649 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 17 Apr 2024 20:55:15 +0800
 Subject: [PATCH 0595/1218] k1x:rproc: fix bug of rproc driver
@@ -12,7 +12,7 @@ Change-Id: I8bc1c352866518f0c9446d051ffe71725f73e96f
  1 file changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 23b2d8d07bf7..6f8bbe1849ef 100644
+index 23b2d8d07bf75..6f8bbe1849ef8 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -476,6 +476,8 @@ static int spacemit_rproc_probe(struct platform_device *pdev)

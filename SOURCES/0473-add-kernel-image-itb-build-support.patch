@@ -1,4 +1,4 @@
-From 76869e6753a5ad07cf17c48d5373ce1903edd42d Mon Sep 17 00:00:00 2001
+From 44ba5a798d6f1610136246e90a388e0718426258 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Mon, 11 Mar 2024 17:40:22 +0800
 Subject: [PATCH 0473/1218] add kernel image itb build support
@@ -14,7 +14,7 @@ Change-Id: I69c1807dd292e8702d175806dfff4ee4fcf00ab0
  create mode 100644 arch/riscv/generic/Platform
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index df57654a615e..d1c0937584a6 100644
+index df57654a615e0..d1c0937584a6b 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -191,13 +191,19 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
@@ -40,7 +40,7 @@ index df57654a615e..d1c0937584a6 100644
  
  # the install target always installs KBUILD_IMAGE (which may be compressed)
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index bfc3d0b75b9b..96e3de6d44a7 100644
+index bfc3d0b75b9b2..96e3de6d44a7d 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
 @@ -67,6 +67,34 @@ $(obj)/Image.xz: $(obj)/Image FORCE
@@ -80,7 +80,7 @@ index bfc3d0b75b9b..96e3de6d44a7 100644
  EFI_ZBOOT_MACH_TYPE	:= RISCV$(BITS)
 diff --git a/arch/riscv/generic/Image.its.S b/arch/riscv/generic/Image.its.S
 new file mode 100644
-index 000000000000..4891bc36ba18
+index 0000000000000..4891bc36ba186
 --- /dev/null
 +++ b/arch/riscv/generic/Image.its.S
 @@ -0,0 +1,32 @@
@@ -118,7 +118,7 @@ index 000000000000..4891bc36ba18
 +};
 diff --git a/arch/riscv/generic/Platform b/arch/riscv/generic/Platform
 new file mode 100644
-index 000000000000..6247acb3499f
+index 0000000000000..6247acb3499fd
 --- /dev/null
 +++ b/arch/riscv/generic/Platform
 @@ -0,0 +1,15 @@

@@ -1,4 +1,4 @@
-From b6dd6c692699786dd09e2ba216acdc0388e2b2ea Mon Sep 17 00:00:00 2001
+From 025f371ae043b91486851acd5875531d91f35fd5 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 4 Sep 2024 10:48:21 +0800
 Subject: [PATCH 0982/1218] deconfig: enable spinlock_debug
@@ -10,7 +10,7 @@ Signed-off-by: lijuan <juan.li@spacemit.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 1f52884da53a..3bec2b75bbc0 100644
+index 1f52884da53a4..3bec2b75bbc08 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -1298,6 +1298,7 @@ CONFIG_SCHED_STACK_END_CHECK=y

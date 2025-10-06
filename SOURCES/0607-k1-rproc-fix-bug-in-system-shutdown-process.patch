@@ -1,4 +1,4 @@
-From 90aae8c097c421392c9975c3a9fe5d693e52ced0 Mon Sep 17 00:00:00 2001
+From 8e8868692688b6270a5697cdaa6e2982f0dd9252 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 22 Apr 2024 11:14:23 +0800
 Subject: [PATCH 0607/1218] k1:rproc: fix bug in system shutdown process
@@ -14,7 +14,7 @@ Change-Id: Ie308748e05e025246cd37cc264d54bbe1606acc0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index bc49fcc5ca5f..319497971f20 100644
+index bc49fcc5ca5ff..319497971f206 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -652,7 +652,7 @@ static void spacemit_rproc_shutdown(struct platform_device *pdev)

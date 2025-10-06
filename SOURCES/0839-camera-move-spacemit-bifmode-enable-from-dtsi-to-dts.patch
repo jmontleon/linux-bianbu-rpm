@@ -1,4 +1,4 @@
-From 191c0854c9420ec3838f7fe1172efd3c64ea11fe Mon Sep 17 00:00:00 2001
+From 21a1ae0cb1b6a5e6545091d2fa7e5a2c09eee5e4 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Mon, 29 Jul 2024 15:28:58 +0800
 Subject: [PATCH 0839/1218] camera: move spacemit,bifmode-enable from dtsi to
@@ -17,7 +17,7 @@ Change-Id: Ie37a15d97447480f63ae6805239f170a42ebc017
  8 files changed, 19 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
-index 1e125109c061..2680b7ee92c3 100644
+index 1e125109c0617..2680b7ee92c37 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 @@ -47,7 +47,6 @@ csiphy1: csiphy@d420a800 {
@@ -29,7 +29,7 @@ index 1e125109c061..2680b7ee92c3 100644
  		reg-names = "csiphy-regs";
  		clocks = <&ccu CLK_CCIC3PHY>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
-index 77e245818057..24a15834d1a4 100644
+index 77e245818057f..24a15834d1a41 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -833,7 +833,7 @@ &csiphy1 {
@@ -42,7 +42,7 @@ index 77e245818057..24a15834d1a4 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 10718f71cc5c..6b52e4598101 100644
+index 10718f71cc5ca..6b52e4598101b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -935,7 +935,7 @@ &csiphy1 {
@@ -55,7 +55,7 @@ index 10718f71cc5c..6b52e4598101 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 52b7dd6f1896..849095162543 100644
+index 52b7dd6f1896b..8490951625439 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -928,6 +928,7 @@ &csiphy1 {
@@ -67,7 +67,7 @@ index 52b7dd6f1896..849095162543 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 3b237d7e2f8c..2803d3002ef7 100644
+index 3b237d7e2f8c2..2803d3002ef7a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -883,6 +883,7 @@ &csiphy1 {
@@ -79,7 +79,7 @@ index 3b237d7e2f8c..2803d3002ef7 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index b2c43f1c2f73..a91f2bfb7e85 100644
+index b2c43f1c2f736..a91f2bfb7e85d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -818,6 +818,19 @@ &frontsensor {
@@ -103,7 +103,7 @@ index b2c43f1c2f73..a91f2bfb7e85 100644
  	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index 4fe692870900..4b7b8f865c84 100644
+index 4fe6928709000..4b7b8f865c84f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -1068,6 +1068,7 @@ &csiphy1 {
@@ -115,7 +115,7 @@ index 4fe692870900..4b7b8f865c84 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index a8ec87256b77..0af4f239aef8 100644
+index a8ec87256b775..0af4f239aef81 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -984,6 +984,7 @@ &csiphy1 {

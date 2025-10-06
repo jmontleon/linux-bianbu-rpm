@@ -1,4 +1,4 @@
-From ad5d5165b3db49469b069c38e158e34eee47b701 Mon Sep 17 00:00:00 2001
+From c29071f8759bd78c4de4d5e6853fce36a01efe00 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 8 Aug 2023 09:08:05 +0800
 Subject: [PATCH 0085/1218] add k1-x device support
@@ -16,7 +16,7 @@ Change-Id: I8bc2ee3c35195eb0f6967281629f7db75372b0da
  create mode 100644 arch/riscv/configs/k1-x_fpga_defconfig
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index be4cdb357715..21a698452f31 100644
+index be4cdb3577151..21a698452f318 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -122,15 +122,10 @@ choice
@@ -39,7 +39,7 @@ index be4cdb357715..21a698452f31 100644
  
  config SOC_SPACEMIT_K1_FPGA
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 5fc695236578..023d2a96de4a 100644
+index 5fc695236578e..023d2a96de4a0 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,4 +2,5 @@
@@ -50,7 +50,7 @@ index 5fc695236578..023d2a96de4a 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 new file mode 100644
-index 000000000000..8d14cb1a49a8
+index 0000000000000..8d14cb1a49a86
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -0,0 +1,224 @@
@@ -280,7 +280,7 @@ index 000000000000..8d14cb1a49a8
 +
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 new file mode 100644
-index 000000000000..4c783065403d
+index 0000000000000..4c783065403d4
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -0,0 +1,28 @@
@@ -314,7 +314,7 @@ index 000000000000..4c783065403d
 +
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
 new file mode 100644
-index 000000000000..a6bd78539626
+index 0000000000000..a6bd78539626c
 --- /dev/null
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -0,0 +1,146 @@

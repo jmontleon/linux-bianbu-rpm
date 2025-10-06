@@ -1,4 +1,4 @@
-From 6338c1fae0d335f98506300b051dc26b4c5cdfbc Mon Sep 17 00:00:00 2001
+From aaf8c7de3f4dbf45af1a8b53210de339192da839 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Sat, 12 Aug 2023 10:34:02 +0800
 Subject: [PATCH 0086/1218] update vpu driver
@@ -30,7 +30,7 @@ Change-Id: I1ca624604136733aa3e04e81cd5836a2643811c2
  14 files changed, 125 insertions(+), 45 deletions(-)
 
 diff --git a/drivers/media/vpu/Kconfig b/drivers/media/vpu/Kconfig
-index ff68fd869afe..f2bc23094530 100755
+index ff68fd869afea..f2bc23094530b 100755
 --- a/drivers/media/vpu/Kconfig
 +++ b/drivers/media/vpu/Kconfig
 @@ -1,16 +1,25 @@
@@ -62,7 +62,7 @@ index ff68fd869afe..f2bc23094530 100755
 +	help
 +		Append file and line number to kernel space log messages.
 diff --git a/drivers/media/vpu/if/mvx_firmware_cache.c b/drivers/media/vpu/if/mvx_firmware_cache.c
-index d8e5eced7dab..7b656a64cf51 100755
+index d8e5eced7dabb..7b656a64cf519 100755
 --- a/drivers/media/vpu/if/mvx_firmware_cache.c
 +++ b/drivers/media/vpu/if/mvx_firmware_cache.c
 @@ -409,21 +409,31 @@ static ssize_t dirty_show(struct kobject *kobj,
@@ -142,7 +142,7 @@ index d8e5eced7dab..7b656a64cf51 100755
  
  static void cache_update(struct mvx_fw_cache *cache)
 diff --git a/drivers/media/vpu/if/mvx_if.c b/drivers/media/vpu/if/mvx_if.c
-index 8cd27860b1c8..d8dba8a1e942 100755
+index 8cd27860b1c8f..d8dba8a1e9423 100755
 --- a/drivers/media/vpu/if/mvx_if.c
 +++ b/drivers/media/vpu/if/mvx_if.c
 @@ -33,9 +33,9 @@
@@ -157,7 +157,7 @@ index 8cd27860b1c8..d8dba8a1e942 100755
  #include <linux/export.h>
  #include <linux/platform_device.h>
 diff --git a/drivers/media/vpu/if/mvx_mmu.c b/drivers/media/vpu/if/mvx_mmu.c
-index ff39537d6c74..68ab5bebb774 100755
+index ff39537d6c74b..68ab5bebb7746 100755
 --- a/drivers/media/vpu/if/mvx_mmu.c
 +++ b/drivers/media/vpu/if/mvx_mmu.c
 @@ -421,7 +421,7 @@ static int append_sg_table(struct mvx_mmu_pages *pages,
@@ -179,7 +179,7 @@ index ff39537d6c74..68ab5bebb774 100755
  		phys_addr_t base;
  
 diff --git a/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h b/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
-index 63cd4df6cb24..658248f09ac4 100755
+index 63cd4df6cb24c..658248f09ac42 100755
 --- a/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 +++ b/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 @@ -339,7 +339,7 @@ struct v4l2_mvx_long_term_ref
@@ -192,7 +192,7 @@ index 63cd4df6cb24..658248f09ac4 100755
  	V4L2_CID_MVE_VIDEO_STREAM_ESCAPING,
  	V4L2_CID_MVE_VIDEO_H265_PROFILE,
 diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
-index 4e49976cd1aa..cbf644a6d76f 100755
+index 4e49976cd1aaa..cbf644a6d76f8 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 @@ -69,8 +69,8 @@ static const struct v4l2_ioctl_ops mvx_v4l2_ioctl_ops = {
@@ -243,7 +243,7 @@ index 4e49976cd1aa..cbf644a6d76f 100755
  	ret = video_register_device(&ext->vdev, VFL_TYPE_VIDEO, -1);
  	if (ret != 0) {
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
-index da602881b63f..a3010dd57622 100755
+index da602881b63fa..a3010dd576227 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 @@ -29,9 +29,9 @@
@@ -258,7 +258,7 @@ index da602881b63f..a3010dd57622 100755
  #include "mvx_log_group.h"
  #include "mvx_seq.h"
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
-index 2a0a20d4a508..9c1a5052aaf3 100755
+index 2a0a20d4a5086..9c1a5052aaf34 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 @@ -146,7 +146,7 @@ static int session_debugfs_init(struct mvx_v4l2_session *session,
@@ -278,7 +278,7 @@ index 2a0a20d4a508..9c1a5052aaf3 100755
 \ No newline at end of file
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
-index 40c1aed6bfdf..cfb561ed2c2e 100755
+index 40c1aed6bfdf9..cfb561ed2c2ec 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 @@ -1103,6 +1103,62 @@ int mvx_v4l2_vidioc_g_crop(struct file *file,
@@ -345,7 +345,7 @@ index 40c1aed6bfdf..cfb561ed2c2e 100755
  int mvx_v4l2_vidioc_streamon(struct file *file,
  			     void *priv,
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h
-index 200d4603d60e..11e9f6df00e8 100755
+index 200d4603d60ea..11e9f6df00e85 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h
 @@ -84,7 +84,8 @@ int mvx_v4l2_vidioc_try_fmt_vid_out(struct file *file,
@@ -371,7 +371,7 @@ index 200d4603d60e..11e9f6df00e8 100755
 +			     struct v4l2_streamparm *a);
  #endif /* _MVX_V4L2_VIDIOC_H_ */
 diff --git a/drivers/media/vpu/mvx_log.c b/drivers/media/vpu/mvx_log.c
-index a6f36ab71fbf..6c05ed3fb21f 100755
+index a6f36ab71fbf2..6c05ed3fb21f7 100755
 --- a/drivers/media/vpu/mvx_log.c
 +++ b/drivers/media/vpu/mvx_log.c
 @@ -900,24 +900,15 @@ int mvx_log_group_add(struct mvx_log *log,
@@ -404,7 +404,7 @@ index a6f36ab71fbf..6c05ed3fb21f 100755
  	return 0;
  
 diff --git a/drivers/media/vpu/mvx_log.h b/drivers/media/vpu/mvx_log.h
-index 0dd86ca83600..50b6352ad476 100755
+index 0dd86ca83600f..50b6352ad4762 100755
 --- a/drivers/media/vpu/mvx_log.h
 +++ b/drivers/media/vpu/mvx_log.h
 @@ -71,7 +71,7 @@
@@ -417,7 +417,7 @@ index 0dd86ca83600..50b6352ad476 100755
  		}							      \
  	} while (0)
 diff --git a/drivers/media/vpu/mvx_log_group.c b/drivers/media/vpu/mvx_log_group.c
-index 06fcd43258e5..d4e1ba7d8bcc 100755
+index 06fcd43258e55..d4e1ba7d8bccc 100755
 --- a/drivers/media/vpu/mvx_log_group.c
 +++ b/drivers/media/vpu/mvx_log_group.c
 @@ -78,7 +78,7 @@ int mvx_log_group_init(const char *entry_name)
@@ -430,7 +430,7 @@ index 06fcd43258e5..d4e1ba7d8bcc 100755
  	if (ret != 0)
  		goto delete_dmesg_drain;
 diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-index 5e6eb90b2091..c6ec87e88dfe 100644
+index 5e6eb90b20919..c6ec87e88dfef 100644
 --- a/include/media/v4l2-ioctl.h
 +++ b/include/media/v4l2-ioctl.h
 @@ -299,14 +299,10 @@ struct v4l2_ioctl_ops {

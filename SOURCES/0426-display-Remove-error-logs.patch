@@ -1,4 +1,4 @@
-From 2f4003ebe8ceeaf07a64c5a0fbb90595f552765a Mon Sep 17 00:00:00 2001
+From 43ac54313de36a5bf765b2e04000d97b2afb12c5 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Wed, 21 Feb 2024 18:19:35 +0800
 Subject: [PATCH 0426/1218] display: Remove error logs
@@ -10,7 +10,7 @@ Change-Id: I4fe993570c8e7efafd11722e88411b6512b13ae5
  2 files changed, 45 insertions(+), 69 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 912d0840bf3d..7d4d489d66a0 100644
+index 912d0840bf3db..7d4d489d66a07 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -982,39 +982,6 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
@@ -79,7 +79,7 @@ index 912d0840bf3d..7d4d489d66a0 100644
  		result = reset_control_deassert(dpu->hdmi_reset);
  		if (result < 0) {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index b98dc9e34565..0cabad35d25a 100644
+index b98dc9e345651..0cabad35d25aa 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -534,6 +534,8 @@ static int spacemit_panel_probe(struct mipi_dsi_device *slave)

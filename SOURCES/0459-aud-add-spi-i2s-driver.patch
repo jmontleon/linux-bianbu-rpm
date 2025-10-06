@@ -1,4 +1,4 @@
-From 4ee19720763a426106b7adab67998d9c3395f60f Mon Sep 17 00:00:00 2001
+From 63e11b2785782c9fa0d3cc83b1e417ee34ac019f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 7 Mar 2024 11:01:49 +0800
 Subject: [PATCH 0459/1218] aud: add spi-i2s driver
@@ -13,7 +13,7 @@ Change-Id: Icba4775f27b54df5ad884cc4051709189c3ab80d
  create mode 100755 sound/soc/spacemit/spacemit-snd-spi.h
 
 diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
-index 7dd04de40ea9..448cb5ff2394 100644
+index 7dd04de40ea95..448cb5ff23943 100644
 --- a/sound/soc/spacemit/Makefile
 +++ b/sound/soc/spacemit/Makefile
 @@ -1,3 +1,4 @@
@@ -23,7 +23,7 @@ index 7dd04de40ea9..448cb5ff2394 100644
  obj-$(CONFIG_SND_SOC_SPACEMIT) += snd-soc-spacemit.o
 diff --git a/sound/soc/spacemit/spacemit-snd-spi.c b/sound/soc/spacemit/spacemit-snd-spi.c
 new file mode 100755
-index 000000000000..4b90cd091041
+index 0000000000000..4b90cd0910419
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-spi.c
 @@ -0,0 +1,465 @@
@@ -494,7 +494,7 @@ index 000000000000..4b90cd091041
 +MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-spi.h b/sound/soc/spacemit/spacemit-snd-spi.h
 new file mode 100755
-index 000000000000..1977563c3da5
+index 0000000000000..1977563c3da58
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-spi.h
 @@ -0,0 +1,135 @@

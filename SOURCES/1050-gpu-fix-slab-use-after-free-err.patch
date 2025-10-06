@@ -1,4 +1,4 @@
-From 8dbe0f1b74fdd94a28a3c175a2b679a34f84a5ce Mon Sep 17 00:00:00 2001
+From 424c57c33322de617eefc387feede4812b652be3 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 30 Oct 2024 15:45:49 +0800
 Subject: [PATCH 1050/1218] gpu: fix slab-use-after-free err
@@ -92,7 +92,7 @@ Change-Id: I4fff5252afc4c830b7534df03712c5b8fa840ecd
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/module_common.c b/drivers/gpu/drm/img-rogue/module_common.c
-index 1f454c91fdb0..bd6a6e9ebcc9 100644
+index 1f454c91fdb05..bd6a6e9ebcc90 100644
 --- a/drivers/gpu/drm/img-rogue/module_common.c
 +++ b/drivers/gpu/drm/img-rogue/module_common.c
 @@ -720,7 +720,7 @@ void PVRSRVDeviceRelease(PVRSRV_DEVICE_NODE *psDeviceNode,

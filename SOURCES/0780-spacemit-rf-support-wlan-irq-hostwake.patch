@@ -1,4 +1,4 @@
-From 206ad4342ec4f1ceacb9041a19ef4b167ccc2164 Mon Sep 17 00:00:00 2001
+From d3a869e75f50935901e65cfcb5ce7e0b3fdd8804 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 1 Jul 2024 15:18:53 +0800
 Subject: [PATCH 0780/1218] spacemit-rf: support wlan irq hostwake
@@ -9,7 +9,7 @@ Change-Id: Ide03090c3a8eac0f0cd747bbce2690eb143b63f3
  1 file changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
-index 46247d982d97..bf02ade21dd4 100644
+index 46247d982d979..bf02ade21dd47 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -30,7 +30,7 @@ struct wlan_pwrseq {

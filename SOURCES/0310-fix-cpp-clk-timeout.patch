@@ -1,4 +1,4 @@
-From 8e693748dc014c1e2cced54f45a165f6ec4b93a3 Mon Sep 17 00:00:00 2001
+From 9489ec298cea8e03e16c439e66a1ef6d040a20d0 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Thu, 4 Jan 2024 11:22:31 +0800
 Subject: [PATCH 0310/1218] fix cpp clk timeout
@@ -9,7 +9,7 @@ Change-Id: I4686adc39ea1b5c1c8fe5be691ca40f8c6e19280
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
-index 509130104a48..fe0f677dc5c7 100755
+index 509130104a486..fe0f677dc5c74 100755
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 @@ -888,12 +888,12 @@ static int cpp_update_clock_rate(struct cpp_device *cpp_dev,

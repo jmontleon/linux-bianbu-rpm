@@ -1,4 +1,4 @@
-From a5e17542336ca00b4a2f97e7c6ea5e6ff6d5420f Mon Sep 17 00:00:00 2001
+From 388eca4c4915750bbc3dd0ee0ca2f5c6662737f3 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Sat, 16 Mar 2024 19:05:28 +0800
 Subject: [PATCH 0497/1218] display: add hdmi edid
@@ -15,7 +15,7 @@ Change-Id: Ifa4942e511c29a17e761982ab93b12acd260ce0c
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 old mode 100755
 new mode 100644
-index 7bc2b8e09e60..574e0d2b8797
+index 7bc2b8e09e602..574e0d2b8797f
 --- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 @@ -37,6 +37,12 @@ dpu_offline0_hdmi_out: endpoint@1 {
@@ -35,7 +35,7 @@ diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/sp
 old mode 100755
 new mode 100644
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 4f43a9fd758d..cdd699cb68a4 100644
+index 4f43a9fd758d8..cdd699cb68a40 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -14,6 +14,7 @@
