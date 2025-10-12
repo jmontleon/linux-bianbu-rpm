@@ -1,4 +1,4 @@
-From 32ae519aea78fad3f60f7a255056a4edf1905757 Mon Sep 17 00:00:00 2001
+From f44f3c31ebb7a36436f73544b181167f2446bd5b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 30 Sep 2024 10:52:49 +0800
 Subject: [PATCH 1010/1222] k1x:support sgm41515 charger driver
@@ -16,7 +16,7 @@ Change-Id: I9e540954b64f84114e98a9d7b1ae535950ae5932
  create mode 100644 drivers/power/supply/sgm4154x_charger.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 886f1c56c5b5..a8414b08d88e 100644
+index 886f1c56c5b53..a8414b08d88ea 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -433,6 +433,47 @@ ocp2138@3e {
@@ -116,7 +116,7 @@ index 886f1c56c5b5..a8414b08d88e 100644
  
  &pinctrl {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index b803dbc3da63..8940cc2dcd62 100644
+index b803dbc3da638..8940cc2dcd62e 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -708,6 +708,7 @@ CONFIG_GPIO_K1X=y
@@ -128,7 +128,7 @@ index b803dbc3da63..8940cc2dcd62 100644
  CONFIG_THERMAL=y
  CONFIG_CPU_THERMAL=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 690bc7cc4875..ea9e3c301768 100644
+index 690bc7cc48758..ea9e3c3017689 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -1095,4 +1095,13 @@ config FUEL_GAUGE_MM8013
@@ -146,7 +146,7 @@ index 690bc7cc4875..ea9e3c301768 100644
 +
  endif # POWER_SUPPLY
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index 92ceb4164461..616a7977de50 100644
+index 92ceb41644612..616a7977de50a 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -26,6 +26,7 @@ obj-$(CONFIG_CHARGER_AXP20X)	+= axp20x_ac_power.o
@@ -159,7 +159,7 @@ index 92ceb4164461..616a7977de50 100644
  obj-$(CONFIG_BATTERY_DS2780)	+= ds2780_battery.o
 diff --git a/drivers/power/supply/sgm4154x_charger.c b/drivers/power/supply/sgm4154x_charger.c
 new file mode 100644
-index 000000000000..47586366abab
+index 0000000000000..47586366abab2
 --- /dev/null
 +++ b/drivers/power/supply/sgm4154x_charger.c
 @@ -0,0 +1,2011 @@
@@ -2176,7 +2176,7 @@ index 000000000000..47586366abab
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/power/supply/sgm4154x_charger.h b/drivers/power/supply/sgm4154x_charger.h
 new file mode 100644
-index 000000000000..48130723d4f9
+index 0000000000000..48130723d4f92
 --- /dev/null
 +++ b/drivers/power/supply/sgm4154x_charger.h
 @@ -0,0 +1,328 @@

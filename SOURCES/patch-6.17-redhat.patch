@@ -36,15 +36,16 @@
  drivers/firmware/efi/secureboot.c                  |  38 ++
  drivers/gpio/Kconfig                               |  11 +
  drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-usbio.c                          | 247 +++++++
+ drivers/gpio/gpio-usbio.c                          | 248 +++++++
  drivers/hid/hid-rmi.c                              |  66 --
  drivers/hwtracing/coresight/coresight-etm4x-core.c |  19 +
  drivers/i2c/busses/Kconfig                         |  11 +
  drivers/i2c/busses/Makefile                        |   1 +
- drivers/i2c/busses/i2c-usbio.c                     | 320 +++++++++
+ drivers/i2c/busses/i2c-usbio.c                     | 321 +++++++++
  drivers/input/rmi4/rmi_driver.c                    | 124 ++--
  drivers/iommu/iommu.c                              |  22 +
  drivers/media/i2c/ov08x40.c                        |   2 +-
+ drivers/net/wireless/ath/ath11k/core.c             |  54 +-
  drivers/pci/quirks.c                               |  24 +
  drivers/platform/x86/intel/int3472/discrete.c      |  58 +-
  drivers/scsi/sd.c                                  |  10 +
@@ -69,7 +70,7 @@
  security/lockdown/lockdown.c                       |  11 +
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 -
- 71 files changed, 2449 insertions(+), 286 deletions(-)
+ 72 files changed, 2499 insertions(+), 292 deletions(-)
 
 diff --git a/Documentation/arch/x86/tdx.rst b/Documentation/arch/x86/tdx.rst
 index 719043cd8b469..61670e7df2f7c 100644
@@ -125,7 +126,7 @@ index 97d958c945e4f..c7e27e2edfe45 100644
  M:	David E. Box <david.e.box@linux.intel.com>
  S:	Supported
 diff --git a/Makefile b/Makefile
-index 82bb9cdf73a32..4ad99d73d4f30 100644
+index a04d0223dc840..07d5a34200366 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -1028,7 +1029,7 @@ index beba745b64057..fd41f6d3abf9a 100644
  		alg->verify = sig_default_verify;
  	if (!alg->set_priv_key)
 diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index ee33ba21ae2bc..0d8e2429b5098 100644
+index 3e284706152aa..9195f7d539dc7 100644
 --- a/crypto/testmgr.c
 +++ b/crypto/testmgr.c
 @@ -4070,7 +4070,7 @@ static int test_sig_one(struct crypto_sig *tfm, const struct sig_testvec *vecs)
@@ -1510,10 +1511,10 @@ index 379f55e9ed1e6..b1593ce92ebe7 100644
  obj-$(CONFIG_GPIO_VIRTUSER)		+= gpio-virtuser.o
 diff --git a/drivers/gpio/gpio-usbio.c b/drivers/gpio/gpio-usbio.c
 new file mode 100644
-index 0000000000000..e13c120824e3c
+index 0000000000000..34d42c743d5bc
 --- /dev/null
 +++ b/drivers/gpio/gpio-usbio.c
-@@ -0,0 +1,247 @@
+@@ -0,0 +1,248 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (c) 2025 Intel Corporation.
@@ -1545,6 +1546,7 @@ index 0000000000000..e13c120824e3c
 +	{ "INTC1007" }, /* MTL */
 +	{ "INTC10B2" }, /* ARL */
 +	{ "INTC10B5" }, /* LNL */
++	{ "INTC10D1" }, /* MTL-CVF */
 +	{ "INTC10E2" }, /* PTL */
 +	{ }
 +};
@@ -1950,10 +1952,10 @@ index 04db855fdfd66..401a79c9767e6 100644
  obj-$(CONFIG_I2C_PCI1XXXX)	+= i2c-mchp-pci1xxxx.o
 diff --git a/drivers/i2c/busses/i2c-usbio.c b/drivers/i2c/busses/i2c-usbio.c
 new file mode 100644
-index 0000000000000..d42f9ab6e9a5c
+index 0000000000000..e7799abf67877
 --- /dev/null
 +++ b/drivers/i2c/busses/i2c-usbio.c
-@@ -0,0 +1,320 @@
+@@ -0,0 +1,321 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (c) 2025 Intel Corporation.
@@ -1983,6 +1985,7 @@ index 0000000000000..d42f9ab6e9a5c
 +	{ "INTC1008" }, /* MTL */
 +	{ "INTC10B3" }, /* ARL */
 +	{ "INTC10B6" }, /* LNL */
++	{ "INTC10D2" }, /* MTL-CVF */
 +	{ "INTC10E3" }, /* PTL */
 +	{ }
 +};
@@ -2519,6 +2522,101 @@ index e0094305ca2ab..90887fc54fb0e 100644
  }
  
  static int ov08x40_set_ctrl_vflip(struct ov08x40 *ov08x, u32 ctrl_val)
+diff --git a/drivers/net/wireless/ath/ath11k/core.c b/drivers/net/wireless/ath/ath11k/core.c
+index d49353b6b2e76..47522fa186a11 100644
+--- a/drivers/net/wireless/ath/ath11k/core.c
++++ b/drivers/net/wireless/ath/ath11k/core.c
+@@ -912,42 +912,84 @@ static const struct ath11k_hw_params ath11k_hw_params[] = {
+ static const struct dmi_system_id ath11k_pm_quirk_table[] = {
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /* X13 G4 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21J3"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /* X13 G4 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21J4"),
+ 		},
+ 	},
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /* T14 G4 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21K3"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /* T14 G4 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21K4"),
+ 		},
+ 	},
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /* P14s G4 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21K5"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /* P14s G4 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21K6"),
+ 		},
+ 	},
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /* T16 G2 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21K7"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /* T16 G2 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21K8"),
+ 		},
+ 	},
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /*P16s G2 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21K9"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /*P16s G2 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21KA"),
+ 		},
+ 	},
+ 	{
+ 		.driver_data = (void *)ATH11K_PM_WOW,
+-		.matches = {
++		.matches = { /*T14s G4 AMD #1 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21F8"),
++		},
++	},
++	{
++		.driver_data = (void *)ATH11K_PM_WOW,
++		.matches = { /*T14s G4 AMD #2 */
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21F9"),
+ 		},
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
 index d97335a401930..3b0c24a0bf325 100644
 --- a/drivers/pci/quirks.c

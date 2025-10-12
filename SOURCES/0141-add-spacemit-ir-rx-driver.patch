@@ -1,4 +1,4 @@
-From b910e6d8c0a91b3c440e1fa376d08a25bef46c3d Mon Sep 17 00:00:00 2001
+From a20a122db483a237a53cde6f18678c56f6d7e801 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 13 Oct 2023 09:18:51 +0800
 Subject: [PATCH 0141/1222] add spacemit ir-rx driver
@@ -13,7 +13,7 @@ Change-Id: Ib63a260f6fe854f160bf66aee0f0f065a38e4e83
  create mode 100755 drivers/media/rc/ir-spacemit.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 86b3f0871337..d440efaa5a43 100644
+index 86b3f08713370..d440efaa5a430 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -365,6 +365,16 @@ mailbox: mailbox@2f824000 {
@@ -34,7 +34,7 @@ index 86b3f0871337..d440efaa5a43 100644
  			compatible = "spacemit,k1pro-axi-dma";
  			reg = <0x0 0x2ce40000 0x0 0x10000>;
 diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
-index 0a8aeafdb7e0..09c16ac7983d 100644
+index 0a8aeafdb7e07..09c16ac7983de 100644
 --- a/drivers/media/rc/Kconfig
 +++ b/drivers/media/rc/Kconfig
 @@ -385,6 +385,15 @@ config IR_SUNXI
@@ -54,7 +54,7 @@ index 0a8aeafdb7e0..09c16ac7983d 100644
  	tristate "Infrared Toy and IR Droid"
  	depends on USB
 diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
-index 2bca6f7f07bc..3d7bb1db0a75 100644
+index 2bca6f7f07bc9..3d7bb1db0a755 100644
 --- a/drivers/media/rc/Makefile
 +++ b/drivers/media/rc/Makefile
 @@ -47,6 +47,7 @@ obj-$(CONFIG_IR_SERIAL) += serial_ir.o
@@ -67,7 +67,7 @@ index 2bca6f7f07bc..3d7bb1db0a75 100644
  obj-$(CONFIG_IR_WINBOND_CIR) += winbond-cir.o
 diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
 new file mode 100755
-index 000000000000..e022603e743c
+index 0000000000000..e022603e743cd
 --- /dev/null
 +++ b/drivers/media/rc/ir-spacemit.c
 @@ -0,0 +1,331 @@

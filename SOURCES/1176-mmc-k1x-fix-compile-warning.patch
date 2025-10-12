@@ -1,4 +1,4 @@
-From 1e9ee8993a2c16c9e90bab5753612e024c06a49b Mon Sep 17 00:00:00 2001
+From a304318880c35afe1c51739b32ca60ee0ab59b8d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:23:56 +0800
 Subject: [PATCH 1176/1222] mmc: k1x: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: Ie8fef2d80a2aae1d5941a4065ccd28eebed822d8
  1 file changed, 5 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 1c91e1a73431..84f45308568a 100644
+index 1c91e1a73431f..84f45308568a6 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -32,11 +32,11 @@

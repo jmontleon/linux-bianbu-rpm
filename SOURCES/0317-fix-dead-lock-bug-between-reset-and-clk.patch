@@ -1,4 +1,4 @@
-From 139b8c16dae6dd6fcd1c771464179fe536b2fb52 Mon Sep 17 00:00:00 2001
+From 31f62bc1a516ad51115bff7c20954c06919ed0a7 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jan 2024 04:55:16 +0800
 Subject: [PATCH 0317/1222] fix dead-lock bug between reset and clk
@@ -87,7 +87,7 @@ Change-Id: Ia95b41ffd6c1893c9c5e9c1c9fc0c155ea902d2c
  1 file changed, 2 deletions(-)
 
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 636aeea6cae4..efdf290e4589 100644
+index 636aeea6cae41..efdf290e45899 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -370,8 +370,6 @@ static void spacemit_reset_set(struct reset_controller_dev *rcdev,

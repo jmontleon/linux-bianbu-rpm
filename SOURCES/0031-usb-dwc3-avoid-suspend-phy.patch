@@ -1,4 +1,4 @@
-From 0a492cd01b5c8cdf14008852ac0b3a23740ce037 Mon Sep 17 00:00:00 2001
+From c18631889db27a79ee0a3b289043a89d585b6e47 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 16 May 2023 16:29:33 +0800
 Subject: [PATCH 0031/1222] usb: dwc3: avoid suspend phy
@@ -9,7 +9,7 @@ Change-Id: I3a9a77a5aa8976be0b9ae6cf32fdc4b15fa5ffc2
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 81a51bb8f69f..ae3ae0fad51b 100644
+index 81a51bb8f69f3..ae3ae0fad51b1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -293,6 +293,8 @@ dwc3@2cb00000 {

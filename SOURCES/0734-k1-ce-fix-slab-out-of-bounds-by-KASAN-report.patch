@@ -1,4 +1,4 @@
-From 58c5b57b6f326c919c29d730b1cc5edefaa49f15 Mon Sep 17 00:00:00 2001
+From 74c7a17b35ef8e6feb705cad26c4a93af6fe488b Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 19 Jun 2024 14:32:42 +0800
 Subject: [PATCH 0734/1222] k1: ce: fix slab-out-of-bounds by KASAN report
@@ -80,7 +80,7 @@ Change-Id: Ib097b8e4672300904a5fc0025c72bef08469cd32
  1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 170157219152..224f1fe62ebd 100755
+index 1701572191525..224f1fe62ebd2 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -6,6 +6,7 @@

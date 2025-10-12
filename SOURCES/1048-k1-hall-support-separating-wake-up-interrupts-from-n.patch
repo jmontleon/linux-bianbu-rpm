@@ -1,4 +1,4 @@
-From e2e1f06f2b8ab5f4bfb6a1f0760f4e32bbee893f Mon Sep 17 00:00:00 2001
+From 1766760624ada7d0d2440e9444bd0ab111475868 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 25 Oct 2024 19:06:54 +0800
 Subject: [PATCH 1048/1222] k1:hall:support separating wake-up interrupts from
@@ -14,7 +14,7 @@ Change-Id: I17a867c0595fa07ad17ca7c396f2272ce8f61b10
  5 files changed, 148 insertions(+), 11 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index d6c702328628..85e70e676e9a 100644
+index d6c702328628f..85e70e676e9a0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -140,11 +140,11 @@ vcc4v0_baseboard: vcc4v0-baseboard {
@@ -33,7 +33,7 @@ index d6c702328628..85e70e676e9a 100644
  
  	rf_pwrseq: rf-pwrseq {
 diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
-index 8aa28c08b289..9e4ef7a789fe 100644
+index 8aa28c08b2891..9e4ef7a789fef 100644
 --- a/drivers/base/power/wakeirq.c
 +++ b/drivers/base/power/wakeirq.c
 @@ -238,6 +238,66 @@ int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
@@ -104,7 +104,7 @@ index 8aa28c08b289..9e4ef7a789fe 100644
   * dev_pm_set_dedicated_wake_irq_reverse - Request a dedicated wake-up interrupt
   *                                         with reverse enable ordering
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 7323a03cb476..3f56fd32f311 100644
+index 7323a03cb476c..3f56fd32f3114 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -1490,6 +1490,57 @@ static int pcs_irq_set_wake(struct irq_data *d, unsigned int state)
@@ -186,7 +186,7 @@ index 7323a03cb476..3f56fd32f311 100644
  #endif
  
 diff --git a/drivers/soc/spacemit/spacemit_lid.c b/drivers/soc/spacemit/spacemit_lid.c
-index 1046afe8af1f..1fdc9e672bc6 100644
+index 1046afe8af1f7..1fdc9e672bc6d 100644
 --- a/drivers/soc/spacemit/spacemit_lid.c
 +++ b/drivers/soc/spacemit/spacemit_lid.c
 @@ -13,12 +13,14 @@
@@ -268,7 +268,7 @@ index 1046afe8af1f..1fdc9e672bc6 100644
  }
  
 diff --git a/include/linux/pm_wakeirq.h b/include/linux/pm_wakeirq.h
-index 25b63ed51b76..096be1dca58d 100644
+index 25b63ed51b765..096be1dca58d6 100644
 --- a/include/linux/pm_wakeirq.h
 +++ b/include/linux/pm_wakeirq.h
 @@ -8,6 +8,9 @@

@@ -1,4 +1,4 @@
-From 8fdda53b6030c4451496fb92964b35b41d4bd18f Mon Sep 17 00:00:00 2001
+From a7d03ccad971e65e17e5cfb9c25d281a5650b14d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 15 Apr 2024 17:07:10 +0800
 Subject: [PATCH 0596/1222] k1x:rtc: fix the bug that setting rtc time failed
@@ -11,7 +11,7 @@ Change-Id: I189af06e1a79461523a5b7abd34606e1b36956ba
  3 files changed, 128 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
-index 4deb649a3dcc..385c7ec18c46 100644
+index 4deb649a3dcc0..385c7ec18c46b 100644
 --- a/drivers/rtc/rtc-spt-pmic.c
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -20,6 +20,7 @@ struct spacemit_rtc {
@@ -230,7 +230,7 @@ index 4deb649a3dcc..385c7ec18c46 100644
  					   spt_rtc_irq,
  					   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index c42bf3760ba3..f878198efeec 100644
+index c42bf3760ba31..f878198efeecc 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -132,6 +132,26 @@ struct rtc_regdesc {
@@ -261,7 +261,7 @@ index c42bf3760ba3..f878198efeec 100644
  		unsigned char reg;
  		unsigned char msk;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 831c151cf783..385ecc538bb3 100644
+index 831c151cf7830..385ecc538bb31 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -690,6 +690,26 @@ static const struct rtc_regdesc spm8821_regdesc = {		\

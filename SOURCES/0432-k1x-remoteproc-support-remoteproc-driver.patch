@@ -1,4 +1,4 @@
-From 8eb98a217ff07883cdb9f02d2c689fe23db03071 Mon Sep 17 00:00:00 2001
+From cecafbd2992c9e336fcbbdc987e99b0ec9bf6217 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Feb 2024 11:12:22 +0800
 Subject: [PATCH 0432/1222] k1x: remoteproc: support remoteproc driver
@@ -15,7 +15,7 @@ Change-Id: I0df684d83d029c5d79bc0374722c571430efb5d8
  create mode 100644 drivers/remoteproc/k1x-rproc.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d5b0e1136447..79909049df39 100644
+index d5b0e11364479..79909049df39c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -938,6 +938,21 @@ mailbox: mailbox@d4013400 {
@@ -41,7 +41,7 @@ index d5b0e1136447..79909049df39 100644
  			compatible = "spacemit,pdma-1.0";
  			reg = <0x0 0xd4000000 0x0 0x4000>;
 diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 78c07045122a..efb1a132fcfd 100644
+index 78c07045122ac..efb1a132fcfd1 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -161,8 +161,14 @@ config PRU_REMOTEPROC
@@ -62,7 +62,7 @@ index 78c07045122a..efb1a132fcfd 100644
  	  Say Y here here to support spacemit remote processors
  	  via the remote processor framework.
 diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-index b372d236e911..95de676717c7 100644
+index b372d236e911e..95de676717c7d 100644
 --- a/drivers/remoteproc/Makefile
 +++ b/drivers/remoteproc/Makefile
 @@ -40,4 +40,5 @@ obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o ti_k3_common.o
@@ -76,7 +76,7 @@ diff --git a/drivers/remoteproc/spacemit_rproc.c b/drivers/remoteproc/k1pro-rpro
 similarity index 99%
 rename from drivers/remoteproc/spacemit_rproc.c
 rename to drivers/remoteproc/k1pro-rproc.c
-index f0ed72ab2e8b..c96d4ffb3054 100644
+index f0ed72ab2e8bc..c96d4ffb30542 100644
 --- a/drivers/remoteproc/spacemit_rproc.c
 +++ b/drivers/remoteproc/k1pro-rproc.c
 @@ -79,7 +79,7 @@ static int spacemit_rproc_prepare(struct rproc *rproc)
@@ -90,7 +90,7 @@ index f0ed72ab2e8b..c96d4ffb3054 100644
  					   rmem->base,
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
 new file mode 100644
-index 000000000000..6fe1e15ad209
+index 0000000000000..6fe1e15ad209d
 --- /dev/null
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -0,0 +1,411 @@

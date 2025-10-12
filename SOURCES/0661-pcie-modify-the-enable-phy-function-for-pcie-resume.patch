@@ -1,4 +1,4 @@
-From 99cd2587254f7591a5f3025f63e90d6cbd5c7af7 Mon Sep 17 00:00:00 2001
+From 1eb23c2fb2e85b6c6133c0904b4c84572598ee03 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 14 May 2024 21:31:21 +0800
 Subject: [PATCH 0661/1222] pcie: modify the enable phy function for pcie
@@ -13,7 +13,7 @@ Change-Id: I9df8c54bdac3e4aa1b723e4750875810d23d8379
  1 file changed, 104 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 1c88bca34273..2c82d3fb6b44 100755
+index 1c88bca34273e..2c82d3fb6b444 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -133,6 +133,7 @@ struct k1x_pcie {

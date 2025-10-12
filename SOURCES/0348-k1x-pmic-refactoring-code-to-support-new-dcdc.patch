@@ -1,4 +1,4 @@
-From 4bf5ad3eeb3aa11cf0cdee875c1db95918382c53 Mon Sep 17 00:00:00 2001
+From cd05e3818e78bc95a87c397ca68a3df3561ff3fc Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 10 Jan 2024 15:15:40 +0800
 Subject: [PATCH 0348/1222] k1x:pmic: refactoring code to support new dcdc
@@ -18,7 +18,7 @@ Change-Id: I8709bf5b9af4def2da06788f4bcac7eb31b8f76e
  create mode 100644 include/linux/mfd/spacemit/sy8810l.h
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 3599d7602cfb..cb697b6befa6 100644
+index 3599d7602cfb3..cb697b6befa67 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -11,52 +11,29 @@
@@ -171,7 +171,7 @@ index 3599d7602cfb..cb697b6befa6 100644
  
  	pmic->i2c = client;
 diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
-index 2246d18cd6d6..95325137fedb 100644
+index 2246d18cd6d6c..95325137fedbe 100644
 --- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
 +++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 @@ -39,6 +39,7 @@ struct spacemit_pctl {
@@ -322,7 +322,7 @@ index 2246d18cd6d6..95325137fedb 100644
  	.probe = spacemit_pmic_pinctrl_probe,
  	.driver = {
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index 78be25672386..d4943521ab3c 100644
+index 78be256723862..d4943521ab3c1 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -17,13 +17,6 @@
@@ -418,7 +418,7 @@ index 78be25672386..d4943521ab3c 100644
  			pr_err("failed to register %d regulator\n", i);
  			return PTR_ERR(regulator_dev);
 diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
-index 43d4e7e01fc5..173d78e73eea 100644
+index 43d4e7e01fc5e..173d78e73eeaf 100644
 --- a/include/linux/mfd/spacemit/pm853.h
 +++ b/include/linux/mfd/spacemit/pm853.h
 @@ -106,12 +106,6 @@ enum PM853_reg {
@@ -455,7 +455,7 @@ index 43d4e7e01fc5..173d78e73eea 100644
 +
  #endif
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 6b98a1c37d97..2976ce88bb2e 100644
+index 6b98a1c37d97a..2976ce88bb2e8 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -17,10 +17,8 @@ struct spacemit_pmic {
@@ -519,7 +519,7 @@ index 6b98a1c37d97..2976ce88bb2e 100644
  
  #endif /* __SPACEMIT_PMIC_H__ */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index ef4b326edfaa..cb2c26193905 100644
+index ef4b326edfaa4..cb2c261939053 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -76,14 +76,6 @@ enum SPM8821_reg {
@@ -571,7 +571,7 @@ index ef4b326edfaa..cb2c26193905 100644
  #endif /* __SPM8821_H__ */
 diff --git a/include/linux/mfd/spacemit/sy8810l.h b/include/linux/mfd/spacemit/sy8810l.h
 new file mode 100644
-index 000000000000..091d4446b1eb
+index 0000000000000..091d4446b1ebf
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/sy8810l.h
 @@ -0,0 +1,67 @@

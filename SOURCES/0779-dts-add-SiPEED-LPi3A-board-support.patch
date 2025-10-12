@@ -1,4 +1,4 @@
-From 759b0b0069817e91eea6f8cc70431f336eea1029 Mon Sep 17 00:00:00 2001
+From 1b0a7e392639d1118b11578b5973091edb48e9b8 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Mon, 24 Jun 2024 22:17:48 +0800
 Subject: [PATCH 0779/1222] dts: add SiPEED LPi3A board support
@@ -14,7 +14,7 @@ Change-Id: I88588a8eb03151988a3060d1d74a1459ed60b6a9
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 259c27eb5e72..a438abed2105 100644
+index 259c27eb5e727..a438abed21051 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,5 +5,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
@@ -27,7 +27,7 @@ index 259c27eb5e72..a438abed2105 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 new file mode 100644
-index 000000000000..32b4f0876ad3
+index 0000000000000..32b4f0876ad30
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -0,0 +1,1241 @@
@@ -1274,7 +1274,7 @@ index 000000000000..32b4f0876ad3
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 new file mode 100644
-index 000000000000..e7952c0d2104
+index 0000000000000..e7952c0d2104e
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 @@ -0,0 +1,66 @@

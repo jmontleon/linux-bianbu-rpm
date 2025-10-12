@@ -1,4 +1,4 @@
-From 91823006efc25ee74dbb0b729a7f7b8dc2bb9fb4 Mon Sep 17 00:00:00 2001
+From 463998ef185dc54a4cd94cc90557ac5b1fccf9e3 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 21 Dec 2023 10:42:55 +0800
 Subject: [PATCH 0219/1222] qspi: support pm runtime for qspi driver
@@ -9,7 +9,7 @@ Change-Id: I9b14da1e500ea44cb3a6b8250af0b80743fe042f
  1 file changed, 31 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index 25913e050d2f..d64d654b2902 100755
+index 25913e050d2f6..d64d654b2902a 100755
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -317,8 +317,6 @@ struct k1x_qspi {

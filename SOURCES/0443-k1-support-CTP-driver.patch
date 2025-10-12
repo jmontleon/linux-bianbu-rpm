@@ -1,4 +1,4 @@
-From 7864a83f89702efd15a9cbe528730debbb75609c Mon Sep 17 00:00:00 2001
+From 98a45293d55d6873367cc9f592a806831ec04d40 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Thu, 22 Feb 2024 21:42:21 +0800
 Subject: [PATCH 0443/1222] k1: support CTP driver
@@ -21,7 +21,7 @@ Change-Id: I410038588a0284fbb9c0c27fbae7700a9826431c
  create mode 100755 drivers/input/touchscreen/gt9xx_update.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 116b8467407f..3b9bd44992bf 100644
+index 116b8467407f2..3b9bd44992bf1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -264,6 +264,25 @@ &i2c6 {
@@ -60,7 +60,7 @@ index 116b8467407f..3b9bd44992bf 100644
  		&range GPIO_65  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_1V8_DS2)
  		&range GPIO_66  2 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 996be6298ff3..878e4693f40c 100644
+index 996be6298ff37..878e4693f40c2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -333,8 +333,8 @@ K1X_PADCONF(GPIO_119,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS0))    /* i
@@ -75,7 +75,7 @@ index 996be6298ff3..878e4693f40c 100644
      };
  
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 2df9cece8996..a60b76fad9ed 100644
+index 2df9cece8996f..a60b76fad9edf 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -345,6 +345,9 @@ CONFIG_AIC_LOADFW_SUPPORT=m
@@ -89,7 +89,7 @@ index 2df9cece8996..a60b76fad9ed 100644
  CONFIG_INPUT_SPACEMIT_POWERKEY=y
  CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
 diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index 196905162945..86dca7b1c33e 100644
+index 196905162945d..86dca7b1c33ec 100644
 --- a/drivers/input/touchscreen/Kconfig
 +++ b/drivers/input/touchscreen/Kconfig
 @@ -24,6 +24,16 @@ config TOUCHSCREEN_88PM860X
@@ -110,7 +110,7 @@ index 196905162945..86dca7b1c33e 100644
  	tristate "ADS7846/TSC2046/AD7873 and AD(S)7843 based touchscreens"
  	depends on SPI_MASTER
 diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 97a025c6a377..f283bbbd97fe 100644
+index 97a025c6a3770..f283bbbd97fe8 100644
 --- a/drivers/input/touchscreen/Makefile
 +++ b/drivers/input/touchscreen/Makefile
 @@ -8,6 +8,8 @@
@@ -124,7 +124,7 @@ index 97a025c6a377..f283bbbd97fe 100644
  obj-$(CONFIG_TOUCHSCREEN_AD7879)	+= ad7879.o
 diff --git a/drivers/input/touchscreen/goodix_tool.c b/drivers/input/touchscreen/goodix_tool.c
 new file mode 100755
-index 000000000000..e2df937a1218
+index 0000000000000..e2df937a12188
 --- /dev/null
 +++ b/drivers/input/touchscreen/goodix_tool.c
 @@ -0,0 +1,537 @@
@@ -667,7 +667,7 @@ index 000000000000..e2df937a1218
 +}
 diff --git a/drivers/input/touchscreen/gt9xx.c b/drivers/input/touchscreen/gt9xx.c
 new file mode 100755
-index 000000000000..7a018dae50fc
+index 0000000000000..7a018dae50fcc
 --- /dev/null
 +++ b/drivers/input/touchscreen/gt9xx.c
 @@ -0,0 +1,2541 @@
@@ -3214,7 +3214,7 @@ index 000000000000..7a018dae50fc
 +
 diff --git a/drivers/input/touchscreen/gt9xx.h b/drivers/input/touchscreen/gt9xx.h
 new file mode 100755
-index 000000000000..fd6d13c8d3d2
+index 0000000000000..fd6d13c8d3d2e
 --- /dev/null
 +++ b/drivers/input/touchscreen/gt9xx.h
 @@ -0,0 +1,380 @@
@@ -3600,7 +3600,7 @@ index 000000000000..fd6d13c8d3d2
 +#endif /* _GOODIX_GT9XX_H_ */
 diff --git a/drivers/input/touchscreen/gt9xx_update.c b/drivers/input/touchscreen/gt9xx_update.c
 new file mode 100755
-index 000000000000..27205dfc7214
+index 0000000000000..27205dfc72141
 --- /dev/null
 +++ b/drivers/input/touchscreen/gt9xx_update.c
 @@ -0,0 +1,2090 @@

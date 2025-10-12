@@ -1,4 +1,4 @@
-From 3a48530d5ee26bba821de8f8eb31e699e362bd7c Mon Sep 17 00:00:00 2001
+From 6e76b18f3908877c326d2b8ceb51acb623fea237 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Thu, 11 Jul 2024 17:57:28 +0800
 Subject: [PATCH 0821/1222] i2c: fix warn_on when system power off
@@ -57,7 +57,7 @@ Change-Id: Iae244655e7f915c7ded42facfe46dea12404a395
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index eda79cfb2422..f0b6e9d36fe3 100644
+index eda79cfb2422e..f0b6e9d36fe31 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1245,15 +1245,12 @@ spacemit_i2c_xfer(struct i2c_adapter *adapt, struct i2c_msg msgs[], int num)

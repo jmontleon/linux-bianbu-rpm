@@ -1,4 +1,4 @@
-From 0935c8ae7e31b4701f26d3322d9e05d621f21ef6 Mon Sep 17 00:00:00 2001
+From ce64a6d1f522a602701947641a4c11d2a2967d57 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Wed, 23 Oct 2024 13:45:43 +0800
 Subject: [PATCH 1033/1222] Fix dma_buf warning with enabled lockdep
@@ -42,7 +42,7 @@ Change-Id: I2dc5ccd1c8e85367b40b5ffe58d8e93a6801ce18
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
-index 619b9b5b4e4d..d11e71f7b299 100644
+index 619b9b5b4e4dc..d11e71f7b2996 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 @@ -317,7 +317,7 @@ static void PMRFinalizeDmaBuf(PMR_IMPL_PRIVDATA pvPriv)

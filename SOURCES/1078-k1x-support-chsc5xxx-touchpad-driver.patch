@@ -1,4 +1,4 @@
-From 96eee37271b5d25f16a7a293c75a1dce178310dd Mon Sep 17 00:00:00 2001
+From f551369920463126da73c92241c7d36c19f0cdce Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 7 Nov 2024 11:13:17 +0800
 Subject: [PATCH 1078/1222] k1x:support chsc5xxx touchpad driver
@@ -44,7 +44,7 @@ Change-Id: If505cd9d37c65272e5a9812e9f366eda0dce0399
  create mode 100755 drivers/input/touchscreen/chsc5xxx/st.code-workspace
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
-index 7db589ad2887..05998394978b 100644
+index 7db589ad28871..05998394978b4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 @@ -301,6 +301,14 @@ &i2c1 {
@@ -63,7 +63,7 @@ index 7db589ad2887..05998394978b 100644
  
  &i2c2 {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 43c6b827ba21..d856cbe9d651 100644
+index 43c6b827ba21f..d856cbe9d651c 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -676,6 +676,8 @@ CONFIG_INPUT_TOUCHSCREEN=y
@@ -76,7 +76,7 @@ index 43c6b827ba21..d856cbe9d651 100644
  CONFIG_INPUT_UINPUT=y
  CONFIG_INPUT_SPACEMIT_POWERKEY=y
 diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index 0c2e5be3ae50..b2e4971bc167 100644
+index 0c2e5be3ae506..b2e4971bc167d 100644
 --- a/drivers/input/touchscreen/Kconfig
 +++ b/drivers/input/touchscreen/Kconfig
 @@ -1420,4 +1420,11 @@ config TOUCHSCREEN_CHIPONE_TDDI
@@ -92,7 +92,7 @@ index 0c2e5be3ae50..b2e4971bc167 100644
 +source "drivers/input/touchscreen/chsc5xxx/Kconfig"
  endif
 diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index a66057abc029..f654d76eac5d 100644
+index a66057abc029a..f654d76eac5de 100644
 --- a/drivers/input/touchscreen/Makefile
 +++ b/drivers/input/touchscreen/Makefile
 @@ -122,3 +122,4 @@ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
@@ -102,7 +102,7 @@ index a66057abc029..f654d76eac5d 100644
 +obj-y += chsc5xxx/
 diff --git a/drivers/input/touchscreen/chsc5xxx/Kconfig b/drivers/input/touchscreen/chsc5xxx/Kconfig
 new file mode 100755
-index 000000000000..0f3e8a6d9b19
+index 0000000000000..0f3e8a6d9b19d
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/Kconfig
 @@ -0,0 +1,51 @@
@@ -159,7 +159,7 @@ index 000000000000..0f3e8a6d9b19
 +	  module will be called semi_touch_apk.
 diff --git a/drivers/input/touchscreen/chsc5xxx/Makefile b/drivers/input/touchscreen/chsc5xxx/Makefile
 new file mode 100755
-index 000000000000..1a6fbe9adf7d
+index 0000000000000..1a6fbe9adf7d4
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/Makefile
 @@ -0,0 +1,13 @@
@@ -178,7 +178,7 @@ index 000000000000..1a6fbe9adf7d
 +
 diff --git a/drivers/input/touchscreen/chsc5xxx/basic_util.c b/drivers/input/touchscreen/chsc5xxx/basic_util.c
 new file mode 100644
-index 000000000000..6a40b25ec55a
+index 0000000000000..6a40b25ec55a3
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/basic_util.c
 @@ -0,0 +1,39 @@
@@ -224,7 +224,7 @@ index 000000000000..6a40b25ec55a
 \ No newline at end of file
 diff --git a/drivers/input/touchscreen/chsc5xxx/fw_code_bin.h b/drivers/input/touchscreen/chsc5xxx/fw_code_bin.h
 new file mode 100644
-index 000000000000..b53ca9ee4689
+index 0000000000000..b53ca9ee46894
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/fw_code_bin.h
 @@ -0,0 +1,672 @@
@@ -902,7 +902,7 @@ index 000000000000..b53ca9ee4689
 +#endif //TYPE_OF_IC(SEMI_TOUCH_IC) == TYPE_OF_IC(SEMI_TOUCH_5472)
 diff --git a/drivers/input/touchscreen/chsc5xxx/fw_update_packet.h b/drivers/input/touchscreen/chsc5xxx/fw_update_packet.h
 new file mode 100644
-index 000000000000..ec0b5f7328d0
+index 0000000000000..ec0b5f7328d0e
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/fw_update_packet.h
 @@ -0,0 +1,5122 @@
@@ -6030,7 +6030,7 @@ index 000000000000..ec0b5f7328d0
 +#define firmware_chain_header  &fw_upd_data
 diff --git a/drivers/input/touchscreen/chsc5xxx/head_def.h b/drivers/input/touchscreen/chsc5xxx/head_def.h
 new file mode 100644
-index 000000000000..4d54f198e635
+index 0000000000000..4d54f198e6353
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/head_def.h
 @@ -0,0 +1,323 @@
@@ -6359,7 +6359,7 @@ index 000000000000..4d54f198e635
 +#endif //__HEAD_DEFINE__
 diff --git a/drivers/input/touchscreen/chsc5xxx/i2c_communication.c b/drivers/input/touchscreen/chsc5xxx/i2c_communication.c
 new file mode 100644
-index 000000000000..c9341b63ee92
+index 0000000000000..c9341b63ee92c
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/i2c_communication.c
 @@ -0,0 +1,139 @@
@@ -6504,7 +6504,7 @@ index 000000000000..c9341b63ee92
 +
 diff --git a/drivers/input/touchscreen/chsc5xxx/idmx_core.c b/drivers/input/touchscreen/chsc5xxx/idmx_core.c
 new file mode 100644
-index 000000000000..343879dce6e9
+index 0000000000000..343879dce6e9a
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/idmx_core.c
 @@ -0,0 +1,444 @@
@@ -6954,7 +6954,7 @@ index 000000000000..343879dce6e9
 +MODULE_AUTHOR("wasim");
 diff --git a/drivers/input/touchscreen/chsc5xxx/platform.h b/drivers/input/touchscreen/chsc5xxx/platform.h
 new file mode 100644
-index 000000000000..76d865c79cd2
+index 0000000000000..76d865c79cd22
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/platform.h
 @@ -0,0 +1,112 @@
@@ -7072,7 +7072,7 @@ index 000000000000..76d865c79cd2
 +#endif
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_apk.c b/drivers/input/touchscreen/chsc5xxx/semi_touch_apk.c
 new file mode 100644
-index 000000000000..1af22773b549
+index 0000000000000..1af22773b5493
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_apk.c
 @@ -0,0 +1,391 @@
@@ -7469,7 +7469,7 @@ index 000000000000..1af22773b549
 +
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_custom.c b/drivers/input/touchscreen/chsc5xxx/semi_touch_custom.c
 new file mode 100644
-index 000000000000..d051aa6f84ef
+index 0000000000000..d051aa6f84ef2
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_custom.c
 @@ -0,0 +1,748 @@
@@ -8223,7 +8223,7 @@ index 000000000000..d051aa6f84ef
 +}
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_device.c b/drivers/input/touchscreen/chsc5xxx/semi_touch_device.c
 new file mode 100644
-index 000000000000..3e638fc46c86
+index 0000000000000..3e638fc46c86b
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_device.c
 @@ -0,0 +1,412 @@
@@ -8641,7 +8641,7 @@ index 000000000000..3e638fc46c86
 +}
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_function.c b/drivers/input/touchscreen/chsc5xxx/semi_touch_function.c
 new file mode 100644
-index 000000000000..4d5f270c455c
+index 0000000000000..4d5f270c455c3
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_function.c
 @@ -0,0 +1,538 @@
@@ -9186,7 +9186,7 @@ index 000000000000..4d5f270c455c
 \ No newline at end of file
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_interface.h b/drivers/input/touchscreen/chsc5xxx/semi_touch_interface.h
 new file mode 100644
-index 000000000000..c23f76a6e47d
+index 0000000000000..c23f76a6e47de
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_interface.h
 @@ -0,0 +1,93 @@
@@ -9286,7 +9286,7 @@ index 000000000000..c23f76a6e47d
 \ No newline at end of file
 diff --git a/drivers/input/touchscreen/chsc5xxx/semi_touch_upgrade.c b/drivers/input/touchscreen/chsc5xxx/semi_touch_upgrade.c
 new file mode 100644
-index 000000000000..b8985fb64841
+index 0000000000000..b8985fb648414
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/semi_touch_upgrade.c
 @@ -0,0 +1,622 @@
@@ -9914,7 +9914,7 @@ index 000000000000..b8985fb64841
 +
 diff --git a/drivers/input/touchscreen/chsc5xxx/st.code-workspace b/drivers/input/touchscreen/chsc5xxx/st.code-workspace
 new file mode 100755
-index 000000000000..dcea87970486
+index 0000000000000..dcea879704861
 --- /dev/null
 +++ b/drivers/input/touchscreen/chsc5xxx/st.code-workspace
 @@ -0,0 +1,19 @@

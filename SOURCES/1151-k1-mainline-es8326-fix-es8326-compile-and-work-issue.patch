@@ -1,4 +1,4 @@
-From 9e0c81a9a07aa1b775579690b1c0b7caa5deb503 Mon Sep 17 00:00:00 2001
+From f45516629a6f0ca659dafbdeebe4ff138aea80c4 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Thu, 28 Nov 2024 20:22:44 +0800
 Subject: [PATCH 1151/1222] k1-mainline:es8326: fix es8326 compile and work
@@ -10,7 +10,7 @@ Change-Id: I8ac63738ac370d8f3d49eb8284484c58c0a6ce40
  1 file changed, 166 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 002951250d77..9847df1f2015 100644
+index 002951250d775..9847df1f20158 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -51,6 +51,8 @@ struct es8326_priv {

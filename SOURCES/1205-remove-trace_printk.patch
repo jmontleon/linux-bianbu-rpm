@@ -1,4 +1,4 @@
-From 7fc361cff5e51b4c12d239e538a804a73d92f949 Mon Sep 17 00:00:00 2001
+From d65a36e49529d1517054ad3a6d44c9045010a7dd Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 26 Dec 2024 15:24:28 -0500
 Subject: [PATCH 1205/1222] remove trace_printk
@@ -11,7 +11,7 @@ Subject: [PATCH 1205/1222] remove trace_printk
  4 files changed, 8 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
-index 9245ee407c29..3d0587207ac9 100644
+index 9245ee407c291..3d0587207ac98 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 @@ -309,8 +309,6 @@ void dpu_dump_fps(struct spacemit_dpu *dpu)
@@ -24,7 +24,7 @@ index 9245ee407c29..3d0587207ac9 100644
  
  void dpu_underrun_wq_stop_trace(struct work_struct *work)
 diff --git a/drivers/hwtracing/stm/dummy_stm.c b/drivers/hwtracing/stm/dummy_stm.c
-index 38528ffdc0b3..66bfd740924a 100644
+index 38528ffdc0b3f..66bfd740924aa 100644
 --- a/drivers/hwtracing/stm/dummy_stm.c
 +++ b/drivers/hwtracing/stm/dummy_stm.c
 @@ -27,8 +27,6 @@ dummy_stm_packet(struct stm_data *stm_data, unsigned int master,
@@ -37,7 +37,7 @@ index 38528ffdc0b3..66bfd740924a 100644
  	return size;
  }
 diff --git a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
-index bcf88b892951..ce9faf1151db 100644
+index bcf88b892951c..ce9faf1151db0 100644
 --- a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
 +++ b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
 @@ -87,7 +87,6 @@ void cam_debug(int module_tag, const char *cam_level, const char *func, int line
@@ -49,7 +49,7 @@ index bcf88b892951..ce9faf1151db 100644
  #define cam_trace(f, args...)	trace_printk(f, ##args)
  #else
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
-index 1f7706a8332d..6bbac6c5cedd 100644
+index 1f7706a8332d3..6bbac6c5cedd6 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_log.c
 @@ -821,13 +821,11 @@ static void drain_ftrace_data(struct mvx_log_drain *drain,

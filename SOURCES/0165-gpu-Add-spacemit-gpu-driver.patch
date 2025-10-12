@@ -1,4 +1,4 @@
-From bfe0bf599be45da8171606f70e78f8257028ec20 Mon Sep 17 00:00:00 2001
+From 080e16ce7a541aedd37957dd8f13814058323300 Mon Sep 17 00:00:00 2001
 From: Dengbo <bo.deng@spacemit.com>
 Date: Tue, 21 Nov 2023 13:58:40 +0800
 Subject: [PATCH 0165/1222] gpu: Add spacemit gpu driver
@@ -1026,7 +1026,7 @@ Change-Id: I566fbdc75139307da0d0dd16746e313fec031f5f
  create mode 100644 drivers/gpu/drm/nulldisp/pdp_drm.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 62fe605eabec..9e61cda44f5a 100644
+index 62fe605eabecd..9e61cda44f5a9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1064,6 +1064,18 @@ dphy2_in: endpoint {
@@ -1049,7 +1049,7 @@ index 62fe605eabec..9e61cda44f5a 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 07cd6ac76650..ce9ecbe0c650 100644
+index 07cd6ac76650d..ce9ecbe0c6504 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -287,6 +287,7 @@ CONFIG_SPACEMIT_V2D=y
@@ -1061,7 +1061,7 @@ index 07cd6ac76650..ce9ecbe0c650 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 028b3845c043..8cbff20f2aa0 100644
+index 028b3845c043d..8cbff20f2aa0f 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -398,6 +398,10 @@ source "drivers/gpu/drm/imagination/Kconfig"
@@ -1076,7 +1076,7 @@ index 028b3845c043..8cbff20f2aa0 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && HYPERV
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 99dea2c668c6..596f54c297b0 100644
+index 99dea2c668c6e..596f54c297b03 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
 @@ -232,6 +232,8 @@ obj-$(CONFIG_DRM_SPRD) += sprd/
@@ -1090,7 +1090,7 @@ index 99dea2c668c6..596f54c297b0 100644
  hdrtest-files := \
 diff --git a/drivers/gpu/drm/img-rogue/Kconfig b/drivers/gpu/drm/img-rogue/Kconfig
 new file mode 100644
-index 000000000000..3b875605e725
+index 0000000000000..3b875605e7250
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/Kconfig
 @@ -0,0 +1,10 @@
@@ -1106,7 +1106,7 @@ index 000000000000..3b875605e725
 +
 diff --git a/drivers/gpu/drm/img-rogue/Makefile b/drivers/gpu/drm/img-rogue/Makefile
 new file mode 100644
-index 000000000000..dddabeed1d0b
+index 0000000000000..dddabeed1d0b1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/Makefile
 @@ -0,0 +1,151 @@
@@ -1263,7 +1263,7 @@ index 000000000000..dddabeed1d0b
 +pvrsrvkm-$(CONFIG_X86)   += osfunc_x86.o
 diff --git a/drivers/gpu/drm/img-rogue/allocmem.c b/drivers/gpu/drm/img-rogue/allocmem.c
 new file mode 100644
-index 000000000000..46a112d3ab7c
+index 0000000000000..46a112d3ab7cc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/allocmem.c
 @@ -0,0 +1,436 @@
@@ -1705,7 +1705,7 @@ index 000000000000..46a112d3ab7c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/allocmem.h b/drivers/gpu/drm/img-rogue/allocmem.h
 new file mode 100644
-index 000000000000..3de9e6781fbd
+index 0000000000000..3de9e6781fbdf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/allocmem.h
 @@ -0,0 +1,224 @@
@@ -1935,7 +1935,7 @@ index 000000000000..3de9e6781fbd
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/apollo.mk b/drivers/gpu/drm/img-rogue/apollo/apollo.mk
 new file mode 100644
-index 000000000000..6d34673e40be
+index 0000000000000..6d34673e40be3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/apollo.mk
 @@ -0,0 +1,4 @@
@@ -1945,7 +1945,7 @@ index 000000000000..6d34673e40be
 + tc_odin.o
 diff --git a/drivers/gpu/drm/img-rogue/apollo/apollo_regs.h b/drivers/gpu/drm/img-rogue/apollo/apollo_regs.h
 new file mode 100644
-index 000000000000..4081e2123ac7
+index 0000000000000..4081e2123ac76
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/apollo_regs.h
 @@ -0,0 +1,108 @@
@@ -2059,7 +2059,7 @@ index 000000000000..4081e2123ac7
 +#endif /* APOLLO_REGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/bonnie_tcf.h b/drivers/gpu/drm/img-rogue/apollo/bonnie_tcf.h
 new file mode 100644
-index 000000000000..fc87ec790df9
+index 0000000000000..fc87ec790df93
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/bonnie_tcf.h
 @@ -0,0 +1,68 @@
@@ -2133,7 +2133,7 @@ index 000000000000..fc87ec790df9
 +#endif /* BONNIE_TCF_DEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c
 new file mode 100644
-index 000000000000..76895df4559f
+index 0000000000000..76895df4559fa
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c
 @@ -0,0 +1,1104 @@
@@ -3243,7 +3243,7 @@ index 000000000000..76895df4559f
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c
 new file mode 100644
-index 000000000000..5725fd173800
+index 0000000000000..5725fd173800c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c
 @@ -0,0 +1,184 @@
@@ -3433,7 +3433,7 @@ index 000000000000..5725fd173800
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c
 new file mode 100644
-index 000000000000..a1f5462dd66a
+index 0000000000000..a1f5462dd66ab
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c
 @@ -0,0 +1,889 @@
@@ -4328,7 +4328,7 @@ index 000000000000..a1f5462dd66a
 +MODULE_LICENSE("Dual MIT/GPL");
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h
 new file mode 100644
-index 000000000000..e58bf53b548d
+index 0000000000000..e58bf53b548d7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h
 @@ -0,0 +1,242 @@
@@ -4576,7 +4576,7 @@ index 000000000000..e58bf53b548d
 +#endif /* !defined(__DRM_PDP_DRV_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c
 new file mode 100644
-index 000000000000..49c901afdb2b
+index 0000000000000..49c901afdb2b0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c
 @@ -0,0 +1,311 @@
@@ -4893,7 +4893,7 @@ index 000000000000..49c901afdb2b
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c
 new file mode 100644
-index 000000000000..5370ee250841
+index 0000000000000..5370ee250841c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c
 @@ -0,0 +1,320 @@
@@ -5219,7 +5219,7 @@ index 000000000000..5370ee250841
 +#endif /* CONFIG_DRM_FBDEV_EMULATION */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c
 new file mode 100644
-index 000000000000..3b2a81d4b71e
+index 0000000000000..3b2a81d4b71e3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c
 @@ -0,0 +1,899 @@
@@ -6124,7 +6124,7 @@ index 000000000000..3b2a81d4b71e
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h
 new file mode 100644
-index 000000000000..5bb228b8f3af
+index 0000000000000..5bb228b8f3aff
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h
 @@ -0,0 +1,158 @@
@@ -6288,7 +6288,7 @@ index 000000000000..5bb228b8f3af
 +#endif /* !defined(__DRM_PDP_GEM_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 new file mode 100644
-index 000000000000..dd1ad0ea4d19
+index 0000000000000..dd1ad0ea4d191
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 @@ -0,0 +1,468 @@
@@ -6762,7 +6762,7 @@ index 000000000000..dd1ad0ea4d19
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c
 new file mode 100644
-index 000000000000..9431154b83f4
+index 0000000000000..9431154b83f40
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c
 @@ -0,0 +1,385 @@
@@ -7153,7 +7153,7 @@ index 000000000000..9431154b83f4
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c
 new file mode 100644
-index 000000000000..915ef3c5a38c
+index 0000000000000..915ef3c5a38c3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c
 @@ -0,0 +1,148 @@
@@ -7307,7 +7307,7 @@ index 000000000000..915ef3c5a38c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/odin_defs.h b/drivers/gpu/drm/img-rogue/apollo/odin_defs.h
 new file mode 100644
-index 000000000000..6234887a1bfd
+index 0000000000000..6234887a1bfd6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/odin_defs.h
 @@ -0,0 +1,326 @@
@@ -7639,7 +7639,7 @@ index 000000000000..6234887a1bfd
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/odin_pdp_regs.h b/drivers/gpu/drm/img-rogue/apollo/odin_pdp_regs.h
 new file mode 100644
-index 000000000000..da47a253db31
+index 0000000000000..da47a253db31d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/odin_pdp_regs.h
 @@ -0,0 +1,8540 @@
@@ -16185,7 +16185,7 @@ index 000000000000..da47a253db31
 +#endif /* ODN_PDP_REGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/odin_regs.h b/drivers/gpu/drm/img-rogue/apollo/odin_regs.h
 new file mode 100644
-index 000000000000..5d5821623ac7
+index 0000000000000..5d5821623ac70
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/odin_regs.h
 @@ -0,0 +1,1026 @@
@@ -17217,7 +17217,7 @@ index 000000000000..5d5821623ac7
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/orion_defs.h b/drivers/gpu/drm/img-rogue/apollo/orion_defs.h
 new file mode 100644
-index 000000000000..1691151de58d
+index 0000000000000..1691151de58d2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/orion_defs.h
 @@ -0,0 +1,183 @@
@@ -17406,7 +17406,7 @@ index 000000000000..1691151de58d
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/orion_regs.h b/drivers/gpu/drm/img-rogue/apollo/orion_regs.h
 new file mode 100644
-index 000000000000..2a626bd2b70a
+index 0000000000000..2a626bd2b70a2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/orion_regs.h
 @@ -0,0 +1,439 @@
@@ -17851,7 +17851,7 @@ index 000000000000..2a626bd2b70a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.c b/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.c
 new file mode 100644
-index 000000000000..a55c6d83e13f
+index 0000000000000..a55c6d83e13f9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.c
 @@ -0,0 +1,329 @@
@@ -18186,7 +18186,7 @@ index 000000000000..a55c6d83e13f
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.h b/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.h
 new file mode 100644
-index 000000000000..fc7db08a041e
+index 0000000000000..fc7db08a041e0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_apollo.h
 @@ -0,0 +1,88 @@
@@ -18280,7 +18280,7 @@ index 000000000000..fc7db08a041e
 +#endif /* __PDP_APOLLO_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_common.h b/drivers/gpu/drm/img-rogue/apollo/pdp_common.h
 new file mode 100644
-index 000000000000..68e7130ecd9c
+index 0000000000000..68e7130ecd9c7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_common.h
 @@ -0,0 +1,107 @@
@@ -18393,7 +18393,7 @@ index 000000000000..68e7130ecd9c
 +#endif /* __PDP_COMMON_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_odin.c b/drivers/gpu/drm/img-rogue/apollo/pdp_odin.c
 new file mode 100644
-index 000000000000..e3a0d5c85e8a
+index 0000000000000..e3a0d5c85e8a7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_odin.c
 @@ -0,0 +1,1231 @@
@@ -19630,7 +19630,7 @@ index 000000000000..e3a0d5c85e8a
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_odin.h b/drivers/gpu/drm/img-rogue/apollo/pdp_odin.h
 new file mode 100644
-index 000000000000..0a625e231147
+index 0000000000000..0a625e2311479
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_odin.h
 @@ -0,0 +1,95 @@
@@ -19731,7 +19731,7 @@ index 000000000000..0a625e231147
 +#endif /* __PDP_ODIN_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_plato.c b/drivers/gpu/drm/img-rogue/apollo/pdp_plato.c
 new file mode 100644
-index 000000000000..df214f97bc6d
+index 0000000000000..df214f97bc6df
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_plato.c
 @@ -0,0 +1,339 @@
@@ -20076,7 +20076,7 @@ index 000000000000..df214f97bc6d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_plato.h b/drivers/gpu/drm/img-rogue/apollo/pdp_plato.h
 new file mode 100644
-index 000000000000..3275259673c0
+index 0000000000000..3275259673c06
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_plato.h
 @@ -0,0 +1,86 @@
@@ -20168,7 +20168,7 @@ index 000000000000..3275259673c0
 +#endif /* __PDP_PLATO_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pdp_regs.h b/drivers/gpu/drm/img-rogue/apollo/pdp_regs.h
 new file mode 100644
-index 000000000000..bd26b0617f95
+index 0000000000000..bd26b0617f95a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pdp_regs.h
 @@ -0,0 +1,75 @@
@@ -20249,7 +20249,7 @@ index 000000000000..bd26b0617f95
 +#endif /* !defined(__PDP_REGS_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pfim_defs.h b/drivers/gpu/drm/img-rogue/apollo/pfim_defs.h
 new file mode 100644
-index 000000000000..d39c06f703bd
+index 0000000000000..d39c06f703bd2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pfim_defs.h
 @@ -0,0 +1,69 @@
@@ -20324,7 +20324,7 @@ index 000000000000..d39c06f703bd
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/pfim_regs.h b/drivers/gpu/drm/img-rogue/apollo/pfim_regs.h
 new file mode 100644
-index 000000000000..4b8ff82138b4
+index 0000000000000..4b8ff82138b40
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/pfim_regs.h
 @@ -0,0 +1,265 @@
@@ -20595,7 +20595,7 @@ index 000000000000..4b8ff82138b4
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/sysconfig.c b/drivers/gpu/drm/img-rogue/apollo/sysconfig.c
 new file mode 100644
-index 000000000000..7f3b056659a4
+index 0000000000000..7f3b056659a48
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/sysconfig.c
 @@ -0,0 +1,1414 @@
@@ -22015,7 +22015,7 @@ index 000000000000..7f3b056659a4
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/sysinfo.h b/drivers/gpu/drm/img-rogue/apollo/sysinfo.h
 new file mode 100644
-index 000000000000..b71df887b113
+index 0000000000000..b71df887b113b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/sysinfo.h
 @@ -0,0 +1,60 @@
@@ -22081,7 +22081,7 @@ index 000000000000..b71df887b113
 +#endif /* !defined(__SYSINFO_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 new file mode 100644
-index 000000000000..3fbf0defb77e
+index 0000000000000..3fbf0defb77e9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 @@ -0,0 +1,1507 @@
@@ -23594,7 +23594,7 @@ index 000000000000..3fbf0defb77e
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.h b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.h
 new file mode 100644
-index 000000000000..0090dd2e570e
+index 0000000000000..0090dd2e570e7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.h
 @@ -0,0 +1,77 @@
@@ -23677,7 +23677,7 @@ index 000000000000..0090dd2e570e
 +#endif /* _APOLLO_DRV_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_clocks.h b/drivers/gpu/drm/img-rogue/apollo/tc_clocks.h
 new file mode 100644
-index 000000000000..431273de0827
+index 0000000000000..431273de0827a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_clocks.h
 @@ -0,0 +1,158 @@
@@ -23841,7 +23841,7 @@ index 000000000000..431273de0827
 +#endif /* if !defined(TC_CLOCKS_H) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv.c b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
 new file mode 100644
-index 000000000000..cb10915ac950
+index 0000000000000..cb10915ac950a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
 @@ -0,0 +1,943 @@
@@ -24790,7 +24790,7 @@ index 000000000000..cb10915ac950
 +EXPORT_SYMBOL(tc_dma_chan_free);
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv.h b/drivers/gpu/drm/img-rogue/apollo/tc_drv.h
 new file mode 100644
-index 000000000000..c2d7ebe7f311
+index 0000000000000..c2d7ebe7f3110
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv.h
 @@ -0,0 +1,191 @@
@@ -24987,7 +24987,7 @@ index 000000000000..c2d7ebe7f311
 +#endif /* _TC_DRV_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h b/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h
 new file mode 100644
-index 000000000000..97d6ecf4c33c
+index 0000000000000..97d6ecf4c33c4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h
 @@ -0,0 +1,204 @@
@@ -25197,7 +25197,7 @@ index 000000000000..97d6ecf4c33c
 +#endif /* _TC_DRV_INTERNAL_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 new file mode 100644
-index 000000000000..25c84b7a613b
+index 0000000000000..25c84b7a613bc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 @@ -0,0 +1,2305 @@
@@ -27508,7 +27508,7 @@ index 000000000000..25c84b7a613b
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin.h b/drivers/gpu/drm/img-rogue/apollo/tc_odin.h
 new file mode 100644
-index 000000000000..d2be3cde97a4
+index 0000000000000..d2be3cde97a4c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin.h
 @@ -0,0 +1,82 @@
@@ -27596,7 +27596,7 @@ index 000000000000..d2be3cde97a4
 +#endif /* _ODIN_DRV_H */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h b/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h
 new file mode 100644
-index 000000000000..55a47efdb7b2
+index 0000000000000..55a47efdb7b2b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h
 @@ -0,0 +1,105 @@
@@ -27707,7 +27707,7 @@ index 000000000000..55a47efdb7b2
 +#endif	/* __TC_ODIN_COMMON_REGS_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tcf_clk_ctrl.h b/drivers/gpu/drm/img-rogue/apollo/tcf_clk_ctrl.h
 new file mode 100644
-index 000000000000..cc7b10fd8116
+index 0000000000000..cc7b10fd81161
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tcf_clk_ctrl.h
 @@ -0,0 +1,1018 @@
@@ -28731,7 +28731,7 @@ index 000000000000..cc7b10fd8116
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tcf_pll.h b/drivers/gpu/drm/img-rogue/apollo/tcf_pll.h
 new file mode 100644
-index 000000000000..71eaf924bbd6
+index 0000000000000..71eaf924bbd6a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tcf_pll.h
 @@ -0,0 +1,311 @@
@@ -29048,7 +29048,7 @@ index 000000000000..71eaf924bbd6
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tcf_rgbpdp_regs.h b/drivers/gpu/drm/img-rogue/apollo/tcf_rgbpdp_regs.h
 new file mode 100644
-index 000000000000..e87ba6152411
+index 0000000000000..e87ba61524116
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/apollo/tcf_rgbpdp_regs.h
 @@ -0,0 +1,559 @@
@@ -29613,7 +29613,7 @@ index 000000000000..e87ba6152411
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/cache_km.c b/drivers/gpu/drm/img-rogue/cache_km.c
 new file mode 100644
-index 000000000000..f36f3370cf2f
+index 0000000000000..f36f3370cf2f3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/cache_km.c
 @@ -0,0 +1,1631 @@
@@ -31250,7 +31250,7 @@ index 000000000000..f36f3370cf2f
 +}
 diff --git a/drivers/gpu/drm/img-rogue/cache_km.h b/drivers/gpu/drm/img-rogue/cache_km.h
 new file mode 100644
-index 000000000000..282ff5bc5f0f
+index 0000000000000..282ff5bc5f0f8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/cache_km.h
 @@ -0,0 +1,151 @@
@@ -31407,7 +31407,7 @@ index 000000000000..282ff5bc5f0f
 +#endif	/* CACHE_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/cache_ops.h b/drivers/gpu/drm/img-rogue/cache_ops.h
 new file mode 100644
-index 000000000000..a1d714519d59
+index 0000000000000..a1d714519d59f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/cache_ops.h
 @@ -0,0 +1,61 @@
@@ -31474,7 +31474,7 @@ index 000000000000..a1d714519d59
 +#endif	/* CACHE_OPS_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_cache_bridge.h b/drivers/gpu/drm/img-rogue/client_cache_bridge.h
 new file mode 100644
-index 000000000000..1dec13fccce7
+index 0000000000000..1dec13fccce75
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_cache_bridge.h
 @@ -0,0 +1,80 @@
@@ -31560,7 +31560,7 @@ index 000000000000..1dec13fccce7
 +#endif /* CLIENT_CACHE_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_cache_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_cache_direct_bridge.c
 new file mode 100644
-index 000000000000..9691bae9352f
+index 0000000000000..9691bae9352f7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_cache_direct_bridge.c
 @@ -0,0 +1,112 @@
@@ -31678,7 +31678,7 @@ index 000000000000..9691bae9352f
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_devicememhistory_bridge.h b/drivers/gpu/drm/img-rogue/client_devicememhistory_bridge.h
 new file mode 100644
-index 000000000000..bfa6bfb9c037
+index 0000000000000..bfa6bfb9c0379
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_devicememhistory_bridge.h
 @@ -0,0 +1,111 @@
@@ -31795,7 +31795,7 @@ index 000000000000..bfa6bfb9c037
 +#endif /* CLIENT_DEVICEMEMHISTORY_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_devicememhistory_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_devicememhistory_direct_bridge.c
 new file mode 100644
-index 000000000000..a593a7e2cc7a
+index 0000000000000..a593a7e2cc7a4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_devicememhistory_direct_bridge.c
 @@ -0,0 +1,195 @@
@@ -31996,7 +31996,7 @@ index 000000000000..a593a7e2cc7a
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_htbuffer_bridge.h b/drivers/gpu/drm/img-rogue/client_htbuffer_bridge.h
 new file mode 100644
-index 000000000000..2c5d18843120
+index 0000000000000..2c5d188431209
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_htbuffer_bridge.h
 @@ -0,0 +1,64 @@
@@ -32066,7 +32066,7 @@ index 000000000000..2c5d18843120
 +#endif /* CLIENT_HTBUFFER_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_htbuffer_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_htbuffer_direct_bridge.c
 new file mode 100644
-index 000000000000..3e6295cdfdf3
+index 0000000000000..3e6295cdfdf33
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_htbuffer_direct_bridge.c
 @@ -0,0 +1,70 @@
@@ -32142,7 +32142,7 @@ index 000000000000..3e6295cdfdf3
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_mm_bridge.h b/drivers/gpu/drm/img-rogue/client_mm_bridge.h
 new file mode 100644
-index 000000000000..4f00526c8f3e
+index 0000000000000..4f00526c8f3ef
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_mm_bridge.h
 @@ -0,0 +1,243 @@
@@ -32391,7 +32391,7 @@ index 000000000000..4f00526c8f3e
 +#endif /* CLIENT_MM_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c
 new file mode 100644
-index 000000000000..184355b3abbf
+index 0000000000000..184355b3abbff
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c
 @@ -0,0 +1,752 @@
@@ -33149,7 +33149,7 @@ index 000000000000..184355b3abbf
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_pvrtl_bridge.h b/drivers/gpu/drm/img-rogue/client_pvrtl_bridge.h
 new file mode 100644
-index 000000000000..2cfafd5a83e1
+index 0000000000000..2cfafd5a83e15
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_pvrtl_bridge.h
 @@ -0,0 +1,93 @@
@@ -33248,7 +33248,7 @@ index 000000000000..2cfafd5a83e1
 +#endif /* CLIENT_PVRTL_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_pvrtl_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_pvrtl_direct_bridge.c
 new file mode 100644
-index 000000000000..fa2fbed9595b
+index 0000000000000..fa2fbed9595b9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_pvrtl_direct_bridge.c
 @@ -0,0 +1,175 @@
@@ -33429,7 +33429,7 @@ index 000000000000..fa2fbed9595b
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_ri_bridge.h b/drivers/gpu/drm/img-rogue/client_ri_bridge.h
 new file mode 100644
-index 000000000000..b3c42e6f496e
+index 0000000000000..b3c42e6f496e4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_ri_bridge.h
 @@ -0,0 +1,89 @@
@@ -33524,7 +33524,7 @@ index 000000000000..b3c42e6f496e
 +#endif /* CLIENT_RI_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c
 new file mode 100644
-index 000000000000..74eaf18e4aeb
+index 0000000000000..74eaf18e4aeb2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c
 @@ -0,0 +1,182 @@
@@ -33712,7 +33712,7 @@ index 000000000000..74eaf18e4aeb
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_sync_bridge.h b/drivers/gpu/drm/img-rogue/client_sync_bridge.h
 new file mode 100644
-index 000000000000..19f1b0ece5b9
+index 0000000000000..19f1b0ece5b9f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_sync_bridge.h
 @@ -0,0 +1,102 @@
@@ -33820,7 +33820,7 @@ index 000000000000..19f1b0ece5b9
 +#endif /* CLIENT_SYNC_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_sync_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_sync_direct_bridge.c
 new file mode 100644
-index 000000000000..d631aea421ad
+index 0000000000000..d631aea421adb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_sync_direct_bridge.c
 @@ -0,0 +1,262 @@
@@ -34088,7 +34088,7 @@ index 000000000000..d631aea421ad
 +}
 diff --git a/drivers/gpu/drm/img-rogue/client_synctracking_bridge.h b/drivers/gpu/drm/img-rogue/client_synctracking_bridge.h
 new file mode 100644
-index 000000000000..544efd962834
+index 0000000000000..544efd9628345
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_synctracking_bridge.h
 @@ -0,0 +1,68 @@
@@ -34162,7 +34162,7 @@ index 000000000000..544efd962834
 +#endif /* CLIENT_SYNCTRACKING_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/client_synctracking_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_synctracking_direct_bridge.c
 new file mode 100644
-index 000000000000..baeb89a6a0ae
+index 0000000000000..baeb89a6a0aed
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/client_synctracking_direct_bridge.c
 @@ -0,0 +1,92 @@
@@ -34260,7 +34260,7 @@ index 000000000000..baeb89a6a0ae
 +}
 diff --git a/drivers/gpu/drm/img-rogue/common_cache_bridge.h b/drivers/gpu/drm/img-rogue/common_cache_bridge.h
 new file mode 100644
-index 000000000000..cc848753f7fa
+index 0000000000000..cc848753f7fa5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_cache_bridge.h
 @@ -0,0 +1,126 @@
@@ -34392,7 +34392,7 @@ index 000000000000..cc848753f7fa
 +#endif /* COMMON_CACHE_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_cmm_bridge.h b/drivers/gpu/drm/img-rogue/common_cmm_bridge.h
 new file mode 100644
-index 000000000000..da48de3598be
+index 0000000000000..da48de3598be1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_cmm_bridge.h
 @@ -0,0 +1,114 @@
@@ -34512,7 +34512,7 @@ index 000000000000..da48de3598be
 +#endif /* COMMON_CMM_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_devicememhistory_bridge.h b/drivers/gpu/drm/img-rogue/common_devicememhistory_bridge.h
 new file mode 100644
-index 000000000000..800f98dd2836
+index 0000000000000..800f98dd28363
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_devicememhistory_bridge.h
 @@ -0,0 +1,185 @@
@@ -34703,7 +34703,7 @@ index 000000000000..800f98dd2836
 +#endif /* COMMON_DEVICEMEMHISTORY_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_di_bridge.h b/drivers/gpu/drm/img-rogue/common_di_bridge.h
 new file mode 100644
-index 000000000000..8591006140b6
+index 0000000000000..8591006140b62
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_di_bridge.h
 @@ -0,0 +1,153 @@
@@ -34862,7 +34862,7 @@ index 000000000000..8591006140b6
 +#endif /* COMMON_DI_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h b/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h
 new file mode 100644
-index 000000000000..7547d9f76297
+index 0000000000000..7547d9f762979
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h
 @@ -0,0 +1,150 @@
@@ -35018,7 +35018,7 @@ index 000000000000..7547d9f76297
 +#endif /* COMMON_DMABUF_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_htbuffer_bridge.h b/drivers/gpu/drm/img-rogue/common_htbuffer_bridge.h
 new file mode 100644
-index 000000000000..32be202186dc
+index 0000000000000..32be202186dca
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_htbuffer_bridge.h
 @@ -0,0 +1,82 @@
@@ -35106,7 +35106,7 @@ index 000000000000..32be202186dc
 +#endif /* COMMON_HTBUFFER_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_mm_bridge.h b/drivers/gpu/drm/img-rogue/common_mm_bridge.h
 new file mode 100644
-index 000000000000..cf9f8834c48f
+index 0000000000000..cf9f8834c48f3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_mm_bridge.h
 @@ -0,0 +1,779 @@
@@ -35891,7 +35891,7 @@ index 000000000000..cf9f8834c48f
 +#endif /* COMMON_MM_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_mmextmem_bridge.h b/drivers/gpu/drm/img-rogue/common_mmextmem_bridge.h
 new file mode 100644
-index 000000000000..f52637853325
+index 0000000000000..f526378533252
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_mmextmem_bridge.h
 @@ -0,0 +1,80 @@
@@ -35977,7 +35977,7 @@ index 000000000000..f52637853325
 +#endif /* COMMON_MMEXTMEM_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_pvrtl_bridge.h b/drivers/gpu/drm/img-rogue/common_pvrtl_bridge.h
 new file mode 100644
-index 000000000000..edc822375222
+index 0000000000000..edc8223752220
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_pvrtl_bridge.h
 @@ -0,0 +1,214 @@
@@ -36197,7 +36197,7 @@ index 000000000000..edc822375222
 +#endif /* COMMON_PVRTL_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxbreakpoint_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxbreakpoint_bridge.h
 new file mode 100644
-index 000000000000..ca5290a88266
+index 0000000000000..ca5290a88266e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxbreakpoint_bridge.h
 @@ -0,0 +1,150 @@
@@ -36353,7 +36353,7 @@ index 000000000000..ca5290a88266
 +#endif /* COMMON_RGXBREAKPOINT_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h
 new file mode 100644
-index 000000000000..7f5687d826d5
+index 0000000000000..7f5687d826d53
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h
 @@ -0,0 +1,250 @@
@@ -36609,7 +36609,7 @@ index 000000000000..7f5687d826d5
 +#endif /* COMMON_RGXCMP_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h
 new file mode 100644
-index 000000000000..a92ae9bfdb8d
+index 0000000000000..a92ae9bfdb8d5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h
 @@ -0,0 +1,339 @@
@@ -36954,7 +36954,7 @@ index 000000000000..a92ae9bfdb8d
 +#endif /* COMMON_RGXFWDBG_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h
 new file mode 100644
-index 000000000000..609429400ae2
+index 0000000000000..609429400ae20
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h
 @@ -0,0 +1,248 @@
@@ -37208,7 +37208,7 @@ index 000000000000..609429400ae2
 +#endif /* COMMON_RGXHWPERF_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxkicksync_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxkicksync_bridge.h
 new file mode 100644
-index 000000000000..afd882ca7529
+index 0000000000000..afd882ca7529b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxkicksync_bridge.h
 @@ -0,0 +1,143 @@
@@ -37357,7 +37357,7 @@ index 000000000000..afd882ca7529
 +#endif /* COMMON_RGXKICKSYNC_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxregconfig_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxregconfig_bridge.h
 new file mode 100644
-index 000000000000..942b7e4b06d0
+index 0000000000000..942b7e4b06d00
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxregconfig_bridge.h
 @@ -0,0 +1,146 @@
@@ -37509,7 +37509,7 @@ index 000000000000..942b7e4b06d0
 +#endif /* COMMON_RGXREGCONFIG_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h
 new file mode 100644
-index 000000000000..7974b6735280
+index 0000000000000..7974b67352808
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h
 @@ -0,0 +1,424 @@
@@ -37939,7 +37939,7 @@ index 000000000000..7974b6735280
 +#endif /* COMMON_RGXTA3D_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxtimerquery_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxtimerquery_bridge.h
 new file mode 100644
-index 000000000000..34d7c2c56a2c
+index 0000000000000..34d7c2c56a2c7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxtimerquery_bridge.h
 @@ -0,0 +1,112 @@
@@ -38057,7 +38057,7 @@ index 000000000000..34d7c2c56a2c
 +#endif /* COMMON_RGXTIMERQUERY_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h
 new file mode 100644
-index 000000000000..9d8397fc90bf
+index 0000000000000..9d8397fc90bf8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h
 @@ -0,0 +1,228 @@
@@ -38291,7 +38291,7 @@ index 000000000000..9d8397fc90bf
 +#endif /* COMMON_RGXTQ2_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h
 new file mode 100644
-index 000000000000..b4a9be2bd977
+index 0000000000000..b4a9be2bd9775
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h
 @@ -0,0 +1,210 @@
@@ -38507,7 +38507,7 @@ index 000000000000..b4a9be2bd977
 +#endif /* COMMON_RGXTQ_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_ri_bridge.h b/drivers/gpu/drm/img-rogue/common_ri_bridge.h
 new file mode 100644
-index 000000000000..967ed5395518
+index 0000000000000..967ed53955186
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_ri_bridge.h
 @@ -0,0 +1,225 @@
@@ -38738,7 +38738,7 @@ index 000000000000..967ed5395518
 +#endif /* COMMON_RI_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_srvcore_bridge.h b/drivers/gpu/drm/img-rogue/common_srvcore_bridge.h
 new file mode 100644
-index 000000000000..603ba5b1d89e
+index 0000000000000..603ba5b1d89eb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_srvcore_bridge.h
 @@ -0,0 +1,369 @@
@@ -39113,7 +39113,7 @@ index 000000000000..603ba5b1d89e
 +#endif /* COMMON_SRVCORE_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_sync_bridge.h b/drivers/gpu/drm/img-rogue/common_sync_bridge.h
 new file mode 100644
-index 000000000000..753d40b64f12
+index 0000000000000..753d40b64f126
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_sync_bridge.h
 @@ -0,0 +1,254 @@
@@ -39373,7 +39373,7 @@ index 000000000000..753d40b64f12
 +#endif /* COMMON_SYNC_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_synctracking_bridge.h b/drivers/gpu/drm/img-rogue/common_synctracking_bridge.h
 new file mode 100644
-index 000000000000..9fd9fdb796a7
+index 0000000000000..9fd9fdb796a77
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/common_synctracking_bridge.h
 @@ -0,0 +1,97 @@
@@ -39476,7 +39476,7 @@ index 000000000000..9fd9fdb796a7
 +#endif /* COMMON_SYNCTRACKING_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
 new file mode 100644
-index 000000000000..c1850e8277f5
+index 0000000000000..c1850e8277f58
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -0,0 +1,198 @@
@@ -39680,7 +39680,7 @@ index 000000000000..c1850e8277f5
 +#define SUPPORT_BUFFER_SYNC 1
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.mk b/drivers/gpu/drm/img-rogue/config_kernel.mk
 new file mode 100644
-index 000000000000..83b78b3fabc2
+index 0000000000000..83b78b3fabc28
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.mk
 @@ -0,0 +1,53 @@
@@ -39739,7 +39739,7 @@ index 000000000000..83b78b3fabc2
 +override SUPPORT_BUFFER_SYNC := 1
 diff --git a/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_36.V.52.182.h b/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_36.V.52.182.h
 new file mode 100644
-index 000000000000..b96d9f278f1d
+index 0000000000000..b96d9f278f1d1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_36.V.52.182.h
 @@ -0,0 +1,104 @@
@@ -39849,7 +39849,7 @@ index 000000000000..b96d9f278f1d
 +#endif /* RGXCONFIG_KM_36_V_52_182_H */
 diff --git a/drivers/gpu/drm/img-rogue/connection_server.c b/drivers/gpu/drm/img-rogue/connection_server.c
 new file mode 100644
-index 000000000000..efb0a97675a7
+index 0000000000000..efb0a97675a76
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/connection_server.c
 @@ -0,0 +1,555 @@
@@ -40410,7 +40410,7 @@ index 000000000000..efb0a97675a7
 +}
 diff --git a/drivers/gpu/drm/img-rogue/connection_server.h b/drivers/gpu/drm/img-rogue/connection_server.h
 new file mode 100644
-index 000000000000..95660832a9a3
+index 0000000000000..95660832a9a39
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/connection_server.h
 @@ -0,0 +1,144 @@
@@ -40560,7 +40560,7 @@ index 000000000000..95660832a9a3
 +#endif /* !defined(CONNECTION_SERVER_H) */
 diff --git a/drivers/gpu/drm/img-rogue/cores/rgxcore_km_36.29.52.182.h b/drivers/gpu/drm/img-rogue/cores/rgxcore_km_36.29.52.182.h
 new file mode 100644
-index 000000000000..7a5a87c84f7b
+index 0000000000000..7a5a87c84f7b4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/cores/rgxcore_km_36.29.52.182.h
 @@ -0,0 +1,75 @@
@@ -40641,7 +40641,7 @@ index 000000000000..7a5a87c84f7b
 +#endif /* RGXCORE_KM_36_29_52_182_H */
 diff --git a/drivers/gpu/drm/img-rogue/debug_common.c b/drivers/gpu/drm/img-rogue/debug_common.c
 new file mode 100644
-index 000000000000..98e7dbe6ed29
+index 0000000000000..98e7dbe6ed296
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/debug_common.c
 @@ -0,0 +1,2172 @@
@@ -42819,7 +42819,7 @@ index 000000000000..98e7dbe6ed29
 +}
 diff --git a/drivers/gpu/drm/img-rogue/debug_common.h b/drivers/gpu/drm/img-rogue/debug_common.h
 new file mode 100644
-index 000000000000..c098696f740e
+index 0000000000000..c098696f740e4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/debug_common.h
 @@ -0,0 +1,69 @@
@@ -42894,7 +42894,7 @@ index 000000000000..c098696f740e
 +#endif /* DEBUG_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/device.h b/drivers/gpu/drm/img-rogue/device.h
 new file mode 100644
-index 000000000000..20e8770aa507
+index 0000000000000..20e8770aa5070
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/device.h
 @@ -0,0 +1,647 @@
@@ -43547,7 +43547,7 @@ index 000000000000..20e8770aa507
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/device_connection.h b/drivers/gpu/drm/img-rogue/device_connection.h
 new file mode 100644
-index 000000000000..b80983c2d87d
+index 0000000000000..b80983c2d87d5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/device_connection.h
 @@ -0,0 +1,130 @@
@@ -43683,7 +43683,7 @@ index 000000000000..b80983c2d87d
 +#endif /* !defined(DEVICE_CONNECTION_H) */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem.c b/drivers/gpu/drm/img-rogue/devicemem.c
 new file mode 100644
-index 000000000000..09765b599cc4
+index 0000000000000..09765b599cc49
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem.c
 @@ -0,0 +1,2779 @@
@@ -46468,7 +46468,7 @@ index 000000000000..09765b599cc4
 +}
 diff --git a/drivers/gpu/drm/img-rogue/devicemem.h b/drivers/gpu/drm/img-rogue/devicemem.h
 new file mode 100644
-index 000000000000..0a7d550bf194
+index 0000000000000..0a7d550bf194d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem.h
 @@ -0,0 +1,694 @@
@@ -47168,7 +47168,7 @@ index 000000000000..0a7d550bf194
 +#endif /* #ifndef SRVCLIENT_DEVICEMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c
 new file mode 100644
-index 000000000000..1234f76a60c2
+index 0000000000000..1234f76a60c21
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c
 @@ -0,0 +1,219 @@
@@ -47393,7 +47393,7 @@ index 000000000000..1234f76a60c2
 +}
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h
 new file mode 100644
-index 000000000000..bf49a07cbefd
+index 0000000000000..bf49a07cbefdb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h
 @@ -0,0 +1,223 @@
@@ -47622,7 +47622,7 @@ index 000000000000..bf49a07cbefd
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_history_server.c b/drivers/gpu/drm/img-rogue/devicemem_history_server.c
 new file mode 100644
-index 000000000000..e84e75e7c7d8
+index 0000000000000..e84e75e7c7d89
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_history_server.c
 @@ -0,0 +1,2313 @@
@@ -49941,7 +49941,7 @@ index 000000000000..e84e75e7c7d8
 +}
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_history_server.h b/drivers/gpu/drm/img-rogue/devicemem_history_server.h
 new file mode 100644
-index 000000000000..81fe702371ac
+index 0000000000000..81fe702371ace
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_history_server.h
 @@ -0,0 +1,167 @@
@@ -50114,7 +50114,7 @@ index 000000000000..81fe702371ac
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_pdump.h b/drivers/gpu/drm/img-rogue/devicemem_pdump.h
 new file mode 100644
-index 000000000000..09b28afe7e51
+index 0000000000000..09b28afe7e51a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_pdump.h
 @@ -0,0 +1,363 @@
@@ -50483,7 +50483,7 @@ index 000000000000..09b28afe7e51
 +#endif /* DEVICEMEM_PDUMP_H */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server.c b/drivers/gpu/drm/img-rogue/devicemem_server.c
 new file mode 100644
-index 000000000000..e43f686308ce
+index 0000000000000..e43f686308ce0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server.c
 @@ -0,0 +1,2326 @@
@@ -52815,7 +52815,7 @@ index 000000000000..e43f686308ce
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server.h b/drivers/gpu/drm/img-rogue/devicemem_server.h
 new file mode 100644
-index 000000000000..0f893cd9f7b3
+index 0000000000000..0f893cd9f7b3d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server.h
 @@ -0,0 +1,729 @@
@@ -53550,7 +53550,7 @@ index 000000000000..0f893cd9f7b3
 +#endif /* DEVICEMEM_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server_utils.h b/drivers/gpu/drm/img-rogue/devicemem_server_utils.h
 new file mode 100644
-index 000000000000..ad85c07cdcf6
+index 0000000000000..ad85c07cdcf66
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server_utils.h
 @@ -0,0 +1,198 @@
@@ -53754,7 +53754,7 @@ index 000000000000..ad85c07cdcf6
 +}
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_typedefs.h b/drivers/gpu/drm/img-rogue/devicemem_typedefs.h
 new file mode 100644
-index 000000000000..683af9a04f04
+index 0000000000000..683af9a04f04c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_typedefs.h
 @@ -0,0 +1,141 @@
@@ -53901,7 +53901,7 @@ index 000000000000..683af9a04f04
 +#endif /* #ifndef DEVICEMEM_TYPEDEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_utils.c b/drivers/gpu/drm/img-rogue/devicemem_utils.c
 new file mode 100644
-index 000000000000..7b60110310c1
+index 0000000000000..7b60110310c17
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_utils.c
 @@ -0,0 +1,1267 @@
@@ -55174,7 +55174,7 @@ index 000000000000..7b60110310c1
 +}
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_utils.h b/drivers/gpu/drm/img-rogue/devicemem_utils.h
 new file mode 100644
-index 000000000000..9e24c1dceca7
+index 0000000000000..9e24c1dceca74
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/devicemem_utils.h
 @@ -0,0 +1,582 @@
@@ -55762,7 +55762,7 @@ index 000000000000..9e24c1dceca7
 +#endif /* DEVICEMEM_UTILS_H */
 diff --git a/drivers/gpu/drm/img-rogue/di_common.h b/drivers/gpu/drm/img-rogue/di_common.h
 new file mode 100644
-index 000000000000..a10178708a75
+index 0000000000000..a10178708a754
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_common.h
 @@ -0,0 +1,236 @@
@@ -56004,7 +56004,7 @@ index 000000000000..a10178708a75
 +#endif /* DI_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/di_impl_brg.c b/drivers/gpu/drm/img-rogue/di_impl_brg.c
 new file mode 100644
-index 000000000000..5670af07f6d4
+index 0000000000000..5670af07f6d41
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_impl_brg.c
 @@ -0,0 +1,889 @@
@@ -56899,7 +56899,7 @@ index 000000000000..5670af07f6d4
 +}
 diff --git a/drivers/gpu/drm/img-rogue/di_impl_brg.h b/drivers/gpu/drm/img-rogue/di_impl_brg.h
 new file mode 100644
-index 000000000000..7d5a6ca757e8
+index 0000000000000..7d5a6ca757e8e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_impl_brg.h
 @@ -0,0 +1,92 @@
@@ -56997,7 +56997,7 @@ index 000000000000..7d5a6ca757e8
 +#endif /* PVR_IMPL_BRG_H */
 diff --git a/drivers/gpu/drm/img-rogue/di_impl_brg_intern.h b/drivers/gpu/drm/img-rogue/di_impl_brg_intern.h
 new file mode 100644
-index 000000000000..5e11cac59854
+index 0000000000000..5e11cac598543
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_impl_brg_intern.h
 @@ -0,0 +1,61 @@
@@ -57064,7 +57064,7 @@ index 000000000000..5e11cac59854
 +#endif /* PVR_IMPL_BRG_INTERN_H */
 diff --git a/drivers/gpu/drm/img-rogue/di_server.c b/drivers/gpu/drm/img-rogue/di_server.c
 new file mode 100644
-index 000000000000..330d35792819
+index 0000000000000..330d357928193
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_server.c
 @@ -0,0 +1,800 @@
@@ -57870,7 +57870,7 @@ index 000000000000..330d35792819
 +}
 diff --git a/drivers/gpu/drm/img-rogue/di_server.h b/drivers/gpu/drm/img-rogue/di_server.h
 new file mode 100644
-index 000000000000..a68894b1b430
+index 0000000000000..a68894b1b4305
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/di_server.h
 @@ -0,0 +1,219 @@
@@ -58095,7 +58095,7 @@ index 000000000000..a68894b1b430
 +#endif /* DI_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/dllist.h b/drivers/gpu/drm/img-rogue/dllist.h
 new file mode 100644
-index 000000000000..2c237fb8edef
+index 0000000000000..2c237fb8edef8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dllist.h
 @@ -0,0 +1,407 @@
@@ -58508,7 +58508,7 @@ index 000000000000..2c237fb8edef
 +#endif /* DLLIST_H */
 diff --git a/drivers/gpu/drm/img-rogue/dma_km.h b/drivers/gpu/drm/img-rogue/dma_km.h
 new file mode 100644
-index 000000000000..ce4d1317279b
+index 0000000000000..ce4d1317279b5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dma_km.h
 @@ -0,0 +1,83 @@
@@ -58597,7 +58597,7 @@ index 000000000000..ce4d1317279b
 +#endif /* DMA_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/dma_support.c b/drivers/gpu/drm/img-rogue/dma_support.c
 new file mode 100644
-index 000000000000..2058584ddf7c
+index 0000000000000..2058584ddf7ca
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dma_support.c
 @@ -0,0 +1,523 @@
@@ -59126,7 +59126,7 @@ index 000000000000..2058584ddf7c
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/dma_support.h b/drivers/gpu/drm/img-rogue/dma_support.h
 new file mode 100644
-index 000000000000..c1d22bddf523
+index 0000000000000..c1d22bddf5236
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dma_support.h
 @@ -0,0 +1,117 @@
@@ -59249,7 +59249,7 @@ index 000000000000..c1d22bddf523
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/env_connection.h b/drivers/gpu/drm/img-rogue/env_connection.h
 new file mode 100644
-index 000000000000..2a6c7d05c412
+index 0000000000000..2a6c7d05c4126
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/env_connection.h
 @@ -0,0 +1,92 @@
@@ -59347,7 +59347,7 @@ index 000000000000..2a6c7d05c412
 +#endif /* !defined(ENV_CONNECTION_H) */
 diff --git a/drivers/gpu/drm/img-rogue/event.c b/drivers/gpu/drm/img-rogue/event.c
 new file mode 100644
-index 000000000000..e9847ff68b88
+index 0000000000000..e9847ff68b88f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/event.c
 @@ -0,0 +1,514 @@
@@ -59867,7 +59867,7 @@ index 000000000000..e9847ff68b88
 +#endif /* defined(PVRSRV_SERVER_THREADS_INDEFINITE_SLEEP) */
 diff --git a/drivers/gpu/drm/img-rogue/event.h b/drivers/gpu/drm/img-rogue/event.h
 new file mode 100644
-index 000000000000..bb378cb9220f
+index 0000000000000..bb378cb9220f4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/event.h
 @@ -0,0 +1,54 @@
@@ -59927,7 +59927,7 @@ index 000000000000..bb378cb9220f
 +void LinuxEventObjectDumpDebugInfo(IMG_HANDLE hOSEventObject);
 diff --git a/drivers/gpu/drm/img-rogue/fwload.c b/drivers/gpu/drm/img-rogue/fwload.c
 new file mode 100644
-index 000000000000..35e52af56a2e
+index 0000000000000..35e52af56a2e8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/fwload.c
 @@ -0,0 +1,255 @@
@@ -60188,7 +60188,7 @@ index 000000000000..35e52af56a2e
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/fwload.h b/drivers/gpu/drm/img-rogue/fwload.h
 new file mode 100644
-index 000000000000..08e7f533b666
+index 0000000000000..08e7f533b6663
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/fwload.h
 @@ -0,0 +1,158 @@
@@ -60352,7 +60352,7 @@ index 000000000000..08e7f533b666
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/fwtrace_string.h b/drivers/gpu/drm/img-rogue/fwtrace_string.h
 new file mode 100644
-index 000000000000..a2ab95c3a815
+index 0000000000000..a2ab95c3a8159
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/fwtrace_string.h
 @@ -0,0 +1,52 @@
@@ -60410,7 +60410,7 @@ index 000000000000..a2ab95c3a815
 +#endif /* KM_TRACE_STRING_H */
 diff --git a/drivers/gpu/drm/img-rogue/handle.c b/drivers/gpu/drm/img-rogue/handle.c
 new file mode 100644
-index 000000000000..e98443682d1a
+index 0000000000000..e98443682d1a8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/handle.c
 @@ -0,0 +1,2498 @@
@@ -62914,7 +62914,7 @@ index 000000000000..e98443682d1a
 +}
 diff --git a/drivers/gpu/drm/img-rogue/handle.h b/drivers/gpu/drm/img-rogue/handle.h
 new file mode 100644
-index 000000000000..92946b6fbb36
+index 0000000000000..92946b6fbb365
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/handle.h
 @@ -0,0 +1,206 @@
@@ -63126,7 +63126,7 @@ index 000000000000..92946b6fbb36
 +#endif /* !defined(HANDLE_API_H) */
 diff --git a/drivers/gpu/drm/img-rogue/handle_idr.c b/drivers/gpu/drm/img-rogue/handle_idr.c
 new file mode 100644
-index 000000000000..c40e096bfaa5
+index 0000000000000..c40e096bfaa54
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/handle_idr.c
 @@ -0,0 +1,440 @@
@@ -63572,7 +63572,7 @@ index 000000000000..c40e096bfaa5
 +}
 diff --git a/drivers/gpu/drm/img-rogue/handle_impl.h b/drivers/gpu/drm/img-rogue/handle_impl.h
 new file mode 100644
-index 000000000000..94305979d130
+index 0000000000000..94305979d1307
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/handle_impl.h
 @@ -0,0 +1,89 @@
@@ -63667,7 +63667,7 @@ index 000000000000..94305979d130
 +#endif /* !defined(HANDLE_IMPL_H) */
 diff --git a/drivers/gpu/drm/img-rogue/handle_types.h b/drivers/gpu/drm/img-rogue/handle_types.h
 new file mode 100644
-index 000000000000..5ccbc607d5df
+index 0000000000000..5ccbc607d5dfe
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/handle_types.h
 @@ -0,0 +1,89 @@
@@ -63762,7 +63762,7 @@ index 000000000000..5ccbc607d5df
 +HANDLETYPE(DI_CONTEXT)
 diff --git a/drivers/gpu/drm/img-rogue/hash.c b/drivers/gpu/drm/img-rogue/hash.c
 new file mode 100644
-index 000000000000..994ae5871f5f
+index 0000000000000..994ae5871f5fe
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/hash.c
 @@ -0,0 +1,734 @@
@@ -64502,7 +64502,7 @@ index 000000000000..994ae5871f5f
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/hash.h b/drivers/gpu/drm/img-rogue/hash.h
 new file mode 100644
-index 000000000000..92d48990af82
+index 0000000000000..92d48990af828
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/hash.h
 @@ -0,0 +1,247 @@
@@ -64755,7 +64755,7 @@ index 000000000000..92d48990af82
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/htb_debug.c b/drivers/gpu/drm/img-rogue/htb_debug.c
 new file mode 100644
-index 000000000000..6f0ede57af13
+index 0000000000000..6f0ede57af139
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htb_debug.c
 @@ -0,0 +1,1189 @@
@@ -65950,7 +65950,7 @@ index 000000000000..6f0ede57af13
 +/* EOF */
 diff --git a/drivers/gpu/drm/img-rogue/htb_debug.h b/drivers/gpu/drm/img-rogue/htb_debug.h
 new file mode 100644
-index 000000000000..cf18bbb2ac5d
+index 0000000000000..cf18bbb2ac5d7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htb_debug.h
 @@ -0,0 +1,72 @@
@@ -66028,7 +66028,7 @@ index 000000000000..cf18bbb2ac5d
 +#endif /* HTB_DEBUG_H */
 diff --git a/drivers/gpu/drm/img-rogue/htbserver.c b/drivers/gpu/drm/img-rogue/htbserver.c
 new file mode 100644
-index 000000000000..168cd01e319a
+index 0000000000000..168cd01e319ae
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbserver.c
 @@ -0,0 +1,936 @@
@@ -66970,7 +66970,7 @@ index 000000000000..168cd01e319a
 +/* EOF */
 diff --git a/drivers/gpu/drm/img-rogue/htbserver.h b/drivers/gpu/drm/img-rogue/htbserver.h
 new file mode 100644
-index 000000000000..4aaa3dd35e08
+index 0000000000000..4aaa3dd35e085
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbserver.h
 @@ -0,0 +1,240 @@
@@ -67216,7 +67216,7 @@ index 000000000000..4aaa3dd35e08
 +/* EOF */
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer.c b/drivers/gpu/drm/img-rogue/htbuffer.c
 new file mode 100644
-index 000000000000..5f83127a5462
+index 0000000000000..5f83127a54623
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbuffer.c
 @@ -0,0 +1,106 @@
@@ -67328,7 +67328,7 @@ index 000000000000..5f83127a5462
 +/* EOF */
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer.h b/drivers/gpu/drm/img-rogue/htbuffer.h
 new file mode 100644
-index 000000000000..96daa9727c47
+index 0000000000000..96daa9727c477
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbuffer.h
 @@ -0,0 +1,92 @@
@@ -67426,7 +67426,7 @@ index 000000000000..96daa9727c47
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer_init.h b/drivers/gpu/drm/img-rogue/htbuffer_init.h
 new file mode 100644
-index 000000000000..9a93b59d8628
+index 0000000000000..9a93b59d86284
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbuffer_init.h
 @@ -0,0 +1,92 @@
@@ -67524,7 +67524,7 @@ index 000000000000..9a93b59d8628
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer_sf.h b/drivers/gpu/drm/img-rogue/htbuffer_sf.h
 new file mode 100644
-index 000000000000..3bfd06398b83
+index 0000000000000..3bfd06398b83f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbuffer_sf.h
 @@ -0,0 +1,245 @@
@@ -67775,7 +67775,7 @@ index 000000000000..3bfd06398b83
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer_types.h b/drivers/gpu/drm/img-rogue/htbuffer_types.h
 new file mode 100644
-index 000000000000..fd061eb428d7
+index 0000000000000..fd061eb428d72
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/htbuffer_types.h
 @@ -0,0 +1,122 @@
@@ -67903,7 +67903,7 @@ index 000000000000..fd061eb428d7
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/img_3dtypes.h b/drivers/gpu/drm/img-rogue/img_3dtypes.h
 new file mode 100644
-index 000000000000..102c6eeda959
+index 0000000000000..102c6eeda9590
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/img_3dtypes.h
 @@ -0,0 +1,248 @@
@@ -68157,7 +68157,7 @@ index 000000000000..102c6eeda959
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/img_defs.h b/drivers/gpu/drm/img-rogue/img_defs.h
 new file mode 100644
-index 000000000000..0a755ae134c4
+index 0000000000000..0a755ae134c42
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/img_defs.h
 @@ -0,0 +1,599 @@
@@ -68762,7 +68762,7 @@ index 000000000000..0a755ae134c4
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/img_elf.h b/drivers/gpu/drm/img-rogue/img_elf.h
 new file mode 100644
-index 000000000000..8837d9592599
+index 0000000000000..8837d95925996
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/img_elf.h
 @@ -0,0 +1,111 @@
@@ -68879,7 +68879,7 @@ index 000000000000..8837d9592599
 +#endif /* IMG_ELF_H */
 diff --git a/drivers/gpu/drm/img-rogue/img_types.h b/drivers/gpu/drm/img-rogue/img_types.h
 new file mode 100644
-index 000000000000..7b4eb6415515
+index 0000000000000..7b4eb64155156
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/img_types.h
 @@ -0,0 +1,331 @@
@@ -69216,7 +69216,7 @@ index 000000000000..7b4eb6415515
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/img_types_check.h b/drivers/gpu/drm/img-rogue/img_types_check.h
 new file mode 100644
-index 000000000000..ce73789877f6
+index 0000000000000..ce73789877f6c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/img_types_check.h
 @@ -0,0 +1,58 @@
@@ -69280,7 +69280,7 @@ index 000000000000..ce73789877f6
 +#endif /* IMG_TYPES_CHECK_H */
 diff --git a/drivers/gpu/drm/img-rogue/info_page.h b/drivers/gpu/drm/img-rogue/info_page.h
 new file mode 100644
-index 000000000000..5816125d742f
+index 0000000000000..5816125d742fc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/info_page.h
 @@ -0,0 +1,99 @@
@@ -69385,7 +69385,7 @@ index 000000000000..5816125d742f
 +#endif /* INFO_PAGE_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/info_page_client.h b/drivers/gpu/drm/img-rogue/info_page_client.h
 new file mode 100644
-index 000000000000..9df2461b55fb
+index 0000000000000..9df2461b55fba
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/info_page_client.h
 @@ -0,0 +1,89 @@
@@ -69480,7 +69480,7 @@ index 000000000000..9df2461b55fb
 +#endif /* INFO_PAGE_CLIENT_H */
 diff --git a/drivers/gpu/drm/img-rogue/info_page_defs.h b/drivers/gpu/drm/img-rogue/info_page_defs.h
 new file mode 100644
-index 000000000000..949afcfd869d
+index 0000000000000..949afcfd869d9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/info_page_defs.h
 @@ -0,0 +1,133 @@
@@ -69619,7 +69619,7 @@ index 000000000000..949afcfd869d
 +#endif /* INFO_PAGE_DEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/info_page_km.c b/drivers/gpu/drm/img-rogue/info_page_km.c
 new file mode 100644
-index 000000000000..79b03fe7e658
+index 0000000000000..79b03fe7e658b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/info_page_km.c
 @@ -0,0 +1,142 @@
@@ -69767,7 +69767,7 @@ index 000000000000..79b03fe7e658
 +}
 diff --git a/drivers/gpu/drm/img-rogue/interrupt_support.c b/drivers/gpu/drm/img-rogue/interrupt_support.c
 new file mode 100644
-index 000000000000..c67d45352050
+index 0000000000000..c67d453520508
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/interrupt_support.c
 @@ -0,0 +1,151 @@
@@ -69924,7 +69924,7 @@ index 000000000000..c67d45352050
 +}
 diff --git a/drivers/gpu/drm/img-rogue/interrupt_support.h b/drivers/gpu/drm/img-rogue/interrupt_support.h
 new file mode 100644
-index 000000000000..b87772d223cb
+index 0000000000000..b87772d223cb0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/interrupt_support.h
 @@ -0,0 +1,103 @@
@@ -70033,7 +70033,7 @@ index 000000000000..b87772d223cb
 +#endif /* !defined(INTERRUPT_SUPPORT_H) */
 diff --git a/drivers/gpu/drm/img-rogue/kernel_compatibility.h b/drivers/gpu/drm/img-rogue/kernel_compatibility.h
 new file mode 100644
-index 000000000000..aab3dc1ef1e2
+index 0000000000000..aab3dc1ef1e26
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/kernel_compatibility.h
 @@ -0,0 +1,605 @@
@@ -70644,7 +70644,7 @@ index 000000000000..aab3dc1ef1e2
 +#endif /* __KERNEL_COMPATIBILITY_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/kernel_config_compatibility.h b/drivers/gpu/drm/img-rogue/kernel_config_compatibility.h
 new file mode 100644
-index 000000000000..63effd65ecf9
+index 0000000000000..63effd65ecf9f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/kernel_config_compatibility.h
 @@ -0,0 +1,54 @@
@@ -70704,7 +70704,7 @@ index 000000000000..63effd65ecf9
 +#endif /* __KERNEL_CONFIG_COMPATIBILITY_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/kernel_nospec.h b/drivers/gpu/drm/img-rogue/kernel_nospec.h
 new file mode 100644
-index 000000000000..e27a3ebc2ac6
+index 0000000000000..e27a3ebc2ac6a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/kernel_nospec.h
 @@ -0,0 +1,71 @@
@@ -70781,7 +70781,7 @@ index 000000000000..e27a3ebc2ac6
 +#endif /* __KERNEL_NOSPEC_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/kernel_types.h b/drivers/gpu/drm/img-rogue/kernel_types.h
 new file mode 100644
-index 000000000000..c3305102fc20
+index 0000000000000..c3305102fc208
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/kernel_types.h
 @@ -0,0 +1,137 @@
@@ -70924,7 +70924,7 @@ index 000000000000..c3305102fc20
 +#define PRId64		"lld"
 diff --git a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h
 new file mode 100644
-index 000000000000..798c36305261
+index 0000000000000..798c363052618
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h
 @@ -0,0 +1,393 @@
@@ -71323,7 +71323,7 @@ index 000000000000..798c36305261
 +#endif /* RGX_BVNC_DEFS_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h
 new file mode 100644
-index 000000000000..ada0efbf0bca
+index 0000000000000..ada0efbf0bca8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h
 @@ -0,0 +1,487 @@
@@ -71816,7 +71816,7 @@ index 000000000000..ada0efbf0bca
 +#endif /* RGX_BVNC_TABLE_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/km/rgx_cr_defs_km.h b/drivers/gpu/drm/img-rogue/km/rgx_cr_defs_km.h
 new file mode 100644
-index 000000000000..1326877b50be
+index 0000000000000..1326877b50be2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgx_cr_defs_km.h
 @@ -0,0 +1,8472 @@
@@ -80294,7 +80294,7 @@ index 000000000000..1326877b50be
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h b/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h
 new file mode 100644
-index 000000000000..31a550ab9364
+index 0000000000000..31a550ab9364d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h
 @@ -0,0 +1,365 @@
@@ -80665,7 +80665,7 @@ index 000000000000..31a550ab9364
 +#endif /* RGXDEFS_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/km/rgxmhdefs_km.h b/drivers/gpu/drm/img-rogue/km/rgxmhdefs_km.h
 new file mode 100644
-index 000000000000..663001dd9ebc
+index 0000000000000..663001dd9ebce
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgxmhdefs_km.h
 @@ -0,0 +1,286 @@
@@ -80957,7 +80957,7 @@ index 000000000000..663001dd9ebc
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/km/rgxmmudefs_km.h b/drivers/gpu/drm/img-rogue/km/rgxmmudefs_km.h
 new file mode 100644
-index 000000000000..14a6a73c84bc
+index 0000000000000..14a6a73c84bca
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km/rgxmmudefs_km.h
 @@ -0,0 +1,216 @@
@@ -81179,7 +81179,7 @@ index 000000000000..14a6a73c84bc
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint.c b/drivers/gpu/drm/img-rogue/km_apphint.c
 new file mode 100644
-index 000000000000..e8d69e21bd2e
+index 0000000000000..e8d69e21bd2e6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km_apphint.c
 @@ -0,0 +1,1760 @@
@@ -82945,7 +82945,7 @@ index 000000000000..e8d69e21bd2e
 +/* EOF */
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint.h b/drivers/gpu/drm/img-rogue/km_apphint.h
 new file mode 100644
-index 000000000000..71e2ce94000a
+index 0000000000000..71e2ce94000a9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km_apphint.h
 @@ -0,0 +1,99 @@
@@ -83050,7 +83050,7 @@ index 000000000000..71e2ce94000a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint_defs.h b/drivers/gpu/drm/img-rogue/km_apphint_defs.h
 new file mode 100644
-index 000000000000..f2ffad0030cd
+index 0000000000000..f2ffad0030cdd
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km_apphint_defs.h
 @@ -0,0 +1,162 @@
@@ -83218,7 +83218,7 @@ index 000000000000..f2ffad0030cd
 +#endif /* KM_APPHINT_DEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h b/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h
 new file mode 100644
-index 000000000000..3bc19a75ac2b
+index 0000000000000..3bc19a75ac2ba
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h
 @@ -0,0 +1,304 @@
@@ -83528,7 +83528,7 @@ index 000000000000..3bc19a75ac2b
 +#endif /* KM_APPHINT_DEFS_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/linkage.h b/drivers/gpu/drm/img-rogue/linkage.h
 new file mode 100644
-index 000000000000..3f24dc68eff6
+index 0000000000000..3f24dc68eff60
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/linkage.h
 @@ -0,0 +1,52 @@
@@ -83586,7 +83586,7 @@ index 000000000000..3f24dc68eff6
 +#endif /* !defined(LINKAGE_H) */
 diff --git a/drivers/gpu/drm/img-rogue/linux_sw_sync.h b/drivers/gpu/drm/img-rogue/linux_sw_sync.h
 new file mode 100644
-index 000000000000..c12c650294a2
+index 0000000000000..c12c650294a2d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/linux_sw_sync.h
 @@ -0,0 +1,52 @@
@@ -83644,7 +83644,7 @@ index 000000000000..c12c650294a2
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/lists.c b/drivers/gpu/drm/img-rogue/lists.c
 new file mode 100644
-index 000000000000..e8e7088a3296
+index 0000000000000..e8e7088a3296e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/lists.c
 @@ -0,0 +1,60 @@
@@ -83710,7 +83710,7 @@ index 000000000000..e8e7088a3296
 +IMPLEMENT_LIST_REMOVE(PVRSRV_DEVICE_NODE)
 diff --git a/drivers/gpu/drm/img-rogue/lists.h b/drivers/gpu/drm/img-rogue/lists.h
 new file mode 100644
-index 000000000000..2e2c29a0b7b0
+index 0000000000000..2e2c29a0b7b0b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/lists.h
 @@ -0,0 +1,367 @@
@@ -84083,7 +84083,7 @@ index 000000000000..2e2c29a0b7b0
 +/* PRQA S 0881,3410 -- */
 diff --git a/drivers/gpu/drm/img-rogue/lock.h b/drivers/gpu/drm/img-rogue/lock.h
 new file mode 100644
-index 000000000000..87953ab84707
+index 0000000000000..87953ab847074
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/lock.h
 @@ -0,0 +1,431 @@
@@ -84520,7 +84520,7 @@ index 000000000000..87953ab84707
 +#endif /* LOCK_H */
 diff --git a/drivers/gpu/drm/img-rogue/lock_types.h b/drivers/gpu/drm/img-rogue/lock_types.h
 new file mode 100644
-index 000000000000..bf7167b554f6
+index 0000000000000..bf7167b554f69
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/lock_types.h
 @@ -0,0 +1,92 @@
@@ -84618,7 +84618,7 @@ index 000000000000..bf7167b554f6
 +#endif /* LOCK_TYPES_H */
 diff --git a/drivers/gpu/drm/img-rogue/log2.h b/drivers/gpu/drm/img-rogue/log2.h
 new file mode 100644
-index 000000000000..795660400850
+index 0000000000000..795660400850b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/log2.h
 @@ -0,0 +1,417 @@
@@ -85041,7 +85041,7 @@ index 000000000000..795660400850
 +#endif /* LOG2_H */
 diff --git a/drivers/gpu/drm/img-rogue/mem_utils.c b/drivers/gpu/drm/img-rogue/mem_utils.c
 new file mode 100644
-index 000000000000..b88537ea3aed
+index 0000000000000..b88537ea3aed7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/mem_utils.c
 @@ -0,0 +1,445 @@
@@ -85492,7 +85492,7 @@ index 000000000000..b88537ea3aed
 +#endif /* !defined(__QNXNTO__) */
 diff --git a/drivers/gpu/drm/img-rogue/mmu_common.c b/drivers/gpu/drm/img-rogue/mmu_common.c
 new file mode 100644
-index 000000000000..6a063742c7be
+index 0000000000000..6a063742c7be2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/mmu_common.c
 @@ -0,0 +1,4800 @@
@@ -90298,7 +90298,7 @@ index 000000000000..6a063742c7be
 + ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/mmu_common.h b/drivers/gpu/drm/img-rogue/mmu_common.h
 new file mode 100644
-index 000000000000..51218556a5a5
+index 0000000000000..51218556a5a54
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/mmu_common.h
 @@ -0,0 +1,831 @@
@@ -91135,7 +91135,7 @@ index 000000000000..51218556a5a5
 +#endif /* #ifdef MMU_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/module_common.c b/drivers/gpu/drm/img-rogue/module_common.c
 new file mode 100644
-index 000000000000..3ca0947653c8
+index 0000000000000..3ca0947653c80
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/module_common.c
 @@ -0,0 +1,755 @@
@@ -91896,7 +91896,7 @@ index 000000000000..3ca0947653c8
 +}
 diff --git a/drivers/gpu/drm/img-rogue/module_common.h b/drivers/gpu/drm/img-rogue/module_common.h
 new file mode 100644
-index 000000000000..811cacdd98ac
+index 0000000000000..811cacdd98ac3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/module_common.h
 @@ -0,0 +1,109 @@
@@ -92011,7 +92011,7 @@ index 000000000000..811cacdd98ac
 +#endif /* MODULE_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/multicore_defs.h b/drivers/gpu/drm/img-rogue/multicore_defs.h
 new file mode 100644
-index 000000000000..b410f57075f4
+index 0000000000000..b410f57075f4a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/multicore_defs.h
 @@ -0,0 +1,53 @@
@@ -92070,7 +92070,7 @@ index 000000000000..b410f57075f4
 +#endif /* RGX_MULTICORE_DEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/opaque_types.h b/drivers/gpu/drm/img-rogue/opaque_types.h
 new file mode 100644
-index 000000000000..766bc22ea418
+index 0000000000000..766bc22ea418c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/opaque_types.h
 @@ -0,0 +1,56 @@
@@ -92132,7 +92132,7 @@ index 000000000000..766bc22ea418
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/os_apphint.h b/drivers/gpu/drm/img-rogue/os_apphint.h
 new file mode 100644
-index 000000000000..93c9272498e5
+index 0000000000000..93c9272498e5c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/os_apphint.h
 @@ -0,0 +1,186 @@
@@ -92324,7 +92324,7 @@ index 000000000000..93c9272498e5
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/os_cpu_cache.h b/drivers/gpu/drm/img-rogue/os_cpu_cache.h
 new file mode 100644
-index 000000000000..56f92036ff49
+index 0000000000000..56f92036ff49a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/os_cpu_cache.h
 @@ -0,0 +1,69 @@
@@ -92399,7 +92399,7 @@ index 000000000000..56f92036ff49
 +#endif	/* OS_CPU_CACHE_H */
 diff --git a/drivers/gpu/drm/img-rogue/os_srvinit_param.h b/drivers/gpu/drm/img-rogue/os_srvinit_param.h
 new file mode 100644
-index 000000000000..a4d77e381ff7
+index 0000000000000..a4d77e381ff77
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/os_srvinit_param.h
 @@ -0,0 +1,328 @@
@@ -92733,7 +92733,7 @@ index 000000000000..a4d77e381ff7
 +#endif /* OS_SRVINIT_PARAM_H */
 diff --git a/drivers/gpu/drm/img-rogue/osconnection_server.c b/drivers/gpu/drm/img-rogue/osconnection_server.c
 new file mode 100644
-index 000000000000..3fcf43ca777d
+index 0000000000000..3fcf43ca777d7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osconnection_server.c
 @@ -0,0 +1,157 @@
@@ -92896,7 +92896,7 @@ index 000000000000..3fcf43ca777d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/osconnection_server.h b/drivers/gpu/drm/img-rogue/osconnection_server.h
 new file mode 100644
-index 000000000000..28a6dd3825fb
+index 0000000000000..28a6dd3825fba
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osconnection_server.h
 @@ -0,0 +1,133 @@
@@ -93035,7 +93035,7 @@ index 000000000000..28a6dd3825fb
 +#endif /* OSCONNECTION_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/osdi_impl.h b/drivers/gpu/drm/img-rogue/osdi_impl.h
 new file mode 100644
-index 000000000000..65507feea59b
+index 0000000000000..65507feea59b6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osdi_impl.h
 @@ -0,0 +1,211 @@
@@ -93252,7 +93252,7 @@ index 000000000000..65507feea59b
 +#endif /* OSDI_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
 new file mode 100644
-index 000000000000..03a297b55466
+index 0000000000000..03a297b55466d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc.c
 @@ -0,0 +1,2878 @@
@@ -96136,7 +96136,7 @@ index 000000000000..03a297b55466
 +#endif /* SUPPORT_SECURE_ALLOC_KM */
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.h b/drivers/gpu/drm/img-rogue/osfunc.h
 new file mode 100644
-index 000000000000..550dfa69ccd5
+index 0000000000000..550dfa69ccd5c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc.h
 @@ -0,0 +1,1882 @@
@@ -98024,7 +98024,7 @@ index 000000000000..550dfa69ccd5
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_arm.c b/drivers/gpu/drm/img-rogue/osfunc_arm.c
 new file mode 100644
-index 000000000000..a249bef51e9a
+index 0000000000000..a249bef51e9a4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc_arm.c
 @@ -0,0 +1,181 @@
@@ -98211,7 +98211,7 @@ index 000000000000..a249bef51e9a
 +}
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_arm64.c b/drivers/gpu/drm/img-rogue/osfunc_arm64.c
 new file mode 100644
-index 000000000000..9b5f5fad35b5
+index 0000000000000..9b5f5fad35b5a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc_arm64.c
 @@ -0,0 +1,272 @@
@@ -98489,7 +98489,7 @@ index 000000000000..9b5f5fad35b5
 +}
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_common.h b/drivers/gpu/drm/img-rogue/osfunc_common.h
 new file mode 100644
-index 000000000000..bc47e3bc7a25
+index 0000000000000..bc47e3bc7a257
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc_common.h
 @@ -0,0 +1,284 @@
@@ -98779,7 +98779,7 @@ index 000000000000..bc47e3bc7a25
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_riscv.c b/drivers/gpu/drm/img-rogue/osfunc_riscv.c
 new file mode 100644
-index 000000000000..911736abf2d8
+index 0000000000000..911736abf2d88
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc_riscv.c
 @@ -0,0 +1,209 @@
@@ -98994,7 +98994,7 @@ index 000000000000..911736abf2d8
 +}
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_x86.c b/drivers/gpu/drm/img-rogue/osfunc_x86.c
 new file mode 100644
-index 000000000000..cd9c70eb988d
+index 0000000000000..cd9c70eb988d0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osfunc_x86.c
 @@ -0,0 +1,135 @@
@@ -99135,7 +99135,7 @@ index 000000000000..cd9c70eb988d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/oskm_apphint.h b/drivers/gpu/drm/img-rogue/oskm_apphint.h
 new file mode 100644
-index 000000000000..8740a6a597e1
+index 0000000000000..8740a6a597e19
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/oskm_apphint.h
 @@ -0,0 +1,186 @@
@@ -99327,7 +99327,7 @@ index 000000000000..8740a6a597e1
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/osmmap.h b/drivers/gpu/drm/img-rogue/osmmap.h
 new file mode 100644
-index 000000000000..40a509d19440
+index 0000000000000..40a509d194404
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osmmap.h
 @@ -0,0 +1,115 @@
@@ -99448,7 +99448,7 @@ index 000000000000..40a509d19440
 +#endif /* OSMMAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/osmmap_stub.c b/drivers/gpu/drm/img-rogue/osmmap_stub.c
 new file mode 100644
-index 000000000000..74bad7073c58
+index 0000000000000..74bad7073c58a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/osmmap_stub.c
 @@ -0,0 +1,146 @@
@@ -99600,7 +99600,7 @@ index 000000000000..74bad7073c58
 +}
 diff --git a/drivers/gpu/drm/img-rogue/ospvr_gputrace.h b/drivers/gpu/drm/img-rogue/ospvr_gputrace.h
 new file mode 100644
-index 000000000000..038b3b889468
+index 0000000000000..038b3b889468a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ospvr_gputrace.h
 @@ -0,0 +1,183 @@
@@ -99789,7 +99789,7 @@ index 000000000000..038b3b889468
 +#endif /* PVR_GPUTRACE_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/pci_support.c b/drivers/gpu/drm/img-rogue/pci_support.c
 new file mode 100644
-index 000000000000..c3bbcc46cb2c
+index 0000000000000..c3bbcc46cb2c4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pci_support.c
 @@ -0,0 +1,726 @@
@@ -100521,7 +100521,7 @@ index 000000000000..c3bbcc46cb2c
 +#endif /* defined(CONFIG_MTRR) */
 diff --git a/drivers/gpu/drm/img-rogue/pci_support.h b/drivers/gpu/drm/img-rogue/pci_support.h
 new file mode 100644
-index 000000000000..29746c672047
+index 0000000000000..29746c672047d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pci_support.h
 @@ -0,0 +1,99 @@
@@ -100626,7 +100626,7 @@ index 000000000000..29746c672047
 +#endif /* PCI_SUPPORT_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdp/drm_pdp.mk b/drivers/gpu/drm/img-rogue/pdp/drm_pdp.mk
 new file mode 100644
-index 000000000000..f4ac53c4a7d2
+index 0000000000000..f4ac53c4a7d29
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdp/drm_pdp.mk
 @@ -0,0 +1,13 @@
@@ -100645,7 +100645,7 @@ index 000000000000..f4ac53c4a7d2
 + ../apollo/pdp_plato.o
 diff --git a/drivers/gpu/drm/img-rogue/pdp2_mmu_regs.h b/drivers/gpu/drm/img-rogue/pdp2_mmu_regs.h
 new file mode 100644
-index 000000000000..6164c5814140
+index 0000000000000..6164c58141409
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdp2_mmu_regs.h
 @@ -0,0 +1,764 @@
@@ -101415,7 +101415,7 @@ index 000000000000..6164c5814140
 +#endif /* _PDP2_MMU_REGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdp2_regs.h b/drivers/gpu/drm/img-rogue/pdp2_regs.h
 new file mode 100644
-index 000000000000..bf85386b1df5
+index 0000000000000..bf85386b1df59
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdp2_regs.h
 @@ -0,0 +1,8565 @@
@@ -109986,7 +109986,7 @@ index 000000000000..bf85386b1df5
 +#endif /* _PDP2_REGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdp_drm.h b/drivers/gpu/drm/img-rogue/pdp_drm.h
 new file mode 100644
-index 000000000000..f5d747d3ad10
+index 0000000000000..f5d747d3ad108
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdp_drm.h
 @@ -0,0 +1,105 @@
@@ -110097,7 +110097,7 @@ index 000000000000..f5d747d3ad10
 +#endif /* defined(__PDP_DRM_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pdump.h b/drivers/gpu/drm/img-rogue/pdump.h
 new file mode 100644
-index 000000000000..3ef71846446e
+index 0000000000000..3ef71846446e2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdump.h
 @@ -0,0 +1,238 @@
@@ -110341,7 +110341,7 @@ index 000000000000..3ef71846446e
 +#endif /* SERVICES_PDUMP_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdump_km.h b/drivers/gpu/drm/img-rogue/pdump_km.h
 new file mode 100644
-index 000000000000..7066f1dec5e8
+index 0000000000000..7066f1dec5e83
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdump_km.h
 @@ -0,0 +1,1146 @@
@@ -111493,7 +111493,7 @@ index 000000000000..7066f1dec5e8
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pdump_mmu.h b/drivers/gpu/drm/img-rogue/pdump_mmu.h
 new file mode 100644
-index 000000000000..4f3b2cc90b94
+index 0000000000000..4f3b2cc90b946
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdump_mmu.h
 @@ -0,0 +1,147 @@
@@ -111646,7 +111646,7 @@ index 000000000000..4f3b2cc90b94
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/pdump_physmem.h b/drivers/gpu/drm/img-rogue/pdump_physmem.h
 new file mode 100644
-index 000000000000..bf38df94f3fa
+index 0000000000000..bf38df94f3fa7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdump_physmem.h
 @@ -0,0 +1,300 @@
@@ -111952,7 +111952,7 @@ index 000000000000..bf38df94f3fa
 +#endif /* #ifndef SRVSRV_PDUMP_PHYSMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdump_symbolicaddr.h b/drivers/gpu/drm/img-rogue/pdump_symbolicaddr.h
 new file mode 100644
-index 000000000000..ed912a5096c9
+index 0000000000000..ed912a5096c95
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdump_symbolicaddr.h
 @@ -0,0 +1,55 @@
@@ -112013,7 +112013,7 @@ index 000000000000..ed912a5096c9
 +#endif /* #ifndef SRVKM_PDUMP_SYMBOLICADDR_H */
 diff --git a/drivers/gpu/drm/img-rogue/pdumpdefs.h b/drivers/gpu/drm/img-rogue/pdumpdefs.h
 new file mode 100644
-index 000000000000..7cea362a4152
+index 0000000000000..7cea362a4152f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdumpdefs.h
 @@ -0,0 +1,268 @@
@@ -112287,7 +112287,7 @@ index 000000000000..7cea362a4152
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pdumpdesc.h b/drivers/gpu/drm/img-rogue/pdumpdesc.h
 new file mode 100644
-index 000000000000..273cde910e7f
+index 0000000000000..273cde910e7ff
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pdumpdesc.h
 @@ -0,0 +1,230 @@
@@ -112523,7 +112523,7 @@ index 000000000000..273cde910e7f
 +#endif /* PDUMPDESC_H */
 diff --git a/drivers/gpu/drm/img-rogue/physheap.c b/drivers/gpu/drm/img-rogue/physheap.c
 new file mode 100644
-index 000000000000..4b57898da80d
+index 0000000000000..4b57898da80da
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physheap.c
 @@ -0,0 +1,1735 @@
@@ -114264,7 +114264,7 @@ index 000000000000..4b57898da80d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physheap.h b/drivers/gpu/drm/img-rogue/physheap.h
 new file mode 100644
-index 000000000000..3d9c0f415dba
+index 0000000000000..3d9c0f415dbaf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physheap.h
 @@ -0,0 +1,486 @@
@@ -114756,7 +114756,7 @@ index 000000000000..3d9c0f415dba
 +#endif /* PHYSHEAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/physheap_config.h b/drivers/gpu/drm/img-rogue/physheap_config.h
 new file mode 100644
-index 000000000000..0ca695652de1
+index 0000000000000..0ca695652de1c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physheap_config.h
 @@ -0,0 +1,164 @@
@@ -114926,7 +114926,7 @@ index 000000000000..0ca695652de1
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/physmem.c b/drivers/gpu/drm/img-rogue/physmem.c
 new file mode 100644
-index 000000000000..96deb42f2f5a
+index 0000000000000..96deb42f2f5a8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem.c
 @@ -0,0 +1,731 @@
@@ -115663,7 +115663,7 @@ index 000000000000..96deb42f2f5a
 +#endif /* if defined(SUPPORT_INSECURE_EXPORT) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem.h b/drivers/gpu/drm/img-rogue/physmem.h
 new file mode 100644
-index 000000000000..d36a73627330
+index 0000000000000..d36a73627330f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem.h
 @@ -0,0 +1,237 @@
@@ -115906,7 +115906,7 @@ index 000000000000..d36a73627330
 +#endif /* SRVSRV_PHYSMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 new file mode 100644
-index 000000000000..619b9b5b4e4d
+index 0000000000000..619b9b5b4e4dc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 @@ -0,0 +1,1297 @@
@@ -117209,7 +117209,7 @@ index 000000000000..619b9b5b4e4d
 +#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) || defined(SUPPORT_ION) || defined(KERNEL_HAS_DMABUF_VMAP_MMAP) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.h b/drivers/gpu/drm/img-rogue/physmem_dmabuf.h
 new file mode 100644
-index 000000000000..c36cdecf5c21
+index 0000000000000..c36cdecf5c21d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.h
 @@ -0,0 +1,124 @@
@@ -117339,7 +117339,7 @@ index 000000000000..c36cdecf5c21
 +#endif /* !defined(PHYSMEM_DMABUF_H) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem.c b/drivers/gpu/drm/img-rogue/physmem_extmem.c
 new file mode 100644
-index 000000000000..d365524f9a9c
+index 0000000000000..d365524f9a9c1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem.c
 @@ -0,0 +1,70 @@
@@ -117415,7 +117415,7 @@ index 000000000000..d365524f9a9c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem.h b/drivers/gpu/drm/img-rogue/physmem_extmem.h
 new file mode 100644
-index 000000000000..cc7d23297d43
+index 0000000000000..cc7d23297d439
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem.h
 @@ -0,0 +1,76 @@
@@ -117497,7 +117497,7 @@ index 000000000000..cc7d23297d43
 +#endif /* SRVSRV_PHYSMEM_EXTMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c b/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c
 new file mode 100644
-index 000000000000..c18acd751913
+index 0000000000000..c18acd7519136
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c
 @@ -0,0 +1,1026 @@
@@ -118529,7 +118529,7 @@ index 000000000000..c18acd751913
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h b/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h
 new file mode 100644
-index 000000000000..5e0480efef50
+index 0000000000000..5e0480efef503
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h
 @@ -0,0 +1,115 @@
@@ -118650,7 +118650,7 @@ index 000000000000..5e0480efef50
 +#endif /* SRVSRV_PHYSMEM_EXTEMEM_WRAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_hostmem.c b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 new file mode 100644
-index 000000000000..c8c0d5b12ed2
+index 0000000000000..c8c0d5b12ed22
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 @@ -0,0 +1,204 @@
@@ -118860,7 +118860,7 @@ index 000000000000..c8c0d5b12ed2
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_hostmem.h b/drivers/gpu/drm/img-rogue/physmem_hostmem.h
 new file mode 100644
-index 000000000000..cfa453de343a
+index 0000000000000..cfa453de343a2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_hostmem.h
 @@ -0,0 +1,65 @@
@@ -118931,7 +118931,7 @@ index 000000000000..cfa453de343a
 +#endif /* !defined(PHYSMEM_HOSTMEM_H) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_lma.c b/drivers/gpu/drm/img-rogue/physmem_lma.c
 new file mode 100644
-index 000000000000..ea1e3d1624a6
+index 0000000000000..ea1e3d1624a6d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_lma.c
 @@ -0,0 +1,2934 @@
@@ -121871,7 +121871,7 @@ index 000000000000..ea1e3d1624a6
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_lma.h b/drivers/gpu/drm/img-rogue/physmem_lma.h
 new file mode 100644
-index 000000000000..08dba2941135
+index 0000000000000..08dba2941135d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_lma.h
 @@ -0,0 +1,94 @@
@@ -121971,7 +121971,7 @@ index 000000000000..08dba2941135
 +#endif /* #ifndef SRVSRV_PHYSMEM_LMA_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem.c b/drivers/gpu/drm/img-rogue/physmem_osmem.c
 new file mode 100644
-index 000000000000..c321840f9973
+index 0000000000000..c321840f9973e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem.c
 @@ -0,0 +1,91 @@
@@ -122068,7 +122068,7 @@ index 000000000000..c321840f9973
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem.h b/drivers/gpu/drm/img-rogue/physmem_osmem.h
 new file mode 100644
-index 000000000000..28c64f1558b6
+index 0000000000000..28c64f1558b64
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem.h
 @@ -0,0 +1,151 @@
@@ -122225,7 +122225,7 @@ index 000000000000..28c64f1558b6
 +#endif /* PHYSMEM_OSMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 new file mode 100644
-index 000000000000..9bcf64362889
+index 0000000000000..9bcf643628899
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 @@ -0,0 +1,3939 @@
@@ -126170,7 +126170,7 @@ index 000000000000..9bcf64362889
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h
 new file mode 100644
-index 000000000000..89706fffdc5c
+index 0000000000000..89706fffdc5cd
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h
 @@ -0,0 +1,49 @@
@@ -126225,7 +126225,7 @@ index 000000000000..89706fffdc5c
 +#endif /* PHYSMEM_OSMEM_LINUX_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_test.c b/drivers/gpu/drm/img-rogue/physmem_test.c
 new file mode 100644
-index 000000000000..60c98c78c2a5
+index 0000000000000..60c98c78c2a56
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_test.c
 @@ -0,0 +1,1037 @@
@@ -127268,7 +127268,7 @@ index 000000000000..60c98c78c2a5
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_test.h b/drivers/gpu/drm/img-rogue/physmem_test.h
 new file mode 100644
-index 000000000000..684c729d0e51
+index 0000000000000..684c729d0e513
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_test.h
 @@ -0,0 +1,51 @@
@@ -127325,7 +127325,7 @@ index 000000000000..684c729d0e51
 +#endif /* SRVSRV_PHYSMEM_TEST_H */
 diff --git a/drivers/gpu/drm/img-rogue/plato_drv.h b/drivers/gpu/drm/img-rogue/plato_drv.h
 new file mode 100644
-index 000000000000..06f3f9270f35
+index 0000000000000..06f3f9270f350
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/plato_drv.h
 @@ -0,0 +1,464 @@
@@ -127795,7 +127795,7 @@ index 000000000000..06f3f9270f35
 +#endif /* _PLATO_DRV_H */
 diff --git a/drivers/gpu/drm/img-rogue/pmr.c b/drivers/gpu/drm/img-rogue/pmr.c
 new file mode 100644
-index 000000000000..521ea64ec14c
+index 0000000000000..521ea64ec14c4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr.c
 @@ -0,0 +1,4189 @@
@@ -131990,7 +131990,7 @@ index 000000000000..521ea64ec14c
 +#endif /* defined(SUPPORT_PMR_DEFERRED_FREE) */
 diff --git a/drivers/gpu/drm/img-rogue/pmr.h b/drivers/gpu/drm/img-rogue/pmr.h
 new file mode 100644
-index 000000000000..2a86e96c73d2
+index 0000000000000..2a86e96c73d24
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr.h
 @@ -0,0 +1,1137 @@
@@ -133133,7 +133133,7 @@ index 000000000000..2a86e96c73d2
 +#endif /* #ifdef SRVSRV_PMR_H */
 diff --git a/drivers/gpu/drm/img-rogue/pmr_impl.h b/drivers/gpu/drm/img-rogue/pmr_impl.h
 new file mode 100644
-index 000000000000..68089ddc6fa8
+index 0000000000000..68089ddc6fa85
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr_impl.h
 @@ -0,0 +1,558 @@
@@ -133697,7 +133697,7 @@ index 000000000000..68089ddc6fa8
 +#endif /* SRVSRV_PMR_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/pmr_os.c b/drivers/gpu/drm/img-rogue/pmr_os.c
 new file mode 100644
-index 000000000000..5e82e9ce785d
+index 0000000000000..5e82e9ce785d9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr_os.c
 @@ -0,0 +1,611 @@
@@ -134314,7 +134314,7 @@ index 000000000000..5e82e9ce785d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pmr_os.h b/drivers/gpu/drm/img-rogue/pmr_os.h
 new file mode 100644
-index 000000000000..7b4a2117091c
+index 0000000000000..7b4a2117091c1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr_os.h
 @@ -0,0 +1,62 @@
@@ -134382,7 +134382,7 @@ index 000000000000..7b4a2117091c
 +#endif /* !defined(PMR_OS_H) */
 diff --git a/drivers/gpu/drm/img-rogue/power.c b/drivers/gpu/drm/img-rogue/power.c
 new file mode 100644
-index 000000000000..7d2d4627aab4
+index 0000000000000..7d2d4627aab44
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/power.c
 @@ -0,0 +1,1301 @@
@@ -135689,7 +135689,7 @@ index 000000000000..7d2d4627aab4
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/power.h b/drivers/gpu/drm/img-rogue/power.h
 new file mode 100644
-index 000000000000..e4ef6de844bc
+index 0000000000000..e4ef6de844bc4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/power.h
 @@ -0,0 +1,457 @@
@@ -136152,7 +136152,7 @@ index 000000000000..e4ef6de844bc
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/powervr/buffer_attribs.h b/drivers/gpu/drm/img-rogue/powervr/buffer_attribs.h
 new file mode 100644
-index 000000000000..41eaaaecd19e
+index 0000000000000..41eaaaecd19e3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/powervr/buffer_attribs.h
 @@ -0,0 +1,193 @@
@@ -136351,7 +136351,7 @@ index 000000000000..41eaaaecd19e
 +#endif /* POWERVR_BUFFER_ATTRIBS_H */
 diff --git a/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h b/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h
 new file mode 100644
-index 000000000000..92f1d4c97871
+index 0000000000000..92f1d4c97871b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h
 @@ -0,0 +1,143 @@
@@ -136500,7 +136500,7 @@ index 000000000000..92f1d4c97871
 +#endif /* IMG_DRM_FOURCC_H */
 diff --git a/drivers/gpu/drm/img-rogue/powervr/mem_types.h b/drivers/gpu/drm/img-rogue/powervr/mem_types.h
 new file mode 100644
-index 000000000000..a6dce8fe9889
+index 0000000000000..a6dce8fe9889b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/powervr/mem_types.h
 @@ -0,0 +1,64 @@
@@ -136570,7 +136570,7 @@ index 000000000000..a6dce8fe9889
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h b/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h
 new file mode 100644
-index 000000000000..30f7972444cd
+index 0000000000000..30f7972444cd0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h
 @@ -0,0 +1,72 @@
@@ -136648,7 +136648,7 @@ index 000000000000..30f7972444cd
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/private_data.h b/drivers/gpu/drm/img-rogue/private_data.h
 new file mode 100644
-index 000000000000..60a1fac0b970
+index 0000000000000..60a1fac0b9700
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/private_data.h
 @@ -0,0 +1,59 @@
@@ -136713,7 +136713,7 @@ index 000000000000..60a1fac0b970
 +#endif /* !defined(INCLUDED_PRIVATE_DATA_H) */
 diff --git a/drivers/gpu/drm/img-rogue/proc_stats.h b/drivers/gpu/drm/img-rogue/proc_stats.h
 new file mode 100644
-index 000000000000..037880e19da5
+index 0000000000000..037880e19da57
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/proc_stats.h
 @@ -0,0 +1,153 @@
@@ -136872,7 +136872,7 @@ index 000000000000..037880e19da5
 +#endif // PROC_STATS_H
 diff --git a/drivers/gpu/drm/img-rogue/process_stats.c b/drivers/gpu/drm/img-rogue/process_stats.c
 new file mode 100644
-index 000000000000..e82f0f916e05
+index 0000000000000..e82f0f916e05a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/process_stats.c
 @@ -0,0 +1,3312 @@
@@ -140190,7 +140190,7 @@ index 000000000000..e82f0f916e05
 +} /* PVRSRVGetProcessMemUsage */
 diff --git a/drivers/gpu/drm/img-rogue/process_stats.h b/drivers/gpu/drm/img-rogue/process_stats.h
 new file mode 100644
-index 000000000000..5b5539e7f0aa
+index 0000000000000..5b5539e7f0aaf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/process_stats.h
 @@ -0,0 +1,214 @@
@@ -140410,7 +140410,7 @@ index 000000000000..5b5539e7f0aa
 +#endif /* PROCESS_STATS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge.h b/drivers/gpu/drm/img-rogue/pvr_bridge.h
 new file mode 100644
-index 000000000000..7afdaa856fe5
+index 0000000000000..7afdaa856fe5e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge.h
 @@ -0,0 +1,457 @@
@@ -140873,7 +140873,7 @@ index 000000000000..7afdaa856fe5
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge_k.c b/drivers/gpu/drm/img-rogue/pvr_bridge_k.c
 new file mode 100644
-index 000000000000..2c23f57eee92
+index 0000000000000..2c23f57eee92f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge_k.c
 @@ -0,0 +1,635 @@
@@ -141514,7 +141514,7 @@ index 000000000000..2c23f57eee92
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge_k.h b/drivers/gpu/drm/img-rogue/pvr_bridge_k.h
 new file mode 100644
-index 000000000000..e6464efae23e
+index 0000000000000..e6464efae23e1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge_k.h
 @@ -0,0 +1,111 @@
@@ -141631,7 +141631,7 @@ index 000000000000..e6464efae23e
 +#endif /* PVR_BRIDGE_K_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
 new file mode 100644
-index 000000000000..203e2360a779
+index 0000000000000..203e2360a7799
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
 @@ -0,0 +1,739 @@
@@ -142376,7 +142376,7 @@ index 000000000000..203e2360a779
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.h b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.h
 new file mode 100644
-index 000000000000..b6aadf940479
+index 0000000000000..b6aadf9404792
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.h
 @@ -0,0 +1,125 @@
@@ -142507,7 +142507,7 @@ index 000000000000..b6aadf940479
 +#endif /* PVR_BUFFER_SYNC_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_buffer_sync_shared.h b/drivers/gpu/drm/img-rogue/pvr_buffer_sync_shared.h
 new file mode 100644
-index 000000000000..7a110910dbd6
+index 0000000000000..7a110910dbd69
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_buffer_sync_shared.h
 @@ -0,0 +1,57 @@
@@ -142570,7 +142570,7 @@ index 000000000000..7a110910dbd6
 +#endif /* PVR_BUFFER_SYNC_SHARED_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
 new file mode 100644
-index 000000000000..3fa890316dcc
+index 0000000000000..3fa890316dcc0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
 @@ -0,0 +1,308 @@
@@ -142884,7 +142884,7 @@ index 000000000000..3fa890316dcc
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.h b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.h
 new file mode 100644
-index 000000000000..2cb8db1e5c50
+index 0000000000000..2cb8db1e5c500
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.h
 @@ -0,0 +1,68 @@
@@ -142958,7 +142958,7 @@ index 000000000000..2cb8db1e5c50
 +#endif /* !defined(__PVR_COUNTING_TIMELINE_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debug.c b/drivers/gpu/drm/img-rogue/pvr_debug.c
 new file mode 100644
-index 000000000000..bf529f9c6a30
+index 0000000000000..bf529f9c6a303
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_debug.c
 @@ -0,0 +1,486 @@
@@ -143450,7 +143450,7 @@ index 000000000000..bf529f9c6a30
 +#endif /* PVRSRV_NEED_PVR_DPF */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debug.h b/drivers/gpu/drm/img-rogue/pvr_debug.h
 new file mode 100644
-index 000000000000..2e8599fe6797
+index 0000000000000..2e8599fe67978
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_debug.h
 @@ -0,0 +1,1071 @@
@@ -144527,7 +144527,7 @@ index 000000000000..2e8599fe6797
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debugfs.c b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 new file mode 100644
-index 000000000000..111e61e56b25
+index 0000000000000..111e61e56b25b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 @@ -0,0 +1,622 @@
@@ -145155,7 +145155,7 @@ index 000000000000..111e61e56b25
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debugfs.h b/drivers/gpu/drm/img-rogue/pvr_debugfs.h
 new file mode 100644
-index 000000000000..23ae55b12069
+index 0000000000000..23ae55b120695
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_debugfs.h
 @@ -0,0 +1,50 @@
@@ -145211,7 +145211,7 @@ index 000000000000..23ae55b12069
 +#endif /* PVR_DEBUGFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_dicommon.h b/drivers/gpu/drm/img-rogue/pvr_dicommon.h
 new file mode 100644
-index 000000000000..c729dde2fab6
+index 0000000000000..c729dde2fab6e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_dicommon.h
 @@ -0,0 +1,59 @@
@@ -145276,7 +145276,7 @@ index 000000000000..c729dde2fab6
 +#endif /* PVR_DICOMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_dma_resv.h b/drivers/gpu/drm/img-rogue/pvr_dma_resv.h
 new file mode 100644
-index 000000000000..a51c9de84ada
+index 0000000000000..a51c9de84adad
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_dma_resv.h
 @@ -0,0 +1,80 @@
@@ -145362,7 +145362,7 @@ index 000000000000..a51c9de84ada
 +#endif /* __PVR_DMA_RESV_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
 new file mode 100644
-index 000000000000..bd42146ad208
+index 0000000000000..bd42146ad2086
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
 @@ -0,0 +1,451 @@
@@ -145819,7 +145819,7 @@ index 000000000000..bd42146ad208
 +};
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.h b/drivers/gpu/drm/img-rogue/pvr_drm.h
 new file mode 100644
-index 000000000000..c0d00c98d8c0
+index 0000000000000..c0d00c98d8c01
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.h
 @@ -0,0 +1,146 @@
@@ -145971,7 +145971,7 @@ index 000000000000..c0d00c98d8c0
 +#endif /* defined(__PVR_DRM_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drv.h b/drivers/gpu/drm/img-rogue/pvr_drv.h
 new file mode 100644
-index 000000000000..ee4fdf44259c
+index 0000000000000..ee4fdf44259c1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_drv.h
 @@ -0,0 +1,112 @@
@@ -146089,7 +146089,7 @@ index 000000000000..ee4fdf44259c
 +#endif /* !defined(__PVR_DRV_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fd_sync_kernel.h b/drivers/gpu/drm/img-rogue/pvr_fd_sync_kernel.h
 new file mode 100644
-index 000000000000..3645e29079b1
+index 0000000000000..3645e29079b15
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_fd_sync_kernel.h
 @@ -0,0 +1,64 @@
@@ -146159,7 +146159,7 @@ index 000000000000..3645e29079b1
 +#endif /* _PVR_FD_SYNC_KERNEL_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.c b/drivers/gpu/drm/img-rogue/pvr_fence.c
 new file mode 100644
-index 000000000000..5638dad8212c
+index 0000000000000..5638dad8212c1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence.c
 @@ -0,0 +1,1153 @@
@@ -147318,7 +147318,7 @@ index 000000000000..5638dad8212c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.h b/drivers/gpu/drm/img-rogue/pvr_fence.h
 new file mode 100644
-index 000000000000..2a63f4ba77d9
+index 0000000000000..2a63f4ba77d9a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence.h
 @@ -0,0 +1,240 @@
@@ -147564,7 +147564,7 @@ index 000000000000..2a63f4ba77d9
 +#endif /* !defined(__PVR_FENCE_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence_trace.h b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
 new file mode 100644
-index 000000000000..e2f044caad1c
+index 0000000000000..e2f044caad1c6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
 @@ -0,0 +1,225 @@
@@ -147795,7 +147795,7 @@ index 000000000000..e2f044caad1c
 +#include <trace/define_trace.h>
 diff --git a/drivers/gpu/drm/img-rogue/pvr_gputrace.c b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
 new file mode 100644
-index 000000000000..9c04b99b709a
+index 0000000000000..9c04b99b709ac
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
 @@ -0,0 +1,1685 @@
@@ -149486,7 +149486,7 @@ index 000000000000..9c04b99b709a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvr_intrinsics.h b/drivers/gpu/drm/img-rogue/pvr_intrinsics.h
 new file mode 100644
-index 000000000000..410a2f5a50b5
+index 0000000000000..410a2f5a50b57
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_intrinsics.h
 @@ -0,0 +1,70 @@
@@ -149562,7 +149562,7 @@ index 000000000000..410a2f5a50b5
 +#endif /* PVR_INTRINSICS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_ion_stats.h b/drivers/gpu/drm/img-rogue/pvr_ion_stats.h
 new file mode 100644
-index 000000000000..1c0d44acac44
+index 0000000000000..1c0d44acac440
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_ion_stats.h
 @@ -0,0 +1,91 @@
@@ -149659,7 +149659,7 @@ index 000000000000..1c0d44acac44
 +#endif /* PVR_ION_STATS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_linux_fence.h b/drivers/gpu/drm/img-rogue/pvr_linux_fence.h
 new file mode 100644
-index 000000000000..b9c542a26a65
+index 0000000000000..b9c542a26a656
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_linux_fence.h
 @@ -0,0 +1,103 @@
@@ -149768,7 +149768,7 @@ index 000000000000..b9c542a26a65
 +#endif /* !defined(__PVR_LINUX_FENCE_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_notifier.c b/drivers/gpu/drm/img-rogue/pvr_notifier.c
 new file mode 100644
-index 000000000000..5add59562de7
+index 0000000000000..5add59562de74
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_notifier.c
 @@ -0,0 +1,657 @@
@@ -150431,7 +150431,7 @@ index 000000000000..5add59562de7
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_notifier.h b/drivers/gpu/drm/img-rogue/pvr_notifier.h
 new file mode 100644
-index 000000000000..b3757494e4b7
+index 0000000000000..b3757494e4b79
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_notifier.h
 @@ -0,0 +1,326 @@
@@ -150763,7 +150763,7 @@ index 000000000000..b3757494e4b7
 +#endif /* !defined(PVR_NOTIFIER_H) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 new file mode 100644
-index 000000000000..16b4084b0ed6
+index 0000000000000..16b4084b0ed62
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 @@ -0,0 +1,337 @@
@@ -151106,7 +151106,7 @@ index 000000000000..16b4084b0ed6
 +module_exit(pvr_exit);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_procfs.h b/drivers/gpu/drm/img-rogue/pvr_procfs.h
 new file mode 100644
-index 000000000000..61a1f0ee28d3
+index 0000000000000..61a1f0ee28d3c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_procfs.h
 @@ -0,0 +1,50 @@
@@ -151162,7 +151162,7 @@ index 000000000000..61a1f0ee28d3
 +#endif /* PVR_PROCFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_ricommon.h b/drivers/gpu/drm/img-rogue/pvr_ricommon.h
 new file mode 100644
-index 000000000000..0521aa151794
+index 0000000000000..0521aa151794b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_ricommon.h
 @@ -0,0 +1,68 @@
@@ -151236,7 +151236,7 @@ index 000000000000..0521aa151794
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sw_fence.c b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
 new file mode 100644
-index 000000000000..4f2404a21161
+index 0000000000000..4f2404a211618
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
 @@ -0,0 +1,199 @@
@@ -151441,7 +151441,7 @@ index 000000000000..4f2404a21161
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sw_fence.h b/drivers/gpu/drm/img-rogue/pvr_sw_fence.h
 new file mode 100644
-index 000000000000..bebbcb75e23b
+index 0000000000000..bebbcb75e23b4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sw_fence.h
 @@ -0,0 +1,60 @@
@@ -151507,7 +151507,7 @@ index 000000000000..bebbcb75e23b
 +#endif /* !defined(__PVR_SW_FENCES_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync.h b/drivers/gpu/drm/img-rogue/pvr_sync.h
 new file mode 100644
-index 000000000000..a8ecd8b2caa0
+index 0000000000000..a8ecd8b2caa03
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync.h
 @@ -0,0 +1,120 @@
@@ -151633,7 +151633,7 @@ index 000000000000..a8ecd8b2caa0
 +#endif /* _PVR_SYNC_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_api.h b/drivers/gpu/drm/img-rogue/pvr_sync_api.h
 new file mode 100644
-index 000000000000..89b7833ae351
+index 0000000000000..89b7833ae351d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_api.h
 @@ -0,0 +1,63 @@
@@ -151702,7 +151702,7 @@ index 000000000000..89b7833ae351
 +#endif /* _PVR_SYNC_API_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_file.c b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
 new file mode 100644
-index 000000000000..e3656108e963
+index 0000000000000..e3656108e9637
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
 @@ -0,0 +1,1094 @@
@@ -152802,7 +152802,7 @@ index 000000000000..e3656108e963
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c
 new file mode 100644
-index 000000000000..60ba3555e779
+index 0000000000000..60ba3555e7792
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c
 @@ -0,0 +1,277 @@
@@ -153085,7 +153085,7 @@ index 000000000000..60ba3555e779
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h
 new file mode 100644
-index 000000000000..ef12dc298368
+index 0000000000000..ef12dc298368f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h
 @@ -0,0 +1,71 @@
@@ -153162,7 +153162,7 @@ index 000000000000..ef12dc298368
 +#endif /* _PVR_SYNC_IOCTL_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c
 new file mode 100644
-index 000000000000..423c8d3a75ef
+index 0000000000000..423c8d3a75eff
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c
 @@ -0,0 +1,168 @@
@@ -153336,7 +153336,7 @@ index 000000000000..423c8d3a75ef
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h
 new file mode 100644
-index 000000000000..756ce4bf71e6
+index 0000000000000..756ce4bf71e63
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h
 @@ -0,0 +1,62 @@
@@ -153404,7 +153404,7 @@ index 000000000000..756ce4bf71e6
 +#endif /* _PVR_SYNC_IOCTL_DRM_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_uaccess.h b/drivers/gpu/drm/img-rogue/pvr_uaccess.h
 new file mode 100644
-index 000000000000..13864eab4c7a
+index 0000000000000..13864eab4c7a6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_uaccess.h
 @@ -0,0 +1,99 @@
@@ -153509,7 +153509,7 @@ index 000000000000..13864eab4c7a
 +#endif /* PVR_UACCESS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_vmap.h b/drivers/gpu/drm/img-rogue/pvr_vmap.h
 new file mode 100644
-index 000000000000..6424b20e764c
+index 0000000000000..6424b20e764c0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_vmap.h
 @@ -0,0 +1,83 @@
@@ -153598,7 +153598,7 @@ index 000000000000..6424b20e764c
 +#endif /* PVR_VMAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrmodule.h b/drivers/gpu/drm/img-rogue/pvrmodule.h
 new file mode 100644
-index 000000000000..267c7b687487
+index 0000000000000..267c7b6874872
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrmodule.h
 @@ -0,0 +1,48 @@
@@ -153652,7 +153652,7 @@ index 000000000000..267c7b687487
 +#endif	/* _PVRMODULE_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv.c b/drivers/gpu/drm/img-rogue/pvrsrv.c
 new file mode 100644
-index 000000000000..0eb314399c60
+index 0000000000000..0eb314399c602
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv.c
 @@ -0,0 +1,3748 @@
@@ -157406,7 +157406,7 @@ index 000000000000..0eb314399c60
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv.h b/drivers/gpu/drm/img-rogue/pvrsrv.h
 new file mode 100644
-index 000000000000..71e2debfb9c6
+index 0000000000000..71e2debfb9c62
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv.h
 @@ -0,0 +1,553 @@
@@ -157965,7 +157965,7 @@ index 000000000000..71e2debfb9c6
 +#endif /* PVRSRV_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_apphint.h b/drivers/gpu/drm/img-rogue/pvrsrv_apphint.h
 new file mode 100644
-index 000000000000..e35426680795
+index 0000000000000..e354266807954
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_apphint.h
 @@ -0,0 +1,71 @@
@@ -158042,7 +158042,7 @@ index 000000000000..e35426680795
 +#endif /* PVRSRV_APPHINT_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c
 new file mode 100644
-index 000000000000..154298b02040
+index 0000000000000..154298b020401
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c
 @@ -0,0 +1,390 @@
@@ -158438,7 +158438,7 @@ index 000000000000..154298b02040
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.h b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.h
 new file mode 100644
-index 000000000000..b225da6d368e
+index 0000000000000..b225da6d368e0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.h
 @@ -0,0 +1,53 @@
@@ -158497,7 +158497,7 @@ index 000000000000..b225da6d368e
 +#endif /* PVRSRV_BRIDGE_INIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_cleanup.h b/drivers/gpu/drm/img-rogue/pvrsrv_cleanup.h
 new file mode 100644
-index 000000000000..a197ca9ec908
+index 0000000000000..a197ca9ec9080
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_cleanup.h
 @@ -0,0 +1,256 @@
@@ -158759,7 +158759,7 @@ index 000000000000..a197ca9ec908
 +#endif /* PVRSRV_CLEANUP_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_device.h b/drivers/gpu/drm/img-rogue/pvrsrv_device.h
 new file mode 100644
-index 000000000000..8eda99c72089
+index 0000000000000..8eda99c720896
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_device.h
 @@ -0,0 +1,403 @@
@@ -159168,7 +159168,7 @@ index 000000000000..8eda99c72089
 +#endif /* PVRSRV_DEVICE_H*/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_device_types.h b/drivers/gpu/drm/img-rogue/pvrsrv_device_types.h
 new file mode 100644
-index 000000000000..20e0d5ce3ed5
+index 0000000000000..20e0d5ce3ed59
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_device_types.h
 @@ -0,0 +1,60 @@
@@ -159234,7 +159234,7 @@ index 000000000000..20e0d5ce3ed5
 +#endif /* PVRSRV_DEVICE_TYPES_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_devvar.h b/drivers/gpu/drm/img-rogue/pvrsrv_devvar.h
 new file mode 100644
-index 000000000000..a8c64e309fda
+index 0000000000000..a8c64e309fdaf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_devvar.h
 @@ -0,0 +1,291 @@
@@ -159531,7 +159531,7 @@ index 000000000000..a8c64e309fda
 +#endif /* PVRSRV_DEVVAR_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_error.c b/drivers/gpu/drm/img-rogue/pvrsrv_error.c
 new file mode 100644
-index 000000000000..5cd02a28d5a1
+index 0000000000000..5cd02a28d5a15
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_error.c
 @@ -0,0 +1,61 @@
@@ -159598,7 +159598,7 @@ index 000000000000..5cd02a28d5a1
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_error.h b/drivers/gpu/drm/img-rogue/pvrsrv_error.h
 new file mode 100644
-index 000000000000..120c42d87155
+index 0000000000000..120c42d871557
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_error.h
 @@ -0,0 +1,75 @@
@@ -159679,7 +159679,7 @@ index 000000000000..120c42d87155
 +#endif /* !defined(PVRSRV_ERROR_H) */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_errors.h b/drivers/gpu/drm/img-rogue/pvrsrv_errors.h
 new file mode 100644
-index 000000000000..99368eff0be2
+index 0000000000000..99368eff0be29
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_errors.h
 @@ -0,0 +1,421 @@
@@ -160106,7 +160106,7 @@ index 000000000000..99368eff0be2
 +PVRE(PVRSRV_ERROR_KERNEL_CCB_OFFSET)
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_firmware_boot.h b/drivers/gpu/drm/img-rogue/pvrsrv_firmware_boot.h
 new file mode 100644
-index 000000000000..14a196d2767c
+index 0000000000000..14a196d2767cb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_firmware_boot.h
 @@ -0,0 +1,87 @@
@@ -160199,7 +160199,7 @@ index 000000000000..14a196d2767c
 +#endif /* PVRSRV_FIRMWARE_BOOT_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h b/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h
 new file mode 100644
-index 000000000000..459da0091e78
+index 0000000000000..459da0091e78f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h
 @@ -0,0 +1,215 @@
@@ -160420,7 +160420,7 @@ index 000000000000..459da0091e78
 +#endif /* PVRSRV_MEMALLOC_PHYSHEAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h
 new file mode 100644
-index 000000000000..1e960356eb88
+index 0000000000000..1e960356eb888
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h
 @@ -0,0 +1,1047 @@
@@ -161473,7 +161473,7 @@ index 000000000000..1e960356eb88
 +#endif /* PVRSRV_MEMALLOCFLAGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags_internal.h b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags_internal.h
 new file mode 100644
-index 000000000000..4fee3d49b927
+index 0000000000000..4fee3d49b9278
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags_internal.h
 @@ -0,0 +1,78 @@
@@ -161557,7 +161557,7 @@ index 000000000000..4fee3d49b927
 +#endif /* PVRSRV_MEMALLOCFLAGS_INTERNAL_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_pool.c b/drivers/gpu/drm/img-rogue/pvrsrv_pool.c
 new file mode 100644
-index 000000000000..d62a062a944c
+index 0000000000000..d62a062a944c0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_pool.c
 @@ -0,0 +1,260 @@
@@ -161823,7 +161823,7 @@ index 000000000000..d62a062a944c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_pool.h b/drivers/gpu/drm/img-rogue/pvrsrv_pool.h
 new file mode 100644
-index 000000000000..2272fc50ce6e
+index 0000000000000..2272fc50ce6e3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_pool.h
 @@ -0,0 +1,135 @@
@@ -161964,7 +161964,7 @@ index 000000000000..2272fc50ce6e
 +#endif /* PVRSRVPOOL_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_sync_km.h b/drivers/gpu/drm/img-rogue/pvrsrv_sync_km.h
 new file mode 100644
-index 000000000000..04611f9f7cee
+index 0000000000000..04611f9f7ceeb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_sync_km.h
 @@ -0,0 +1,65 @@
@@ -162035,7 +162035,7 @@ index 000000000000..04611f9f7cee
 +#endif	/* PVRSRV_SYNC_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_sync_server.h b/drivers/gpu/drm/img-rogue/pvrsrv_sync_server.h
 new file mode 100644
-index 000000000000..5d1a10cd0a9c
+index 0000000000000..5d1a10cd0a9c4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_sync_server.h
 @@ -0,0 +1,278 @@
@@ -162319,7 +162319,7 @@ index 000000000000..5d1a10cd0a9c
 +#endif /* PVRSRV_SYNC_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_tlcommon.h b/drivers/gpu/drm/img-rogue/pvrsrv_tlcommon.h
 new file mode 100644
-index 000000000000..9bc65fe05f98
+index 0000000000000..9bc65fe05f988
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_tlcommon.h
 @@ -0,0 +1,260 @@
@@ -162585,7 +162585,7 @@ index 000000000000..9bc65fe05f98
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h b/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h
 new file mode 100644
-index 000000000000..b15bcfa0c7d6
+index 0000000000000..b15bcfa0c7d6f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h
 @@ -0,0 +1,63 @@
@@ -162654,7 +162654,7 @@ index 000000000000..b15bcfa0c7d6
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrvkm.mk b/drivers/gpu/drm/img-rogue/pvrsrvkm.mk
 new file mode 100644
-index 000000000000..1b1f81e45593
+index 0000000000000..1b1f81e45593e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrsrvkm.mk
 @@ -0,0 +1,154 @@
@@ -162814,7 +162814,7 @@ index 000000000000..1b1f81e45593
 +pvrsrvkm-$(CONFIG_X86)   += osfunc_x86.o
 diff --git a/drivers/gpu/drm/img-rogue/pvrversion.h b/drivers/gpu/drm/img-rogue/pvrversion.h
 new file mode 100644
-index 000000000000..67b258ccb32d
+index 0000000000000..67b258ccb32d2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvrversion.h
 @@ -0,0 +1,68 @@
@@ -162888,7 +162888,7 @@ index 000000000000..67b258ccb32d
 +#endif /* PVRVERSION_H */
 diff --git a/drivers/gpu/drm/img-rogue/ra.c b/drivers/gpu/drm/img-rogue/ra.c
 new file mode 100644
-index 000000000000..90c05717fef5
+index 0000000000000..90c05717fef52
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ra.c
 @@ -0,0 +1,3472 @@
@@ -166366,7 +166366,7 @@ index 000000000000..90c05717fef5
 +}
 diff --git a/drivers/gpu/drm/img-rogue/ra.h b/drivers/gpu/drm/img-rogue/ra.h
 new file mode 100644
-index 000000000000..654c24d40275
+index 0000000000000..654c24d40275f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ra.h
 @@ -0,0 +1,644 @@
@@ -167016,7 +167016,7 @@ index 000000000000..654c24d40275
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge.h b/drivers/gpu/drm/img-rogue/rgx_bridge.h
 new file mode 100644
-index 000000000000..af6d0af25238
+index 0000000000000..af6d0af252385
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge.h
 @@ -0,0 +1,252 @@
@@ -167274,7 +167274,7 @@ index 000000000000..af6d0af25238
 +#endif /* RGX_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge_init.c b/drivers/gpu/drm/img-rogue/rgx_bridge_init.c
 new file mode 100644
-index 000000000000..5ab1a0a2f778
+index 0000000000000..5ab1a0a2f7784
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge_init.c
 @@ -0,0 +1,105 @@
@@ -167385,7 +167385,7 @@ index 000000000000..5ab1a0a2f778
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge_init.h b/drivers/gpu/drm/img-rogue/rgx_bridge_init.h
 new file mode 100644
-index 000000000000..10e8e72ca095
+index 0000000000000..10e8e72ca0957
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge_init.h
 @@ -0,0 +1,55 @@
@@ -167446,7 +167446,7 @@ index 000000000000..10e8e72ca095
 +#endif /* RGX_BRIDGE_INIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_common.h b/drivers/gpu/drm/img-rogue/rgx_common.h
 new file mode 100644
-index 000000000000..6a79b9bfdba7
+index 0000000000000..6a79b9bfdba79
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_common.h
 @@ -0,0 +1,232 @@
@@ -167684,7 +167684,7 @@ index 000000000000..6a79b9bfdba7
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_common_asserts.h b/drivers/gpu/drm/img-rogue/rgx_common_asserts.h
 new file mode 100644
-index 000000000000..c571cc6f008e
+index 0000000000000..c571cc6f008ef
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_common_asserts.h
 @@ -0,0 +1,73 @@
@@ -167763,7 +167763,7 @@ index 000000000000..c571cc6f008e
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_compat_bvnc.h b/drivers/gpu/drm/img-rogue/rgx_compat_bvnc.h
 new file mode 100644
-index 000000000000..c3e1333cdb0f
+index 0000000000000..c3e1333cdb0fa
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_compat_bvnc.h
 @@ -0,0 +1,140 @@
@@ -167909,7 +167909,7 @@ index 000000000000..c3e1333cdb0f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fw_info.h b/drivers/gpu/drm/img-rogue/rgx_fw_info.h
 new file mode 100644
-index 000000000000..fb31ac440024
+index 0000000000000..fb31ac440024d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fw_info.h
 @@ -0,0 +1,144 @@
@@ -168059,7 +168059,7 @@ index 000000000000..fb31ac440024
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h b/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h
 new file mode 100644
-index 000000000000..84a916a51888
+index 0000000000000..84a916a518889
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h
 @@ -0,0 +1,192 @@
@@ -168257,7 +168257,7 @@ index 000000000000..84a916a51888
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_hwperf.h b/drivers/gpu/drm/img-rogue/rgx_fwif_hwperf.h
 new file mode 100644
-index 000000000000..ec2d9bb071e7
+index 0000000000000..ec2d9bb071e73
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_hwperf.h
 @@ -0,0 +1,253 @@
@@ -168516,7 +168516,7 @@ index 000000000000..ec2d9bb071e7
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_km.h b/drivers/gpu/drm/img-rogue/rgx_fwif_km.h
 new file mode 100644
-index 000000000000..8612383519e2
+index 0000000000000..8612383519e26
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_km.h
 @@ -0,0 +1,2666 @@
@@ -171188,7 +171188,7 @@ index 000000000000..8612383519e2
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_resetframework.h b/drivers/gpu/drm/img-rogue/rgx_fwif_resetframework.h
 new file mode 100644
-index 000000000000..e60bafd84536
+index 0000000000000..e60bafd845365
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_resetframework.h
 @@ -0,0 +1,70 @@
@@ -171264,7 +171264,7 @@ index 000000000000..e60bafd84536
 +#endif /* RGX_FWIF_RESETFRAMEWORK_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h b/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h
 new file mode 100644
-index 000000000000..00b7763653dc
+index 0000000000000..00b7763653dc5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h
 @@ -0,0 +1,995 @@
@@ -172265,7 +172265,7 @@ index 000000000000..00b7763653dc
 +#endif /* RGX_FWIF_SF_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h b/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h
 new file mode 100644
-index 000000000000..3fe7eb5fe3b4
+index 0000000000000..3fe7eb5fe3b43
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h
 @@ -0,0 +1,361 @@
@@ -172632,7 +172632,7 @@ index 000000000000..3fe7eb5fe3b4
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h b/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h
 new file mode 100644
-index 000000000000..f02deeb1ea92
+index 0000000000000..f02deeb1ea92b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h
 @@ -0,0 +1,126 @@
@@ -172764,7 +172764,7 @@ index 000000000000..f02deeb1ea92
 +#endif /* RGX_HEAP_FIRMWARE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_heaps.h b/drivers/gpu/drm/img-rogue/rgx_heaps.h
 new file mode 100644
-index 000000000000..e41e4002b2c4
+index 0000000000000..e41e4002b2c4d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_heaps.h
 @@ -0,0 +1,68 @@
@@ -172838,7 +172838,7 @@ index 000000000000..e41e4002b2c4
 +#endif /* RGX_HEAPS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf.h b/drivers/gpu/drm/img-rogue/rgx_hwperf.h
 new file mode 100644
-index 000000000000..d164c20a2417
+index 0000000000000..d164c20a24176
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf.h
 @@ -0,0 +1,483 @@
@@ -173327,7 +173327,7 @@ index 000000000000..d164c20a2417
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h b/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h
 new file mode 100644
-index 000000000000..6f73eeee1743
+index 0000000000000..6f73eeee17430
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h
 @@ -0,0 +1,1634 @@
@@ -174967,7 +174967,7 @@ index 000000000000..6f73eeee1743
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c
 new file mode 100644
-index 000000000000..268ba65207ae
+index 0000000000000..268ba65207ae3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c
 @@ -0,0 +1,635 @@
@@ -175608,7 +175608,7 @@ index 000000000000..268ba65207ae
 + ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf_table.h b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.h
 new file mode 100644
-index 000000000000..449885cdcb64
+index 0000000000000..449885cdcb64c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.h
 @@ -0,0 +1,116 @@
@@ -175730,7 +175730,7 @@ index 000000000000..449885cdcb64
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_memallocflags.h b/drivers/gpu/drm/img-rogue/rgx_memallocflags.h
 new file mode 100644
-index 000000000000..e26f42c4f935
+index 0000000000000..e26f42c4f935a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_memallocflags.h
 @@ -0,0 +1,58 @@
@@ -175794,7 +175794,7 @@ index 000000000000..e26f42c4f935
 +#endif /* RGX_MEMALLOCFLAGS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_meta.h b/drivers/gpu/drm/img-rogue/rgx_meta.h
 new file mode 100644
-index 000000000000..ae91ddf7401a
+index 0000000000000..ae91ddf7401ac
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_meta.h
 @@ -0,0 +1,379 @@
@@ -176179,7 +176179,7 @@ index 000000000000..ae91ddf7401a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgx_mips.h b/drivers/gpu/drm/img-rogue/rgx_mips.h
 new file mode 100644
-index 000000000000..a80d2f66f0b7
+index 0000000000000..a80d2f66f0b7a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_mips.h
 @@ -0,0 +1,406 @@
@@ -176591,7 +176591,7 @@ index 000000000000..a80d2f66f0b7
 +#endif /* RGX_MIPS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_options.h b/drivers/gpu/drm/img-rogue/rgx_options.h
 new file mode 100644
-index 000000000000..364b8db3ad3d
+index 0000000000000..364b8db3ad3db
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_options.h
 @@ -0,0 +1,342 @@
@@ -176939,7 +176939,7 @@ index 000000000000..364b8db3ad3d
 +#endif /* RGX_OPTIONS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_pdump_panics.h b/drivers/gpu/drm/img-rogue/rgx_pdump_panics.h
 new file mode 100644
-index 000000000000..fce2b3efab69
+index 0000000000000..fce2b3efab695
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_pdump_panics.h
 @@ -0,0 +1,64 @@
@@ -177009,7 +177009,7 @@ index 000000000000..fce2b3efab69
 +#endif /* RGX_PDUMP_PANICS_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_riscv.h b/drivers/gpu/drm/img-rogue/rgx_riscv.h
 new file mode 100644
-index 000000000000..4c064384608d
+index 0000000000000..4c064384608de
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_riscv.h
 @@ -0,0 +1,248 @@
@@ -177263,7 +177263,7 @@ index 000000000000..4c064384608d
 +#endif /* RGX_RISCV_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_tq_shared.h b/drivers/gpu/drm/img-rogue/rgx_tq_shared.h
 new file mode 100644
-index 000000000000..2db19224c441
+index 0000000000000..2db19224c441b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_tq_shared.h
 @@ -0,0 +1,61 @@
@@ -177330,7 +177330,7 @@ index 000000000000..2db19224c441
 +#endif /* RGX_TQ_SHARED_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxapi_km.h b/drivers/gpu/drm/img-rogue/rgxapi_km.h
 new file mode 100644
-index 000000000000..65ba85d20b4b
+index 0000000000000..65ba85d20b4ba
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxapi_km.h
 @@ -0,0 +1,336 @@
@@ -177672,7 +177672,7 @@ index 000000000000..65ba85d20b4b
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxbreakpoint.c b/drivers/gpu/drm/img-rogue/rgxbreakpoint.c
 new file mode 100644
-index 000000000000..902cbe0318d9
+index 0000000000000..902cbe0318d9b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxbreakpoint.c
 @@ -0,0 +1,292 @@
@@ -177970,7 +177970,7 @@ index 000000000000..902cbe0318d9
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxbreakpoint.h b/drivers/gpu/drm/img-rogue/rgxbreakpoint.h
 new file mode 100644
-index 000000000000..2470de250914
+index 0000000000000..2470de2509149
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxbreakpoint.h
 @@ -0,0 +1,142 @@
@@ -178118,7 +178118,7 @@ index 000000000000..2470de250914
 +#endif /* RGXBREAKPOINT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxbvnc.c b/drivers/gpu/drm/img-rogue/rgxbvnc.c
 new file mode 100644
-index 000000000000..2d551b26872c
+index 0000000000000..2d551b26872c0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxbvnc.c
 @@ -0,0 +1,969 @@
@@ -179093,7 +179093,7 @@ index 000000000000..2d551b26872c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxbvnc.h b/drivers/gpu/drm/img-rogue/rgxbvnc.h
 new file mode 100644
-index 000000000000..64c418bc4edb
+index 0000000000000..64c418bc4edb1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxbvnc.h
 @@ -0,0 +1,90 @@
@@ -179189,7 +179189,7 @@ index 000000000000..64c418bc4edb
 +#endif /* RGXBVNC_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxccb.c b/drivers/gpu/drm/img-rogue/rgxccb.c
 new file mode 100644
-index 000000000000..10fa9443b6b1
+index 0000000000000..10fa9443b6b1a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxccb.c
 @@ -0,0 +1,2869 @@
@@ -182064,7 +182064,7 @@ index 000000000000..10fa9443b6b1
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxccb.h b/drivers/gpu/drm/img-rogue/rgxccb.h
 new file mode 100644
-index 000000000000..1389fd05bb77
+index 0000000000000..1389fd05bb77e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxccb.h
 @@ -0,0 +1,356 @@
@@ -182426,7 +182426,7 @@ index 000000000000..1389fd05bb77
 +#endif /* RGXCCB_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxcompute.c b/drivers/gpu/drm/img-rogue/rgxcompute.c
 new file mode 100644
-index 000000000000..e2d044c3f42e
+index 0000000000000..e2d044c3f42e2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxcompute.c
 @@ -0,0 +1,1562 @@
@@ -183994,7 +183994,7 @@ index 000000000000..e2d044c3f42e
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxcompute.h b/drivers/gpu/drm/img-rogue/rgxcompute.h
 new file mode 100644
-index 000000000000..a0ab9c9c25fb
+index 0000000000000..a0ab9c9c25fbc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxcompute.h
 @@ -0,0 +1,196 @@
@@ -184196,7 +184196,7 @@ index 000000000000..a0ab9c9c25fb
 +#endif /* RGXCOMPUTE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug.c b/drivers/gpu/drm/img-rogue/rgxdebug.c
 new file mode 100644
-index 000000000000..23382dca2353
+index 0000000000000..23382dca2353c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug.c
 @@ -0,0 +1,4077 @@
@@ -188279,7 +188279,7 @@ index 000000000000..23382dca2353
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.c b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 new file mode 100644
-index 000000000000..8684309e9f7f
+index 0000000000000..8684309e9f7f4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 @@ -0,0 +1,2219 @@
@@ -190504,7 +190504,7 @@ index 000000000000..8684309e9f7f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.h b/drivers/gpu/drm/img-rogue/rgxdebug_common.h
 new file mode 100644
-index 000000000000..d8d5611a599d
+index 0000000000000..d8d5611a599d5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.h
 @@ -0,0 +1,388 @@
@@ -190898,7 +190898,7 @@ index 000000000000..d8d5611a599d
 +#endif /* RGXDEBUG_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxdevice.h b/drivers/gpu/drm/img-rogue/rgxdevice.h
 new file mode 100644
-index 000000000000..8ae09cdf7694
+index 0000000000000..8ae09cdf7694e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxdevice.h
 @@ -0,0 +1,912 @@
@@ -191816,7 +191816,7 @@ index 000000000000..8ae09cdf7694
 +#endif /* RGXDEVICE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxfw_log_helper.h b/drivers/gpu/drm/img-rogue/rgxfw_log_helper.h
 new file mode 100644
-index 000000000000..275b63aca46b
+index 0000000000000..275b63aca46bf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfw_log_helper.h
 @@ -0,0 +1,79 @@
@@ -191901,7 +191901,7 @@ index 000000000000..275b63aca46b
 +#endif /* RGXFW_LOG_HELPER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c
 new file mode 100644
-index 000000000000..dc39be0d3c19
+index 0000000000000..dc39be0d3c19b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c
 @@ -0,0 +1,755 @@
@@ -192662,7 +192662,7 @@ index 000000000000..dc39be0d3c19
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwcmnctx.h b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.h
 new file mode 100644
-index 000000000000..eba2fac705da
+index 0000000000000..eba2fac705dae
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.h
 @@ -0,0 +1,150 @@
@@ -192818,7 +192818,7 @@ index 000000000000..eba2fac705da
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwdbg.c b/drivers/gpu/drm/img-rogue/rgxfwdbg.c
 new file mode 100644
-index 000000000000..9a6add28b218
+index 0000000000000..9a6add28b218c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwdbg.c
 @@ -0,0 +1,608 @@
@@ -193432,7 +193432,7 @@ index 000000000000..9a6add28b218
 +
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwdbg.h b/drivers/gpu/drm/img-rogue/rgxfwdbg.h
 new file mode 100644
-index 000000000000..eb0eb0bf1c0c
+index 0000000000000..eb0eb0bf1c0cb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwdbg.h
 @@ -0,0 +1,160 @@
@@ -193598,7 +193598,7 @@ index 000000000000..eb0eb0bf1c0c
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwimageutils.c b/drivers/gpu/drm/img-rogue/rgxfwimageutils.c
 new file mode 100644
-index 000000000000..24976382e167
+index 0000000000000..24976382e1675
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwimageutils.c
 @@ -0,0 +1,1154 @@
@@ -194758,7 +194758,7 @@ index 000000000000..24976382e167
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwimageutils.h b/drivers/gpu/drm/img-rogue/rgxfwimageutils.h
 new file mode 100644
-index 000000000000..b4cedb8d3271
+index 0000000000000..b4cedb8d32717
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwimageutils.h
 @@ -0,0 +1,224 @@
@@ -194988,7 +194988,7 @@ index 000000000000..b4cedb8d3271
 +#endif /* RGXFWIMAGEUTILS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwmemctx.h b/drivers/gpu/drm/img-rogue/rgxfwmemctx.h
 new file mode 100644
-index 000000000000..2cb40991fee9
+index 0000000000000..2cb40991fee97
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwmemctx.h
 @@ -0,0 +1,163 @@
@@ -195157,7 +195157,7 @@ index 000000000000..2cb40991fee9
 +#endif /* RGXFWMEMCTX_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwriscv.c b/drivers/gpu/drm/img-rogue/rgxfwriscv.c
 new file mode 100644
-index 000000000000..15fd27c05dad
+index 0000000000000..15fd27c05dad0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwriscv.c
 @@ -0,0 +1,1076 @@
@@ -196239,7 +196239,7 @@ index 000000000000..15fd27c05dad
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwriscv.h b/drivers/gpu/drm/img-rogue/rgxfwriscv.h
 new file mode 100644
-index 000000000000..4a9ac7aedc08
+index 0000000000000..4a9ac7aedc08b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwriscv.h
 @@ -0,0 +1,212 @@
@@ -196457,7 +196457,7 @@ index 000000000000..4a9ac7aedc08
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwtrace_strings.c b/drivers/gpu/drm/img-rogue/rgxfwtrace_strings.c
 new file mode 100644
-index 000000000000..d95050871994
+index 0000000000000..d950508719949
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwtrace_strings.c
 @@ -0,0 +1,56 @@
@@ -196519,7 +196519,7 @@ index 000000000000..d95050871994
 +const IMG_UINT32 g_ui32SFsCount = ARRAY_SIZE(SFs);
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwutils.c b/drivers/gpu/drm/img-rogue/rgxfwutils.c
 new file mode 100644
-index 000000000000..fc81cb4d904d
+index 0000000000000..fc81cb4d904d3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwutils.c
 @@ -0,0 +1,6946 @@
@@ -203471,7 +203471,7 @@ index 000000000000..fc81cb4d904d
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwutils.h b/drivers/gpu/drm/img-rogue/rgxfwutils.h
 new file mode 100644
-index 000000000000..28fc64905243
+index 0000000000000..28fc649052438
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxfwutils.h
 @@ -0,0 +1,1292 @@
@@ -204769,7 +204769,7 @@ index 000000000000..28fc64905243
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxheapconfig.h b/drivers/gpu/drm/img-rogue/rgxheapconfig.h
 new file mode 100644
-index 000000000000..92da55c35664
+index 0000000000000..92da55c35664b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxheapconfig.h
 @@ -0,0 +1,294 @@
@@ -205069,7 +205069,7 @@ index 000000000000..92da55c35664
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h b/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h
 new file mode 100644
-index 000000000000..13b4a96f7f6f
+index 0000000000000..13b4a96f7f6f0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h
 @@ -0,0 +1,124 @@
@@ -205199,7 +205199,7 @@ index 000000000000..13b4a96f7f6f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf.c b/drivers/gpu/drm/img-rogue/rgxhwperf.c
 new file mode 100644
-index 000000000000..1bb4e429ead4
+index 0000000000000..1bb4e429ead41
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf.c
 @@ -0,0 +1,1037 @@
@@ -206242,7 +206242,7 @@ index 000000000000..1bb4e429ead4
 + ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf.h b/drivers/gpu/drm/img-rogue/rgxhwperf.h
 new file mode 100644
-index 000000000000..16a959c7594a
+index 0000000000000..16a959c7594ad
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf.h
 @@ -0,0 +1,96 @@
@@ -206344,7 +206344,7 @@ index 000000000000..16a959c7594a
 +#endif /* RGXHWPERF_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf_common.c b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
 new file mode 100644
-index 000000000000..cf2b4fcf77d5
+index 0000000000000..cf2b4fcf77d53
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
 @@ -0,0 +1,4050 @@
@@ -210400,7 +210400,7 @@ index 000000000000..cf2b4fcf77d5
 + ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf_common.h b/drivers/gpu/drm/img-rogue/rgxhwperf_common.h
 new file mode 100644
-index 000000000000..6544e524a4a4
+index 0000000000000..6544e524a4a4c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf_common.h
 @@ -0,0 +1,635 @@
@@ -211041,7 +211041,7 @@ index 000000000000..6544e524a4a4
 +#endif /* RGXHWPERF_COMMON_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/rgxinit.c b/drivers/gpu/drm/img-rogue/rgxinit.c
 new file mode 100644
-index 000000000000..cbfd04c8d9b4
+index 0000000000000..cbfd04c8d9b4b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxinit.c
 @@ -0,0 +1,5208 @@
@@ -216255,7 +216255,7 @@ index 000000000000..cbfd04c8d9b4
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxinit.h b/drivers/gpu/drm/img-rogue/rgxinit.h
 new file mode 100644
-index 000000000000..6878aee7f075
+index 0000000000000..6878aee7f0750
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxinit.h
 @@ -0,0 +1,282 @@
@@ -216543,7 +216543,7 @@ index 000000000000..6878aee7f075
 +#endif /* RGXINIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxkicksync.c b/drivers/gpu/drm/img-rogue/rgxkicksync.c
 new file mode 100644
-index 000000000000..2028c5463a3d
+index 0000000000000..2028c5463a3de
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxkicksync.c
 @@ -0,0 +1,804 @@
@@ -217353,7 +217353,7 @@ index 000000000000..2028c5463a3d
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxkicksync.h b/drivers/gpu/drm/img-rogue/rgxkicksync.h
 new file mode 100644
-index 000000000000..57b49a03da5c
+index 0000000000000..57b49a03da5c4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxkicksync.h
 @@ -0,0 +1,128 @@
@@ -217487,7 +217487,7 @@ index 000000000000..57b49a03da5c
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer.h b/drivers/gpu/drm/img-rogue/rgxlayer.h
 new file mode 100644
-index 000000000000..6b4667e43b44
+index 0000000000000..6b4667e43b442
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer.h
 @@ -0,0 +1,850 @@
@@ -218343,7 +218343,7 @@ index 000000000000..6b4667e43b44
 +#endif /* RGXLAYER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer_impl.c b/drivers/gpu/drm/img-rogue/rgxlayer_impl.c
 new file mode 100644
-index 000000000000..406f7b580119
+index 0000000000000..406f7b5801190
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer_impl.c
 @@ -0,0 +1,1346 @@
@@ -219695,7 +219695,7 @@ index 000000000000..406f7b580119
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer_impl.h b/drivers/gpu/drm/img-rogue/rgxlayer_impl.h
 new file mode 100644
-index 000000000000..4d7c0f0c7798
+index 0000000000000..4d7c0f0c77986
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer_impl.h
 @@ -0,0 +1,67 @@
@@ -219768,7 +219768,7 @@ index 000000000000..4d7c0f0c7798
 +#endif /* RGXLAYER_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxmem.c b/drivers/gpu/drm/img-rogue/rgxmem.c
 new file mode 100644
-index 000000000000..d9aa6adfada1
+index 0000000000000..d9aa6adfada13
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmem.c
 @@ -0,0 +1,972 @@
@@ -220746,7 +220746,7 @@ index 000000000000..d9aa6adfada1
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxmem.h b/drivers/gpu/drm/img-rogue/rgxmem.h
 new file mode 100644
-index 000000000000..2e959fc79eda
+index 0000000000000..2e959fc79edae
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmem.h
 @@ -0,0 +1,157 @@
@@ -220909,7 +220909,7 @@ index 000000000000..2e959fc79eda
 +#endif /* RGXMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.c b/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.c
 new file mode 100644
-index 000000000000..e0b17bf3dedd
+index 0000000000000..e0b17bf3dedde
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.c
 @@ -0,0 +1,1068 @@
@@ -221983,7 +221983,7 @@ index 000000000000..e0b17bf3dedd
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.h b/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.h
 new file mode 100644
-index 000000000000..b2b39402cafe
+index 0000000000000..b2b39402cafed
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmipsmmuinit.h
 @@ -0,0 +1,97 @@
@@ -222086,7 +222086,7 @@ index 000000000000..b2b39402cafe
 +#endif /* #ifndef SRVKM_RGXMIPSMMUINIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxmmuinit.c b/drivers/gpu/drm/img-rogue/rgxmmuinit.c
 new file mode 100644
-index 000000000000..d790c2c98e50
+index 0000000000000..d790c2c98e500
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmmuinit.c
 @@ -0,0 +1,1147 @@
@@ -223239,7 +223239,7 @@ index 000000000000..d790c2c98e50
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxmmuinit.h b/drivers/gpu/drm/img-rogue/rgxmmuinit.h
 new file mode 100644
-index 000000000000..0591628d6ad3
+index 0000000000000..0591628d6ad3e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmmuinit.h
 @@ -0,0 +1,60 @@
@@ -223305,7 +223305,7 @@ index 000000000000..0591628d6ad3
 +#endif /* #ifndef SRVKM_RGXMMUINIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxmulticore.c b/drivers/gpu/drm/img-rogue/rgxmulticore.c
 new file mode 100644
-index 000000000000..2c8b0cf9c34e
+index 0000000000000..2c8b0cf9c34ec
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmulticore.c
 @@ -0,0 +1,252 @@
@@ -223563,7 +223563,7 @@ index 000000000000..2c8b0cf9c34e
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxmulticore.h b/drivers/gpu/drm/img-rogue/rgxmulticore.h
 new file mode 100644
-index 000000000000..b45a20ab5e14
+index 0000000000000..b45a20ab5e14c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxmulticore.h
 @@ -0,0 +1,54 @@
@@ -223623,7 +223623,7 @@ index 000000000000..b45a20ab5e14
 +#endif /* RGXMULTICORE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxpower.c b/drivers/gpu/drm/img-rogue/rgxpower.c
 new file mode 100644
-index 000000000000..9bc7bf9b3b79
+index 0000000000000..9bc7bf9b3b799
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxpower.c
 @@ -0,0 +1,1691 @@
@@ -225320,7 +225320,7 @@ index 000000000000..9bc7bf9b3b79
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxpower.h b/drivers/gpu/drm/img-rogue/rgxpower.h
 new file mode 100644
-index 000000000000..a6cd3f2b2d10
+index 0000000000000..a6cd3f2b2d10b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxpower.h
 @@ -0,0 +1,286 @@
@@ -225612,7 +225612,7 @@ index 000000000000..a6cd3f2b2d10
 +#endif /* RGXPOWER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxregconfig.c b/drivers/gpu/drm/img-rogue/rgxregconfig.c
 new file mode 100644
-index 000000000000..ef39bea255eb
+index 0000000000000..ef39bea255ebb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxregconfig.c
 @@ -0,0 +1,319 @@
@@ -225937,7 +225937,7 @@ index 000000000000..ef39bea255eb
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxregconfig.h b/drivers/gpu/drm/img-rogue/rgxregconfig.h
 new file mode 100644
-index 000000000000..b0921d98cb14
+index 0000000000000..b0921d98cb14a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxregconfig.h
 @@ -0,0 +1,130 @@
@@ -226073,7 +226073,7 @@ index 000000000000..b0921d98cb14
 +#endif /* RGXREGCONFIG_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxshader.c b/drivers/gpu/drm/img-rogue/rgxshader.c
 new file mode 100644
-index 000000000000..e29a4e3ab683
+index 0000000000000..e29a4e3ab683c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxshader.c
 @@ -0,0 +1,308 @@
@@ -226387,7 +226387,7 @@ index 000000000000..e29a4e3ab683
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxshader.h b/drivers/gpu/drm/img-rogue/rgxshader.h
 new file mode 100644
-index 000000000000..7676ede51b7f
+index 0000000000000..7676ede51b7fa
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxshader.h
 @@ -0,0 +1,83 @@
@@ -226476,7 +226476,7 @@ index 000000000000..7676ede51b7f
 +#endif /* RGXSHADER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxsrvinit.c b/drivers/gpu/drm/img-rogue/rgxsrvinit.c
 new file mode 100644
-index 000000000000..fd6516cc1e98
+index 0000000000000..fd6516cc1e987
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxsrvinit.c
 @@ -0,0 +1,1863 @@
@@ -228345,7 +228345,7 @@ index 000000000000..fd6516cc1e98
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxstartstop.c b/drivers/gpu/drm/img-rogue/rgxstartstop.c
 new file mode 100644
-index 000000000000..924c435c55de
+index 0000000000000..924c435c55de6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxstartstop.c
 @@ -0,0 +1,1314 @@
@@ -229665,7 +229665,7 @@ index 000000000000..924c435c55de
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/rgxstartstop.h b/drivers/gpu/drm/img-rogue/rgxstartstop.h
 new file mode 100644
-index 000000000000..178afe2849a0
+index 0000000000000..178afe2849a0c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxstartstop.h
 @@ -0,0 +1,84 @@
@@ -229755,7 +229755,7 @@ index 000000000000..178afe2849a0
 +#endif /* RGXSTARTSTOP_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxsyncutils.c b/drivers/gpu/drm/img-rogue/rgxsyncutils.c
 new file mode 100644
-index 000000000000..cec0597d0301
+index 0000000000000..cec0597d0301e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxsyncutils.c
 @@ -0,0 +1,184 @@
@@ -229945,7 +229945,7 @@ index 000000000000..cec0597d0301
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxsyncutils.h b/drivers/gpu/drm/img-rogue/rgxsyncutils.h
 new file mode 100644
-index 000000000000..bfc46937f185
+index 0000000000000..bfc46937f185f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxsyncutils.h
 @@ -0,0 +1,76 @@
@@ -230027,7 +230027,7 @@ index 000000000000..bfc46937f185
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxta3d.c b/drivers/gpu/drm/img-rogue/rgxta3d.c
 new file mode 100644
-index 000000000000..9e547542dad9
+index 0000000000000..9e547542dad90
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxta3d.c
 @@ -0,0 +1,5603 @@
@@ -235636,7 +235636,7 @@ index 000000000000..9e547542dad9
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxta3d.h b/drivers/gpu/drm/img-rogue/rgxta3d.h
 new file mode 100644
-index 000000000000..d789e62a2602
+index 0000000000000..d789e62a26020
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxta3d.h
 @@ -0,0 +1,510 @@
@@ -236152,7 +236152,7 @@ index 000000000000..d789e62a2602
 +#endif /* RGXTA3D_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c
 new file mode 100644
-index 000000000000..469a81e80bc6
+index 0000000000000..469a81e80bc6b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c
 @@ -0,0 +1,1374 @@
@@ -237532,7 +237532,7 @@ index 000000000000..469a81e80bc6
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h
 new file mode 100644
-index 000000000000..a7fc39bcf34e
+index 0000000000000..a7fc39bcf34e1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h
 @@ -0,0 +1,132 @@
@@ -237670,7 +237670,7 @@ index 000000000000..a7fc39bcf34e
 +#endif /* RGXTDMTRANSFER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimecorr.c b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 new file mode 100644
-index 000000000000..3fc284ca5a52
+index 0000000000000..3fc284ca5a52c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 @@ -0,0 +1,729 @@
@@ -238405,7 +238405,7 @@ index 000000000000..3fc284ca5a52
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimecorr.h b/drivers/gpu/drm/img-rogue/rgxtimecorr.h
 new file mode 100644
-index 000000000000..e1cfff9b7abc
+index 0000000000000..e1cfff9b7abce
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtimecorr.h
 @@ -0,0 +1,272 @@
@@ -238683,7 +238683,7 @@ index 000000000000..e1cfff9b7abc
 +#endif /* RGXTIMECORR_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimerquery.c b/drivers/gpu/drm/img-rogue/rgxtimerquery.c
 new file mode 100644
-index 000000000000..82900863ed26
+index 0000000000000..82900863ed26a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtimerquery.c
 @@ -0,0 +1,225 @@
@@ -238914,7 +238914,7 @@ index 000000000000..82900863ed26
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimerquery.h b/drivers/gpu/drm/img-rogue/rgxtimerquery.h
 new file mode 100644
-index 000000000000..7a43e7966f88
+index 0000000000000..7a43e7966f885
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtimerquery.h
 @@ -0,0 +1,117 @@
@@ -239037,7 +239037,7 @@ index 000000000000..7a43e7966f88
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer.c b/drivers/gpu/drm/img-rogue/rgxtransfer.c
 new file mode 100644
-index 000000000000..e8b619d31a8e
+index 0000000000000..e8b619d31a8ed
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer.c
 @@ -0,0 +1,1839 @@
@@ -240882,7 +240882,7 @@ index 000000000000..e8b619d31a8e
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer.h b/drivers/gpu/drm/img-rogue/rgxtransfer.h
 new file mode 100644
-index 000000000000..8bd0b76c75d7
+index 0000000000000..8bd0b76c75d72
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer.h
 @@ -0,0 +1,159 @@
@@ -241047,7 +241047,7 @@ index 000000000000..8bd0b76c75d7
 +#endif /* RGXTRANSFER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h b/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h
 new file mode 100644
-index 000000000000..b7b3a645e453
+index 0000000000000..b7b3a645e4530
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h
 @@ -0,0 +1,71 @@
@@ -241124,7 +241124,7 @@ index 000000000000..b7b3a645e453
 +#endif /* RGXSHADERHEADER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxutils.c b/drivers/gpu/drm/img-rogue/rgxutils.c
 new file mode 100644
-index 000000000000..7b5bcc804f85
+index 0000000000000..7b5bcc804f851
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxutils.c
 @@ -0,0 +1,306 @@
@@ -241436,7 +241436,7 @@ index 000000000000..7b5bcc804f85
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxutils.h b/drivers/gpu/drm/img-rogue/rgxutils.h
 new file mode 100644
-index 000000000000..67d4bb840a6a
+index 0000000000000..67d4bb840a6a9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxutils.h
 @@ -0,0 +1,211 @@
@@ -241653,7 +241653,7 @@ index 000000000000..67d4bb840a6a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/ri_server.c b/drivers/gpu/drm/img-rogue/ri_server.c
 new file mode 100644
-index 000000000000..82a26cb69d27
+index 0000000000000..82a26cb69d271
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ri_server.c
 @@ -0,0 +1,2161 @@
@@ -243820,7 +243820,7 @@ index 000000000000..82a26cb69d27
 +#endif /* if defined(PVRSRV_ENABLE_GPU_MEMORY_INFO) */
 diff --git a/drivers/gpu/drm/img-rogue/ri_server.h b/drivers/gpu/drm/img-rogue/ri_server.h
 new file mode 100644
-index 000000000000..69266b8b5d89
+index 0000000000000..69266b8b5d898
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ri_server.h
 @@ -0,0 +1,110 @@
@@ -243936,7 +243936,7 @@ index 000000000000..69266b8b5d89
 +#endif /* RI_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/ri_typedefs.h b/drivers/gpu/drm/img-rogue/ri_typedefs.h
 new file mode 100644
-index 000000000000..77be10e2ab03
+index 0000000000000..77be10e2ab03c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/ri_typedefs.h
 @@ -0,0 +1,52 @@
@@ -243994,7 +243994,7 @@ index 000000000000..77be10e2ab03
 +#endif /* #ifndef RI_TYPEDEFS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rogue_trace_events.h b/drivers/gpu/drm/img-rogue/rogue_trace_events.h
 new file mode 100644
-index 000000000000..b079d73af784
+index 0000000000000..b079d73af7847
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rogue_trace_events.h
 @@ -0,0 +1,593 @@
@@ -244593,7 +244593,7 @@ index 000000000000..b079d73af784
 +#include <trace/define_trace.h>
 diff --git a/drivers/gpu/drm/img-rogue/server_cache_bridge.c b/drivers/gpu/drm/img-rogue/server_cache_bridge.c
 new file mode 100644
-index 000000000000..bddcd95e0953
+index 0000000000000..bddcd95e09532
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_cache_bridge.c
 @@ -0,0 +1,449 @@
@@ -245048,7 +245048,7 @@ index 000000000000..bddcd95e0953
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_cmm_bridge.c b/drivers/gpu/drm/img-rogue/server_cmm_bridge.c
 new file mode 100644
-index 000000000000..b95f8589ae99
+index 0000000000000..b95f8589ae995
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_cmm_bridge.c
 @@ -0,0 +1,409 @@
@@ -245463,7 +245463,7 @@ index 000000000000..b95f8589ae99
 +#endif /* EXCLUDE_CMM_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c b/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c
 new file mode 100644
-index 000000000000..14fc7041b469
+index 0000000000000..14fc7041b469a
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c
 @@ -0,0 +1,826 @@
@@ -246295,7 +246295,7 @@ index 000000000000..14fc7041b469
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_di_bridge.c b/drivers/gpu/drm/img-rogue/server_di_bridge.c
 new file mode 100644
-index 000000000000..96acc090a989
+index 0000000000000..96acc090a989e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_di_bridge.c
 @@ -0,0 +1,618 @@
@@ -246919,7 +246919,7 @@ index 000000000000..96acc090a989
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c b/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c
 new file mode 100644
-index 000000000000..fdfa03d54e5a
+index 0000000000000..fdfa03d54e5a0
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c
 @@ -0,0 +1,670 @@
@@ -247595,7 +247595,7 @@ index 000000000000..fdfa03d54e5a
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c b/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c
 new file mode 100644
-index 000000000000..50b4fcbe2dee
+index 0000000000000..50b4fcbe2dee8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c
 @@ -0,0 +1,225 @@
@@ -247826,7 +247826,7 @@ index 000000000000..50b4fcbe2dee
 +#endif /* EXCLUDE_HTBUFFER_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_mm_bridge.c b/drivers/gpu/drm/img-rogue/server_mm_bridge.c
 new file mode 100644
-index 000000000000..7842b7c3516f
+index 0000000000000..7842b7c3516f4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_mm_bridge.c
 @@ -0,0 +1,3186 @@
@@ -251018,7 +251018,7 @@ index 000000000000..7842b7c3516f
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c b/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c
 new file mode 100644
-index 000000000000..954713f7691c
+index 0000000000000..954713f7691ce
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c
 @@ -0,0 +1,164 @@
@@ -251188,7 +251188,7 @@ index 000000000000..954713f7691c
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c b/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c
 new file mode 100644
-index 000000000000..bbf2d33f8dae
+index 0000000000000..bbf2d33f8daec
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c
 @@ -0,0 +1,814 @@
@@ -252008,7 +252008,7 @@ index 000000000000..bbf2d33f8dae
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c
 new file mode 100644
-index 000000000000..a4b80284cd78
+index 0000000000000..a4b80284cd78e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c
 @@ -0,0 +1,371 @@
@@ -252385,7 +252385,7 @@ index 000000000000..a4b80284cd78
 +#endif /* EXCLUDE_RGXBREAKPOINT_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c
 new file mode 100644
-index 000000000000..72836a97b47d
+index 0000000000000..72836a97b47db
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c
 @@ -0,0 +1,1314 @@
@@ -253705,7 +253705,7 @@ index 000000000000..72836a97b47d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c
 new file mode 100644
-index 000000000000..b186658608cf
+index 0000000000000..b186658608cf8
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c
 @@ -0,0 +1,545 @@
@@ -254256,7 +254256,7 @@ index 000000000000..b186658608cf
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c
 new file mode 100644
-index 000000000000..9a88ae828497
+index 0000000000000..9a88ae8284977
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c
 @@ -0,0 +1,1016 @@
@@ -255278,7 +255278,7 @@ index 000000000000..9a88ae828497
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c
 new file mode 100644
-index 000000000000..0c301964e7ce
+index 0000000000000..0c301964e7ce5
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c
 @@ -0,0 +1,586 @@
@@ -255870,7 +255870,7 @@ index 000000000000..0c301964e7ce
 +#endif /* SUPPORT_RGXKICKSYNC_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c
 new file mode 100644
-index 000000000000..4cdcb127299b
+index 0000000000000..4cdcb127299bb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c
 @@ -0,0 +1,239 @@
@@ -256115,7 +256115,7 @@ index 000000000000..4cdcb127299b
 +#endif /* EXCLUDE_RGXREGCONFIG_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c
 new file mode 100644
-index 000000000000..b62e4ef1142d
+index 0000000000000..b62e4ef1142de
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c
 @@ -0,0 +1,2447 @@
@@ -258568,7 +258568,7 @@ index 000000000000..b62e4ef1142d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c
 new file mode 100644
-index 000000000000..99e6239cf7a9
+index 0000000000000..99e6239cf7a9e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c
 @@ -0,0 +1,167 @@
@@ -258741,7 +258741,7 @@ index 000000000000..99e6239cf7a9
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c
 new file mode 100644
-index 000000000000..6ce59c8049c3
+index 0000000000000..6ce59c8049c36
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c
 @@ -0,0 +1,1194 @@
@@ -259941,7 +259941,7 @@ index 000000000000..6ce59c8049c3
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c
 new file mode 100644
-index 000000000000..08bbf7bb601e
+index 0000000000000..08bbf7bb601eb
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c
 @@ -0,0 +1,1288 @@
@@ -261235,7 +261235,7 @@ index 000000000000..08bbf7bb601e
 +#endif /* SUPPORT_RGXTQ_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_ri_bridge.c b/drivers/gpu/drm/img-rogue/server_ri_bridge.c
 new file mode 100644
-index 000000000000..122c2ac61473
+index 0000000000000..122c2ac614737
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_ri_bridge.c
 @@ -0,0 +1,745 @@
@@ -261986,7 +261986,7 @@ index 000000000000..122c2ac61473
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
 new file mode 100644
-index 000000000000..c8a16df8455d
+index 0000000000000..c8a16df8455d9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
 @@ -0,0 +1,1053 @@
@@ -263045,7 +263045,7 @@ index 000000000000..c8a16df8455d
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_sync_bridge.c b/drivers/gpu/drm/img-rogue/server_sync_bridge.c
 new file mode 100644
-index 000000000000..2b48d10f16f1
+index 0000000000000..2b48d10f16f18
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_sync_bridge.c
 @@ -0,0 +1,738 @@
@@ -263789,7 +263789,7 @@ index 000000000000..2b48d10f16f1
 +}
 diff --git a/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c b/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c
 new file mode 100644
-index 000000000000..93d674bde379
+index 0000000000000..93d674bde3797
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c
 @@ -0,0 +1,325 @@
@@ -264120,7 +264120,7 @@ index 000000000000..93d674bde379
 +}
 diff --git a/drivers/gpu/drm/img-rogue/services_kernel_client.h b/drivers/gpu/drm/img-rogue/services_kernel_client.h
 new file mode 100644
-index 000000000000..44e3a4e1ce83
+index 0000000000000..44e3a4e1ce837
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/services_kernel_client.h
 @@ -0,0 +1,289 @@
@@ -264415,7 +264415,7 @@ index 000000000000..44e3a4e1ce83
 +#endif /* __SERVICES_KERNEL_CLIENT__ */
 diff --git a/drivers/gpu/drm/img-rogue/services_km.h b/drivers/gpu/drm/img-rogue/services_km.h
 new file mode 100644
-index 000000000000..8903b86a76a9
+index 0000000000000..8903b86a76a97
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/services_km.h
 @@ -0,0 +1,180 @@
@@ -264601,7 +264601,7 @@ index 000000000000..8903b86a76a9
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/servicesext.h b/drivers/gpu/drm/img-rogue/servicesext.h
 new file mode 100644
-index 000000000000..f2d09b71cf8a
+index 0000000000000..f2d09b71cf8ae
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/servicesext.h
 @@ -0,0 +1,168 @@
@@ -264775,7 +264775,7 @@ index 000000000000..f2d09b71cf8a
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/sofunc_pvr.h b/drivers/gpu/drm/img-rogue/sofunc_pvr.h
 new file mode 100644
-index 000000000000..48bc94d8ef0b
+index 0000000000000..48bc94d8ef0bf
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sofunc_pvr.h
 @@ -0,0 +1,94 @@
@@ -264875,7 +264875,7 @@ index 000000000000..48bc94d8ef0b
 +#endif /* SOFUNC_PVR_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 new file mode 100644
-index 000000000000..0bfaae616406
+index 0000000000000..0bfaae6164063
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 @@ -0,0 +1,355 @@
@@ -265236,7 +265236,7 @@ index 000000000000..0bfaae616406
 +}
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.h b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.h
 new file mode 100644
-index 000000000000..1d13c4a48a2d
+index 0000000000000..1d13c4a48a2d7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.h
 @@ -0,0 +1,34 @@
@@ -265276,7 +265276,7 @@ index 000000000000..1d13c4a48a2d
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 new file mode 100644
-index 000000000000..7de71f718af3
+index 0000000000000..7de71f718af30
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 @@ -0,0 +1,275 @@
@@ -265557,7 +265557,7 @@ index 000000000000..7de71f718af3
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 new file mode 100644
-index 000000000000..1bfe68c5da83
+index 0000000000000..1bfe68c5da833
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 @@ -0,0 +1,60 @@
@@ -265623,7 +265623,7 @@ index 000000000000..1bfe68c5da83
 +#endif	/* __SYSCCONFIG_H__ */
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h b/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h
 new file mode 100644
-index 000000000000..57046a00c203
+index 0000000000000..57046a00c2033
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h
 @@ -0,0 +1,58 @@
@@ -265687,7 +265687,7 @@ index 000000000000..57046a00c203
 +#endif	/* !defined(__SYSINFO_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/srvcore.c b/drivers/gpu/drm/img-rogue/srvcore.c
 new file mode 100644
-index 000000000000..75624f3bb3ac
+index 0000000000000..75624f3bb3ac4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/srvcore.c
 @@ -0,0 +1,1643 @@
@@ -267336,7 +267336,7 @@ index 000000000000..75624f3bb3ac
 +}
 diff --git a/drivers/gpu/drm/img-rogue/srvcore.h b/drivers/gpu/drm/img-rogue/srvcore.h
 new file mode 100644
-index 000000000000..fa261c2645bd
+index 0000000000000..fa261c2645bdd
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/srvcore.h
 @@ -0,0 +1,240 @@
@@ -267582,7 +267582,7 @@ index 000000000000..fa261c2645bd
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/srvinit.h b/drivers/gpu/drm/img-rogue/srvinit.h
 new file mode 100644
-index 000000000000..48e6863eae1f
+index 0000000000000..48e6863eae1ff
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/srvinit.h
 @@ -0,0 +1,68 @@
@@ -267656,7 +267656,7 @@ index 000000000000..48e6863eae1f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/srvkm.h b/drivers/gpu/drm/img-rogue/srvkm.h
 new file mode 100644
-index 000000000000..ca564763d168
+index 0000000000000..ca564763d1687
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/srvkm.h
 @@ -0,0 +1,144 @@
@@ -267806,7 +267806,7 @@ index 000000000000..ca564763d168
 +#endif /* SRVKM_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync.c b/drivers/gpu/drm/img-rogue/sync.c
 new file mode 100644
-index 000000000000..c87d604b0cb2
+index 0000000000000..c87d604b0cb29
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync.c
 @@ -0,0 +1,824 @@
@@ -268636,7 +268636,7 @@ index 000000000000..c87d604b0cb2
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/sync.h b/drivers/gpu/drm/img-rogue/sync.h
 new file mode 100644
-index 000000000000..f126915060f4
+index 0000000000000..f126915060f4f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync.h
 @@ -0,0 +1,292 @@
@@ -268934,7 +268934,7 @@ index 000000000000..f126915060f4
 +#endif /* SYNC_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint.c b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
 new file mode 100644
-index 000000000000..52b8898fa8cc
+index 0000000000000..52b8898fa8cce
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
 @@ -0,0 +1,3238 @@
@@ -272178,7 +272178,7 @@ index 000000000000..52b8898fa8cc
 +#endif /* (SYNC_CHECKPOINT_POOL_LIMIT > 0) */
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint.h b/drivers/gpu/drm/img-rogue/sync_checkpoint.h
 new file mode 100644
-index 000000000000..33c26f420862
+index 0000000000000..33c26f4208625
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint.h
 @@ -0,0 +1,666 @@
@@ -272850,7 +272850,7 @@ index 000000000000..33c26f420862
 +#endif	/* SYNC_CHECKPOINT_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint_external.h b/drivers/gpu/drm/img-rogue/sync_checkpoint_external.h
 new file mode 100644
-index 000000000000..19b5011aa8b7
+index 0000000000000..19b5011aa8b75
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint_external.h
 @@ -0,0 +1,83 @@
@@ -272939,7 +272939,7 @@ index 000000000000..19b5011aa8b7
 +#endif /* SYNC_CHECKPOINT_EXTERNAL_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint_init.h b/drivers/gpu/drm/img-rogue/sync_checkpoint_init.h
 new file mode 100644
-index 000000000000..94f2e000ded9
+index 0000000000000..94f2e000ded92
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint_init.h
 @@ -0,0 +1,82 @@
@@ -273027,7 +273027,7 @@ index 000000000000..94f2e000ded9
 +#endif /* SYNC_CHECKPOINT_INIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h b/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h
 new file mode 100644
-index 000000000000..49d1b7810a8d
+index 0000000000000..49d1b7810a8da
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h
 @@ -0,0 +1,274 @@
@@ -273307,7 +273307,7 @@ index 000000000000..49d1b7810a8d
 +#endif /* SYNC_CHECKPOINT_INTERNAL_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_fallback_server.h b/drivers/gpu/drm/img-rogue/sync_fallback_server.h
 new file mode 100644
-index 000000000000..ac6bd4755b0e
+index 0000000000000..ac6bd4755b0ee
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_fallback_server.h
 @@ -0,0 +1,204 @@
@@ -273517,7 +273517,7 @@ index 000000000000..ac6bd4755b0e
 +#endif /* SYNC_FALLBACK_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_internal.h b/drivers/gpu/drm/img-rogue/sync_internal.h
 new file mode 100644
-index 000000000000..929b66e0f37c
+index 0000000000000..929b66e0f37c3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_internal.h
 @@ -0,0 +1,112 @@
@@ -273635,7 +273635,7 @@ index 000000000000..929b66e0f37c
 +#endif	/* SYNC_INTERNAL */
 diff --git a/drivers/gpu/drm/img-rogue/sync_prim_internal.h b/drivers/gpu/drm/img-rogue/sync_prim_internal.h
 new file mode 100644
-index 000000000000..77164c2356cd
+index 0000000000000..77164c2356cd7
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_prim_internal.h
 @@ -0,0 +1,84 @@
@@ -273725,7 +273725,7 @@ index 000000000000..77164c2356cd
 +#endif /* SYNC_INTERNAL_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync_server.c b/drivers/gpu/drm/img-rogue/sync_server.c
 new file mode 100644
-index 000000000000..12a7d1ea8d0b
+index 0000000000000..12a7d1ea8d0bc
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_server.c
 @@ -0,0 +1,1220 @@
@@ -274951,7 +274951,7 @@ index 000000000000..12a7d1ea8d0b
 +}
 diff --git a/drivers/gpu/drm/img-rogue/sync_server.h b/drivers/gpu/drm/img-rogue/sync_server.h
 new file mode 100644
-index 000000000000..e35682970af6
+index 0000000000000..e35682970af61
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sync_server.h
 @@ -0,0 +1,249 @@
@@ -275206,7 +275206,7 @@ index 000000000000..e35682970af6
 +#endif	/*SYNC_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/syscommon.h b/drivers/gpu/drm/img-rogue/syscommon.h
 new file mode 100644
-index 000000000000..b7babda19cab
+index 0000000000000..b7babda19cab3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/syscommon.h
 @@ -0,0 +1,175 @@
@@ -275387,7 +275387,7 @@ index 000000000000..b7babda19cab
 +#endif /* !defined(SYSCOMMON_H) */
 diff --git a/drivers/gpu/drm/img-rogue/sysconfig_cmn.c b/drivers/gpu/drm/img-rogue/sysconfig_cmn.c
 new file mode 100644
-index 000000000000..68d30527eb3f
+index 0000000000000..68d30527eb3f2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sysconfig_cmn.c
 @@ -0,0 +1,210 @@
@@ -275603,7 +275603,7 @@ index 000000000000..68d30527eb3f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/sysvalidation.h b/drivers/gpu/drm/img-rogue/sysvalidation.h
 new file mode 100644
-index 000000000000..17ad86bbdb00
+index 0000000000000..17ad86bbdb00e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/sysvalidation.h
 @@ -0,0 +1,63 @@
@@ -275672,7 +275672,7 @@ index 000000000000..17ad86bbdb00
 +#endif /* !defined(SYSVALIDATION_H) */
 diff --git a/drivers/gpu/drm/img-rogue/tlclient.c b/drivers/gpu/drm/img-rogue/tlclient.c
 new file mode 100644
-index 000000000000..76983002c4f1
+index 0000000000000..76983002c4f10
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlclient.c
 @@ -0,0 +1,499 @@
@@ -276177,7 +276177,7 @@ index 000000000000..76983002c4f1
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/tlclient.h b/drivers/gpu/drm/img-rogue/tlclient.h
 new file mode 100644
-index 000000000000..00f7aa8fc043
+index 0000000000000..00f7aa8fc0433
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlclient.h
 @@ -0,0 +1,257 @@
@@ -276440,7 +276440,7 @@ index 000000000000..00f7aa8fc043
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/tlintern.c b/drivers/gpu/drm/img-rogue/tlintern.c
 new file mode 100644
-index 000000000000..2c84ebf7b194
+index 0000000000000..2c84ebf7b1940
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlintern.c
 @@ -0,0 +1,442 @@
@@ -276888,7 +276888,7 @@ index 000000000000..2c84ebf7b194
 +}
 diff --git a/drivers/gpu/drm/img-rogue/tlintern.h b/drivers/gpu/drm/img-rogue/tlintern.h
 new file mode 100644
-index 000000000000..c3edce6b8cd1
+index 0000000000000..c3edce6b8cd17
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlintern.h
 @@ -0,0 +1,345 @@
@@ -277239,7 +277239,7 @@ index 000000000000..c3edce6b8cd1
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/tlserver.c b/drivers/gpu/drm/img-rogue/tlserver.c
 new file mode 100644
-index 000000000000..c250dd3dc618
+index 0000000000000..c250dd3dc6189
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlserver.c
 @@ -0,0 +1,747 @@
@@ -277992,7 +277992,7 @@ index 000000000000..c250dd3dc618
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/tlserver.h b/drivers/gpu/drm/img-rogue/tlserver.h
 new file mode 100644
-index 000000000000..7ac2958eac1e
+index 0000000000000..7ac2958eac1ee
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlserver.h
 @@ -0,0 +1,97 @@
@@ -278095,7 +278095,7 @@ index 000000000000..7ac2958eac1e
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/tlstream.c b/drivers/gpu/drm/img-rogue/tlstream.c
 new file mode 100644
-index 000000000000..b38a5cf56819
+index 0000000000000..b38a5cf568191
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlstream.c
 @@ -0,0 +1,1625 @@
@@ -279726,7 +279726,7 @@ index 000000000000..b38a5cf56819
 +}
 diff --git a/drivers/gpu/drm/img-rogue/tlstream.h b/drivers/gpu/drm/img-rogue/tlstream.h
 new file mode 100644
-index 000000000000..911e720e7cdd
+index 0000000000000..911e720e7cdde
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/tlstream.h
 @@ -0,0 +1,600 @@
@@ -280332,7 +280332,7 @@ index 000000000000..911e720e7cdd
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/trace_events.c b/drivers/gpu/drm/img-rogue/trace_events.c
 new file mode 100644
-index 000000000000..9fdd8598f2ef
+index 0000000000000..9fdd8598f2ef6
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/trace_events.c
 @@ -0,0 +1,269 @@
@@ -280607,7 +280607,7 @@ index 000000000000..9fdd8598f2ef
 +}
 diff --git a/drivers/gpu/drm/img-rogue/trace_events.h b/drivers/gpu/drm/img-rogue/trace_events.h
 new file mode 100644
-index 000000000000..5a4d0567688b
+index 0000000000000..5a4d0567688b4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/trace_events.h
 @@ -0,0 +1,196 @@
@@ -280809,7 +280809,7 @@ index 000000000000..5a4d0567688b
 +#endif /* TRACE_EVENTS_H */
 diff --git a/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.c b/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.c
 new file mode 100644
-index 000000000000..2d4f2fa8ce66
+index 0000000000000..2d4f2fa8ce66e
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.c
 @@ -0,0 +1,280 @@
@@ -281095,7 +281095,7 @@ index 000000000000..2d4f2fa8ce66
 +}
 diff --git a/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.h b/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.h
 new file mode 100644
-index 000000000000..75ec9297e9c2
+index 0000000000000..75ec9297e9c2d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/uniq_key_splay_tree.h
 @@ -0,0 +1,90 @@
@@ -281191,7 +281191,7 @@ index 000000000000..75ec9297e9c2
 +#endif /* !UNIQ_KEY_SPLAY_TREE_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/vmm_impl.h b/drivers/gpu/drm/img-rogue/vmm_impl.h
 new file mode 100644
-index 000000000000..9ac1f50e5d30
+index 0000000000000..9ac1f50e5d30c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_impl.h
 @@ -0,0 +1,203 @@
@@ -281400,7 +281400,7 @@ index 000000000000..9ac1f50e5d30
 +#endif /* VMM_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/vmm_pvz_client.c b/drivers/gpu/drm/img-rogue/vmm_pvz_client.c
 new file mode 100644
-index 000000000000..8ea86d9a0f0d
+index 0000000000000..8ea86d9a0f0d4
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_pvz_client.c
 @@ -0,0 +1,131 @@
@@ -281537,7 +281537,7 @@ index 000000000000..8ea86d9a0f0d
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vmm_pvz_client.h b/drivers/gpu/drm/img-rogue/vmm_pvz_client.h
 new file mode 100644
-index 000000000000..205dc4ae93b5
+index 0000000000000..205dc4ae93b5b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_pvz_client.h
 @@ -0,0 +1,76 @@
@@ -281619,7 +281619,7 @@ index 000000000000..205dc4ae93b5
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vmm_pvz_server.c b/drivers/gpu/drm/img-rogue/vmm_pvz_server.c
 new file mode 100644
-index 000000000000..995d3051b95f
+index 0000000000000..995d3051b95fd
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_pvz_server.c
 @@ -0,0 +1,241 @@
@@ -281866,7 +281866,7 @@ index 000000000000..995d3051b95f
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vmm_pvz_server.h b/drivers/gpu/drm/img-rogue/vmm_pvz_server.h
 new file mode 100644
-index 000000000000..02e2683c0c19
+index 0000000000000..02e2683c0c19b
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_pvz_server.h
 @@ -0,0 +1,121 @@
@@ -281993,7 +281993,7 @@ index 000000000000..02e2683c0c19
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vmm_type_stub.c b/drivers/gpu/drm/img-rogue/vmm_type_stub.c
 new file mode 100644
-index 000000000000..cafe57bbab77
+index 0000000000000..cafe57bbab779
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vmm_type_stub.c
 @@ -0,0 +1,112 @@
@@ -282111,7 +282111,7 @@ index 000000000000..cafe57bbab77
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vz_vm.h b/drivers/gpu/drm/img-rogue/vz_vm.h
 new file mode 100644
-index 000000000000..ee4a7fb5b3a7
+index 0000000000000..ee4a7fb5b3a7c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vz_vm.h
 @@ -0,0 +1,63 @@
@@ -282180,7 +282180,7 @@ index 000000000000..ee4a7fb5b3a7
 +*****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c
 new file mode 100644
-index 000000000000..5e0121950580
+index 0000000000000..5e01219505808
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c
 @@ -0,0 +1,196 @@
@@ -282382,7 +282382,7 @@ index 000000000000..5e0121950580
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h
 new file mode 100644
-index 000000000000..a35461915866
+index 0000000000000..a354619158665
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h
 @@ -0,0 +1,79 @@
@@ -282467,7 +282467,7 @@ index 000000000000..a35461915866
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_vm.c b/drivers/gpu/drm/img-rogue/vz_vmm_vm.c
 new file mode 100644
-index 000000000000..7e3a695dbb02
+index 0000000000000..7e3a695dbb020
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_vm.c
 @@ -0,0 +1,294 @@
@@ -282767,7 +282767,7 @@ index 000000000000..7e3a695dbb02
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/nulldisp/Kconfig b/drivers/gpu/drm/nulldisp/Kconfig
 new file mode 100644
-index 000000000000..b912475b3c22
+index 0000000000000..b912475b3c22b
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/Kconfig
 @@ -0,0 +1,8 @@
@@ -282781,7 +282781,7 @@ index 000000000000..b912475b3c22
 +          This enables powervr null drm display driver
 diff --git a/drivers/gpu/drm/nulldisp/Makefile b/drivers/gpu/drm/nulldisp/Makefile
 new file mode 100644
-index 000000000000..dbd25a3ea752
+index 0000000000000..dbd25a3ea7521
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/Makefile
 @@ -0,0 +1,6 @@
@@ -282793,7 +282793,7 @@ index 000000000000..dbd25a3ea752
 +drm_nulldisp-y := drm_nulldisp_drv.o drm_nulldisp_netlink.o drm_netlink_gem.o drm_nulldisp_gem.o
 diff --git a/drivers/gpu/drm/nulldisp/drm_netlink_gem.c b/drivers/gpu/drm/nulldisp/drm_netlink_gem.c
 new file mode 100644
-index 000000000000..467e1f4edb6b
+index 0000000000000..467e1f4edb6b9
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_netlink_gem.c
 @@ -0,0 +1,143 @@
@@ -282942,7 +282942,7 @@ index 000000000000..467e1f4edb6b
 +#endif	/* (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 0)) */
 diff --git a/drivers/gpu/drm/nulldisp/drm_netlink_gem.h b/drivers/gpu/drm/nulldisp/drm_netlink_gem.h
 new file mode 100644
-index 000000000000..3a3fcd4901e5
+index 0000000000000..3a3fcd4901e50
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_netlink_gem.h
 @@ -0,0 +1,61 @@
@@ -283009,7 +283009,7 @@ index 000000000000..3a3fcd4901e5
 +#endif	/* !defined(__DRM_NETLINK_GEM_H__) */
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
 new file mode 100644
-index 000000000000..4017051a68ee
+index 0000000000000..4017051a68eea
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
 @@ -0,0 +1,2752 @@
@@ -285767,7 +285767,7 @@ index 000000000000..4017051a68ee
 +MODULE_LICENSE("Dual MIT/GPL");
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.h b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.h
 new file mode 100644
-index 000000000000..355dabd1cba3
+index 0000000000000..355dabd1cba30
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.h
 @@ -0,0 +1,97 @@
@@ -285870,7 +285870,7 @@ index 000000000000..355dabd1cba3
 +#endif /* __DRM_NULLDISP_DRV_H__ */
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.c
 new file mode 100644
-index 000000000000..3c2bf285db36
+index 0000000000000..3c2bf285db360
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.c
 @@ -0,0 +1,668 @@
@@ -286544,7 +286544,7 @@ index 000000000000..3c2bf285db36
 +}
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.h b/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.h
 new file mode 100644
-index 000000000000..5b5682b0c019
+index 0000000000000..5b5682b0c0199
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_gem.h
 @@ -0,0 +1,158 @@
@@ -286708,7 +286708,7 @@ index 000000000000..5b5682b0c019
 +#endif	/* !defined(__DRM_NULLDISP_H__) */
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
 new file mode 100644
-index 000000000000..a5e8a742bcd1
+index 0000000000000..a5e8a742bcd1d
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
 @@ -0,0 +1,698 @@
@@ -287412,7 +287412,7 @@ index 000000000000..a5e8a742bcd1
 +}
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.h b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.h
 new file mode 100644
-index 000000000000..1cea24085bff
+index 0000000000000..1cea24085bffa
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.h
 @@ -0,0 +1,77 @@
@@ -287495,7 +287495,7 @@ index 000000000000..1cea24085bff
 +#endif /* __DRM_NULLDISP_NETLINK_H__ */
 diff --git a/drivers/gpu/drm/nulldisp/img_drm_fourcc_internal.h b/drivers/gpu/drm/nulldisp/img_drm_fourcc_internal.h
 new file mode 100644
-index 000000000000..ee88e90cde1e
+index 0000000000000..ee88e90cde1e5
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/img_drm_fourcc_internal.h
 @@ -0,0 +1,94 @@
@@ -287595,7 +287595,7 @@ index 000000000000..ee88e90cde1e
 +#endif /* IMG_DRM_FOURCC_INTERNAL_H */
 diff --git a/drivers/gpu/drm/nulldisp/kernel_compatibility.h b/drivers/gpu/drm/nulldisp/kernel_compatibility.h
 new file mode 100644
-index 000000000000..0df21c37097f
+index 0000000000000..0df21c37097fa
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/kernel_compatibility.h
 @@ -0,0 +1,576 @@
@@ -288177,7 +288177,7 @@ index 000000000000..0df21c37097f
 +#endif /* __KERNEL_COMPATIBILITY_H__ */
 diff --git a/drivers/gpu/drm/nulldisp/netlink.h b/drivers/gpu/drm/nulldisp/netlink.h
 new file mode 100644
-index 000000000000..7b0a71fbaab3
+index 0000000000000..7b0a71fbaab32
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/netlink.h
 @@ -0,0 +1,147 @@
@@ -288330,7 +288330,7 @@ index 000000000000..7b0a71fbaab3
 +#endif /* __NETLINK_H__ */
 diff --git a/drivers/gpu/drm/nulldisp/nulldisp_drm.h b/drivers/gpu/drm/nulldisp/nulldisp_drm.h
 new file mode 100644
-index 000000000000..8403fb56f1a5
+index 0000000000000..8403fb56f1a57
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/nulldisp_drm.h
 @@ -0,0 +1,105 @@
@@ -288441,7 +288441,7 @@ index 000000000000..8403fb56f1a5
 +#endif /* defined(__NULLDISP_DRM_H__) */
 diff --git a/drivers/gpu/drm/nulldisp/pdp_drm.h b/drivers/gpu/drm/nulldisp/pdp_drm.h
 new file mode 100644
-index 000000000000..f5d747d3ad10
+index 0000000000000..f5d747d3ad108
 --- /dev/null
 +++ b/drivers/gpu/drm/nulldisp/pdp_drm.h
 @@ -0,0 +1,105 @@

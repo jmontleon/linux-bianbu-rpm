@@ -1,4 +1,4 @@
-From 69890bc27de72fac7f1f72db78228f30a160a494 Mon Sep 17 00:00:00 2001
+From b27ed4a006987f1130bf3c5acb67a19fd9a8f009 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:20:46 +0800
 Subject: [PATCH 0899/1222] codec: add es7210 driver
@@ -21,7 +21,7 @@ Change-Id: Ic7c9a2cb71a0e1655f35a3c680edf46dc66831f0
  create mode 100644 sound/soc/codecs/es7210_snd_controls.c
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index ee698943e166..315e95b8f78f 100644
+index ee698943e1661..315e95b8f78fa 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -572,6 +572,7 @@ CONFIG_SND_SOC=y
@@ -33,7 +33,7 @@ index ee698943e166..315e95b8f78f 100644
  CONFIG_UHID=y
  CONFIG_HID_MULTITOUCH=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6d7e4725d89c..267cd2d5f351 100644
+index 6d7e4725d89cd..267cd2d5f3512 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -123,6 +123,7 @@ config SND_SOC_ALL_CODECS
@@ -55,7 +55,7 @@ index 6d7e4725d89c..267cd2d5f351 100644
  	tristate "Everest Semi ES7241 CODEC"
  
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index a68c3d192a1b..e9292d391694 100644
+index a68c3d192a1b6..e9292d391694f 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
 @@ -125,6 +125,7 @@ snd-soc-da732x-y := da732x.o
@@ -76,7 +76,7 @@ index a68c3d192a1b..e9292d391694 100644
  obj-$(CONFIG_SND_SOC_ES8311)    += snd-soc-es8311.o
 diff --git a/sound/soc/codecs/es7210.c b/sound/soc/codecs/es7210.c
 new file mode 100644
-index 000000000000..1932218f3dd5
+index 0000000000000..1932218f3dd5d
 --- /dev/null
 +++ b/sound/soc/codecs/es7210.c
 @@ -0,0 +1,1992 @@
@@ -2074,7 +2074,7 @@ index 000000000000..1932218f3dd5
 +MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/codecs/es7210.h b/sound/soc/codecs/es7210.h
 new file mode 100644
-index 000000000000..feb88830a5b8
+index 0000000000000..feb88830a5b80
 --- /dev/null
 +++ b/sound/soc/codecs/es7210.h
 @@ -0,0 +1,140 @@
@@ -2220,7 +2220,7 @@ index 000000000000..feb88830a5b8
 +#endif	/* _ES7210_H_ */
 diff --git a/sound/soc/codecs/es7210_config.c b/sound/soc/codecs/es7210_config.c
 new file mode 100644
-index 000000000000..b3c087aa77f1
+index 0000000000000..b3c087aa77f1b
 --- /dev/null
 +++ b/sound/soc/codecs/es7210_config.c
 @@ -0,0 +1,280 @@
@@ -2506,7 +2506,7 @@ index 000000000000..b3c087aa77f1
 +}
 diff --git a/sound/soc/codecs/es7210_config.h b/sound/soc/codecs/es7210_config.h
 new file mode 100644
-index 000000000000..5e1da6040b14
+index 0000000000000..5e1da6040b14c
 --- /dev/null
 +++ b/sound/soc/codecs/es7210_config.h
 @@ -0,0 +1,259 @@
@@ -2772,7 +2772,7 @@ index 000000000000..5e1da6040b14
 \ No newline at end of file
 diff --git a/sound/soc/codecs/es7210_snd_controls.c b/sound/soc/codecs/es7210_snd_controls.c
 new file mode 100644
-index 000000000000..8922627f7960
+index 0000000000000..8922627f7960e
 --- /dev/null
 +++ b/sound/soc/codecs/es7210_snd_controls.c
 @@ -0,0 +1,174 @@

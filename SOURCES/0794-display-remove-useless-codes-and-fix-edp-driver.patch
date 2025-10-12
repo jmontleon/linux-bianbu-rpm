@@ -1,4 +1,4 @@
-From bd75325c7577f01df36973c3d411a7691804ae8d Mon Sep 17 00:00:00 2001
+From 509d148ecf0d377e54b3197b778c2cdfb0347be6 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 13 Jun 2024 20:33:05 +0800
 Subject: [PATCH 0794/1222] display: remove useless codes and fix edp driver
@@ -10,7 +10,7 @@ Change-Id: Ic33ee4bbb60e60e5b3caa5ab80af41b75e1061c2
  2 files changed, 87 insertions(+), 151 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 7bd443f97617..ee2103976d48 100644
+index 7bd443f976173..ee2103976d489 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -195,7 +195,7 @@ dsi1_output: endpoint@1 {
@@ -23,7 +23,7 @@ index 7bd443f97617..ee2103976d48 100644
  
  };
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 1c1cbcf619dd..ccda58bc8e2f 100644
+index 1c1cbcf619dd7..ccda58bc8e2f6 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -18,12 +18,9 @@

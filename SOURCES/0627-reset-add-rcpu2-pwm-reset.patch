@@ -1,4 +1,4 @@
-From f572eae729bdb43804c022edff878bfd3abc2791 Mon Sep 17 00:00:00 2001
+From d755cf70bbadf454e803ddcfdbd4098cbda6e3b5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 30 Apr 2024 10:33:26 +0800
 Subject: [PATCH 0627/1222] reset: add rcpu2 pwm reset
@@ -11,7 +11,7 @@ Change-Id: I06ccb125d1a6657ec17d9e4519e7b4dc3e14cf69
  3 files changed, 26 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e6aea6abd715..fcc63f3e0f5c 100644
+index e6aea6abd7155..fcc63f3e0f5c0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -611,8 +611,9 @@ reset: reset-controller@d4050000 {
@@ -27,7 +27,7 @@ index e6aea6abd715..fcc63f3e0f5c 100644
  			status = "okay";
  		};
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 90af43a69c37..1cba454051f6 100644
+index 90af43a69c377..1cba454051f66 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -132,6 +132,10 @@
@@ -100,7 +100,7 @@ index 90af43a69c37..1cba454051f6 100644
  
  	reset->lock = &g_cru_lock;
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index ed4b24f6d380..e3cb57034a50 100644
+index ed4b24f6d3800..e3cb57034a508 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -115,6 +115,8 @@

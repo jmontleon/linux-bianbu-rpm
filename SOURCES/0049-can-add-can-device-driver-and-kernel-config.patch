@@ -1,4 +1,4 @@
-From 0eabd428a27f90b29f6f7c9dc2d881598f744c3a Mon Sep 17 00:00:00 2001
+From 796627e0e21da398b2e65fbe26a9d5bfe92d0c56 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 7 Jun 2023 15:36:34 +0800
 Subject: [PATCH 0049/1222] can: add can-device driver and kernel config
@@ -13,7 +13,7 @@ Change-Id: I2df90864e84bcec7e05da4ea891129d6fcfa8896
  create mode 100644 drivers/net/can/ipms_canfd.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 0bd42d960ad3..6748593aed9f 100644
+index 0bd42d960ad3e..6748593aed9f4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -296,6 +296,21 @@ core3_tcm@60000 {
@@ -39,7 +39,7 @@ index 0bd42d960ad3..6748593aed9f 100644
  			compatible = "spacemit,k1-pro-dwc3";
  			#address-cells = <2>;
 diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index d43d56694667..af4b9db4e7a2 100644
+index d43d566946676..af4b9db4e7a24 100644
 --- a/drivers/net/can/Kconfig
 +++ b/drivers/net/can/Kconfig
 @@ -217,6 +217,11 @@ config CAN_XILINXCAN
@@ -55,7 +55,7 @@ index d43d56694667..af4b9db4e7a2 100644
  source "drivers/net/can/cc770/Kconfig"
  source "drivers/net/can/ctucanfd/Kconfig"
 diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index 56138d8ddfd2..6eed3874bb0e 100644
+index 56138d8ddfd23..6eed3874bb0e1 100644
 --- a/drivers/net/can/Makefile
 +++ b/drivers/net/can/Makefile
 @@ -33,5 +33,6 @@ obj-$(CONFIG_CAN_SJA1000)	+= sja1000/
@@ -67,7 +67,7 @@ index 56138d8ddfd2..6eed3874bb0e 100644
  subdir-ccflags-$(CONFIG_CAN_DEBUG_DEVICES) += -DDEBUG
 diff --git a/drivers/net/can/ipms_canfd.c b/drivers/net/can/ipms_canfd.c
 new file mode 100644
-index 000000000000..f7f685afc609
+index 0000000000000..f7f685afc6091
 --- /dev/null
 +++ b/drivers/net/can/ipms_canfd.c
 @@ -0,0 +1,1196 @@

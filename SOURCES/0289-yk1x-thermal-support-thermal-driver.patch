@@ -1,4 +1,4 @@
-From 0e170623304c054e4cbf24bf8c8428de8f445ddd Mon Sep 17 00:00:00 2001
+From f7598362622d139a673527fe906cf8a7f9791b2b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 30 Dec 2023 14:17:59 +0800
 Subject: [PATCH 0289/1222] yk1x:thermal: support thermal driver
@@ -18,7 +18,7 @@ Change-Id: I14e2f239405f0f53fc403c0274036a8fec35cf74
  create mode 100644 drivers/thermal/k1x-thermal.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 3706fc179110..eb29d0efe5ed 100644
+index 3706fc1791105..eb29d0efe5edd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1743,6 +1743,104 @@ qspi: spi@d420c000 {
@@ -127,7 +127,7 @@ index 3706fc179110..eb29d0efe5ed 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 6814a9ee0734..0e855b58e045 100644
+index 6814a9ee07345..0e855b58e0454 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -201,6 +201,10 @@ CONFIG_PINCTRL_SINGLE=y
@@ -142,7 +142,7 @@ index 6814a9ee0734..0e855b58e045 100644
  CONFIG_SPACEMIT_WATCHDOG=y
  CONFIG_MFD_SYSCON=y
 diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index a09c188b9ad1..efe4b01b7048 100644
+index a09c188b9ad11..efe4b01b70484 100644
 --- a/drivers/thermal/Kconfig
 +++ b/drivers/thermal/Kconfig
 @@ -433,6 +433,13 @@ config AMLOGIC_THERMAL
@@ -160,7 +160,7 @@ index a09c188b9ad1..efe4b01b7048 100644
  depends on X86 || X86_INTEL_QUARK || COMPILE_TEST
  source "drivers/thermal/intel/Kconfig"
 diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index d7718978db24..a7301e0bff92 100644
+index d7718978db245..a7301e0bff920 100644
 --- a/drivers/thermal/Makefile
 +++ b/drivers/thermal/Makefile
 @@ -68,3 +68,4 @@ obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
@@ -170,7 +170,7 @@ index d7718978db24..a7301e0bff92 100644
 +obj-$(CONFIG_K1X_THERMAL) += k1x-thermal.o
 diff --git a/drivers/thermal/k1x-thermal.c b/drivers/thermal/k1x-thermal.c
 new file mode 100644
-index 000000000000..02b8a577daed
+index 0000000000000..02b8a577daed6
 --- /dev/null
 +++ b/drivers/thermal/k1x-thermal.c
 @@ -0,0 +1,352 @@
@@ -528,7 +528,7 @@ index 000000000000..02b8a577daed
 +module_platform_driver(k1x_thermal_driver);
 diff --git a/drivers/thermal/k1x-thermal.h b/drivers/thermal/k1x-thermal.h
 new file mode 100644
-index 000000000000..28cc0f5067b8
+index 0000000000000..28cc0f5067b85
 --- /dev/null
 +++ b/drivers/thermal/k1x-thermal.h
 @@ -0,0 +1,77 @@

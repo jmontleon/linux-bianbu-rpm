@@ -1,4 +1,4 @@
-From 0cac63a801358405680d798d492b04e07e1c204a Mon Sep 17 00:00:00 2001
+From f820d0d1bb676f52875a828dd4730a076d58a200 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 20 Dec 2023 20:35:43 +0800
 Subject: [PATCH 0212/1222] qspi: fix the bus_num for k1x qspi controller
@@ -13,7 +13,7 @@ Change-Id: Ib755dadd4ec45b8a6a23c7347d4107576cfcf4d8
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index fc05c66d3b99..d036bff3ed12 100644
+index fc05c66d3b990..d036bff3ed120 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1576,7 +1576,7 @@ qspi: spi@d420c000 {

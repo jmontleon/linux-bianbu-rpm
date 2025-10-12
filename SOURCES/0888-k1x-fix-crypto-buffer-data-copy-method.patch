@@ -1,4 +1,4 @@
-From ab7ffc1de3dde72a6a5029bb7c9d218d0adc7557 Mon Sep 17 00:00:00 2001
+From 6f7ce2a145c4e988f498df71b89db5f52ad0df0d Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 20 Jun 2024 17:24:41 +0800
 Subject: [PATCH 0888/1222] k1x:fix crypto buffer data copy method
@@ -9,7 +9,7 @@ Change-Id: Id15a97c465d4b2e75e73e6cb2c0975487c7dd7e2
  1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index b7315a95e284..a6cc7f5a0cdd 100644
+index b7315a95e284a..a6cc7f5a0cdd4 100644
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -65,10 +65,10 @@ static int ecb_encrypt(struct skcipher_request *req)

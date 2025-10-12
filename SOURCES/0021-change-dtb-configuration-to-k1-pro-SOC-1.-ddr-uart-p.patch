@@ -1,4 +1,4 @@
-From 9f6d9fe05f0d7af70a0d2706c3db16d773aaaf3e Mon Sep 17 00:00:00 2001
+From a001b6854839d4d28cbbd7a42e69a81d4fbc68cf Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Tue, 18 Apr 2023 15:09:56 +0800
 Subject: [PATCH 0021/1222] change dtb configuration to k1-pro SOC 1.
@@ -11,7 +11,7 @@ Change-Id: Id6014c5a6c046de28b7ecb70710b13e77bfa8ae7
  2 files changed, 10 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index f41352dc7533..8660fb125339 100644
+index f41352dc7533f..8660fb1253397 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -188,7 +188,7 @@ reset: reset-controller@18030000 {
@@ -63,7 +63,7 @@ index f41352dc7533..8660fb125339 100644
  			reg-io-width = <4>;
  			hw-flow-control = "unsupport";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
-index 11b46bdd63ce..328b6dd4f2eb 100644
+index 11b46bdd63ceb..328b6dd4f2eb1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_fpga.dts
 @@ -9,7 +9,7 @@ / {

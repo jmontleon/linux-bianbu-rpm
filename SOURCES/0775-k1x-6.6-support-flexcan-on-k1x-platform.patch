@@ -1,4 +1,4 @@
-From ea2981cf1e6799775935fa2689c55d2bb0c0dd48 Mon Sep 17 00:00:00 2001
+From 5c2a6f01885f123301c908188af65473c7c5a43d Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 25 Jun 2024 17:42:12 +0800
 Subject: [PATCH 0775/1222] k1x-6.6:support flexcan on k1x platform
@@ -9,7 +9,7 @@ Change-Id: I796836b60825783d70214b52231697c74bf87590
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 3e5e954ad8e6..23640d7c7552 100644
+index 3e5e954ad8e65..23640d7c75528 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -413,6 +413,17 @@ static const struct flexcan_devtype_data nxp_s32g2_devtype_data = {

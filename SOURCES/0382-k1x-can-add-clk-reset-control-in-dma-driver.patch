@@ -1,4 +1,4 @@
-From ed494536fa1ba459eb4e4ebee177cf60650aaf20 Mon Sep 17 00:00:00 2001
+From 1fb046d44d995ad25d409703f0e64a21e13c17b8 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 15 Jan 2024 19:59:17 +0800
 Subject: [PATCH 0382/1222] k1x-can:add clk&reset control in dma driver
@@ -10,7 +10,7 @@ Change-Id: Id971bbff39cda9a56a1a248ef6d228ba1d8cdb58
  2 files changed, 19 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 06d5d35fc1b5..5fb1bf05c246 100644
+index 06d5d35fc1b55..5fb1bf05c2460 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -19,6 +19,7 @@
@@ -72,7 +72,7 @@ index 06d5d35fc1b5..5fb1bf05c246 100644
  	priv->transceiver = transceiver;
  
 diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
-index 16692a2502eb..1165b6558376 100644
+index 16692a2502eba..1165b65583768 100644
 --- a/drivers/net/can/flexcan/flexcan.h
 +++ b/drivers/net/can/flexcan/flexcan.h
 @@ -105,6 +105,7 @@ struct flexcan_priv {

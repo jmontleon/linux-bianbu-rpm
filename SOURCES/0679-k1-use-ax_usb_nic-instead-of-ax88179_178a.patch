@@ -1,4 +1,4 @@
-From 1f81c78bddf221482831d083c384fbf4d1861ee0 Mon Sep 17 00:00:00 2001
+From a8d736f614d4f43ad0bd2c7c6cfe786251ea41ad Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 20 May 2024 14:30:30 +0800
 Subject: [PATCH 0679/1222] k1: use ax_usb_nic instead of ax88179_178a
@@ -9,7 +9,7 @@ Change-Id: I008ce40456ab2cc32baf176eed188ef0ec65bf23
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index c7fc6b3b89e2..3299fb17f4d9 100644
+index c7fc6b3b89e25..3299fb17f4d98 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -324,8 +324,10 @@ CONFIG_CAN_FLEXCAN=y

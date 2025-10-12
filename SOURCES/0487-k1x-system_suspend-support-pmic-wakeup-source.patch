@@ -1,4 +1,4 @@
-From 567890c831f420f2bb1f9d0a96383a13e37c95ed Mon Sep 17 00:00:00 2001
+From 1805e47243378582d1d78182e4f04c2b6939bab8 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 13 Mar 2024 10:21:07 +0800
 Subject: [PATCH 0487/1222] k1x:system_suspend: support pmic wakeup source
@@ -17,7 +17,7 @@ Change-Id: Ia4705bf110c4a308c427c778eb543a1679087e78
  5 files changed, 78 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
-index e65d20fbd3ac..d76b0a8e913b 100644
+index e65d20fbd3ac6..d76b0a8e913bf 100644
 --- a/drivers/input/misc/spacemit-pwrkey.c
 +++ b/drivers/input/misc/spacemit-pwrkey.c
 @@ -8,6 +8,7 @@
@@ -37,7 +37,7 @@ index e65d20fbd3ac..d76b0a8e913b 100644
  
  	return 0;
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index a648f7458a0b..c4bed017bea0 100644
+index a648f7458a0b3..c4bed017bea08 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -224,8 +224,12 @@ static struct irq_chip plic_edge_chip = {
@@ -67,7 +67,7 @@ index a648f7458a0b..c4bed017bea0 100644
  
  static int plic_irq_set_type(struct irq_data *d, unsigned int type)
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index f2779cfae373..aa789eb3fe76 100644
+index f2779cfae3737..aa789eb3fe76e 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -8,6 +8,7 @@
@@ -89,7 +89,7 @@ index f2779cfae373..aa789eb3fe76 100644
  
  	ret = devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_NONE,
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
-index 3ab5a80adab6..4deb649a3dcc 100644
+index 3ab5a80adab67..4deb649a3dcc0 100644
 --- a/drivers/rtc/rtc-spt-pmic.c
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -389,6 +389,7 @@ static int spacemit_rtc_probe(struct platform_device *pdev)
@@ -101,7 +101,7 @@ index 3ab5a80adab6..4deb649a3dcc 100644
  
  	rtc->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index be86ad07f1e4..9ed5dcd60534 100644
+index be86ad07f1e4d..9ed5dcd60534d 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -21,6 +21,7 @@

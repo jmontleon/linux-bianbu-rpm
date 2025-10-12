@@ -1,4 +1,4 @@
-From ccbbf52ba699fc4747c907211d69a9eaf1028ce1 Mon Sep 17 00:00:00 2001
+From b962fd2696d89b641fa740ddb6b6f2950a4eb278 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 1 Apr 2024 20:09:44 +0800
 Subject: [PATCH 0545/1222] usb: spacemit_onboard_hub: fix bug caused by no
@@ -15,7 +15,7 @@ Change-Id: Ie091132052ec774cc56caab82e34d2b0536af4a2
  create mode 100644 drivers/usb/misc/spacemit_onboard_hub.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 7661c63787d7..106be807779c 100644
+index 7661c63787d74..106be807779c4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -597,9 +597,10 @@ &combphy {
@@ -31,7 +31,7 @@ index 7661c63787d7..106be807779c 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 63b8f3faf8d5..b06526852872 100644
+index 63b8f3faf8d57..b065268528726 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -779,9 +779,10 @@ &combphy {
@@ -47,7 +47,7 @@ index 63b8f3faf8d5..b06526852872 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index dd7b38f614aa..bced90483a40 100644
+index dd7b38f614aa4..bced90483a40f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -741,9 +741,10 @@ &combphy {
@@ -63,7 +63,7 @@ index dd7b38f614aa..bced90483a40 100644
  };
  
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
-index fa12fb718bae..8ccde42e2393 100644
+index fa12fb718bae1..8ccde42e23935 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.c
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -17,30 +17,139 @@
@@ -234,7 +234,7 @@ index fa12fb718bae..8ccde42e2393 100644
  }
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.h b/drivers/usb/misc/spacemit_onboard_hub.h
 new file mode 100644
-index 000000000000..a59c80059dd4
+index 0000000000000..a59c80059dd47
 --- /dev/null
 +++ b/drivers/usb/misc/spacemit_onboard_hub.h
 @@ -0,0 +1,136 @@

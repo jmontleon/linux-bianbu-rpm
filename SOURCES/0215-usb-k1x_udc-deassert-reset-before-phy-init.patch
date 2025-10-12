@@ -1,4 +1,4 @@
-From 615c3a176d19a664924264c0fdd93d48a3435e88 Mon Sep 17 00:00:00 2001
+From 4e8082491b14195b74d1f792ea2d1e8aff14be83 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 21 Dec 2023 17:02:48 +0800
 Subject: [PATCH 0215/1222] usb: k1x_udc: deassert reset before phy init
@@ -9,7 +9,7 @@ Change-Id: I1a0c4fff5565698d21ccd2eec5bf2dfd427cc65a
  1 file changed, 17 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index e7904bbe8d40..ce4fdd7dcbf7 100755
+index e7904bbe8d40a..ce4fdd7dcbf74 100755
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -1176,6 +1176,13 @@ static int mv_udc_enable_internal(struct mv_udc *udc)

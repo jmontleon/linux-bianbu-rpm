@@ -1,4 +1,4 @@
-From 7b784de1dabc9eb9afcf4663be3d1b33933813ed Mon Sep 17 00:00:00 2001
+From 272b4204f0277a492c1edfae056f0d680fd50b90 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 29 Aug 2023 20:01:02 +0800
 Subject: [PATCH 0098/1222] disable pm, power management is not support now
@@ -9,7 +9,7 @@ Change-Id: Ifb7b74b44a8262c152b41fe612d31cfeb593ea77
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index a93c66aa8f70..6fbf072654d3 100644
+index a93c66aa8f703..6fbf072654d3f 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y

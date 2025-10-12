@@ -1,4 +1,4 @@
-From 36afcc1cbfa655c6f64bbcb4b72d858e3b87b98f Mon Sep 17 00:00:00 2001
+From 7b0cbfdb3c9f4131e1b4616d05b3bd1ba7787dcc Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:24:02 +0800
 Subject: [PATCH 0900/1222] codec: add es8156 driver
@@ -16,7 +16,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  create mode 100644 sound/soc/codecs/es8156.h
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 315e95b8f78f..5d3d023daaee 100644
+index 315e95b8f78fa..5d3d023daaeec 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -572,6 +572,7 @@ CONFIG_SND_SOC=y
@@ -28,7 +28,7 @@ index 315e95b8f78f..5d3d023daaee 100644
  CONFIG_SND_SIMPLE_CARD=y
  CONFIG_UHID=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 267cd2d5f351..dcd9e7e83c25 100644
+index 267cd2d5f3512..dcd9e7e83c250 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -115,6 +115,7 @@ config SND_SOC_ALL_CODECS
@@ -51,7 +51,7 @@ index 267cd2d5f351..dcd9e7e83c25 100644
  	tristate "Everest Semi ES8311 CODEC"
  	depends on I2C
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index e9292d391694..5760bdbe90f2 100644
+index e9292d391694f..5760bdbe90f25 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
 @@ -128,6 +128,7 @@ snd-soc-es7134-y := es7134.o
@@ -72,7 +72,7 @@ index e9292d391694..5760bdbe90f2 100644
  obj-$(CONFIG_SND_SOC_ES8323)	+= snd-soc-es8323.o
 diff --git a/sound/soc/codecs/es8156.c b/sound/soc/codecs/es8156.c
 new file mode 100644
-index 000000000000..da26b4737fd8
+index 0000000000000..da26b4737fd8f
 --- /dev/null
 +++ b/sound/soc/codecs/es8156.c
 @@ -0,0 +1,871 @@
@@ -949,7 +949,7 @@ index 000000000000..da26b4737fd8
 +MODULE_LICENSE("GPL");
 diff --git a/sound/soc/codecs/es8156.h b/sound/soc/codecs/es8156.h
 new file mode 100644
-index 000000000000..fdbbf31e5ded
+index 0000000000000..fdbbf31e5ded2
 --- /dev/null
 +++ b/sound/soc/codecs/es8156.h
 @@ -0,0 +1,85 @@

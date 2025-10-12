@@ -1,4 +1,4 @@
-From 787129a1999aa537c1571a372174482476957617 Mon Sep 17 00:00:00 2001
+From b6848318f5d6de3e0397236a78d78badcac91dd0 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 18 Mar 2024 10:59:01 +0800
 Subject: [PATCH 0502/1222] dts/dpu_reserved: move dpu reserved memory to
@@ -34,7 +34,7 @@ Change-Id: I0d742625348ba22c4f27bf423dbc8d45ef1b57d4
  8 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c3b9314f9224..9820fb6fd7f6 100644
+index c3b9314f9224b..9820fb6fd7f66 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -525,7 +525,7 @@ area_reserved@80000000 {
@@ -47,7 +47,7 @@ index c3b9314f9224..9820fb6fd7f6 100644
  			reg = <0x0 0xc0800000 0x0 0x40000>;
  			da_base = <0x0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 29145d85f2fb..dfcd5a9567c6 100644
+index 29145d85f2fb9..dfcd5a9567c6f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -101,9 +101,9 @@ linux,cma {
@@ -63,7 +63,7 @@ index 29145d85f2fb..dfcd5a9567c6 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index c83eea3b43d2..8bcd7a099164 100644
+index c83eea3b43d24..8bcd7a099164f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -104,9 +104,9 @@ linux,cma {
@@ -79,7 +79,7 @@ index c83eea3b43d2..8bcd7a099164 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 92a4a378f6f9..859ca2a35adb 100644
+index 92a4a378f6f9b..859ca2a35adb9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -104,9 +104,9 @@ linux,cma {
@@ -95,7 +95,7 @@ index 92a4a378f6f9..859ca2a35adb 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 99156c1188d8..fa1fd4819fff 100644
+index 99156c1188d85..fa1fd4819fff0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -104,9 +104,9 @@ linux,cma {
@@ -111,7 +111,7 @@ index 99156c1188d8..fa1fd4819fff 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 48ad9cd88fba..628f9bdd08e6 100644
+index 48ad9cd88fba3..628f9bdd08e6b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -102,9 +102,9 @@ linux,cma {
@@ -127,7 +127,7 @@ index 48ad9cd88fba..628f9bdd08e6 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 5fa5934ce704..17352efde87e 100644
+index 5fa5934ce7045..17352efde87ee 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -101,9 +101,9 @@ linux,cma {
@@ -143,7 +143,7 @@ index 5fa5934ce704..17352efde87e 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index decc6d73fa90..f8d1fe9c6ccd 100644
+index decc6d73fa90f..f8d1fe9c6ccd1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -100,9 +100,9 @@ linux,cma {

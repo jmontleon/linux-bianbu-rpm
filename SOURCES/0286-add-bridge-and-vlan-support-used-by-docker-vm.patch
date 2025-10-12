@@ -1,4 +1,4 @@
-From 45b76d71592bac55716224bcd8574913d6c2918b Mon Sep 17 00:00:00 2001
+From 52ddc08418635fa7566b815644bdffa6f74b684e Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:29:23 +0800
 Subject: [PATCH 0286/1222] add bridge and vlan support used by docker,vm
@@ -9,7 +9,7 @@ Change-Id: I49c7deb29d4d445f3b19df37d437c26aa770e9da
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index d9d7571be914..671108009e8e 100644
+index d9d7571be914f..671108009e8ef 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -54,6 +54,10 @@ CONFIG_IP_MULTICAST=y

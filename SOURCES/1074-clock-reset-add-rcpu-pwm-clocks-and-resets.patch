@@ -1,4 +1,4 @@
-From 41a5f08b2a7e1ffb33cbc49840d349041c1e30c3 Mon Sep 17 00:00:00 2001
+From aa2ac86ccd29dde02d5cbe43d7fd4d7f7378f4b3 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Wed, 6 Nov 2024 14:52:17 +0800
 Subject: [PATCH 1074/1222] clock&reset: add rcpu pwm clocks and resets
@@ -13,7 +13,7 @@ Change-Id: I89be20947682e026422cc1c785e2dd6da930e616
  5 files changed, 133 insertions(+), 34 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 7ea166ca6fb0..6c0b7f45114b 100644
+index 7ea166ca6fb00..6c0b7f45114bd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1619,8 +1619,8 @@ rpwm2: pwm@c0888300 {
@@ -28,7 +28,7 @@ index 7ea166ca6fb0..6c0b7f45114b 100644
  			rcpu-pwm;
  			status = "disabled";
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 9a9da1cc1232..71bc111626c0 100644
+index 9a9da1cc1232e..71bc111626c0f 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -197,7 +197,16 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -131,7 +131,7 @@ index 9a9da1cc1232..71bc111626c0 100644
  	.num = CLK_MAX_NO,
  };
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 34f12af0d5af..73470c61b1bb 100644
+index 34f12af0d5af3..73470c61b1bbd 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -139,7 +139,16 @@
@@ -179,7 +179,7 @@ index 34f12af0d5af..73470c61b1bb 100644
  
  static struct spacemit_reset *to_spacemit_reset(
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index be4c4e1f834b..cff282ac6256 100644
+index be4c4e1f834b2..cff282ac62562 100644
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -195,26 +195,35 @@
@@ -237,7 +237,7 @@ index be4c4e1f834b..cff282ac6256 100644
 +#define CLK_MAX_NO      212
  #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index 752995127334..de94abdc7be7 100644
+index 752995127334e..de94abdc7be7a 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -115,14 +115,23 @@

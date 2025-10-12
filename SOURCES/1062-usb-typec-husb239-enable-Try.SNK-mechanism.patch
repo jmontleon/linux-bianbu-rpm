@@ -1,4 +1,4 @@
-From e40522badd72f104983c1af1c05f14a724500d92 Mon Sep 17 00:00:00 2001
+From 5534fb6b3a1f55c240d52c37610c5b3659cb8e8f Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 31 Oct 2024 16:28:22 +0800
 Subject: [PATCH 1062/1222] usb: typec: husb239: enable Try.SNK mechanism
@@ -9,7 +9,7 @@ Change-Id: I5acc51a57739cbac47716f25ff834feb8a6f9b8b
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index 8badc635b179..340f50855b2c 100644
+index 8badc635b1790..340f50855b2c4 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -671,6 +671,7 @@ static int husb239_chip_init(struct husb239 *husb239)

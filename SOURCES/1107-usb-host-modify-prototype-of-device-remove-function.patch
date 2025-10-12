@@ -1,4 +1,4 @@
-From 43fd667ccc05c1f013934bb5be5340e94ce2c6eb Mon Sep 17 00:00:00 2001
+From e2b8e7388d102954786b95137ef99634e014dcd5 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:58:01 +0800
 Subject: [PATCH 1107/1222] usb: host: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: If40d222b690c2af07389ae0ad1dd66f97b9044d7
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index 16803b344d7b..de8e18080447 100644
+index 16803b344d7b9..de8e180804479 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -481,7 +481,7 @@ static int mv_ehci_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From dc098b3e463dd1149d9f90456cc07d7df9b28fe4 Mon Sep 17 00:00:00 2001
+From 1b1dfa0648dd6856dae4e8bd26724076c548273b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 28 Mar 2024 10:17:03 +0800
 Subject: [PATCH 0536/1222] k1:sys-reboot: using the reset function of pmic
@@ -14,7 +14,7 @@ Change-Id: Ie60a7a9abbcf1dc7b6b903612ef625d602efb226
  5 files changed, 30 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 8a07e22ddfd6..fb622e42c66d 100644
+index 8a07e22ddfd69..fb622e42c66d2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -923,3 +923,6 @@ &cls1_trip4 {
@@ -25,7 +25,7 @@ index 8a07e22ddfd6..fb622e42c66d 100644
 +	spa,wdt-enable-restart-handler;
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index d4b715c31f8b..5c22ce29a472 100644
+index d4b715c31f8b0..5c22ce29a4724 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -860,3 +860,7 @@ &cls0_trip4 {
@@ -37,7 +37,7 @@ index d4b715c31f8b..5c22ce29a472 100644
 +	spa,wdt-enable-restart-handler;
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 4bd366571a43..3dc7ba3509be 100644
+index 4bd366571a435..3dc7ba3509be7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -680,3 +680,7 @@ &spacemit_i2s {
@@ -49,7 +49,7 @@ index 4bd366571a43..3dc7ba3509be 100644
 +	spa,wdt-enable-restart-handler;
 +};
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index aa789eb3fe76..e2d41162e4fc 100644
+index aa789eb3fe76e..e2d41162e4fc3 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -57,13 +57,25 @@ static void spacemit_pm_power_off(void)
@@ -81,7 +81,7 @@ index aa789eb3fe76..e2d41162e4fc 100644
  
  static int spacemit_prepare_sub_pmic(struct spacemit_pmic *pmic)
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 2b680f04ce8b..831c151cf783 100644
+index 2b680f04ce8b0..831c151cf7830 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -78,6 +78,7 @@ enum SPM8821_reg {

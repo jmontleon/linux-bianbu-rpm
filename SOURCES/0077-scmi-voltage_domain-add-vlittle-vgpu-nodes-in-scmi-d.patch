@@ -1,4 +1,4 @@
-From 453fdf9f761057f425a67ac8434431050a75468e Mon Sep 17 00:00:00 2001
+From 610ea8a21243bde7f592011dbd19741c6227b48f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 25 Jul 2023 10:52:47 +0800
 Subject: [PATCH 0077/1222] scmi:voltage_domain: add vlittle & vgpu nodes in
@@ -10,7 +10,7 @@ Change-Id: I02f3c551faddec25c9417bf9c4ea5a2928c08bda
  1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
-index ae50a1d6c116..7bf002daab8f 100644
+index ae50a1d6c116c..7bf002daab8f8 100644
 --- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -47,10 +47,16 @@ regulators {

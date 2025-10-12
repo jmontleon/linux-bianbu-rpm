@@ -1,4 +1,4 @@
-From 3b77ca2e1a40fe7df9be531e5b15034e1e28ce13 Mon Sep 17 00:00:00 2001
+From 7cea2a42c3222c80f550c31b112ea95b3974b187 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 27 May 2024 16:22:42 +0800
 Subject: [PATCH 0789/1222] display: fix dsi dphy hs prepare and hs zero cycle
@@ -23,7 +23,7 @@ Change-Id: I4a8a838a0ffdc486c13c3f7a2fc88eaebf286d9a
  15 files changed, 72 insertions(+), 57 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 451de7cc0be8..13cb26440d32 100644
+index 451de7cc0be81..13cb26440d324 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -200,6 +200,7 @@ &pwm14 {
@@ -35,7 +35,7 @@ index 451de7cc0be8..13cb26440d32 100644
  	vin-supply-names = "dsi_1v2";
  	status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 59601d1e0b4f..7d01aa120dd0 100644
+index 59601d1e0b4f6..7d01aa120dd0e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -202,6 +202,7 @@ &pwm14 {
@@ -47,7 +47,7 @@ index 59601d1e0b4f..7d01aa120dd0 100644
  	vin-supply-names = "dsi_1v2";
  	status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 61a28b257c06..30d03669d85a 100644
+index 61a28b257c063..30d03669d85a5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -182,6 +182,7 @@ &pwm14 {
@@ -59,7 +59,7 @@ index 61a28b257c06..30d03669d85a 100644
  	vin-supply-names = "dsi_1v2";
  	status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
-index 84c80076cc28..e41a2ce3af40 100644
+index 84c80076cc28c..e41a2ce3af40e 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
 @@ -5,11 +5,10 @@ lcd_gc9503v_mipi: lcd_gc9503v_mipi {
@@ -85,7 +85,7 @@ index 84c80076cc28..e41a2ce3af40 100644
  		eotp-enable = <0>;
  		burst-mode = <2>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
-index e722c4840f14..5fac6d4a9af1 100644
+index e722c4840f143..5fac6d4a9af1b 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
 @@ -5,12 +5,8 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
@@ -112,7 +112,7 @@ index e722c4840f14..5fac6d4a9af1 100644
  		eotp-enable = <0>;
  		burst-mode = <2>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
-index e459306f6f6e..fbc3d70bbb60 100644
+index e459306f6f6eb..fbc3d70bbb60a 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 @@ -5,12 +5,8 @@ lcd_icnl9911c_mipi: lcd_icnl9911c_mipi {
@@ -138,7 +138,7 @@ index e459306f6f6e..fbc3d70bbb60 100644
  		eotp-enable = <0>;
  		burst-mode = <2>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
-index 59427e12c7e5..92a97bb458a7 100644
+index 59427e12c7e59..92a97bb458a7d 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1080.dtsi
 @@ -5,12 +5,8 @@ lcd_lt8911_edp_1920x1080: lcd_lt8911_edp_1920x1080 {
@@ -164,7 +164,7 @@ index 59427e12c7e5..92a97bb458a7 100644
  		eotp-enable = <1>;
  		burst-mode = <2>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
-index 0d9636b904b6..62d767b87418 100644
+index 0d9636b904b65..62d767b874186 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_lt8911_edp_1920x1200.dtsi
 @@ -5,12 +5,8 @@ lcd_lt8911_edp_1920x1200: lcd_lt8911_edp_1920x1200 {
@@ -190,7 +190,7 @@ index 0d9636b904b6..62d767b87418 100644
  		eotp-enable = <1>;
  		burst-mode = <2>;
 diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
-index c222cbb9d26f..df77156ba916 100644
+index c222cbb9d26f4..df77156ba9165 100644
 --- a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 +++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 @@ -130,11 +130,12 @@ static void dphy_set_bit_clk_src(void __iomem *base_addr, uint32_t bit_clk_src,
@@ -327,7 +327,7 @@ index c222cbb9d26f..df77156ba916 100644
  
  static void dphy_get_setting(struct spacemit_dphy_ctx *dphy_ctx, struct device_node *np)
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index cd4602c4d549..1bc77000783f 100644
+index cd4602c4d5497..1bc77000783f8 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -220,8 +220,6 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
@@ -363,7 +363,7 @@ index cd4602c4d549..1bc77000783f 100644
  			DRM_DEBUG("set escclk=%lld\n", clk_val);
  		}
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
-index 34f58dbb33f2..8ef2eff9a2d5 100644
+index 34f58dbb33f21..8ef2eff9a2d50 100644
 --- a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 @@ -680,6 +680,9 @@ static void dsi_open_dphy(struct spacemit_dsi_device* device_ctx, bool ready)
@@ -386,7 +386,7 @@ index 34f58dbb33f2..8ef2eff9a2d5 100644
  		pr_err("%s: Invalid param\n", __func__);
  		return -1;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.h b/drivers/gpu/drm/spacemit/spacemit_dphy.h
-index 2a2462b75f3b..80c452756cc1 100644
+index 2a2462b75f3be..80c452756cc1c 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dphy.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dphy.h
 @@ -16,6 +16,9 @@
@@ -400,7 +400,7 @@ index 2a2462b75f3b..80c452756cc1 100644
  	DPHY_LANE_MAP_0123 = 0,
  	DPHY_LANE_MAP_0312 = 1,
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index a7d986d32495..05e49653d625 100644
+index a7d986d324957..05e49653d6252 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -141,6 +141,7 @@ struct spacemit_dpu {
@@ -412,7 +412,7 @@ index a7d986d32495..05e49653d625 100644
  	struct reset_control *mclk_reset;
  	struct reset_control *lcd_reset;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 0a0e4911fb7b..235720894b23 100644
+index 0a0e4911fb7be..235720894b238 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -265,11 +265,18 @@ static void spacemit_dsi_get_mipi_info(struct device_node *lcd_node, struct spac
@@ -438,7 +438,7 @@ index 0a0e4911fb7b..235720894b23 100644
  	ret = of_property_read_u32(lcd_node, "split-enable", &val);
  	if (ret)
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
-index f9fdc4d30090..38996bb09591 100644
+index f9fdc4d300904..38996bb095910 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
 @@ -150,7 +150,8 @@ struct spacemit_mipi_info {

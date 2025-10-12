@@ -1,4 +1,4 @@
-From 53390602d9d6e1f40760c75956b38719c38ff4a6 Mon Sep 17 00:00:00 2001
+From 666f97d98c056d488a0b941bae25f3fdcc45419f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 12 Jan 2024 23:08:47 +0800
 Subject: [PATCH 0369/1222] audio: add audio driver
@@ -42,7 +42,7 @@ Change-Id: I3b1c964f78480197e50f7a91f92fb8552ba23bff
  create mode 100644 sound/soc/spacemit/spacemit-snd.h
 
 diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index ce74818bd715..2ff1d011346f 100644
+index ce74818bd7152..2ff1d011346f8 100644
 --- a/sound/soc/Kconfig
 +++ b/sound/soc/Kconfig
 @@ -139,6 +139,7 @@ source "sound/soc/uniphier/Kconfig"
@@ -54,7 +54,7 @@ index ce74818bd715..2ff1d011346f 100644
  # SOF
  source "sound/soc/sof/Kconfig"
 diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 462322c38aa4..0fc1143afdfa 100644
+index 462322c38aa42..0fc1143afdfa6 100644
 --- a/sound/soc/Makefile
 +++ b/sound/soc/Makefile
 @@ -83,3 +83,4 @@ obj-$(CONFIG_SND_SOC)	+= ux500/
@@ -64,7 +64,7 @@ index 462322c38aa4..0fc1143afdfa 100644
 +obj-$(CONFIG_SND_SOC)	+= spacemit/
 diff --git a/sound/soc/spacemit/Kconfig b/sound/soc/spacemit/Kconfig
 new file mode 100644
-index 000000000000..8c1b74cb3dfb
+index 0000000000000..8c1b74cb3dfb3
 --- /dev/null
 +++ b/sound/soc/spacemit/Kconfig
 @@ -0,0 +1,7 @@
@@ -77,7 +77,7 @@ index 000000000000..8c1b74cb3dfb
 +
 diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
 new file mode 100644
-index 000000000000..8b06a074bb5d
+index 0000000000000..8b06a074bb5d0
 --- /dev/null
 +++ b/sound/soc/spacemit/Makefile
 @@ -0,0 +1,4 @@
@@ -87,7 +87,7 @@ index 000000000000..8b06a074bb5d
 +obj-$(CONFIG_SND_SOC_SPACEMIT) += snd-soc-spacemit.o
 diff --git a/sound/soc/spacemit/spacemit-snd-adsp.c b/sound/soc/spacemit/spacemit-snd-adsp.c
 new file mode 100644
-index 000000000000..56a8371a7cca
+index 0000000000000..56a8371a7ccac
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-adsp.c
 @@ -0,0 +1,516 @@
@@ -609,7 +609,7 @@ index 000000000000..56a8371a7cca
 +}
 diff --git a/sound/soc/spacemit/spacemit-snd-adsp.h b/sound/soc/spacemit/spacemit-snd-adsp.h
 new file mode 100644
-index 000000000000..dc158b1e99d1
+index 0000000000000..dc158b1e99d1b
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-adsp.h
 @@ -0,0 +1,65 @@
@@ -680,7 +680,7 @@ index 000000000000..dc158b1e99d1
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
 new file mode 100644
-index 000000000000..ca2c5b1945da
+index 0000000000000..ca2c5b1945da5
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -0,0 +1,219 @@
@@ -905,7 +905,7 @@ index 000000000000..ca2c5b1945da
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-ipc.c b/sound/soc/spacemit/spacemit-snd-ipc.c
 new file mode 100644
-index 000000000000..87ef4f8d09b2
+index 0000000000000..87ef4f8d09b2f
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-ipc.c
 @@ -0,0 +1,310 @@
@@ -1221,7 +1221,7 @@ index 000000000000..87ef4f8d09b2
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-ipc.h b/sound/soc/spacemit/spacemit-snd-ipc.h
 new file mode 100644
-index 000000000000..abb38f96f02f
+index 0000000000000..abb38f96f02f4
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-ipc.h
 @@ -0,0 +1,65 @@
@@ -1292,7 +1292,7 @@ index 000000000000..abb38f96f02f
 +#endif
 diff --git a/sound/soc/spacemit/spacemit-snd-memory.c b/sound/soc/spacemit/spacemit-snd-memory.c
 new file mode 100644
-index 000000000000..3a64e201a1c4
+index 0000000000000..3a64e201a1c40
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-memory.c
 @@ -0,0 +1,223 @@
@@ -1521,7 +1521,7 @@ index 000000000000..3a64e201a1c4
 +}
 diff --git a/sound/soc/spacemit/spacemit-snd-memory.h b/sound/soc/spacemit/spacemit-snd-memory.h
 new file mode 100644
-index 000000000000..1bde459fa2fc
+index 0000000000000..1bde459fa2fc5
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-memory.h
 @@ -0,0 +1,38 @@
@@ -1565,7 +1565,7 @@ index 000000000000..1bde459fa2fc
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-msgs.h b/sound/soc/spacemit/spacemit-snd-msgs.h
 new file mode 100644
-index 000000000000..1fecda0d3938
+index 0000000000000..1fecda0d39381
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-msgs.h
 @@ -0,0 +1,244 @@
@@ -1815,7 +1815,7 @@ index 000000000000..1fecda0d3938
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm.c b/sound/soc/spacemit/spacemit-snd-pcm.c
 new file mode 100644
-index 000000000000..844f9cf8c0d6
+index 0000000000000..844f9cf8c0d69
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-pcm.c
 @@ -0,0 +1,662 @@
@@ -2483,7 +2483,7 @@ index 000000000000..844f9cf8c0d6
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-soc.c b/sound/soc/spacemit/spacemit-snd-soc.c
 new file mode 100644
-index 000000000000..7218c7231cce
+index 0000000000000..7218c7231cce9
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-soc.c
 @@ -0,0 +1,46 @@
@@ -2535,7 +2535,7 @@ index 000000000000..7218c7231cce
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-soc.h b/sound/soc/spacemit/spacemit-snd-soc.h
 new file mode 100644
-index 000000000000..015881bdd065
+index 0000000000000..015881bdd0657
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-soc.h
 @@ -0,0 +1,12 @@
@@ -2553,7 +2553,7 @@ index 000000000000..015881bdd065
 +#endif
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
 new file mode 100644
-index 000000000000..f3e3ccef2f68
+index 0000000000000..f3e3ccef2f686
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -0,0 +1,153 @@
@@ -2712,7 +2712,7 @@ index 000000000000..f3e3ccef2f68
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.h b/sound/soc/spacemit/spacemit-snd-sspa.h
 new file mode 100644
-index 000000000000..5158bbc31c60
+index 0000000000000..5158bbc31c606
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.h
 @@ -0,0 +1,79 @@
@@ -2797,7 +2797,7 @@ index 000000000000..5158bbc31c60
 +
 diff --git a/sound/soc/spacemit/spacemit-snd.h b/sound/soc/spacemit/spacemit-snd.h
 new file mode 100644
-index 000000000000..dcec4c65e89a
+index 0000000000000..dcec4c65e89a6
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-snd.h
 @@ -0,0 +1,16 @@

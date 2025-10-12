@@ -1,4 +1,4 @@
-From 8b0472856bb7bcc1f2510bcac0a3087baff27b38 Mon Sep 17 00:00:00 2001
+From b806dfe9c4b171ef08eec1b1b7e561a86e3761d2 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Thu, 11 Apr 2024 11:48:41 +0800
 Subject: [PATCH 0583/1222] fix gpu_clk clock setting timeout
@@ -9,7 +9,7 @@ Change-Id: I027bb5ce640e9227a3c40cfa663821516c3220d3
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
-index 40fa7570076d..8f160924e8c8 100644
+index 40fa7570076df..8f160924e8c82 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 +++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 @@ -339,6 +339,8 @@ struct st_context *RgxStInit(PVRSRV_DEVICE_CONFIG* psDevConfig)

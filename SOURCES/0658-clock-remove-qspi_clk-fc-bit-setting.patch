@@ -1,4 +1,4 @@
-From 74e3138446188d79955817eacb5cf010a9951ee0 Mon Sep 17 00:00:00 2001
+From cf150ef9a2ef7b39e0d32688aeacf631e2911e49 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 14 May 2024 15:55:50 +0800
 Subject: [PATCH 0658/1222] clock: remove qspi_clk fc bit setting
@@ -9,7 +9,7 @@ Change-Id: I141225d7af4dbef4427c5cedaf356c1d9086c757
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 752112214a2e..b1b1ff299b4a 100755
+index 752112214a2e7..b1b1ff299b4ab 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -892,9 +892,9 @@ static SPACEMIT_CCU_GATE_NO_PARENT(usb30_clk, "usb30_clk", NULL,

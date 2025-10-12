@@ -1,4 +1,4 @@
-From b53fb12a773cfe65ae87171072b60e97b409aa24 Mon Sep 17 00:00:00 2001
+From 7d9ed22090de5e1e3163d48bf487f7e9da1228f0 Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Mon, 30 Sep 2024 17:56:46 +0800
 Subject: [PATCH 1014/1222] add new pinctrl node for FusionOne to support
@@ -10,7 +10,7 @@ Change-Id: I57d86148e5614f11e728b78719b4ad8866486d7d
  1 file changed, 23 insertions(+), 21 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
-index e077ddc2b7f2..931058685efd 100644
+index e077ddc2b7f20..931058685efd4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 @@ -163,18 +163,6 @@ bt_pwrseq: bt-pwrseq {

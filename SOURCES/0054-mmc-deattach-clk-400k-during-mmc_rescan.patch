@@ -1,4 +1,4 @@
-From b06e42af91c195b88b5c5c5a40015c24194a236c Mon Sep 17 00:00:00 2001
+From 77cbe7dc00365317c1a1bf8414a7b41ecbe8b629 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 13 Jun 2023 15:10:18 +0800
 Subject: [PATCH 0054/1222] mmc: deattach clk 400k during mmc_rescan()
@@ -13,7 +13,7 @@ Change-Id: I039df8e60e71179b5388a6c9be31c7dfe29050b7
  2 files changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 53953e69b7c7..7b8f1b6497b9 100644
+index 53953e69b7c7b..7b8f1b6497b98 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -342,9 +342,8 @@ emmc: mmc@2ca00000 {
@@ -41,7 +41,7 @@ index 53953e69b7c7..7b8f1b6497b9 100644
  			bus-width = <4>;
  			cap-mmc-highspeed;
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
-index ccb6dc59da71..5de04240403f 100644
+index ccb6dc59da710..5de04240403f6 100644
 --- a/drivers/mmc/host/sdhci-of-spacemit.c
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -35,7 +35,7 @@

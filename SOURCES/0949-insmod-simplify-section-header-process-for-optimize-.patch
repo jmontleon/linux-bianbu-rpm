@@ -1,4 +1,4 @@
-From 721c7a60f260d61aaa0785bf530e3794af5244f5 Mon Sep 17 00:00:00 2001
+From 2da92293caf611f96e013e03d7cd3550aa6d4292 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 20 Aug 2024 09:44:29 +0800
 Subject: [PATCH 0949/1222] insmod: simplify section header process for
@@ -10,7 +10,7 @@ Change-Id: I24f37b06fb891f66431b40c1954d2758782fbd11
  1 file changed, 11 insertions(+)
 
 diff --git a/arch/riscv/kernel/module-sections.c b/arch/riscv/kernel/module-sections.c
-index 75551ac6504c..afc46a0ec66e 100644
+index 75551ac6504c5..afc46a0ec66ed 100644
 --- a/arch/riscv/kernel/module-sections.c
 +++ b/arch/riscv/kernel/module-sections.c
 @@ -55,6 +55,8 @@ unsigned long module_emit_plt_entry(struct module *mod, unsigned long val)

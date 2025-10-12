@@ -1,4 +1,4 @@
-From 5d1ff218c824d9bf7d871f617cede2d99f660d8c Mon Sep 17 00:00:00 2001
+From 77cbdcd01dcc2d66113a2f5044e315d17b73782c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 23 Nov 2023 19:17:04 +0800
 Subject: [PATCH 0169/1222] fix some warning when building dts
@@ -42,7 +42,7 @@ diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_pinctrl.dtsi b/arch/riscv/boot/
 old mode 100755
 new mode 100644
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d2dc33006806..0327cc6cdc05 100644
+index d2dc330068066..0327cc6cdc051 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -237,7 +237,7 @@ opp1600000000 {
@@ -108,7 +108,7 @@ index d2dc33006806..0327cc6cdc05 100644
  			ip = "synopsys-dhost";
  			dev-id = <2>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
-index 4a1a62b3cd1b..b2b1fe98a173 100644
+index 4a1a62b3cd1be..b2b1fe98a1730 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -165,7 +165,7 @@ reserved-memory {

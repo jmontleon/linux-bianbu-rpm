@@ -1,4 +1,4 @@
-From f66272372ed50053e7407e0b8140145cd8a8ea28 Mon Sep 17 00:00:00 2001
+From 0188d386b816abda95d6bade52feb92be82a6fe7 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 13 Sep 2023 14:10:14 +0800
 Subject: [PATCH 0116/1222] usb: gadget: support k1x udc
@@ -26,7 +26,7 @@ Change-Id: Ia4e716ba53d0ea5c5939340601d6bc2a2c8de1fe
  create mode 100755 include/linux/platform_data/k1x_ci_usb.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 2cf7c73f9f6a..c5f7d04451c4 100644
+index 2cf7c73f9f6a7..c5f7d04451c44 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -4,6 +4,7 @@
@@ -80,7 +80,7 @@ index 2cf7c73f9f6a..c5f7d04451c4 100644
  			compatible = "spacemit,k1-x-sdhci";
  			reg = <0x0 0xd4280000 0x0 0x200>;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index a9199b2ae807..fef99e1907c0 100644
+index a9199b2ae8077..fef99e1907c05 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -127,7 +127,13 @@ CONFIG_VIRTIO_CONSOLE=y
@@ -107,7 +107,7 @@ index a9199b2ae807..fef99e1907c0 100644
  CONFIG_NFS_FS=y
  CONFIG_NFS_V4=y
 diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
-index 26460340fbc9..9f455790e50d 100644
+index 26460340fbc97..9f455790e50d1 100644
 --- a/drivers/usb/gadget/udc/Kconfig
 +++ b/drivers/usb/gadget/udc/Kconfig
 @@ -236,6 +236,13 @@ config USB_SNP_CORE
@@ -125,7 +125,7 @@ index 26460340fbc9..9f455790e50d 100644
  config USB_SNP_UDC_PLAT
  	tristate "Synopsys USB 2.0 Device controller"
 diff --git a/drivers/usb/gadget/udc/Makefile b/drivers/usb/gadget/udc/Makefile
-index 1b9b1a4f9c57..cd3da81b69bf 100644
+index 1b9b1a4f9c574..cd3da81b69bf5 100644
 --- a/drivers/usb/gadget/udc/Makefile
 +++ b/drivers/usb/gadget/udc/Makefile
 @@ -38,3 +38,5 @@ obj-$(CONFIG_USB_ASPEED_UDC)	+= aspeed_udc.o
@@ -136,7 +136,7 @@ index 1b9b1a4f9c57..cd3da81b69bf 100644
 +
 diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
 new file mode 100755
-index 000000000000..04dc2479682b
+index 0000000000000..04dc2479682b6
 --- /dev/null
 +++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
 @@ -0,0 +1,348 @@
@@ -490,7 +490,7 @@ index 000000000000..04dc2479682b
 +#endif
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
 new file mode 100755
-index 000000000000..546292b3c778
+index 0000000000000..546292b3c7784
 --- /dev/null
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -0,0 +1,2674 @@
@@ -3169,7 +3169,7 @@ index 000000000000..546292b3c778
 +MODULE_LICENSE("GPL v2");
 +MODULE_DESCRIPTION("SPACEMIT K1x UDC Controller");
 diff --git a/drivers/usb/phy/Kconfig b/drivers/usb/phy/Kconfig
-index b7acf3966cd7..41e98faca33f 100644
+index b7acf3966cd7b..41e98faca33f3 100644
 --- a/drivers/usb/phy/Kconfig
 +++ b/drivers/usb/phy/Kconfig
 @@ -126,6 +126,15 @@ config USB_ISP1301
@@ -3189,7 +3189,7 @@ index b7acf3966cd7..41e98faca33f 100644
  	tristate "Freescale MXS USB PHY support"
  	depends on ARCH_MXC || ARCH_MXS
 diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
-index ceae46c5341d..fbfe759738b8 100644
+index ceae46c5341dd..fbfe759738b84 100644
 --- a/drivers/usb/phy/Makefile
 +++ b/drivers/usb/phy/Makefile
 @@ -22,3 +22,4 @@ obj-$(CONFIG_USB_MXS_PHY)		+= phy-mxs-usb.o
@@ -3200,7 +3200,7 @@ index ceae46c5341d..fbfe759738b8 100644
 \ No newline at end of file
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
 new file mode 100755
-index 000000000000..7f2a36cb43c2
+index 0000000000000..7f2a36cb43c22
 --- /dev/null
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -0,0 +1,204 @@
@@ -3410,7 +3410,7 @@ index 000000000000..7f2a36cb43c2
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.h b/drivers/usb/phy/phy-k1x-ci-usb2.h
 new file mode 100755
-index 000000000000..43dd8c0ab112
+index 0000000000000..43dd8c0ab112c
 --- /dev/null
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.h
 @@ -0,0 +1,46 @@
@@ -3462,7 +3462,7 @@ index 000000000000..43dd8c0ab112
 +#endif
 diff --git a/include/dt-bindings/usb/k1x_ci_usb.h b/include/dt-bindings/usb/k1x_ci_usb.h
 new file mode 100755
-index 000000000000..fd0f1dfd15c4
+index 0000000000000..fd0f1dfd15c46
 --- /dev/null
 +++ b/include/dt-bindings/usb/k1x_ci_usb.h
 @@ -0,0 +1,15 @@
@@ -3483,7 +3483,7 @@ index 000000000000..fd0f1dfd15c4
 +#endif
 diff --git a/include/linux/platform_data/k1x_ci_usb.h b/include/linux/platform_data/k1x_ci_usb.h
 new file mode 100755
-index 000000000000..1272c1f94294
+index 0000000000000..1272c1f94294f
 --- /dev/null
 +++ b/include/linux/platform_data/k1x_ci_usb.h
 @@ -0,0 +1,131 @@

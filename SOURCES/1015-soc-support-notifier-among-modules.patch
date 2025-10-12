@@ -1,4 +1,4 @@
-From 704f051b0a7afe3625351d11875e63b296cf7679 Mon Sep 17 00:00:00 2001
+From 8312efad7219f50f0c764eb3ab98c0a8ad57584d Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 20 Nov 2024 14:24:35 +0800
 Subject: [PATCH 1015/1222] soc: support notifier among modules
@@ -8,7 +8,7 @@ Subject: [PATCH 1015/1222] soc: support notifier among modules
  1 file changed, 13 insertions(+)
 
 diff --git a/include/soc/spacemit/spacemit_panel.h b/include/soc/spacemit/spacemit_panel.h
-index cd1d7b1fa634..08a82895673b 100644
+index cd1d7b1fa6340..08a82895673b3 100644
 --- a/include/soc/spacemit/spacemit_panel.h
 +++ b/include/soc/spacemit/spacemit_panel.h
 @@ -30,4 +30,17 @@ enum{

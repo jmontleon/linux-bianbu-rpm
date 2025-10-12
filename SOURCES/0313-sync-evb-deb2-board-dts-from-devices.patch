@@ -1,4 +1,4 @@
-From bdd2d73921612d0a9fc1285935927de1c1e28b90 Mon Sep 17 00:00:00 2001
+From 8a40ca9f14f226f4055db24022f688d1da0ed5a1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 3 Jan 2024 12:49:22 +0800
 Subject: [PATCH 0313/1222] sync evb/deb2 board dts from devices
@@ -10,7 +10,7 @@ Change-Id: Iba4c31a358480cba4bc539959d3f8256bff5be6e
  2 files changed, 96 insertions(+), 34 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 18076efbb230..210aa0a96b56 100644
+index 18076efbb2305..210aa0a96b565 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -96,7 +96,7 @@ pwm_bl {
@@ -85,7 +85,7 @@ index 18076efbb230..210aa0a96b56 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index f83f98063bfb..551826d62d5d 100644
+index f83f98063bfb0..551826d62d5dc 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -96,7 +96,7 @@ pwm_bl {

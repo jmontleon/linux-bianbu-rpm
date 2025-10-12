@@ -1,4 +1,4 @@
-From 3ea74a4db65f8c7fc4cd185252a6ff13f3e1d206 Mon Sep 17 00:00:00 2001
+From 0c5731346ef8e6336ecd5736045a69cf0f1d9208 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 25 Apr 2023 20:44:04 +0800
 Subject: [PATCH 0024/1222] pwm-dwc driver loaded by platform changes in
@@ -14,7 +14,7 @@ Change-Id: Id5ad8802c4eb0676c755bae7d3b3079a40c58eab
  create mode 100755 drivers/pwm/pwm-dwc-k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 23e2fd668fbf..bb35e791495e 100644
+index 23e2fd668fbf9..bb35e791495e1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -231,6 +231,17 @@ uart0: serial@2cea0000 {
@@ -36,7 +36,7 @@ index 23e2fd668fbf..bb35e791495e 100644
  			compatible = "spacemit,k1-pro-tcm";
  			reg = <0x0 0xbe000000 0x0 0x80000>;
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index f00ce973dddf..341b6dedc9c3 100644
+index f00ce973dddf6..341b6dedc9c36 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
 @@ -230,6 +230,14 @@ config PWM_DWC
@@ -55,7 +55,7 @@ index f00ce973dddf..341b6dedc9c3 100644
  	tristate "Cirrus Logic EP93xx PWM support"
  	depends on ARCH_EP93XX || COMPILE_TEST
 diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index ff4f47e5fb7a..6e7e59edf4b1 100644
+index ff4f47e5fb7a0..6e7e59edf4b16 100644
 --- a/drivers/pwm/Makefile
 +++ b/drivers/pwm/Makefile
 @@ -19,6 +19,7 @@ obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
@@ -68,7 +68,7 @@ index ff4f47e5fb7a..6e7e59edf4b1 100644
  obj-$(CONFIG_PWM_GPIO)		+= pwm-gpio.o
 diff --git a/drivers/pwm/pwm-dwc-k1x.c b/drivers/pwm/pwm-dwc-k1x.c
 new file mode 100755
-index 000000000000..bc8ee92fcc03
+index 0000000000000..bc8ee92fcc03e
 --- /dev/null
 +++ b/drivers/pwm/pwm-dwc-k1x.c
 @@ -0,0 +1,345 @@

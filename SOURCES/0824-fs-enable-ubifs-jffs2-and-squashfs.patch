@@ -1,4 +1,4 @@
-From ee952a8cb7a9aa45169f03c9ae9b664f630e55fd Mon Sep 17 00:00:00 2001
+From 47da7846d8768d63cb427c693ece4b0c9a6b136c Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 17 Jul 2024 09:42:41 +0800
 Subject: [PATCH 0824/1222] fs: enable ubifs, jffs2 and squashfs
@@ -10,7 +10,7 @@ Signed-off-by: lijuan <juan.li@spacemit.com>
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index bd3bd74dfa2f..866b33040967 100644
+index bd3bd74dfa2f4..866b330409676 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -224,6 +224,7 @@ CONFIG_MTD_BLOCK=y

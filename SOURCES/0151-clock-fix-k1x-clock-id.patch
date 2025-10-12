@@ -1,4 +1,4 @@
-From 5d5cf3171225e71ede9649faf4783342f0a5fa5f Mon Sep 17 00:00:00 2001
+From 5c1e88a0e9860091af99e5e059467be08a1a6304 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 7 Nov 2023 11:09:50 +0800
 Subject: [PATCH 0151/1222] clock: fix k1x clock id
@@ -10,7 +10,7 @@ Change-Id: I6ac8911c563a63455f69bf70ef83832dfb3819ec
  2 files changed, 50 insertions(+), 50 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index eced9a1d6a49..560943ff6934 100755
+index eced9a1d6a499..560943ff6934a 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1040,30 +1040,30 @@ static struct clk_hw_onecell_data spacemit_k1x_hw_clks = {
@@ -78,7 +78,7 @@ index eced9a1d6a49..560943ff6934 100755
  		[CLK_SDH_AXI]		= &sdh_axi_aclk.common.hw,
  		[CLK_SDH0] 		= &sdh0_clk.common.hw,
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 861ade9029c2..871f1068c2a3 100755
+index 861ade9029c24..871f1068c2a30 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -35,30 +35,30 @@

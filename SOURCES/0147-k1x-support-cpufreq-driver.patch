@@ -1,4 +1,4 @@
-From eaa96799a7d4e6f16b415173fdc5228f6c99eeb0 Mon Sep 17 00:00:00 2001
+From c4b92c7487f53107bf39bd6a12c02e7a452c48a6 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 31 Oct 2023 15:54:06 +0800
 Subject: [PATCH 0147/1222] k1x: support cpufreq driver
@@ -13,7 +13,7 @@ Signed-off-by: Nell <xianbin.zhu@spacemit.com>
  2 files changed, 96 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index bb9a1660c5c5..48089048c245 100644
+index bb9a1660c5c53..48089048c2452 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -38,6 +38,8 @@ cpu_0: cpu@0 {
@@ -151,7 +151,7 @@ index bb9a1660c5c5..48089048c245 100644
  
  	reserved-memory {
 diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 015dd393eaba..ed55fb4f12d9 100644
+index 015dd393eaba5..ed55fb4f12d9d 100644
 --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
 @@ -95,6 +95,8 @@ static const struct of_device_id allowlist[] __initconst = {

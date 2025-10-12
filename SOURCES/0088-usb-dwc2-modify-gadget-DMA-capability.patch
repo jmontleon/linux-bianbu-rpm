@@ -1,4 +1,4 @@
-From 3f387f09f3a797644b95f830ba873344895931c7 Mon Sep 17 00:00:00 2001
+From 250cb980db80a9474e6da57925ae95b20308d01d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 7 Aug 2023 10:53:20 +0800
 Subject: [PATCH 0088/1222] usb: dwc2: modify gadget DMA capability
@@ -9,7 +9,7 @@ Change-Id: If706005ff99e655420bf8f0d9db008bd2ad1d55c
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index d7676b628ebf..e6b403f2cdbf 100644
+index d7676b628ebff..e6b403f2cdbf3 100644
 --- a/drivers/usb/dwc2/platform.c
 +++ b/drivers/usb/dwc2/platform.c
 @@ -453,7 +453,7 @@ static int dwc2_driver_probe(struct platform_device *dev)

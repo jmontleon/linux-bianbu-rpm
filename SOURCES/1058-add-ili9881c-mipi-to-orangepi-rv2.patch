@@ -1,4 +1,4 @@
-From ffc61f70bee4897d7a6b7ed74c7a221a90093d02 Mon Sep 17 00:00:00 2001
+From ef735941c10ecbe4edbf562934dcd15b282848ed Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Thu, 31 Oct 2024 14:46:38 +0800
 Subject: [PATCH 1058/1222] add ili9881c mipi to orangepi-rv2
@@ -11,7 +11,7 @@ Change-Id: I52c005e206c48fb20fac76cff157c7e8a0824dce
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_ili9881c_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
-index 4517cd976ead..28f1645934ad 100644
+index 4517cd976ead8..28f1645934ad2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 @@ -6,7 +6,7 @@
@@ -60,7 +60,7 @@ index 4517cd976ead..28f1645934ad 100644
  &dpu_online2_hdmi {
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_ili9881c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_ili9881c_mipi.dtsi
 new file mode 100644
-index 000000000000..701058694d2e
+index 0000000000000..701058694d2e8
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_ili9881c_mipi.dtsi
 @@ -0,0 +1,260 @@

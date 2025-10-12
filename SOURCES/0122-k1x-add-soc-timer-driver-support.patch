@@ -1,4 +1,4 @@
-From f71cd382a4827684cfbf7e39badad4c218a0ed52 Mon Sep 17 00:00:00 2001
+From 0e81ffd803cc62b711a47db1f07cb91fca36a1ad Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 15 Sep 2023 08:48:51 +0800
 Subject: [PATCH 0122/1222] k1x:add soc-timer driver support
@@ -12,7 +12,7 @@ Change-Id: I2828ff84b7896e3a7d27217f84bbc76fe3ad449b
  create mode 100755 drivers/clocksource/timer-k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 0d8bd06cb2af..96f3c976a4c2 100644
+index 0d8bd06cb2af3..96f3c976a4c28 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -178,6 +178,13 @@ pll_clk_pwm: clock-pll_clk_pwm {
@@ -57,7 +57,7 @@ index 0d8bd06cb2af..96f3c976a4c2 100644
  			compatible = "spacemit,k1x-emac";
  			reg = <0x00000000 0xCAC80000 0x00000000 0x00000420>,
 diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 205bf3b0a8f3..1be0b633888f 100644
+index 205bf3b0a8f3f..1be0b633888ff 100644
 --- a/drivers/clocksource/Makefile
 +++ b/drivers/clocksource/Makefile
 @@ -61,6 +61,7 @@ obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o
@@ -70,7 +70,7 @@ index 205bf3b0a8f3..1be0b633888f 100644
  obj-$(CONFIG_ARM_ARCH_TIMER)		+= arm_arch_timer.o
 diff --git a/drivers/clocksource/timer-k1x.c b/drivers/clocksource/timer-k1x.c
 new file mode 100755
-index 000000000000..765e06164798
+index 0000000000000..765e061647986
 --- /dev/null
 +++ b/drivers/clocksource/timer-k1x.c
 @@ -0,0 +1,694 @@

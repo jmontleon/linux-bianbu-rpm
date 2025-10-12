@@ -1,4 +1,4 @@
-From ad5f0ce222c860573a82ade968ac4af4fcc692ae Mon Sep 17 00:00:00 2001
+From 0d067800a4bf349f2b858f8079debcedafec4952 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 25 Oct 2024 10:44:32 +0800
 Subject: [PATCH 1040/1222] sound: change from late_initcall_sync to
@@ -12,7 +12,7 @@ Change-Id: Iebd060cf77ea2aa615bc4c4450f7f14e50672e14
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index a4bc789c2d45..70b9a64d30fd 100644
+index a4bc789c2d45a..70b9a64d30fdb 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -432,7 +432,7 @@ static int spacemit_snd_card_init(void)
@@ -25,7 +25,7 @@ index a4bc789c2d45..70b9a64d30fd 100644
  MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
  MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index c71f78e6543d..b3be4a60842f 100644
+index c71f78e6543dd..b3be4a60842f6 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -1397,7 +1397,7 @@ static int spacemit_snd_pcm_init(void)
@@ -38,7 +38,7 @@ index c71f78e6543d..b3be4a60842f 100644
  #ifdef CONFIG_SPACEMIT_AUDIO_DATA_DEBUG
  
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 59144a397533..1bc8ed8d0a6d 100644
+index 59144a3975333..1bc8ed8d0a6d1 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -297,7 +297,7 @@ static int spacemit_snd_sspa_init(void)

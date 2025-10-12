@@ -1,4 +1,4 @@
-From 0ad97427af7b830181027e14ccf201f81c8dd2af Mon Sep 17 00:00:00 2001
+From 4608b512ba9908117d92c59087f711d709930c8c Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 4 Jan 2024 19:39:14 +0800
 Subject: [PATCH 0321/1222] dtsi: k1-x: add usb2 otg support
@@ -9,7 +9,7 @@ Change-Id: I9fef60a608b73fa79e3d4be04d792c99fcf5b2b2
  1 file changed, 40 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 905706a8ce56..79dcc0687d64 100644
+index 905706a8ce56d..79dcc0687d646 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1514,6 +1514,17 @@ eth1: ethernet@cac81000 {

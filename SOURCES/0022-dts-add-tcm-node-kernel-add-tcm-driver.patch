@@ -1,4 +1,4 @@
-From a8491b7b0e2b9c9b5645573eeb646dd6bdd49689 Mon Sep 17 00:00:00 2001
+From e31ea4b08cefa239387a6920afe0ce679edbb393 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Mon, 17 Apr 2023 15:13:57 +0800
 Subject: [PATCH 0022/1222] dts add tcm node; kernel add tcm driver
@@ -12,7 +12,7 @@ Change-Id: I1b817cff11d03e8f5470eb84663444eb79aec7db
  create mode 100644 drivers/misc/tcm.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 8660fb125339..eeb312a09dbc 100644
+index 8660fb1253397..eeb312a09dbc1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -109,7 +109,7 @@ cpu3_intc: interrupt-controller {
@@ -58,7 +58,7 @@ index 8660fb125339..eeb312a09dbc 100644
  };
  
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index e2e66f5f4fb8..acac69125c7c 100644
+index e2e66f5f4fb89..acac69125c7c5 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
 @@ -76,3 +76,4 @@ obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
@@ -68,7 +68,7 @@ index e2e66f5f4fb8..acac69125c7c 100644
 +obj-y				+= tcm.o
 diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
 new file mode 100644
-index 000000000000..0d02e6d8972b
+index 0000000000000..0d02e6d8972be
 --- /dev/null
 +++ b/drivers/misc/tcm.c
 @@ -0,0 +1,586 @@

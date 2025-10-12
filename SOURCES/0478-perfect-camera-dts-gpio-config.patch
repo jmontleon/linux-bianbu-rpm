@@ -1,4 +1,4 @@
-From 3f145e2137386401b54c94340ffb91bb7f0939bb Mon Sep 17 00:00:00 2001
+From c462510464e15442d40231429007cb11634707c6 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Wed, 13 Mar 2024 10:59:53 +0800
 Subject: [PATCH 0478/1222] perfect camera dts gpio config
@@ -14,7 +14,7 @@ Change-Id: Ia771928da98bedbf0e097057ba6f5e33a694b31f
  rename arch/riscv/boot/dts/spacemit/{k1-x-camera-sensor-evb.dtsi => k1-x-camera-sensor.dtsi} (85%)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
-index b19330762960..97b5c24345cb 100755
+index b193307629602..97b5c24345cb3 100755
 --- a/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sdk.dtsi
 @@ -4,7 +4,7 @@
@@ -30,7 +30,7 @@ diff --git a/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi b/arch/ris
 similarity index 85%
 rename from arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
 rename to arch/riscv/boot/dts/spacemit/k1-x-camera-sensor.dtsi
-index bcefb96ad6b2..092101702e0d 100755
+index bcefb96ad6b20..092101702e0d7 100755
 --- a/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor-evb.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-camera-sensor.dtsi
 @@ -17,8 +17,8 @@ backsensor: cam_sensor@0 {
@@ -67,7 +67,7 @@ index bcefb96ad6b2..092101702e0d 100755
  		interconnect-names = "dma-mem";
  		status = "okay";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index fbe38174b6a7..025b5b4a16fb 100644
+index fbe38174b6a7b..025b5b4a16fb3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -481,6 +481,8 @@ &range GPIO_90  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
@@ -159,7 +159,7 @@ index fbe38174b6a7..025b5b4a16fb 100644
  &isp {
  	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 46d680c8d75d..698655439e60 100644
+index 46d680c8d75d3..698655439e606 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -505,6 +505,8 @@ &range GPIO_90  1 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
@@ -250,7 +250,7 @@ index 46d680c8d75d..698655439e60 100644
  	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index e595359a6014..aa5b41984d46 100644
+index e595359a6014c..aa5b41984d46a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -466,6 +466,11 @@ edcdc_1: EDCDC_REG1 {

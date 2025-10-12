@@ -1,4 +1,4 @@
-From 860991e1a3c5356dd40a94dab5060d15176f3bb6 Mon Sep 17 00:00:00 2001
+From 3c8e8853f16175c0bd5b4b4bbf1f02f1fbff2f61 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 5 Nov 2024 23:41:36 +0800
 Subject: [PATCH 1072/1222] k1: add fanghang k1-x_uav dts
@@ -12,7 +12,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_uav.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 48113b91122a..d5cb5d41ad0e 100644
+index 48113b91122ad..d5cb5d41ad0ef 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -9,5 +9,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -24,7 +24,7 @@ index 48113b91122a..d5cb5d41ad0e 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_uav.dts b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
 new file mode 100644
-index 000000000000..534589d09a39
+index 0000000000000..534589d09a39d
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
 @@ -0,0 +1,1265 @@

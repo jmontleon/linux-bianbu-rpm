@@ -1,4 +1,4 @@
-From 89c428fd937874af4070ae44a70d0c00aa4d0e24 Mon Sep 17 00:00:00 2001
+From 81ee3ac8246e1f6c78a9a0455f059cb3de24c8c8 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Sep 2023 19:48:33 +0800
 Subject: [PATCH 0127/1222] reset: update reset controller driver
@@ -11,7 +11,7 @@ Change-Id: If64fe8afe18ef41ac4e196be0fd6e505709768cf
  3 files changed, 46 insertions(+), 52 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 5b63847a9d06..847168456ed3 100644
+index 5b63847a9d06c..847168456ed36 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -473,8 +473,8 @@ usbotg: usb2@2cb40000 {
@@ -35,7 +35,7 @@ index 5b63847a9d06..847168456ed3 100644
  			ranges;
  			status = "disabled";
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index 4c418c70165e..026717812959 100755
+index 4c418c70165e2..0267178129593 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -94,7 +94,7 @@ static struct k1pro_reset_gsr_signal
@@ -75,7 +75,7 @@ index 4c418c70165e..026717812959 100755
      [RESET_DDR1]          = { DDR_MBUS_SW_RESET700, BIT(2), RESET_DDR_SUB_GSR },
      [RESET_DDR_PHY0]      = { DDR_MBUS_SW_RESET700, BIT(3), RESET_DDR_SUB_GSR },
 diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
-index 74e938ec6041..78b6ff2cf297 100755
+index 74e938ec6041f..78b6ff2cf297d 100755
 --- a/include/dt-bindings/reset/k1-pro-reset.h
 +++ b/include/dt-bindings/reset/k1-pro-reset.h
 @@ -94,51 +94,41 @@

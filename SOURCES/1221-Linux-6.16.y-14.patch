@@ -1,4 +1,4 @@
-From 28909aebaaced4b3a5f36f41209b1085ccb896d8 Mon Sep 17 00:00:00 2001
+From 46bb0e42fb4ff9ce28e7a01332775efb060fccea Mon Sep 17 00:00:00 2001
 From: mara <36348181+sndwvs@users.noreply.github.com>
 Date: Thu, 31 Jul 2025 23:56:27 +0300
 Subject: [PATCH 1221/1222] Linux 6.16.y (#14)
@@ -19,7 +19,7 @@ Subject: [PATCH 1221/1222] Linux 6.16.y (#14)
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_orangepi-r2s.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index fde940679561..057d66ee876e 100644
+index fde9406795610..057d66ee876e5 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -9,5 +9,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -32,7 +32,7 @@ index fde940679561..057d66ee876e 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_cm6.dts b/arch/riscv/boot/dts/spacemit/k1-x_cm6.dts
 new file mode 100644
-index 000000000000..a64836e22a6b
+index 0000000000000..a64836e22a6b6
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_cm6.dts
 @@ -0,0 +1,1147 @@
@@ -1185,7 +1185,7 @@ index 000000000000..a64836e22a6b
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-r2s.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-r2s.dts
 new file mode 100644
-index 000000000000..c82dd8d4b0a0
+index 0000000000000..c82dd8d4b0a06
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-r2s.dts
 @@ -0,0 +1,850 @@
@@ -2040,7 +2040,7 @@ index 000000000000..c82dd8d4b0a0
 +	status = "okay";
 +};
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
-index 6f6772b66a1e..d978aab285f9 100644
+index 6f6772b66a1e7..d978aab285f9c 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
 @@ -247,8 +247,10 @@ u8 rtw_cfg80211_ch_switch_notify(_adapter *adapter,
@@ -2125,7 +2125,7 @@ index 6f6772b66a1e..d978aab285f9 100644
  #else
  	, struct ieee80211_channel *chan
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
-index 295689e78602..984c59540d05 100644
+index 295689e78602e..984c59540d05b 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
 @@ -1103,7 +1103,11 @@ void rtw_cfg80211_cac_finished_event(struct rf_ctl_t *rfctl, u8 band_idx

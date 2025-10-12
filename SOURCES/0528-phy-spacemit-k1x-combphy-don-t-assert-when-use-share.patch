@@ -1,4 +1,4 @@
-From 3e90fd3c00d4e071e43ccad44677f8184326ea43 Mon Sep 17 00:00:00 2001
+From 895dfda306102398fb58b80b9094a8f1338c09c8 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:29:07 +0800
 Subject: [PATCH 0528/1222] phy-spacemit-k1x-combphy: don't assert when use
@@ -10,7 +10,7 @@ Change-Id: I128f3c0c98aab58b1710fcdf2abf7d58076a2232
  1 file changed, 6 deletions(-)
 
 diff --git a/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
-index b8a9581acd51..374c621dff79 100644
+index b8a9581acd510..374c621dff793 100644
 --- a/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
 +++ b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
 @@ -219,12 +219,6 @@ static int spacemit_combphy_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From 3a2f79d8147618a402f15c26bede03b8187cc8f6 Mon Sep 17 00:00:00 2001
+From 15a11df32337bb3c2229d169038ce9e3a4720734 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 1 Mar 2024 17:34:30 +0800
 Subject: [PATCH 0481/1222] k1:rpoc: using a RT thread to process the virtio
@@ -10,7 +10,7 @@ Change-Id: Ifc1df386b70d6ce5a8354d2f3bc804935d34df3e
  1 file changed, 41 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index bb88cd986e67..d07a1a3dbe2d 100644
+index bb88cd986e67c..d07a1a3dbe2d4 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -10,8 +10,14 @@

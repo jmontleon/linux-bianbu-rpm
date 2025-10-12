@@ -1,4 +1,4 @@
-From 921cf8bb884912fe7a894c16eb1aed4c490e0055 Mon Sep 17 00:00:00 2001
+From e3fec25231d0bf386ddd96b1daf9f393ec6dbc21 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sun, 8 Oct 2023 16:46:20 +0800
 Subject: [PATCH 0135/1222] yk1x: add the first-version of pm-domain
@@ -19,7 +19,7 @@ Change-Id: I76296788a7824c806ba04b4b95bd59df7f821091
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi b/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi
 new file mode 100644
-index 000000000000..fbbc575a9eb6
+index 0000000000000..fbbc575a9eb65
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi
 @@ -0,0 +1,131 @@
@@ -155,7 +155,7 @@ index 000000000000..fbbc575a9eb6
 +	};
 +};
 diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index a2d65adffb80..285108a8b80e 100644
+index a2d65adffb805..285108a8b80e6 100644
 --- a/drivers/soc/Kconfig
 +++ b/drivers/soc/Kconfig
 @@ -31,5 +31,6 @@ source "drivers/soc/ux500/Kconfig"
@@ -166,7 +166,7 @@ index a2d65adffb80..285108a8b80e 100644
  
  endmenu
 diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index c9e689080ceb..79c00b244a61 100644
+index c9e689080ceb7..79c00b244a61a 100644
 --- a/drivers/soc/Makefile
 +++ b/drivers/soc/Makefile
 @@ -37,3 +37,4 @@ obj-$(CONFIG_ARCH_U8500)	+= ux500/
@@ -176,7 +176,7 @@ index c9e689080ceb..79c00b244a61 100644
 +obj-$(CONFIG_SOC_SPACEMIT_K1X)	+= spacemit/
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
 new file mode 100644
-index 000000000000..65c1e723f48b
+index 0000000000000..65c1e723f48bd
 --- /dev/null
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -0,0 +1,16 @@
@@ -198,14 +198,14 @@ index 000000000000..65c1e723f48b
 +endif
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
 new file mode 100644
-index 000000000000..345cb29b07ed
+index 0000000000000..345cb29b07ed9
 --- /dev/null
 +++ b/drivers/soc/spacemit/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain.o
 diff --git a/drivers/soc/spacemit/pm_domain.c b/drivers/soc/spacemit/pm_domain.c
 new file mode 100644
-index 000000000000..b70d97678ede
+index 0000000000000..b70d97678edeb
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm_domain.c
 @@ -0,0 +1,563 @@

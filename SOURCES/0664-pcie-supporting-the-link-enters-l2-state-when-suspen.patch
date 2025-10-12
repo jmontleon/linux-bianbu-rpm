@@ -1,4 +1,4 @@
-From 2ba4a6d0b8986f35b28f4f26f10f385027bc521c Mon Sep 17 00:00:00 2001
+From c4d734b58e356093bbedc691477618527047933d Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 15 May 2024 15:48:25 +0800
 Subject: [PATCH 0664/1222] pcie: supporting the link enters l2 state when
@@ -10,7 +10,7 @@ Change-Id: Icefe5b27fb23fb55cec40bbb50c3b042a151cfa0
  1 file changed, 35 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 2c82d3fb6b44..dc7922d003ab 100755
+index 2c82d3fb6b444..dc7922d003ab0 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -34,6 +34,7 @@

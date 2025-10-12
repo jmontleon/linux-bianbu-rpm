@@ -1,4 +1,4 @@
-From a24f8806adf08b771cce731b083a80ab3b8ede18 Mon Sep 17 00:00:00 2001
+From 7c9d71910658437488006abfd3e511cf865465f1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 29 Jun 2023 09:06:23 +0800
 Subject: [PATCH 0065/1222] scmi: support arm's scmi protocol for spacemit
@@ -14,7 +14,7 @@ Change-Id: Ib797b2696207a5c1bf10a5feadfcad0814e196d3
 
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 new file mode 100644
-index 000000000000..cb0da2c8e700
+index 0000000000000..cb0da2c8e7009
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -0,0 +1,46 @@
@@ -65,7 +65,7 @@ index 000000000000..cb0da2c8e700
 +};
 +
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index b4c1ba470ce7..4a2eb68d581e 100644
+index b4c1ba470ce7f..4a2eb68d581ec 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -48,6 +48,8 @@ CONFIG_PCI=y
@@ -94,7 +94,7 @@ index b4c1ba470ce7..4a2eb68d581e 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index e3fb36825978..96cbed1ea6e6 100644
+index e3fb36825978e..96cbed1ea6e6d 100644
 --- a/drivers/firmware/arm_scmi/Kconfig
 +++ b/drivers/firmware/arm_scmi/Kconfig
 @@ -3,7 +3,7 @@ menu "ARM System Control and Management Interface Protocol"

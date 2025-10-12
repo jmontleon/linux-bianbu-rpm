@@ -1,4 +1,4 @@
-From 262301ca6e3ee8e73457e659ec3bd0e7647b271a Mon Sep 17 00:00:00 2001
+From e9c9dbcdc9a1dc87f48714cedeed91d721dc3ee5 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 7 Jun 2024 15:20:41 +0800
 Subject: [PATCH 0702/1222] k1:deassert rpwm reset in resume ops
@@ -10,7 +10,7 @@ Change-Id: Idbbfe16eefc699e96ee38e13e89b23e4da580aef
  2 files changed, 36 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ac9ab1fcd610..9240bec8cc63 100644
+index ac9ab1fcd6108..9240bec8cc632 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1567,6 +1567,7 @@ rpwm2: pwm@c0888300 {
@@ -22,7 +22,7 @@ index ac9ab1fcd610..9240bec8cc63 100644
  		};
  
 diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-index df58bfb176c2..de3f1b0e2c76 100644
+index df58bfb176c2c..de3f1b0e2c760 100644
 --- a/drivers/pwm/pwm-pxa.c
 +++ b/drivers/pwm/pwm-pxa.c
 @@ -58,6 +58,7 @@ struct pxa_pwm_chip {

@@ -1,4 +1,4 @@
-From 0cc62278ad10cf72583121b1169c4c5bc6d13fd7 Mon Sep 17 00:00:00 2001
+From af9eabc35aa4b8be621dbdc48fcc4080db4ffb68 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 2 Feb 2024 11:11:20 +0800
 Subject: [PATCH 0416/1222] clock: uart source 48M and 14.7M have same gate
@@ -11,7 +11,7 @@ Change-Id: Ie3877e31684c97c68bfdeb39ae98e600822cac11
  2 files changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 553dac7784dd..e70933692406 100755
+index 553dac7784ddb..e709336924063 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -428,13 +428,18 @@ static struct ccu_ddn_tbl slow_uart1_tbl[] = {
@@ -46,7 +46,7 @@ index 553dac7784dd..e70933692406 100755
  	.num = CLK_MAX_NO,
  };
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 8be995999fcf..4abf7b20ec64 100755
+index 8be995999fcf4..4abf7b20ec64c 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -187,5 +187,7 @@

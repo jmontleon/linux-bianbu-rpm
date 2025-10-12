@@ -1,4 +1,4 @@
-From e72052fdd31a16866615dcdbace0bb5b62c1333e Mon Sep 17 00:00:00 2001
+From 8de0eb218874daa2f92bec970dcc70be1994007c Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Wed, 29 Nov 2023 16:37:27 +0800
 Subject: [PATCH 0179/1222] display: Add spacemit drm debugfs node
@@ -9,7 +9,7 @@ Change-Id: I263458ec60889950ac1e89033e90765c9e3560f7
  1 file changed, 113 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 2f987b91ad9a..3a9089f83a65 100644
+index 2f987b91ad9ae..3a9089f83a656 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -7,6 +7,7 @@

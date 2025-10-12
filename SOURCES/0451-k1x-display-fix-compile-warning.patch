@@ -1,4 +1,4 @@
-From ea35cf9b946e5b821063adc8aae1eaa8a3affdfb Mon Sep 17 00:00:00 2001
+From 169528f8a8ed8cafc5ad58057220dc7fd79f4a07 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 28 Feb 2024 14:49:58 +0800
 Subject: [PATCH 0451/1222] k1x/display: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: Icf6695d50896bdec6ceac66bb8473d21abd90cd6
  1 file changed, 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index ec4848996ba5..4563e2f7d003 100644
+index ec4848996ba5f..4563e2f7d003a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -167,8 +167,6 @@ static const struct drm_info_list spacemit_debugfs_files[] = {

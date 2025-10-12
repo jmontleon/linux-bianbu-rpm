@@ -1,4 +1,4 @@
-From 83d4bc0e4ee50a627397cf57ddbc9a0cce22abcb Mon Sep 17 00:00:00 2001
+From b7fed8c0b9f0c398ee983c93d858fc810669c644 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 9 Aug 2024 11:16:04 +0800
 Subject: [PATCH 0918/1222] k1x:support cw2015 driver
@@ -14,7 +14,7 @@ Change-Id: Ib54b2262ba9243c68e3221cb1e25191064f447cc
  create mode 100644 drivers/power/supply/cw2015_fuel_gauge.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 26f6423c86af..686eebd7c4d4 100644
+index 26f6423c86af3..686eebd7c4d44 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -266,7 +266,23 @@ es8326: es8326@19{
@@ -43,7 +43,7 @@ index 26f6423c86af..686eebd7c4d4 100644
  
  
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 8f9ded27d032..92922bf6adda 100644
+index 8f9ded27d0324..92922bf6addaa 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -390,6 +390,7 @@ CONFIG_GPIO_K1X=y
@@ -55,7 +55,7 @@ index 8f9ded27d032..92922bf6adda 100644
  CONFIG_CHARGER_SBS_VIRTUAL=y
  CONFIG_SENSORS_PWM_FAN=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 7ee22b3d3a10..690bc7cc4875 100644
+index 7ee22b3d3a10c..690bc7cc48758 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -138,6 +138,18 @@ config BATTERY_CW2015
@@ -78,7 +78,7 @@ index 7ee22b3d3a10..690bc7cc4875 100644
  	tristate "DS2760 battery driver (HP iPAQ & others)"
  	depends on W1
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index 01d7c31b47f3..92ceb4164461 100644
+index 01d7c31b47f3b..92ceb41644612 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -26,6 +26,7 @@ obj-$(CONFIG_CHARGER_AXP20X)	+= axp20x_ac_power.o
@@ -91,7 +91,7 @@ index 01d7c31b47f3..92ceb4164461 100644
  obj-$(CONFIG_BATTERY_DS2781)	+= ds2781_battery.o
 diff --git a/drivers/power/supply/cw2015_fuel_gauge.c b/drivers/power/supply/cw2015_fuel_gauge.c
 new file mode 100644
-index 000000000000..19d032c4f6b7
+index 0000000000000..19d032c4f6b75
 --- /dev/null
 +++ b/drivers/power/supply/cw2015_fuel_gauge.c
 @@ -0,0 +1,881 @@

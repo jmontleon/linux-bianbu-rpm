@@ -1,4 +1,4 @@
-From 7d4d8ffe6477209e8bd17ae3b2a72a18f479df3d Mon Sep 17 00:00:00 2001
+From 1d9acf19f378ee7d67dfd3745a8cb26b1a970ca2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 29 Jun 2023 09:01:48 +0800
 Subject: [PATCH 0064/1222] mailbox: enable spacemit mailbox driver
@@ -18,7 +18,7 @@ Change-Id: If9bd59b3168665aa85af896d0b224e0cd8336f36
  create mode 100644 drivers/mailbox/spacemit/spacemit_mailbox.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 036776e05c69..075b87276c8b 100644
+index 036776e05c69d..075b87276c8b8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -246,6 +246,19 @@ uart0: serial@2cea0000 {
@@ -42,7 +42,7 @@ index 036776e05c69..075b87276c8b 100644
  			compatible = "spacemit,k1pro-axi-dma";
  			reg = <0x0 0x2ce40000 0x0 0x10000>;
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index a209ded8df1e..b4c1ba470ce7 100644
+index a209ded8df1ea..b4c1ba470ce7f 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -159,6 +159,8 @@ CONFIG_SW_SYNC=y
@@ -55,7 +55,7 @@ index a209ded8df1e..b4c1ba470ce7 100644
  CONFIG_REMOTEPROC=y
  CONFIG_SPACEMIT_REMOTEPROC=y
 diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 02432d4a5ccd..51dd3ffa5791 100644
+index 02432d4a5ccd4..51dd3ffa57919 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -369,4 +369,12 @@ config BCM74110_MAILBOX
@@ -72,7 +72,7 @@ index 02432d4a5ccd..51dd3ffa5791 100644
 +
  endif
 diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index 98a68f838486..4d43924eafc4 100644
+index 98a68f838486e..4d43924eafc4b 100644
 --- a/drivers/mailbox/Makefile
 +++ b/drivers/mailbox/Makefile
 @@ -78,3 +78,5 @@ obj-$(CONFIG_THEAD_TH1520_MBOX)	+= mailbox-th1520.o
@@ -83,14 +83,14 @@ index 98a68f838486..4d43924eafc4 100644
 +obj-$(CONFIG_SPACEMIT_MAILBOX)	+= spacemit/
 diff --git a/drivers/mailbox/spacemit/Makefile b/drivers/mailbox/spacemit/Makefile
 new file mode 100644
-index 000000000000..482e1c15fe73
+index 0000000000000..482e1c15fe73a
 --- /dev/null
 +++ b/drivers/mailbox/spacemit/Makefile
 @@ -0,0 +1 @@
 +obj-y += spacemit-mailbox.o
 diff --git a/drivers/mailbox/spacemit/spacemit-mailbox.c b/drivers/mailbox/spacemit/spacemit-mailbox.c
 new file mode 100644
-index 000000000000..c40a3b00f242
+index 0000000000000..c40a3b00f2423
 --- /dev/null
 +++ b/drivers/mailbox/spacemit/spacemit-mailbox.c
 @@ -0,0 +1,284 @@
@@ -380,7 +380,7 @@ index 000000000000..c40a3b00f242
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mailbox/spacemit/spacemit_mailbox.h b/drivers/mailbox/spacemit/spacemit_mailbox.h
 new file mode 100644
-index 000000000000..d64379e21514
+index 0000000000000..d64379e21514e
 --- /dev/null
 +++ b/drivers/mailbox/spacemit/spacemit_mailbox.h
 @@ -0,0 +1,138 @@

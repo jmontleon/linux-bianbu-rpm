@@ -1,4 +1,4 @@
-From 0ba95cdf9e909dbb49ef395dba168fdf43109577 Mon Sep 17 00:00:00 2001
+From 9f7246e9404676f3a2216214cd0a84c3547f784b Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 30 Mar 2023 16:44:46 +0800
 Subject: [PATCH 0017/1222] add k1pro ccu driver and config
@@ -21,7 +21,7 @@ Change-Id: I605d165b5af7ddd4dede2ad4d7eb5f82b626f5aa
  create mode 100755 include/dt-bindings/clock/k1-pro-ccu-clock.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 8e42efb752a9..e0d63ef9c7f7 100644
+index 8e42efb752a97..e0d63ef9c7f74 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -4,6 +4,8 @@
@@ -110,7 +110,7 @@ index 8e42efb752a9..e0d63ef9c7f7 100644
  		clint0: clint@b4000000 {
  			compatible = "riscv,clint0";
 diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index f14cd0559980..e0f937899ede 100644
+index f14cd0559980b..e0f937899ede0 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
 @@ -538,7 +538,7 @@ source "drivers/clk/visconti/Kconfig"
@@ -123,7 +123,7 @@ index f14cd0559980..e0f937899ede 100644
  config CLK_KUNIT_TEST
  	tristate "Basic Clock Framework Kunit Tests" if !KUNIT_ALL_TESTS
 diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 748959391acf..49566c10c607 100644
+index 748959391acf5..49566c10c6072 100644
 --- a/drivers/clk/Makefile
 +++ b/drivers/clk/Makefile
 @@ -167,3 +167,4 @@ endif
@@ -133,7 +133,7 @@ index 748959391acf..49566c10c607 100644
 +obj-y					+= spacemit/
 diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
 new file mode 100755
-index 000000000000..58cf14d4996a
+index 0000000000000..58cf14d4996ac
 --- /dev/null
 +++ b/drivers/clk/spacemit/Kconfig
 @@ -0,0 +1,17 @@
@@ -156,7 +156,7 @@ index 000000000000..58cf14d4996a
 +endif
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
 new file mode 100755
-index 000000000000..140a86466d3b
+index 0000000000000..140a86466d3b0
 --- /dev/null
 +++ b/drivers/clk/spacemit/Makefile
 @@ -0,0 +1,6 @@
@@ -168,7 +168,7 @@ index 000000000000..140a86466d3b
 +obj-$(CONFIG_CLK_K1_CCU)	+= k1-pro-ccu.o
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
 new file mode 100755
-index 000000000000..28048a9eca60
+index 0000000000000..28048a9eca601
 --- /dev/null
 +++ b/drivers/clk/spacemit/k1-pro-ccu.c
 @@ -0,0 +1,268 @@
@@ -442,7 +442,7 @@ index 000000000000..28048a9eca60
 +
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.h b/drivers/clk/spacemit/k1-pro-ccu.h
 new file mode 100755
-index 000000000000..15b5cbd2c07a
+index 0000000000000..15b5cbd2c07ac
 --- /dev/null
 +++ b/drivers/clk/spacemit/k1-pro-ccu.h
 @@ -0,0 +1,119 @@
@@ -567,7 +567,7 @@ index 000000000000..15b5cbd2c07a
 +
 diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
 new file mode 100755
-index 000000000000..a8d4bc68c825
+index 0000000000000..a8d4bc68c8259
 --- /dev/null
 +++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
 @@ -0,0 +1,145 @@

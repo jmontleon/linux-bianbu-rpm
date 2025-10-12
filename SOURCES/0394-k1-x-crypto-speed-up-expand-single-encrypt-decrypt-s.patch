@@ -1,4 +1,4 @@
-From 6da59628ca137b517924fcf9d9b38b036cb6e537 Mon Sep 17 00:00:00 2001
+From 4ee92d7502bbe6a0ebd14fa10ddff378ebd09015 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 17 Jan 2024 20:36:23 +0800
 Subject: [PATCH 0394/1222] k1-x:crypto speed up(expand single encrypt/decrypt
@@ -12,7 +12,7 @@ Change-Id: I6fb2b9729113c5b93c241b08d070a43c561f5995
  3 files changed, 193 insertions(+), 54 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index caf20038690b..70c69d93c8c7 100755
+index caf20038690b2..70c69d93c8c77 100755
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -11,6 +11,9 @@
@@ -290,7 +290,7 @@ index caf20038690b..70c69d93c8c7 100755
  	.encrypt		= ecb_encrypt,
  	.decrypt		= ecb_decrypt,
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 143b933090c7..c792f9d28958 100755
+index 143b933090c78..c792f9d289584 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -31,6 +31,8 @@
@@ -396,7 +396,7 @@ index 143b933090c7..c792f9d28958 100755
  }
  
 diff --git a/drivers/crypto/spacemit/spacemit_engine.h b/drivers/crypto/spacemit/spacemit_engine.h
-index cdf84a2ac965..79bc71eb28bb 100755
+index cdf84a2ac9654..79bc71eb28bb8 100755
 --- a/drivers/crypto/spacemit/spacemit_engine.h
 +++ b/drivers/crypto/spacemit/spacemit_engine.h
 @@ -8,6 +8,8 @@

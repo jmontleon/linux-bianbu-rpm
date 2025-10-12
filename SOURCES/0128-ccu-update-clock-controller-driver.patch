@@ -1,4 +1,4 @@
-From 87976cb841793d5b3ad4d74e9a36b87a212e43a5 Mon Sep 17 00:00:00 2001
+From cecd0cf5ad58888c0d12f4e86e85171781ee7b24 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Sep 2023 19:51:01 +0800
 Subject: [PATCH 0128/1222] ccu: update clock controller driver
@@ -10,7 +10,7 @@ Change-Id: Ia6e577867bf2f5d873b13caa4e1f522a0d6e3cb2
  2 files changed, 7 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
-index db4deed19c79..cc0b8d7c24cf 100755
+index db4deed19c790..cc0b8d7c24cf9 100755
 --- a/drivers/clk/spacemit/k1-pro-ccu.c
 +++ b/drivers/clk/spacemit/k1-pro-ccu.c
 @@ -69,7 +69,6 @@ static struct ccu_clk_data ccu_clocks[] =  {
@@ -45,7 +45,7 @@ index db4deed19c79..cc0b8d7c24cf 100755
      {CLK_USB2VBUS, CLK_TYPE_GATE, "clk_usb2vbus", "clk_usb_sys", NULL, 1, USB_GMAC_SUB_EN_REG704, 16, 0, 0, 0, 0},
      {CLK_GMAC_PHYCLK_OUT, CLK_TYPE_GATE, "clk_gmac_phyclk_out", NULL, NULL, 0, USB_GMAC_SUB_EN_REG704, 17, 0, 0, 0, 0},
 diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
-index ba842c09138c..9518abcdf6b0 100755
+index ba842c09138c8..9518abcdf6b05 100755
 --- a/include/dt-bindings/clock/k1-pro-ccu-clock.h
 +++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
 @@ -124,11 +124,10 @@

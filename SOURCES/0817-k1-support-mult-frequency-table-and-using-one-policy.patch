@@ -1,4 +1,4 @@
-From d876ba72ce5feb412c761196fbf9cabe795f695a Mon Sep 17 00:00:00 2001
+From 570ef0e6651f346734a2f6670e929f7128a902df Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 8 Jul 2024 13:53:08 +0800
 Subject: [PATCH 0817/1222] k1: support mult frequency table and using one
@@ -31,7 +31,7 @@ Change-Id: I84f68f445afe6e72b30f0dd4b2d744d64efa1f7d
  create mode 100644 arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 7e9cee563659..c35df005d36f 100644
+index 7e9cee563659b..c35df005d36f9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -63,9 +63,7 @@ cpu_0: cpu@0 {
@@ -215,7 +215,7 @@ index 7e9cee563659..c35df005d36f 100644
  
  	clocks {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 1c17bd735d23..f58b394bf690 100644
+index 1c17bd735d23a..f58b394bf6905 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -9,6 +9,7 @@
@@ -251,7 +251,7 @@ index 1c17bd735d23..f58b394bf690 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 966efcf683fc..4c7708759f0d 100644
+index 966efcf683fc8..4c7708759f0dd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -9,6 +9,7 @@
@@ -287,7 +287,7 @@ index 966efcf683fc..4c7708759f0d 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index a27954e45b85..3b509c276ff7 100644
+index a27954e45b855..3b509c276ff7f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -6,6 +6,7 @@
@@ -323,7 +323,7 @@ index a27954e45b85..3b509c276ff7 100644
  	mboxes = <&mailbox 0>, <&mailbox 1>;
  	mbox-names = "vq0", "vq1";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 68e9dd4e6831..46c38e50382b 100644
+index 68e9dd4e68312..46c38e50382b2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -10,6 +10,7 @@
@@ -359,7 +359,7 @@ index 68e9dd4e6831..46c38e50382b 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index a3099f73e310..69538b312feb 100644
+index a3099f73e310b..69538b312feb4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -10,6 +10,7 @@
@@ -395,7 +395,7 @@ index a3099f73e310..69538b312feb 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 66420dc53399..1f75f3ccec21 100644
+index 66420dc533999..1f75f3ccec215 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -10,6 +10,7 @@
@@ -453,7 +453,7 @@ index 66420dc53399..1f75f3ccec21 100644
  
  &rcpu {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 0ed80cd17ae2..b3674883c453 100644
+index 0ed80cd17ae2a..b3674883c453b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -10,6 +10,7 @@
@@ -528,7 +528,7 @@ index 0ed80cd17ae2..b3674883c453 100644
  	spa,wdt-enable-restart-handler;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 82c30191fcf8..036a64893f8b 100644
+index 82c30191fcf87..036a64893f8bf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -9,6 +9,7 @@
@@ -586,7 +586,7 @@ index 82c30191fcf8..036a64893f8b 100644
  
  &rcpu {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 8dd137733b1f..fed656ef6537 100644
+index 8dd137733b1fa..fed656ef6537b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -9,6 +9,7 @@
@@ -622,7 +622,7 @@ index 8dd137733b1f..fed656ef6537 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index 274431024206..ed63ee3f9945 100644
+index 2744310242062..ed63ee3f9945f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -10,6 +10,7 @@
@@ -658,7 +658,7 @@ index 274431024206..ed63ee3f9945 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index 728a630aa8e1..f4a63ba9583b 100644
+index 728a630aa8e10..f4a63ba9583bf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -10,6 +10,7 @@
@@ -694,7 +694,7 @@ index 728a630aa8e1..f4a63ba9583b 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index edf90c4b66f5..944bab40e5e7 100644
+index edf90c4b66f59..944bab40e5e71 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -6,6 +6,7 @@
@@ -731,7 +731,7 @@ index edf90c4b66f5..944bab40e5e7 100644
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 new file mode 100644
-index 000000000000..6672b481625b
+index 0000000000000..6672b481625be
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 @@ -0,0 +1,110 @@
@@ -846,7 +846,7 @@ index 000000000000..6672b481625b
 +	operating-points-v2 = <&clst_core_opp_table0>;
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index 3a5c15291046..2567721f330e 100644
+index 3a5c152910463..2567721f330e6 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -10,6 +10,7 @@
@@ -883,7 +883,7 @@ index 3a5c15291046..2567721f330e 100644
  	pinctrl-0 = <&pinctrl_rcpu>;
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 new file mode 100644
-index 000000000000..af2458381b89
+index 0000000000000..af2458381b89a
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 @@ -0,0 +1,234 @@
@@ -1122,7 +1122,7 @@ index 000000000000..af2458381b89
 +	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
 +};
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 506437489b4d..0e0c72ea4566 100644
+index 506437489b4db..0e0c72ea45668 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -36,6 +36,7 @@ struct private_data {
@@ -1159,7 +1159,7 @@ index 506437489b4d..0e0c72ea4566 100644
  static int set_target(struct cpufreq_policy *policy, unsigned int index)
  {
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index 5fd734cffa0a..ce81b344a1c6 100644
+index 5fd734cffa0a9..ce81b344a1c66 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -8,19 +8,25 @@
@@ -1660,7 +1660,7 @@ index 5fd734cffa0a..ce81b344a1c6 100644
         return 0;
  }
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index edbd60501cf0..b78b025314e0 100644
+index edbd60501cf00..b78b025314e0e 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
 @@ -664,8 +664,13 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_exact_indexed);
@@ -1801,7 +1801,7 @@ index edbd60501cf0..b78b025314e0 100644
   * dev_pm_opp_clear_config() - Releases resources blocked for OPP configuration.
   * @token: The token returned by dev_pm_opp_set_config() previously.
 diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index cf477beae4bb..6162593f05dc 100644
+index cf477beae4bbe..6162593f05dcf 100644
 --- a/include/linux/pm_opp.h
 +++ b/include/linux/pm_opp.h
 @@ -182,6 +182,9 @@ int dev_pm_opp_register_notifier(struct device *dev, struct notifier_block *nb);

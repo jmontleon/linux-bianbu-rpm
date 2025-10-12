@@ -1,4 +1,4 @@
-From ca96629746a3255ba1176c4fe5c91f951df6e652 Mon Sep 17 00:00:00 2001
+From 9412e6dc770afd9b7dd5e8747969d7e3761ebe81 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 4 Jul 2024 20:17:25 +0800
 Subject: [PATCH 0829/1222] usb: ehci: support remote wakeup
@@ -10,7 +10,7 @@ Change-Id: I8663ba274dd05ef7bd368e45cbd51ae11fb1d7cc
  2 files changed, 150 insertions(+), 48 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 8eb78acf78e0..b0866813b787 100644
+index 8eb78acf78e07..b0866813b7875 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1794,8 +1794,9 @@ udc: udc@c0900100 {
@@ -38,7 +38,7 @@ index 8eb78acf78e0..b0866813b787 100644
  			spacemit,ehci-name = "mv-ehci";
  			spacemit,otg-force-a-bus-req;
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index 57af956a24bd..dcea1a11306c 100644
+index 57af956a24bdb..dcea1a11306c5 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -22,23 +22,44 @@

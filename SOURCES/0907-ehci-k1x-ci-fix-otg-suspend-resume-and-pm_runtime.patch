@@ -1,4 +1,4 @@
-From 9253446ba3a94e6b418cfefb81f1272b33072ab4 Mon Sep 17 00:00:00 2001
+From 40956fc6ed3cb3a9499f551fe9df98ae307a0641 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:49:50 +0800
 Subject: [PATCH 0907/1222] ehci-k1x-ci: fix otg suspend resume and pm_runtime
@@ -15,7 +15,7 @@ Change-Id: I178dddaaf1fd565d6a4c189d346bd7ed7865fadf
  1 file changed, 39 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index ab26783d76df..16803b344d7b 100644
+index ab26783d76dfc..16803b344d7b9 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -5,7 +5,7 @@

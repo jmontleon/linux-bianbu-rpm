@@ -1,4 +1,4 @@
-From c501dff7587181db8ec901cf992635adba8c18d4 Mon Sep 17 00:00:00 2001
+From 256d5bd5b96c05897b7485828db695b87e4e25ba Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 29 Mar 2024 16:15:21 +0800
 Subject: [PATCH 0563/1222] k1x:rcpu: support suspend & resume function for
@@ -21,7 +21,7 @@ Signed-off-by: Nell <xianbin.zhu@spacemit.com>
  11 files changed, 200 insertions(+), 39 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c21363603675..ff0a738be0f8 100644
+index c213636036758..ff0a738be0f82 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -520,6 +520,12 @@ rsc_table: rsc_table@302fc000 {
@@ -38,7 +38,7 @@ index c21363603675..ff0a738be0f8 100644
  
  	soc: soc {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 9d73c247abeb..a893af99a8dd 100644
+index 9d73c247abeb3..a893af99a8dde 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -718,7 +718,7 @@ &rcpu {
@@ -51,7 +51,7 @@ index 9d73c247abeb..a893af99a8dd 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 05a475d59b86..55e3fd4c85c6 100644
+index 05a475d59b864..55e3fd4c85c6a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -949,7 +949,7 @@ &rcpu {
@@ -64,7 +64,7 @@ index 05a475d59b86..55e3fd4c85c6 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index eace7ed52b34..b0dc558df5ad 100644
+index eace7ed52b34c..b0dc558df5ad4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -913,7 +913,7 @@ &rcpu {
@@ -77,7 +77,7 @@ index eace7ed52b34..b0dc558df5ad 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 4a9919dd2d22..8125c2036de5 100644
+index 4a9919dd2d222..8125c2036de52 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -850,7 +850,7 @@ &rcpu {
@@ -90,7 +90,7 @@ index 4a9919dd2d22..8125c2036de5 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 92f8dd268bb0..25982115b268 100644
+index 92f8dd268bb0f..25982115b2686 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -752,7 +752,7 @@ &rcpu {
@@ -103,7 +103,7 @@ index 92f8dd268bb0..25982115b268 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 5062ea7bafb3..a53bda8a42ba 100644
+index 5062ea7bafb34..a53bda8a42ba2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -721,7 +721,7 @@ &rcpu {
@@ -116,7 +116,7 @@ index 5062ea7bafb3..a53bda8a42ba 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 19a10eea0232..b2e5fc221f3d 100644
+index 19a10eea0232a..b2e5fc221f3d8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -598,7 +598,7 @@ &rcpu {
@@ -129,7 +129,7 @@ index 19a10eea0232..b2e5fc221f3d 100644
  };
  
 diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
-index cfeaf16177d4..220f15d4b1a5 100644
+index cfeaf16177d49..220f15d4b1a59 100644
 --- a/drivers/mailbox/spacemit/k1x-mailbox.c
 +++ b/drivers/mailbox/spacemit/k1x-mailbox.c
 @@ -223,9 +223,39 @@ static const struct of_device_id spacemit_mailbox_of_match[] = {
@@ -173,7 +173,7 @@ index cfeaf16177d4..220f15d4b1a5 100644
  	},
  	.probe  = spacemit_mailbox_probe,
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 168aa7ce1f29..23b2d8d07bf7 100644
+index 168aa7ce1f295..23b2d8d07bf75 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -3,6 +3,8 @@
@@ -438,7 +438,7 @@ index 168aa7ce1f29..23b2d8d07bf7 100644
  	return 0;
  }
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 05162fddbfe9..3891cb499564 100644
+index 05162fddbfe92..3891cb4995643 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -255,9 +255,57 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)

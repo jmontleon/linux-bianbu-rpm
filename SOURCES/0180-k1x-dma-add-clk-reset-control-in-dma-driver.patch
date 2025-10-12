@@ -1,4 +1,4 @@
-From 7641ea8fd709e8099acba8dabf162516204ef463 Mon Sep 17 00:00:00 2001
+From c8d58c9a0c42b0abebf48fe8c0e14ec35781b928 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 2 Dec 2023 20:43:44 +0800
 Subject: [PATCH 0180/1222] k1x-dma:add clk&reset control in dma driver
@@ -10,7 +10,7 @@ Change-Id: Idc9da0e335d7e27ae6c1108c4e27248c24a4a171
  2 files changed, 30 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 20ee9895f4c2..bbf70b5040ba 100644
+index 20ee9895f4c2b..bbf70b5040ba8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -579,6 +579,8 @@ pdma0: pdma@d4000000 {
@@ -23,7 +23,7 @@ index 20ee9895f4c2..bbf70b5040ba 100644
  			#dma-channels = <16>;
  			max-burst-size = <64>;
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index 91dbc85f4f5a..8d45bccbbca1 100644
+index 91dbc85f4f5af..8d45bccbbca13 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -15,6 +15,8 @@

@@ -1,4 +1,4 @@
-From eaeb5ac3834733a716643b8104041c12c1882bb3 Mon Sep 17 00:00:00 2001
+From 1364cb2606153681efa505dbd1ff2fa2613a542b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 12 Jan 2024 19:25:29 +0800
 Subject: [PATCH 0362/1222] disable rtl8852bs wifi driver, there is too much
@@ -10,7 +10,7 @@ Change-Id: Ia7340823a5c1a0ff4967880c9ced3fed5290a83f
  1 file changed, 1 deletion(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 48b984a4e5b2..d57efa2028a1 100644
+index 48b984a4e5b24..d57efa2028a16 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -188,7 +188,6 @@ CONFIG_USB_USBNET=y

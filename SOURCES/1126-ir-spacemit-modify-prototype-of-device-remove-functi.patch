@@ -1,4 +1,4 @@
-From 3bcba8fccd3ef53fefecf015174de5c2bc8d1fa7 Mon Sep 17 00:00:00 2001
+From ba532a9387de979af2da062688058ddc366d2f9f Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:26:23 +0800
 Subject: [PATCH 1126/1222] ir: spacemit: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I3c5e017681917d4cb0836f1e5690667ee34b2cf5
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
-index 0005461aad9d..9fe3fbf3fdca 100644
+index 0005461aad9d0..9fe3fbf3fdca4 100644
 --- a/drivers/media/rc/ir-spacemit.c
 +++ b/drivers/media/rc/ir-spacemit.c
 @@ -283,14 +283,12 @@ static int spacemit_ir_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From 5681c6fe8e83883b55dc385f945816e9fc0e6c94 Mon Sep 17 00:00:00 2001
+From 52ce8667aa5ec377b4da945270b2eed16ef84cf5 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 2 Jul 2024 15:41:13 +0800
 Subject: [PATCH 0788/1222] k1: add wlan hostwake config for MINI-PC and
@@ -11,7 +11,7 @@ Change-Id: I009070cb60c13f8661b033c2eadc2627e6438461
  2 files changed, 28 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 73238e0b7362..21b9d6d32b1f 100644
+index 73238e0b7362a..21b9d6d32b1fb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -144,8 +144,11 @@ rf_pwrseq: rf-pwrseq {
@@ -60,7 +60,7 @@ index 73238e0b7362..21b9d6d32b1f 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index 656aab066f95..7d746c2e2468 100644
+index 656aab066f957..7d746c2e24680 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -147,8 +147,11 @@ rf_pwrseq: rf-pwrseq {

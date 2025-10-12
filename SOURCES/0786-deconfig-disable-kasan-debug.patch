@@ -1,4 +1,4 @@
-From 81df4d7509d04c58204ef7a0352e51efae09b8f8 Mon Sep 17 00:00:00 2001
+From 125af365ce6cdcf2249f82416fd0048246d9f194 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 1 Jul 2024 14:54:06 +0800
 Subject: [PATCH 0786/1222] deconfig: disable kasan debug
@@ -10,7 +10,7 @@ Signed-off-by: lijuan <juan.li@spacemit.com>
  1 file changed, 3 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index fc76d81561a5..ed6d51348bfe 100644
+index fc76d81561a53..ed6d51348bfe2 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -43,7 +43,6 @@ CONFIG_SOC_SPACEMIT=y

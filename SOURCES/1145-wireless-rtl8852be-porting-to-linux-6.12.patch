@@ -1,4 +1,4 @@
-From 7b80fc0503264ef547fb6f5c279c2b10277a4a35 Mon Sep 17 00:00:00 2001
+From 15cfe8001c1e5f2c42f2b55141cfee8f915bdf6e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 12:26:48 +0800
 Subject: [PATCH 1145/1222] wireless: rtl8852be: porting to linux-6.12
@@ -13,7 +13,7 @@ Change-Id: Idd258bb7dfe7183ad658b05a9c7e41b3c659c0b8
  2 files changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/os_intfs.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/os_intfs.c
-index 0f7ff9a8c070..2a2417c708b4 100644
+index 0f7ff9a8c070f..2a2417c708b48 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/os_intfs.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/os_intfs.c
 @@ -515,13 +515,13 @@ static void rtw_ethtool_get_drvinfo(struct net_device *dev, struct ethtool_drvin
@@ -47,7 +47,7 @@ index 0f7ff9a8c070..2a2417c708b4 100644
  }
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_android.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_android.c
-index 9c12c16285ea..1dea513ad3fd 100644
+index 9c12c16285ea5..1dea513ad3fd4 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_android.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/rtw_android.c
 @@ -990,7 +990,7 @@ static void shutdown_card(void)

@@ -1,4 +1,4 @@
-From 7ec1a34b69f473da812727679ff4b7e01133f5d5 Mon Sep 17 00:00:00 2001
+From 4ddf517b5fc2982f13df1205899d3c5e40944f75 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 24 Jun 2024 09:22:29 +0800
 Subject: [PATCH 0768/1222] riscv: show reason of unaligned access speed are
@@ -22,7 +22,7 @@ Change-Id: I8890cb2657e26bcc692fb689801d870ceb402a9c
  1 file changed, 9 insertions(+)
 
 diff --git a/arch/riscv/kernel/unaligned_access_speed.c b/arch/riscv/kernel/unaligned_access_speed.c
-index ae2068425fbc..839daa4e50d6 100644
+index ae2068425fbcd..839daa4e50d65 100644
 --- a/arch/riscv/kernel/unaligned_access_speed.c
 +++ b/arch/riscv/kernel/unaligned_access_speed.c
 @@ -315,6 +315,15 @@ static void check_vector_unaligned_access(struct work_struct *work __always_unus

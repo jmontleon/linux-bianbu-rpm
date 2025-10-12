@@ -1,4 +1,4 @@
-From c948ebd0246384f3b18ced34d2eb99a1b9a09bed Mon Sep 17 00:00:00 2001
+From 326be76636ec51b601af09f21baf8165c6ff3a0c Mon Sep 17 00:00:00 2001
 From: linjunyan <junyan.lin@spacemit.com>
 Date: Wed, 10 Apr 2024 11:32:29 +0800
 Subject: [PATCH 0578/1222] k1_defconfig: enable usb serial drivers as modules
@@ -9,7 +9,7 @@ Change-Id: I845e28592927d71f1fd63910b2573d0a3650f004
  1 file changed, 52 insertions(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 1e485e1ada43..df9a895bb353 100644
+index 1e485e1ada434..df9a895bb3530 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -583,7 +583,59 @@ CONFIG_USB_DWC3=y

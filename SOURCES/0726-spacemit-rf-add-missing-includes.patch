@@ -1,4 +1,4 @@
-From 3223b1d6a61b227a57029273d72643a672fcfac3 Mon Sep 17 00:00:00 2001
+From 47f2641aa141584f7c1471d22d8e7780a5ea66f5 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 18 Jun 2024 17:28:20 +0800
 Subject: [PATCH 0726/1222] spacemit-rf: add missing includes
@@ -10,7 +10,7 @@ Change-Id: Icdc1ae951fb3928cc7cab5978f299c387ff868f9
  2 files changed, 5 insertions(+)
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
-index 34e89a7f7ace..4cd27bbcbfe4 100755
+index 34e89a7f7ace5..4cd27bbcbfe48 100755
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 @@ -19,6 +19,8 @@
@@ -23,7 +23,7 @@ index 34e89a7f7ace..4cd27bbcbfe4 100755
  #include <linux/platform_device.h>
  #include "spacemit-pwrseq.h"
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
-index 2c6a5fa4d3e6..46247d982d97 100755
+index 2c6a5fa4d3e6b..46247d982d979 100755
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -17,6 +17,9 @@

@@ -1,4 +1,4 @@
-From 6007c6208eeebe59d2ca14aaf94197e733688bca Mon Sep 17 00:00:00 2001
+From be227ef01e0ec994ad531274ea094c2811667a6f Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 22 May 2023 19:59:48 +0800
 Subject: [PATCH 0034/1222] ethernet: adding the driver of the Designware gmac
@@ -15,7 +15,7 @@ Change-Id: I4d50d83d82bdd7edf50de2708d1d319fa625a302
  create mode 100755 drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index ae3ae0fad51b..028601ce2f6f 100644
+index ae3ae0fad51b1..028601ce2f6f5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -310,7 +310,26 @@ qspi0: spi@2ce00000 {
@@ -47,7 +47,7 @@ index ae3ae0fad51b..028601ce2f6f 100644
  	};
  };
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 1dd9b6a758a6..607b3100ad1a 100644
+index 1dd9b6a758a6d..607b3100ad1a8 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -53,6 +53,48 @@ CONFIG_BLK_DEV_SD=y
@@ -116,7 +116,7 @@ index 1dd9b6a758a6..607b3100ad1a 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 67fa879b1e52..52119c836f9f 100644
+index 67fa879b1e521..52119c836f9f2 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
 +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
 @@ -323,6 +323,15 @@ config DWMAC_VISCONTI
@@ -136,7 +136,7 @@ index 67fa879b1e52..52119c836f9f 100644
  
  config DWMAC_INTEL
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index b591d93f8503..036259a515c9 100644
+index b591d93f85033..036259a515c97 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
 +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
 @@ -31,6 +31,7 @@ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
@@ -149,7 +149,7 @@ index b591d93f8503..036259a515c9 100644
  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 new file mode 100755
-index 000000000000..28cbbfb019a2
+index 0000000000000..28cbbfb019a20
 --- /dev/null
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 @@ -0,0 +1,332 @@

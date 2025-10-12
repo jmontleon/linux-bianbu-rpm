@@ -1,4 +1,4 @@
-From f52f5fe19f1cda68888e26ee9aca6a022dd75462 Mon Sep 17 00:00:00 2001
+From f7ce945ad0c473acd0748c365376f6085ddfc0ab Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Mon, 28 Oct 2024 13:52:53 +0800
 Subject: [PATCH 1045/1222] disable the function that auto switch usb mode at
@@ -10,7 +10,7 @@ Change-Id: I13fc72049c13c9bd3ac6ea2e3098c77e02b90e8b
  1 file changed, 16 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
-index bb026a56b180..0874359a491f 100644
+index bb026a56b1802..0874359a491f0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 @@ -185,12 +185,6 @@ dwc3_con_ep: endpoint {

@@ -1,4 +1,4 @@
-From c2c560197b719e97fb2b6240409df5e0e96d8288 Mon Sep 17 00:00:00 2001
+From 301bdd3f72542b533bea062e1e6a0c0f3b4f393c Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Wed, 15 May 2024 21:14:14 +0800
 Subject: [PATCH 0666/1222] Linux:Separate the I2C configuration between the
@@ -19,7 +19,7 @@ Change-Id: I2291dca7a3c103644245ab0079a6b6a4a2df904e
  10 files changed, 23 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 680d23dbf325..53bda1137923 100644
+index 680d23dbf325c..53bda1137923a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1102,7 +1102,7 @@ i2c0: i2c@d4010800 {
@@ -68,7 +68,7 @@ index 680d23dbf325..53bda1137923 100644
                          spacemit,i2c-master-code = /bits/ 8 <0x0e>;
                          spacemit,i2c-clk-rate = <32000000>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 363414789c99..378285002b37 100644
+index 363414789c991..378285002b370 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -278,6 +278,7 @@ &hdmi{
@@ -88,7 +88,7 @@ index 363414789c99..378285002b37 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 7e7c4a9701a9..df21933b1c3d 100644
+index 7e7c4a9701a90..df21933b1c3d6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -182,6 +182,7 @@ &uart2 {
@@ -100,7 +100,7 @@ index 7e7c4a9701a9..df21933b1c3d 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 6f0a0c552816..aeb2346fc14a 100644
+index 6f0a0c5528167..aeb2346fc14a7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -237,18 +237,21 @@ &hdmi{
@@ -126,7 +126,7 @@ index 6f0a0c552816..aeb2346fc14a 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 87c53a0ed55c..6da20d963215 100644
+index 87c53a0ed55c6..6da20d9632150 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -231,18 +231,21 @@ &hdmi{
@@ -152,7 +152,7 @@ index 87c53a0ed55c..6da20d963215 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 70fd97ee7d05..3c97d82a8be3 100644
+index 70fd97ee7d051..3c97d82a8be33 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -219,18 +219,21 @@ &hdmi{
@@ -178,7 +178,7 @@ index 70fd97ee7d05..3c97d82a8be3 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index b2e854475f22..fe1123d908ff 100644
+index b2e854475f229..fe1123d908fff 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -193,12 +193,14 @@ &hdmi{
@@ -197,7 +197,7 @@ index b2e854475f22..fe1123d908ff 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index e0a4b93427c1..00fc4af8e9c2 100644
+index e0a4b93427c14..00fc4af8e9c2c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -218,6 +218,7 @@ &hdmi{
@@ -217,7 +217,7 @@ index e0a4b93427c1..00fc4af8e9c2 100644
  
  	es8326: es8326@19{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 184560f090f6..efce0fd59df3 100644
+index 184560f090f65..efce0fd59df32 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -213,6 +213,7 @@ &hdmi{
@@ -229,7 +229,7 @@ index 184560f090f6..efce0fd59df3 100644
  
  	eeprom@50{
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index cd5e5d9cb70f..48a32dcdf338 100644
+index cd5e5d9cb70f1..48a32dcdf3384 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -169,6 +169,7 @@ &uart2 {

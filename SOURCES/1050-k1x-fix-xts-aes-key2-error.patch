@@ -1,4 +1,4 @@
-From 015d5c6e61d7701447c0b956e03f9b7b062b5ec2 Mon Sep 17 00:00:00 2001
+From 3b0dd2bd07413cfd6bedc943e5251bcc84a3f87b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 29 Oct 2024 20:29:54 +0800
 Subject: [PATCH 1050/1222] k1x:fix xts-aes key2 error
@@ -10,7 +10,7 @@ Change-Id: I4c63e363a5578678a716238dd61903bebfff79e4
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index e7b06926c5cd..b3388788256f 100644
+index e7b06926c5cdb..b3388788256f8 100644
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -327,7 +327,7 @@ static int xts_encrypt(struct skcipher_request *req)
@@ -32,7 +32,7 @@ index e7b06926c5cd..b3388788256f 100644
  		map_addr = out_buffer;
  		for(sg = start_dstsg,len = 0;len<singal_len;len += sg->length)
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index 0016813dab0a..13a597f608c3 100644
+index 0016813dab0a7..13a597f608c38 100644
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -1082,6 +1082,11 @@ static int ce_aes_process_nblocks(int index, const unsigned char *buf_in, unsign

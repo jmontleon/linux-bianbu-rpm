@@ -1,4 +1,4 @@
-From ec6e391cfd0350b5880be49db8a00ab083c4ecd3 Mon Sep 17 00:00:00 2001
+From fa414d34b0d73195ab114b6c7a47d2f95f6736bb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 7 Mar 2024 11:43:09 +0800
 Subject: [PATCH 0467/1222] aud: add es8326 sound card support
@@ -10,7 +10,7 @@ Change-Id: I36aefe7c14dee14346a4d97484ac92c0a706643b
  2 files changed, 70 insertions(+), 13 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 3b65462deca7..6cfc53b5ba84 100644
+index 3b65462deca79..6cfc53b5ba84d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2555,8 +2555,13 @@ spacemit-snd-dma1 {
@@ -30,7 +30,7 @@ index 3b65462deca7..6cfc53b5ba84 100644
  	};
  };
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index a8ff6a72f6e7..6496050fa99b 100644
+index a8ff6a72f6e75..6496050fa99b6 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -39,7 +39,50 @@ __maybe_unused SND_SOC_DAILINK_DEF(pcm_dma1,

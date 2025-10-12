@@ -1,4 +1,4 @@
-From 69e90d19cd3e802d1eadbb21e7cb082cbe016b19 Mon Sep 17 00:00:00 2001
+From d469f3089c8b5f6a2f64254b398c9ee0d028723d Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 17 Aug 2025 23:24:26 -0400
 Subject: [PATCH 1222/1222] 6.17 Fixes
@@ -20,7 +20,7 @@ Subject: [PATCH 1222/1222] 6.17 Fixes
  13 files changed, 62 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/gpio/gpio-k1x.c b/drivers/gpio/gpio-k1x.c
-index a3bb171d8e9c..271e0414f86a 100644
+index a3bb171d8e9c6..271e0414f86a4 100644
 --- a/drivers/gpio/gpio-k1x.c
 +++ b/drivers/gpio/gpio-k1x.c
 @@ -111,7 +111,7 @@ static int k1x_gpio_get(struct gpio_chip *chip, unsigned offset)
@@ -42,7 +42,7 @@ index a3bb171d8e9c..271e0414f86a 100644
  
  #ifdef CONFIG_OF_GPIO
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
-index f9f922408dc4..c61c384e72ad 100644
+index f9f922408dc45..c61c384e72adc 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc.c
 @@ -69,7 +69,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -54,7 +54,7 @@ index f9f922408dc4..c61c384e72ad 100644
  #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0))
  #include <linux/sched/clock.h>
 diff --git a/drivers/gpu/drm/img-rogue/pmr_os.c b/drivers/gpu/drm/img-rogue/pmr_os.c
-index 5802364a23a7..c9c641dc104d 100644
+index 5802364a23a79..c9c641dc104d9 100644
 --- a/drivers/gpu/drm/img-rogue/pmr_os.c
 +++ b/drivers/gpu/drm/img-rogue/pmr_os.c
 @@ -45,7 +45,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -122,7 +122,7 @@ index 5802364a23a7..c9c641dc104d 100644
  			{
  				iStatus = vm_fault_to_errno(vmf, 0);
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 856cf2357a3f..cf8754be351b 100644
+index 856cf2357a3f0..cf8754be351b4 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1588,11 +1588,6 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
@@ -155,7 +155,7 @@ index 856cf2357a3f..cf8754be351b 100644
  
  #ifdef CONFIG_PM_SLEEP
 diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
-index 7caa692f9a87..41f8081f3f14 100644
+index 7caa692f9a873..41f8081f3f142 100644
 --- a/drivers/net/ethernet/spacemit/emac_ptp.c
 +++ b/drivers/net/ethernet/spacemit/emac_ptp.c
 @@ -180,7 +180,7 @@ static u64 emac_hw_get_rx_timestamp(struct emac_priv *priv)
@@ -168,7 +168,7 @@ index 7caa692f9a87..41f8081f3f14 100644
  	struct emac_priv *priv = container_of(cc, struct emac_priv, cc);
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
-index 318b67ad6bd8..ff7247ef1a8a 100644
+index 318b67ad6bd8c..ff7247ef1a8a7 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
 +++ b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
 @@ -724,7 +724,7 @@ struct rtw_timer_list {
@@ -181,7 +181,7 @@ index 318b67ad6bd8..ff7247ef1a8a 100644
  	ptimer->function(ptimer->arg);
  }
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
-index d978aab285f9..e7d736216294 100644
+index d978aab285f9c..e7d736216294c 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
 @@ -3618,7 +3618,7 @@ static void cfg80211_rtw_abort_scan(struct wiphy *wiphy,
@@ -210,7 +210,7 @@ index d978aab285f9..e7d736216294 100644
  	unsigned int link_id,
  #endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
-index 984c59540d05..b50a9a0f6007 100644
+index 984c59540d05b..b50a9a0f60076 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
 +++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
 @@ -151,7 +151,7 @@ static void rtw_regd_schedule_dfs_chan_update(struct wiphy *wiphy)
@@ -241,7 +241,7 @@ index 984c59540d05..b50a9a0f6007 100644
  }
  
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
-index 715671b76672..7895a6d634fc 100644
+index 715671b766729..7895a6d634fc6 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 @@ -3613,7 +3613,7 @@ static void cfg80211_rtw_abort_scan(struct wiphy *wiphy,
@@ -284,7 +284,7 @@ index 715671b76672..7895a6d634fc 100644
  {
  	RTW_INFO("%s\n", __func__);
 diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 00f52d472dcd..0bbf08ed3d5c 100644
+index 00f52d472dcdd..0bbf08ed3d5cd 100644
 --- a/drivers/pci/controller/dwc/pcie-designware.h
 +++ b/drivers/pci/controller/dwc/pcie-designware.h
 @@ -413,6 +413,7 @@ struct dw_pcie_rp {
@@ -296,7 +296,7 @@ index 00f52d472dcd..0bbf08ed3d5c 100644
  	struct irq_chip		*msi_irq_chip;
  	u32			num_vectors;
 diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
-index 2583d0b998fa..25cace8d14b8 100644
+index 2583d0b998fa7..25cace8d14b81 100644
 --- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
 +++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 @@ -174,7 +174,7 @@ static int spacemit_gpio_get_direction(struct gpio_chip *chip,
@@ -327,7 +327,7 @@ index 2583d0b998fa..25cace8d14b8 100644
  	pctl->chip.direction_output	= spacemit_gpio_output;
  
 diff --git a/drivers/power/supply/sbs-charger-virtual.c b/drivers/power/supply/sbs-charger-virtual.c
-index 4d2fd9b88c72..a229b81d8efd 100644
+index 4d2fd9b88c720..a229b81d8efde 100644
 --- a/drivers/power/supply/sbs-charger-virtual.c
 +++ b/drivers/power/supply/sbs-charger-virtual.c
 @@ -176,7 +176,7 @@ static int sbs_charger_probe(struct platform_device *pdev)
@@ -340,7 +340,7 @@ index 4d2fd9b88c72..a229b81d8efd 100644
  	info->charger = devm_power_supply_register(&pdev->dev,
  						   &sbs_charger_desc, &psy_cfg);
 diff --git a/drivers/power/supply/sgm4154x_charger.c b/drivers/power/supply/sgm4154x_charger.c
-index 7cf26e8011e6..2c1c2b986d47 100644
+index 7cf26e8011e65..2c1c2b986d47a 100644
 --- a/drivers/power/supply/sgm4154x_charger.c
 +++ b/drivers/power/supply/sgm4154x_charger.c
 @@ -749,7 +749,7 @@ static int sgm4154x_power_supply_init(struct sgm4154x_device *sgm,

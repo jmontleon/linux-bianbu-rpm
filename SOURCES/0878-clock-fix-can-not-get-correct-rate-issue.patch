@@ -1,4 +1,4 @@
-From 67b57714b4ef8be6859af7bff616e8164ee85d61 Mon Sep 17 00:00:00 2001
+From 6686879025fe09f2d275915ec6b56951befc539f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 6 Aug 2024 17:00:04 +0800
 Subject: [PATCH 0878/1222] clock: fix can not get correct rate issue
@@ -9,7 +9,7 @@ Change-Id: Iac2b692cb81c58e6f0b5ec1d5c2e06abe78d2271
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 92927998d767..47e963e92d63 100644
+index 92927998d7672..47e963e92d632 100644
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -10,7 +10,7 @@

@@ -1,4 +1,4 @@
-From 8b5cfa42661689419ba840cb8f8656cc333c08cc Mon Sep 17 00:00:00 2001
+From 66be66ea752c30bc0840364691225839b487bf69 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 15:46:29 +0800
 Subject: [PATCH 0922/1222] display: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I4debd5bc0d4236f3f915d2b90dbd7524e2329c7e
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 9c5733d051e6..40ff51db3957 100644
+index 9c5733d051e66..40ff51db3957a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -239,8 +239,10 @@ int spacemit_gem_prime_vmap(struct drm_gem_object *gem_obj, struct iosys_map *ma

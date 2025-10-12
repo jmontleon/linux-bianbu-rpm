@@ -1,4 +1,4 @@
-From 5dca30fc3244e96cabdd2c908ef6d6719cb2a16b Mon Sep 17 00:00:00 2001
+From fc519936794ba71aae9397678274af37490d1673 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 30 Nov 2023 20:54:50 +0800
 Subject: [PATCH 0187/1222] pm-domain: add new feature
@@ -16,7 +16,7 @@ Change-Id: Ic759fa1599fe466cb1ac9f89c1ca80decb741b03
  3 files changed, 229 insertions(+), 54 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 49ba46a38646..845f92cbfcf6 100644
+index 49ba46a38646b..845f92cbfcf6f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -552,7 +552,7 @@ power: power-controller {
@@ -42,7 +42,7 @@ index 49ba46a38646..845f92cbfcf6 100644
  		};
  
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index e05bf717afe7..95fcf6488549 100644
+index e05bf717afe76..95fcf6488549c 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -47,6 +47,11 @@
@@ -473,7 +473,7 @@ index e05bf717afe7..95fcf6488549 100644
  
  	return 0;
 diff --git a/include/dt-bindings/pmu/k1x_pmu.h b/include/dt-bindings/pmu/k1x_pmu.h
-index 4ca807c65713..e31cdfd06454 100644
+index 4ca807c65713c..e31cdfd06454c 100644
 --- a/include/dt-bindings/pmu/k1x_pmu.h
 +++ b/include/dt-bindings/pmu/k1x_pmu.h
 @@ -9,5 +9,6 @@

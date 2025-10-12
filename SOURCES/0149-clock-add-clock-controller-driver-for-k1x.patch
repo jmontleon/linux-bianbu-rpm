@@ -1,4 +1,4 @@
-From e7148a0e93c6ef4674d04b19227e244fe152d262 Mon Sep 17 00:00:00 2001
+From a99282f1b0c52135a04716a17f5bdfbe35d75cf9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 6 Nov 2023 11:31:55 +0800
 Subject: [PATCH 0149/1222] clock: add clock controller driver for k1x
@@ -30,7 +30,7 @@ Change-Id: I50963d55984172eae32786e7603b36c62b26fb31
  create mode 100755 include/dt-bindings/clock/spacemit-k1x-clock.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 30f0f691eb41..1b59493d8a6f 100644
+index 30f0f691eb41d..1b59493d8a6f7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -6,6 +6,7 @@
@@ -105,7 +105,7 @@ index 30f0f691eb41..1b59493d8a6f 100644
  			ranges;
  			compatible = "spacemit,k1x-reset";
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 3b4f1e2e08a5..5c4be03ae3df 100644
+index 3b4f1e2e08a54..5c4be03ae3dfc 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -321,6 +321,7 @@ CONFIG_DMABUF_HEAPS_CMA=y
@@ -117,7 +117,7 @@ index 3b4f1e2e08a5..5c4be03ae3df 100644
  # CONFIG_IOMMU_SUPPORT is not set
  # CONFIG_DPAA2_CONSOLE is not set
 diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
-index 58cf14d4996a..8229879bc21f 100755
+index 58cf14d4996ac..8229879bc21f1 100755
 --- a/drivers/clk/spacemit/Kconfig
 +++ b/drivers/clk/spacemit/Kconfig
 @@ -15,3 +15,10 @@ config CLK_K1_CCU
@@ -132,7 +132,7 @@ index 58cf14d4996a..8229879bc21f 100755
 +          Build the driver for Spacemit K1x Clock Driver.
 +
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
-index 140a86466d3b..f1fad0d5a71c 100755
+index 140a86466d3b0..f1fad0d5a71ce 100755
 --- a/drivers/clk/spacemit/Makefile
 +++ b/drivers/clk/spacemit/Makefile
 @@ -2,5 +2,7 @@
@@ -146,7 +146,7 @@ index 140a86466d3b..f1fad0d5a71c 100755
 +obj-$(CONFIG_CLK_K1_CCU)           += k1-pro-ccu.o
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 new file mode 100755
-index 000000000000..eced9a1d6a49
+index 0000000000000..eced9a1d6a499
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -0,0 +1,1330 @@
@@ -1482,7 +1482,7 @@ index 000000000000..eced9a1d6a49
 +
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 new file mode 100755
-index 000000000000..c7f7bcbf20fc
+index 0000000000000..c7f7bcbf20fc4
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 @@ -0,0 +1,70 @@
@@ -1558,7 +1558,7 @@ index 000000000000..c7f7bcbf20fc
 +#endif /* _CCU_SPACEMIT_K1X_H_ */
 diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
 new file mode 100644
-index 000000000000..5afbd462eb9b
+index 0000000000000..5afbd462eb9b0
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_ddn.c
 @@ -0,0 +1,170 @@
@@ -1734,7 +1734,7 @@ index 000000000000..5afbd462eb9b
 +
 diff --git a/drivers/clk/spacemit/ccu_ddn.h b/drivers/clk/spacemit/ccu_ddn.h
 new file mode 100644
-index 000000000000..b2a0ccc73b90
+index 0000000000000..b2a0ccc73b907
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_ddn.h
 @@ -0,0 +1,97 @@
@@ -1837,7 +1837,7 @@ index 000000000000..b2a0ccc73b90
 +#endif
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
 new file mode 100755
-index 000000000000..cbab9946c994
+index 0000000000000..cbab9946c9945
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -0,0 +1,347 @@
@@ -2190,7 +2190,7 @@ index 000000000000..cbab9946c994
 +
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
 new file mode 100755
-index 000000000000..65b72eb46f8a
+index 0000000000000..65b72eb46f8ab
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -0,0 +1,298 @@
@@ -2494,7 +2494,7 @@ index 000000000000..65b72eb46f8a
 +#endif /* _CCU_DIV_H_ */
 diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
 new file mode 100644
-index 000000000000..391498a28457
+index 0000000000000..391498a284572
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_pll.c
 @@ -0,0 +1,280 @@
@@ -2780,7 +2780,7 @@ index 000000000000..391498a28457
 +
 diff --git a/drivers/clk/spacemit/ccu_pll.h b/drivers/clk/spacemit/ccu_pll.h
 new file mode 100644
-index 000000000000..95df6203e85f
+index 0000000000000..95df6203e85f4
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_pll.h
 @@ -0,0 +1,84 @@
@@ -2870,7 +2870,7 @@ index 000000000000..95df6203e85f
 +#endif
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
 new file mode 100755
-index 000000000000..861ade9029c2
+index 0000000000000..861ade9029c24
 --- /dev/null
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -0,0 +1,177 @@

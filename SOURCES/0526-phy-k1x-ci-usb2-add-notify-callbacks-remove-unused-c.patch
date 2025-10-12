@@ -1,4 +1,4 @@
-From c5ce888c2656abdf19c9fe45b9bc0ed7e0f5cdce Mon Sep 17 00:00:00 2001
+From d660699be82b099529b5fa10d61ee7cec57dbb53 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:19:16 +0800
 Subject: [PATCH 0526/1222] phy-k1x-ci-usb2: add notify callbacks, remove
@@ -12,7 +12,7 @@ Change-Id: I96f14d3db4b0d82917e46831f6b48e84bdec9bbb
  3 files changed, 35 insertions(+), 88 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e82fb9a5524f..d03ff7a22f1e 100644
+index e82fb9a5524f2..d03ff7a22f1ef 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1637,8 +1637,6 @@ extcon: extcon@d428287c {
@@ -43,7 +43,7 @@ index e82fb9a5524f..d03ff7a22f1e 100644
  			status = "disabled";
  		};
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index 5f3bf6b6ee94..116e8fd84f4b 100755
+index 5f3bf6b6ee94e..116e8fd84f4b4 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -17,30 +17,9 @@
@@ -159,7 +159,7 @@ index 5f3bf6b6ee94..116e8fd84f4b 100755
  }
  
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.h b/drivers/usb/phy/phy-k1x-ci-usb2.h
-index 43dd8c0ab112..2a001de2f456 100755
+index 43dd8c0ab112c..2a001de2f4561 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.h
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.h
 @@ -2,45 +2,33 @@

@@ -1,4 +1,4 @@
-From 2e026634d6940941dd4842a77cf1d21441a38c8b Mon Sep 17 00:00:00 2001
+From 8dd4cfe19d60f335a4895ff0c06b280bc83fbc93 Mon Sep 17 00:00:00 2001
 From: Icenowy Zheng <uwu@icenowy.me>
 Date: Fri, 11 Oct 2024 14:19:03 +0800
 Subject: [PATCH 1083/1222] drm/radeon: mask MSI on K1x
@@ -9,7 +9,7 @@ Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/radeon/radeon_irq_kms.c b/drivers/gpu/drm/radeon/radeon_irq_kms.c
-index 9961251b44ba..6b6305a2fc0a 100644
+index 9961251b44ba0..6b6305a2fc0ac 100644
 --- a/drivers/gpu/drm/radeon/radeon_irq_kms.c
 +++ b/drivers/gpu/drm/radeon/radeon_irq_kms.c
 @@ -245,6 +245,11 @@ static bool radeon_msi_ok(struct radeon_device *rdev)

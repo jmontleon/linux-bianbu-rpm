@@ -1,4 +1,4 @@
-From 2c65a4b3e13907fef56740df140082855e513030 Mon Sep 17 00:00:00 2001
+From 4a587e7b62e9aef5211b8795a6f823194ece6d8f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 28 Nov 2023 16:47:05 +0800
 Subject: [PATCH 0175/1222] pm_domain: improve the execution process of this
@@ -23,7 +23,7 @@ Change-Id: Ia07c863a034f6974a9d2bcb7c4995303a6624d57
  rename drivers/soc/spacemit/pm_domain/{pm_domain.c => k1x-pm_domain.c} (86%)
 
 diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 79c00b244a61..d41e27cbc9f0 100644
+index 79c00b244a61a..d41e27cbc9f0f 100644
 --- a/drivers/soc/Makefile
 +++ b/drivers/soc/Makefile
 @@ -37,4 +37,4 @@ obj-$(CONFIG_ARCH_U8500)	+= ux500/
@@ -33,7 +33,7 @@ index 79c00b244a61..d41e27cbc9f0 100644
 -obj-$(CONFIG_SOC_SPACEMIT_K1X)	+= spacemit/
 +obj-$(CONFIG_SOC_SPACEMIT)	+= spacemit/
 diff --git a/drivers/soc/spacemit/pm_domain/Makefile b/drivers/soc/spacemit/pm_domain/Makefile
-index 43497925c777..5966a750f722 100644
+index 43497925c7779..5966a750f7221 100644
 --- a/drivers/soc/spacemit/pm_domain/Makefile
 +++ b/drivers/soc/spacemit/pm_domain/Makefile
 @@ -1 +1,2 @@
@@ -42,7 +42,7 @@ index 43497925c777..5966a750f722 100644
 +obj-$(CONFIG_SOC_SPACEMIT_K1X) += k1x-pm_domain.o
 diff --git a/drivers/soc/spacemit/pm_domain/atomic_qos.c b/drivers/soc/spacemit/pm_domain/atomic_qos.c
 new file mode 100644
-index 000000000000..68f987e10cdb
+index 0000000000000..68f987e10cdb4
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm_domain/atomic_qos.c
 @@ -0,0 +1,276 @@
@@ -324,7 +324,7 @@ index 000000000000..68f987e10cdb
 +}
 diff --git a/drivers/soc/spacemit/pm_domain/atomic_qos.h b/drivers/soc/spacemit/pm_domain/atomic_qos.h
 new file mode 100644
-index 000000000000..61d0837bffe3
+index 0000000000000..61d0837bffe3a
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm_domain/atomic_qos.h
 @@ -0,0 +1,93 @@
@@ -425,7 +425,7 @@ diff --git a/drivers/soc/spacemit/pm_domain/pm_domain.c b/drivers/soc/spacemit/p
 similarity index 86%
 rename from drivers/soc/spacemit/pm_domain/pm_domain.c
 rename to drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 4d2690553b9a..e05bf717afe7 100644
+index 4d2690553b9ad..e05bf717afe76 100644
 --- a/drivers/soc/spacemit/pm_domain/pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -20,6 +20,7 @@

@@ -1,4 +1,4 @@
-From ecffaa796a57021a71b7255cc7f90c237b2bce1d Mon Sep 17 00:00:00 2001
+From 82ed1f60d3966ea3eac19684d33f86808ff29571 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 30 Aug 2024 17:54:41 +0800
 Subject: [PATCH 0991/1222] k1x_udc_core: fix high-bandwidth isoc endpoint
@@ -17,7 +17,7 @@ Change-Id: Ib39513fe56277f3d1fc3d6278f3ea10d0440d03f
  1 file changed, 29 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 8686609442be..551f6d4bc19f 100644
+index 8686609442bee..551f6d4bc19f2 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -407,18 +407,43 @@ static struct mv_dtd *build_dtd(struct mv_req *req, unsigned *length,

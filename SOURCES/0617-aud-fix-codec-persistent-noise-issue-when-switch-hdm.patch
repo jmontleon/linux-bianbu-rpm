@@ -1,4 +1,4 @@
-From cf99a02ab1bd52bd4ca38d98f937b6e338f2142a Mon Sep 17 00:00:00 2001
+From 823ec86923659c8e6b8af90bea133f3c1dbd5871 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 26 Apr 2024 18:02:15 +0800
 Subject: [PATCH 0617/1222] aud: fix codec persistent noise issue when switch
@@ -11,7 +11,7 @@ Change-Id: Ieb54436ede453a8616895e10c530369c711c31ac
  2 files changed, 96 insertions(+), 22 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index c4cc2cc62224..fa0ec0bd7768 100755
+index c4cc2cc622245..fa0ec0bd77680 100755
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -149,7 +149,7 @@ static int i2s_sspa_set_dai_fmt(struct snd_soc_dai *cpu_dai,
@@ -24,7 +24,7 @@ index c4cc2cc62224..fa0ec0bd7768 100755
  	}
  
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 4e08f9fe3c79..779ea0a14c66 100755
+index 4e08f9fe3c794..779ea0a14c661 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -75,6 +75,7 @@ struct spacemit_snd_dmadata {

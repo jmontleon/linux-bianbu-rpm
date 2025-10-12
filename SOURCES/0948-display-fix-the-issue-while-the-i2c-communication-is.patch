@@ -1,4 +1,4 @@
-From 0a97142db6f4f977be571241708a22671542d932 Mon Sep 17 00:00:00 2001
+From bf6bcb74df4514ea4470dedbd26464c19109c83a Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 19 Aug 2024 21:13:42 +0800
 Subject: [PATCH 0948/1222] display: fix the issue while the i2c communication
@@ -10,7 +10,7 @@ Change-Id: Icb7572d8f282d243d403c7a445dd5dcf4e037756
  1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
-index 677187c7fcbc..3c019801dd8f 100644
+index 677187c7fcbc9..3c019801dd8fa 100644
 --- a/drivers/gpu/drm/spacemit/lt9711.c
 +++ b/drivers/gpu/drm/spacemit/lt9711.c
 @@ -287,13 +287,6 @@ static int lt9711_probe(struct i2c_client *client)

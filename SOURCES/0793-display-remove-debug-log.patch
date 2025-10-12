@@ -1,4 +1,4 @@
-From 4e560b13484b22a9949734d872affe20ea81c135 Mon Sep 17 00:00:00 2001
+From 5db5a178543c80c5360d9690e078ad6220df5062 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 7 Jun 2024 14:22:12 +0800
 Subject: [PATCH 0793/1222] display: remove debug log
@@ -12,7 +12,7 @@ Change-Id: I9b66df5599c5bdd1ae5686238ad96c1e4fbb8cf7
  4 files changed, 20 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
-index df77156ba916..079332eba7e9 100644
+index df77156ba9165..079332eba7e93 100644
 --- a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 +++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 @@ -211,7 +211,7 @@ static void dphy_set_timing(struct spacemit_dphy_ctx *dphy_ctx)
@@ -43,7 +43,7 @@ index df77156ba916..079332eba7e9 100644
  	dptc_dsi_write(0x4c, 0x001F);
  #else
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 1bc77000783f..ac9b221aecfc 100644
+index 1bc77000783f8..ac9b221aecfca 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -643,15 +643,15 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
@@ -68,7 +68,7 @@ index 1bc77000783f..ac9b221aecfc 100644
  		udelay(10);
  	}
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 235720894b23..52f5faadbde1 100644
+index 235720894b238..52f5faadbde1a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -462,7 +462,7 @@ static int spacemit_dsi_connector_get_modes(struct drm_connector *connector)
@@ -108,7 +108,7 @@ index 235720894b23..52f5faadbde1 100644
  }
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 7839300311fe..16878c0287f4 100644
+index 7839300311fe2..16878c0287f46 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -489,7 +489,7 @@ int edid_read (struct spacemit_hdmi *hdmi){

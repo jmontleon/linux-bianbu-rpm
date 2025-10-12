@@ -1,4 +1,4 @@
-From 5b2620b42d5acf0ed00000b5f80339976fc6005e Mon Sep 17 00:00:00 2001
+From 217190fe52e38dd3e9063626fe8ce039e34d75bc Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 18 Oct 2024 19:04:46 +0800
 Subject: [PATCH 1097/1222] es8326: fix es8326 no sound due to data-length
@@ -10,7 +10,7 @@ Change-Id: I86d89580cc8df150e4010821e2ab2249424b9fa2
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index c19cb2e6b278..f94ce8ec01dd 100644
+index c19cb2e6b278f..f94ce8ec01dd6 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -1255,6 +1255,7 @@ static void es8326_init(struct snd_soc_component *component)

@@ -1,4 +1,4 @@
-From dbe8570dadbe07d22870f4fd658e5c1e70c3808c Mon Sep 17 00:00:00 2001
+From 064fbb7a72c9b40d661590e110c46dc7847d19f5 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 20 Nov 2023 10:23:54 +0800
 Subject: [PATCH 0162/1222] pinctrl: supports the allocation of GPIOs with the
@@ -16,7 +16,7 @@ Change-Id: I278245d1ce7b559c20f1134cdf750c0abd41c2fd
  3 files changed, 154 insertions(+), 139 deletions(-)
 
 diff --git a/drivers/gpio/gpio-k1x.c b/drivers/gpio/gpio-k1x.c
-index 37c2bf3e6748..ab12b847fea1 100644
+index 37c2bf3e6748e..ab12b847fea1d 100644
 --- a/drivers/gpio/gpio-k1x.c
 +++ b/drivers/gpio/gpio-k1x.c
 @@ -346,7 +346,6 @@ static int k1x_gpio_probe(struct platform_device *pdev)
@@ -43,7 +43,7 @@ index 37c2bf3e6748..ab12b847fea1 100644
 -postcore_initcall(k1x_gpio_init);
 +subsys_initcall(k1x_gpio_init);
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 5cda6201b60f..d297a05bac4a 100644
+index 5cda6201b60f5..d297a05bac4ac 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -1991,7 +1991,21 @@ static struct platform_driver pcs_driver = {
@@ -69,7 +69,7 @@ index 5cda6201b60f..d297a05bac4a 100644
  MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
  MODULE_DESCRIPTION("One-register-per-pin type device tree based pinctrl driver");
 diff --git a/include/dt-bindings/pinctrl/k1-x-pinctrl.h b/include/dt-bindings/pinctrl/k1-x-pinctrl.h
-index aa92d7a96d89..90d0ec2caf4a 100644
+index aa92d7a96d898..90d0ec2caf4a0 100644
 --- a/include/dt-bindings/pinctrl/k1-x-pinctrl.h
 +++ b/include/dt-bindings/pinctrl/k1-x-pinctrl.h
 @@ -4,142 +4,142 @@

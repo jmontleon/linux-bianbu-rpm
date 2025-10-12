@@ -1,4 +1,4 @@
-From c55b6ae614582d75f353371c68b0b024830ff0fe Mon Sep 17 00:00:00 2001
+From c7c5c12192e882003450b16fc80bf6689b406b39 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 8 May 2024 22:04:19 +0800
 Subject: [PATCH 0641/1222] k1:rtc: fix stack-out-of-bounds when open KASAN
@@ -75,7 +75,7 @@ Change-Id: I9485da33655da8021d313cfc5aaa68193cc8baa0
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index c42bf3760ba3..b1e58621913f 100644
+index c42bf3760ba31..b1e58621913f4 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -82,16 +82,16 @@ struct pin_config_desc {

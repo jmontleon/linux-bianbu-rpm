@@ -1,4 +1,4 @@
-From 8a70a5718efa7a8717bd430f847334c1813600c4 Mon Sep 17 00:00:00 2001
+From 66e9d78fc3fa0a18c3b17df25f2d046f8590e9f1 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Tue, 23 Jan 2024 16:47:01 +0800
 Subject: [PATCH 0400/1222] k1x: adjust i2c driver strength
@@ -10,7 +10,7 @@ Change-Id: I0260182ab4025313b89f4e2cc4ff9831a3d0d389
  2 files changed, 38 insertions(+), 38 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 9ccf559eebdb..407eab4a7840 100644
+index 9ccf559eebdb9..407eab4a78402 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1059,10 +1059,10 @@ i2c1: i2c@d4011000 {
@@ -27,7 +27,7 @@ index 9ccf559eebdb..407eab4a7840 100644
                          #address-cells = <1>;
                          #size-cells = <0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 43a18611c37d..996be6298ff3 100644
+index 43a18611c37d1..996be6298ff37 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -228,127 +228,127 @@ K1X_PADCONF(PRI_TDO,    MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))    /* ua

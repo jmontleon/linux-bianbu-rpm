@@ -1,4 +1,4 @@
-From 74f37ace0fe8a464d5f2da0e11b2deb97a75e231 Mon Sep 17 00:00:00 2001
+From 8c978c9fc6de252b8ff4597f25c1f40f95757f89 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:54:30 +0800
 Subject: [PATCH 0904/1222] dtsi: k1: add otg1 support, add wakeup_reg reg
@@ -9,7 +9,7 @@ Change-Id: I0ddea9d46eed913007e57b749ba6d42c1c5a935d
  1 file changed, 34 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 61a29cbed9d1..0fa82a0ce791 100644
+index 61a29cbed9d13..0fa82a0ce791a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1766,7 +1766,8 @@ usbphy: usbphy@c0940000 {

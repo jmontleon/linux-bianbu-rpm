@@ -1,4 +1,4 @@
-From 17d335dfb1ef46e203ef1df9e94919cf42aa2db5 Mon Sep 17 00:00:00 2001
+From 067e41e95843f1b6446308a3d97f86f6c23d0804 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 9 May 2024 14:27:27 +0800
 Subject: [PATCH 0645/1222] display: add hdmi resume and suspend
@@ -9,7 +9,7 @@ Change-Id: I2883b3cb465fd011f9689a577ce3360eaa126bc4
  1 file changed, 28 insertions(+)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index cad53ed63cab..068131619cf4 100644
+index cad53ed63cab5..068131619cf4c 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -967,10 +967,38 @@ static int hdmi_rt_pm_suspend(struct device *dev)

@@ -1,4 +1,4 @@
-From 785d356eb09122d28e349ab85db1fae71a79110d Mon Sep 17 00:00:00 2001
+From c01e48b5a646392e9901bcb7853ba7c3a4a78c33 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:20:24 +0800
 Subject: [PATCH 1172/1222] wireless: rtl8852bs: porting to linux-6.12
@@ -10,7 +10,7 @@ Change-Id: I62558c1e36805c3c29d871635adace688005c25b
  2 files changed, 46 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/Makefile b/drivers/net/wireless/realtek/rtl8852bs/Makefile
-index 357f90d96246..25839207288a 100644
+index 357f90d96246b..25839207288ad 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/Makefile
 +++ b/drivers/net/wireless/realtek/rtl8852bs/Makefile
 @@ -14,6 +14,11 @@ EXTRA_CFLAGS += -Wno-unused-label
@@ -26,7 +26,7 @@ index 357f90d96246..25839207288a 100644
  ############ ANDROID COMMON KERNEL ############
  # clang
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
-index a50bf29733d1..ba3a2db7643d 100644
+index a50bf29733d19..ba3a2db7643d8 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
 @@ -161,6 +161,10 @@ static const struct ieee80211_rate rtw_rates[] = {

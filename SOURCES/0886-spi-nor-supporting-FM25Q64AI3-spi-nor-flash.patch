@@ -1,4 +1,4 @@
-From f18d11e5fdd36f87f8b92b3bbecea8fb541d8b75 Mon Sep 17 00:00:00 2001
+From 7e159897b1923f8e736575a300efb196228366d4 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 9 Jul 2024 20:52:24 +0800
 Subject: [PATCH 0886/1222] spi-nor: supporting FM25Q64AI3 spi nor flash
@@ -13,7 +13,7 @@ Change-Id: Ie3190b3bc897af26bfa9e0948b528f4d65bc6b70
  create mode 100644 drivers/mtd/spi-nor/fmsh.c
 
 diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5dd9c35f6b6f..cd9320cda798 100644
+index 5dd9c35f6b6f8..cd9320cda7982 100644
 --- a/drivers/mtd/spi-nor/Makefile
 +++ b/drivers/mtd/spi-nor/Makefile
 @@ -14,6 +14,7 @@ spi-nor-objs			+= spansion.o
@@ -25,7 +25,7 @@ index 5dd9c35f6b6f..cd9320cda798 100644
  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
  
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ac4b960101cc..854494f08e38 100644
+index ac4b960101cc1..854494f08e38a 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
 @@ -1954,6 +1954,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
@@ -37,7 +37,7 @@ index ac4b960101cc..854494f08e38 100644
  
  static const struct flash_info spi_nor_generic_flash = {
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index ceff412f7d65..8d0cd373d034 100644
+index ceff412f7d65a..8d0cd373d0346 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
 @@ -598,6 +598,7 @@ extern const struct spi_nor_manufacturer spi_nor_spansion;
@@ -50,7 +50,7 @@ index ceff412f7d65..8d0cd373d034 100644
  
 diff --git a/drivers/mtd/spi-nor/fmsh.c b/drivers/mtd/spi-nor/fmsh.c
 new file mode 100644
-index 000000000000..73004e94476e
+index 0000000000000..73004e94476ed
 --- /dev/null
 +++ b/drivers/mtd/spi-nor/fmsh.c
 @@ -0,0 +1,20 @@
