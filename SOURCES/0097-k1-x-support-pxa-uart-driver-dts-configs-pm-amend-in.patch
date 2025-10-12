@@ -1,4 +1,4 @@
-From 7ef761c01b268c35520b4a59bbccf6f2b20cf808 Mon Sep 17 00:00:00 2001
+From 348896e9187a35850a244568e43b59f344b05aa8 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 28 Aug 2023 21:52:28 +0800
 Subject: [PATCH 0097/1218] k1-x support pxa uart driver(dts configs&pm amend
@@ -72,7 +72,7 @@ index 61fd48715a144..06857d9204c96 100644
  # CONFIG_HW_RANDOM is not set
  # CONFIG_HWMON is not set
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 6d0f8ea290df6..23f1a8620e9a9 100644
+index 4732c2f835c86..83147e75cd78b 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -415,7 +415,7 @@ config SERIAL_21285_CONSOLE

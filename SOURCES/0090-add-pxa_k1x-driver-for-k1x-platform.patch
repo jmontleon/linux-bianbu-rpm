@@ -1,4 +1,4 @@
-From cdcb17e4f0d4c9a62eb56367b61fd58ad1522776 Mon Sep 17 00:00:00 2001
+From 58459649eb1fc1f633dcfbe592981cc576095308 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 18 Aug 2023 11:58:11 +0800
 Subject: [PATCH 0090/1218] add pxa_k1x driver for k1x platform
@@ -12,7 +12,7 @@ Change-Id: I4b9cddc3478b0fc180f142452de47cec0f560950
  create mode 100644 drivers/tty/serial/pxa_k1x.c
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 79a8186d33613..6d0f8ea290df6 100644
+index d80353287a05a..4732c2f835c86 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -418,7 +418,6 @@ config SERIAL_PXA
