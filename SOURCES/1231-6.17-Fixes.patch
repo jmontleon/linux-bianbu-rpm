@@ -1,0 +1,357 @@
+From 3ca02fe6340630162b73ff9d739af8332f110faa Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sun, 17 Aug 2025 23:24:26 -0400
+Subject: [PATCH 1231/1234] 6.17 Fixes
+
+---
+ drivers/gpio/gpio-k1x.c                       |  4 +-
+ drivers/gpu/drm/img-rogue/osfunc.c            |  1 -
+ drivers/gpu/drm/img-rogue/pmr_os.c            | 43 ++++++++++++++++++-
+ drivers/mmc/host/sdhci-of-k1x.c               |  8 ----
+ drivers/net/ethernet/spacemit/emac_ptp.c      |  2 +-
+ .../rtl8852be/include/osdep_service_linux.h   |  2 +-
+ .../rtl8852be/os_dep/linux/ioctl_cfg80211.c   |  4 +-
+ .../rtl8852be/os_dep/linux/wifi_regd.c        |  6 +--
+ .../rtl8852bs/os_dep/linux/ioctl_cfg80211.c   | 14 ++----
+ drivers/pci/controller/dwc/pcie-designware.h  |  1 +
+ drivers/pinctrl/spacemit-pmic-pinctrl.c       |  6 ++-
+ drivers/power/supply/sbs-charger-virtual.c    |  2 +-
+ drivers/power/supply/sgm4154x_charger.c       |  2 +-
+ 13 files changed, 62 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/gpio/gpio-k1x.c b/drivers/gpio/gpio-k1x.c
+index a3bb171d8e9c6..271e0414f86a4 100644
+--- a/drivers/gpio/gpio-k1x.c
++++ b/drivers/gpio/gpio-k1x.c
+@@ -111,7 +111,7 @@ static int k1x_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 	return !!(gplr & bit);
+ }
+ 
+-static void k1x_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
++static int  k1x_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ {
+ 	struct k1x_gpio_chip *k1x_chip =
+ 			container_of(chip, struct k1x_gpio_chip, chip);
+@@ -124,6 +124,8 @@ static void k1x_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ 	/* Is it configured as output? */
+ 	if (gpdr & bit)
+ 		writel(bit, bank->reg_bank + (value ? GPSR : GPCR));
++
++  return 0;
+ }
+ 
+ #ifdef CONFIG_OF_GPIO
+diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
+index f9f922408dc45..c61c384e72adc 100644
+--- a/drivers/gpu/drm/img-rogue/osfunc.c
++++ b/drivers/gpu/drm/img-rogue/osfunc.c
+@@ -69,7 +69,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ #include <linux/utsname.h>
+ #include <linux/scatterlist.h>
+ #include <linux/interrupt.h>
+-#include <linux/pfn_t.h>
+ #include <linux/pfn.h>
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0))
+ #include <linux/sched/clock.h>
+diff --git a/drivers/gpu/drm/img-rogue/pmr_os.c b/drivers/gpu/drm/img-rogue/pmr_os.c
+index 5802364a23a79..c9c641dc104d9 100644
+--- a/drivers/gpu/drm/img-rogue/pmr_os.c
++++ b/drivers/gpu/drm/img-rogue/pmr_os.c
+@@ -45,7 +45,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ #include <linux/mm.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/version.h>
+-#include <linux/pfn_t.h>
+ #include <linux/pfn.h>
+ 
+ #include "img_defs.h"
+@@ -89,6 +88,46 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ #define PMR_OS_USE_VM_INSERT_PAGE 1
+ #endif
+ 
++#define PFN_FLAGS_MASK (((u64) (~PAGE_MASK)) << (BITS_PER_LONG_LONG - PAGE_SHIFT))
++
++typedef struct {
++	u64 val;
++} pfn_t;
++
++static inline pfn_t __pfn_to_pfn_t(unsigned long pfn, u64 flags)
++{
++	pfn_t pfn_t = { .val = pfn | (flags & PFN_FLAGS_MASK), };
++
++	return pfn_t;
++}
++
++static inline pfn_t phys_to_pfn_t(phys_addr_t addr, u64 flags)
++{
++	return __pfn_to_pfn_t(addr >> PAGE_SHIFT, flags);
++}
++
++static inline bool pfn_t_has_page(pfn_t pfn)
++{
++	return true;
++}
++
++static inline unsigned long pfn_t_to_pfn(pfn_t pfn)
++{
++	return pfn.val & ~PFN_FLAGS_MASK;
++}
++
++static inline struct page *pfn_t_to_page(pfn_t pfn)
++{
++	if (pfn_t_has_page(pfn))
++		return pfn_to_page(pfn_t_to_pfn(pfn));
++	return NULL;
++}
++
++static inline int pfn_t_valid(pfn_t pfn)
++{
++	return pfn_valid(pfn_t_to_pfn(pfn));
++}
++
+ static void MMapPMROpen(struct vm_area_struct *ps_vma)
+ {
+ 	PMR *psPMR = ps_vma->vm_private_data;
+@@ -241,7 +280,7 @@ static INLINE int _OSMMapPMR(PVRSRV_DEVICE_NODE *psDevNode,
+ 
+ 			vmf = vmf_insert_mixed(ps_vma,
+ 									ps_vma->vm_start + uiOffset,
+-									sPFN);
++									pfn_t_to_pfn(sPFN));
+ 			if (vmf & VM_FAULT_ERROR)
+ 			{
+ 				iStatus = vm_fault_to_errno(vmf, 0);
+diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
+index 856cf2357a3f0..cf8754be351b4 100644
+--- a/drivers/mmc/host/sdhci-of-k1x.c
++++ b/drivers/mmc/host/sdhci-of-k1x.c
+@@ -1588,11 +1588,6 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ 	spacemit->clk_io = devm_clk_get(dev, "sdh-io");
+ 	if (IS_ERR(spacemit->clk_io))
+ 		spacemit->clk_io = devm_clk_get(dev, NULL);
+-	if (IS_ERR(spacemit->clk_io)) {
+-		dev_err(dev, "failed to get io clock\n");
+-		ret = PTR_ERR(spacemit->clk_io);
+-		goto err_clk_get;
+-	}
+ 	pltfm_host->clk = spacemit->clk_io;
+ 	clk_prepare_enable(spacemit->clk_io);
+ 
+@@ -1726,8 +1721,6 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)
+ 		clk_disable_unprepare(spacemit->clk_aib);
+ 	clk_disable_unprepare(spacemit->clk_io);
+ 	clk_disable_unprepare(spacemit->clk_core);
+-err_clk_get:
+-	sdhci_pltfm_free(pdev);
+ 	return ret;
+ }
+ 
+@@ -1757,7 +1750,6 @@ static void spacemit_sdhci_remove(struct platform_device *pdev)
+ #endif
+ 	}
+ 
+-	sdhci_pltfm_free(pdev);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
+index 7caa692f9a873..41f8081f3f142 100644
+--- a/drivers/net/ethernet/spacemit/emac_ptp.c
++++ b/drivers/net/ethernet/spacemit/emac_ptp.c
+@@ -180,7 +180,7 @@ static u64 emac_hw_get_rx_timestamp(struct emac_priv *priv)
+  * emac_cyclecounter_read - read raw cycle counter (used by time counter)
+  * @cc: cyclecounter structure
+  **/
+-static u64 emac_cyclecounter_read(const struct cyclecounter *cc)
++static u64 emac_cyclecounter_read(struct cyclecounter *cc)
+ {
+ 	struct emac_priv *priv = container_of(cc, struct emac_priv, cc);
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
+index 318b67ad6bd8c..ff7247ef1a8a7 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
++++ b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
+@@ -724,7 +724,7 @@ struct rtw_timer_list {
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+ static inline void timer_hdl(struct timer_list *in_timer)
+ {
+-	_timer *ptimer = from_timer(ptimer, in_timer, timer);
++	_timer *ptimer = timer_container_of(ptimer, in_timer, timer);
+ 
+ 	ptimer->function(ptimer->arg);
+ }
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
+index d978aab285f9c..e7d736216294c 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/ioctl_cfg80211.c
+@@ -3618,7 +3618,7 @@ static void cfg80211_rtw_abort_scan(struct wiphy *wiphy,
+ }
+ #endif /* LINUX_VERSION_CODE >= 4.5.0 */
+ 
+-static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, u32 changed)
++static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, int radio_idx, u32 changed)
+ {
+ #if 0
+ 	struct iwm_priv *iwm = wiphy_to_iwm(wiphy);
+@@ -4616,6 +4616,7 @@ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+ 	struct wireless_dev *wdev,
+ #endif
++	int radio_idx,
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 36)) || defined(COMPAT_KERNEL_RELEASE)
+ 	enum nl80211_tx_power_setting type, int mbm)
+ #else
+@@ -4656,6 +4657,7 @@ static int cfg80211_rtw_get_txpower(struct wiphy *wiphy,
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+ 	struct wireless_dev *wdev,
+ #endif
++	int radio_idx,
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
+ 	unsigned int link_id,
+ #endif
+diff --git a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
+index 984c59540d05b..b50a9a0f60076 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
++++ b/drivers/net/wireless/realtek/rtl8852be/os_dep/linux/wifi_regd.c
+@@ -151,7 +151,7 @@ static void rtw_regd_schedule_dfs_chan_update(struct wiphy *wiphy)
+ 
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 3, 0)) || defined(CONFIG_MLD_KERNEL_PATCH)
+ 	/* ToDo CONFIG_RTW_MLD */
+-	cfg80211_ch_switch_notify(wiphy_data->du_wdev->netdev, &wiphy_data->du_chdef, 0, 0);
++	cfg80211_ch_switch_notify(wiphy_data->du_wdev->netdev, &wiphy_data->du_chdef, 0);
+ #elif (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 2))
+ 	cfg80211_ch_switch_notify(wiphy_data->du_wdev->netdev, &wiphy_data->du_chdef, 0);
+ #else
+@@ -975,7 +975,7 @@ static void async_cac_change_work_hdl(_workitem *work)
+ 		evt = LIST_CONTAINOR(list, struct async_cac_change_evt, list);
+ 
+ 		rtnl_lock();
+-		cfg80211_cac_event(evt->netdev, &evt->chandef, evt->event, GFP_KERNEL);
++		cfg80211_cac_event(evt->netdev, &evt->chandef, evt->event, GFP_KERNEL, 0);
+ 		rtnl_unlock();
+ 
+ 		rtw_mfree(evt, sizeof(*evt));
+@@ -1065,7 +1065,7 @@ static void rtw_cfg80211_cac_event(struct rf_ctl_t *rfctl, u8 band_idx
+ 		if (async)
+ 			cfg80211_cac_event_async(iface->pnetdev, &chdef, event);
+ 		else
+-			cfg80211_cac_event(iface->pnetdev, &chdef, event, GFP_KERNEL);
++			cfg80211_cac_event(iface->pnetdev, &chdef, event, GFP_KERNEL, 0);
+ 	}
+ }
+ 
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
+index 715671b766729..7895a6d634fc6 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
++++ b/drivers/net/wireless/realtek/rtl8852bs/os_dep/linux/ioctl_cfg80211.c
+@@ -3613,7 +3613,7 @@ static void cfg80211_rtw_abort_scan(struct wiphy *wiphy,
+ }
+ #endif /* LINUX_VERSION_CODE >= 4.5.0 */
+ 
+-static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, u32 changed)
++static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, int radio_idx, u32 changed)
+ {
+ #if 0
+ 	struct iwm_priv *iwm = wiphy_to_iwm(wiphy);
+@@ -4599,14 +4599,9 @@ static int cfg80211_rtw_disconnect(struct wiphy *wiphy, struct net_device *ndev,
+ }
+ 
+ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+ 	struct wireless_dev *wdev,
+-#endif
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 36)) || defined(COMPAT_KERNEL_RELEASE)
++	int radio_idx,
+ 	enum nl80211_tx_power_setting type, int mbm)
+-#else
+-	enum tx_power_setting type, int dbm)
+-#endif
+ {
+ #if 0
+ 	struct iwm_priv *iwm = wiphy_to_iwm(wiphy);
+@@ -4639,12 +4634,9 @@ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
+ }
+ 
+ static int cfg80211_rtw_get_txpower(struct wiphy *wiphy,
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+ 	struct wireless_dev *wdev,
+-#endif
+-#if (defined(CONFIG_MLD_KERNEL_PATCH) || (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 2)))
++	int radio_idx,
+ 	unsigned int link_id,
+-#endif
+ 	int *dbm)
+ {
+ 	RTW_INFO("%s\n", __func__);
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index e995f692a1ecd..c56b84db82711 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -416,6 +416,7 @@ struct dw_pcie_rp {
+ 	const struct dw_pcie_host_ops *ops;
+ 	int			msi_irq[MAX_MSI_CTRLS];
+ 	struct irq_domain	*irq_domain;
++	struct irq_domain	*msi_domain;
+ 	dma_addr_t		msi_data;
+ 	struct irq_chip		*msi_irq_chip;
+ 	u32			num_vectors;
+diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+index 0bf22b103323a..c99d55e85b9f7 100644
+--- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
++++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
+@@ -174,7 +174,7 @@ static int spacemit_gpio_get_direction(struct gpio_chip *chip,
+ 		return -EINVAL;
+ }
+ 
+-static void spacemit_gpio_set(struct gpio_chip *chip, unsigned int offset,
++static int  spacemit_gpio_set(struct gpio_chip *chip, unsigned int offset,
+ 			    int value)
+ {
+ 	int ret;
+@@ -186,6 +186,8 @@ static void spacemit_gpio_set(struct gpio_chip *chip, unsigned int offset,
+ 			value ? pctl->config_desc[offset].output.msk : 0);
+ 	if (ret)
+ 		dev_err(pctl->dev, "set PIN%d, val:%d, failed\n", offset, value);
++
++	return ret;
+ }
+ 
+ static int spacemit_gpio_input(struct gpio_chip *chip, unsigned int offset)
+@@ -376,7 +378,7 @@ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
+ 	pctl->chip.owner		= THIS_MODULE;
+ 	pctl->chip.get			= spacemit_gpio_get;
+ 	pctl->chip.get_direction	= spacemit_gpio_get_direction;
+-	pctl->chip.set			= spacemit_gpio_set;
++	pctl->chip.set  		= spacemit_gpio_set;
+ 	pctl->chip.direction_input	= spacemit_gpio_input;
+ 	pctl->chip.direction_output	= spacemit_gpio_output;
+ 
+diff --git a/drivers/power/supply/sbs-charger-virtual.c b/drivers/power/supply/sbs-charger-virtual.c
+index 4d2fd9b88c720..a229b81d8efde 100644
+--- a/drivers/power/supply/sbs-charger-virtual.c
++++ b/drivers/power/supply/sbs-charger-virtual.c
+@@ -176,7 +176,7 @@ static int sbs_charger_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	psy_cfg.drv_data = info;
+-	psy_cfg.of_node = pdev->dev.of_node;
++	psy_cfg.fwnode = dev_fwnode(&pdev->dev);
+ 
+ 	info->charger = devm_power_supply_register(&pdev->dev,
+ 						   &sbs_charger_desc, &psy_cfg);
+diff --git a/drivers/power/supply/sgm4154x_charger.c b/drivers/power/supply/sgm4154x_charger.c
+index 7cf26e8011e65..2c1c2b986d47a 100644
+--- a/drivers/power/supply/sgm4154x_charger.c
++++ b/drivers/power/supply/sgm4154x_charger.c
+@@ -749,7 +749,7 @@ static int sgm4154x_power_supply_init(struct sgm4154x_device *sgm,
+ 							struct device *dev)
+ {
+ 	struct power_supply_config psy_cfg = { .drv_data = sgm,
+-						.of_node = dev->of_node, };
++						.fwnode = dev_fwnode(dev), };
+ 
+ 	psy_cfg.supplied_to = sgm4154x_charger_supplied_to;
+ 	psy_cfg.num_supplicants = ARRAY_SIZE(sgm4154x_charger_supplied_to);
+-- 
+2.51.0
+

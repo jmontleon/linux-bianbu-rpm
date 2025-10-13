@@ -1,0 +1,21 @@
+From d6fe4f3a03750046128892d189e1590be1fa7ef1 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:23:09 -0500
+Subject: [PATCH 1212/1234] fix module dma_buf ns
+
+---
+ drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index 993e29ce12ab2..49e0e4413e417 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -1449,3 +1449,4 @@ module_platform_driver(cpp_driver);
+ 
+ MODULE_DESCRIPTION("SPACEMIT Camera Post Process Driver");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(DMA_BUF);
+-- 
+2.51.0
+

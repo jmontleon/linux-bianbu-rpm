@@ -1,0 +1,27 @@
+From 9ee58c51b35a40a68521a576592406cfd2ffc34e Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Fri, 15 Aug 2025 10:32:48 -0400
+Subject: [PATCH 0009/1234] Revert "clk: spacemit: ccu_pll: fix error return
+ value in recalc_rate callback"
+
+This reverts commit c60b95389d0206a3a3c087c09113315e7084be3f.
+---
+ drivers/clk/spacemit/ccu_pll.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
+index 45f540073a656..4427dcfbbb97f 100644
+--- a/drivers/clk/spacemit/ccu_pll.c
++++ b/drivers/clk/spacemit/ccu_pll.c
+@@ -122,7 +122,7 @@ static unsigned long ccu_pll_recalc_rate(struct clk_hw *hw,
+ 
+ 	WARN_ON_ONCE(!entry);
+ 
+-	return entry ? entry->rate : 0;
++	return entry ? entry->rate : -EINVAL;
+ }
+ 
+ static long ccu_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+-- 
+2.51.0
+

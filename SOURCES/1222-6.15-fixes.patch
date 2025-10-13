@@ -1,0 +1,343 @@
+From 88a6e0b3b124533f6460962f8d224546df0b935d Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Mon, 7 Apr 2025 19:34:18 -0400
+Subject: [PATCH 1222/1234] 6.15 fixes
+
+---
+ drivers/cpufreq/cpufreq.c                                   | 4 ++++
+ drivers/crypto/spacemit/spacemit_ce_engine.c                | 4 ----
+ drivers/gpu/drm/img-rogue/apollo/tc_apollo.c                | 2 +-
+ drivers/gpu/drm/img-rogue/apollo/tc_odin.c                  | 2 +-
+ drivers/gpu/drm/img-rogue/osfunc.c                          | 2 +-
+ drivers/gpu/drm/spacemit/spacemit_dsi.c                     | 2 +-
+ drivers/gpu/drm/spacemit/spacemit_hdmi.c                    | 2 +-
+ drivers/gpu/drm/spacemit/spacemit_wb.c                      | 2 +-
+ drivers/input/touchscreen/gt9xx.c                           | 5 ++---
+ drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c    | 2 +-
+ drivers/net/ethernet/spacemit/k1x-emac.c                    | 2 +-
+ drivers/net/usb/qmi_wwan_f.c                                | 3 +--
+ .../realtek/rtl8852be/include/osdep_service_linux.h         | 4 ++--
+ .../realtek/rtl8852bs/include/osdep_service_linux.h         | 4 ++--
+ drivers/spi/spi-k1x.c                                       | 2 +-
+ drivers/tty/serial/pxa_k1x.c                                | 2 +-
+ drivers/watchdog/k1x_wdt.c                                  | 3 +--
+ sound/soc/codecs/es8156.c                                   | 4 ++--
+ sound/soc/spacemit/spacemit-snd-card.c                      | 4 ++--
+ sound/soc/spacemit/spacemit-snd-i2s.c                       | 6 +++---
+ 20 files changed, 29 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index fdda9d68196c4..9933af8a6bf27 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2872,10 +2872,14 @@ void remove_boost_sysfs_file(void)
+ 
+ void remove_policy_boost_sysfs_file(struct cpufreq_policy *policy)
+ {
++  /*
++   * FIX ME: Does anything need to happen here anymore?
++   *
+ 	if (cpufreq_driver->attr[CPUFREQ_BOOST_FREQ]) {
+ 		sysfs_remove_file(&policy->kobj,
+ 				&((cpufreq_driver->attr[CPUFREQ_BOOST_FREQ])->attr));
+ 	}
++  */
+ 
+ 	if (cpufreq_boost_supported()) {
+ 		sysfs_remove_file(&policy->kobj, &local_boost.attr);
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index ac1e7385b81b5..7baaa5f5a8e8d 100644
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -907,10 +907,6 @@ static unsigned int spacemit_crypto_ctxsize(struct crypto_alg *alg, u32 type, u3
+ 	case CRYPTO_ALG_TYPE_CIPHER:
+ 		len += alg->cra_ctxsize;
+ 		break;
+-
+-	case CRYPTO_ALG_TYPE_COMPRESS:
+-		len += alg->cra_ctxsize;
+-		break;
+ 	}
+ 
+ 	return len;
+diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
+index 618c017b8c0f0..7376563e442ec 100644
+--- a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
++++ b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
+@@ -827,7 +827,7 @@ static int apollo_enable_irq(struct tc_device *tc)
+ static void apollo_disable_irq(struct tc_device *tc)
+ {
+ #if defined(TC_FAKE_INTERRUPTS)
+-	del_timer_sync(&tc->timer);
++	timer_delete_sync(&tc->timer);
+ #else
+ 	iowrite32(0, tc->tcf.registers +
+ 		TCF_CLK_CTRL_INTERRUPT_ENABLE);
+diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
+index 2e676ac7e3421..9dfa547d7ad9f 100644
+--- a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
++++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
+@@ -1433,7 +1433,7 @@ static int odin_enable_irq(struct tc_device *tc)
+ static void odin_disable_irq(struct tc_device *tc)
+ {
+ #if defined(TC_FAKE_INTERRUPTS)
+-	del_timer_sync(&tc->timer);
++	timer_delete_sync(&tc->timer);
+ #else
+ 	iowrite32(0, tc->tcf.registers +
+ 			common_reg_offset(tc, CORE_INTERRUPT_ENABLE));
+diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
+index efa06b112bb31..2e948492b9598 100644
+--- a/drivers/gpu/drm/img-rogue/osfunc.c
++++ b/drivers/gpu/drm/img-rogue/osfunc.c
+@@ -1569,7 +1569,7 @@ PVRSRV_ERROR OSDisableTimer (IMG_HANDLE hTimer)
+ 	flush_workqueue(psTimerWorkQueue);
+ 
+ 	/* remove timer */
+-	del_timer_sync(&psTimerCBData->sTimer);
++	timer_delete_sync(&psTimerCBData->sTimer);
+ 
+ 	/*
+ 	 * This second flush is to catch the case where the timer ran
+diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
+index 959640832bc0f..c1371872f5281 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
+@@ -462,7 +462,7 @@ static int spacemit_dsi_connector_get_modes(struct drm_connector *connector)
+ 
+ static enum drm_mode_status
+ spacemit_dsi_connector_mode_valid(struct drm_connector *connector,
+-			 struct drm_display_mode *mode)
++			 const struct drm_display_mode *mode)
+ {
+ 	enum drm_mode_status mode_status = MODE_OK;
+ 
+diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+index 00c85c3f0a2d0..03c33fd7691b9 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
++++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
+@@ -800,7 +800,7 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)
+ 
+ static enum drm_mode_status
+ spacemit_hdmi_connector_mode_valid(struct drm_connector *connector,
+-			       struct drm_display_mode *mode)
++			       const struct drm_display_mode *mode)
+ {
+ 	return MODE_OK;
+ }
+diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
+index 784bf71bac520..9e5f47752920a 100644
+--- a/drivers/gpu/drm/spacemit/spacemit_wb.c
++++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
+@@ -84,7 +84,7 @@ static int spacemit_wb_connector_get_modes(struct drm_connector *connector)
+ 
+ static enum drm_mode_status
+ spacemit_wb_connector_mode_valid(struct drm_connector *connector,
+-			 struct drm_display_mode *mode)
++			 const struct drm_display_mode *mode)
+ {
+ 	enum drm_mode_status mode_status = MODE_OK;
+ 
+diff --git a/drivers/input/touchscreen/gt9xx.c b/drivers/input/touchscreen/gt9xx.c
+index 53d19d1c7b146..2fa81df9d34cb 100644
+--- a/drivers/input/touchscreen/gt9xx.c
++++ b/drivers/input/touchscreen/gt9xx.c
+@@ -1509,9 +1509,8 @@ static int gtp_request_irq(struct goodix_ts_data *ts)
+ 		}
+ 	} else { /* use hrtimer */
+ 		dev_info(&ts->client->dev, "No hardware irq, use hrtimer\n");
+-		hrtimer_init(&ts->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-		ts->timer.function = gtp_timer_handler;
+-		hrtimer_start(&ts->timer,
++    hrtimer_setup(&ts->timer, gtp_timer_handler, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++    hrtimer_start(&ts->timer,
+ 			      ktime_set(0, (GTP_POLL_TIME + 6) * 1000000),
+ 			      HRTIMER_MODE_REL);
+ 		set_bit(HRTIMER_USED, &ts->flags);
+diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+index 1c50d1b7d7951..d501d47ae5f2d 100644
+--- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
++++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
+@@ -95,7 +95,7 @@ static void watchdog_stop(struct mvx_session *session)
+ {
+ 	int ret;
+ 
+-	ret = del_timer_sync(&session->watchdog_timer);
++	ret = timer_delete_sync(&session->watchdog_timer);
+ 
+ 	/* ret: 0=watchdog expired, 1=watchdog still running */
+ 	MVX_SESSION_DEBUG(session, "Watchdog stop. ret=%d", ret);
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index e85f79457edad..4a773f5d6f3be 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -2764,7 +2764,7 @@ static int emac_probe(struct platform_device *pdev)
+ phy_clk_disable:
+ 	if (priv->ref_clk_frm_soc)
+ 		clk_disable_unprepare(priv->phy_clk);
+-	del_timer_sync(&priv->txtimer);
++	timer_delete_sync(&priv->txtimer);
+ mac_clk_disable:
+ 	clk_disable_unprepare(priv->mac_clk);
+ err_netdev:
+diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
+index e53a60d2ea0a9..3c27b0e9c4e51 100644
+--- a/drivers/net/usb/qmi_wwan_f.c
++++ b/drivers/net/usb/qmi_wwan_f.c
+@@ -1197,8 +1197,7 @@ static int qmap_register_device(sQmiWwanQmap * pDev, u8 offset_id)
+ 
+     priv->agg_skb = NULL;
+     priv->agg_count = 0;
+-    hrtimer_init(&priv->agg_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-    priv->agg_hrtimer.function = rmnet_usb_tx_agg_timer_cb;
++    hrtimer_setup(&priv->agg_hrtimer, rmnet_usb_tx_agg_timer_cb, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+     INIT_WORK(&priv->agg_wq, rmnet_usb_tx_agg_work);
+     ktime_get_ts64(&priv->agg_time);
+     spin_lock_init(&priv->agg_lock);
+diff --git a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
+index 15d00eb72cbba..318b67ad6bd8c 100644
+--- a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
++++ b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
+@@ -764,12 +764,12 @@ __inline static void _set_timer(_timer *ptimer, u32 delay_time)
+ 
+ __inline static void _cancel_timer(_timer *ptimer, u8 *bcancelled)
+ {
+-	*bcancelled = del_timer_sync(&ptimer->timer) == 1 ? 1 : 0;
++	*bcancelled = timer_delete_sync(&ptimer->timer) == 1 ? 1 : 0;
+ }
+ 
+ __inline static void _cancel_timer_async(_timer *ptimer)
+ {
+-	del_timer(&ptimer->timer);
++	timer_delete(&ptimer->timer);
+ }
+ 
+ /*work*/
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
+index d3eb947c6116b..b5be8be5ba749 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
+@@ -760,12 +760,12 @@ __inline static void _set_timer(_timer *ptimer, u32 delay_time)
+ 
+ __inline static void _cancel_timer(_timer *ptimer, u8 *bcancelled)
+ {
+-	*bcancelled = del_timer_sync(&ptimer->timer) == 1 ? 1 : 0;
++	*bcancelled = timer_delete_sync(&ptimer->timer) == 1 ? 1 : 0;
+ }
+ 
+ __inline static void _cancel_timer_async(_timer *ptimer)
+ {
+-	del_timer(&ptimer->timer);
++	timer_delete(&ptimer->timer);
+ }
+ 
+ /*work*/
+diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
+index a4a49253c34b2..cf3a9029a325c 100644
+--- a/drivers/spi/spi-k1x.c
++++ b/drivers/spi/spi-k1x.c
+@@ -255,7 +255,7 @@ static void giveback(struct spi_driver_data *drv_data)
+ 	spi_finalize_current_message(drv_data->controller);
+ 
+ 	if (drv_data->slave_mode)
+-		del_timer(&drv_data->slave_rx_timer);
++		timer_delete(&drv_data->slave_rx_timer);
+ 	complete(&drv_data->cur_msg_completion);
+ }
+ 
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index ab1f607434a0f..74caac83a705c 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -1860,7 +1860,7 @@ static int serial_pxa_suspend(struct device *dev)
+ 
+ #ifdef CONFIG_PM
+ 	/* Remove uart rx constraint which will block system entering low power state. */
+-	if (del_timer_sync(&sport->pxa_timer)) {
++	if (timer_delete_sync(&sport->pxa_timer)) {
+ 		_pxa_timer_handler(sport);
+ 	}
+ #endif
+diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
+index fd06316a38bc8..c854ab926e522 100644
+--- a/drivers/watchdog/k1x_wdt.c
++++ b/drivers/watchdog/k1x_wdt.c
+@@ -680,8 +680,7 @@ static int spa_wdt_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	info->feed_timeout = ktime_set(SPACEMIT_WATCHDOG_FEED_TIMEOUT, 0);
+-	hrtimer_init(&info->feed_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-	info->feed_timer.function = spa_wdt_feed;
++	hrtimer_setup(&info->feed_timer, spa_wdt_feed, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 
+ 	platform_set_drvdata(pdev, info);
+ 
+diff --git a/sound/soc/codecs/es8156.c b/sound/soc/codecs/es8156.c
+index da26b4737fd8f..2f73cf77660aa 100644
+--- a/sound/soc/codecs/es8156.c
++++ b/sound/soc/codecs/es8156.c
+@@ -336,10 +336,10 @@ static int es8156_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	struct snd_soc_component *codec = codec_dai->component;
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM://es8156 master
++	case SND_SOC_DAIFMT_CBP_CFP://es8156 master
+ 		snd_soc_component_update_bits(codec, ES8156_SCLK_MODE_REG02, 0x01,0x01);
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS://es8156 slave
++	case SND_SOC_DAIFMT_CBC_CFC://es8156 slave
+ 		snd_soc_component_update_bits(codec, ES8156_SCLK_MODE_REG02, 0x01,0x00);
+ 		break;
+ 	default:
+diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
+index 99378d4c63dc2..21da71c79b37c 100644
+--- a/sound/soc/spacemit/spacemit-snd-card.c
++++ b/sound/soc/spacemit/spacemit-snd-card.c
+@@ -258,7 +258,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = simple_util_set_dailink_name(dev, dai_link,
++	ret = simple_util_set_dailink_name(priv, dai_link,
+ 					   "%s-%s",
+ 					   dai_link->cpus->dai_name,
+ 					   dai_link->codecs->dai_name);
+@@ -331,7 +331,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			goto card_parse_end;
+ 	}
+ 
+-	ret = simple_util_parse_card_name(&priv->snd_card, PREFIX);
++	ret = simple_util_parse_card_name(priv, PREFIX);
+ 
+ card_parse_end:
+ 	of_node_put(dai_link);
+diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
+index 61f3c1b95c486..7d8078233d6f6 100644
+--- a/sound/soc/spacemit/spacemit-snd-i2s.c
++++ b/sound/soc/spacemit/spacemit-snd-i2s.c
+@@ -103,7 +103,7 @@ static int i2s_sspa_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct sspa_priv *priv = snd_soc_dai_get_drvdata(dai);
+ 	pm_runtime_get_sync(&priv->i2splatdev->dev);
+-	i2s_sspa_set_dai_fmt(dai, SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S);
++	i2s_sspa_set_dai_fmt(dai, SND_SOC_DAIFMT_CBC_CFC | SND_SOC_DAIFMT_I2S);
+ 
+ 	return 0;
+ }
+@@ -164,11 +164,11 @@ static int i2s_sspa_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		ssp_top_cfg |= TOP_SFRMDIR_M;
+ 		ssp_top_cfg |= TOP_SCLKDIR_M;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_CBP_CFP:
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.51.0
+

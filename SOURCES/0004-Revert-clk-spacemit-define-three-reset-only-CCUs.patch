@@ -1,0 +1,56 @@
+From 5797f36ad960582be0029ec5f2b3fe5b6b49d07b Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Fri, 15 Aug 2025 10:29:26 -0400
+Subject: [PATCH 0004/1234] Revert "clk: spacemit: define three reset-only
+ CCUs"
+
+This reverts commit 024b84f661674dcfa1341c90ce654c485c4ab756.
+---
+ drivers/clk/spacemit/ccu-k1.c | 24 ------------------------
+ 1 file changed, 24 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
+index 18e0c34b6fbfe..57a1a10a48e69 100644
+--- a/drivers/clk/spacemit/ccu-k1.c
++++ b/drivers/clk/spacemit/ccu-k1.c
+@@ -968,18 +968,6 @@ static const struct spacemit_ccu_data k1_ccu_apmu_data = {
+ 	.num	= ARRAY_SIZE(k1_ccu_apmu_hws),
+ };
+ 
+-static const struct spacemit_ccu_data k1_ccu_rcpu_data = {
+-	.reset_name	= "rcpu-reset",
+-};
+-
+-static const struct spacemit_ccu_data k1_ccu_rcpu2_data = {
+-	.reset_name	= "rcpu2-reset",
+-};
+-
+-static const struct spacemit_ccu_data k1_ccu_apbc2_data = {
+-	.reset_name	= "apbc2-reset",
+-};
+-
+ static int spacemit_ccu_register(struct device *dev,
+ 				 struct regmap *regmap,
+ 				 struct regmap *lock_regmap,
+@@ -1084,18 +1072,6 @@ static const struct of_device_id of_k1_ccu_match[] = {
+ 		.compatible	= "spacemit,k1-syscon-apmu",
+ 		.data		= &k1_ccu_apmu_data,
+ 	},
+-	{
+-		.compatible	= "spacemit,k1-syscon-rcpu",
+-		.data		= &k1_ccu_rcpu_data,
+-	},
+-	{
+-		.compatible	= "spacemit,k1-syscon-rcpu2",
+-		.data		= &k1_ccu_rcpu2_data,
+-	},
+-	{
+-		.compatible	= "spacemit,k1-syscon-apbc2",
+-		.data		= &k1_ccu_apbc2_data,
+-	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, of_k1_ccu_match);
+-- 
+2.51.0
+

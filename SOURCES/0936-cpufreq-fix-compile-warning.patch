@@ -1,0 +1,26 @@
+From 1b7840259c3f82780f413dbf90ffad9af53f5381 Mon Sep 17 00:00:00 2001
+From: Mark Zhuang <mark.zhuang@spacemit.com>
+Date: Mon, 12 Aug 2024 11:25:20 +0800
+Subject: [PATCH 0936/1234] cpufreq: fix compile warning
+
+Change-Id: I92afde0d9002d35025dae9e89f82ad95f1239e75
+---
+ drivers/cpufreq/spacemit-cpufreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
+index ee030cb24a435..6636edaf99917 100644
+--- a/drivers/cpufreq/spacemit-cpufreq.c
++++ b/drivers/cpufreq/spacemit-cpufreq.c
+@@ -414,7 +414,7 @@ static int spacemit_dt_cpufreq_pre_probe(struct platform_device *pdev)
+ 	struct device_node *cpus;
+ 	struct device_node *product_id, *wafer_id;
+ 	u32 prop = 0;
+-	u32 product_prop, wafer_prop;
++	u32 product_prop = 0, wafer_prop = 0;
+ 
+ 	if (strncmp(pdev->name, "cpufreq-dt", 10) != 0)
+ 		return 0;
+-- 
+2.51.0
+

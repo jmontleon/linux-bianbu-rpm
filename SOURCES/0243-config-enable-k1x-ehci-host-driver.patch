@@ -1,0 +1,27 @@
+From 87cf56e59cf049d39a0b13942b29c1ca1a2ff34b Mon Sep 17 00:00:00 2001
+From: Pan Junzhong <junzhong.pan@spacemit.com>
+Date: Thu, 21 Dec 2023 21:24:52 +0800
+Subject: [PATCH 0243/1234] config: enable k1x ehci host driver
+
+Change-Id: If6c982debdf779d48df0f18463006edcf75740ef
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index f4921d020f1d9..0b8c011893acf 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -314,6 +314,9 @@ CONFIG_FB=y
+ # CONFIG_HID_GENERIC is not set
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_EHCI_ROOT_HUB_TT=y
++CONFIG_USB_EHCI_K1X=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_DWC3=y
+ # CONFIG_USB_DWC3_OMAP is not set
+-- 
+2.51.0
+
