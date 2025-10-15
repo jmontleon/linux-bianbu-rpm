@@ -1,4 +1,4 @@
-From 3b4356d6dc179eaee77da1b46ec24efa897ed77a Mon Sep 17 00:00:00 2001
+From 867c8487a424c10d02b1cab2cd55358ca4aa8efd Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 2 Sep 2024 11:13:19 +0800
 Subject: [PATCH 0982/1222] spacemit_onboard_hub: fix Kconfig dependancy
@@ -9,10 +9,10 @@ Change-Id: I5e2668023670b1d49872667bc6b0a7e73a6e834b
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 631e286aca9ce..c70ff5fda1e63 100644
+index 533711dbdeef7..884e5f535c5d9 100644
 --- a/drivers/usb/misc/Kconfig
 +++ b/drivers/usb/misc/Kconfig
-@@ -346,8 +346,8 @@ config USB_ONBOARD_DEV_USB5744
+@@ -347,8 +347,8 @@ config USB_ONBOARD_DEV_USB5744
  
  config SPACEMIT_ONBOARD_USB_HUB
  	tristate "Spacemit onboard USB hub support"

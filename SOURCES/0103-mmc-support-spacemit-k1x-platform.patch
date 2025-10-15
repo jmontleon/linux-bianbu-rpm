@@ -1,4 +1,4 @@
-From cc9f4a0cf9bdd45cde6e99604183e8980a5e40e2 Mon Sep 17 00:00:00 2001
+From 14a0e93ed40f34344840f4e9263dee1a03782ea4 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
 Subject: [PATCH 0103/1222] mmc: support spacemit k1x platform
@@ -412,7 +412,7 @@ index c5bc6268803eb..7623caff1d9b6 100644
  	mmc_detect_change(host, msecs_to_jiffies(ctx->cd_debounce_delay_ms));
  
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index a7eef04c77a0d..9276b7da80e17 100644
+index 3baa8d94c0df1..3e1c17fefc6e6 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -288,14 +288,27 @@ config MMC_SDHCI_OF_MA35D1
@@ -446,7 +446,7 @@ index a7eef04c77a0d..9276b7da80e17 100644
  
  	  If you have a controller with this interface, say Y or M here.
  
-@@ -1152,3 +1165,4 @@ config MMC_LITEX
+@@ -1153,3 +1166,4 @@ config MMC_LITEX
  	  module will be called litex_mmc.
  
  	  If unsure, say N.

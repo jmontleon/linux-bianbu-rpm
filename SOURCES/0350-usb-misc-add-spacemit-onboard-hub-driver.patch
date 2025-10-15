@@ -1,4 +1,4 @@
-From f9c0ae0014ae12e69b77b64593b7e14a443d140f Mon Sep 17 00:00:00 2001
+From 30c2d252f5bf045b1a12ec7d6e900105fca2c8c2 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:20:01 +0800
 Subject: [PATCH 0350/1222] usb: misc: add spacemit onboard hub driver
@@ -12,10 +12,10 @@ Change-Id: I5f648277a88ef3e7dd8296a519ead726a9b3b0c4
  create mode 100644 drivers/usb/misc/spacemit_onboard_hub.c
 
 diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 6497c4e81e951..631e286aca9ce 100644
+index 9bf8fc6247bac..533711dbdeef7 100644
 --- a/drivers/usb/misc/Kconfig
 +++ b/drivers/usb/misc/Kconfig
-@@ -343,3 +343,11 @@ config USB_ONBOARD_DEV_USB5744
+@@ -344,3 +344,11 @@ config USB_ONBOARD_DEV_USB5744
  	  during hub start-up configuration stage. It is must to enable this
  	  option on AMD Kria KR260 Robotics Starter Kit as this hub is
  	  connected to USB-SD converter which mounts the root filesystem.

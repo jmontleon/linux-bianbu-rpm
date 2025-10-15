@@ -1,4 +1,4 @@
-From 84e9d7a9d72ca70386f2f9c279645aa07d3712d9 Mon Sep 17 00:00:00 2001
+From a8d8ad1d63a2b90a4e730dcb042991b801860deb Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 22 Nov 2023 17:33:39 +0800
 Subject: [PATCH 0168/1222] pmic:spm8821:pinctrl: first version to support
@@ -16,10 +16,10 @@ Change-Id: I0b0bc49acd314b0a1c8919605326b503272bbc44
  create mode 100644 drivers/pinctrl/spacemit-pmic-pinctrl.c
 
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index da556205c5a93..bc3ba05087ce4 100644
+index 88a92c7dbb2ec..1a0c3ca1d1d2b 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
-@@ -493,6 +493,17 @@ config PINCTRL_RK805
+@@ -495,6 +495,17 @@ config PINCTRL_RK805
  	help
  	  This selects the pinctrl driver for RK805.
  

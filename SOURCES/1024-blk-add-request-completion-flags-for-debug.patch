@@ -1,4 +1,4 @@
-From ea13c2b613e85e1a207e63d65a94c9227610abb6 Mon Sep 17 00:00:00 2001
+From 6693dd3cbe0a15953caa8389ebec771167580892 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 14 Oct 2024 18:10:42 +0800
 Subject: [PATCH 1024/1222] blk: add request completion flags for debug
@@ -10,10 +10,10 @@ Change-Id: Ib84003e68d537173a9d550071d43eab587d10fb6
  2 files changed, 3 insertions(+)
 
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index ba3a4b77f5786..8d28e43bfdad9 100644
+index f8a8a23b90402..1054ffdbdedc2 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -1276,6 +1276,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
+@@ -1283,6 +1283,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
  	cpu = rq->mq_ctx->cpu;
  	if (llist_add(&rq->ipi_list, &per_cpu(blk_cpu_done, cpu)))
  		smp_call_function_single_async(cpu, &per_cpu(blk_cpu_csd, cpu));
@@ -21,7 +21,7 @@ index ba3a4b77f5786..8d28e43bfdad9 100644
  }
  
  static void blk_mq_raise_softirq(struct request *rq)
-@@ -3576,6 +3577,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
+@@ -3584,6 +3585,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
  	}
  
  	WRITE_ONCE(rq->state, MQ_RQ_IDLE);

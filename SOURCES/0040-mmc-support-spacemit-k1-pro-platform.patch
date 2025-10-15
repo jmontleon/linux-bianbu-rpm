@@ -1,4 +1,4 @@
-From f5d1b390b524e28baf9ab8ed2992a11f95ce5357 Mon Sep 17 00:00:00 2001
+From f445c22abfb933781287d4ad4edacb1b6221359e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 19 May 2023 16:26:14 +0800
 Subject: [PATCH 0040/1222] mmc: support spacemit k1-pro platform
@@ -30,7 +30,7 @@ index 607b3100ad1a8..0c83d64e11f49 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 7232de1c06887..a7eef04c77a0d 100644
+index 5cc415ba4f550..3baa8d94c0df1 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -288,6 +288,19 @@ config MMC_SDHCI_OF_MA35D1

@@ -126,7 +126,7 @@ index 97d958c945e4f..c7e27e2edfe45 100644
  M:	David E. Box <david.e.box@linux.intel.com>
  S:	Supported
 diff --git a/Makefile b/Makefile
-index a04d0223dc840..07d5a34200366 100644
+index 22ee632f9104a..469cce72801b2 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -758,7 +758,7 @@ index 697fb99406e6b..15088d14904fc 100644
  #ifdef CONFIG_KEXEC_JUMP
  	if (image->preserve_context)
 diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 1b7960cf6eb0c..f2bbbeef5477d 100644
+index e3a3987b0c4fb..4c718f8adc592 100644
 --- a/arch/x86/kernel/process.c
 +++ b/arch/x86/kernel/process.c
 @@ -88,6 +88,16 @@ EXPORT_PER_CPU_SYMBOL(cpu_tss_rw);
@@ -1866,10 +1866,10 @@ index d4af17fdba467..154f0403cbf4c 100644
  	data->xport.ops = &hid_rmi_ops;
  
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 42e5d37403add..87b0c6c936b18 100644
+index 4b98a7bf4cb73..441e6fa3bed2a 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -11,6 +11,7 @@
+@@ -12,6 +12,7 @@
  #include <linux/init.h>
  #include <linux/types.h>
  #include <linux/device.h>
@@ -1877,7 +1877,7 @@ index 42e5d37403add..87b0c6c936b18 100644
  #include <linux/io.h>
  #include <linux/err.h>
  #include <linux/fs.h>
-@@ -2446,6 +2447,16 @@ static const struct amba_id etm4_ids[] = {
+@@ -2451,6 +2452,16 @@ static const struct amba_id etm4_ids[] = {
  	{},
  };
  
@@ -1894,7 +1894,7 @@ index 42e5d37403add..87b0c6c936b18 100644
  MODULE_DEVICE_TABLE(amba, etm4_ids);
  
  static struct amba_driver etm4x_amba_driver = {
-@@ -2514,6 +2525,11 @@ static int __init etm4x_init(void)
+@@ -2525,6 +2536,11 @@ static int __init etm4x_init(void)
  {
  	int ret;
  
@@ -1906,7 +1906,7 @@ index 42e5d37403add..87b0c6c936b18 100644
  	ret = etm4_pm_setup();
  
  	/* etm4_pm_setup() does its own cleanup - exit on error */
-@@ -2540,6 +2556,9 @@ static int __init etm4x_init(void)
+@@ -2551,6 +2567,9 @@ static int __init etm4x_init(void)
  
  static void __exit etm4x_exit(void)
  {
@@ -2470,7 +2470,7 @@ index 2168b6cd71673..5d7cda175a0ce 100644
  	if (data->f01_container->dev.driver) {
  		/* Driver already bound, so enable ATTN now. */
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 060ebe330ee16..2dfed8d439670 100644
+index 59244c744eabd..183f4eaab6e20 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
 @@ -8,6 +8,7 @@
@@ -2481,7 +2481,7 @@ index 060ebe330ee16..2dfed8d439670 100644
  #include <linux/kernel.h>
  #include <linux/bits.h>
  #include <linux/bug.h>
-@@ -2941,6 +2942,27 @@ int iommu_fwspec_add_ids(struct device *dev, const u32 *ids, int num_ids)
+@@ -2967,6 +2968,27 @@ int iommu_fwspec_add_ids(struct device *dev, const u32 *ids, int num_ids)
  }
  EXPORT_SYMBOL_GPL(iommu_fwspec_add_ids);
  
@@ -2828,10 +2828,10 @@ index 256fe8c86828d..2e4a09948df8f 100644
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
 diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 6497c4e81e951..bfe08e15d051a 100644
+index 9bf8fc6247bac..7cfcdb6284180 100644
 --- a/drivers/usb/misc/Kconfig
 +++ b/drivers/usb/misc/Kconfig
-@@ -178,6 +178,20 @@ config USB_LJCA
+@@ -179,6 +179,20 @@ config USB_LJCA
  	  This driver can also be built as a module. If so, the module
  	  will be called usb-ljca.
  
@@ -4116,7 +4116,7 @@ index cf83afa1d879a..aba751e7abffe 100644
  	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
  };
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 4863106034dfb..c787506dcfb30 100644
+index fd6b370c81698..225544b1f9f64 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
 @@ -502,7 +502,7 @@ LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
