@@ -1,4 +1,4 @@
-From 75a420df9054face5d8d9db427922fd2a99d3366 Mon Sep 17 00:00:00 2001
+From a607686d7156c6de75f58aa0fdaaa46b5fbc4bb2 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 10:30:37 +0800
 Subject: [PATCH 1032/1222] nvme: expose allocation or mapping failure reports
@@ -9,7 +9,7 @@ Change-Id: Id61d1a9caaea249c41fce1174c068d417d77e6f4
  1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 2c6d9506b1725..44d410aefbeb3 100644
+index 8ed5f1941f05c..78a674ee41c54 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
 @@ -2265,7 +2265,7 @@ static void nvme_free_host_mem_multi(struct nvme_dev *dev)

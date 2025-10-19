@@ -1,4 +1,4 @@
-From eaf36a5bce091a04d5aa495e05e2bea7b72517ed Mon Sep 17 00:00:00 2001
+From f151fbd628652604b0355470b802d9903f0aec3a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 31 Aug 2024 12:46:41 +0800
 Subject: [PATCH 0978/1222] k1:cpufreq: delete the boost related node for k1
@@ -12,7 +12,7 @@ Change-Id: I4ed3d9517d8769f57c49c02187f5a8632775fc3c
  4 files changed, 41 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index ca8e148faecbb..ec290893fbecc 100644
+index 1dd837c3098ce..63f12747cc2e5 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -158,6 +158,7 @@ static void cpufreq_exit(struct cpufreq_policy *policy)

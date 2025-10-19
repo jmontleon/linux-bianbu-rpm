@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.17.3
-%define specversion 6.17.3
+%define specrpmversion 6.17.4
+%define specversion 6.17.4
 %define patchversion 6.17
-%define pkgrelease 300
+%define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.17.3
+%define tarfile_release 6.17.4
 # This is needed to do merge window version magic
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease 300%{?buildid}%{?dist}
+%define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.17.3
+%define kabiversion 6.17.4
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6847,8 +6847,13 @@ fi\
 #
 #
 %changelog
-* Wed Oct 15 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.17.3-300]
+* Sun Oct 19 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.17.4-0]
+- Add Fedora 42 and 41 to release_targets (Justin M. Forbes)
+- RHEL_RELEASE should be 0, not 1 (Justin M. Forbes)
+- PCI: vmd: override irq_startup()/irq_shutdown() in vmd_init_dev_msi_info() (Inochi Amaoto)
+- fedora: arm64: Updates for AMD Xilinx devices (Peter Robinson)
 - Fix up config issue due to stable backport (Justin M. Forbes)
+- Linux v6.17.4
 
 * Wed Oct 15 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.17.3-1]
 - Linux v6.17.3

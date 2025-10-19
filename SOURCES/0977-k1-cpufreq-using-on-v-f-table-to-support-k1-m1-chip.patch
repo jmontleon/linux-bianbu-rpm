@@ -1,4 +1,4 @@
-From 6ce33737cf85b3ea240444b98d8cb427a8109af3 Mon Sep 17 00:00:00 2001
+From 04042928e01c79566d5597d4c83cb7e8b8e672b2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 30 Aug 2024 21:57:56 +0800
 Subject: [PATCH 0977/1222] k1: cpufreq: using on v-f table to support k1 & m1
@@ -582,7 +582,7 @@ index fa02fda0ad36d..0000000000000
 -	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
 -};
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 0e0c72ea45668..ca8e148faecbb 100644
+index 16a55f81ca3b9..1dd837c3098ce 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -156,10 +156,18 @@ static void cpufreq_exit(struct cpufreq_policy *policy)

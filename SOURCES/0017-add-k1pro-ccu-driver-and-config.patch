@@ -1,4 +1,4 @@
-From fb868e4b92c48ad167725e3be00677492dd49c72 Mon Sep 17 00:00:00 2001
+From 98dd53d8ce24477983972b6c783ea40cb58a11fb Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 30 Mar 2023 16:44:46 +0800
 Subject: [PATCH 0017/1222] add k1pro ccu driver and config
@@ -110,10 +110,10 @@ index 8e42efb752a97..e0d63ef9c7f74 100644
  		clint0: clint@b4000000 {
  			compatible = "riscv,clint0";
 diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index f14cd0559980b..e0f937899ede0 100644
+index b65f63abe7db0..e3f2281ba099a 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
-@@ -538,7 +538,7 @@ source "drivers/clk/visconti/Kconfig"
+@@ -539,7 +539,7 @@ source "drivers/clk/visconti/Kconfig"
  source "drivers/clk/x86/Kconfig"
  source "drivers/clk/xilinx/Kconfig"
  source "drivers/clk/zynqmp/Kconfig"

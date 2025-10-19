@@ -1,4 +1,4 @@
-From 2796f5d08515d535c47b32e02b92e80a5c8c6661 Mon Sep 17 00:00:00 2001
+From e693b4b21a77befa1953e3aa361d675d57e32973 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 8 Jun 2025 19:19:38 -0400
 Subject: [PATCH 0008/1222] Revert "clk: spacemit: Add clock support for
@@ -31,10 +31,10 @@ This reverts commit 1b72c59db0add8e47fa116b21f78ed0b09a264f3.
  delete mode 100644 drivers/clk/spacemit/ccu_pll.h
 
 diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 4d56475f94fc1..f14cd0559980b 100644
+index b1425aed65938..b65f63abe7db0 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
-@@ -525,7 +525,6 @@ source "drivers/clk/samsung/Kconfig"
+@@ -526,7 +526,6 @@ source "drivers/clk/samsung/Kconfig"
  source "drivers/clk/sifive/Kconfig"
  source "drivers/clk/socfpga/Kconfig"
  source "drivers/clk/sophgo/Kconfig"

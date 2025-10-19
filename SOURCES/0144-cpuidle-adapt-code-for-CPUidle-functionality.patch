@@ -1,4 +1,4 @@
-From 62495e05fdd9524e0f23bb20ce17f521ede1b909 Mon Sep 17 00:00:00 2001
+From 828866b9cc7a3442901755286c833b58a7a4975b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 16 Oct 2023 15:40:56 +0800
 Subject: [PATCH 0144/1222] cpuidle: adapt code for CPUidle functionality
@@ -94,7 +94,7 @@ index 41eb691b471b7..6a5186e13a11f 100644
  	if (err) {
  		pr_err("failed to request timer irq\n");
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index bf69a4802b71e..a648f7458a0b3 100644
+index 9c4af7d588463..f5b86b2637c2f 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -40,27 +40,38 @@

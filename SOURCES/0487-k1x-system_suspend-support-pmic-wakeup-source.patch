@@ -1,4 +1,4 @@
-From 16ad07419a9cd610b91fb477de47e7787e41d1f5 Mon Sep 17 00:00:00 2001
+From 53d70c3fe4192a7da8b4905647c23a6a6fdb83fa Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 13 Mar 2024 10:21:07 +0800
 Subject: [PATCH 0487/1222] k1x:system_suspend: support pmic wakeup source
@@ -37,7 +37,7 @@ index e65d20fbd3ac6..d76b0a8e913bf 100644
  
  	return 0;
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index a648f7458a0b3..c4bed017bea08 100644
+index f5b86b2637c2f..43a3b4fb9b6aa 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -224,8 +224,12 @@ static struct irq_chip plic_edge_chip = {
