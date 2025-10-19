@@ -1,4 +1,4 @@
-From 086ebe0d3fa697afd4b964acfa5399aa9cf39378 Mon Sep 17 00:00:00 2001
+From 042a51c29a65d0dcfd002ddd40faed180bf5c6a5 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:17:12 +0800
 Subject: [PATCH 1116/1222] soc: spacemit-pm: fix error when save context for
@@ -36,7 +36,7 @@ index 7498d689d86f9..4175e127ea3d4 100644
  	csr_write(CSR_IE, context->ie);
  
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 6f8fbe5ba67e3..0b2fe9c1d0c24 100644
+index 5346153746fdc..7722687ea32f5 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -14,6 +14,7 @@
