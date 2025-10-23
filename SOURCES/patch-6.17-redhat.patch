@@ -46,7 +46,6 @@
  drivers/iommu/iommu.c                              |  22 +
  drivers/media/i2c/ov08x40.c                        |   2 +-
  drivers/net/wireless/ath/ath11k/core.c             |  54 +-
- drivers/pci/controller/vmd.c                       |  13 +
  drivers/pci/quirks.c                               |  24 +
  drivers/platform/x86/intel/int3472/discrete.c      |  58 +-
  drivers/scsi/sd.c                                  |  10 +
@@ -71,7 +70,7 @@
  security/lockdown/lockdown.c                       |  11 +
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 -
- 73 files changed, 2512 insertions(+), 292 deletions(-)
+ 72 files changed, 2499 insertions(+), 292 deletions(-)
 
 diff --git a/Documentation/arch/x86/tdx.rst b/Documentation/arch/x86/tdx.rst
 index 719043cd8b469..61670e7df2f7c 100644
@@ -127,7 +126,7 @@ index 97d958c945e4f..c7e27e2edfe45 100644
  M:	David E. Box <david.e.box@linux.intel.com>
  S:	Supported
 diff --git a/Makefile b/Makefile
-index 4c3092dae03cf..d94f8028a8d45 100644
+index 072a3be625510..052cfe6c163e5 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -213,10 +212,10 @@ index b1f3df39ed406..5e1c1169e27e5 100644
  	  The VM uses one page of physical memory for each page table.
  	  For systems with a lot of processes, this can use a lot of
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e9bbfacc35a64..59f8e55f3ec0e 100644
+index 93f391e67af15..237f7f623b4a3 100644
 --- a/arch/arm64/Kconfig
 +++ b/arch/arm64/Kconfig
-@@ -1429,7 +1429,7 @@ endchoice
+@@ -1430,7 +1430,7 @@ endchoice
  
  config ARM64_FORCE_52BIT
  	bool "Force 52-bit virtual addresses for userspace"
@@ -638,7 +637,7 @@ index 7ddef3a698668..913199b1954ba 100644
  #endif /* !__ASSEMBLER__ */
  #endif /* _ASM_X86_TDX_H */
 diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index a6f88ca1a6b49..5398db4dedb4a 100644
+index a11e17f3b4b1b..ccaa51ce63f6e 100644
 --- a/arch/x86/kernel/cpu/amd.c
 +++ b/arch/x86/kernel/cpu/amd.c
 @@ -545,6 +545,23 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
@@ -2618,44 +2617,6 @@ index 2810752260f2f..6c35a289d374d 100644
  			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
  			DMI_MATCH(DMI_PRODUCT_NAME, "21F9"),
  		},
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index 1bd5bf4a60979..b4b62b9ccc45a 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -192,6 +192,12 @@ static void vmd_pci_msi_enable(struct irq_data *data)
- 	data->chip->irq_unmask(data);
- }
- 
-+static unsigned int vmd_pci_msi_startup(struct irq_data *data)
-+{
-+	vmd_pci_msi_enable(data);
-+	return 0;
-+}
-+
- static void vmd_irq_disable(struct irq_data *data)
- {
- 	struct vmd_irq *vmdirq = data->chip_data;
-@@ -210,6 +216,11 @@ static void vmd_pci_msi_disable(struct irq_data *data)
- 	vmd_irq_disable(data->parent_data);
- }
- 
-+static void vmd_pci_msi_shutdown(struct irq_data *data)
-+{
-+	vmd_pci_msi_disable(data);
-+}
-+
- static struct irq_chip vmd_msi_controller = {
- 	.name			= "VMD-MSI",
- 	.irq_compose_msi_msg	= vmd_compose_msi_msg,
-@@ -309,6 +320,8 @@ static bool vmd_init_dev_msi_info(struct device *dev, struct irq_domain *domain,
- 	if (!msi_lib_init_dev_msi_info(dev, domain, real_parent, info))
- 		return false;
- 
-+	info->chip->irq_startup		= vmd_pci_msi_startup;
-+	info->chip->irq_shutdown	= vmd_pci_msi_shutdown;
- 	info->chip->irq_enable		= vmd_pci_msi_enable;
- 	info->chip->irq_disable		= vmd_pci_msi_disable;
- 	return true;
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
 index d97335a401930..3b0c24a0bf325 100644
 --- a/drivers/pci/quirks.c
