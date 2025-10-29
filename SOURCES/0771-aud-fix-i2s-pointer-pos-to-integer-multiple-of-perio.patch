@@ -1,4 +1,4 @@
-From 8b73f83515b091e5158e56a61faf6a56016cf648 Mon Sep 17 00:00:00 2001
+From c68caab88955e1dc99dbed1e3a312e6a6bb6a3ac Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 25 Jun 2024 16:03:31 +0800
 Subject: [PATCH 0771/1222] aud: fix i2s pointer pos to integer multiple of
@@ -35,5 +35,5 @@ index 487b0e3a4cc2e..d248f75096868 100644
  		runtime->delay = bytes_to_frames(runtime, state.in_flight_bytes);
  	}
 -- 
-2.51.0
+2.51.1
 

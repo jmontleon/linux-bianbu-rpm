@@ -1,4 +1,4 @@
-From c2f83794d99acda0395a1f66eb413392e6f8a6da Mon Sep 17 00:00:00 2001
+From 0417262b830b6311f037156a681a61ecf535392e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:48:35 +0800
 Subject: [PATCH 1102/1222] riscv: spackemit: add of node get for process
@@ -10,10 +10,10 @@ Change-Id: Ia7072f4b47f67f4dff1c0f9fe71514964f44520c
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index 0b9c7a66e9efa..7c6b4c9760101 100644
+index eba2980340622..84f93296e40fa 100644
 --- a/arch/riscv/kernel/cpu.c
 +++ b/arch/riscv/kernel/cpu.c
-@@ -338,8 +338,12 @@ static int c_show(struct seq_file *m, void *v)
+@@ -336,8 +336,12 @@ static int c_show(struct seq_file *m, void *v)
  	seq_printf(m, "processor\t: %lu\n", cpu_id);
  	seq_printf(m, "hart\t\t: %lu\n", cpuid_to_hartid_map(cpu_id));
  
@@ -27,5 +27,5 @@ index 0b9c7a66e9efa..7c6b4c9760101 100644
  	/*
  	 * For historical raisins, the isa: line is limited to the lowest common
 -- 
-2.51.0
+2.51.1
 

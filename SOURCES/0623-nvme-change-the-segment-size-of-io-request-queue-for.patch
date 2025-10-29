@@ -1,4 +1,4 @@
-From b3fa48cd219d46e201372e97f6afb8a7c5a47d2d Mon Sep 17 00:00:00 2001
+From 4603185505bffacfa0a8f68aad88dc3612daa61d Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
 Subject: [PATCH 0623/1222] nvme: change the segment size of io request queue
@@ -28,5 +28,5 @@ index 6b7493934535a..d39ee8cf9a770 100644
  	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
  	    ns->head->ids.csi == NVME_CSI_ZNS)
 -- 
-2.51.0
+2.51.1
 

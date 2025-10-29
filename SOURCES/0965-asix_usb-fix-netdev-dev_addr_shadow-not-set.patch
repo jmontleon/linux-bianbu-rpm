@@ -1,4 +1,4 @@
-From d94e919b639fe204af5ad1e351343dbb6da5651c Mon Sep 17 00:00:00 2001
+From 6d3bd2ea528478c2638ee683c890c4b07d77c6e4 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 26 Aug 2024 10:07:32 +0800
 Subject: [PATCH 0965/1222] asix_usb: fix netdev->dev_addr_shadow not set
@@ -36,5 +36,5 @@ index 93253f0e144ff..20fbb2bf04cee 100644
  		dev_warn(&axdev->intf->dev, "Found invalid MAC address value");
  
 -- 
-2.51.0
+2.51.1
 

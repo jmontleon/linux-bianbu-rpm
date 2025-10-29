@@ -1,4 +1,4 @@
-From 80535deba7a5bc665bf8efafdbbf56fd425b375b Mon Sep 17 00:00:00 2001
+From 8d7488c3899e068af5a30f49563d37da832fd0ac Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 14 Mar 2024 18:19:39 +0800
 Subject: [PATCH 0495/1222] mmc: sdhci-of-k1x: support disable caps
@@ -40,5 +40,5 @@ index 4abbb4e89b68f..f6789060bb98e 100644
  		pr_debug("%s: get card pinctrl\n", mmc_hostname(host->mmc));
  		spacemit->pinctrl = devm_pinctrl_get(&pdev->dev);
 -- 
-2.51.0
+2.51.1
 

@@ -1,4 +1,4 @@
-From 2df6eec8997aaf33c6dd3d9f34f70b40f7c230f4 Mon Sep 17 00:00:00 2001
+From fa2478cddd18d7754de182a9a6f0e9d072c6f12c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:34:46 +0800
 Subject: [PATCH 0259/1222] clean compile warning in arch/riscv/mm/init.c
@@ -9,7 +9,7 @@ Change-Id: I6465e56523ffb3ede59a3cafc7994aed3226843d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 93d045d3485d0..b3fcd6fbd52ef 100644
+index 279ec881df156..e443ed142748f 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -316,7 +316,7 @@ static void __init setup_bootmem(void)
@@ -22,5 +22,5 @@ index 93d045d3485d0..b3fcd6fbd52ef 100644
  	dma_contiguous_reserve(dma32_phys_limit);
  	#endif
 -- 
-2.51.0
+2.51.1
 

@@ -1,4 +1,4 @@
-From 5eea55a039759408e86d559026529a3ff48855f0 Mon Sep 17 00:00:00 2001
+From 90576dd10c3e59462f2edee1a20c437a04f89801 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 18:34:48 +0800
 Subject: [PATCH 0648/1222] usb: k1x_udc_core: remove req from queue even it's
@@ -38,5 +38,5 @@ index 0903113c10fde..7362f4ea6ca6f 100755
  	if (req->req.status == -EINPROGRESS)
  		req->req.status = status;
 -- 
-2.51.0
+2.51.1
 

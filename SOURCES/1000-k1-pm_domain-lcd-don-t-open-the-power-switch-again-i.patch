@@ -1,4 +1,4 @@
-From a0a070f1add0bee961a9da8e91a5d97ee5cfe331 Mon Sep 17 00:00:00 2001
+From 92893a675cbefd7571f57ee73a0a50ea2a16b861 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 12 Sep 2024 19:03:49 +0800
 Subject: [PATCH 1000/1222] k1:pm_domain:lcd: don't open the power-switch again
@@ -24,5 +24,5 @@ index e08f373626eec..392c735a926d6 100644
  			/* this is the sw type */
  			regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], spd->param.reg_pwr_ctrl, &val);
 -- 
-2.51.0
+2.51.1
 

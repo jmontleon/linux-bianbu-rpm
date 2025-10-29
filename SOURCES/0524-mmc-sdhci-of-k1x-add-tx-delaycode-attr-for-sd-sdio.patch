@@ -1,4 +1,4 @@
-From 718fdbdb9d3184780ff77876941d89aaf62d6be5 Mon Sep 17 00:00:00 2001
+From 32d203bb480e2b6b555c0428fdf4ccbfef0a4eb4 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:20:28 +0800
 Subject: [PATCH 0524/1222] mmc: sdhci-of-k1x: add tx delaycode attr for
@@ -66,5 +66,5 @@ index 762577c63db96..9588dca97a10c 100644
  		for (i = 0; i < ARRAY_SIZE(sdhci_sysfs_files); i++) {
  			device_create_file(dev, &sdhci_sysfs_files[i]);
 -- 
-2.51.0
+2.51.1
 

@@ -1,4 +1,4 @@
-From 83cb08776c1e7ad09ac3874eb864e536fb3638bb Mon Sep 17 00:00:00 2001
+From 7d4b2ce937a2e08e97b73766aba9456ada8f819e Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Tue, 2 Jan 2024 10:16:04 +0800
 Subject: [PATCH 0299/1222] camera self managed ldo
@@ -48,5 +48,5 @@ index fc3f70ac129d2..cce34e4ca3990 100755
  	sensor->pwdn = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_HIGH);
  	if (IS_ERR(sensor->pwdn)) {
 -- 
-2.51.0
+2.51.1
 

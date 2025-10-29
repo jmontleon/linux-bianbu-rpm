@@ -1,4 +1,4 @@
-From 6569baa93887ed030817973325a8d8c200433e70 Mon Sep 17 00:00:00 2001
+From 7232574af8537c50e0ddc2478b3a9a10b3d8aa59 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 14:37:42 +0800
 Subject: [PATCH 0697/1222] usb: xhci-plat: read reset-on-resume from device
@@ -26,5 +26,5 @@ index 62f6e0b848e38..2cea72fd96f50 100644
  					 &xhci->imod_interval);
  		device_property_read_u16(tmpdev, "num-hc-interrupters",
 -- 
-2.51.0
+2.51.1
 

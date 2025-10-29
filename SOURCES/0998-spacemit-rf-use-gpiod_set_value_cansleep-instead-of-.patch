@@ -1,4 +1,4 @@
-From 48f28fa5705f827ef96cac44baa4ae5749f9feae Mon Sep 17 00:00:00 2001
+From 905c267ad0e387eddd072355e09f419507c5e59e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 10 Sep 2024 20:39:21 +0800
 Subject: [PATCH 0998/1222] spacemit-rf: use gpiod_set_value_cansleep() instead
@@ -67,5 +67,5 @@ index c7a553ba5f768..f9bb8130088ce 100644
  			spacemit_power_on(pwrseq->parent, 0);
  	}
 -- 
-2.51.0
+2.51.1
 
