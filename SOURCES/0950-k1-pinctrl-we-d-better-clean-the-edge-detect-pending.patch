@@ -1,4 +1,4 @@
-From 20d0325dec7c793434804bc6409ac0d318edf05a Mon Sep 17 00:00:00 2001
+From 6a84575b8ac20faff6e61ecd9ed152d56f39fe84 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Aug 2024 11:30:28 +0800
 Subject: [PATCH 0950/1222] k1:pinctrl: we'd better clean the edge-detect
@@ -48,7 +48,7 @@ index 2dd278b9716ea..99a1c6301c45c 100644
  			#address-cells = <1>;
  			#size-cells = <1>;
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index f715a669aa9b4..7323a03cb476c 100644
+index b1a0ef92c8422..5d32b9fb20dae 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -44,6 +44,8 @@
@@ -60,7 +60,7 @@ index f715a669aa9b4..7323a03cb476c 100644
  #endif
  
  /**
-@@ -1823,7 +1825,10 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -1825,7 +1827,10 @@ static int pcs_probe(struct platform_device *pdev)
  	struct pcs_device *pcs;
  	const struct pcs_soc_data *soc;
  	int ret;
@@ -72,7 +72,7 @@ index f715a669aa9b4..7323a03cb476c 100644
  	soc = of_device_get_match_data(&pdev->dev);
  	if (WARN_ON(!soc))
  		return -EINVAL;
-@@ -1973,6 +1978,16 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -1975,6 +1980,16 @@ static int pcs_probe(struct platform_device *pdev)
  		pcs->desc.confops = &pcs_pinconf_ops;
  	pcs->desc.owner = THIS_MODULE;
  

@@ -1,4 +1,4 @@
-From 3183023d9976b0d550a70c59764496da8933e0de Mon Sep 17 00:00:00 2001
+From ef1014eeea973eac29ae08382109b5bfe461e6f8 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 1 Jul 2024 20:23:18 +0800
 Subject: [PATCH 0783/1222] pm:pinctrl: support edge-detect wakeup functoin
@@ -62,7 +62,7 @@ index ea30bf701e0d8..796786ea6a70a 100644
  
  &gpio{
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index d297a05bac4ac..4fee4e701042c 100644
+index a89c65a2453cf..6e6431db117ba 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -28,6 +28,11 @@
@@ -100,7 +100,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  	void *saved_vals;
  	unsigned size;
  	struct device *dev;
-@@ -1434,7 +1448,11 @@ static void pcs_irq_mask(struct irq_data *d)
+@@ -1436,7 +1450,11 @@ static void pcs_irq_mask(struct irq_data *d)
  {
  	struct pcs_soc_data *pcs_soc = irq_data_get_irq_chip_data(d);
  
@@ -112,7 +112,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  }
  
  /**
-@@ -1445,7 +1463,11 @@ static void pcs_irq_unmask(struct irq_data *d)
+@@ -1447,7 +1465,11 @@ static void pcs_irq_unmask(struct irq_data *d)
  {
  	struct pcs_soc_data *pcs_soc = irq_data_get_irq_chip_data(d);
  
@@ -124,7 +124,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  }
  
  /**
-@@ -1486,6 +1508,7 @@ static int pcs_irq_handle(struct pcs_soc_data *pcs_soc)
+@@ -1488,6 +1510,7 @@ static int pcs_irq_handle(struct pcs_soc_data *pcs_soc)
  		unsigned mask;
  
  		pcswi = list_entry(pos, struct pcs_interrupt, node);
@@ -132,7 +132,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  		raw_spin_lock(&pcs->lock);
  		mask = pcs->read(pcswi->reg);
  		raw_spin_unlock(&pcs->lock);
-@@ -1494,6 +1517,22 @@ static int pcs_irq_handle(struct pcs_soc_data *pcs_soc)
+@@ -1496,6 +1519,22 @@ static int pcs_irq_handle(struct pcs_soc_data *pcs_soc)
  						  pcswi->hwirq);
  			count++;
  		}
@@ -155,7 +155,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  	}
  
  	return count;
-@@ -1771,6 +1810,11 @@ static int pcs_quirk_missing_pinctrl_cells(struct pcs_device *pcs,
+@@ -1773,6 +1812,11 @@ static int pcs_quirk_missing_pinctrl_cells(struct pcs_device *pcs,
  	return error;
  }
  
@@ -167,7 +167,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  static int pcs_probe(struct platform_device *pdev)
  {
  	struct device_node *np = pdev->dev.of_node;
-@@ -1779,11 +1823,44 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -1781,11 +1825,44 @@ static int pcs_probe(struct platform_device *pdev)
  	struct pcs_device *pcs;
  	const struct pcs_soc_data *soc;
  	int ret;
@@ -212,7 +212,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  	pcs = devm_kzalloc(&pdev->dev, sizeof(*pcs), GFP_KERNEL);
  	if (!pcs)
  		return -ENOMEM;
-@@ -1851,6 +1928,29 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -1853,6 +1930,29 @@ static int pcs_probe(struct platform_device *pdev)
  		return -ENODEV;
  	}
  
@@ -242,7 +242,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  	platform_set_drvdata(pdev, pcs);
  
  	switch (pcs->width) {
-@@ -1914,6 +2014,11 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -1916,6 +2016,11 @@ static int pcs_probe(struct platform_device *pdev)
  
  	dev_info(pcs->dev, "%i pins, size %u\n", pcs->desc.npins, pcs->size);
  
@@ -254,7 +254,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  	ret = pinctrl_enable(pcs->pctl);
  	if (ret)
  		goto free;
-@@ -1930,6 +2035,12 @@ static void pcs_remove(struct platform_device *pdev)
+@@ -1932,6 +2037,12 @@ static void pcs_remove(struct platform_device *pdev)
  	struct pcs_device *pcs = platform_get_drvdata(pdev);
  
  	pcs_free_resources(pcs);
@@ -267,7 +267,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  }
  
  static const struct pcs_soc_data pinctrl_single_omap_wkup = {
-@@ -1959,6 +2070,14 @@ static const struct pcs_soc_data pinctrl_single_j7200 = {
+@@ -1961,6 +2072,14 @@ static const struct pcs_soc_data pinctrl_single_j7200 = {
  	.flags = PCS_CONTEXT_LOSS_OFF,
  };
  
@@ -282,7 +282,7 @@ index d297a05bac4ac..4fee4e701042c 100644
  static const struct pcs_soc_data pinctrl_single = {
  };
  
-@@ -1977,6 +2096,9 @@ static const struct of_device_id pcs_of_match[] = {
+@@ -1979,6 +2098,9 @@ static const struct of_device_id pcs_of_match[] = {
  	{ .compatible = "ti,j7200-padconf", .data = &pinctrl_single_j7200 },
  	{ .compatible = "pinctrl-single", .data = &pinctrl_single },
  	{ .compatible = "pinconf-single", .data = &pinconf_single },

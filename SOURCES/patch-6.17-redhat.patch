@@ -25,7 +25,7 @@
  crypto/testmgr.c                                   |   2 +-
  drivers/acpi/apei/hest.c                           |   8 +
  drivers/acpi/irq.c                                 |  17 +-
- drivers/acpi/scan.c                                |  11 +
+ drivers/acpi/scan.c                                |   9 +
  drivers/ata/libahci.c                              |  18 +
  drivers/char/ipmi/ipmi_dmi.c                       |  15 +
  drivers/char/ipmi/ipmi_msghandler.c                |  16 +-
@@ -44,8 +44,6 @@
  drivers/i2c/busses/i2c-usbio.c                     | 321 +++++++++
  drivers/input/rmi4/rmi_driver.c                    | 124 ++--
  drivers/iommu/iommu.c                              |  22 +
- drivers/media/i2c/ov08x40.c                        |   2 +-
- drivers/net/wireless/ath/ath11k/core.c             |  54 +-
  drivers/pci/quirks.c                               |  24 +
  drivers/platform/x86/intel/int3472/discrete.c      |  58 +-
  drivers/scsi/sd.c                                  |  10 +
@@ -70,7 +68,7 @@
  security/lockdown/lockdown.c                       |  11 +
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 -
- 72 files changed, 2499 insertions(+), 292 deletions(-)
+ 70 files changed, 2448 insertions(+), 285 deletions(-)
 
 diff --git a/Documentation/arch/x86/tdx.rst b/Documentation/arch/x86/tdx.rst
 index 719043cd8b469..61670e7df2f7c 100644
@@ -126,7 +124,7 @@ index 97d958c945e4f..c7e27e2edfe45 100644
  M:	David E. Box <david.e.box@linux.intel.com>
  S:	Supported
 diff --git a/Makefile b/Makefile
-index 570042d208fd3..7c4032f587865 100644
+index 1383a6e417a46..8970d89f94019 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -578,7 +576,7 @@ index bde58f6510ac4..a24c7805acdb5 100644
  	L1TF_MITIGATION_OFF,
  	L1TF_MITIGATION_AUTO,
 diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 7ddef3a698668..913199b1954ba 100644
+index 5e043961fb1d7..dc9b78ce0e596 100644
 --- a/arch/x86/include/asm/tdx.h
 +++ b/arch/x86/include/asm/tdx.h
 @@ -102,10 +102,31 @@ u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
@@ -624,7 +622,7 @@ index 7ddef3a698668..913199b1954ba 100644
  	} while (ret == TDX_RND_NO_ENTROPY && --retry);
  
  	return ret;
-@@ -203,5 +226,11 @@ static inline const char *tdx_dump_mce_info(struct mce *m) { return NULL; }
+@@ -205,5 +228,11 @@ static inline const char *tdx_dump_mce_info(struct mce *m) { return NULL; }
  static inline const struct tdx_sys_info *tdx_get_sysinfo(void) { return NULL; }
  #endif	/* CONFIG_INTEL_TDX_HOST */
  
@@ -637,7 +635,7 @@ index 7ddef3a698668..913199b1954ba 100644
  #endif /* !__ASSEMBLER__ */
  #endif /* _ASM_X86_TDX_H */
 diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index a11e17f3b4b1b..ccaa51ce63f6e 100644
+index 3fbb86fa669f5..61aea79fcdedd 100644
 --- a/arch/x86/kernel/cpu/amd.c
 +++ b/arch/x86/kernel/cpu/amd.c
 @@ -545,6 +545,23 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
@@ -949,7 +947,7 @@ index 1b2edd07a3e17..1c434c6900ebe 100644
  	reserve_initrd();
  
 diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-index d91d9d6bb26c1..3284430350279 100644
+index 987c0eb10545c..adeb59155074f 100644
 --- a/arch/x86/kvm/vmx/tdx.c
 +++ b/arch/x86/kvm/vmx/tdx.c
 @@ -442,6 +442,16 @@ void tdx_disable_virtualization_cpu(void)
@@ -970,7 +968,7 @@ index d91d9d6bb26c1..3284430350279 100644
  
  #define TDX_SEAMCALL_RETRIES 10000
 diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index c7a9a087ccaf5..458cb109f61a0 100644
+index 9767b5821f4d8..115ed29a8d2e1 100644
 --- a/arch/x86/virt/vmx/tdx/tdx.c
 +++ b/arch/x86/virt/vmx/tdx/tdx.c
 @@ -1266,7 +1266,7 @@ static bool paddr_is_tdx_private(unsigned long phys)
@@ -982,16 +980,16 @@ index c7a9a087ccaf5..458cb109f61a0 100644
  
  	/*
  	 * The SEAMCALL will not return success unless there is a
-@@ -1522,7 +1522,7 @@ noinstr __flatten u64 tdh_vp_enter(struct tdx_vp *td, struct tdx_module_args *ar
+@@ -1517,7 +1517,7 @@ noinstr u64 tdh_vp_enter(struct tdx_vp *td, struct tdx_module_args *args)
  {
- 	args->rcx = tdx_tdvpr_pa(td);
+ 	args->rcx = td->tdvpr_pa;
  
 -	return __seamcall_saved_ret(TDH_VP_ENTER, args);
 +	return __seamcall_dirty_cache(__seamcall_saved_ret, TDH_VP_ENTER, args);
  }
  EXPORT_SYMBOL_GPL(tdh_vp_enter);
  
-@@ -1870,3 +1870,22 @@ u64 tdh_phymem_page_wbinvd_hkid(u64 hkid, struct page *page)
+@@ -1865,3 +1865,22 @@ u64 tdh_phymem_page_wbinvd_hkid(u64 hkid, struct page *page)
  	return seamcall(TDH_PHYMEM_PAGE_WBINVD, &args);
  }
  EXPORT_SYMBOL_GPL(tdh_phymem_page_wbinvd_hkid);
@@ -1104,19 +1102,10 @@ index 76a856c32c4d0..f2d25d95811c9 100644
  	return ctx.rc;
  }
 diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index fb1fe9f3b1a36..1a857d373b3db 100644
+index f2e032f381625..295e429f0d8e0 100644
 --- a/drivers/acpi/scan.c
 +++ b/drivers/acpi/scan.c
-@@ -845,6 +845,8 @@ static bool acpi_info_matches_ids(struct acpi_device_info *info,
- static const char * const acpi_ignore_dep_ids[] = {
- 	"PNP0D80", /* Windows-compatible System Power Management Controller */
- 	"INT33BD", /* Intel Baytrail Mailbox Device */
-+	"INTC10DE", /* Intel CVS LNL */
-+	"INTC10E0", /* Intel CVS ARL */
- 	"LATT2021", /* Lattice FW Update Client Driver */
- 	NULL
- };
-@@ -1794,6 +1796,15 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+@@ -1798,6 +1798,15 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
  	if (!acpi_match_device_ids(device, ignore_serial_bus_ids))
  		return false;
  
@@ -2509,119 +2498,11 @@ index 59244c744eabd..183f4eaab6e20 100644
  /**
   * iommu_setup_default_domain - Set the default_domain for the group
   * @group: Group to change
-diff --git a/drivers/media/i2c/ov08x40.c b/drivers/media/i2c/ov08x40.c
-index e0094305ca2ab..90887fc54fb0e 100644
---- a/drivers/media/i2c/ov08x40.c
-+++ b/drivers/media/i2c/ov08x40.c
-@@ -1648,7 +1648,7 @@ static int ov08x40_set_ctrl_hflip(struct ov08x40 *ov08x, u32 ctrl_val)
- 
- 	return ov08x40_write_reg(ov08x, OV08X40_REG_MIRROR,
- 				 OV08X40_REG_VALUE_08BIT,
--				 ctrl_val ? val | BIT(2) : val & ~BIT(2));
-+				 ctrl_val ? val & ~BIT(2) : val | BIT(2));
- }
- 
- static int ov08x40_set_ctrl_vflip(struct ov08x40 *ov08x, u32 ctrl_val)
-diff --git a/drivers/net/wireless/ath/ath11k/core.c b/drivers/net/wireless/ath/ath11k/core.c
-index 2810752260f2f..6c35a289d374d 100644
---- a/drivers/net/wireless/ath/ath11k/core.c
-+++ b/drivers/net/wireless/ath/ath11k/core.c
-@@ -912,42 +912,84 @@ static const struct ath11k_hw_params ath11k_hw_params[] = {
- static const struct dmi_system_id ath11k_pm_quirk_table[] = {
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /* X13 G4 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21J3"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /* X13 G4 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21J4"),
- 		},
- 	},
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /* T14 G4 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21K3"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /* T14 G4 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21K4"),
- 		},
- 	},
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /* P14s G4 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21K5"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /* P14s G4 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21K6"),
- 		},
- 	},
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /* T16 G2 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21K7"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /* T16 G2 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21K8"),
- 		},
- 	},
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /*P16s G2 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21K9"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /*P16s G2 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21KA"),
- 		},
- 	},
- 	{
- 		.driver_data = (void *)ATH11K_PM_WOW,
--		.matches = {
-+		.matches = { /*T14s G4 AMD #1 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21F8"),
-+		},
-+	},
-+	{
-+		.driver_data = (void *)ATH11K_PM_WOW,
-+		.matches = { /*T14s G4 AMD #2 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21F9"),
- 		},
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index d97335a401930..3b0c24a0bf325 100644
+index 214ed060ca1b3..90a0bd985ad53 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -4450,6 +4450,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
+@@ -4451,6 +4451,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9084,
  				quirk_bridge_cavm_thrx2_pcie_root);
  

@@ -1,4 +1,4 @@
-From 5bf6f715513a79e83ca2fb5cc32df0b201b1dab8 Mon Sep 17 00:00:00 2001
+From f72bcd1f203691e18a18561c281ae5c94293816b Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 26 Jan 2024 15:42:02 +0800
 Subject: [PATCH 0408/1222] display: disable kernel logo
@@ -23,7 +23,7 @@ index e73d8707cf953..20bea54d79fb4 100644
  CONFIG_USB=y
  CONFIG_USB_XHCI_HCD=y
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 84476a89f7a00..5940e2eb92316 100644
+index c4914a4324326..451d262767f80 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
 @@ -1159,7 +1159,6 @@ static void fbcon_init(struct vc_data *vc, bool init)

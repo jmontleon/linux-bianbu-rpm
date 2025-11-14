@@ -1,4 +1,4 @@
-From 4a401f104c3fa13d610d551a2fffb2a011f3ea39 Mon Sep 17 00:00:00 2001
+From 7b02ec034fbe30883656dc282778e3a946001e72 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 13 Mar 2024 10:21:07 +0800
 Subject: [PATCH 0487/1222] k1x:system_suspend: support pmic wakeup source
@@ -37,10 +37,10 @@ index e65d20fbd3ac6..d76b0a8e913bf 100644
  
  	return 0;
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index f5b86b2637c2f..43a3b4fb9b6aa 100644
+index 7b7de40a2e94e..976839bc1eace 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -224,8 +224,12 @@ static struct irq_chip plic_edge_chip = {
+@@ -226,8 +226,12 @@ static struct irq_chip plic_edge_chip = {
  	.irq_set_affinity = plic_set_affinity,
  #endif
  	.irq_set_type	= plic_irq_set_type,
@@ -53,7 +53,7 @@ index f5b86b2637c2f..43a3b4fb9b6aa 100644
  };
  
  static struct irq_chip plic_chip = {
-@@ -239,8 +243,12 @@ static struct irq_chip plic_chip = {
+@@ -241,8 +245,12 @@ static struct irq_chip plic_chip = {
  	.irq_set_affinity = plic_set_affinity,
  #endif
  	.irq_set_type	= plic_irq_set_type,

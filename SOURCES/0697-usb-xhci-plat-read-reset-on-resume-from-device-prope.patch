@@ -1,4 +1,4 @@
-From 6e08a8f0eebaa0c20112b81a05cd68f047820332 Mon Sep 17 00:00:00 2001
+From f8a28702eddfa4aa81a31a2d91c96e46f4496d97 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 14:37:42 +0800
 Subject: [PATCH 0697/1222] usb: xhci-plat: read reset-on-resume from device
@@ -10,10 +10,10 @@ Change-Id: If185d41fc0f52b2d32450a119e3e2d5a4238876f
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 62f6e0b848e38..2cea72fd96f50 100644
+index e53b1760f6c17..fbb251d56d387 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
-@@ -265,6 +265,11 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
+@@ -266,6 +266,11 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
  		if (device_property_read_bool(tmpdev, "xhci-skip-phy-init-quirk"))
  			xhci->quirks |= XHCI_SKIP_PHY_INIT;
  

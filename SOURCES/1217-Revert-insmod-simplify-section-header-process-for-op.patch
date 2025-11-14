@@ -1,4 +1,4 @@
-From b11c3d9bf3d0acb4df77c90aef9a623fa2d0681a Mon Sep 17 00:00:00 2001
+From a851c09fd4db0ffa07bf2ad1a59417efae7b3f37 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Tue, 10 Jun 2025 14:33:43 -0400
 Subject: [PATCH 1217/1222] Revert "insmod: simplify section header process for
@@ -13,7 +13,7 @@ the conflicting 6.16 commit be17c0df67959fe4f88dac75dc26ed9252d4b133
  1 file changed, 11 deletions(-)
 
 diff --git a/arch/riscv/kernel/module-sections.c b/arch/riscv/kernel/module-sections.c
-index afc46a0ec66ed..75551ac6504c5 100644
+index 5964d22aba644..1675cbad8619d 100644
 --- a/arch/riscv/kernel/module-sections.c
 +++ b/arch/riscv/kernel/module-sections.c
 @@ -55,8 +55,6 @@ unsigned long module_emit_plt_entry(struct module *mod, unsigned long val)

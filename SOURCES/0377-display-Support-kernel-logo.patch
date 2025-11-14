@@ -1,4 +1,4 @@
-From 5cffe55f9898c955de63cfab0146922398fb96d7 Mon Sep 17 00:00:00 2001
+From cc3a85b6a7219687a9eac31e97eeb90622208cb2 Mon Sep 17 00:00:00 2001
 From: yangchen <chen.yang@spacemit.com>
 Date: Sat, 13 Jan 2024 01:46:16 +0800
 Subject: [PATCH 0377/1222] display: Support kernel logo
@@ -90,7 +90,7 @@ index b290476a23d1a..e9941fb95ce7b 100644
  	return 0;
  
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 5940e2eb92316..84476a89f7a00 100644
+index 451d262767f80..c4914a4324326 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
 @@ -1159,6 +1159,7 @@ static void fbcon_init(struct vc_data *vc, bool init)

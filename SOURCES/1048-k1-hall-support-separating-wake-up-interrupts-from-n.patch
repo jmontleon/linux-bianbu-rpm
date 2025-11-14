@@ -1,4 +1,4 @@
-From 5682468b65d0aa486b43ef6a76e900d5f8ddf5bf Mon Sep 17 00:00:00 2001
+From 7c7aef9d948c9770d67934074767ec5c40311926 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 25 Oct 2024 19:06:54 +0800
 Subject: [PATCH 1048/1222] k1:hall:support separating wake-up interrupts from
@@ -104,10 +104,10 @@ index 8aa28c08b2891..9e4ef7a789fef 100644
   * dev_pm_set_dedicated_wake_irq_reverse - Request a dedicated wake-up interrupt
   *                                         with reverse enable ordering
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 7323a03cb476c..3f56fd32f3114 100644
+index 5d32b9fb20dae..bca013e2d0d5c 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
-@@ -1490,6 +1490,57 @@ static int pcs_irq_set_wake(struct irq_data *d, unsigned int state)
+@@ -1492,6 +1492,57 @@ static int pcs_irq_set_wake(struct irq_data *d, unsigned int state)
  	return 0;
  }
  
@@ -165,7 +165,7 @@ index 7323a03cb476c..3f56fd32f3114 100644
  /**
   * pcs_irq_handle() - common interrupt handler
   * @pcs_soc: SoC specific settings
-@@ -1632,6 +1683,10 @@ static int pcs_irq_init_chained_handler(struct pcs_device *pcs,
+@@ -1634,6 +1685,10 @@ static int pcs_irq_init_chained_handler(struct pcs_device *pcs,
  	pcs->chip.irq_mask = pcs_irq_mask;
  	pcs->chip.irq_unmask = pcs_irq_unmask;
  	pcs->chip.irq_set_wake = pcs_irq_set_wake;
@@ -176,7 +176,7 @@ index 7323a03cb476c..3f56fd32f3114 100644
  
  	if (PCS_QUIRK_HAS_SHARED_IRQ) {
  		int res;
-@@ -2026,7 +2081,7 @@ static int pcs_probe(struct platform_device *pdev)
+@@ -2028,7 +2083,7 @@ static int pcs_probe(struct platform_device *pdev)
  	dev_info(pcs->dev, "%i pins, size %u\n", pcs->desc.npins, pcs->size);
  
  #ifdef CONFIG_SOC_SPACEMIT_K1X
