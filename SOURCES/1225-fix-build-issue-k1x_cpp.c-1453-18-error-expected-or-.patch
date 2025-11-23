@@ -1,0 +1,23 @@
+From 227f8a75a535a83816b9fbfa9c44cfdaa97d08ee Mon Sep 17 00:00:00 2001
+From: repo bot <abf@abf.io>
+Date: Mon, 26 May 2025 10:10:24 +0000
+Subject: [PATCH 1225/1232] fix build issue: k1x_cpp.c:1453:18: error: expected
+ ',' or ';' before 'DMA_BUF'
+
+---
+ drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+index 49e0e4413e41..837ad99ef3db 100644
+--- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
++++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
+@@ -1449,4 +1449,4 @@ module_platform_driver(cpp_driver);
+ 
+ MODULE_DESCRIPTION("SPACEMIT Camera Post Process Driver");
+ MODULE_LICENSE("GPL");
+-MODULE_IMPORT_NS(DMA_BUF);
++MODULE_IMPORT_NS("DMA_BUF");
+-- 
+2.51.1
+

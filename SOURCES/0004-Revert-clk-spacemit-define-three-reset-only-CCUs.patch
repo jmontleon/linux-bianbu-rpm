@@ -1,7 +1,7 @@
-From 5797f36ad960582be0029ec5f2b3fe5b6b49d07b Mon Sep 17 00:00:00 2001
+From fb34f223e7d8ea6c26796e55e1de3192ba2423df Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 10:29:26 -0400
-Subject: [PATCH 0004/1234] Revert "clk: spacemit: define three reset-only
+Subject: [PATCH 0004/1232] Revert "clk: spacemit: define three reset-only
  CCUs"
 
 This reverts commit 024b84f661674dcfa1341c90ce654c485c4ab756.
@@ -10,7 +10,7 @@ This reverts commit 024b84f661674dcfa1341c90ce654c485c4ab756.
  1 file changed, 24 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 18e0c34b6fbfe..57a1a10a48e69 100644
+index 18e0c34b6fbf..57a1a10a48e6 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -968,18 +968,6 @@ static const struct spacemit_ccu_data k1_ccu_apmu_data = {
@@ -52,5 +52,5 @@ index 18e0c34b6fbfe..57a1a10a48e69 100644
  };
  MODULE_DEVICE_TABLE(of, of_k1_ccu_match);
 -- 
-2.51.0
+2.51.1
 

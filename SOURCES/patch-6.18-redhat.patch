@@ -1,5 +1,5 @@
- Documentation/admin-guide/kernel-parameters.txt    |  20 +
- Documentation/admin-guide/rh-waived-features.rst   |  21 +
+ Documentation/admin-guide/kernel-parameters.txt    |  23 +
+ Documentation/admin-guide/rh-waived-items.rst      |  29 ++
  Kconfig                                            |   2 +
  Kconfig.redhat                                     |  31 ++
  Makefile                                           |  38 +-
@@ -72,7 +72,7 @@
  kernel/rh_flags.c                                  | 115 +++++
  kernel/rh_messages.c                               | 414 ++++++++++++++++
  kernel/rh_messages.h                               | 333 +++++++++++++
- kernel/rh_waived.c                                 | 104 ++++
+ kernel/rh_waived.c                                 | 147 ++++++
  scripts/Makefile.lib                               |   3 +
  scripts/mod/modpost.c                              |   8 +
  scripts/tags.sh                                    |   2 +
@@ -81,23 +81,26 @@
  security/lockdown/lockdown.c                       |  11 +
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 --
- 83 files changed, 2769 insertions(+), 245 deletions(-)
+ 83 files changed, 2823 insertions(+), 245 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 6c42061ca20e5..3b4011b7d5b79 100644
+index 6c42061ca20e5..88db6c8c0453c 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6442,6 +6442,17 @@
+@@ -6442,6 +6442,20 @@
  		2	The "airplane mode" button toggles between everything
  			blocked and everything unblocked.
  
 +	rh_waived=
-+			Enable waived features in RHEL.
++			Enable waived items in RHEL.
 +
-+			Waived features are disabled by default in RHEL, this parameter
-+			provides support to enable such features, as needed.
++			Some specific features, or security mitigations, can be
++			waived (toggled on/off) on demand in RHEL.  However,
++			waiving any of these items should be used judiciously,
++			as it generally means the system might end up being
++			considered insecure or even out-of-scope for support.
 +
-+			Format: <feat-1>,<feat-2>...<feat-n>
++			Format: <item-1>,<item-2>...<item-n>
 +
 +			Use 'rh_waived' to enable all waived features listed at
 +			Documentation/admin-guide/rh-waived-features.rst
@@ -105,7 +108,7 @@ index 6c42061ca20e5..3b4011b7d5b79 100644
  	ring3mwait=disable
  			[KNL] Disable ring 3 MONITOR/MWAIT feature on supported
  			CPUs.
-@@ -7816,6 +7827,15 @@
+@@ -7816,6 +7830,15 @@
  	unknown_nmi_panic
  			[X86] Cause panic on unknown NMI.
  
@@ -121,32 +124,40 @@ index 6c42061ca20e5..3b4011b7d5b79 100644
  	unwind_debug	[X86-64,EARLY]
  			Enable unwinder debug output.  This can be
  			useful for debugging certain unwinder error
-diff --git a/Documentation/admin-guide/rh-waived-features.rst b/Documentation/admin-guide/rh-waived-features.rst
+diff --git a/Documentation/admin-guide/rh-waived-items.rst b/Documentation/admin-guide/rh-waived-items.rst
 new file mode 100644
-index 0000000000000..45caec7fbae64
+index 0000000000000..7471c891419c2
 --- /dev/null
-+++ b/Documentation/admin-guide/rh-waived-features.rst
-@@ -0,0 +1,21 @@
-+.. _rh_waived_features:
++++ b/Documentation/admin-guide/rh-waived-items.rst
+@@ -0,0 +1,29 @@
++.. _rh_waived_items:
 +
-+=======================
-+Red Hat Waived Features
-+=======================
++====================
++Red Hat Waived Items
++====================
 +
-+Red Hat waived features are features considered unmaintained, insecure, rudimentary, or
-+deprecated and are shipped in RHEL only for customer convenience. These features are disabled
-+by default but can be enabled on demand via the ``rh_waived`` kernel boot parameter. To allow
-+a set of waived features, append ``rh_waived=<feature name>,...,<feature name>`` to the kernel
-+cmdline. Appending only ``rh_waived`` (with no arguments) will enable all waived features
++Waived Items is a mechanism offered by Red Hat which allows customers to "waive"
++and utilize features that are not enabled by default as these are considered as
++unmaintained, insecure, rudimentary, or deprecated, but are shipped with the
++RHEL kernel for customer's convinience only.
++Waived Items can range from features that can be enabled on demand to specific
++security mitigations that can be disabled on demand.
++
++To explicitly "waive" any of these items, RHEL offers the ``rh_waived``
++kernel boot parameter. To allow set of waived items, append
++``rh_waived=<item name>,...,<item name>`` to the kernel
++cmdline.
++Appending ``rh_waived=features`` will waive all features listed below,
++and appending ``rh_waived=cves`` will waive all security mitigations
 +listed below.
 +
-+The waived features listed in the next session follow the pattern below:
++The waived items listed in the next session follow the pattern below:
 +
-+- feature name
-+        feature description
++- item name
++        item description
 +
-+List of Red Hat Waived Features
-+===============================
++List of Red Hat Waived Items
++============================
 +
 diff --git a/Kconfig b/Kconfig
 index 307e581144de3..11e93e479ce4f 100644
@@ -196,7 +207,7 @@ index 0000000000000..85771d74c34f9
 +
 +endmenu
 diff --git a/Makefile b/Makefile
-index 17cfa11ca7163..0cdffff94693b 100644
+index d763c2c75cdbf..dd11e7ece1307 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -266,10 +277,10 @@ index 17cfa11ca7163..0cdffff94693b 100644
  	@:
  
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 2e3f93b690f47..3724e38d896a7 100644
+index 4fb985b76e97f..ed23eedf6c2d6 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
-@@ -1212,9 +1212,9 @@ config HIGHMEM
+@@ -1214,9 +1214,9 @@ config HIGHMEM
  	  If unsure, say n.
  
  config HIGHPTE
@@ -418,10 +429,10 @@ index 892fce2b75497..eefbda45ac47a 100644
  	/* boot_command_line has been already set up in early.c */
  	*cmdline_p = boot_command_line;
 diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index c7d3512914ca9..3ad1a183d5397 100644
+index 02d97834a1d4d..4165e24261282 100644
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -1757,6 +1757,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+@@ -1761,6 +1761,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
  		get_cpu_vendor(c);
  		intel_unlock_cpuid_leafs(c);
  		get_cpu_cap(c);
@@ -1132,7 +1143,7 @@ index bbf7029e224be..cf7faa970dd65 100644
  		dmi_decode_ipmi((const struct dmi_header *) dev->device_data);
  
 diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index a0b67a35a5f04..4e713e631c7e1 100644
+index 3700ab4eba3e7..68f2c97866544 100644
 --- a/drivers/char/ipmi/ipmi_msghandler.c
 +++ b/drivers/char/ipmi/ipmi_msghandler.c
 @@ -34,6 +34,7 @@
@@ -1143,7 +1154,7 @@ index a0b67a35a5f04..4e713e631c7e1 100644
  #include <linux/delay.h>
  
  #define IPMI_DRIVER_VERSION "39.2"
-@@ -5583,8 +5584,21 @@ static int __init ipmi_init_msghandler_mod(void)
+@@ -5586,8 +5587,21 @@ static int __init ipmi_init_msghandler_mod(void)
  {
  	int rv;
  
@@ -2113,10 +2124,10 @@ index 302d61783f6c0..ff731f0b3e2ca 100644
  		return rc;
  	if (rc < 0) {
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 214ed060ca1b3..90a0bd985ad53 100644
+index b9c252aa6fe08..166a5815e1efb 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -4451,6 +4451,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
+@@ -4453,6 +4453,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9084,
  				quirk_bridge_cavm_thrx2_pcie_root);
  
@@ -2562,10 +2573,10 @@ index 6f972a66c13ee..d484940c73bd0 100644
  
  struct taint_flag {
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index d1fdf81fbe1e4..7f956e957fa4e 100644
+index bf97d49c23cf5..e451ed55fd96a 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
-@@ -1649,6 +1649,7 @@ int pci_add_dynid(struct pci_driver *drv,
+@@ -1651,6 +1651,7 @@ int pci_add_dynid(struct pci_driver *drv,
  		  unsigned long driver_data);
  const struct pci_device_id *pci_match_id(const struct pci_device_id *ids,
  					 struct pci_dev *dev);
@@ -2573,7 +2584,7 @@ index d1fdf81fbe1e4..7f956e957fa4e 100644
  int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
  		    int pass);
  
-@@ -2765,6 +2766,10 @@ static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+@@ -2767,6 +2768,10 @@ static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
  	return false;
  }
  
@@ -3201,7 +3212,7 @@ index 0000000000000..5139cb2cabdc0
 +#endif /* _LINUX_RH_KABI_H */
 diff --git a/include/linux/rh_waived.h b/include/linux/rh_waived.h
 new file mode 100644
-index 0000000000000..945dd71cc0827
+index 0000000000000..d62a9e896b5ee
 --- /dev/null
 +++ b/include/linux/rh_waived.h
 @@ -0,0 +1,19 @@
@@ -3216,12 +3227,12 @@ index 0000000000000..945dd71cc0827
 +#ifndef _RH_WAIVED_H
 +#define _RH_WAIVED_H
 +
-+enum rh_waived_feat {
-+	/* RH_WAIVED_FEAT_ITEMS must always be the last item in the enum */
-+	RH_WAIVED_FEAT_ITEMS,
++enum rh_waived_items {
++	/* RH_WAIVED_ITEMS must always be the last item in the enum */
++	RH_WAIVED_ITEMS,
 +};
 +
-+bool is_rh_waived(enum rh_waived_feat feat);
++bool is_rh_waived(enum rh_waived_items feat);
 +
 +#endif /* _RH_WAIVED_H */
 diff --git a/include/linux/rmi.h b/include/linux/rmi.h
@@ -3280,7 +3291,7 @@ index 07a3116811c5d..ea319de7dff9c 100644
  		if (!strcmp(fn_name, entry->buf)) {
  			pr_debug("initcall %s blacklisted\n", fn_name);
 diff --git a/kernel/Makefile b/kernel/Makefile
-index df3dd8291bb60..21daf9c1590fa 100644
+index 9fe722305c9be..7c2f153f0e08e 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
 @@ -12,6 +12,8 @@ obj-y     = fork.o exec_domain.o panic.o \
@@ -3310,7 +3321,7 @@ index d595fe512498c..362eb90a9bbe5 100644
  long bpf_jit_limit_max __read_mostly;
  
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 2a9456a3e7304..d2297dcc59010 100644
+index 8a129746bd6cc..cf8d472fa999a 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
 @@ -27,6 +27,7 @@
@@ -3345,7 +3356,7 @@ index 2a9456a3e7304..d2297dcc59010 100644
  int sysctl_unprivileged_bpf_disabled __read_mostly =
  	IS_BUILTIN(CONFIG_BPF_UNPRIV_DEFAULT_OFF) ? 2 : 0;
  
-@@ -6462,6 +6480,11 @@ static int bpf_unpriv_handler(const struct ctl_table *table, int write,
+@@ -6477,6 +6495,11 @@ static int bpf_unpriv_handler(const struct ctl_table *table, int write,
  	if (write && !ret) {
  		if (locked_state && unpriv_enable != 1)
  			return -EPERM;
@@ -4337,10 +4348,10 @@ index 0000000000000..a4fbf54d2b84a
 +#endif /* __RH_MESSAGES_H */
 diff --git a/kernel/rh_waived.c b/kernel/rh_waived.c
 new file mode 100644
-index 0000000000000..84e22b1730cc4
+index 0000000000000..20966f7c7277f
 --- /dev/null
 +++ b/kernel/rh_waived.c
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,147 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * kernel/rh_waived.c
@@ -4360,47 +4371,56 @@ index 0000000000000..84e22b1730cc4
 +#include <linux/rh_waived.h>
 +
 +/*
-+ * RH_INSERT_WAIVED_FEAT
++ * * RH_INSERT_WAIVED_ITEM
 + *   This macro is intended to be used to insert items into the
-+ *   rh_waived_feat_list array. It expects to get an item from
-+ *   enum rh_waived_feat as its first argument, and a string
++ *   rh_waived_list array. It expects to get an item from
++ *   enum rh_waived_items as its first argument, and a string
 + *   holding the feature name as its second argument.
 + *
 + *   The feature name is also utilized as the token for the
 + *   boot parameter parser.
 + *
 + *   Example usage:
-+ *   struct rh_waived_feat_item foo[RH_WAIVED_FEAT_ITEMS] = {
-+ *   	RH_INSERT_WAIVED_FEAT(FOO_FEAT, "foo_feat_short_str"),
++ *   struct rh_waived_item foo[RH_WAIVED_FEAT_ITEMS] = {
++ *     RH_INSERT_WAIVED_ITEM(FOO_FEAT, "foo_feat_short_str", "alias", RH_WAIVED_FEAT),
 + *   };
 + */
-+#define RH_INSERT_WAIVED_FEAT(enum_item, name) \
-+	[(enum_item)] = {.feat_name = (name), .enabled = 0,}
++#define RH_INSERT_WAIVED_ITEM(enum_item, item, item_alt, class)                \
++       [(enum_item)] = { .name = (item), .alias = (item_alt),          \
++                         .type = (class), .waived = 0, }
 +
 +/* Indicates if the rh_flag 'rh_waived' should be added. */
 +bool __initdata add_rh_flag = false;
 +
-+struct rh_waived_feat_item {
-+	char *feat_name;
-+	unsigned int enabled;
++typedef enum {
++       RH_WAIVED_FEAT,
++       RH_WAIVED_CVE,
++       RH_WAIVED_ANY
++} rh_waived_t;
++
++struct rh_waived_item {
++       char *name, *alias;
++       rh_waived_t type;
++       unsigned int waived;
++
 +};
 +
-+/* Always use the marco RH_INSERT_WAIVED_FEAT to insert items to this array. */
-+struct rh_waived_feat_item rh_waived_feat_list[RH_WAIVED_FEAT_ITEMS] = {
++/* Always use the marco RH_INSERT_WAIVED to insert items to this array. */
++struct rh_waived_item rh_waived_list[RH_WAIVED_ITEMS] = {
 +};
 +
 +/*
-+ * is_rh_waived() - Checks if a given waived feature has been enabled.
++ * is_rh_waived() - Checks if a given item has been marked as waived.
 + *
-+ * @feat: waived feature.
++ * @item: waived item.
 + */
-+__inline__ bool is_rh_waived(enum rh_waived_feat feat)
++__inline__ bool is_rh_waived(enum rh_waived_items item)
 +{
-+	return !!rh_waived_feat_list[feat].enabled;
++	return !!rh_waived_list[item].waived;
 +}
 +EXPORT_SYMBOL(is_rh_waived);
 +
-+static int __init rh_waived_setup(char *s)
++static void __init rh_waived_parser(char *s, rh_waived_t type)
 +{
 +	int i;
 +	char *token;
@@ -4408,24 +4428,58 @@ index 0000000000000..84e22b1730cc4
 +	pr_info(KERN_CONT "rh_waived: ");
 +
 +	if (!s) {
-+		for (i = 0; i < RH_WAIVED_FEAT_ITEMS; i++) {
-+			rh_waived_feat_list[i].enabled = 1;
-+			pr_info(KERN_CONT "%s%s", rh_waived_feat_list[i].feat_name,
-+				i < RH_WAIVED_FEAT_ITEMS - 1 ? " " : "\n");
++		for (i = 0; i < RH_WAIVED_ITEMS; i++) {
++			if (type != RH_WAIVED_ANY && rh_waived_list[i].type != type)
++				continue;
++
++			rh_waived_list[i].waived = 1;
++			pr_info(KERN_CONT "%s%s", rh_waived_list[i].name,
++				i < RH_WAIVED_ITEMS - 1 ? " " : "\n");
 +		}
++
++		add_rh_flag = true;
++		return;
 +	}
 +
 +	while ((token = strsep(&s, ",")) != NULL) {
-+		for (i = 0; i < RH_WAIVED_FEAT_ITEMS; i++) {
-+			if (!strcmp(token, rh_waived_feat_list[i].feat_name)) {
-+				rh_waived_feat_list[i].enabled = 1;
-+				pr_info(KERN_CONT "%s%s", rh_waived_feat_list[i].feat_name,
-+					i < RH_WAIVED_FEAT_ITEMS - 1 ? " " : "\n");
++		for (i = 0; i < RH_WAIVED_ITEMS; i++) {
++			char *alias = rh_waived_list[i].alias;
++
++			if (type != RH_WAIVED_ANY && rh_waived_list[i].type != type)
++				continue;
++
++			if (!strcmp(token, rh_waived_list[i].name) ||
++			    (alias && !strcmp(token, alias))) {
++				rh_waived_list[i].waived = 1;
++				pr_info(KERN_CONT "%s ", rh_waived_list[i].name);
 +			}
 +		}
 +	}
 +
++	pr_info(KERN_CONT "\n");
 +	add_rh_flag = true;
++}
++
++static int __init rh_waived_setup(char *s)
++{
++	/*
++	 * originally, if no string was passed to the cmdline option
++	 * all listed features would be waived, so we keep that same
++	 * compromise with the new contract.
++	 */
++	if (!s || !strcmp(s, "features")) {
++		rh_waived_parser(NULL, RH_WAIVED_FEAT);
++		return 0;
++	}
++
++	/* waive all possible mitigations in the list */
++	if (!strcmp(s, "cves")) {
++		rh_waived_parser(NULL, RH_WAIVED_CVE);
++		return 0;
++	}
++
++	/* otherwise, just deal with the enumerated waive list */
++	rh_waived_parser(s, RH_WAIVED_ANY);
 +
 +	return 0;
 +}

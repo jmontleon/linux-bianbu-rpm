@@ -1,7 +1,7 @@
-From ad7c4b8dbef869b49059b1ddb17a9bdf71e75518 Mon Sep 17 00:00:00 2001
+From 5b7cce26ea77d956cfed1855fd6f70a9972aadcc Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:48:44 -0400
-Subject: [PATCH 0010/1234] Revert "clk: spacemit: introduce pre-div for ddn
+Subject: [PATCH 0010/1232] Revert "clk: spacemit: introduce pre-div for ddn
  clock"
 
 This reverts commit 74246a820c817f195f6191e370c3df98d2df5d91.
@@ -12,7 +12,7 @@ This reverts commit 74246a820c817f195f6191e370c3df98d2df5d91.
  3 files changed, 10 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 74068bd92011d..a3cecf2c241fe 100644
+index 74068bd92011..a3cecf2c241f 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -238,8 +238,8 @@ CCU_GATE_DEFINE(pll1_d3_819p2, CCU_PARENT_HW(pll1_d3), MPMU_ACGR, BIT(14), 0);
@@ -27,7 +27,7 @@ index 74068bd92011d..a3cecf2c241fe 100644
  CCU_GATE_DEFINE(wdt_clk, CCU_PARENT_HW(pll1_d96_25p6), MPMU_WDTPCR, BIT(1), 0);
  
 diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
-index 5b16e273bee5b..02b68ea84db9b 100644
+index 5b16e273bee5..02b68ea84db9 100644
 --- a/drivers/clk/spacemit/ccu_ddn.c
 +++ b/drivers/clk/spacemit/ccu_ddn.c
 @@ -22,21 +22,21 @@
@@ -67,7 +67,7 @@ index 5b16e273bee5b..02b68ea84db9b 100644
  
  static int ccu_ddn_set_rate(struct clk_hw *hw, unsigned long rate,
 diff --git a/drivers/clk/spacemit/ccu_ddn.h b/drivers/clk/spacemit/ccu_ddn.h
-index 4838414a8e8dc..a52fabe77d62e 100644
+index 4838414a8e8d..a52fabe77d62 100644
 --- a/drivers/clk/spacemit/ccu_ddn.h
 +++ b/drivers/clk/spacemit/ccu_ddn.h
 @@ -18,14 +18,13 @@ struct ccu_ddn {
@@ -97,5 +97,5 @@ index 4838414a8e8dc..a52fabe77d62e 100644
  
  static inline struct ccu_ddn *hw_to_ccu_ddn(struct clk_hw *hw)
 -- 
-2.51.0
+2.51.1
 
