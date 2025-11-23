@@ -13,7 +13,7 @@ Change-Id: I900da4a0302c8b41eaa8c79fe275676707fdadc1
  rename drivers/pwm/{pwm-dwc-k1x.c => pwm-dwc-k1pro.c} (100%)
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index c338b36470e25..32c4c664adf5d 100644
+index c338b36470e2..32c4c664adf5 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -224,6 +224,8 @@ CONFIG_SPACEMIT_MAILBOX=y
@@ -26,7 +26,7 @@ index c338b36470e25..32c4c664adf5d 100644
  # CONFIG_NVMEM is not set
  CONFIG_EXT4_FS=y
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 341b6dedc9c36..e47c6d2bc85fb 100644
+index 341b6dedc9c3..e47c6d2bc85f 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
 @@ -230,13 +230,13 @@ config PWM_DWC
@@ -47,7 +47,7 @@ index 341b6dedc9c36..e47c6d2bc85fb 100644
  config PWM_EP93XX
  	tristate "Cirrus Logic EP93xx PWM support"
 diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 6e7e59edf4b16..ed5d4d649e115 100644
+index 6e7e59edf4b1..ed5d4d649e11 100644
 --- a/drivers/pwm/Makefile
 +++ b/drivers/pwm/Makefile
 @@ -19,7 +19,7 @@ obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o

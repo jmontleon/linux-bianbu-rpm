@@ -15,7 +15,7 @@ Change-Id: I2110f8479af7352c4fa26e56c5a20dfe39897f62
  create mode 100755 drivers/power/supply/sbs-charger-virtual.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 7459b66771cfc..a5e295049122e 100644
+index 7459b66771cf..a5e295049122 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -158,6 +158,12 @@ bt_pwrseq: bt-pwrseq {
@@ -32,7 +32,7 @@ index 7459b66771cfc..a5e295049122e 100644
  
  &pinctrl {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 92c0584716bf9..8f9ded27d0324 100644
+index 92c0584716bf..8f9ded27d032 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -391,6 +391,7 @@ CONFIG_GPIO_PCA953X=y
@@ -44,7 +44,7 @@ index 92c0584716bf9..8f9ded27d0324 100644
  CONFIG_THERMAL=y
  CONFIG_CPU_THERMAL=y
 diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 79ddb006e2dad..7ee22b3d3a10c 100644
+index 79ddb006e2da..7ee22b3d3a10 100644
 --- a/drivers/power/supply/Kconfig
 +++ b/drivers/power/supply/Kconfig
 @@ -271,6 +271,15 @@ config CHARGER_SBS
@@ -64,7 +64,7 @@ index 79ddb006e2dad..7ee22b3d3a10c 100644
  	tristate "Smart Battery System Manager"
  	depends on I2C && I2C_MUX && GPIOLIB
 diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index f943c9150b326..01d7c31b47f3b 100644
+index f943c9150b32..01d7c31b47f3 100644
 --- a/drivers/power/supply/Makefile
 +++ b/drivers/power/supply/Makefile
 @@ -45,6 +45,7 @@ obj-$(CONFIG_BATTERY_IPAQ_MICRO) += ipaq_micro_battery.o
@@ -77,7 +77,7 @@ index f943c9150b326..01d7c31b47f3b 100644
  obj-$(CONFIG_BATTERY_BQ27XXX_I2C) += bq27xxx_battery_i2c.o
 diff --git a/drivers/power/supply/sbs-charger-virtual.c b/drivers/power/supply/sbs-charger-virtual.c
 new file mode 100755
-index 0000000000000..9fbd4da366086
+index 000000000000..9fbd4da36608
 --- /dev/null
 +++ b/drivers/power/supply/sbs-charger-virtual.c
 @@ -0,0 +1,238 @@

@@ -11,7 +11,7 @@ Change-Id: If50cdff23e1d91a0d45c1b14f934fa2c22c58b99
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 39a2fb81051f2..5e270caab92d9 100644
+index 39a2fb81051f..5e270caab92d 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -6,6 +6,7 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -26,7 +26,7 @@ index 39a2fb81051f2..5e270caab92d9 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 new file mode 100644
-index 0000000000000..e077ddc2b7f20
+index 000000000000..e077ddc2b7f2
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_FusionOne.dts
 @@ -0,0 +1,870 @@

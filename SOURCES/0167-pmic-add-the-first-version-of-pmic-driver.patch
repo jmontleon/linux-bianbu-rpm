@@ -20,7 +20,7 @@ Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
  create mode 100644 include/linux/mfd/spacemit/spm8821.h
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 425c5fba6cb1e..2761e4d5d1e39 100644
+index 425c5fba6cb1..2761e4d5d1e3 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
 @@ -2341,6 +2341,16 @@ config MFD_QCOM_PM8008
@@ -41,7 +41,7 @@ index 425c5fba6cb1e..2761e4d5d1e39 100644
  	depends on ARCH_SA1100
  
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index f7bdedd5a66d1..6528043f3f630 100644
+index f7bdedd5a66d..6528043f3f63 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
 @@ -295,3 +295,4 @@ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
@@ -51,7 +51,7 @@ index f7bdedd5a66d1..6528043f3f630 100644
 +obj-$(CONFIG_MFD_SPACEMIT_PMIC) += spacemit-mfd.o
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
 new file mode 100644
-index 0000000000000..ea8ab1c92adfc
+index 000000000000..ea8ab1c92adf
 --- /dev/null
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -0,0 +1,140 @@
@@ -196,7 +196,7 @@ index 0000000000000..ea8ab1c92adfc
 +
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index eaa6df1c9f806..e4ebe4aa32da9 100644
+index eaa6df1c9f80..e4ebe4aa32da 100644
 --- a/drivers/regulator/Kconfig
 +++ b/drivers/regulator/Kconfig
 @@ -1748,4 +1748,12 @@ config REGULATOR_QCOM_LABIBB
@@ -213,7 +213,7 @@ index eaa6df1c9f806..e4ebe4aa32da9 100644
 +	
  endif
 diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index be98b29d6675d..5b719af20db51 100644
+index be98b29d6675..5b719af20db5 100644
 --- a/drivers/regulator/Makefile
 +++ b/drivers/regulator/Makefile
 @@ -203,5 +203,6 @@ obj-$(CONFIG_REGULATOR_WM831X) += wm831x-ldo.o
@@ -225,7 +225,7 @@ index be98b29d6675d..5b719af20db51 100644
  ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
 new file mode 100644
-index 0000000000000..f775a54cf7083
+index 000000000000..f775a54cf708
 --- /dev/null
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -0,0 +1,77 @@
@@ -308,7 +308,7 @@ index 0000000000000..f775a54cf7083
 +
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
 new file mode 100644
-index 0000000000000..f5200dfc856aa
+index 000000000000..f5200dfc856a
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -0,0 +1,62 @@
@@ -376,7 +376,7 @@ index 0000000000000..f5200dfc856aa
 +#endif /* __SPACEMIT_PMIC_H__ */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
 new file mode 100644
-index 0000000000000..6393008aaa4e6
+index 000000000000..6393008aaa4e
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -0,0 +1,180 @@

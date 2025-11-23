@@ -14,7 +14,7 @@ Change-Id: Id062cc95354aff04ba803ae04b17b7d1710b0029
  rename drivers/soc/spacemit/{ => pm_domain}/pm_domain.c (100%)
 
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index 345cb29b07ed9..f6fba0ac90946 100644
+index 345cb29b07ed..f6fba0ac9094 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1 +1 @@
@@ -22,7 +22,7 @@ index 345cb29b07ed9..f6fba0ac90946 100644
 +obj-$(CONFIG_SPACEMIT_PM_DOMAINS) += pm_domain/
 diff --git a/drivers/soc/spacemit/pm_domain/Makefile b/drivers/soc/spacemit/pm_domain/Makefile
 new file mode 100644
-index 0000000000000..43497925c7779
+index 000000000000..43497925c777
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm_domain/Makefile
 @@ -0,0 +1 @@

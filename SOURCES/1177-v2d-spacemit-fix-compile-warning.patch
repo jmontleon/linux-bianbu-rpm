@@ -11,7 +11,7 @@ Change-Id: I519946ecb5cd73592c3ec46e1b6493398810be22
  3 files changed, 39 insertions(+), 55 deletions(-)
 
 diff --git a/drivers/soc/spacemit/v2d/v2d_drv.c b/drivers/soc/spacemit/v2d/v2d_drv.c
-index 83bfe1260b541..2c4a22290ea51 100644
+index 83bfe1260b54..2c4a22290ea5 100644
 --- a/drivers/soc/spacemit/v2d/v2d_drv.c
 +++ b/drivers/soc/spacemit/v2d/v2d_drv.c
 @@ -80,8 +80,7 @@ static ssize_t v2d_sysfs_clkrate_set(struct device *dev, struct device_attribute
@@ -295,7 +295,7 @@ index 83bfe1260b541..2c4a22290ea51 100644
  
  	if (__clk_is_enabled(info->clkcore)) {
 diff --git a/drivers/soc/spacemit/v2d/v2d_hw.c b/drivers/soc/spacemit/v2d/v2d_hw.c
-index 998146b570e5b..73e811c297c81 100644
+index 998146b570e5..73e811c297c8 100644
 --- a/drivers/soc/spacemit/v2d/v2d_hw.c
 +++ b/drivers/soc/spacemit/v2d/v2d_hw.c
 @@ -133,7 +133,7 @@ static void ConfigAxiBus(void)
@@ -308,7 +308,7 @@ index 998146b570e5b..73e811c297c81 100644
  	int Bpp=0;
  
 diff --git a/drivers/soc/spacemit/v2d/v2d_iommu.c b/drivers/soc/spacemit/v2d/v2d_iommu.c
-index f26ea816a679d..0563f5aef4fd4 100644
+index f26ea816a679..0563f5aef4fd 100644
 --- a/drivers/soc/spacemit/v2d/v2d_iommu.c
 +++ b/drivers/soc/spacemit/v2d/v2d_iommu.c
 @@ -6,10 +6,11 @@

@@ -15,7 +15,7 @@ Change-Id: I137d8856ab1970be531d9207c2f90ff105583caa
  create mode 100644 drivers/rtc/rtc-spt-pmic.c
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 4a82233b262bb..3599d7602cfb3 100644
+index 4a82233b262b..3599d7602cfb 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -15,6 +15,7 @@ SPM8821_CHIP_ID_REG;
@@ -27,7 +27,7 @@ index 4a82233b262bb..3599d7602cfb3 100644
  
  PM853_MFD_CELL;
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 87d8faec2e252..59c2dad9c18a6 100644
+index 87d8faec2e25..59c2dad9c18a 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
 @@ -765,6 +765,13 @@ config RTC_DRV_SD3078
@@ -45,7 +45,7 @@ index 87d8faec2e252..59c2dad9c18a6 100644
  
  comment "SPI RTC drivers"
 diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 789bddfea99d8..d97c6dbf9342f 100644
+index 789bddfea99d..d97c6dbf9342 100644
 --- a/drivers/rtc/Makefile
 +++ b/drivers/rtc/Makefile
 @@ -195,3 +195,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
@@ -55,7 +55,7 @@ index 789bddfea99d8..d97c6dbf9342f 100644
 +obj-$(CONFIG_RTC_DRV_SPT_PMIC) += rtc-spt-pmic.o
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
 new file mode 100644
-index 0000000000000..3ab5a80adab67
+index 000000000000..3ab5a80adab6
 --- /dev/null
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -0,0 +1,446 @@
@@ -506,7 +506,7 @@ index 0000000000000..3ab5a80adab67
 +MODULE_DESCRIPTION("PMIC RTC driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 9bf12dd93d58e..6b98a1c37d97a 100644
+index 9bf12dd93d58..6b98a1c37d97 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -27,6 +27,7 @@ struct spacemit_pmic {
@@ -613,7 +613,7 @@ index 9bf12dd93d58e..6b98a1c37d97a 100644
  	unsigned char device_id_reg;
  	unsigned char version_id_reg;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 675edf6a4c4ba..ef4b326edfaa4 100644
+index 675edf6a4c4b..ef4b326edfaa 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -647,7 +647,6 @@ static const struct regmap_irq_chip spm8821_irq_chip = {	\

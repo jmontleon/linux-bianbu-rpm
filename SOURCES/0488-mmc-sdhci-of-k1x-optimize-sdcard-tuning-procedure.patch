@@ -14,7 +14,7 @@ Change-Id: I1464f06fb285254d5addc43fb413b696b1690ed1
  6 files changed, 347 insertions(+), 207 deletions(-)
 
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 6b85fadf12c97..11cec1d3e260c 100644
+index 6b85fadf12c9..11cec1d3e260 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
 @@ -1201,11 +1201,6 @@ int mmc_host_set_uhs_voltage(struct mmc_host *host)
@@ -42,7 +42,7 @@ index 6b85fadf12c97..11cec1d3e260c 100644
  	if (err) {
  		pr_debug("%s: Signal voltage switch failed, "
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 97199eb0c02c7..9ae9d051eb02a 100644
+index 97199eb0c02c..9ae9d051eb02 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
 @@ -1179,11 +1179,6 @@ static int mmc_select_hs400(struct mmc_card *card)
@@ -91,7 +91,7 @@ index 97199eb0c02c7..9ae9d051eb02a 100644
  	/* Controller enable enhanced strobe function */
  	host->ios.enhanced_strobe = true;
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 1968ec44de577..4abbb4e89b68f 100644
+index 1968ec44de57..4abbb4e89b68 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -16,6 +16,8 @@
@@ -770,7 +770,7 @@ index 1968ec44de577..4abbb4e89b68f 100644
  #ifdef CONFIG_SYSFS
  		for (i = 0; i < ARRAY_SIZE(sdhci_sysfs_files); i++) {
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 529b03d67141c..8b7d8f9df85b4 100644
+index 529b03d67141..8b7d8f9df85b 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,15 +1733,6 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -930,7 +930,7 @@ index 529b03d67141c..8b7d8f9df85b4 100644
  	host->tuning_count = FIELD_GET(SDHCI_RETUNING_TIMER_COUNT_MASK,
  				       host->caps1);
 diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 72fe3f8c8ea72..7433dbb074a73 100644
+index 72fe3f8c8ea7..7433dbb074a7 100644
 --- a/drivers/mmc/host/sdhci.h
 +++ b/drivers/mmc/host/sdhci.h
 @@ -738,14 +738,6 @@ struct sdhci_ops {
@@ -949,7 +949,7 @@ index 72fe3f8c8ea72..7433dbb074a73 100644
  #endif
  };
 diff --git a/include/linux/platform_data/k1x_sdhci.h b/include/linux/platform_data/k1x_sdhci.h
-index 862b4017904d7..f6de968012796 100644
+index 862b4017904d..f6de96801279 100644
 --- a/include/linux/platform_data/k1x_sdhci.h
 +++ b/include/linux/platform_data/k1x_sdhci.h
 @@ -51,6 +51,7 @@ struct rx_tuning {

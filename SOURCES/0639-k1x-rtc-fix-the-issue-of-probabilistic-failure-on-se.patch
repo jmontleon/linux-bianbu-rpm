@@ -12,7 +12,7 @@ Change-Id: I012de89395d0d0af8070822b44100335c8bb0254
  3 files changed, 196 insertions(+), 145 deletions(-)
 
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
-index 385c7ec18c46b..bc8f0a234407e 100644
+index 385c7ec18c46..bc8f0a234407 100644
 --- a/drivers/rtc/rtc-spt-pmic.c
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -1,5 +1,4 @@
@@ -453,7 +453,7 @@ index 385c7ec18c46b..bc8f0a234407e 100644
  	rtc_ctl.bits.rtc_en = 1;
  	/* rtc clk out enable */
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index f878198efeecc..c42bf3760ba31 100644
+index f878198efeec..c42bf3760ba3 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -132,26 +132,6 @@ struct rtc_regdesc {
@@ -484,7 +484,7 @@ index f878198efeecc..c42bf3760ba31 100644
  		unsigned char reg;
  		unsigned char msk;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 385ecc538bb31..831c151cf7830 100644
+index 385ecc538bb3..831c151cf783 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -690,26 +690,6 @@ static const struct rtc_regdesc spm8821_regdesc = {		\

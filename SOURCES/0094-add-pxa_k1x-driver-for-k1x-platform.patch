@@ -12,7 +12,7 @@ Change-Id: I4b9cddc3478b0fc180f142452de47cec0f560950
  create mode 100644 drivers/tty/serial/pxa_k1x.c
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 2829950d5bcba..b15ec9cb519db 100644
+index 2829950d5bcb..b15ec9cb519d 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -418,7 +418,6 @@ config SERIAL_PXA
@@ -52,7 +52,7 @@ index 2829950d5bcba..b15ec9cb519db 100644
  config SERIAL_PXA_CONSOLE
  	bool "Console on PXA serial port (DEPRECATED)"
 diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index a2ccbc508ec57..a7a631fa43af3 100644
+index a2ccbc508ec5..a7a631fa43af 100644
 --- a/drivers/tty/serial/Makefile
 +++ b/drivers/tty/serial/Makefile
 @@ -66,6 +66,7 @@ obj-$(CONFIG_SERIAL_OWL)		+= owl-uart.o
@@ -65,7 +65,7 @@ index a2ccbc508ec57..a7a631fa43af3 100644
  obj-$(CONFIG_SERIAL_QE)			+= ucc_uart.o
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
 new file mode 100644
-index 0000000000000..be8ea8b1430e3
+index 000000000000..be8ea8b1430e
 --- /dev/null
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -0,0 +1,2354 @@

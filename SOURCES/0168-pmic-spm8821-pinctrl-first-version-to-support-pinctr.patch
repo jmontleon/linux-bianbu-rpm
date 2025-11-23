@@ -16,7 +16,7 @@ Change-Id: I0b0bc49acd314b0a1c8919605326b503272bbc44
  create mode 100644 drivers/pinctrl/spacemit-pmic-pinctrl.c
 
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 88a92c7dbb2ec..1a0c3ca1d1d2b 100644
+index 88a92c7dbb2e..1a0c3ca1d1d2 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
 @@ -495,6 +495,17 @@ config PINCTRL_RK805
@@ -38,7 +38,7 @@ index 88a92c7dbb2ec..1a0c3ca1d1d2b 100644
  	tristate "Rockchip gpio and pinctrl driver"
  	depends on ARCH_ROCKCHIP || COMPILE_TEST
 diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index 0f366e4ef3260..244082d0d9f4b 100644
+index 0f366e4ef326..244082d0d9f4 100644
 --- a/drivers/pinctrl/Makefile
 +++ b/drivers/pinctrl/Makefile
 @@ -61,6 +61,7 @@ obj-$(CONFIG_PINCTRL_TPS6594)	+= pinctrl-tps6594.o
@@ -51,7 +51,7 @@ index 0f366e4ef3260..244082d0d9f4b 100644
  obj-$(CONFIG_ARCH_ASPEED)	+= aspeed/
 diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 new file mode 100644
-index 0000000000000..267acb9c731d5
+index 000000000000..267acb9c731d
 --- /dev/null
 +++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 @@ -0,0 +1,416 @@
@@ -472,7 +472,7 @@ index 0000000000000..267acb9c731d5
 +
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index f775a54cf7083..93a27b20387c5 100644
+index f775a54cf708..93a27b20387c 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -1,4 +1,10 @@
@@ -497,7 +497,7 @@ index f775a54cf7083..93a27b20387c5 100644
  };
  
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index f5200dfc856aa..79c1267bf82f8 100644
+index f5200dfc856a..79c1267bf82f 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -13,8 +13,62 @@ struct spacemit_pmic {
@@ -620,7 +620,7 @@ index f5200dfc856aa..79c1267bf82f8 100644
  
  #endif /* __SPACEMIT_PMIC_H__ */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 6393008aaa4e6..353a4d17e3b32 100644
+index 6393008aaa4e..353a4d17e3b3 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -1,4 +1,5 @@

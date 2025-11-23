@@ -10,7 +10,7 @@ Change-Id: I7ae828acec4eae6de9b18c8a5788eadacd3e0fbd
  2 files changed, 387 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 4a19f37f8f061..8dfdf215cdbbd 100644
+index 4a19f37f8f06..8dfdf215cdbb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1607,9 +1607,13 @@ pcie0_rc: pcie@ca000000 {
@@ -78,7 +78,7 @@ index 4a19f37f8f061..8dfdf215cdbbd 100644
  			clock-names = "pcie-clk";
  			resets = <&reset RESET_PCIE2>;
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 4e9becf41c4e8..7741fd65f5b33 100755
+index 4e9becf41c4e..7741fd65f5b3 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -130,9 +130,13 @@ struct k1x_pcie {

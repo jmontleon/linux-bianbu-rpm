@@ -10,7 +10,7 @@ Change-Id: I5c45b1c25df8a86c0935b842a530f135d9f908ea
  2 files changed, 45 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index b018c30608954..cf6f08326559b 100644
+index b018c3060895..cf6f08326559 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -170,6 +170,11 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -81,7 +81,7 @@ index b018c30608954..cf6f08326559b 100644
  	.num = CLK_MAX_NO,
  };
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 183c435ddf183..df27435111dd8 100644
+index 183c435ddf18..df27435111dd 100644
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -196,7 +196,13 @@

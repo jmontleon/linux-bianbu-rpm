@@ -11,7 +11,7 @@ Change-Id: I2829950ded80e17e39d337d432b69a3adb7cbc85
  2 files changed, 15 insertions(+)
 
 diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 0a76bdfe55282..6d9de505f68a6 100644
+index 0a76bdfe5528..6d9de505f68a 100644
 --- a/drivers/target/target_core_transport.c
 +++ b/drivers/target/target_core_transport.c
 @@ -3138,6 +3138,10 @@ static const char *target_tmf_name(enum tcm_tmreq_table tmf)
@@ -39,7 +39,7 @@ index 0a76bdfe55282..6d9de505f68a6 100644
  		pr_err("Unknown TMR function: 0x%02x.\n",
  				tmr->function);
 diff --git a/include/target/target_core_base.h b/include/target/target_core_base.h
-index c4d9116904aa0..d29e2db83bf07 100644
+index c4d9116904aa..d29e2db83bf0 100644
 --- a/include/target/target_core_base.h
 +++ b/include/target/target_core_base.h
 @@ -223,6 +223,10 @@ enum tcm_tmreq_table {

@@ -10,7 +10,7 @@ Change-Id: I19cbf991887d8f7a49ef7e598c62f35be8c6503a
  2 files changed, 19 insertions(+), 25 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 4f94b38b2c04e..d5c0db0888253 100644
+index 4f94b38b2c04..d5c0db088825 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -780,8 +780,10 @@ pcie0_rc: pcie@ca000000 {
@@ -50,7 +50,7 @@ index 4f94b38b2c04e..d5c0db0888253 100644
  			bus-range = <0x00 0xff>;
  			max-link-speed = <2>;
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 3ed4bc0c13b92..f5174e8d94d1a 100755
+index 3ed4bc0c13b9..f5174e8d94d1 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -25,6 +25,7 @@

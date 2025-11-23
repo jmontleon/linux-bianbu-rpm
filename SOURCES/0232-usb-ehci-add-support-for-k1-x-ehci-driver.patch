@@ -12,7 +12,7 @@ Change-Id: I8d2a46ff6b5de2a7f5af8314d2eb7160bfd69321
  create mode 100755 drivers/usb/host/ehci-k1x-ci.c
 
 diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-index 109100cc77a32..3eb2df1df1bd1 100644
+index 109100cc77a3..3eb2df1df1bd 100644
 --- a/drivers/usb/host/Kconfig
 +++ b/drivers/usb/host/Kconfig
 @@ -324,6 +324,12 @@ config USB_EHCI_MV
@@ -29,7 +29,7 @@ index 109100cc77a32..3eb2df1df1bd1 100644
  	tristate "Cavium Networks Octeon USB support"
  	depends on CAVIUM_OCTEON_SOC && USB
 diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-index 6d1d190c914d4..5f83f989fbf91 100644
+index 6d1d190c914d..5f83f989fbf9 100644
 --- a/drivers/usb/host/ehci-hcd.c
 +++ b/drivers/usb/host/ehci-hcd.c
 @@ -1332,6 +1332,10 @@ MODULE_LICENSE ("GPL");
@@ -55,7 +55,7 @@ index 6d1d190c914d4..5f83f989fbf91 100644
  static int __init ehci_hcd_init(void)
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
 new file mode 100755
-index 0000000000000..206a919e90727
+index 000000000000..206a919e9072
 --- /dev/null
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -0,0 +1,416 @@

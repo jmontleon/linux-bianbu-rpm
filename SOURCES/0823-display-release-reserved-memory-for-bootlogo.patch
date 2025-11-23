@@ -12,7 +12,7 @@ Change-Id: I2646d02de743cd11eea6b8bc26af90a9512ef026
  4 files changed, 36 insertions(+), 68 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
-index a350a62a3fb24..00582f9e63858 100644
+index a350a62a3fb2..00582f9e6385 100644
 --- a/drivers/gpu/drm/spacemit/Makefile
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -10,6 +10,7 @@ spacemit-drm-y := 	spacemit_drm.o \
@@ -24,7 +24,7 @@ index a350a62a3fb24..00582f9e63858 100644
  				sysfs/sysfs_dpu.o \
  				sysfs/sysfs_dsi.o \
 diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.c b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
-index c143cc76f2d76..1bd746026330f 100644
+index c143cc76f2d7..1bd746026330 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 @@ -6,64 +6,30 @@
@@ -106,7 +106,7 @@ index c143cc76f2d76..1bd746026330f 100644
  }
 -#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.h b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
-index 30e33b3aab3ea..0a0a74fd021be 100644
+index 30e33b3aab3e..0a0a74fd021b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_bootloader.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
 @@ -9,10 +9,6 @@
@@ -122,7 +122,7 @@ index 30e33b3aab3ea..0a0a74fd021be 100644
  
  #endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 5c05cc688ef0a..2db7d090c9b94 100644
+index 5c05cc688ef0..2db7d090c9b9 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -26,6 +26,7 @@

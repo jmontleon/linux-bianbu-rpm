@@ -14,7 +14,7 @@ Change-Id: If8fc577995390188df3899f33b02748a6a7478c0
  create mode 100644 drivers/gpio/gpio-k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index a64b221869900..8f937c9ca0edb 100644
+index a64b22186990..8f937c9ca0ed 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -463,6 +463,32 @@ counter0 {
@@ -51,7 +51,7 @@ index a64b221869900..8f937c9ca0edb 100644
  			compatible = "spacemit,k1x-emac";
  			reg = <0x00000000 0xCAC80000 0x00000000 0x00000420>,
 diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
-index 5354ac1328496..6b0d325370969 100644
+index 5354ac132849..6b0d32537096 100644
 --- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 @@ -123,6 +123,9 @@ CONFIG_SERIAL_PXA_CONSOLE=y
@@ -65,7 +65,7 @@ index 5354ac1328496..6b0d325370969 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index d8ac40d0eb6fb..3539cb90a60f5 100644
+index d8ac40d0eb6f..3539cb90a60f 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
 @@ -921,6 +921,15 @@ config GPIO_IDT3243X
@@ -85,7 +85,7 @@ index d8ac40d0eb6fb..3539cb90a60f5 100644
  
  menu "Port-mapped I/O GPIO drivers"
 diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 379f55e9ed1e6..270c75dac3274 100644
+index 379f55e9ed1e..270c75dac327 100644
 --- a/drivers/gpio/Makefile
 +++ b/drivers/gpio/Makefile
 @@ -214,3 +214,4 @@ obj-$(CONFIG_GPIO_XTENSA)		+= gpio-xtensa.o
@@ -95,7 +95,7 @@ index 379f55e9ed1e6..270c75dac3274 100644
 +obj-$(CONFIG_GPIO_K1X)			+= gpio-k1x.o
 diff --git a/drivers/gpio/gpio-k1x.c b/drivers/gpio/gpio-k1x.c
 new file mode 100644
-index 0000000000000..37c2bf3e6748e
+index 000000000000..37c2bf3e6748
 --- /dev/null
 +++ b/drivers/gpio/gpio-k1x.c
 @@ -0,0 +1,427 @@

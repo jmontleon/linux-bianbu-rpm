@@ -11,7 +11,7 @@ Change-Id: I586ebcec8e3b03cec44a1845b1bee36b79c14d0e
  3 files changed, 63 insertions(+), 50 deletions(-)
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 1507012b6aadc..18bc0910ded83 100644
+index 1507012b6aad..18bc0910ded8 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -126,6 +126,7 @@ choice
@@ -23,7 +23,7 @@ index 1507012b6aadc..18bc0910ded83 100644
  		  This enables support for Spacemit k1-pro Platform Hardware.
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 847168456ed36..8b8e6fdf17277 100644
+index 847168456ed3..8b8e6fdf1727 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -27,7 +27,7 @@ cpu_0: cpu@0 {
@@ -211,7 +211,7 @@ index 847168456ed36..8b8e6fdf17277 100644
  		uart0: serial@2cea0000 {
  			compatible = "snps,dw-apb-uart";
 diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
-index 3a55ae5fe225a..8e53d23623767 100644
+index 3a55ae5fe225..8e53d2362376 100644
 --- a/drivers/clocksource/dw_apb_timer.c
 +++ b/drivers/clocksource/dw_apb_timer.c
 @@ -75,6 +75,7 @@ static void apbt_eoi(struct dw_apb_timer *timer)

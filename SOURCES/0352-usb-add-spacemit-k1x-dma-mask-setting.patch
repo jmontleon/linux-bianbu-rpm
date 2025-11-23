@@ -10,7 +10,7 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 92442dbf72f88..a2b29ada6dc0e 100644
+index 92442dbf72f8..a2b29ada6dc0 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
 @@ -2266,6 +2266,12 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
@@ -27,7 +27,7 @@ index 92442dbf72f88..a2b29ada6dc0e 100644
  	mutex_init(&dwc->mutex);
  
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index b299f2b429810..7881ec700dfb3 100644
+index b299f2b42981..7881ec700dfb 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
 @@ -5495,6 +5495,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)

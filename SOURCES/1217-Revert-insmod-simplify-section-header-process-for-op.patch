@@ -13,7 +13,7 @@ the conflicting 6.16 commit be17c0df67959fe4f88dac75dc26ed9252d4b133
  1 file changed, 11 deletions(-)
 
 diff --git a/arch/riscv/kernel/module-sections.c b/arch/riscv/kernel/module-sections.c
-index 5964d22aba644..1675cbad8619d 100644
+index 5964d22aba64..1675cbad8619 100644
 --- a/arch/riscv/kernel/module-sections.c
 +++ b/arch/riscv/kernel/module-sections.c
 @@ -55,8 +55,6 @@ unsigned long module_emit_plt_entry(struct module *mod, unsigned long val)

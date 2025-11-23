@@ -10,7 +10,7 @@ Change-Id: I741a22c473ade0f7758adb9432f0bce9e6401a96
  2 files changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 87ec7bedea1cb..a19767ae29812 100644
+index 87ec7bedea1c..a19767ae2981 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -403,6 +403,7 @@ husb239_u3: tcpc@42 {
@@ -42,7 +42,7 @@ index 87ec7bedea1cb..a19767ae29812 100644
  		&pinctrl 89  GPIO_89  4
  		&pinctrl 96  DVL0     2
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index 4c0b565c40d84..1bc6e441a05ed 100644
+index 4c0b565c40d8..1bc6e441a05e 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -180,6 +180,7 @@ struct husb239 {

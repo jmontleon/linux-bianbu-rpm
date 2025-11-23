@@ -10,7 +10,7 @@ Change-Id: I6bfd078334ade395366f115d57bdf4769e560ecf
  2 files changed, 48 insertions(+), 58 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 570987cc8527c..7c16c526e8600 100644
+index 570987cc8527..7c16c526e860 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -140,8 +140,11 @@ vcc4v0_baseboard: vcc4v0-baseboard {
@@ -57,7 +57,7 @@ index 570987cc8527c..7c16c526e8600 100644
  		&pinctrl 78  GPIO_78  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/drivers/soc/spacemit/spacemit_lid.c b/drivers/soc/spacemit/spacemit_lid.c
-index 37031d806aeb6..1046afe8af1f7 100644
+index 37031d806aeb..1046afe8af1f 100644
 --- a/drivers/soc/spacemit/spacemit_lid.c
 +++ b/drivers/soc/spacemit/spacemit_lid.c
 @@ -9,95 +9,78 @@

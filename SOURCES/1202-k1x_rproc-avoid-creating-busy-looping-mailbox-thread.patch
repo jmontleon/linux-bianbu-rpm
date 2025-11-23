@@ -9,7 +9,7 @@ Subject: [PATCH 1202/1222] k1x_rproc: avoid creating busy looping mailbox
  1 file changed, 7 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 8d0c318b5a393..36d3d17d4221b 100644
+index 8d0c318b5a39..36d3d17d4221 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -12,7 +12,6 @@

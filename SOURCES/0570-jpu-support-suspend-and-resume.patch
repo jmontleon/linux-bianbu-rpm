@@ -10,7 +10,7 @@ Change-Id: Iec710647f27a86ddea15c8db7518ac27faefa6fc
  2 files changed, 4 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 163d26665568b..6723d53a13308 100644
+index 163d26665568..6723d53a1330 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2222,6 +2222,7 @@ jpu@c02f8000 {
@@ -22,7 +22,7 @@ index 163d26665568b..6723d53a13308 100644
  		};
  
 diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
-index 3dbdb7b38e2d5..93dc44d824496 100644
+index 3dbdb7b38e2d..93dc44d82449 100644
 --- a/drivers/soc/spacemit/jpu/jpu.c
 +++ b/drivers/soc/spacemit/jpu/jpu.c
 @@ -1070,9 +1070,11 @@ static long jpu_ioctl(struct file *filp, u_int cmd, u_long arg)

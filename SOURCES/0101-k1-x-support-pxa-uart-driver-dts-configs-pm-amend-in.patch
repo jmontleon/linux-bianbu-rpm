@@ -13,7 +13,7 @@ Change-Id: I26ded00ba7a3fb6b645d0b7420ac3a513fc039eb
  4 files changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 3e597b6ad54af..5516f0b5f2b85 100644
+index 3e597b6ad54a..5516f0b5f2b8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -114,6 +114,13 @@ clocks {
@@ -50,7 +50,7 @@ index 3e597b6ad54af..5516f0b5f2b85 100644
  			lpm-qos = <PM_QOS_CPUIDLE_BLOCK_AXI>;
  			edge-wakeup-pin = <54>;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 61fd48715a144..06857d9204c96 100644
+index 61fd48715a14..06857d9204c9 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -71,14 +71,10 @@ CONFIG_INPUT_EVDEV=y
@@ -72,7 +72,7 @@ index 61fd48715a144..06857d9204c96 100644
  # CONFIG_HW_RANDOM is not set
  # CONFIG_HWMON is not set
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index b15ec9cb519db..668321768ce1c 100644
+index b15ec9cb519d..668321768ce1 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -415,7 +415,7 @@ config SERIAL_21285_CONSOLE
@@ -85,7 +85,7 @@ index b15ec9cb519db..668321768ce1c 100644
  	select SERIAL_8250_PXA if SERIAL_8250=y
  	help
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index be8ea8b1430e3..4bf9343be8eeb 100644
+index be8ea8b1430e..4bf9343be8ee 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -56,7 +56,7 @@

@@ -25,7 +25,7 @@ Change-Id: I6620b9c6896bd1ba7d0e6aeafd218deb558207b3
  create mode 100644 include/linux/spacemit/platform_pm_ops.h
 
 diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
-index 4a7d53e367b15..1380e9206e51a 100644
+index 4a7d53e367b1..1380e9206e51 100644
 --- a/drivers/mailbox/spacemit/k1x-mailbox.c
 +++ b/drivers/mailbox/spacemit/k1x-mailbox.c
 @@ -16,11 +16,19 @@
@@ -67,7 +67,7 @@ index 4a7d53e367b15..1380e9206e51a 100644
  		dev_err(dev, "Failed to register IRQ handler: %d\n", ret);
  		return -EINVAL;
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 89a66efa97b36..d529e28a4b8b6 100644
+index 89a66efa97b3..d529e28a4b8b 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -22,7 +22,10 @@
@@ -360,7 +360,7 @@ index 89a66efa97b36..d529e28a4b8b6 100644
  {
  	int i;
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index 61fc72c15c4ea..e5e23be15e738 100644
+index 61fc72c15c4e..e5e23be15e73 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -5,3 +5,4 @@ obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-rf/
@@ -370,7 +370,7 @@ index 61fc72c15c4ea..e5e23be15e738 100644
 +obj-$(CONFIG_PM) += pm/
 diff --git a/drivers/soc/spacemit/pm/Makefile b/drivers/soc/spacemit/pm/Makefile
 new file mode 100644
-index 0000000000000..9aa8704282c04
+index 000000000000..9aa8704282c0
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm/Makefile
 @@ -0,0 +1,2 @@
@@ -378,7 +378,7 @@ index 0000000000000..9aa8704282c04
 +obj-y += platform_pm_ops.o
 diff --git a/drivers/soc/spacemit/pm/platform_pm.c b/drivers/soc/spacemit/pm/platform_pm.c
 new file mode 100644
-index 0000000000000..7498d689d86f9
+index 000000000000..7498d689d86f
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm/platform_pm.c
 @@ -0,0 +1,146 @@
@@ -530,7 +530,7 @@ index 0000000000000..7498d689d86f9
 +#endif /* CONFIG_RISCV_SBI */
 diff --git a/drivers/soc/spacemit/pm/platform_pm_ops.c b/drivers/soc/spacemit/pm/platform_pm_ops.c
 new file mode 100644
-index 0000000000000..f590910400936
+index 000000000000..f59091040093
 --- /dev/null
 +++ b/drivers/soc/spacemit/pm/platform_pm_ops.c
 @@ -0,0 +1,63 @@
@@ -598,7 +598,7 @@ index 0000000000000..f590910400936
 +EXPORT_SYMBOL_GPL(platform_pm_resume_wake);
 +#endif /* CONFIG_PM_SLEEP */
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 3891cb4995643..35d4e03d058c7 100644
+index 3891cb499564..35d4e03d058c 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -255,12 +255,6 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
@@ -646,7 +646,7 @@ index 3891cb4995643..35d4e03d058c7 100644
  	pmu->domains[id] = pd;
 diff --git a/include/linux/spacemit/platform_pm_ops.h b/include/linux/spacemit/platform_pm_ops.h
 new file mode 100644
-index 0000000000000..018f65e3d34d6
+index 000000000000..018f65e3d34d
 --- /dev/null
 +++ b/include/linux/spacemit/platform_pm_ops.h
 @@ -0,0 +1,19 @@

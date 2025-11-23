@@ -28,7 +28,7 @@ Subject: [PATCH 0103/1222] mmc: support spacemit k1x platform
  create mode 100644 include/linux/platform_data/k1x_sdhci.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index a10f426d88f39..5f1aca227452b 100644
+index a10f426d88f3..5f1aca227452 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -3,6 +3,7 @@
@@ -124,7 +124,7 @@ index a10f426d88f39..5f1aca227452b 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 98ef1d8f2796e..c338b36470e25 100644
+index 98ef1d8f2796..c338b36470e2 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -213,7 +213,7 @@ CONFIG_MMC=y
@@ -137,7 +137,7 @@ index 98ef1d8f2796e..c338b36470e25 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 2f151bd941121..1d9b7ad5d684c 100644
+index 2f151bd94112..1d9b7ad5d684 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -128,6 +128,10 @@ CONFIG_MFD_SYSCON=y
@@ -152,7 +152,7 @@ index 2f151bd941121..1d9b7ad5d684c 100644
  CONFIG_MMP_PDMA_SPACEMIT_K1X=y
  CONFIG_SYNC_FILE=y
 diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-index 1cf64e0952fbe..5472fe8298593 100644
+index 1cf64e0952fb..5472fe829859 100644
 --- a/drivers/mmc/core/bus.c
 +++ b/drivers/mmc/core/bus.c
 @@ -377,6 +377,10 @@ int mmc_add_card(struct mmc_card *card)
@@ -167,7 +167,7 @@ index 1cf64e0952fbe..5472fe8298593 100644
  	if (ret)
  		return ret;
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 874c6fe92855e..6b85fadf12c97 100644
+index 874c6fe92855..6b85fadf12c9 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
 @@ -1201,6 +1201,11 @@ int mmc_host_set_uhs_voltage(struct mmc_host *host)
@@ -243,7 +243,7 @@ index 874c6fe92855e..6b85fadf12c97 100644
  }
  
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 5be9b42d5057e..97199eb0c02c7 100644
+index 5be9b42d5057..97199eb0c02c 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
 @@ -1179,6 +1179,11 @@ static int mmc_select_hs400(struct mmc_card *card)
@@ -321,7 +321,7 @@ index 5be9b42d5057e..97199eb0c02c7 100644
  
  out:
 diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index ec02067f03c5c..72f20b5cb54b0 100644
+index ec02067f03c5..72f20b5cb54b 100644
 --- a/drivers/mmc/core/sd.c
 +++ b/drivers/mmc/core/sd.c
 @@ -1428,6 +1428,9 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
@@ -385,7 +385,7 @@ index ec02067f03c5c..72f20b5cb54b0 100644
  
  static const struct mmc_bus_ops mmc_sd_ops = {
 diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
-index c5bc6268803eb..7623caff1d9b6 100644
+index c5bc6268803e..7623caff1d9b 100644
 --- a/drivers/mmc/core/slot-gpio.c
 +++ b/drivers/mmc/core/slot-gpio.c
 @@ -16,6 +16,10 @@
@@ -412,7 +412,7 @@ index c5bc6268803eb..7623caff1d9b6 100644
  	mmc_detect_change(host, msecs_to_jiffies(ctx->cd_debounce_delay_ms));
  
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 3baa8d94c0df1..3e1c17fefc6e6 100644
+index 3baa8d94c0df..3e1c17fefc6e 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -288,14 +288,27 @@ config MMC_SDHCI_OF_MA35D1
@@ -452,7 +452,7 @@ index 3baa8d94c0df1..3e1c17fefc6e6 100644
  	  If unsure, say N.
 +
 diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index ef3ee12396134..b509c52f3e591 100644
+index ef3ee1239613..b509c52f3e59 100644
 --- a/drivers/mmc/host/Makefile
 +++ b/drivers/mmc/host/Makefile
 @@ -92,7 +92,8 @@ obj-$(CONFIG_MMC_SDHCI_OF_DWCMSHC)	+= sdhci-of-dwcmshc.o
@@ -471,7 +471,7 @@ rename from drivers/mmc/host/sdhci-of-spacemit.c
 rename to drivers/mmc/host/sdhci-of-k1pro.c
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
 new file mode 100644
-index 0000000000000..030bc3845fedc
+index 000000000000..030bc3845fed
 --- /dev/null
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -0,0 +1,1530 @@
@@ -2006,7 +2006,7 @@ index 0000000000000..030bc3845fedc
 +MODULE_DESCRIPTION("SDHCI platform driver for Spacemit");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index ac7e11f37af71..529b03d67141c 100644
+index ac7e11f37af7..529b03d67141 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,6 +1733,15 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -2178,7 +2178,7 @@ index ac7e11f37af71..529b03d67141c 100644
  	host->tuning_count = FIELD_GET(SDHCI_RETUNING_TIMER_COUNT_MASK,
  				       host->caps1);
 diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 58fcbeaf281e0..72fe3f8c8ea72 100644
+index 58fcbeaf281e..72fe3f8c8ea7 100644
 --- a/drivers/mmc/host/sdhci.h
 +++ b/drivers/mmc/host/sdhci.h
 @@ -536,6 +536,19 @@ struct sdhci_host {
@@ -2221,7 +2221,7 @@ index 58fcbeaf281e0..72fe3f8c8ea72 100644
  #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
 diff --git a/include/dt-bindings/mmc/k1x_sdhci.h b/include/dt-bindings/mmc/k1x_sdhci.h
 new file mode 100644
-index 0000000000000..8f93a718e9cea
+index 000000000000..8f93a718e9ce
 --- /dev/null
 +++ b/include/dt-bindings/mmc/k1x_sdhci.h
 @@ -0,0 +1,53 @@
@@ -2279,7 +2279,7 @@ index 0000000000000..8f93a718e9cea
 +#endif /* K1X_DT_BINDINGS_MMC_SDHCI_H */
 +
 diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index 68f09a955a902..3cacea9fb9551 100644
+index 68f09a955a90..3cacea9fb955 100644
 --- a/include/linux/mmc/host.h
 +++ b/include/linux/mmc/host.h
 @@ -272,6 +272,15 @@ struct mmc_host_ops {
@@ -2312,7 +2312,7 @@ index 68f09a955a902..3cacea9fb9551 100644
  	struct sd_uhs2_caps	uhs2_caps;	/* Host UHS-II capabilities */
 diff --git a/include/linux/platform_data/k1x_sdhci.h b/include/linux/platform_data/k1x_sdhci.h
 new file mode 100644
-index 0000000000000..c3a4fe7e13d16
+index 000000000000..c3a4fe7e13d1
 --- /dev/null
 +++ b/include/linux/platform_data/k1x_sdhci.h
 @@ -0,0 +1,92 @@

@@ -20,7 +20,7 @@ Change-Id: If6f77dc17c413461113bbd399bfedf5ea414667d
  3 files changed, 380 insertions(+), 659 deletions(-)
 
 diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
-index d09528f7d92c7..57c5af15bd1ad 100644
+index d09528f7d92c..57c5af15bd1a 100644
 --- a/drivers/usb/phy/Makefile
 +++ b/drivers/usb/phy/Makefile
 @@ -22,5 +22,5 @@ obj-$(CONFIG_USB_MXS_PHY)		+= phy-mxs-usb.o
@@ -34,7 +34,7 @@ index d09528f7d92c7..57c5af15bd1ad 100644
 +obj-$(CONFIG_USB_K1XCI_OTG)		+= phy-k1x-ci-otg.o
 \ No newline at end of file
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
-index 8fd575df7aa19..d0afa9c619a25 100644
+index 8fd575df7aa1..d0afa9c619a2 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.c
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.c
 @@ -16,6 +16,8 @@
@@ -1257,7 +1257,7 @@ index 8fd575df7aa19..d0afa9c619a25 100644
  module_platform_driver(mv_otg_driver);
  
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.h b/drivers/usb/phy/phy-k1x-ci-otg.h
-index da4b4b2494a5a..66f084f6310cc 100644
+index da4b4b2494a5..66f084f6310c 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.h
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.h
 @@ -12,99 +12,16 @@

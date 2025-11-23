@@ -11,7 +11,7 @@ Change-Id: I58de3e42cee68384b37ec8f2670cec21953ae0ca
  3 files changed, 612 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index 83bb7d26300d9..b7315a95e284a 100755
+index 83bb7d26300d..b7315a95e284 100755
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -28,6 +28,12 @@ extern int spacemit_aes_ecb_encrypt(int index, const unsigned char *pt,unsigned
@@ -181,7 +181,7 @@ index 83bb7d26300d9..b7315a95e284a 100755
  };
  
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index d72ac799c69f7..ead35c811cc63 100755
+index d72ac799c69f..ead35c811cc6 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -27,6 +27,9 @@
@@ -725,7 +725,7 @@ index d72ac799c69f7..ead35c811cc63 100755
  {
  	mutex_lock(&engine[0].eng_mutex);
 diff --git a/drivers/crypto/spacemit/spacemit_engine.h b/drivers/crypto/spacemit/spacemit_engine.h
-index 79bc71eb28bb8..daec1e1bd77a6 100755
+index 79bc71eb28bb..daec1e1bd77a 100755
 --- a/drivers/crypto/spacemit/spacemit_engine.h
 +++ b/drivers/crypto/spacemit/spacemit_engine.h
 @@ -14,6 +14,7 @@

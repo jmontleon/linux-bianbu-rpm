@@ -14,7 +14,7 @@ Change-Id: I7f2eaf170487c8736265d131072d8ed23ab43185
  6 files changed, 25 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
-index 00582f9e63858..a350a62a3fb24 100644
+index 00582f9e6385..a350a62a3fb2 100644
 --- a/drivers/gpu/drm/spacemit/Makefile
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -10,7 +10,6 @@ spacemit-drm-y := 	spacemit_drm.o \
@@ -26,7 +26,7 @@ index 00582f9e63858..a350a62a3fb24 100644
  				sysfs/sysfs_dpu.o \
  				sysfs/sysfs_dsi.o \
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 6657e2a5104a5..9cd2d1a917b91 100644
+index 6657e2a5104a..9cd2d1a917b9 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -562,7 +562,7 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
@@ -88,7 +88,7 @@ index 6657e2a5104a5..9cd2d1a917b91 100644
  			clk_disable_unprepare(clk_ctx->hmclk);
  		} else if (dpu->type == DSI) {
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 0552570780265..06c042fd3ffe7 100644
+index 055257078026..06c042fd3ffe 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -1153,10 +1153,6 @@ static int lt8911exb_panel_enable(struct drm_panel *panel)
@@ -135,7 +135,7 @@ index 0552570780265..06c042fd3ffe7 100644
  	usleep_range(50*1000, 100*1000); //100ms
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 292f17aa37576..001165efe62bf 100644
+index 292f17aa3757..001165efe62b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -26,7 +26,6 @@
@@ -223,7 +223,7 @@ index 292f17aa37576..001165efe62bf 100644
  }
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index 05e49653d6252..aea9efa761357 100644
+index 05e49653d625..aea9efa76135 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -132,7 +132,7 @@ struct spacemit_dpu {
@@ -236,7 +236,7 @@ index 05e49653d6252..aea9efa761357 100644
  	uint64_t new_mclk;		/* new frame mclk */
  	uint64_t cur_mclk;		/* current frame mclk */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 1a83ecb18275c..be1c6da15a765 100644
+index 1a83ecb18275..be1c6da15a76 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -14,7 +14,6 @@

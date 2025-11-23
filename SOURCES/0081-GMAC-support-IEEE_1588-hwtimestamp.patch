@@ -11,7 +11,7 @@ Change-Id: I2c8f137e61d0d1a60c909cd3fcb44d239d6eb211
  3 files changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 3aafd37888f3f..382380d5d2b6d 100644
+index 3aafd37888f3..382380d5d2b6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -21,7 +21,7 @@ aliases {
@@ -48,7 +48,7 @@ index 3aafd37888f3f..382380d5d2b6d 100644
  			reset-names = "gmac_csr", "gmac_dma";
  			snps,pbl = <32>;
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index c026363fb3399..d48e7b56b6d3e 100644
+index c026363fb339..d48e7b56b6d3 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -47,6 +47,7 @@ CONFIG_INET=y
@@ -68,7 +68,7 @@ index c026363fb3399..d48e7b56b6d3e 100644
  # CONFIG_PINCTRL_MESON is not set
  CONFIG_PINCTRL_K1PRO=y
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
-index cc17e7169bb55..0694ab2b9f035 100755
+index cc17e7169bb5..0694ab2b9f03 100755
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 @@ -272,6 +272,7 @@ static int spacemit_dwmac_probe(struct platform_device *pdev)

@@ -10,7 +10,7 @@ Change-Id: Ic16c1742c580ffdc7c67e5849a9ea162ffc0a096
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 76cf244cb6329..9ccf559eebdb9 100644
+index 76cf244cb632..9ccf559eebdb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -42,6 +42,7 @@ cpus: cpus {
@@ -78,7 +78,7 @@ index 76cf244cb6329..9ccf559eebdb9 100644
  			riscv,cbom-block-size = <64>;
  			i-cache-block-size = <64>;
 diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index 3dbc8cc557dd1..eba2980340622 100644
+index 3dbc8cc557dd..eba298034062 100644
 --- a/arch/riscv/kernel/cpu.c
 +++ b/arch/riscv/kernel/cpu.c
 @@ -331,11 +331,14 @@ static int c_show(struct seq_file *m, void *v)

@@ -10,7 +10,7 @@ Change-Id: I4230411eda7aa59f29fe1122b52d793d4dddc515
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 8f937c9ca0edb..d55106762211a 100644
+index 8f937c9ca0ed..d55106762211 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -500,6 +500,8 @@ eth0: ethernet@cac80000 {
@@ -23,7 +23,7 @@ index 8f937c9ca0edb..d55106762211a 100644
  			status = "disabled";
  		};
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index 9565809f9ab36..b98f30d5853f4 100755
+index 9565809f9ab3..b98f30d5853f 100755
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -2490,6 +2490,7 @@ static const struct net_device_ops emac_netdev_ops = {

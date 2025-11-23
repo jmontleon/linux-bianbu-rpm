@@ -15,7 +15,7 @@ Change-Id: Ie368cc74ae369866f76c580cba7ae0acc00efc11
  5 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 09680e8b8b964..d83ffe5eba952 100644
+index 09680e8b8b96..d83ffe5eba95 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1776,6 +1776,7 @@ imggpu: imggpu@cac00000 {
@@ -27,7 +27,7 @@ index 09680e8b8b964..d83ffe5eba952 100644
  		};
  	};
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
-index a35c16b120bbf..04cce39aef3d7 100644
+index a35c16b120bb..04cce39aef3d 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.h
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -160,7 +160,7 @@
@@ -40,7 +40,7 @@ index a35c16b120bbf..04cce39aef3d7 100644
  #define PVR_LINUX_PHYSMEM_MAX_POOL_PAGES 10240
  #define PVR_LINUX_PHYSMEM_MAX_EXCESS_POOL_PAGES 20480
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
-index 0bfaae6164063..40fa7570076df 100644
+index 0bfaae616406..40fa7570076d 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 +++ b/drivers/gpu/drm/img-rogue/spacemit/spacemit_init.c
 @@ -22,6 +22,7 @@
@@ -88,7 +88,7 @@ index 0bfaae6164063..40fa7570076df 100644
  
  	return platform;
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
-index 7de71f718af30..50237a7e950a6 100644
+index 7de71f718af3..50237a7e950a 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 @@ -138,7 +138,7 @@ PVRSRV_ERROR SysDevInit(void *pvOSDevice, PVRSRV_DEVICE_CONFIG **ppsDevConfig)
@@ -101,7 +101,7 @@ index 7de71f718af30..50237a7e950a6 100644
  
  	/*
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
-index 1bfe68c5da833..d34e2b49a7031 100644
+index 1bfe68c5da83..d34e2b49a703 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 @@ -49,7 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -20,7 +20,7 @@ Signed-off-by: zengyu <yu.zeng@spacemit.com>
  create mode 100644 drivers/misc/input-polldev.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 695e9cce457fd..0492d40ddbd31 100644
+index 695e9cce457f..0492d40ddbd3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -247,6 +247,17 @@ &i2c4 {
@@ -42,7 +42,7 @@ index 695e9cce457fd..0492d40ddbd31 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_i2c8>;
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 99085928923a7..7d4c7fb06cfb6 100644
+index 99085928923a..7d4c7fb06cfb 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -651,6 +651,12 @@ config SPACEMIT_TCM
@@ -59,7 +59,7 @@ index 99085928923a7..7d4c7fb06cfb6 100644
  source "drivers/misc/eeprom/Kconfig"
  source "drivers/misc/cb710/Kconfig"
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index acac69125c7c5..9d67b0ed35553 100644
+index acac69125c7c..9d67b0ed3555 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
 @@ -77,3 +77,4 @@ obj-y				+= keba/
@@ -69,7 +69,7 @@ index acac69125c7c5..9d67b0ed35553 100644
 +obj-$(CONFIG_ICM42607)		+= icm42607.o input-polldev.o
 diff --git a/drivers/misc/icm42607.c b/drivers/misc/icm42607.c
 new file mode 100644
-index 0000000000000..8ac65320759a6
+index 000000000000..8ac65320759a
 --- /dev/null
 +++ b/drivers/misc/icm42607.c
 @@ -0,0 +1,697 @@
@@ -772,7 +772,7 @@ index 0000000000000..8ac65320759a6
 +
 diff --git a/drivers/misc/icm42607.h b/drivers/misc/icm42607.h
 new file mode 100644
-index 0000000000000..3afe1023aba0a
+index 000000000000..3afe1023aba0
 --- /dev/null
 +++ b/drivers/misc/icm42607.h
 @@ -0,0 +1,48 @@
@@ -826,7 +826,7 @@ index 0000000000000..3afe1023aba0a
 +
 diff --git a/drivers/misc/input-polldev.c b/drivers/misc/input-polldev.c
 new file mode 100644
-index 0000000000000..f294a8a431ba0
+index 000000000000..f294a8a431ba
 --- /dev/null
 +++ b/drivers/misc/input-polldev.c
 @@ -0,0 +1,182 @@
@@ -1014,7 +1014,7 @@ index 0000000000000..f294a8a431ba0
 +EXPORT_SYMBOL(input_unregister_polled_device);
 diff --git a/drivers/misc/input-polldev.h b/drivers/misc/input-polldev.h
 new file mode 100644
-index 0000000000000..597a0077b3c54
+index 000000000000..597a0077b3c5
 --- /dev/null
 +++ b/drivers/misc/input-polldev.h
 @@ -0,0 +1,46 @@

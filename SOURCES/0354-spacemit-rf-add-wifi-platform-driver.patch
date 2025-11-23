@@ -18,7 +18,7 @@ Change-Id: Iecea4dfd765c076e1a367f0ed5696fa9cb8cfb8a
  create mode 100755 drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index b193f5905c28d..cb6f565ab3ee6 100644
+index b193f5905c28..cb6f565ab3ee 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -29,3 +29,4 @@ config SPACEMI_K1X_DMA_RANGE
@@ -27,7 +27,7 @@ index b193f5905c28d..cb6f565ab3ee6 100644
  source "drivers/soc/spacemit/jpu/Kconfig"
 +source "drivers/soc/spacemit/spacemit-rf/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index 217b9a1f199a4..39afd7a338191 100644
+index 217b9a1f199a..39afd7a33819 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1,4 +1,5 @@
@@ -38,7 +38,7 @@ index 217b9a1f199a4..39afd7a338191 100644
  obj-$(CONFIG_SPACEMI_K1X_DMA_RANGE) += k1x-dma-range.o
 diff --git a/drivers/soc/spacemit/spacemit-rf/Kconfig b/drivers/soc/spacemit/spacemit-rf/Kconfig
 new file mode 100755
-index 0000000000000..8410233ee4bc0
+index 000000000000..8410233ee4bc
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/Kconfig
 @@ -0,0 +1,9 @@
@@ -53,7 +53,7 @@ index 0000000000000..8410233ee4bc0
 +
 diff --git a/drivers/soc/spacemit/spacemit-rf/Makefile b/drivers/soc/spacemit/spacemit-rf/Makefile
 new file mode 100755
-index 0000000000000..522245a0ba52f
+index 000000000000..522245a0ba52
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/Makefile
 @@ -0,0 +1,6 @@
@@ -65,7 +65,7 @@ index 0000000000000..522245a0ba52f
 +obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 new file mode 100755
-index 0000000000000..cc7d910cd0bc7
+index 000000000000..cc7d910cd0bc
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 @@ -0,0 +1,290 @@
@@ -361,7 +361,7 @@ index 0000000000000..cc7d910cd0bc7
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 new file mode 100755
-index 0000000000000..ffa3d0eb60545
+index 000000000000..ffa3d0eb6054
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -0,0 +1,179 @@

@@ -21,7 +21,7 @@ Change-Id: I3be0e06e9621d2e6a5eda3b0b332c7323522cf7c
  10 files changed, 25 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 5d921c85b07bd..72648a6820064 100644
+index 5d921c85b07b..72648a682006 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -646,6 +646,7 @@ &gpio 123 0	/* usb3 hub en */
@@ -33,7 +33,7 @@ index 5d921c85b07bd..72648a6820064 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 21641345482a6..1c5d3d03406cb 100644
+index 21641345482a..1c5d3d03406c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -649,6 +649,7 @@ &usb3hub {
@@ -45,7 +45,7 @@ index 21641345482a6..1c5d3d03406cb 100644
  		dr_mode = "otg";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 8d1a9c365f634..cc3bf3d3bbfa8 100644
+index 8d1a9c365f63..cc3bf3d3bbfa 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -799,6 +799,7 @@ &usb3hub {
@@ -57,7 +57,7 @@ index 8d1a9c365f634..cc3bf3d3bbfa8 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 33427ba984bab..39ae6ed03a40a 100644
+index 33427ba984ba..39ae6ed03a40 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -785,6 +785,7 @@ &gpio 123 0	/* usb3 hub en */
@@ -69,7 +69,7 @@ index 33427ba984bab..39ae6ed03a40a 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index acacce49cdc58..a87632a0bbb42 100644
+index acacce49cdc5..a87632a0bbb4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -754,6 +754,7 @@ &gpio 123 0	/* usb3 hub en */
@@ -81,7 +81,7 @@ index acacce49cdc58..a87632a0bbb42 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index fda758eb3b3d7..ac5f50ded19ce 100644
+index fda758eb3b3d..ac5f50ded19c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -713,6 +713,7 @@ &ehci1 {
@@ -93,7 +93,7 @@ index fda758eb3b3d7..ac5f50ded19ce 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index d2b130724e9e9..bb2d2073e6f66 100644
+index d2b130724e9e..bb2d2073e6f6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -670,6 +670,7 @@ &combphy {
@@ -105,7 +105,7 @@ index d2b130724e9e9..bb2d2073e6f66 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index c6eade59683da..7a6f1d702ad24 100644
+index c6eade59683d..7a6f1d702ad2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -642,6 +642,7 @@ &usb3hub {
@@ -117,7 +117,7 @@ index c6eade59683da..7a6f1d702ad24 100644
  		dr_mode = "host";
  		phy_type = "utmi";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 170fa75ed9f63..99c8900e6f691 100644
+index 170fa75ed9f6..99c8900e6f69 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -527,6 +527,7 @@ &usb3hub {
@@ -129,7 +129,7 @@ index 170fa75ed9f63..99c8900e6f691 100644
  		dr_mode = "otg";
  		phy_type = "utmi";
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 6da8db13f776d..b5d510b33c83e 100755
+index 6da8db13f776..b5d510b33c83 100755
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -33,6 +33,7 @@ struct dwc3_spacemit {

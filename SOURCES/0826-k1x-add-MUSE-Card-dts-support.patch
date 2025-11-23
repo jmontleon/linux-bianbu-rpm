@@ -11,7 +11,7 @@ Change-Id: I93967873f0f38c4e6a0c8fe4c57395780e2d6e74
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index a438abed21051..68f39e370270e 100644
+index a438abed2105..68f39e370270 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -6,5 +6,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -23,7 +23,7 @@ index a438abed21051..68f39e370270e 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 new file mode 100644
-index 0000000000000..77e245818057f
+index 000000000000..77e245818057
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -0,0 +1,878 @@

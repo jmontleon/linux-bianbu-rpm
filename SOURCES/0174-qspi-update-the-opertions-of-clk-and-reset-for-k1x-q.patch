@@ -11,7 +11,7 @@ Change-Id: I1b8b987a06d86aa5be7227992140e55a6953c1c2
  2 files changed, 23 insertions(+), 41 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index a57d9b62be2ad..0bcdbd971a504 100644
+index a57d9b62be2a..0bcdbd971a50 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -917,8 +917,10 @@ qspi: spi@d420c000 {
@@ -27,7 +27,7 @@ index a57d9b62be2ad..0bcdbd971a504 100644
  			k1x,qspi-mpmu-acgr-reg = <0xd4051024>;
  			k1x,qspi-freq = <26500000>;
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index dd2339e2928a8..25913e050d2f6 100755
+index dd2339e2928a..25913e050d2f 100755
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -29,7 +29,7 @@

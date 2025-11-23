@@ -10,7 +10,7 @@ Change-Id: Ib84003e68d537173a9d550071d43eab587d10fb6
  2 files changed, 3 insertions(+)
 
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 19f62b070ca9d..3f4792cdcc7d4 100644
+index 19f62b070ca9..3f4792cdcc7d 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
 @@ -1283,6 +1283,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
@@ -30,7 +30,7 @@ index 19f62b070ca9d..3f4792cdcc7d4 100644
  }
  
 diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 2a5a828f19a0b..3d86d0b05eeab 100644
+index 2a5a828f19a0..3d86d0b05eea 100644
 --- a/include/linux/blk-mq.h
 +++ b/include/linux/blk-mq.h
 @@ -206,6 +206,7 @@ struct request {

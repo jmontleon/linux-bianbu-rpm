@@ -12,7 +12,7 @@ Change-Id: If69f6e2052b55bc59579fd6ddd1edf083515fb61
  4 files changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 77eb384f8d86e..6eca7511038cc 100644
+index 77eb384f8d86..6eca7511038c 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -103,7 +103,7 @@ static int asoc_simple_parse_dai(struct device_node *node,
@@ -25,7 +25,7 @@ index 77eb384f8d86e..6eca7511038cc 100644
  		return ret;
  	dlc->of_node = args.np;
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index 36522fb909fea..c1ba61c1dbefe 100644
+index 36522fb909fe..c1ba61c1dbef 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -330,6 +330,7 @@ static int i2s_sspa_probe(struct snd_soc_dai *dai)
@@ -53,7 +53,7 @@ index 36522fb909fea..c1ba61c1dbefe 100644
  		.playback = {
  			.channels_min = 1,
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 5832f8bb54d76..487b0e3a4cc2e 100644
+index 5832f8bb54d7..487b0e3a4cc2 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -896,8 +896,11 @@ static void hdmi_reformat(void *dst, void *src, int len)
@@ -111,7 +111,7 @@ index 5832f8bb54d76..487b0e3a4cc2e 100644
  
  static int spacemit_snd_dma_pdev_probe(struct platform_device *pdev)
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index a29011a427ae1..e022e080334f0 100644
+index a29011a427ae..e022e080334f 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -144,6 +144,7 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)

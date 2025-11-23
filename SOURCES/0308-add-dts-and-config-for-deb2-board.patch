@@ -13,7 +13,7 @@ Change-Id: Ib9cd6ccf997b6e68ad091f05238bb649752c4947
  create mode 100644 arch/riscv/configs/k1-x_deb2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 314a14a42e088..d1db701322037 100644
+index 314a14a42e08..d1db70132203 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,5 +2,5 @@
@@ -25,7 +25,7 @@ index 314a14a42e088..d1db701322037 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 new file mode 100644
-index 0000000000000..18076efbb2305
+index 000000000000..18076efbb230
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -0,0 +1,739 @@
@@ -770,7 +770,7 @@ index 0000000000000..18076efbb2305
 +};
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
 new file mode 100644
-index 0000000000000..a6a15ec391f85
+index 000000000000..a6a15ec391f8
 --- /dev/null
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -0,0 +1,503 @@

@@ -13,7 +13,7 @@ Change-Id: I41197262a052e911aabe44609658d6c93444b73e
  3 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/Makefile b/drivers/gpu/drm/img-rogue/Makefile
-index dddabeed1d0b1..e78553430ce32 100644
+index dddabeed1d0b..e78553430ce3 100644
 --- a/drivers/gpu/drm/img-rogue/Makefile
 +++ b/drivers/gpu/drm/img-rogue/Makefile
 @@ -143,7 +143,9 @@ pvrsrvkm-y += \
@@ -28,7 +28,7 @@ index dddabeed1d0b1..e78553430ce32 100644
  pvrsrvkm-$(CONFIG_ARM64) += osfunc_arm64.o
  pvrsrvkm-$(CONFIG_EVENT_TRACING) += trace_events.o pvr_gputrace.o
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
-index c1850e8277f58..a35c16b120bbf 100644
+index c1850e8277f5..a35c16b120bb 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.h
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -2,13 +2,12 @@
@@ -56,7 +56,7 @@ index c1850e8277f58..a35c16b120bbf 100644
 +#define TRACK_FW_BOOT
 +#define LMA
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.mk b/drivers/gpu/drm/img-rogue/config_kernel.mk
-index 83b78b3fabc28..7a87f28235264 100644
+index 83b78b3fabc2..7a87f2823526 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.mk
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.mk
 @@ -19,11 +19,11 @@ override KERNEL_CROSS_COMPILE := riscv64-unknown-linux-gnu-

@@ -13,7 +13,7 @@ Change-Id: Ia186a6cb71546afb2369db5186368b76c15bb9fd
  5 files changed, 112 insertions(+), 43 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 6bcff6cc1d69a..7052c73d41724 100644
+index 6bcff6cc1d69..7052c73d4172 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2324,15 +2324,16 @@ pmu {
@@ -151,7 +151,7 @@ index 6bcff6cc1d69a..7052c73d41724 100644
  	};
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 10ebee68553bf..f4c3240b23593 100644
+index 10ebee68553b..f4c3240b2359 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -708,7 +708,7 @@ &cls1_trip2 {
@@ -164,7 +164,7 @@ index 10ebee68553bf..f4c3240b23593 100644
          pinctrl-0 = <&pinctrl_sspa0_0>;
          status = "okay";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 47ecf635f4dad..967591b2aba0c 100644
+index 47ecf635f4da..967591b2aba0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -263,7 +263,7 @@ mac_address1: mac_address1@6 {
@@ -198,7 +198,7 @@ index 47ecf635f4dad..967591b2aba0c 100644
 +	};
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 952b2a1575aca..71a6428078fba 100644
+index 952b2a1575ac..71a6428078fb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -232,15 +232,18 @@ &i2c2 {
@@ -255,7 +255,7 @@ index 952b2a1575aca..71a6428078fba 100644
  	spa,wdt-enable-restart-handler;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index b69ba2f9abec4..ec6bdc098e5d8 100644
+index b69ba2f9abec..ec6bdc098e5d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -233,7 +233,7 @@ mac_address1: mac_address1@6 {

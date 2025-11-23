@@ -11,7 +11,7 @@ Change-Id: I82b1531037e3f3c44bb8570fc422c1ef0602a663
  3 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 472857ce226d8..fdf4575f720fa 100644
+index 472857ce226d..fdf4575f720f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -590,7 +590,7 @@ ccu: clock-controller@d4050000 {
@@ -24,7 +24,7 @@ index 472857ce226d8..fdf4575f720fa 100644
  			clocks = <&vctcxo_24>, <&vctcxo_3>, <&vctcxo_1>, <&pll1_2457p6_vco>,
  				<&clk_32k>;
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 8d2a3ddb4023a..f385788418279 100755
+index 8d2a3ddb4023..f38578841827 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -167,7 +167,8 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -66,7 +66,7 @@ index 8d2a3ddb4023a..f385788418279 100755
  	.num = CLK_MAX_NO,
  };
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 430e87f5843d6..391f8309052e9 100755
+index 430e87f5843d..391f8309052e 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -192,6 +192,8 @@

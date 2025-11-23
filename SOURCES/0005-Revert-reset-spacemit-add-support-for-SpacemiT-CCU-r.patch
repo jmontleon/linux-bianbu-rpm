@@ -14,7 +14,7 @@ This reverts commit c479d7cf06c3d65532442fa368b058e05dbba1a2.
  delete mode 100644 drivers/reset/reset-spacemit.c
 
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 635eef469ab79..ba4bb07309a1d 100644
+index 635eef469ab7..ba4bb07309a1 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -279,15 +279,6 @@ config RESET_SOCFPGA
@@ -34,7 +34,7 @@ index 635eef469ab79..ba4bb07309a1d 100644
  	bool "Sunplus SoCs Reset Driver" if COMPILE_TEST
  	default ARCH_SUNPLUS
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index a917d2522e8d1..82488dac0f35e 100644
+index a917d2522e8d..82488dac0f35 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
 @@ -36,7 +36,6 @@ obj-$(CONFIG_RESET_RZV2H_USB2PHY) += reset-rzv2h-usb2phy.o
@@ -47,7 +47,7 @@ index a917d2522e8d1..82488dac0f35e 100644
  obj-$(CONFIG_RESET_TH1520) += reset-th1520.o
 diff --git a/drivers/reset/reset-spacemit.c b/drivers/reset/reset-spacemit.c
 deleted file mode 100644
-index e1272aff28f74..0000000000000
+index e1272aff28f7..000000000000
 --- a/drivers/reset/reset-spacemit.c
 +++ /dev/null
 @@ -1,304 +0,0 @@
@@ -356,7 +356,7 @@ index e1272aff28f74..0000000000000
 -MODULE_DESCRIPTION("SpacemiT reset controller driver");
 -MODULE_LICENSE("GPL");
 diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
-index db17f8b465b4b..039a448c51a07 100644
+index db17f8b465b4..039a448c51a0 100644
 --- a/include/soc/spacemit/k1-syscon.h
 +++ b/include/soc/spacemit/k1-syscon.h
 @@ -115,34 +115,4 @@

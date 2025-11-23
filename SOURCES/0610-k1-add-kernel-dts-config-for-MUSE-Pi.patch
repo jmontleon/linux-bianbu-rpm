@@ -11,7 +11,7 @@ Change-Id: Ib4a5404f01604d08ae4605dae2bac9fbeb967e46
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 410a1afa9ea7f..51205d075248b 100644
+index 410a1afa9ea7..51205d075248 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -4,5 +4,6 @@ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
@@ -24,7 +24,7 @@ index 410a1afa9ea7f..51205d075248b 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 new file mode 100644
-index 0000000000000..806834b23d99d
+index 000000000000..806834b23d99
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -0,0 +1,993 @@

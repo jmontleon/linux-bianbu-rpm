@@ -11,7 +11,7 @@ Change-Id: Idbe706f9ef8efd6f443af2b971ee28b61bbf3d53
  3 files changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index d311c3302e48a..4412ed5275a4a 100644
+index d311c3302e48..4412ed5275a4 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -1417,8 +1417,7 @@ static void saturn_init_regs(struct spacemit_dpu *dpu)
@@ -36,7 +36,7 @@ index d311c3302e48a..4412ed5275a4a 100644
  
  	dpu_write_reg(hwdev, DPU_CTL_REG, DPU_CTRL_BASE_ADDR, ctl2_video_mod, 0x1);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index cbb43fbc1f841..e812ab3f47d00 100644
+index cbb43fbc1f84..e812ab3f47d0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -843,7 +843,6 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,
@@ -56,7 +56,7 @@ index cbb43fbc1f841..e812ab3f47d00 100644
  	DRM_DEBUG("%s()\n", __func__);
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 0ca0e72e9833b..b621ece123ce0 100644
+index 0ca0e72e9833..b621ece123ce 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -624,7 +624,6 @@ static void spacemit_hdmi_encoder_disable(struct drm_encoder *encoder)

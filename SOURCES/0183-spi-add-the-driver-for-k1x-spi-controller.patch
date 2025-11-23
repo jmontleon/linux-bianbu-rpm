@@ -18,7 +18,7 @@ Change-Id: I3c280ce7a94b6eff7c6c45adf4cbab3050ce5b09
  create mode 100755 drivers/spi/spi-k1x.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 0f67632e1a06a..666a5373682ab 100644
+index 0f67632e1a06..666a5373682a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -720,6 +720,60 @@ pdma0: pdma@d4000000 {
@@ -83,7 +83,7 @@ index 0f67632e1a06a..666a5373682ab 100644
  			/* for i2c3 used id 4 */
  			compatible = "spacemit,k1x-i2c";
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index ce9ecbe0c6504..5831f056bf070 100644
+index ce9ecbe0c650..5831f056bf07 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -286,8 +286,8 @@ CONFIG_SPACEMIT_V2D=y
@@ -105,7 +105,7 @@ index ce9ecbe0c6504..5831f056bf070 100644
  CONFIG_UDMABUF=y
  CONFIG_DMABUF_HEAPS=y
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 36172102e6f39..1d7f0ad0b5f5b 100644
+index 36172102e6f3..1d7f0ad0b5f5 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -342,6 +342,12 @@ config SPI_DESIGNWARE_EXT
@@ -122,7 +122,7 @@ index 36172102e6f39..1d7f0ad0b5f5b 100644
  	tristate "K1X QuadSPI Controller"
  	depends on SPI_MEM
 diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 0145d5f984497..a3e0b6f80497e 100644
+index 0145d5f98449..a3e0b6f80497 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
 @@ -49,6 +49,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
@@ -135,7 +135,7 @@ index 0145d5f984497..a3e0b6f80497e 100644
  spi-dw-y				:= spi-dw-core.o
 diff --git a/drivers/spi/spi-k1x-dma.c b/drivers/spi/spi-k1x-dma.c
 new file mode 100755
-index 0000000000000..7b0e16aad9ba2
+index 000000000000..7b0e16aad9ba
 --- /dev/null
 +++ b/drivers/spi/spi-k1x-dma.c
 @@ -0,0 +1,375 @@
@@ -516,7 +516,7 @@ index 0000000000000..7b0e16aad9ba2
 +}
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
 new file mode 100755
-index 0000000000000..ff2590b188623
+index 000000000000..ff2590b18862
 --- /dev/null
 +++ b/drivers/spi/spi-k1x.c
 @@ -0,0 +1,1177 @@
@@ -1699,7 +1699,7 @@ index 0000000000000..ff2590b188623
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/spi/spi-k1x.h b/drivers/spi/spi-k1x.h
 new file mode 100755
-index 0000000000000..d576c87655c59
+index 000000000000..d576c87655c5
 --- /dev/null
 +++ b/drivers/spi/spi-k1x.h
 @@ -0,0 +1,363 @@

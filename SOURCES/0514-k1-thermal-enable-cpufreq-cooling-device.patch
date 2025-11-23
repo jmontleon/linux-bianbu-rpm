@@ -15,7 +15,7 @@ Change-Id: I73fb8b3e75e9df55553ebcaa04b76656e053a1b7
  7 files changed, 55 insertions(+), 67 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 0540bf62f3d5f..fdf270cf02ae2 100644
+index 0540bf62f3d5..fdf270cf02ae 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -65,12 +65,6 @@ cpu0_intc: interrupt-controller {
@@ -206,7 +206,7 @@ index 0540bf62f3d5f..fdf270cf02ae2 100644
  		};
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 7e85e06647d0a..f9f0bb0efa0a6 100644
+index 7e85e06647d0..f9f0bb0efa0a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -326,6 +326,7 @@ dcdc_1: DCDC_REG1 {
@@ -272,7 +272,7 @@ index 7e85e06647d0a..f9f0bb0efa0a6 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 946a31c25c9e4..4ae26e15d2bcf 100644
+index 946a31c25c9e..4ae26e15d2bc 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -914,11 +914,11 @@ &rcpu {
@@ -290,7 +290,7 @@ index 946a31c25c9e4..4ae26e15d2bcf 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index fa1fd4819fff0..acd4f6a32bdf2 100644
+index fa1fd4819fff..acd4f6a32bdf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -859,10 +859,10 @@ &rcpu {
@@ -307,7 +307,7 @@ index fa1fd4819fff0..acd4f6a32bdf2 100644
  	temperature = <115000>;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index f27bb19cc14b8..7e208a7c08ed0 100644
+index f27bb19cc14b..7e208a7c08ed 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -666,11 +666,11 @@ &rcpu {
@@ -325,7 +325,7 @@ index f27bb19cc14b8..7e208a7c08ed0 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 344d548547b46..8364c7e904a16 100644
+index 344d548547b4..8364c7e904a1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -203,6 +203,7 @@ dcdc_1: DCDC_REG1 {
@@ -390,7 +390,7 @@ index 344d548547b46..8364c7e904a16 100644
  	temperature = <115000>;
  };
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 8d29d80d4d169..e73d678f52117 100644
+index 8d29d80d4d16..e73d678f5211 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -378,6 +378,7 @@ CONFIG_GPIO_SYSFS=y

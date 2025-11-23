@@ -10,7 +10,7 @@ Change-Id: I91cfab9aa3b2d8f1ebf127313d58351338ee2b7c
  2 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index 631d579867b8d..d0a19656fea04 100644
+index 631d579867b8..d0a19656fea0 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -255,13 +255,14 @@ static int i2s_sspa_trigger(struct snd_pcm_substream *substream, int cmd,
@@ -30,7 +30,7 @@ index 631d579867b8d..d0a19656fea04 100644
  		ssp_top_cfg |= TOP_SSE;
  		i2s_sspa_write_reg(sspa, TOP_CTRL, ssp_top_cfg);   //SSP_enable
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index c860dcf003c44..50fee6701fd9a 100644
+index c860dcf003c4..50fee6701fd9 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -625,13 +625,14 @@ static int spacemit_snd_pcm_open(struct snd_soc_component *component, struct snd

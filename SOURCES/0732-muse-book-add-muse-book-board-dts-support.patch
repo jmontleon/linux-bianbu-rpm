@@ -13,7 +13,7 @@ Change-Id: I96ed33f79e91864222be34d523e279fd34c49517
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 51205d075248b..933b26960ab85 100644
+index 51205d075248..933b26960ab8 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,5 +5,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
@@ -25,7 +25,7 @@ index 51205d075248b..933b26960ab85 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 new file mode 100644
-index 0000000000000..56342110e777a
+index 000000000000..56342110e777
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -0,0 +1,820 @@
@@ -851,7 +851,7 @@ index 0000000000000..56342110e777a
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 new file mode 100644
-index 0000000000000..d5c156f89d08c
+index 000000000000..d5c156f89d08
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -0,0 +1,1014 @@

@@ -15,7 +15,7 @@ Change-Id: I0644dc6f9babad657ec298970519d11496b30d9b
  create mode 100644 drivers/i2c/busses/i2c-k1x.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 96f3c976a4c28..a64b221869900 100644
+index 96f3c976a4c2..a64b22186990 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -123,6 +123,13 @@ pll_clk_uart: clock-pll_clk_uart {
@@ -125,7 +125,7 @@ index 96f3c976a4c28..a64b221869900 100644
  			compatible = "spacemit,k1x-pwm";
  			reg = <0x0 0xd401a000 0x0 0x10>;
 diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 070d014fdc5d5..34f4272c7c81b 100644
+index 070d014fdc5d..34f4272c7c81 100644
 --- a/drivers/i2c/busses/Kconfig
 +++ b/drivers/i2c/busses/Kconfig
 @@ -303,6 +303,14 @@ config I2C_SIS96X
@@ -144,7 +144,7 @@ index 070d014fdc5d5..34f4272c7c81b 100644
  	tristate "VIA VT82C586B"
  	depends on PCI && HAS_IOPORT
 diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index 04db855fdfd66..11214aaa6afa9 100644
+index 04db855fdfd6..11214aaa6afa 100644
 --- a/drivers/i2c/busses/Makefile
 +++ b/drivers/i2c/busses/Makefile
 @@ -75,6 +75,7 @@ obj-$(CONFIG_I2C_IMX)		+= i2c-imx.o
@@ -157,7 +157,7 @@ index 04db855fdfd66..11214aaa6afa9 100644
  obj-$(CONFIG_I2C_KEMPLD)	+= i2c-kempld.o
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
 new file mode 100644
-index 0000000000000..4bc3599b89282
+index 000000000000..4bc3599b8928
 --- /dev/null
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -0,0 +1,2060 @@
@@ -2223,7 +2223,7 @@ index 0000000000000..4bc3599b89282
 +MODULE_ALIAS("platform:i2c-spacemit-k1x");
 diff --git a/drivers/i2c/busses/i2c-k1x.h b/drivers/i2c/busses/i2c-k1x.h
 new file mode 100644
-index 0000000000000..8854e352886c1
+index 000000000000..8854e352886c
 --- /dev/null
 +++ b/drivers/i2c/busses/i2c-k1x.h
 @@ -0,0 +1,273 @@

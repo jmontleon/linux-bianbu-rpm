@@ -11,7 +11,7 @@ Change-Id: I1f234df22bfb8a20e9a066ae0c9e4b22d9fc65dc
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 645f517a1ac26..93a8b6f455999 100644
+index 645f517a1ac2..93a8b6f45599 100644
 --- a/drivers/clocksource/Kconfig
 +++ b/drivers/clocksource/Kconfig
 @@ -152,6 +152,13 @@ config REALTEK_OTTO_TIMER
@@ -29,7 +29,7 @@ index 645f517a1ac26..93a8b6f455999 100644
  	bool "Sun4i timer driver" if COMPILE_TEST
  	depends on HAS_IOMEM
 diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 1be0b633888ff..410ea611d763a 100644
+index 1be0b633888f..410ea611d763 100644
 --- a/drivers/clocksource/Makefile
 +++ b/drivers/clocksource/Makefile
 @@ -61,7 +61,7 @@ obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o

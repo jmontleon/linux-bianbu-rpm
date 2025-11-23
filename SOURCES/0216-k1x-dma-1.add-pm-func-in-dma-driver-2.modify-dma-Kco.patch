@@ -12,7 +12,7 @@ Change-Id: Ia6978dd5cdb545afd5accfa5500bf6c8c8d3f325
  3 files changed, 6 insertions(+), 65 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index abbfabc670d04..0dc7257d0c72f 100644
+index abbfabc670d0..0dc7257d0c72 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -331,6 +331,7 @@ CONFIG_MMC_SDHCI=y
@@ -24,7 +24,7 @@ index abbfabc670d04..0dc7257d0c72f 100644
  CONFIG_USERSPACE_DMA=y
  CONFIG_SW_SYNC=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 04282606eeada..8a093a587400e 100644
+index 04282606eead..8a093a587400 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -448,11 +448,12 @@ config MILBEAUT_XDMAC
@@ -54,7 +54,7 @@ index 04282606eeada..8a093a587400e 100644
  config SPACEMIT_PDMA_SUPPORT_64BIT
  	bool "MMP PDMA support the 64-bit address"
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index 8d45bccbbca13..5c79fb733ca0b 100644
+index 8d45bccbbca1..5c79fb733ca0 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -162,7 +162,6 @@ struct mmp_pdma_device {

@@ -12,7 +12,7 @@ Change-Id: I6a0c54e2c5d425f53a57218f4dc59c25357c2877
  create mode 100644 arch/riscv/include/asm/rwonce.h
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 256917ec7b58b..a3cc5e23de414 100644
+index 256917ec7b58..a3cc5e23de41 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -150,6 +150,13 @@ config BIND_THREAD_TO_AICORES
@@ -31,7 +31,7 @@ index 256917ec7b58b..a3cc5e23de414 100644
  endmenu # "SoC selection"
 diff --git a/arch/riscv/include/asm/rwonce.h b/arch/riscv/include/asm/rwonce.h
 new file mode 100644
-index 0000000000000..349b8792aedb2
+index 000000000000..349b8792aedb
 --- /dev/null
 +++ b/arch/riscv/include/asm/rwonce.h
 @@ -0,0 +1,44 @@

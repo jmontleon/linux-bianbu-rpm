@@ -12,7 +12,7 @@ Change-Id: Iedb10b0ff7742cab490b2d61b0ff41d077bd5527
  mode change 100755 => 100644 drivers/spi/spi-k1x.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e65dd2188ac8d..433379936f86d 100644
+index e65dd2188ac8..433379936f86 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1001,7 +1001,8 @@ spi0: spi@d4026000 {
@@ -48,7 +48,7 @@ index e65dd2188ac8d..433379936f86d 100644
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
 old mode 100755
 new mode 100644
-index ff2590b188623..f013b91d6c096
+index ff2590b18862..f013b91d6c09
 --- a/drivers/spi/spi-k1x.c
 +++ b/drivers/spi/spi-k1x.c
 @@ -416,7 +416,7 @@ static irqreturn_t ssp_int(int irq, void *dev_id)

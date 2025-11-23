@@ -21,7 +21,7 @@ Change-Id: Id5f873f389ffaf95ae514fe5360beaaba3d1c617
  13 files changed, 87 insertions(+), 109 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
-index 079332eba7e93..cfa07c8c7f872 100644
+index 079332eba7e9..cfa07c8c7f87 100644
 --- a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 +++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 @@ -338,7 +338,7 @@ static void dphy_get_setting(struct spacemit_dphy_ctx *dphy_ctx, struct device_n
@@ -70,7 +70,7 @@ index 079332eba7e93..cfa07c8c7f872 100644
  	if (!dphy_ctx) {
  		pr_err("%s: Param is NULL\n",__func__);
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
-index d3e262cc85b63..9245ee407c291 100644
+index d3e262cc85b6..9245ee407c29 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 @@ -168,7 +168,7 @@ static void dump_dpu_regs_by_enum(void __iomem *io_base, phys_addr_t phy_base, d
@@ -83,7 +83,7 @@ index d3e262cc85b63..9245ee407c291 100644
  	int size = ARRAY_SIZE(SATURN_LE_DPU_REG_ENUM_LISTS);
  	int i = 0;
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index e4862f19032eb..535f953d28616 100644
+index e4862f19032e..535f953d2861 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -165,20 +165,18 @@ const u32 saturn_le_rdma_fixed_fbcmem_sizes[] = {
@@ -146,7 +146,7 @@ index e4862f19032eb..535f953d28616 100644
  
  }
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
-index 8ef2eff9a2d50..d4a05bf185ddb 100644
+index 8ef2eff9a2d5..d4a05bf185dd 100644
 --- a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 @@ -706,7 +706,7 @@ static void dsi_ready_dphy(struct spacemit_dsi_device* device_ctx)
@@ -219,7 +219,7 @@ index 8ef2eff9a2d50..d4a05bf185ddb 100644
  	uint32_t irq_st;
  
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 7d222c80f075f..3ca4762bf5f2b 100644
+index 7d222c80f075..3ca4762bf5f2 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -206,7 +206,7 @@ static struct lt8911exb *panel_to_lt8911exb(struct drm_panel *panel)
@@ -443,7 +443,7 @@ index 7d222c80f075f..3ca4762bf5f2b 100644
  #ifdef _uart_debug_
  	unsigned int reg;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.c b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
-index 1bd746026330f..26ff6af49f8f8 100644
+index 1bd746026330..26ff6af49f8f 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 @@ -10,6 +10,8 @@
@@ -456,7 +456,7 @@ index 1bd746026330f..26ff6af49f8f8 100644
  static bool spacemit_dpu_free_logo = false;
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 1e2b74024f409..de942a9bf89f6 100644
+index 1e2b74024f40..de942a9bf89f 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -29,7 +29,7 @@
@@ -478,7 +478,7 @@ index 1e2b74024f409..de942a9bf89f6 100644
  			   const struct component_master_ops *m_ops)
  {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 09f4eef6f7285..830f6aaac5526 100644
+index 09f4eef6f728..830f6aaac552 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -227,7 +227,7 @@ static struct sg_table *spacemit_gem_prime_get_sg_table(struct drm_gem_object *g
@@ -500,7 +500,7 @@ index 09f4eef6f7285..830f6aaac5526 100644
  	struct spacemit_gem_object *spacemit_obj = to_spacemit_obj(obj);
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index fa59b6b874dd5..00c85c3f0a2d0 100644
+index fa59b6b874dd..00c85c3f0a2d 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -169,7 +169,8 @@ enum bit_depth{
@@ -662,7 +662,7 @@ index fa59b6b874dd5..00c85c3f0a2d0 100644
  		clk_set_rate(hdmi->hdmi_mclk, clk_val);
  		DRM_INFO("set hdmi mclk=%lld\n", clk_val);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index 680f391d384ad..e7135843a0571 100644
+index 680f391d384a..e7135843a057 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -143,7 +143,8 @@ static int spacemit_panel_unprepare(struct drm_panel *p)
@@ -676,7 +676,7 @@ index 680f391d384ad..e7135843a0571 100644
  
  	if (panel->vdd_2v8 != NULL) {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
-index a979f8612609f..06baa22a32f6e 100644
+index a979f8612609..06baa22a32f6 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_planes.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -572,7 +572,7 @@ static const char * const color_range_name[] = {
@@ -698,7 +698,7 @@ index a979f8612609f..06baa22a32f6e 100644
  
  	if (WARN_ON(supported_encodings == 0 ||
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
-index 6aa3360e578d9..784bf71bac520 100644
+index 6aa3360e578d..784bf71bac52 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -110,7 +110,7 @@ static const struct drm_connector_helper_funcs spacemit_wb_connector_helper_func
@@ -711,7 +711,7 @@ index 6aa3360e578d9..784bf71bac520 100644
  {
  	struct drm_crtc *crtc = NULL;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.h b/drivers/gpu/drm/spacemit/spacemit_wb.h
-index ff1f21a4aff44..de32df877a042 100644
+index ff1f21a4aff4..de32df877a04 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.h
 @@ -54,6 +54,4 @@ struct spacemit_wb {

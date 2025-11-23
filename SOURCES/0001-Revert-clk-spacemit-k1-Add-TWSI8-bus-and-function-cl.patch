@@ -10,7 +10,7 @@ This reverts commit 49625c6e4d90a9221127c49a11eb8c95732bb690.
  1 file changed, 10 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 65e6de030717a..780d164fb5ec9 100644
+index 65e6de030717..780d164fb5ec 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -226,12 +226,6 @@ CCU_MUX_GATE_DEFINE(twsi4_clk, twsi_parents, APBC_TWSI4_CLK_RST, 4, 3, BIT(1), 0

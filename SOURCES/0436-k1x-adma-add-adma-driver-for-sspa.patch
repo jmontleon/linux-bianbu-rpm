@@ -14,7 +14,7 @@ Change-Id: I679388e06182856cee770aeacf0ea8617ce603ef
  create mode 100755 drivers/dma/adma-spacemit.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 0764f459fca0d..f7142dbb6c953 100644
+index 0764f459fca0..f7142dbb6c95 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1016,6 +1016,17 @@ pdma0: pdma@d4000000 {
@@ -36,7 +36,7 @@ index 0764f459fca0d..f7142dbb6c953 100644
  			compatible = "spacemit,k1x-spi";
  			reg = <0x0 0xd4026000 0x0 0x30>;
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 79f573807f585..537c57a08ef0c 100644
+index 79f573807f58..537c57a08ef0 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -583,6 +583,7 @@ CONFIG_RTC_DRV_SA1100=y
@@ -48,7 +48,7 @@ index 79f573807f585..537c57a08ef0c 100644
  # CONFIG_SH_DMAE_BASE is not set
  # CONFIG_TI_EDMA is not set
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 8a093a587400e..a3cde640c51a9 100644
+index 8a093a587400..a3cde640c51a 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -475,6 +475,13 @@ config SPACEMIT_PDMA_SUPPORT_64BIT
@@ -66,7 +66,7 @@ index 8a093a587400e..a3cde640c51a9 100644
  	tristate "MMP Two-Channel DMA support"
  	depends on ARCH_MMP || COMPILE_TEST
 diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index a9f3209523493..db1b5aa158fbb 100644
+index a9f320952349..db1b5aa158fb 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
 @@ -57,6 +57,7 @@ obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
@@ -79,7 +79,7 @@ index a9f3209523493..db1b5aa158fbb 100644
  obj-$(CONFIG_MPC512X_DMA) += mpc512x_dma.o
 diff --git a/drivers/dma/adma-spacemit.c b/drivers/dma/adma-spacemit.c
 new file mode 100755
-index 0000000000000..7032305c068c6
+index 000000000000..7032305c068c
 --- /dev/null
 +++ b/drivers/dma/adma-spacemit.c
 @@ -0,0 +1,696 @@

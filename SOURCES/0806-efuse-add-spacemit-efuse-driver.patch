@@ -15,7 +15,7 @@ Change-Id: Id880a5bf36fb4093eb55e2edc17eba6fbf4205ee
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi
 new file mode 100644
-index 0000000000000..5aee36ef11f64
+index 000000000000..5aee36ef11f6
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi
 @@ -0,0 +1,52 @@
@@ -72,7 +72,7 @@ index 0000000000000..5aee36ef11f64
 +};
 +
 diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index edd811444ce5f..00cfcfa6f42b3 100644
+index edd811444ce5..00cfcfa6f42b 100644
 --- a/drivers/nvmem/Kconfig
 +++ b/drivers/nvmem/Kconfig
 @@ -335,6 +335,16 @@ config NVMEM_SNVS_LPGPR
@@ -93,7 +93,7 @@ index edd811444ce5f..00cfcfa6f42b3 100644
  	tristate "SPMI SDAM Support"
  	depends on SPMI
 diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 2021d59688dbd..e79fcea59e154 100644
+index 2021d59688db..e79fcea59e15 100644
 --- a/drivers/nvmem/Makefile
 +++ b/drivers/nvmem/Makefile
 @@ -68,6 +68,8 @@ obj-$(CONFIG_NVMEM_SC27XX_EFUSE)	+= nvmem-sc27xx-efuse.o
@@ -107,7 +107,7 @@ index 2021d59688dbd..e79fcea59e154 100644
  obj-$(CONFIG_NVMEM_SPRD_EFUSE)		+= nvmem_sprd_efuse.o
 diff --git a/drivers/nvmem/spacemit-efuse.c b/drivers/nvmem/spacemit-efuse.c
 new file mode 100644
-index 0000000000000..782dbf02a8ffa
+index 000000000000..782dbf02a8ff
 --- /dev/null
 +++ b/drivers/nvmem/spacemit-efuse.c
 @@ -0,0 +1,172 @@

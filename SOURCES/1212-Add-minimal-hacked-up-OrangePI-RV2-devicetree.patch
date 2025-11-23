@@ -12,7 +12,7 @@ Limited to supporting basic functionality - USB, MMC and PCIe
  create mode 100644 arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 5c515f4fda247..702d3b367e343 100644
+index 5c515f4fda24..702d3b367e34 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -9,5 +9,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -24,7 +24,7 @@ index 5c515f4fda247..702d3b367e343 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 new file mode 100644
-index 0000000000000..11f7e49314a1d
+index 000000000000..11f7e49314a1
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/x1_orangepi-rv2.dts
 @@ -0,0 +1,991 @@

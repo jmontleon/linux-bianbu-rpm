@@ -26,7 +26,7 @@ Signed-off-by: fuqiang <qiang.fu@spacemit.com>
  14 files changed, 399 insertions(+), 105 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
-index dfe28ce4379ed..534c7ff41f511 100644
+index dfe28ce4379e..534c7ff41f51 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_scheduler.c
 @@ -46,6 +46,7 @@
@@ -117,7 +117,7 @@ index dfe28ce4379ed..534c7ff41f511 100644
      mutex_unlock(&sched->mutex);
  }
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
-index 57030cece21b0..c3b8ef2a347ce 100644
+index 57030cece21b..c3b8ef2a347c 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v2/mve_protocol_def.h
 @@ -1140,7 +1140,8 @@ struct mve_buffer_frame_afbc
@@ -131,7 +131,7 @@ index 57030cece21b0..c3b8ef2a347ce 100644
  
  /*
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
-index 514bde9fbfc67..8ec9e51c57c03 100644
+index 514bde9fbfc6..8ec9e51c57c0 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/external/fw_v3/mve_protocol_def.h
 @@ -1139,7 +1139,8 @@ struct mve_buffer_frame_afbc
@@ -145,7 +145,7 @@ index 514bde9fbfc67..8ec9e51c57c03 100644
  
  /*
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
-index 57922a3d91a39..be23b7b55004f 100644
+index 57922a3d91a3..be23b7b55004 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.c
 @@ -301,12 +301,28 @@ int mvx_buffer_synch(struct mvx_buffer *buf,
@@ -183,7 +183,7 @@ index 57922a3d91a39..be23b7b55004f 100644
  				return ret;
  		}
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
-index c035e23bab4c8..9b26bf95569d3 100644
+index c035e23bab4c..9b26bf95569d 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_buffer.h
 @@ -230,7 +230,9 @@ struct mvx_corrupt_buffer {
@@ -197,7 +197,7 @@ index c035e23bab4c8..9b26bf95569d3 100644
   * External functions
   ****************************************************************************/
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
-index 0ef9d41726677..4dc2a93a89731 100644
+index 0ef9d4172667..4dc2a93a8973 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware.h
 @@ -55,6 +55,15 @@
@@ -229,7 +229,7 @@ index 0ef9d41726677..4dc2a93a89731 100644
  	struct {
  		/**
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
-index ee83f959729c7..e4c2c1d4c57af 100644
+index ee83f959729c..e4c2c1d4c57a 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_firmware_v2.c
 @@ -32,7 +32,6 @@
@@ -820,7 +820,7 @@ index ee83f959729c7..e4c2c1d4c57af 100644
  		fw->ops_priv.send_idle_ack = mvx_fw_send_idle_ack_v2;
  
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index 43733b02b5c7e..de777c89a2502 100644
+index 43733b02b5c7..de777c89a250 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -672,6 +672,39 @@ phys_addr_t mvx_mmu_alloc_page(struct device *dev)
@@ -895,7 +895,7 @@ index 43733b02b5c7e..de777c89a2502 100644
  	} else {
  		MVX_LOG_PRINT(&mvx_log_if, MVX_LOG_WARNING,
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
-index bde1ce4c623ca..ab2311f4f6e5d 100644
+index bde1ce4c623c..ab2311f4f6e5 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.h
 @@ -214,6 +214,24 @@ phys_addr_t mvx_mmu_alloc_page(struct device *dev);
@@ -933,7 +933,7 @@ index bde1ce4c623ca..ab2311f4f6e5d 100644
  /**
   * mvx_mmu_map_pages() - Map an array of pages to a virtual address.
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
-index aa6a69af4ed3c..3a86d8b30e689 100644
+index aa6a69af4ed3..3a86d8b30e68 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 @@ -144,6 +144,7 @@ static void send_event_error(struct mvx_session *session,
@@ -1017,7 +1017,7 @@ index aa6a69af4ed3c..3a86d8b30e689 100644
  			int s = max_t(unsigned int, s1, s2);
  			if (s < 0)
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
-index 7fd35b8f1f71f..79bf62f3510a4 100644
+index 7fd35b8f1f71..79bf62f3510a 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx-v4l2-controls.h
 @@ -130,8 +130,9 @@
@@ -1032,7 +1032,7 @@ index 7fd35b8f1f71f..79bf62f3510a4 100644
  /****************************************************************************
   * HDR color description.
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
-index 7d7903c616e2e..c2f24c768d725 100644
+index 7d7903c616e2..c2f24c768d72 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_buffer.c
 @@ -188,6 +188,10 @@ static int update_mvx_flags(struct mvx_buffer *buf,
@@ -1057,7 +1057,7 @@ index 7d7903c616e2e..c2f24c768d725 100644
          if (buf->dir == MVX_DIR_INPUT) {
              //decode bitstream port
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
-index fabb9b7a391cf..6ea4ebd19322a 100644
+index fabb9b7a391c..6ea4ebd19322 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 @@ -136,6 +136,8 @@ struct mvx_dvfs_ctx_t
@@ -1131,7 +1131,7 @@ index fabb9b7a391cf..6ea4ebd19322a 100644
 +    }
 +}
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
-index f97b6f04b8bdd..900eb8987db1d 100644
+index f97b6f04b8bd..900eb8987db1 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.h
 @@ -87,4 +87,15 @@ void mvx_dvfs_unregister_session(const mvx_session_id session_id);

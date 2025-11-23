@@ -13,7 +13,7 @@ Change-Id: Ifdd7636ac57d3835022d6c36bde36498dc44a86b
  create mode 100644 include/dt-bindings/pinctrl/k1-x-pinctrl.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ed1d28b5fc9df..8cab143537214 100644
+index ed1d28b5fc9d..8cab14353721 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -432,6 +432,23 @@ &cpu3_intc 0xffffffff &cpu3_intc 9
@@ -42,7 +42,7 @@ index ed1d28b5fc9df..8cab143537214 100644
  			reg = <0x0 0xd4017000 0x0 0x100>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 new file mode 100644
-index 0000000000000..86187b17a75ed
+index 000000000000..86187b17a75e
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -0,0 +1,1087 @@
@@ -1135,7 +1135,7 @@ index 0000000000000..86187b17a75ed
 +
 diff --git a/include/dt-bindings/pinctrl/k1-x-pinctrl.h b/include/dt-bindings/pinctrl/k1-x-pinctrl.h
 new file mode 100644
-index 0000000000000..aa92d7a96d898
+index 000000000000..aa92d7a96d89
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/k1-x-pinctrl.h
 @@ -0,0 +1,198 @@

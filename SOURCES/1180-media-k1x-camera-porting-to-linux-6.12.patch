@@ -13,7 +13,7 @@ Change-Id: I79d44eba0710d966ebc2d6b170b643683da9b43c
  5 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
-index c60e5cedf46e6..40ae02ae184ff 100644
+index c60e5cedf46e..40ae02ae184f 100644
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_vdev.c
 @@ -734,7 +734,7 @@ static int spm_cvdev_vidioc_querycap(struct file *file, void *fh, struct v4l2_ca
@@ -37,7 +37,7 @@ index c60e5cedf46e6..40ae02ae184ff 100644
  	ac_vnode->vnode.queue = &ac_vnode->buf_queue;
  	ac_vnode->vnode.fops = &spm_ccic_file_operations;
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
-index cfab6f543e531..eb43f9d44443c 100644
+index cfab6f543e53..eb43f9d44443 100644
 --- a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 @@ -199,7 +199,7 @@ static int plat_cam_probe(struct platform_device *pdev)
@@ -50,7 +50,7 @@ index cfab6f543e531..eb43f9d44443c 100644
  	ret = __media_device_register(v4l2_dev->mdev, NULL);
  	if (ret)
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index a1bd81c30ee55..b4ad8e0e10464 100644
+index a1bd81c30ee5..b4ad8e0e1046 100644
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -4120,7 +4120,7 @@ struct fe_hdr_combine *fe_hdr_combine_create(unsigned int grp_id, void *isp_ctx)
@@ -63,7 +63,7 @@ index a1bd81c30ee55..b4ad8e0e10464 100644
  	if (ret) {
  		cam_err("%s spm_subdev_init fail ret=%d.", __func__, ret);
 diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.c b/drivers/media/platform/spacemit/camera/vi/subdev.c
-index 2280bd21ebe34..2be31223da8c0 100644
+index 2280bd21ebe3..2be31223da8c 100644
 --- a/drivers/media/platform/spacemit/camera/vi/subdev.c
 +++ b/drivers/media/platform/spacemit/camera/vi/subdev.c
 @@ -111,7 +111,7 @@ int spm_subdev_init(unsigned int grp_id,
@@ -90,7 +90,7 @@ index 2280bd21ebe34..2be31223da8c0 100644
  		cap->device_caps = V4L2_CAP_STREAMING | V4L2_CAP_VIDEO_CAPTURE_MPLANE;
  	}
 diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.c b/drivers/media/platform/spacemit/camera/vi/vdev.c
-index c38658c1bf1ca..3581155f94ddc 100644
+index c38658c1bf1c..3581155f94dd 100644
 --- a/drivers/media/platform/spacemit/camera/vi/vdev.c
 +++ b/drivers/media/platform/spacemit/camera/vi/vdev.c
 @@ -1396,7 +1396,7 @@ static int spm_vdev_vidioc_streamoff(struct file *file, void *fn, enum v4l2_buf_

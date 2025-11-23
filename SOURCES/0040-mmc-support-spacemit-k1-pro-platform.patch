@@ -13,7 +13,7 @@ Change-Id: I86991ea287f50044bc05934b73f16e4f0aa3eab3
  create mode 100644 drivers/mmc/host/sdhci-of-spacemit.c
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 607b3100ad1a8..0c83d64e11f49 100644
+index 607b3100ad1a..0c83d64e11f4 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -130,6 +130,12 @@ CONFIG_USB_GADGET=y
@@ -30,7 +30,7 @@ index 607b3100ad1a8..0c83d64e11f49 100644
  CONFIG_SW_SYNC=y
  CONFIG_UDMABUF=y
 diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 5cc415ba4f550..3baa8d94c0df1 100644
+index 5cc415ba4f55..3baa8d94c0df 100644
 --- a/drivers/mmc/host/Kconfig
 +++ b/drivers/mmc/host/Kconfig
 @@ -288,6 +288,19 @@ config MMC_SDHCI_OF_MA35D1
@@ -54,7 +54,7 @@ index 5cc415ba4f550..3baa8d94c0df1 100644
  	tristate "SDHCI support for the Cadence SD/SDIO/eMMC controller"
  	depends on MMC_SDHCI_PLTFM
 diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 5057fea8afb69..ef3ee12396134 100644
+index 5057fea8afb6..ef3ee1239613 100644
 --- a/drivers/mmc/host/Makefile
 +++ b/drivers/mmc/host/Makefile
 @@ -92,6 +92,7 @@ obj-$(CONFIG_MMC_SDHCI_OF_DWCMSHC)	+= sdhci-of-dwcmshc.o
@@ -67,7 +67,7 @@ index 5057fea8afb69..ef3ee12396134 100644
  obj-$(CONFIG_MMC_SDHCI_NPCM)		+= sdhci-npcm.o
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
 new file mode 100644
-index 0000000000000..f334efd373c42
+index 000000000000..f334efd373c4
 --- /dev/null
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -0,0 +1,418 @@

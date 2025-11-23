@@ -12,7 +12,7 @@ Change-Id: I79d381496c0aa525cf65a719248b201f34d14d16
  4 files changed, 45 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ff0a738be0f82..d52f07c464800 100644
+index ff0a738be0f8..d52f07c46480 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -589,8 +589,9 @@ ccu: clock-controller@d4050000 {
@@ -28,7 +28,7 @@ index ff0a738be0f82..d52f07c464800 100644
  				<&clk_32k>;
  			clock-names = "vctcxo_24", "vctcxo_3", "vctcxo_1", "pll1_2457p6_vco",
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index d4370c4dcdda9..fefd84d2ee0be 100755
+index d4370c4dcdda..fefd84d2ee0b 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -113,6 +113,7 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -118,7 +118,7 @@ index d4370c4dcdda9..fefd84d2ee0be 100755
  	ret = spacemit_ccu_probe(np, clk_info, hw_clks);
  	//LOG_INFO("init clock finish");
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
-index 46577e2543284..44b81cbf8daaa 100755
+index 46577e254328..44b81cbf8daa 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.h
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 @@ -20,6 +20,7 @@ enum ccu_base_type{
@@ -138,7 +138,7 @@ index 46577e2543284..44b81cbf8daaa 100755
  
  struct clk_hw_table {
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 4abf7b20ec64c..430e87f5843d6 100755
+index 4abf7b20ec64..430e87f5843d 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -189,5 +189,9 @@

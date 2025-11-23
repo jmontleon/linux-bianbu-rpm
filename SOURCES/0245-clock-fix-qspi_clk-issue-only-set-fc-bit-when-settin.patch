@@ -11,7 +11,7 @@ Change-Id: Ic97960f51cfbf62f8cb02e8ec25aedee8f12e24b
  2 files changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 57f068a2a533a..97fede50d908e 100755
+index 57f068a2a533..97fede50d908 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -848,7 +848,7 @@ static SPACEMIT_CCU_GATE_NO_PARENT(usb30_clk, "usb30_clk", NULL,
@@ -24,7 +24,7 @@ index 57f068a2a533a..97fede50d908e 100755
  	9, 3, BIT(12),
  	6, 3, BIT(4), BIT(4), 0x0,
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index d75862e838f41..636ae25a4656c 100755
+index d75862e838f4..636ae25a4656 100755
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -269,6 +269,27 @@ struct ccu_mix {
