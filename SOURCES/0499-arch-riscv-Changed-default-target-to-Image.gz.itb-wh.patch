@@ -1,4 +1,4 @@
-From 7320c4e2139ac8637668d3610533e5ce73d10d87 Mon Sep 17 00:00:00 2001
+From f6b73b16e452e79c8be0ac64612cf884036fda6e Mon Sep 17 00:00:00 2001
 From: James Deng <james.deng@spacemit.com>
 Date: Fri, 15 Mar 2024 21:30:54 +0800
 Subject: [PATCH 0499/1222] arch:riscv: Changed default target to Image.gz.itb
@@ -10,7 +10,7 @@ Change-Id: I5977f9d6b73fd648161f730489520962c6365051
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index ea8229fa696a..816cf066f72c 100644
+index abf55cd128a4..5ce50efc0cf4 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -149,7 +149,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
@@ -23,5 +23,5 @@ index ea8229fa696a..816cf066f72c 100644
  KBUILD_IMAGE := $(boot)/vmlinuz.efi
  endif
 -- 
-2.51.1
+2.52.0
 

@@ -1,4 +1,4 @@
-From 0a4233838c2854e6b76dda46ff332ec1de0f1e5b Mon Sep 17 00:00:00 2001
+From 04280d20524c1a126836ea2ce3ea7a4bc178ae66 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:18:40 +0800
 Subject: [PATCH 1169/1222] usb: gadget: fix compile warning
@@ -34,5 +34,5 @@ index 629f7bbc7eeb..85960a6505ce 100644
  	writel((readl(reg) & ~clear_mask) | set_mask, reg);
  }
 -- 
-2.51.1
+2.52.0
 

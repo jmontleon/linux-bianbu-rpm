@@ -1,4 +1,4 @@
-From 195f4133dfcf4a1a5f779bc61e77e6d5863090e4 Mon Sep 17 00:00:00 2001
+From 2d32703a9328f537a6c7b7b979a23d564e63d1ae Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 29 Aug 2024 18:40:43 +0800
 Subject: [PATCH 0989/1222] k1x_udc_core: fix missing STATUS IN in control out
@@ -32,5 +32,5 @@ index dae5be9edbc3..f05ef390979f 100644
  	list_add_tail(&req->queue, &ep->queue);
  	spin_unlock_irqrestore(&udc->lock, flags);
 -- 
-2.51.1
+2.52.0
 

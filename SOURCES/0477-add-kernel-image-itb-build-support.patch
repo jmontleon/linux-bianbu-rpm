@@ -1,4 +1,4 @@
-From 71b65af41e8d48d0659e134e153602c72d5e0adf Mon Sep 17 00:00:00 2001
+From e2bc1e79a3c3d10c255451a6f673ebb9d8690f0c Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Mon, 11 Mar 2024 17:40:22 +0800
 Subject: [PATCH 0477/1222] add kernel image itb build support
@@ -14,7 +14,7 @@ Change-Id: I69c1807dd292e8702d175806dfff4ee4fcf00ab0
  create mode 100644 arch/riscv/generic/Platform
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index df57654a615e..d1c0937584a6 100644
+index c4e394ede625..8303bfa5bed6 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -191,13 +191,19 @@ vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.db
@@ -138,5 +138,5 @@ index 000000000000..6247acb3499f
 +
 +its-y	:= Image.its.S
 -- 
-2.51.1
+2.52.0
 

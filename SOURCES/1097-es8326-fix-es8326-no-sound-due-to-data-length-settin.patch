@@ -1,4 +1,4 @@
-From 8a34bc1d84e3b4a723380637c649456e156bb9f2 Mon Sep 17 00:00:00 2001
+From 1cf49dae56942f4a9abe0ee5370c2b87bb174097 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 18 Oct 2024 19:04:46 +0800
 Subject: [PATCH 1097/1222] es8326: fix es8326 no sound due to data-length
@@ -22,5 +22,5 @@ index c19cb2e6b278..f94ce8ec01dd 100644
  	if (es8326->version > ES8326_VERSION_B) {
  		regmap_update_bits(es8326->regmap, ES8326_ANA_MICBIAS, 0x73, 0x10);
 -- 
-2.51.1
+2.52.0
 

@@ -1,4 +1,4 @@
-From f240281122052bcc1928a262a71a620f5dd35369 Mon Sep 17 00:00:00 2001
+From edaef306adf344925763bde1ffd228241e98bc13 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
 Subject: [PATCH 0105/1222] hotplug: we'd better flush the local & l2 cache
@@ -27,10 +27,10 @@ index 341e74238aa0..230f017ff54f 100644
  
  enum sbi_ext_time_fid {
 diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
-index a1e38ecfc8be..864e68faee73 100644
+index 3f50d3dd76c6..3679becae6ac 100644
 --- a/arch/riscv/kernel/cpu-hotplug.c
 +++ b/arch/riscv/kernel/cpu-hotplug.c
-@@ -68,8 +68,16 @@ void __noreturn arch_cpu_idle_dead(void)
+@@ -69,8 +69,16 @@ void __noreturn arch_cpu_idle_dead(void)
  {
  	idle_task_exit();
  
@@ -99,5 +99,5 @@ index 4d7cf338824a..4f792d6d7e39 100644
  	error = cpuhp_setup_state(CPUHP_AP_RISCV_TIMER_STARTING,
  			 "clockevents/riscv/timer:starting",
 -- 
-2.51.1
+2.52.0
 

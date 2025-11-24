@@ -1,4 +1,4 @@
-From ab1447da4f4d81f25bfc64e05736bc5ac9946eb8 Mon Sep 17 00:00:00 2001
+From db5015c7aa781ba311a2417581c92b49bbc46926 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 09:58:09 +0800
 Subject: [PATCH 0685/1222] k1: cpu: fix compilation errs
@@ -29,7 +29,7 @@ index 230f017ff54f..fc58b8fb1f89 100644
  				unsigned long start,
  				unsigned long size,
 diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
-index 864e68faee73..a0d5a3169d07 100644
+index 3679becae6ac..16c6b68981d1 100644
 --- a/arch/riscv/kernel/cpu-hotplug.c
 +++ b/arch/riscv/kernel/cpu-hotplug.c
 @@ -15,6 +15,7 @@
@@ -41,5 +41,5 @@ index 864e68faee73..a0d5a3169d07 100644
  bool cpu_has_hotplug(unsigned int cpu)
  {
 -- 
-2.51.1
+2.52.0
 

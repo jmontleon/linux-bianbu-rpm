@@ -1,4 +1,4 @@
-From a593ccd4a4a5075c16c00b7f4149057d8bd41d96 Mon Sep 17 00:00:00 2001
+From 0f0a9d979df10b167e4cdd0a41f047764f098815 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Fri, 15 Mar 2024 10:18:50 +0800
 Subject: [PATCH 0496/1222] add compressed(gzip) kernel itb build
@@ -10,7 +10,7 @@ Change-Id: I5ad336fa1612377306d6f41b3cff6a495e3f9acf
  2 files changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index d1c0937584a6..ea8229fa696a 100644
+index 8303bfa5bed6..abf55cd128a4 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -197,7 +197,7 @@ BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zs
@@ -60,5 +60,5 @@ index 1d6345d4ee87..cae46277fdfb 100644
  EFI_ZBOOT_BFD_TARGET	:= elf$(BITS)-littleriscv
  EFI_ZBOOT_MACH_TYPE	:= RISCV$(BITS)
 -- 
-2.51.1
+2.52.0
 

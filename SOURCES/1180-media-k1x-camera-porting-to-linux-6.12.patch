@@ -1,4 +1,4 @@
-From 5f0274988a1442225581ed109867e84525ca60f3 Mon Sep 17 00:00:00 2001
+From 5b830f4d2058ac49dc4ef81aac53ef776692afd6 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:26:48 +0800
 Subject: [PATCH 1180/1222] media: k1x/camera: porting to linux-6.12
@@ -123,5 +123,5 @@ index c38658c1bf1c..3581155f94dd 100644
  	sc_vnode->vnode.fops = &spm_camera_file_operations;
  	sc_vnode->vnode.ioctl_ops = &spm_camera_v4l2_ioctl_ops;
 -- 
-2.51.1
+2.52.0
 

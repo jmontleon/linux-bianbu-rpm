@@ -1,4 +1,4 @@
-From 71a6d3fa2818a94c2de8582717ee2a426ba9865b Mon Sep 17 00:00:00 2001
+From e12ee7eb3d9d046ecf9799a93ec4f6eeecc71370 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:58:37 +0800
 Subject: [PATCH 1144/1222] riscv: restore vmlinux target building command
@@ -9,7 +9,7 @@ Change-Id: I70b33d83c5061cad7ba80fed6ecd0604413f4c1d
  1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 816cf066f72c..df57654a615e 100644
+index 5ce50efc0cf4..c4e394ede625 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
 @@ -149,7 +149,7 @@ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
@@ -44,5 +44,5 @@ index 816cf066f72c..df57654a615e 100644
  
  # the install target always installs KBUILD_IMAGE (which may be compressed)
 -- 
-2.51.1
+2.52.0
 

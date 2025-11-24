@@ -1,4 +1,4 @@
-From 21ca410f5402dd758f6b089ac834a224ba79c5fe Mon Sep 17 00:00:00 2001
+From d785ea0aa579f9964571df1e6149812e51640aad Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 10:30:37 +0800
 Subject: [PATCH 1032/1222] nvme: expose allocation or mapping failure reports
@@ -46,5 +46,5 @@ index 8ed5f1941f05..78a674ee41c5 100644
  out_free_descs:
  	dma_free_coherent(dev->dev, descs_size, descs, descs_dma);
 -- 
-2.51.1
+2.52.0
 

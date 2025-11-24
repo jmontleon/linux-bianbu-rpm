@@ -1,4 +1,4 @@
-From 8cbc02985b499c6c9bd5a400a83e58154f2c4597 Mon Sep 17 00:00:00 2001
+From 0056cc3b4145f2299a08f14bedf8379491a334dd Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 12 Sep 2024 21:07:59 +0800
 Subject: [PATCH 1003/1222] usb: f_uvc: use GFP_DMA32 for vb2_queue at spacemit
@@ -33,5 +33,5 @@ index 9a1bbd79ff5a..970ff82dd256 100644
  	ret = vb2_queue_init(&queue->queue);
  	if (ret)
 -- 
-2.51.1
+2.52.0
 

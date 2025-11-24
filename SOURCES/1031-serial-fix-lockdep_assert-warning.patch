@@ -1,4 +1,4 @@
-From 136b240c0c8ed44821ee584124315b1e0ccfa9f7 Mon Sep 17 00:00:00 2001
+From 365bb9ef09d602fd77a2f803aca8fc2261598171 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 11:11:01 +0800
 Subject: [PATCH 1031/1222] serial: fix lockdep_assert warning
@@ -61,5 +61,5 @@ index ca16dd56c231..50d49151a097 100644
  	wake_up_interruptible(&up->port.state->port.delta_msr_wait);
  }
 -- 
-2.51.1
+2.52.0
 

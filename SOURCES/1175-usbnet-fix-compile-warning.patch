@@ -1,4 +1,4 @@
-From eeac2298cd96121a0a9ef3210db24dfd26b8459e Mon Sep 17 00:00:00 2001
+From 5df4268e11e3c8414136ab70657519973eec8b95 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:23:28 +0800
 Subject: [PATCH 1175/1222] usbnet: fix compile warning
@@ -22,5 +22,5 @@ index 3f540f3c0cf8..e53a60d2ea0a 100644
      struct usbnet * usbnetdev = netdev_priv( netdev );
      struct qmi_wwan_state *info = (void *)&usbnetdev->data;
 -- 
-2.51.1
+2.52.0
 
