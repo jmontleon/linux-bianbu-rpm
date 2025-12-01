@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.17.9
-%define specversion 6.17.9
+%define specrpmversion 6.17.10
+%define specversion 6.17.10
 %define patchversion 6.17
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.17.9
+%define tarfile_release 6.17.10
 # This is needed to do merge window version magic
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.17.9
+%define kabiversion 6.17.10
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6847,6 +6847,10 @@ fi\
 #
 #
 %changelog
+* Mon Dec 01 2025 Augusto Caringi <acaringi@redhat.com> [6.17.10-0]
+- Revert "gpio: swnode: don't use the swnode's name as the key for GPIO lookup" (Justin M. Forbes)
+- Linux v6.17.10
+
 * Mon Nov 24 2025 Augusto Caringi <acaringi@redhat.com> [6.17.9-0]
 - Change RZ_DMAC from m to y for Fedora (Justin M. Forbes)
 - Linux v6.17.9
