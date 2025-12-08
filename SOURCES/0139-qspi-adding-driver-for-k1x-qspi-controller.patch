@@ -1,4 +1,4 @@
-From cd02cce69570ef1183d3ea151f8b81bc8499effe Mon Sep 17 00:00:00 2001
+From ffd86f2539cd93821965b878503c37b093dc928b Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 12 Oct 2023 19:24:26 +0800
 Subject: [PATCH 0139/1222] qspi: adding driver for k1x qspi controller
@@ -58,7 +58,7 @@ index d55106762211..cade7cecf55c 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index f5aa831e54ac..36172102e6f3 100644
+index 81b9d154810b..ac145829372d 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -342,6 +342,14 @@ config SPI_DESIGNWARE_EXT

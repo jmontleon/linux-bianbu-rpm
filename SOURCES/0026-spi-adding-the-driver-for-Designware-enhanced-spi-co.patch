@@ -1,4 +1,4 @@
-From 9382afe5f6e13de333cf2c5a1d2e9bd896f04588 Mon Sep 17 00:00:00 2001
+From 2b50d2bedae5ef26698ab0976cc766d45cd9d4bc Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 8 May 2023 15:30:53 +0800
 Subject: [PATCH 0026/1222] spi: adding the driver for Designware enhanced spi
@@ -77,7 +77,7 @@ index 5921100f6b24..6a711b3074d2 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 891729c9c564..f5aa831e54ac 100644
+index 9f20cb75bb85..81b9d154810b 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -336,6 +336,12 @@ config SPI_DAVINCI
