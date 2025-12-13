@@ -1,4 +1,4 @@
-From 7a91d6d29a998abe7fd3a2ceea3fb0f49388e115 Mon Sep 17 00:00:00 2001
+From 1d35ed8a843e57792d39d2a2da1cb0535f0b0df4 Mon Sep 17 00:00:00 2001
 From: yangchen <chen.yang@spacemit.com>
 Date: Sat, 13 Jan 2024 01:46:16 +0800
 Subject: [PATCH 0388/1232] display: Support kernel logo
@@ -90,10 +90,10 @@ index b290476a23d1..e9941fb95ce7 100644
  	return 0;
  
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 9bd3c3814b5c..3052eb002b2e 100644
+index e7e07eb2142e..26a90223ec2f 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1152,6 +1152,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
+@@ -1154,6 +1154,7 @@ static void fbcon_init(struct vc_data *vc, bool init)
  	} else
  		vc_resize(vc, new_cols, new_rows);
  
@@ -101,7 +101,7 @@ index 9bd3c3814b5c..3052eb002b2e 100644
  	if (logo)
  		fbcon_prepare_logo(vc, info, cols, rows, new_cols, new_rows);
  
-@@ -2202,6 +2203,7 @@ static bool fbcon_switch(struct vc_data *vc)
+@@ -2204,6 +2205,7 @@ static bool fbcon_switch(struct vc_data *vc)
  	fbcon_set_palette(vc, color_table);
  	fbcon_clear_margins(vc, 0);
  
@@ -12728,5 +12728,5 @@ index 3c14e43b82fe..eb389b715f00 100644
 +0 0 0  0 0 0  0 0 0  0 0 0  0 0 0  0 0 0
 +0 0 0  0 0 0  0 0 0  0 0 0
 -- 
-2.51.1
+2.52.0
 

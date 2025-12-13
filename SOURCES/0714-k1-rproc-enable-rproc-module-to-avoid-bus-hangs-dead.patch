@@ -1,4 +1,4 @@
-From c7b50274bcbae0a2d532b17a2c38b17f934235db Mon Sep 17 00:00:00 2001
+From 362a29cb6b037abfeb63ea562aeaec2724a69385 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 7 Jun 2024 14:14:31 +0800
 Subject: [PATCH 0714/1232] k1: rproc: enable rproc module to avoid bus hangs
@@ -61,5 +61,5 @@ index c92bdb462efa..89a66efa97b3 100644
  	rproc = devm_rproc_alloc(dev, np->name, &spacemit_rproc_ops,
  				fw_name, sizeof(*priv));
 -- 
-2.51.1
+2.52.0
 

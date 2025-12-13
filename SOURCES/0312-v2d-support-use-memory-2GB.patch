@@ -1,4 +1,4 @@
-From b7ce169c36cee05ffb141817713433a431789e87 Mon Sep 17 00:00:00 2001
+From c8b0e69f6b053dbb98450ae621c7b1d9a63d390a Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 2 Jan 2024 11:06:20 +0800
 Subject: [PATCH 0312/1232] v2d: support use memory > 2GB
@@ -37,5 +37,5 @@ index 60d2ba66901e..f26ea816a679 100644
  		if (!IS_ALIGNED(s->offset, res->page_size)) {
  			pr_err("v2d iommu paddr not aligned: iova %lx, paddr %llx, size %lx\n",
 -- 
-2.51.1
+2.52.0
 

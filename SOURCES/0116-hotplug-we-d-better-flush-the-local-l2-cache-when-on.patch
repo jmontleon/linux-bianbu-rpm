@@ -1,4 +1,4 @@
-From d7ca27f62e298e59f1b7c030d9a7abc67acc3695 Mon Sep 17 00:00:00 2001
+From 1ca60ae58992e481b2ac87a1e288e89c52da51ac Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 4 Sep 2023 13:45:34 +0800
 Subject: [PATCH 0116/1232] hotplug: we'd better flush the local & l2 cache
@@ -48,7 +48,7 @@ index 3f50d3dd76c6..3679becae6ac 100644
  	/* It should never reach here */
  	BUG();
 diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 5e8cde055264..3babcd362bc2 100644
+index c443337056ab..180b294ef9d5 100644
 --- a/arch/riscv/kernel/sbi.c
 +++ b/arch/riscv/kernel/sbi.c
 @@ -486,6 +486,15 @@ int sbi_remote_hfence_vvma(const struct cpumask *cpu_mask,
@@ -99,5 +99,5 @@ index 4d7cf338824a..4f792d6d7e39 100644
  	error = cpuhp_setup_state(CPUHP_AP_RISCV_TIMER_STARTING,
  			 "clockevents/riscv/timer:starting",
 -- 
-2.51.1
+2.52.0
 

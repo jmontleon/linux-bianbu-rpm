@@ -1,4 +1,4 @@
-From b3fd0a3c7adaa8386cc96ad92cea45adea0c72c5 Mon Sep 17 00:00:00 2001
+From f0ff8e0b9dd4cdddac35bb24bc9fa2792f115cb2 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 26 Jan 2024 15:42:02 +0800
 Subject: [PATCH 0419/1232] display: disable kernel logo
@@ -23,10 +23,10 @@ index e73d8707cf95..20bea54d79fb 100644
  CONFIG_USB=y
  CONFIG_USB_XHCI_HCD=y
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 3052eb002b2e..9bd3c3814b5c 100644
+index 26a90223ec2f..e7e07eb2142e 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1152,7 +1152,6 @@ static void fbcon_init(struct vc_data *vc, bool init)
+@@ -1154,7 +1154,6 @@ static void fbcon_init(struct vc_data *vc, bool init)
  	} else
  		vc_resize(vc, new_cols, new_rows);
  
@@ -34,7 +34,7 @@ index 3052eb002b2e..9bd3c3814b5c 100644
  	if (logo)
  		fbcon_prepare_logo(vc, info, cols, rows, new_cols, new_rows);
  
-@@ -2203,7 +2202,6 @@ static bool fbcon_switch(struct vc_data *vc)
+@@ -2205,7 +2204,6 @@ static bool fbcon_switch(struct vc_data *vc)
  	fbcon_set_palette(vc, color_table);
  	fbcon_clear_margins(vc, 0);
  
@@ -12661,5 +12661,5 @@ index e7275acdd326..3c14e43b82fe 100644
 +  0   0   0   0   0   0   0   0   0   0   0   0
 +  0   0   0   0   0   0   0   0   0   0   0   0
 -- 
-2.51.1
+2.52.0
 

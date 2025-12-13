@@ -1,4 +1,4 @@
-From 16e6089a30b3816620b191bdab786f45d4bf07e6 Mon Sep 17 00:00:00 2001
+From 8ac61d5a66dd304b422d9cc071fe7191dad9ce4a Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 19 Oct 2025 12:07:56 -0400
 Subject: [PATCH 0019/1232] Revert "tty: serial: atmel: make it selectable for
@@ -23,5 +23,5 @@ index 282116765e64..8523ccfb364d 100644
  	select SERIAL_MCTRL_GPIO if GPIOLIB
  	select MFD_AT91_USART
 -- 
-2.51.1
+2.52.0
 

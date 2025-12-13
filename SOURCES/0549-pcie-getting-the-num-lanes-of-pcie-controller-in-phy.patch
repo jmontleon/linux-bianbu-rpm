@@ -1,4 +1,4 @@
-From 9eb2e3f5337d120e344947083927cdfe60ffad39 Mon Sep 17 00:00:00 2001
+From a84cca959d8809dc195ede9bf38608a6ec1b485e Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Fri, 29 Mar 2024 17:48:16 +0800
 Subject: [PATCH 0549/1232] pcie: getting the num lanes of pcie controller in
@@ -52,5 +52,5 @@ index ffbb316ed864..9988e1405aaa 100755
  	k1x->clk_pcie = devm_clk_get(dev, "pcie-clk");
  	if (IS_ERR(k1x->clk_pcie))
 -- 
-2.51.1
+2.52.0
 
