@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.17.11
-%define specversion 6.17.11
+%define specrpmversion 6.17.12
+%define specversion 6.17.12
 %define patchversion 6.17
 %define pkgrelease 300
 %define kversion 6
-%define tarfile_release 6.17.11
+%define tarfile_release 6.17.12
 # This is needed to do merge window version magic
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 300%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.17.11
+%define kabiversion 6.17.12
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6847,6 +6847,9 @@ fi\
 #
 #
 %changelog
+* Sat Dec 13 2025 Justin M. Forbes <jforbes@fedoraproject.org> [6.17.12-0]
+- Linux v6.17.12
+
 * Mon Dec 08 2025 Augusto Caringi <acaringi@redhat.com> [6.17.11-0]
 - Fix up config issue related to CONFIG_SCHED_PROXY_EXEC (Augusto Caringi)
 - Prepare for F41 EOL (Justin M. Forbes)

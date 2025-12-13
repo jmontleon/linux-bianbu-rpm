@@ -1,4 +1,4 @@
-From aca06c2aaec4d457950f8241a9bba88394fae76d Mon Sep 17 00:00:00 2001
+From ed3acce057158eaf7ac4f3aea25aadcd29febaaf Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sun, 28 Apr 2024 21:36:30 +0800
 Subject: [PATCH 0623/1222] nvme: change the segment size of io request queue
@@ -13,7 +13,7 @@ Change-Id: I7b02572742dd5b9ff26de6e469dce71c20741aae
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 5714d4993282..234281f61291 100644
+index 28c598008124..67c1b102e3eb 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
 @@ -2387,6 +2387,10 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
