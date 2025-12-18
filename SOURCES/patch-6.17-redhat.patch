@@ -124,7 +124,7 @@ index 97d958c945e4f..c7e27e2edfe45 100644
  M:	David E. Box <david.e.box@linux.intel.com>
  S:	Supported
 diff --git a/Makefile b/Makefile
-index 49052b0058545..1158dc6ba7777 100644
+index dcfa99bf0e1b9..6781488b094b2 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -1855,7 +1855,7 @@ index d4af17fdba467..154f0403cbf4c 100644
  	data->xport.ops = &hid_rmi_ops;
  
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 4b98a7bf4cb73..441e6fa3bed2a 100644
+index 3906818e65c8a..65702c02e2a56 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
 @@ -12,6 +12,7 @@
@@ -1866,7 +1866,7 @@ index 4b98a7bf4cb73..441e6fa3bed2a 100644
  #include <linux/io.h>
  #include <linux/err.h>
  #include <linux/fs.h>
-@@ -2451,6 +2452,16 @@ static const struct amba_id etm4_ids[] = {
+@@ -2486,6 +2487,16 @@ static const struct amba_id etm4_ids[] = {
  	{},
  };
  
@@ -1883,7 +1883,7 @@ index 4b98a7bf4cb73..441e6fa3bed2a 100644
  MODULE_DEVICE_TABLE(amba, etm4_ids);
  
  static struct amba_driver etm4x_amba_driver = {
-@@ -2525,6 +2536,11 @@ static int __init etm4x_init(void)
+@@ -2560,6 +2571,11 @@ static int __init etm4x_init(void)
  {
  	int ret;
  
@@ -1895,7 +1895,7 @@ index 4b98a7bf4cb73..441e6fa3bed2a 100644
  	ret = etm4_pm_setup();
  
  	/* etm4_pm_setup() does its own cleanup - exit on error */
-@@ -2551,6 +2567,9 @@ static int __init etm4x_init(void)
+@@ -2586,6 +2602,9 @@ static int __init etm4x_init(void)
  
  static void __exit etm4x_exit(void)
  {

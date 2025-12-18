@@ -1,0 +1,29 @@
+From c4f776b7cceeae2ea7973657c3d7f8d244d58e24 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Tue, 6 Jun 2023 10:51:18 +0800
+Subject: [PATCH 0048/1223] usb: xhci: modify DMA capability for k1-pro
+ platform
+
+Change-Id: If5c5c0c66ef1619f8fd6f374e282701d44ab4e48
+---
+ drivers/usb/host/xhci.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 25cd778d3fbdb..18ee98794f49e 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -5480,6 +5480,10 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+ 			!dma_set_mask(dev, DMA_BIT_MASK(64))) {
+ 		xhci_dbg(xhci, "Enabling 64-bit DMA addresses.\n");
+ 		dma_set_coherent_mask(dev, DMA_BIT_MASK(64));
++	} else if (IS_ENABLED(CONFIG_SOC_SPACEMIT_K1PRO) &&
++			!dma_set_mask(dev, DMA_BIT_MASK(40))) {
++		xhci_dbg(xhci, "Force Enabling 40-bit DMA addresses.\n");
++		dma_set_coherent_mask(dev, DMA_BIT_MASK(40));
+ 	} else {
+ 		/*
+ 		 * This is to avoid error in cases where a 32-bit USB
+-- 
+2.52.0
+

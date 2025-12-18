@@ -1,3 +1,1509 @@
+https://gitlab.com/cki-project/kernel-ark/-/commit/6609c4d49ebe220a5c40d3105c3f0e68f569ba1a
+ 6609c4d49ebe220a5c40d3105c3f0e68f569ba1a Linux 6.17.13
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5b5d070700b9e5485822321c13bf08277a6b8410
+ 5b5d070700b9e5485822321c13bf08277a6b8410 ASoC: codecs: nau8325: Silence uninitialized variables warnings
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bca11de0a277b8baeb7d006f93b543c907b6e782
+ bca11de0a277b8baeb7d006f93b543c907b6e782 ALSA: wavefront: Fix integer overflow in sample size validation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c28946b7409b7b68fb0481ec738c8b04578b11c6
+ c28946b7409b7b68fb0481ec738c8b04578b11c6 ALSA: hda: cs35l41: Fix NULL pointer dereference in cs35l41_hda_read_acpi()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/aa463ec2fff179a539d7f6e8c11c8fce57b7aa44
+ aa463ec2fff179a539d7f6e8c11c8fce57b7aa44 ALSA: hda/tas2781: fix speaker id retrieval for multiple probes
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9287f7d96e614b45306b1f254e1d91e0a87e1560
+ 9287f7d96e614b45306b1f254e1d91e0a87e1560 ALSA: hda/realtek: Add match for ASUS Xbox Ally projects
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/932aa1e80b022419cf9710e970739b7a8794f27c
+ 932aa1e80b022419cf9710e970739b7a8794f27c ALSA: dice: fix buffer overflow in detect_stream_formats()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dd2807a22a2330dbe2f0588e578ff5ec05185920
+ dd2807a22a2330dbe2f0588e578ff5ec05185920 usb: dwc3: dwc3_power_off_all_roothub_ports: Use ioremap_np when required
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d8ac85c76a4279979b917d4b2f9c6b07d9783003
+ d8ac85c76a4279979b917d4b2f9c6b07d9783003 usb: typec: ucsi: fix use-after-free caused by uec->work
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e6c536ad2f806718b2f34c66a10d169692b7f902
+ e6c536ad2f806718b2f34c66a10d169692b7f902 usb: phy: Initialize struct usb_phy list_head
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/032b9496f14b89ccc8408c73a2bcbd69d2050bcb
+ 032b9496f14b89ccc8408c73a2bcbd69d2050bcb usb: typec: ucsi: fix probe failure in gaokun_ucsi_probe()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/62715b4cda45b2f47b5b692891c4770827019e14
+ 62715b4cda45b2f47b5b692891c4770827019e14 usb: gadget: tegra-xudc: Always reinitialize data toggle when clear halt
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/740b4330b5452c7474e14ca4e3e6bee91df1ba98
+ 740b4330b5452c7474e14ca4e3e6bee91df1ba98 perf/x86/intel: Fix NULL event dereference crash in handle_pmi_common()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/115e0387d42f44b5f0b96e4f2ac2a214643eb98e
+ 115e0387d42f44b5f0b96e4f2ac2a214643eb98e ocfs2: fix memory leak in ocfs2_merge_rec_left()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b0391a8a07ef5d88b14071badc306708a6d6e788
+ b0391a8a07ef5d88b14071badc306708a6d6e788 cpu: Make atomic hotplug callbacks run with interrupts disabled on UP
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/09efe7cfbf919c4d763bc425473fcfee0dc98356
+ 09efe7cfbf919c4d763bc425473fcfee0dc98356 irqchip/mchp-eic: Fix error code in mchp_eic_domain_alloc()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e70bd000760a557afa20b70abd5d88109f73a09a
+ e70bd000760a557afa20b70abd5d88109f73a09a perf/core: Fix missing read event generation on task exit
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/48dd41fa2d6c6a0c50e714deeba06ffe7f91961b
+ 48dd41fa2d6c6a0c50e714deeba06ffe7f91961b scsi: imm: Fix use-after-free bug caused by unfinished delayed work
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/40e646ed350c138c1cd93c48a79a55554d0f0797
+ 40e646ed350c138c1cd93c48a79a55554d0f0797 efi/cper: align ARM CPER type with UEFI 2.9A/2.10 specs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1dff3a9728db6ba9f9889fe38e5a6d4b45bd525e
+ 1dff3a9728db6ba9f9889fe38e5a6d4b45bd525e efi/cper: Adjust infopfx size to accept an extra space
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9009be7ff281f3fdc09de16732f14eedd7449954
+ 9009be7ff281f3fdc09de16732f14eedd7449954 efi/cper: Add a new helper function to print bitmasks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ec483aee67154b90ada731c5388aa506960c16bd
+ ec483aee67154b90ada731c5388aa506960c16bd dm log-writes: Add missing set_freezable() for freezable kthread
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5306df48c54091e4c2c8eb3cb7da728117bd32cb
+ 5306df48c54091e4c2c8eb3cb7da728117bd32cb dm-raid: fix possible NULL dereference with undefined raid type
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6e6ca189e208ec0fb504a7f11c0e03900536e207
+ 6e6ca189e208ec0fb504a7f11c0e03900536e207 ASoC: amd: acp: update tdm channels for specific DAI
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6e8d363786765a81e35083e0909e076796468edf
+ 6e8d363786765a81e35083e0909e076796468edf block: Use RCU in blk_mq_[un]quiesce_tagset() instead of set->tag_list_lock
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/562ab1c34582bf10383ed82be05fbca02cc36dcd
+ 562ab1c34582bf10383ed82be05fbca02cc36dcd drm/i915/fbdev: Hold runtime PM ref during fbdev BO creation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7bc58a735d5a7d9b716b6df1cddba6c8f249a91e
+ 7bc58a735d5a7d9b716b6df1cddba6c8f249a91e drm/{i915, xe}/fbdev: deduplicate struct drm_mode_fb_cmd2 init
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f1fee740281678ba79a26d8a9172319af703f1ea
+ f1fee740281678ba79a26d8a9172319af703f1ea drm/{i915, xe}/fbdev: pass struct drm_device to intel_fbdev_fb_alloc()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3b6d68ef941f469f7b63ab05914818127c993889
+ 3b6d68ef941f469f7b63ab05914818127c993889 drm/i915/fbdev: make intel_framebuffer_create() error return handling explicit
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b81d9514a65ba65b2dd06b5cb5f18cc93b7bdb2f
+ b81d9514a65ba65b2dd06b5cb5f18cc93b7bdb2f drm/xe/fbdev: use the same 64-byte stride alignment as i915
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0ad68757cd6fcf5a96226a35c71c36b03f102a17
+ 0ad68757cd6fcf5a96226a35c71c36b03f102a17 ARM: 9464/1: fix input-only operand modification in load_unaligned_zeropad()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/df692cf2b601a54b34edfdb9e683d67483aa8ce1
+ df692cf2b601a54b34edfdb9e683d67483aa8ce1 ALSA: firewire-motu: add bounds check in put_user loop for DSP events
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1584c0f4a179992b3d1781e9e79413bd14f84ba8
+ 1584c0f4a179992b3d1781e9e79413bd14f84ba8 rtc: max31335: Fix ignored return value in set_alarm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/15cd9cb4941efd844d4ebcd02f361e2a58f06d5e
+ 15cd9cb4941efd844d4ebcd02f361e2a58f06d5e rtc: gamecube: Check the return value of ioremap()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7d3ad633519b6ab345939d57fa297614b3ae3f12
+ 7d3ad633519b6ab345939d57fa297614b3ae3f12 drm/amdkfd: Use huge page size to check split svm range alignment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/152b482a4b87e547d9bf46a49b268844253134d1
+ 152b482a4b87e547d9bf46a49b268844253134d1 ALSA: uapi: Fix typo in asound.h comment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/171441124cb1d32926651fa5b164ea19d800e25e
+ 171441124cb1d32926651fa5b164ea19d800e25e dma/pool: eliminate alloc_pages warning in atomic_pool_expand
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fb4c487f9c93371bc27b43ea0972147830e606f3
+ fb4c487f9c93371bc27b43ea0972147830e606f3 i2c: spacemit: fix detect issue
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/583e572a044a8ffa2db9bbabcd61cbbdf18128f5
+ 583e572a044a8ffa2db9bbabcd61cbbdf18128f5 docs: hwmon: fix link to g762 devicetree binding
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/97cab5a96b2ffb2b5836b3ced002a70b08390be6
+ 97cab5a96b2ffb2b5836b3ced002a70b08390be6 cifs: Fix handling of a beyond-EOF DIO/unbuffered read over SMB2
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/666de21ccf64fc8d89b16e12c6e4e51309945130
+ 666de21ccf64fc8d89b16e12c6e4e51309945130 cifs: Fix handling of a beyond-EOF DIO/unbuffered read over SMB1
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dbebfa017c3f5988139648a11e7cb7391af78fc1
+ dbebfa017c3f5988139648a11e7cb7391af78fc1 drm/nouveau: fix circular dep oops from vendored i2c encoder
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9561511d84d9c603ad20f72b2bbc6822a1734e33
+ 9561511d84d9c603ad20f72b2bbc6822a1734e33 drm/nouveau: refactor deprecated strcpy
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/161291bac551821bba98eb4ea84c82338578d1b0
+ 161291bac551821bba98eb4ea84c82338578d1b0 ALSA: firewire-motu: fix buffer overflow in hwdep read for DSP events
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2c426d566f368a5311ad61bb04734ac7df618d75
+ 2c426d566f368a5311ad61bb04734ac7df618d75 regulator: fixed: Rely on the core freeing the enable GPIO
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cebbc2dde000c67841bb13f793003afbd6b29574
+ cebbc2dde000c67841bb13f793003afbd6b29574 drm/plane: Fix IS_ERR() vs NULL check in drm_plane_create_hotspot_properties()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/763880d2bbcc6d1ce0beb9b1e2e99d5ccd982992
+ 763880d2bbcc6d1ce0beb9b1e2e99d5ccd982992 nvme-auth: use kvfree() for memory allocated with kvcalloc()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7957635c679e8a01147163a3a4a1f16e1210fa03
+ 7957635c679e8a01147163a3a4a1f16e1210fa03 block: fix memory leak in __blkdev_issue_zero_pages
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3310d6375fdf7902588f19d75006482aa335ca3b
+ 3310d6375fdf7902588f19d75006482aa335ca3b block: fix comment for op_is_zone_mgmt() to include RESET_ALL
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0e3f7442789e4979bf5f30d525639a52ae400166
+ 0e3f7442789e4979bf5f30d525639a52ae400166 blk-mq: Abort suspend when wakeup events are pending
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/80c9941c2a5a4fb8c71edf86e7ca8374b5fe10d6
+ 80c9941c2a5a4fb8c71edf86e7ca8374b5fe10d6 f2fs: revert summary entry count from 2048 to 512 in 16kb block support
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/169ccb71c56a89d75006d24d5cd37fc8f955f8f1
+ 169ccb71c56a89d75006d24d5cd37fc8f955f8f1 ASoC: ak5558: Disable regulator when error happens
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3ee97e92eb16aca3220ce01fd7825f5e8c6e0e93
+ 3ee97e92eb16aca3220ce01fd7825f5e8c6e0e93 ASoC: ak4458: Disable regulator when error happens
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d90b579bd367543db79dd8f91e3e97d8cc1a0768
+ d90b579bd367543db79dd8f91e3e97d8cc1a0768 ASoC: amd: acp: Audio is not resuming after s0ix
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fad3446e3de1d4b7a14751639fab0f30416844e2
+ fad3446e3de1d4b7a14751639fab0f30416844e2 ASoC: bcm: bcm63xx-pcm-whistler: Check return value of of_dma_configure()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/92f1c6134bbd3d6b33c8fea518ad6de9a04f8af3
+ 92f1c6134bbd3d6b33c8fea518ad6de9a04f8af3 platform/x86: asus-wmi: use brightness_set_blocking() for kbd led
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a4e71a62be058276a327e38b0d834d38d22695b1
+ a4e71a62be058276a327e38b0d834d38d22695b1 fs/nls: Fix inconsistency between utf8_to_utf32() and utf32_to_utf8()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e743a0ec4b37bde6fd419aa58014158e61b3839c
+ e743a0ec4b37bde6fd419aa58014158e61b3839c NFS: Fix inheritance of the block sizes when automounting
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4b296944e632cf4c6a4cc8e2585c6451eae47b1b
+ 4b296944e632cf4c6a4cc8e2585c6451eae47b1b NFS: Automounted filesystems should inherit ro,noexec,nodev,sync flags
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c4b498308c20349fb59730cf8b36204dc86fe110
+ c4b498308c20349fb59730cf8b36204dc86fe110 Revert "nfs: ignore SB_RDONLY when mounting nfs"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0ce404acd13a902712a6354d991e8423bc44ce61
+ 0ce404acd13a902712a6354d991e8423bc44ce61 Revert "nfs: clear SB_RDONLY before getting superblock"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/abef9d7aca58f572cef4707822e2bde52bc0b421
+ abef9d7aca58f572cef4707822e2bde52bc0b421 Revert "nfs: ignore SB_RDONLY when remounting nfs"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/deb8b2491f6b9882ae02d7dc2651c7bf4f3b7e05
+ deb8b2491f6b9882ae02d7dc2651c7bf4f3b7e05 drm/panthor: Prevent potential UAF in group creation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9ab439c0de1c0ee4fbf68eebc7e72a40d01b638a
+ 9ab439c0de1c0ee4fbf68eebc7e72a40d01b638a panthor: save task pid and comm in panthor_group
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ca2e7fdad7c683b64821c94a58b9b68733214dad
+ ca2e7fdad7c683b64821c94a58b9b68733214dad NFSv4/pNFS: Clear NFS_INO_LAYOUTCOMMIT in pnfs_mark_layout_stateid_invalid
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0dd9b9389521ace8eb9e0e54d125ee0f0696cf0f
+ 0dd9b9389521ace8eb9e0e54d125ee0f0696cf0f NFS: Initialise verifiers for visible dentries in _nfs4_open_and_get_state
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/34c0479db10884e10374fdd4a18eed2920561034
+ 34c0479db10884e10374fdd4a18eed2920561034 NFS: Initialise verifiers for visible dentries in nfs_atomic_open()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5d9118e858a9a09de9e0140cfb9b5cac9cc9af05
+ 5d9118e858a9a09de9e0140cfb9b5cac9cc9af05 NFS: Initialise verifiers for visible dentries in readdir and lookup
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/374a44a4098ebc7cf74a52928ffcc852e1667f6f
+ 374a44a4098ebc7cf74a52928ffcc852e1667f6f fs/nls: Fix utf16 to utf8 conversion
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/72b2b112d644aa4ccc27628b68d3568d2784ae90
+ 72b2b112d644aa4ccc27628b68d3568d2784ae90 NFS: Avoid changing nlink when file removes and attribute updates race
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/39ab876fb1f727295cab772739ae88b18c7be0c3
+ 39ab876fb1f727295cab772739ae88b18c7be0c3 kbuild: install-extmod-build: Properly fix CC expansion when ccache is used
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1c507327d4a74f75a1e5b3735c0252efde5e875e
+ 1c507327d4a74f75a1e5b3735c0252efde5e875e kbuild: install-extmod-build: Fix when given dir outside the build dir
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9fed02c16488050cd4e33e045506336b216d7301
+ 9fed02c16488050cd4e33e045506336b216d7301 rtc: amlogic-a4: fix double free caused by devm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/87575b7a624e32d8cfda90b01671b3a01b49af9e
+ 87575b7a624e32d8cfda90b01671b3a01b49af9e f2fs: maintain one time GC mode is enabled during whole zoned GC cycle
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ccbb00daa28f284976590a1ca87ee0b882ad6778
+ ccbb00daa28f284976590a1ca87ee0b882ad6778 platform/x86:intel/pmc: Update Arrow Lake telemetry GUID
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7a5515ec41ab6ce0fc621b6cbbacdd0f6f59d44d
+ 7a5515ec41ab6ce0fc621b6cbbacdd0f6f59d44d sched/core: Fix psi_dequeue() for Proxy Execution
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7de90e88caae846605d6609f064fdcc68f81cb79
+ 7de90e88caae846605d6609f064fdcc68f81cb79 sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9b896e99c2bfef01f1746d286e52fcaa51e05d92
+ 9b896e99c2bfef01f1746d286e52fcaa51e05d92 9p: fix cache/debug options printing in v9fs_show_options
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9daa0f5048cd9aca6de9c51f68fbb2a556d1cfce
+ 9daa0f5048cd9aca6de9c51f68fbb2a556d1cfce fbdev: ssd1307fb: fix potential page leak in ssd1307fb_probe()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d205a6b022cac56d682ffbe631c72b9805024aec
+ d205a6b022cac56d682ffbe631c72b9805024aec pinctrl: single: Fix incorrect type for error return variable
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d80ff470826965eb634dae8cd27e72452577dea0
+ d80ff470826965eb634dae8cd27e72452577dea0 perf hist: In init, ensure mem_info is put on error paths
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/017d87fb03d29a9829c93ef4656cc756aed42b54
+ 017d87fb03d29a9829c93ef4656cc756aed42b54 perf tools: Fix split kallsyms DSO counting
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ca4f8d42de9de19cd707d78fe2c8e57b0de86310
+ ca4f8d42de9de19cd707d78fe2c8e57b0de86310 perf tools: Mark split kallsyms DSOs as loaded
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/050b10ae906d38dfbddb92d47b3bfc029715b8e1
+ 050b10ae906d38dfbddb92d47b3bfc029715b8e1 perf jitdump: Add sym/str-tables to build-ID generation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/529c284cc2815c8350860e9a31722050fe7117cb
+ 529c284cc2815c8350860e9a31722050fe7117cb net/sched: sch_cake: Fix incorrect qlen reduction in cake_drop
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e95a7f72a4de17df80c3aa30ae1d584016559dcc
+ e95a7f72a4de17df80c3aa30ae1d584016559dcc net: dsa: xrs700x: reject unsupported HSR configurations
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2ecc02aa47f5e47cb14d0d3fdadc5b2908e92840
+ 2ecc02aa47f5e47cb14d0d3fdadc5b2908e92840 net: hsr: create an API to get hsr port type
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9be11942120e8a85069c180e621201c0c1eb48a6
+ 9be11942120e8a85069c180e621201c0c1eb48a6 net: dsa: b53: fix BCM5325/65 ARL entry VIDs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e5ff51445ab884a4642a76249681414a128e2cc7
+ e5ff51445ab884a4642a76249681414a128e2cc7 net: dsa: b53: fix BCM5325/65 ARL entry multicast port masks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a03f4a8c8cb4070becfdeaf9d05fecec1d56589c
+ a03f4a8c8cb4070becfdeaf9d05fecec1d56589c net: dsa: b53: add support for bcm63xx ARL entry format
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f58acf76476e594fa207622e442a49f7133fc29b
+ f58acf76476e594fa207622e442a49f7133fc29b net: dsa: b53: fix CPU port unicast ARL entries for BCM5325/65
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/10fd23a9dab532fe1933e3b991e25a7e4819635b
+ 10fd23a9dab532fe1933e3b991e25a7e4819635b net: dsa: b53: use same ARL search result offset for BCM5325/65
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f3c162a28271c50a6c2002dd2a3d2f092447243b
+ f3c162a28271c50a6c2002dd2a3d2f092447243b net: dsa: b53: add support for 5389/5397/5398 ARL entry format
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1d654501de83695388fe0da57671ae41aec1dacb
+ 1d654501de83695388fe0da57671ae41aec1dacb net: dsa: b53: move ARL entry functions into ops struct
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/858d0392c8b0b67398e0e6f8e28e01742cdb6ee6
+ 858d0392c8b0b67398e0e6f8e28e01742cdb6ee6 net: dsa: b53: split reading search entry into their own functions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2f86b4b6c2045aef7f180faa068c04b335c00e5e
+ 2f86b4b6c2045aef7f180faa068c04b335c00e5e net: dsa: b53: provide accessors for accessing ARL_SRCH_CTL
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e80a47ff1c59308599d3e6bbe445230375f6f978
+ e80a47ff1c59308599d3e6bbe445230375f6f978 net: dsa: b53: move writing ARL entries into their own functions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2b4c6e6f664d12697016bbbae53e96a7e53d7a0a
+ 2b4c6e6f664d12697016bbbae53e96a7e53d7a0a net: dsa: b53: move reading ARL entries into their own function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/10e6a3f612187b6a4378ad7dd6cd1bbaafab4256
+ 10e6a3f612187b6a4378ad7dd6cd1bbaafab4256 net: dsa: b53: b53_arl_read{,25}(): use the entry for comparision
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8e064c3d366703b802f8cbf93aeee3c4fa316d5c
+ 8e064c3d366703b802f8cbf93aeee3c4fa316d5c net: dsa: b53: fix extracting VID from entry for BCM5325/65
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0978ea24044bc0a6b7e99bf72942625f6cd444ac
+ 0978ea24044bc0a6b7e99bf72942625f6cd444ac net: dsa: b53: fix VLAN_ID_IDX write size for BCM5325/65
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/18801e3af0761479d72c14c5cdfc09d6e43b83e5
+ 18801e3af0761479d72c14c5cdfc09d6e43b83e5 clk: keystone: fix compile testing
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c9355af2c92612e0feceeb6fd9699c8e77daebda
+ c9355af2c92612e0feceeb6fd9699c8e77daebda md/raid5: fix IO hang when array is broken with IO inflight
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/edfce354aa12c32756f1839507e1fda642584548
+ edfce354aa12c32756f1839507e1fda642584548 remoteproc: qcom_q6v5_wcss: fix parsing of qcom,halt-regs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e650651c8c5011ea41a78a2c2b0b279107bc049c
+ e650651c8c5011ea41a78a2c2b0b279107bc049c rqspinlock: Use trylock fallback when per-CPU rqnode is busy
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/838b42af8d7ed8ad4e15ef563a89a6fb783b7ef4
+ 838b42af8d7ed8ad4e15ef563a89a6fb783b7ef4 rqspinlock: Enclose lock/unlock within lock entry acquisitions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e29eeb4eb5b41c5b142d9cf76fd4676f52317ba4
+ e29eeb4eb5b41c5b142d9cf76fd4676f52317ba4 mtd: lpddr_cmds: fix signed shifts in lpddr_cmds
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a90d0dc38a10347078cca60e7495ad0648838f18
+ a90d0dc38a10347078cca60e7495ad0648838f18 net: netpoll: initialize work queue before error checks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2b11277252a9247113994e18989d4d548f278d5b
+ 2b11277252a9247113994e18989d4d548f278d5b selftests: bonding: add delay before each xvlan_over_bond connectivity check
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c86bee25b469139fb896cd5f14451f9d9fcf9cbc
+ c86bee25b469139fb896cd5f14451f9d9fcf9cbc net: phy: aquantia: check for NVMEM deferral
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ef0a26b9d99f7153af64117dd795c7873987d9a7
+ ef0a26b9d99f7153af64117dd795c7873987d9a7 vfio/pci: Use RCU for error/request triggers to avoid circular locking
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ea1e43966cd03098fcd5f0d72e6c2901d45fa08d
+ ea1e43966cd03098fcd5f0d72e6c2901d45fa08d spi: ch341: fix out-of-bounds memory access in ch341_transfer_one
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fcb2cc674362aa64bca3cb4f1360d9db02251f5e
+ fcb2cc674362aa64bca3cb4f1360d9db02251f5e mtd: rawnand: renesas: Handle devm_pm_runtime_enable() errors
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/eb5133e5841f689c0e6f83a93ba12e389c81e852
+ eb5133e5841f689c0e6f83a93ba12e389c81e852 net: stmmac: fix rx limit check in stmmac_rx_zc()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9e3dbc3bb2e2aa728b49422b2e5344488f93f690
+ 9e3dbc3bb2e2aa728b49422b2e5344488f93f690 iavf: Implement settime64 with -EOPNOTSUPP
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f85623af16b83615e5f64a9b19ae1d584805cb07
+ f85623af16b83615e5f64a9b19ae1d584805cb07 netfilter: nft_connlimit: update the count if add was skipped
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8c2da7330214ce30f8333d1799a27ed0a9418f07
+ 8c2da7330214ce30f8333d1799a27ed0a9418f07 netfilter: nf_conncount: rework API to use sk_buff directly
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5379d2452488e05f0999a8a39488ae951c4143c6
+ 5379d2452488e05f0999a8a39488ae951c4143c6 netfilter: flowtable: check for maximum number of encapsulations in bridge vlan
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/baca038f6c9ae1c8e37c0844214ca2d468d463b4
+ baca038f6c9ae1c8e37c0844214ca2d468d463b4 Reinstate "resource: avoid unnecessary lookups in find_next_iomem_res()"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/431a1d44ad4866362cc28fc1cc4ca93d84989239
+ 431a1d44ad4866362cc28fc1cc4ca93d84989239 regulator: core: Protect regulator_supply_alias_list with regulator_list_mutex
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a088689de3939f58d9936ee7a29ec9901e5cb34d
+ a088689de3939f58d9936ee7a29ec9901e5cb34d ARM: dts: samsung: exynos4412-midas: turn off SDIO WLAN chip during system suspend
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4efd558ed93f7c0c70cc27991d650b956ccb4718
+ 4efd558ed93f7c0c70cc27991d650b956ccb4718 ARM: dts: samsung: exynos4210-trats: turn off SDIO WLAN chip during system suspend
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/02117c69492b9e57f9aab6a2d6ce7ece6b012cb8
+ 02117c69492b9e57f9aab6a2d6ce7ece6b012cb8 ARM: dts: samsung: exynos4210-i9100: turn off SDIO WLAN chip during system suspend
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/222b11b15b102a6c6cef7bb39d40b4494452b6ad
+ 222b11b15b102a6c6cef7bb39d40b4494452b6ad ARM: dts: samsung: universal_c210: turn off SDIO WLAN chip during system suspend
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d18e2e409fbd8ef609687500d7721b06e21211b9
+ d18e2e409fbd8ef609687500d7721b06e21211b9 spi: airoha-snfi: en7523: workaround flash damaging if UART_TXD was short to GND
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/acad4b61337a0e2815dbe6c354593779f62d192f
+ acad4b61337a0e2815dbe6c354593779f62d192f ASoC: Intel: catpt: Fix error path in hw_params()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e0e58b5781d509cba47327a00200f22dedeb1019
+ e0e58b5781d509cba47327a00200f22dedeb1019 virtio: clean up features qword/dword terms
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0156981f4a25a32a52fbe32d0d5fed5f1e2596fa
+ 0156981f4a25a32a52fbe32d0d5fed5f1e2596fa vdpa/pds: use %pe for ERR_PTR() in event handler registration
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7debf876bec3511f94c17b6c6a6e2df05355d195
+ 7debf876bec3511f94c17b6c6a6e2df05355d195 vhost: Fix kthread worker cgroup failure handling
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f50a781dfa567843ccccba00d7d008bbeeafe3e5
+ f50a781dfa567843ccccba00d7d008bbeeafe3e5 vdpa/mlx5: Fix incorrect error code reporting in query_virtqueues
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0701bbcd57743dd730dd8e67ad999e6b6f5208f4
+ 0701bbcd57743dd730dd8e67ad999e6b6f5208f4 virtio: fix virtqueue_set_affinity() docs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/389d868e431ef11522443d94474f6c954ba53380
+ 389d868e431ef11522443d94474f6c954ba53380 virtio: fix grammar in virtio_queue_info docs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/afd622be55ecbd7e2fc28a797d71458a835c09f5
+ afd622be55ecbd7e2fc28a797d71458a835c09f5 virtio: fix whitespace in virtio_config_ops
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8dfac5544f511535e07639fe5fded784947430f8
+ 8dfac5544f511535e07639fe5fded784947430f8 virtio: fix typo in virtio_device_ready() comment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/417a626f946a4b301174336801fe2e86b1dd50d6
+ 417a626f946a4b301174336801fe2e86b1dd50d6 virtio_vdpa: fix misleading return in void function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b4d9062cfdd39fd9bb8dc3114f0cbec4436e2dba
+ b4d9062cfdd39fd9bb8dc3114f0cbec4436e2dba of: Skip devicetree kunit tests when RISCV+ACPI doesn't populate root node
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ea75e4e2135d454d281b381f69c4c03210c72819
+ ea75e4e2135d454d281b381f69c4c03210c72819 selftests/net: packetdrill: pass send_omit_free to MSG_ZEROCOPY tests
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4bb910b2963c7dd4d844dbf977cf11f52ced1372
+ 4bb910b2963c7dd4d844dbf977cf11f52ced1372 ext4: improve integrity checking in __mb_check_buddy by enhancing order-0 validation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dd13924876650571c047aa20af498aaba43b186b
+ dd13924876650571c047aa20af498aaba43b186b ublk: prevent invalid access with DEBUG
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6771e5a7c58c526ac2fb3625ff2fdb4984877a42
+ 6771e5a7c58c526ac2fb3625ff2fdb4984877a42 ACPI: processor_core: fix map_x2apic_id for amd-pstate on am4
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c9cdb7447b22467ce11fccb770782c77cf3bca99
+ c9cdb7447b22467ce11fccb770782c77cf3bca99 hwmon: sy7636a: Fix regulator_enable resource leak on error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1d3447dad2d4e79e43455a5604838af5d0e42b14
+ 1d3447dad2d4e79e43455a5604838af5d0e42b14 drm/amd/display: Fix logical vs bitwise bug in get_embedded_panel_info_v2_1()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/db3a3a15563ad29b70c0ed54af4dc22e6c0eade3
+ db3a3a15563ad29b70c0ed54af4dc22e6c0eade3 misc: rp1: Fix an error handling path in rp1_probe()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/aabc2e5b2809db056f4ee66389bc038daf450dd6
+ aabc2e5b2809db056f4ee66389bc038daf450dd6 greybus: gb-beagleplay: Fix timeout handling in bootloader functions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/92b351304289575cfe6b8c6c635f54e0ee242b11
+ 92b351304289575cfe6b8c6c635f54e0ee242b11 firmware_loader: make RUST_FW_LOADER_ABSTRACTIONS select FW_LOADER
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/37d75f7c431f971874d570636767bec8fb6af19c
+ 37d75f7c431f971874d570636767bec8fb6af19c ASoC: fsl_xcvr: clear the channel status control memory
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9c0960ed112398bdb6c60ccf6e6b583bc59acede
+ 9c0960ed112398bdb6c60ccf6e6b583bc59acede gfs2: Prevent recursive memory reclaim
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0d5afeeab9fd30b4b553252c45c1c4809c015a35
+ 0d5afeeab9fd30b4b553252c45c1c4809c015a35 ASoC: nau8325: add missing build config
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0f8189362efce6efe9375c9029b50e8e373a5cf0
+ 0f8189362efce6efe9375c9029b50e8e373a5cf0 ASoC: nau8325: use simple i2c probe function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8493ee0843eb966e0818c4ab3173a5b3f5e76c27
+ 8493ee0843eb966e0818c4ab3173a5b3f5e76c27 clocksource/drivers/nxp-stm: Prevent driver unbind
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3e7af4ecf882abc8d0e62297409b243842dd80f3
+ 3e7af4ecf882abc8d0e62297409b243842dd80f3 clocksource/drivers/nxp-stm: Fix section mismatches
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/afe377d59d91010fa8c2c2cfa0f2668af135a432
+ afe377d59d91010fa8c2c2cfa0f2668af135a432 clocksource/drivers/stm: Fix double deregistration on probe failure
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/647991a5840d16a6f2e9ee503ea243a75875547a
+ 647991a5840d16a6f2e9ee503ea243a75875547a clocksource/drivers/ralink: Fix resource leaks in init error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/119285f6714cdf310e74038c642678c74307c216
+ 119285f6714cdf310e74038c642678c74307c216 drm/panthor: Avoid adding of kernel BOs to extobj list
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1e96d8ec09ea826effdf4b0db86daf134f5dbe15
+ 1e96d8ec09ea826effdf4b0db86daf134f5dbe15 RDMA/irdma: Do not directly rely on IB_PD_UNSAFE_GLOBAL_RKEY
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/80f681d68b60a7ee620c1b00f4555ea95b83fc1a
+ 80f681d68b60a7ee620c1b00f4555ea95b83fc1a RDMA/irdma: Fix data race in irdma_free_pble
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3e6a89483a99aa416c6966ab0e786f430a7fc6a3
+ 3e6a89483a99aa416c6966ab0e786f430a7fc6a3 RDMA/irdma: Fix data race in irdma_sc_ccq_arm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/47431e7720a3897663a099b819673b916e421b8a
+ 47431e7720a3897663a099b819673b916e421b8a iommu/arm-smmu-qcom: Enable use of all SMR groups when running bare-metal
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a8bbc36e178f40eb7130d704b7ce3f93971a01ea
+ a8bbc36e178f40eb7130d704b7ce3f93971a01ea backlight: lp855x: Fix lp855x.h kernel-doc warnings
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/60a24070392ec726ccfe6ad1ca7b0381c8d8f7c9
+ 60a24070392ec726ccfe6ad1ca7b0381c8d8f7c9 backlight: led-bl: Add devlink to supplier LEDs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8571df3cd0d55f9ddfbed22fa8454fdebf3e04a6
+ 8571df3cd0d55f9ddfbed22fa8454fdebf3e04a6 wifi: ieee80211: correct FILS status codes
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/53e0fb84cf657acfcfb7bd35da1e43911848a3a3
+ 53e0fb84cf657acfcfb7bd35da1e43911848a3a3 iomap: always run error completions in user context
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bd14d9b91667bd3a5d8761910ba73f0660fa13d3
+ bd14d9b91667bd3a5d8761910ba73f0660fa13d3 um: Don't rename vmap to kernel_vmap
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c0dfb65d28b1a88225528101a4b8c9dd9d8b2d5e
+ c0dfb65d28b1a88225528101a4b8c9dd9d8b2d5e drm/nouveau: restrict the flush page to a 32-bit address
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/315f0376e4d368b00fabcb202ad8ecc3dd24c0ba
+ 315f0376e4d368b00fabcb202ad8ecc3dd24c0ba PCI: dwc: Fix wrong PORT_LOGIC_LTSSM_STATE_MASK definition
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/18fcc0121bb24be960568861565b75d42f4a5904
+ 18fcc0121bb24be960568861565b75d42f4a5904 btrfs: fix leaf leak in an error path in btrfs_del_items()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6f442808a86eef847ee10afa9e6459494ed85bb3
+ 6f442808a86eef847ee10afa9e6459494ed85bb3 btrfs: fix racy bitfield write in btrfs_clear_space_info_full()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7617680769e3119dfb3b43a2b7c287ce2242211c
+ 7617680769e3119dfb3b43a2b7c287ce2242211c btrfs: fix double free of qgroup record after failure to add delayed ref head
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b7898b69f3729aaffebb428cfb09543511509b8c
+ b7898b69f3729aaffebb428cfb09543511509b8c iommu/arm-smmu-v3: Fix error check in arm_smmu_alloc_cd_tables
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f0fa4091ad2d8b010b739d9a5d6e1dab063fa22d
+ f0fa4091ad2d8b010b739d9a5d6e1dab063fa22d staging: fbtft: core: fix potential memory leak in fbtft_probe_common()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/47e6cf7141269abd03aca5ce51e16b5594ba56e5
+ 47e6cf7141269abd03aca5ce51e16b5594ba56e5 firmware: stratix10-svc: fix make htmldocs warning for stratix10_svc
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fb905e69941b44e03fe1a24e95328d45442b6d6d
+ fb905e69941b44e03fe1a24e95328d45442b6d6d mt76: mt7615: Fix memory leak in mt7615_mcu_wtbl_sta_add()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c3543c07b4f9a3a829a9df7abf5682a750f1e81d
+ c3543c07b4f9a3a829a9df7abf5682a750f1e81d wifi: mt76: mt7996: Add missing locking in mt7996_mac_sta_rc_work()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7db3b78617b02fceed33ba78f27412693654a5fd
+ 7db3b78617b02fceed33ba78f27412693654a5fd wifi: mt76: mt7996: skip deflink accounting for offchannel links
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/06be41d43f7bdd76a17b82169c8cb6a4ec81092f
+ 06be41d43f7bdd76a17b82169c8cb6a4ec81092f wifi: mt76: mt7996: grab mt76 mutex in mt7996_mac_sta_event()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/da3f67a46d6cfd426bfb345b92671468b35e3256
+ da3f67a46d6cfd426bfb345b92671468b35e3256 wifi: mt76: mt7996: fix using wrong phy to start in mt7996_mac_restart()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/28ba843747a7d7b68d7ae04d8189542ae2a95b00
+ 28ba843747a7d7b68d7ae04d8189542ae2a95b00 wifi: mt76: mt7996: fix MLD group index assignment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1c8bdef1696cf77e738b99bbadc2d7789fce1f4c
+ 1c8bdef1696cf77e738b99bbadc2d7789fce1f4c wifi: mt76: mt7996: set link_valid field when initializing wcid
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1b515b2901a67c43dd1abfeecf9024c72f422302
+ 1b515b2901a67c43dd1abfeecf9024c72f422302 wifi: mt76: mt7996: fix teardown command for an MLD peer
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8f2d3f5a7db3f107dbdb7ad722c0bc798f7ef9c7
+ 8f2d3f5a7db3f107dbdb7ad722c0bc798f7ef9c7 wifi: mt76: mt7996: fix several fields in mt7996_mcu_bss_basic_tlv()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cc1ebc3d7215a4749a3e534f7fbe5f0c5399f808
+ cc1ebc3d7215a4749a3e534f7fbe5f0c5399f808 wifi: mt76: mt7996: fix implicit beamforming support for mt7992
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9adffb8f20ede2d7f8affeeac6f94010468c73b3
+ 9adffb8f20ede2d7f8affeeac6f94010468c73b3 wifi: mt76: mt7996: fix max nss value when getting rx chainmask
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/34b8e01accdfd07f0f93cdb619d3744a49c2cb90
+ 34b8e01accdfd07f0f93cdb619d3744a49c2cb90 Revert "wifi: mt76: mt792x: improve monitor interface handling"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/db2b24234374b28acb5926745caef724fa5b34c9
+ db2b24234374b28acb5926745caef724fa5b34c9 wifi: mt76: mt7921: add MBSSID support
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f2882d9c0ded83fe7db6a5221fa7d834fc2ecbd8
+ f2882d9c0ded83fe7db6a5221fa7d834fc2ecbd8 wifi: mt76: mt7925: add MBSSID support
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ab94ecb997fd1bbc501a0116c7aad51556b67c86
+ ab94ecb997fd1bbc501a0116c7aad51556b67c86 wifi: mt76: wed: use proper wed reference in mt76 wed driver callabacks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/96841352aaba7723c20afb3a5356746810ef8198
+ 96841352aaba7723c20afb3a5356746810ef8198 wifi: mt76: mt7996: fix null pointer deref in mt7996_conf_tx()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f117cb2d49b51779a82d36cb98a8da8f752c3e76
+ f117cb2d49b51779a82d36cb98a8da8f752c3e76 ASoC: tas2781: correct the wrong period
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f8402a0050dee8d572e023fa198b22be26cd72fb
+ f8402a0050dee8d572e023fa198b22be26cd72fb crypto: ahash - Zero positive err value in ahash_update_finish
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d3dc513bdb5047a8687abea3d3cd6348937bdf77
+ d3dc513bdb5047a8687abea3d3cd6348937bdf77 crypto: ahash - Fix crypto_ahash_import with partial block data
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1f45394ee22dc0ede57a503d19f3951fa19fd18c
+ 1f45394ee22dc0ede57a503d19f3951fa19fd18c RDMA/bnxt_re: Pass correct flag for dma mr creation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6e861445c5eec432a5f3c4f92989fd3cd3f3b588
+ 6e861445c5eec432a5f3c4f92989fd3cd3f3b588 RDMA/bnxt_re: Fix the inline size for GenP7 devices
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b4911825348a494e894e6ccfcf88d99e9425f129
+ b4911825348a494e894e6ccfcf88d99e9425f129 erofs: limit the level of fs stacking for file-backed mounts
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/043940cb57858b4c6a3f12d8a634877473401ae8
+ 043940cb57858b4c6a3f12d8a634877473401ae8 erofs: correct FSDAX detection
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/163defa23f2a2610b8e9cec31420b2721c6deb77
+ 163defa23f2a2610b8e9cec31420b2721c6deb77 RISC-V: KVM: Fix guest page fault within HLV* instructions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/efb028b07f7b2d141b91c2fab5276b601f0d0dbe
+ efb028b07f7b2d141b91c2fab5276b601f0d0dbe PM / devfreq: hisi: Fix potential UAF in OPP handling
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5b6f8caefd9db59fe92152887614d34e444f7827
+ 5b6f8caefd9db59fe92152887614d34e444f7827 crypto: ccree - Correctly handle return of sg_nents_for_len
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1af5c973dd744e29fa22121f43e8646b7a7a71a7
+ 1af5c973dd744e29fa22121f43e8646b7a7a71a7 crypto: starfive - Correctly handle return of sg_nents_for_len
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ba607d7f286b4d5df908673252ad16c084156088
+ ba607d7f286b4d5df908673252ad16c084156088 selftests/bpf: Improve reliability of test_perf_branches_no_hw()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/717883f9b95a640bb1d3bcb9cdb2888520147c6f
+ 717883f9b95a640bb1d3bcb9cdb2888520147c6f selftests/bpf: skip test_perf_branches_hw() on unsupported platforms
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/66e752902b1169c1f077cdeaa9da25b0f14628b4
+ 66e752902b1169c1f077cdeaa9da25b0f14628b4 regulator: pca9450: Fix error code in probe()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4a43aedb2f515f72bd303b25bc45d8bd8dbc3c55
+ 4a43aedb2f515f72bd303b25bc45d8bd8dbc3c55 usb: raw-gadget: cap raw_io transfer length to KMALLOC_MAX_SIZE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/01341de3c07a22f4e4e6959cbd9edc4585179c70
+ 01341de3c07a22f4e4e6959cbd9edc4585179c70 usb: dwc2: fix hang during suspend if set as peripheral
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/003d52e275baadcc6047b02f536ee42a9d0bda04
+ 003d52e275baadcc6047b02f536ee42a9d0bda04 usb: dwc2: fix hang during shutdown if set as peripheral
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fb2d55ad828d49f9c6d51fc6afea57fdda041a88
+ fb2d55ad828d49f9c6d51fc6afea57fdda041a88 usb: chaoskey: fix locking for O_NONBLOCK
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/de4431faf308d0c533cb386f5fa9af009bc86158
+ de4431faf308d0c533cb386f5fa9af009bc86158 ima: Handle error code returned by ima_filter_rule_match()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0aa7b12eaa87cd6ffa25d432d3c58986516f8b1c
+ 0aa7b12eaa87cd6ffa25d432d3c58986516f8b1c RAS: Report all ARM processor CPER information to userspace
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/638d4148e166d114a4cd7becaae992ce1a815ed8
+ 638d4148e166d114a4cd7becaae992ce1a815ed8 wifi: rtl818x: rtl8187: Fix potential buffer underflow in rtl8187_rx_cb()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/251e09ca0ce4df6860347eaa193b6115ce46bcd1
+ 251e09ca0ce4df6860347eaa193b6115ce46bcd1 clk: spacemit: Set clk_hw_onecell_data::num before using flex array
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/790c3eed1d85aa98fb1d955316c58a950a47d6e3
+ 790c3eed1d85aa98fb1d955316c58a950a47d6e3 cpuset: Treat cpusets in attaching as populated
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/268f7052826e3e0b0b3a2d378c1c21cee759648f
+ 268f7052826e3e0b0b3a2d378c1c21cee759648f net: phy: adin1100: Fix software power-down ready condition
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e6fd70a78ae8300d23384b96738df113453b12bc
+ e6fd70a78ae8300d23384b96738df113453b12bc selftests/bpf: Use ASSERT_STRNEQ to factor in long slab cache names
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/55508cc3ae2e25cfad93f127ba708c48c2b73e69
+ 55508cc3ae2e25cfad93f127ba708c48c2b73e69 ASoC: SDCA: Fix missing dash in HIDE DisCo property
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b58150251f9cbf5a9e98234edccc0b85d30a074c
+ b58150251f9cbf5a9e98234edccc0b85d30a074c phy: rockchip: samsung-hdptx: Prevent Inter-Pair Skew from exceeding the limits
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/282b57c430730ce1d76541912ced8e5ce246b522
+ 282b57c430730ce1d76541912ced8e5ce246b522 phy: rockchip: samsung-hdptx: Reduce ROPLL loop bandwidth
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a963ffc0c4a5e03c8986d39839d74b9849306443
+ a963ffc0c4a5e03c8986d39839d74b9849306443 phy: rockchip: samsung-hdptx: Fix reported clock rate in high bpc mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/97e3890c5d200ea1231c3b080ff27468834cf8b9
+ 97e3890c5d200ea1231c3b080ff27468834cf8b9 phy: freescale: Initialize priv->lock
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/515f2d79add838299b82fe703d4d3dbdb5218858
+ 515f2d79add838299b82fe703d4d3dbdb5218858 phy: rockchip: naneng-combphy: Fix PCIe L1ss support RK3562
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d695278a6a4304de71f9139f6d33af6f1fc97325
+ d695278a6a4304de71f9139f6d33af6f1fc97325 phy: rockchip: naneng-combphy: Add SoC prefix to register definitions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/aa8aba6347b0a0712324b599e30f45019930d0c6
+ aa8aba6347b0a0712324b599e30f45019930d0c6 phy: renesas: rcar-gen3-usb2: Fix an error handling path in rcar_gen3_phy_usb2_probe()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/65327fd5a86dcda26647c13a3fd5c3d17d3e0715
+ 65327fd5a86dcda26647c13a3fd5c3d17d3e0715 leds: rgb: leds-qcom-lpg: Don't enable TRILED when configuring PWM
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7b6959ba8ff4199c033e9ebc57d297c80793b398
+ 7b6959ba8ff4199c033e9ebc57d297c80793b398 of/fdt: Fix incorrect use of dt_root_addr_cells in early_init_dt_check_kho()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/43fee79c439cca728af705fe17829b742e960370
+ 43fee79c439cca728af705fe17829b742e960370 of/fdt: Consolidate duplicate code into helper functions
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ec7a122717cf77ad65a0c67ae4cabb71676dbc84
+ ec7a122717cf77ad65a0c67ae4cabb71676dbc84 mfd: mt6358-irq: Fix missing irq_domain_remove() in error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/98bee417fb5c8af6a74cd5848b0a3210c180a406
+ 98bee417fb5c8af6a74cd5848b0a3210c180a406 mfd: mt6397-irq: Fix missing irq_domain_remove() in error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9a0e664a026204f4508c28d1ced18ad0bd02a601
+ 9a0e664a026204f4508c28d1ced18ad0bd02a601 wifi: mac80211: fix CMAC functions not handling errors
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1502bda9a78ceb7735ecb28743ea7d828a306150
+ 1502bda9a78ceb7735ecb28743ea7d828a306150 iommu/vt-d: Fix unused invalidation hint in qi_desc_iotlb
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5d936c25d3ed581df0ffc9ca826b455faab2416d
+ 5d936c25d3ed581df0ffc9ca826b455faab2416d net: phy: realtek: create rtl8211f_config_rgmii_delay()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cfe3e2f768d248fd3d965d561d0768a56dd0b9f8
+ cfe3e2f768d248fd3d965d561d0768a56dd0b9f8 scsi: qla2xxx: Fix improper freeing of purex item
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ed4d4c646d0a495dc71ca8288f50ccec701e6cd8
+ ed4d4c646d0a495dc71ca8288f50ccec701e6cd8 scsi: ufs: rockchip: Reset controller on PRE_CHANGE of hce enable notify
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/007a1da34f71cb8475a3daa794c2440e71f2c8fa
+ 007a1da34f71cb8475a3daa794c2440e71f2c8fa pwm: bcm2835: Make sure the channel is enabled after pwm_request()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/70fad0040cfa62318c35e738e8ce103350ab2c88
+ 70fad0040cfa62318c35e738e8ce103350ab2c88 perf arm_spe: Fix memset subclass in operation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/61d88ea0f30c88e4ea98793594943aed8f1fc9ab
+ 61d88ea0f30c88e4ea98793594943aed8f1fc9ab ipv6: clear RA flags when adding a static route
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b33e2f3686ab0351530245e1a0caf45bf82af71f
+ b33e2f3686ab0351530245e1a0caf45bf82af71f spi: sophgo: Fix incorrect use of bus width value macros
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/41b5aac3eaa51a4dffc08a3701eed681cfce1abe
+ 41b5aac3eaa51a4dffc08a3701eed681cfce1abe drm/msm/a6xx: Improve MX rail fallback in RPMH vote init
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e20059ca47788c47dd5ddfcbb985973665391214
+ e20059ca47788c47dd5ddfcbb985973665391214 drm/msm/a6xx: Fix the gemnoc workaround
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b1beab02dd661fa69a9f1414f527161e3ddf4e9b
+ b1beab02dd661fa69a9f1414f527161e3ddf4e9b drm/msm/a6xx: Flush LRZ cache before PT switch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2a77df4c46102e79935b26fa0ac95d21eed062f9
+ 2a77df4c46102e79935b26fa0ac95d21eed062f9 drm/mediatek: Fix CCORR mtk_ctm_s31_32_to_s1_n function issue
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/444f7f0a11b02d182085563dbb2646913eb1b8c4
+ 444f7f0a11b02d182085563dbb2646913eb1b8c4 fs/ntfs3: Prevent memory leaks in add sub record
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/67da584d0a8c02899098d8c16bd2236be1352c62
+ 67da584d0a8c02899098d8c16bd2236be1352c62 fs/ntfs3: out1 also needs to put mi
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f49179aaa6fccba8b3d71836500757a69aceba3a
+ f49179aaa6fccba8b3d71836500757a69aceba3a net: stmmac: Fix VLAN 0 deletion in vlan_del_hw_rx_fltr()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b2cc9f08cb412900bff4b537f7c2e0e3fc8d8df0
+ b2cc9f08cb412900bff4b537f7c2e0e3fc8d8df0 powerpc/64s/ptdump: Fix kernel_hash_pagetable dump for ISA v3.00 HPTE format
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a29c7021ac8908996229de5d117482d9d66e46ad
+ a29c7021ac8908996229de5d117482d9d66e46ad powerpc/64s/hash: Restrict stress_hpt_struct memblock region to within RMA limit
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/56905bb70c8b88421709bb4e32fcba617aa37d41
+ 56905bb70c8b88421709bb4e32fcba617aa37d41 bpf: Fix invalid prog->stats access when update_effective_progs fails
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/99881cb9ec4fbdb3b0650c865c9656fca2644d3f
+ 99881cb9ec4fbdb3b0650c865c9656fca2644d3f net: stmmac: dwmac-sophgo: Add phy interface filter
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fbb61eafc35a3e97c8584b4d5a7a309f03e68f30
+ fbb61eafc35a3e97c8584b4d5a7a309f03e68f30 net: phy: Add helper for fixing RGMII PHY mode based on internal mac delay
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a813a74570212cb5f3a7d3b05c0cb0cd00bace1d
+ a813a74570212cb5f3a7d3b05c0cb0cd00bace1d wifi: rtl818x: Fix potential memory leaks in rtl8180_init_rx_ring()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e81847d9ad3719dac41b40245d9bd70144ccfcea
+ e81847d9ad3719dac41b40245d9bd70144ccfcea drm/msm/a2xx: stop over-complaining about the legacy firmware
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6557f2b1c5ad49dec1dd7c3870a4515e4182305b
+ 6557f2b1c5ad49dec1dd7c3870a4515e4182305b drm/msm: fix missing NULL check after kcalloc in crashstate_get_bos()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7723719d530481e66a3edd28286972bdd2505c2b
+ 7723719d530481e66a3edd28286972bdd2505c2b drm/msm: Fix NULL pointer dereference in crashstate_get_vm_logs()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/93724a3ecd4adc70f18217f4ca91b7bd063c65f3
+ 93724a3ecd4adc70f18217f4ca91b7bd063c65f3 block/blk-throttle: Fix throttle slice time for SSDs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f653182289bec218561c35d7584d29e7da81f05b
+ f653182289bec218561c35d7584d29e7da81f05b arm64: dts: imx95-tqma9596sa: reduce maximum FlexSPI frequency to 66MHz
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b53ba4e8e36e6946eda28f603c91353288735601
+ b53ba4e8e36e6946eda28f603c91353288735601 arm64: dts: imx95-tqma9596sa: fix TPM5 pinctrl node name
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c1ffc3601f847e6e4f4cfbba2a6b4765f7e04ddb
+ c1ffc3601f847e6e4f4cfbba2a6b4765f7e04ddb NFSD/blocklayout: Fix minlength check in proc_layoutget
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ea87943a99030cbc47c55984ef30e72daee895b4
+ ea87943a99030cbc47c55984ef30e72daee895b4 tracefs: fix a leak in eventfs_create_events_dir()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f3662a7c9b0f6849b5e7933437d4d10665cafc68
+ f3662a7c9b0f6849b5e7933437d4d10665cafc68 fuse_ctl_add_conn(): fix nlink breakage in case of early failure
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/061a5394912809d560a46fb20711d90bef611e59
+ 061a5394912809d560a46fb20711d90bef611e59 watchdog: starfive: Fix resource leak in probe error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f2db27786e042e9fe3fe56a049810ff856836d31
+ f2db27786e042e9fe3fe56a049810ff856836d31 watchdog: wdat_wdt: Fix ACPI table leak in probe function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2183924dd834e0703f87e17c17e689bcbf55d69d
+ 2183924dd834e0703f87e17c17e689bcbf55d69d mshv: Fix create memory region overlap check
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d8f9e48271c54a7fb3bbe7372f587f6a56ac2530
+ d8f9e48271c54a7fb3bbe7372f587f6a56ac2530 mshv: Fix deposit memory in MSHV_ROOT_HVCALL
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1c30e4afc5507f0069cc09bd561e510e4d97fbf7
+ 1c30e4afc5507f0069cc09bd561e510e4d97fbf7 bpf: Check skb->transport_header is set in bpf_skb_check_mtu
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/31cf8c0a2861d44a9714b508062ce9bb27277dd4
+ 31cf8c0a2861d44a9714b508062ce9bb27277dd4 selftests/bpf: Fix failure paths in send_signal test
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b4e4ce7c03269266aae38596b4b43614bc4cc00f
+ b4e4ce7c03269266aae38596b4b43614bc4cc00f bpf: Handle return value of ftrace_set_filter_ip in register_fentry
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8dd7795edd175cb1e1782f66a7df7caec74f9c95
+ 8dd7795edd175cb1e1782f66a7df7caec74f9c95 bpf: Prevent nesting overflow in bpf_try_get_buffers
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/59f307926bc5957e2495c977a3aa1787a32fc5e5
+ 59f307926bc5957e2495c977a3aa1787a32fc5e5 PCI: Prevent resource tree corruption when BAR resize fails
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4c6bf5b495dc60a0abf753c79137b3b23a33f3a5
+ 4c6bf5b495dc60a0abf753c79137b3b23a33f3a5 ps3disk: use memcpy_{from,to}_bvec index
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ecc596fa37debdcb768ac2d4119ddad17e97b170
+ ecc596fa37debdcb768ac2d4119ddad17e97b170 drm/msm/dpu: drop dpu_hw_dsc_destroy() prototype
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e409e66715bb40d3798ed7e1274463cdfb771087
+ e409e66715bb40d3798ed7e1274463cdfb771087 arm64: dts: qcom: qrb2210-rb1: Fix UART3 wakeup IRQ storm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/946357a538bb47740635c25520924351d2d91544
+ 946357a538bb47740635c25520924351d2d91544 s390/fpu: Fix false-positive kmsan report in fpu_vstl()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3af76d514ed6b5dd03d42dace14f711dc9bf8db4
+ 3af76d514ed6b5dd03d42dace14f711dc9bf8db4 crypto: iaa - Fix incorrect return value in save_iaa_wq()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e95f385c9882ea897232cd18cf1f0b9a36478fbe
+ e95f385c9882ea897232cd18cf1f0b9a36478fbe arm64: dts: rockchip: Add eeprom vcc-supply for Radxa ROCK 3C
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d3e1f66bbff19a5fb3ab7e3eb699fcdf6a9e4f81
+ d3e1f66bbff19a5fb3ab7e3eb699fcdf6a9e4f81 arm64: dts: rockchip: Add eeprom vcc-supply for Radxa ROCK 5A
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c74b7890f44d8cdc0daae8db96245c652ec453f9
+ c74b7890f44d8cdc0daae8db96245c652ec453f9 arm64: dts: rockchip: Move the EEPROM to correct I2C bus on Radxa ROCK 5A
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cfeef4dc954e623fbbd0a353a2a07abac7430ddb
+ cfeef4dc954e623fbbd0a353a2a07abac7430ddb PCI: keystone: Exit ks_pcie_probe() for invalid mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/96a5cb7072cabbac5c66ac9318242c3bdceebb68
+ 96a5cb7072cabbac5c66ac9318242c3bdceebb68 bpf: Free special fields when update [lru_,]percpu_hash maps
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/431e5af9e40e62f22a6de0d35fa20a0922cf53b8
+ 431e5af9e40e62f22a6de0d35fa20a0922cf53b8 accel/amdxdna: Fix deadlock between context destroy and job timeout
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1073d1628c3d6c45285b6087386ba7f2e6c9e167
+ 1073d1628c3d6c45285b6087386ba7f2e6c9e167 accel/amdxdna: Clear mailbox interrupt register during channel creation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c8306fe7a1da6df1f4a534a3b2a945003fb64e7a
+ c8306fe7a1da6df1f4a534a3b2a945003fb64e7a leds: netxbig: Fix GPIO descriptor leak in error paths
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/28f4b0e21c80b093657ed2105a0836adfffc8719
+ 28f4b0e21c80b093657ed2105a0836adfffc8719 scsi: sim710: Fix resource leak by adding missing ioport_unmap() calls
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6984605c386c15cec54a4efa4cee7506fce4d849
+ 6984605c386c15cec54a4efa4cee7506fce4d849 ACPI: property: Fix fwnode refcount leak in acpi_fwnode_graph_parse_endpoint()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/657032de3ce1d20f4d9ce3351a114e12d55a6dc4
+ 657032de3ce1d20f4d9ce3351a114e12d55a6dc4 ocfs2: use correct endian in ocfs2_dinode_has_extents
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7abbe41d22a06aae00fd46d29f59dd40a01e988f
+ 7abbe41d22a06aae00fd46d29f59dd40a01e988f ocfs2: relax BUG() to ocfs2_error() in __ocfs2_move_extent()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0004c7f2f592d1f886bd3428daa185d633c62a0b
+ 0004c7f2f592d1f886bd3428daa185d633c62a0b lib/vsprintf: Check pointer before dereferencing in time_and_date()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ccd564b2cfb1d1f5f70accb908197f51700e32e5
+ ccd564b2cfb1d1f5f70accb908197f51700e32e5 clk: renesas: r9a06g032: Fix memory leak in error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ab44b67f03f82b454bb8347e12b076c780611133
+ ab44b67f03f82b454bb8347e12b076c780611133 clk: renesas: r9a09g077: Propagate rate changes to parent clocks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/72e8684e21bd4e7e1ca8e446ad0af7ff2e21b5a3
+ 72e8684e21bd4e7e1ca8e446ad0af7ff2e21b5a3 drm/tidss: Move OLDI mode validation to OLDI bridge mode_valid hook
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a4ca6bfa3941de236ab30ac55c2647cbd8edd300
+ a4ca6bfa3941de236ab30ac55c2647cbd8edd300 drm/tidss: Remove max_pclk_khz and min_pclk_khz from tidss display features
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/32ad2ae3bffba3a8f23ebb494e5a4c96821b6d7a
+ 32ad2ae3bffba3a8f23ebb494e5a4c96821b6d7a perf tools: Fix missing feature check for inherit + SAMPLE_READ
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5df8940333e5ec2fe2181076df2e981ad001ce71
+ 5df8940333e5ec2fe2181076df2e981ad001ce71 coresight: etm4x: Properly control filter in CPU idle with FEAT_TRF
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0dce009dcfc9fb97611d65711cdcda575996bf16
+ 0dce009dcfc9fb97611d65711cdcda575996bf16 coresight: etm4x: Add context synchronization before enabling trace
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f4f0e0d0390a381c84ecd4d0dff22273dfd2a1f4
+ f4f0e0d0390a381c84ecd4d0dff22273dfd2a1f4 coresight: etm4x: Correct polling IDLE bit
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/eac9bb458f4d4432eaa3f3e140f2bd1956f361a9
+ eac9bb458f4d4432eaa3f3e140f2bd1956f361a9 coresight: etm3x: Always set tracer's device mode on target CPU
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d3a3a19294c37e0cd803b1e06a7f93afed7e6bf4
+ d3a3a19294c37e0cd803b1e06a7f93afed7e6bf4 coresight: etm4x: Always set tracer's device mode on target CPU
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4d20fcc9fc85299d37a403029e2f8a4d11c3199a
+ 4d20fcc9fc85299d37a403029e2f8a4d11c3199a coresight: Change device mode to atomic type
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9a38306643874566d20f7aba7dff9e6f657b51a9
+ 9a38306643874566d20f7aba7dff9e6f657b51a9 nbd: defer config unlock in nbd_genl_connect
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8db2315592f100bcabd6823c5f7a7dc221834b79
+ 8db2315592f100bcabd6823c5f7a7dc221834b79 wifi: cw1200: Fix potential memory leak in cw1200_bh_rx_helper()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/388391dd1cc567fcf0b372b63d414c119d23e911
+ 388391dd1cc567fcf0b372b63d414c119d23e911 macintosh/mac_hid: fix race condition in mac_hid_toggle_emumouse
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/54f112fc5f7a6f48f2ec6fb8d256a8287f65b523
+ 54f112fc5f7a6f48f2ec6fb8d256a8287f65b523 powerpc/32: Fix unpaired stwcx. on interrupt exit
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/37d0a5469e1c202a5f998f43423ad41ff6c7a0a5
+ 37d0a5469e1c202a5f998f43423ad41ff6c7a0a5 powerpc/kdump: Fix size calculation for hot-removed memory ranges
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a34680a0c5cc86b61d130c1363458d0363edc305
+ a34680a0c5cc86b61d130c1363458d0363edc305 cpufreq/amd-pstate: Call cppc_set_auto_sel() only for online CPUs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/df4748822cbf3e85ae028ed10a084df9e6442761
+ df4748822cbf3e85ae028ed10a084df9e6442761 md: delete md_redundancy_group when array is becoming inactive
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3f4fecbcd239dc2b6a54756b84b7b9c835080b78
+ 3f4fecbcd239dc2b6a54756b84b7b9c835080b78 scsi: ufs: core: fix incorrect buffer duplication in ufshcd_read_string_desc()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1f5f4ae1727c1fd9fbe05cabed3563d77c8aaf19
+ 1f5f4ae1727c1fd9fbe05cabed3563d77c8aaf19 drm/panthor: Fix potential memleak of vma structure
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/19164d8228317f3f1fe2662a9ba587cfe3b2d29e
+ 19164d8228317f3f1fe2662a9ba587cfe3b2d29e ntfs3: init run lock for extend inode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/faa8f38f7ccb344ace2c1f364efc70e3a12d32f3
+ faa8f38f7ccb344ace2c1f364efc70e3a12d32f3 coresight: tmc: add the handle of the event to the path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c401eb03f6171135a84a37e01251a6c223645890
+ c401eb03f6171135a84a37e01251a6c223645890 ARM: dts: stm32: stm32mp157c-phycore: Fix STMPE811 touchscreen node properties
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/faefc967fdef391147d46b52cffb6d5efca7ddb2
+ faefc967fdef391147d46b52cffb6d5efca7ddb2 RDMA/rtrs: server: Fix error handling in get_or_create_srv
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cdf14b7d65a0fdc6e28f26e74e6d47e87cb2a608
+ cdf14b7d65a0fdc6e28f26e74e6d47e87cb2a608 dt-bindings: PCI: amlogic: Fix the register name of the DBI region
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cab7048ea83df8e9bd04a18b4731ad73fcbd8552
+ cab7048ea83df8e9bd04a18b4731ad73fcbd8552 iio: imu: bmi270: fix dev_err_probe error msg
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6059a66dba7f26b21852831432e17075f1a1c783
+ 6059a66dba7f26b21852831432e17075f1a1c783 staging: most: remove broken i2c driver
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4e1acf1b6dd6dd0495bda139daafd7a403ae2dc1
+ 4e1acf1b6dd6dd0495bda139daafd7a403ae2dc1 scsi: smartpqi: Fix device resources accessed after device removal
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f0dc12f214be0eb3206983d0d0477f99b0dbed51
+ f0dc12f214be0eb3206983d0d0477f99b0dbed51 scsi: stex: Fix reboot_notifier leak in probe error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/443a1721806b6ff6303b5229e9811d68172d622f
+ 443a1721806b6ff6303b5229e9811d68172d622f nbd: defer config put in recv_work
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b4c5cf406062ad44cd178269571530c6435b2f3b
+ b4c5cf406062ad44cd178269571530c6435b2f3b md: avoid repeated calls to del_gendisk
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a4bd1caf591faeae44cb10b6517e7dacb5139bda
+ a4bd1caf591faeae44cb10b6517e7dacb5139bda md: fix rcu protection in md_wakeup_thread
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ebc7f8d61c13ed27dc3aec181093835ee2350cda
+ ebc7f8d61c13ed27dc3aec181093835ee2350cda md: delete mddev kobj before deleting gendisk kobj
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b827fe03ddb617f50ccf042f26321153be87805c
+ b827fe03ddb617f50ccf042f26321153be87805c regulator: core: disable supply if enabling main regulator fails
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/698d834387b7f74dbca3247944d848fbfc1d7e53
+ 698d834387b7f74dbca3247944d848fbfc1d7e53 perf/x86/intel: Correct large PEBS flag check
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cf69b99805c263117305ac6dffbc85aaf9259d32
+ cf69b99805c263117305ac6dffbc85aaf9259d32 perf/x86: Fix NULL event access and potential PEBS record loss
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ca6b0153166a8eb001c88ebb650a8349f6349e58
+ ca6b0153166a8eb001c88ebb650a8349f6349e58 io_uring: use WRITE_ONCE for user shared memory
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9993a20a97c1f8af79ac68549dc916681a02ec27
+ 9993a20a97c1f8af79ac68549dc916681a02ec27 accel/amdxdna: Fix dma_fence leak when job is canceled
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0213f87c280dc6cba8c5cec5a9a930450aef9877
+ 0213f87c280dc6cba8c5cec5a9a930450aef9877 ext4: correct the checking of quota files before moving extents
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ad2ec6f927684a9dabff3022b376fc1b65d1859d
+ ad2ec6f927684a9dabff3022b376fc1b65d1859d wifi: ath12k: Fix timeout error during beacon stats retrieval
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f7faac4a38d685221d81a07c92033b4e25314a09
+ f7faac4a38d685221d81a07c92033b4e25314a09 mfd: da9055: Fix missing regmap_del_irq_chip() in error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/334ac2449b5b33314b8ae53f3f347502f5df34f4
+ 334ac2449b5b33314b8ae53f3f347502f5df34f4 wifi: rtw89: usb: fix leak in rtw89_usb_write_port()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6dc94d0faa7af69d74992d03b4da2a225a77e223
+ 6dc94d0faa7af69d74992d03b4da2a225a77e223 wifi: rtw89: usb: use common error path for skbs in rtw89_usb_rx_handler()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/afe2dbbecca4d3619b140925aff5e3f6152a924a
+ afe2dbbecca4d3619b140925aff5e3f6152a924a locktorture: Fix memory leak in param_set_cpumask()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/99ac684047c0560947857f26d2601e4f41440bf3
+ 99ac684047c0560947857f26d2601e4f41440bf3 efi/libstub: Fix page table access in 5-level to 4-level paging transition
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/532675fd6d48c19f54c1945e660f1a643d0eae9c
+ 532675fd6d48c19f54c1945e660f1a643d0eae9c x86/boot: Fix page table access in 5-level to 4-level paging transition
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/70acbc9c77686b7a521af6d7a543dcd9c324cf07
+ 70acbc9c77686b7a521af6d7a543dcd9c324cf07 coresight: ETR: Fix ETR buffer use-after-free issue
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/569fd18919b3344dd72ba69ca912f4ce98429bad
+ 569fd18919b3344dd72ba69ca912f4ce98429bad entry,unwind/deferred: Fix unwind_reset_info() placement
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5d3ed8e53bdf5297d19e1b56e3950637d088a93f
+ 5d3ed8e53bdf5297d19e1b56e3950637d088a93f ARM: dts: omap3: n900: Correct obsolete TWL4030 power compatible
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3ac86a146cc464212472bfefd9bf52a9eeafca37
+ 3ac86a146cc464212472bfefd9bf52a9eeafca37 ARM: dts: omap3: beagle-xm: Correct obsolete TWL4030 power compatible
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a5a89e7bc14064cff67956edadee02e56640a752
+ a5a89e7bc14064cff67956edadee02e56640a752 ARM: dts: am335x-netcom-plus-2xx: add missing GPIO labels
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f9281b53e6e2088b4782bce853d516f513b487e1
+ f9281b53e6e2088b4782bce853d516f513b487e1 libbpf: Fix parsing of multi-split BTF
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bb0c58be84f907285af45657c1d4847b960a12bf
+ bb0c58be84f907285af45657c1d4847b960a12bf spi: tegra210-quad: Fix timeout handling
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b48b28b28e919756194946922f6d6c67782309be
+ b48b28b28e919756194946922f6d6c67782309be cleanup: fix scoped_class()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b959df804c33913dbfdb90750f2d693502b3d126
+ b959df804c33913dbfdb90750f2d693502b3d126 iommu/amd: Fix potential out-of-bounds read in iommu_mmio_show
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cc1d5f00b3bb442b129e2f377afebbc0806083f2
+ cc1d5f00b3bb442b129e2f377afebbc0806083f2 firmware: ti_sci: Set IO Isolation only if the firmware is capable
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1123eadb843588b361c96f53a771202b7953154f
+ 1123eadb843588b361c96f53a771202b7953154f drm/panthor: Fix UAF on kernel BO VA nodes
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/13c2310330d6ee9f96996cb9706d265f18cf30a4
+ 13c2310330d6ee9f96996cb9706d265f18cf30a4 drm/panthor: Fix race with suspend during unplug
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5e3ff56d4cb591daea70786d07dc21d06dc34108
+ 5e3ff56d4cb591daea70786d07dc21d06dc34108 drm/panthor: Fix UAF race between device unplug and FW event processing
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dd734773ab73664de7990c96db653528dc0c9ffc
+ dd734773ab73664de7990c96db653528dc0c9ffc drm/panthor: Fix group_free_queue() for partially initialized queues
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fb3238020ecbf0e63eef9f1e12b9dce275df454a
+ fb3238020ecbf0e63eef9f1e12b9dce275df454a drm/panthor: Handle errors returned by drm_sched_entity_init()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c7ace9a933733da51c1204491ecb9278f9567d74
+ c7ace9a933733da51c1204491ecb9278f9567d74 fs/9p: Don't open remote file with APPEND mode when writeback cache is used
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3def14f8020401bd692612b998eefd5abf90a255
+ 3def14f8020401bd692612b998eefd5abf90a255 scsi: target: Fix LUN/device R/W and total command stats
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dc668b0812645995f5ab15401d23e2f128ab9d39
+ dc668b0812645995f5ab15401d23e2f128ab9d39 scsi: target: Do not write NUL characters into ASCII configfs output
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/093c436569b785c4af776779739dd53b0ab9a405
+ 093c436569b785c4af776779739dd53b0ab9a405 power: supply: apm_power: only unset own apm_get_power_status
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/72cb54cc38d2d3f07d3fc4421dfb9c48a0714b14
+ 72cb54cc38d2d3f07d3fc4421dfb9c48a0714b14 power: supply: wm831x: Check wm831x_set_bits() return value
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b7b2784baeeeec2b6992909fb8e655bc1f0c7cc1
+ b7b2784baeeeec2b6992909fb8e655bc1f0c7cc1 power: supply: rt9467: Prevent using uninitialized local variable in rt9467_set_value_from_ranges()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bdaf7f60391623a0951afb53d50f4ca14c2270bc
+ bdaf7f60391623a0951afb53d50f4ca14c2270bc power: supply: rt9467: Return error on failure in rt9467_set_value_from_ranges()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b93bc668534edd97fd50fd2ebcbade3d50cb4e8e
+ b93bc668534edd97fd50fd2ebcbade3d50cb4e8e power: supply: max17040: Check iio_read_channel_processed() return code
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4b966c8124d7501b85203d37d4042218bd22f508
+ 4b966c8124d7501b85203d37d4042218bd22f508 power: supply: cw2015: Check devm_delayed_work_autocancel() return code
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/887e78da01773665677ece22c505508da8269edc
+ 887e78da01773665677ece22c505508da8269edc power: supply: rt5033_charger: Fix device node reference leaks
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0d597b36e76b5b149c2dc1d1e3942ba2a9b843be
+ 0d597b36e76b5b149c2dc1d1e3942ba2a9b843be timers/migration: Fix imbalanced NUMA trees
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c3bfe816a33d1c95d7c5c9c809a162b0bf7694f4
+ c3bfe816a33d1c95d7c5c9c809a162b0bf7694f4 timers/migration: Remove locking on group connection
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ec3c68771b263a0274110cdd4551e3c21ee79ec1
+ ec3c68771b263a0274110cdd4551e3c21ee79ec1 timers/migration: Convert "while" loops to use "for"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/49755ec3edfa5d63c5787e578b2f12e7a65372c8
+ 49755ec3edfa5d63c5787e578b2f12e7a65372c8 perf record: skip synthesize event when open evsel failed
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a7ed663845a889304731f0431e67d41954d0c932
+ a7ed663845a889304731f0431e67d41954d0c932 perf lock contention: Load kernel map before lookup
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8a5dc70435653a73a6a036a5e9986c344aeec969
+ 8a5dc70435653a73a6a036a5e9986c344aeec969 drm/imagination: Fix reference to devm_platform_get_and_ioremap_resource()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a653127447eb5b7e97ebb0e621e22b3e42c72e5a
+ a653127447eb5b7e97ebb0e621e22b3e42c72e5a arm64: dts: renesas: sparrow-hawk: Fix full-size DP connector node name and labels
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c96d27ff585641c4fa7a87dde6db8e1d4189c367
+ c96d27ff585641c4fa7a87dde6db8e1d4189c367 interconnect: debugfs: Fix incorrect error handling for NULL path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3a4902cb19d991cdfc496259d13a347c53c004eb
+ 3a4902cb19d991cdfc496259d13a347c53c004eb accel/amdxdna: Fix incorrect command state for timed out job
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4ed4aaa7ffd4ca43916b4c04c021587c908ee387
+ 4ed4aaa7ffd4ca43916b4c04c021587c908ee387 arm64: dts: qcom: msm8996: add interconnect paths to USB2 controller
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2d6212c2a9cbf29f6cbd13fb12e3667379c8df93
+ 2d6212c2a9cbf29f6cbd13fb12e3667379c8df93 interconnect: qcom: msm8996: add missing link to SLAVE_USB_HS
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cd1aa4114c73ba0ae553e21ecbb2275f9e5aed44
+ cd1aa4114c73ba0ae553e21ecbb2275f9e5aed44 wifi: ath12k: unassign arvif on scan vdev create failure
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/eb1398c40b10b6f69591c1d9156c6a85ba0967ca
+ eb1398c40b10b6f69591c1d9156c6a85ba0967ca wifi: ath12k: fix error handling in creating hardware group
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3da5a878cd3410c12f6e0aac976517ab3440e27f
+ 3da5a878cd3410c12f6e0aac976517ab3440e27f wifi: ath12k: fix reusing m3 memory
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b52da864aed8a3f801530a9cf56fab72b8900668
+ b52da864aed8a3f801530a9cf56fab72b8900668 wifi: ath12k: fix potential memory leak in ath12k_wow_arp_ns_offload()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/26d80dd48f16e61e503c3dfbb948022993693d87
+ 26d80dd48f16e61e503c3dfbb948022993693d87 random: use offstack cpumask when necessary
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c6fddba24cce1171fd35249a7f30a144a10a03b5
+ c6fddba24cce1171fd35249a7f30a144a10a03b5 i3c: master: svc: Prevent incomplete IBI transaction
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/89d4b075ef619198f029334932a0cf938a031979
+ 89d4b075ef619198f029334932a0cf938a031979 i3c: fix refcount inconsistency in i3c_master_register
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e8add65b8bf255266f62def0756027d5895b8dca
+ e8add65b8bf255266f62def0756027d5895b8dca pidfs: add missing BUILD_BUG_ON() assert on struct pidfd_info
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/84538b1c0058ecec3c3a14baeea4051ce897f0e5
+ 84538b1c0058ecec3c3a14baeea4051ce897f0e5 pidfs: add missing PIDFD_INFO_SIZE_VER1
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fb16493ebd8f171bcf0772262619618a131f30f7
+ fb16493ebd8f171bcf0772262619618a131f30f7 accel/ivpu: Fix race condition when unbinding BOs
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/62a4df5a0a8a474a01e31a68e4381019829ea81d
+ 62a4df5a0a8a474a01e31a68e4381019829ea81d drm: nova: select NOVA_CORE
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ff7416eb3b74ce5d90680ce7e1eb744521917e4e
+ ff7416eb3b74ce5d90680ce7e1eb744521917e4e pinctrl: stm32: fix hwspinlock resource leak in probe function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/91af238da6178c55df024bfc651679ae4f72cdd3
+ 91af238da6178c55df024bfc651679ae4f72cdd3 soc: qcom: smem: fix hwspinlock resource leak in probe error paths
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b8d27bf33eea1a2350c04419027876fc9ccbc62e
+ b8d27bf33eea1a2350c04419027876fc9ccbc62e clk: qcom: gcc-qcs615: Update the SDCC clock to use shared_floor_ops
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/43a2587f382d2298d975f06e0f8a6eeb1ba14507
+ 43a2587f382d2298d975f06e0f8a6eeb1ba14507 tools/nolibc/dirent: avoid errno in readdir_r
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5cbd5d562984f56d302d1ec65f17087ca3d4c189
+ 5cbd5d562984f56d302d1ec65f17087ca3d4c189 tools/nolibc/stdio: let perror work when NOLIBC_IGNORE_ERRNO is set
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/45a8d2541df41d3170b5bee017ec4790e2829beb
+ 45a8d2541df41d3170b5bee017ec4790e2829beb accel/ivpu: Remove skip of dma unmap for imported buffers
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8c5a7213333066aa45016c54d3761ac06817e271
+ 8c5a7213333066aa45016c54d3761ac06817e271 x86/dumpstack: Prevent KASAN false positive warnings in __show_regs()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7ddf0f3fdd757d8b06a51fd0cd7a88368b3834d1
+ 7ddf0f3fdd757d8b06a51fd0cd7a88368b3834d1 task_work: Fix NMI race condition
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9da5380fb94a0c72fa4f83398c99bcfd06e4b6cb
+ 9da5380fb94a0c72fa4f83398c99bcfd06e4b6cb perf/x86/intel/cstate: Remove PC3 support from LunarLake
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2a008f6de163279deffd488c1deab081bce5667c
+ 2a008f6de163279deffd488c1deab081bce5667c bpf: Fix stackmap overflow check in __bpf_get_stackid()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7944e9f95f36d09b37229d985a7d78e7c2edfb01
+ 7944e9f95f36d09b37229d985a7d78e7c2edfb01 bpf: Refactor stack map trace depth calculation into helper function
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/cbd670b8e91ecc7445f7e7fb957ab2b06661292e
+ cbd670b8e91ecc7445f7e7fb957ab2b06661292e perf: Remove get_perf_callchain() init_nr argument
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/90e6b3e6e1475041391b123206f68ecf384cfb3c
+ 90e6b3e6e1475041391b123206f68ecf384cfb3c mtd: rawnand: lpc32xx_slc: fix GPIO descriptor leak on probe error and remove
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/11094605b26f35ab9967d165418f835edd443dbc
+ 11094605b26f35ab9967d165418f835edd443dbc mtd: nand: relax ECC parameter validation check
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0568869b4df4930fba191d23d900321f70929914
+ 0568869b4df4930fba191d23d900321f70929914 Revert "mtd: rawnand: marvell: fix layouts"
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1e2b048c7d4ce0a7469422bd4641da1647429f90
+ 1e2b048c7d4ce0a7469422bd4641da1647429f90 wifi: iwlwifi: mld: add null check for kzalloc() in iwl_mld_send_proto_offload()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7a5154dabbf0319a4b69c9b7f54c66fa194f81d6
+ 7a5154dabbf0319a4b69c9b7f54c66fa194f81d6 drm/amdgpu/userq: fix SDMA and compute validation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/26b8badb2b582274b358ee1fc6f2c96d8edcaa2d
+ 26b8badb2b582274b358ee1fc6f2c96d8edcaa2d drm/amdgpu: add userq object va track helpers
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6287a82dfe314e77f6ca46f8ce4ff91bb1811cc5
+ 6287a82dfe314e77f6ca46f8ce4ff91bb1811cc5 ARM: dts: renesas: r9a06g032-rzn1d400-db: Drop invalid #cells properties
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/58b4fe7db5ca5e51556078661ed4eaffdadddefb
+ 58b4fe7db5ca5e51556078661ed4eaffdadddefb ARM: dts: renesas: gose: Remove superfluous port property
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5dbeb421e137824aa9bd8358bdfc926a3965fc0d
+ 5dbeb421e137824aa9bd8358bdfc926a3965fc0d RDMA/rxe: Fix null deref on srq->rq.queue after resize failure
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/15c1eb0da7df1f53d8a70a3ef1b651d24e76f71f
+ 15c1eb0da7df1f53d8a70a3ef1b651d24e76f71f arm64: dts: qcom: qcm2290: Fix camss register prop ordering
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a417324109c6f5e16f0395943b631247b1015a71
+ a417324109c6f5e16f0395943b631247b1015a71 arm64: dts: qcom: qcm2290: Add CCI node
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d958b8141186e116da6dfcfbd7ebefb05e8b1f0a
+ d958b8141186e116da6dfcfbd7ebefb05e8b1f0a sctp: Defer SCTP_DBG_OBJCNT_DEC() to sctp_destroy_sock().
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ee704bb8ece488feb14bb93535cad01997a71874
+ ee704bb8ece488feb14bb93535cad01997a71874 phy: mscc: Fix PTP for VSC8574 and VSC8572
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3d86566384eb08efdf44db6efaf8e697a24d6b82
+ 3d86566384eb08efdf44db6efaf8e697a24d6b82 perf hwmon_pmu: Fix uninitialized variable warning
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/bca5783ac752cd1ae320769ccf6ac57ec015e64a
+ bca5783ac752cd1ae320769ccf6ac57ec015e64a arm64: dts: qcom: sdm845-starqltechn: Fix i2c-gpio node name
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f63b63bed0d3bf6eea07e514244444797a15ac62
+ f63b63bed0d3bf6eea07e514244444797a15ac62 arm64: dts: qcom: qcm6490-shift-otter: Add missing reserved-memory
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/da860032e785bbbdbb985adb97e7a210d3db6cbd
+ da860032e785bbbdbb985adb97e7a210d3db6cbd arm64: dts: qcom: sm8650: set ufs as dma coherent
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/95ac7d3cba3a54a11ac8f22e16f62c7af28ca5ea
+ 95ac7d3cba3a54a11ac8f22e16f62c7af28ca5ea arm64: dts: qcom: qcm6490-fairphone-fp5: Add supplies to simple-fb node
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6c3b02a72213bf0a9099e0b4a35b9d197f972d43
+ 6c3b02a72213bf0a9099e0b4a35b9d197f972d43 arm64: dts: qcom: sdm845-oneplus: Correct gpio used for slider
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/23e867ffbd44a9b05bd6d3d03aae99485788353c
+ 23e867ffbd44a9b05bd6d3d03aae99485788353c arm64: dts: qcom: sdm845-starqltechn: fix max77705 interrupts
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ff8726fb1ae983f9c65cad4e6965a3482de2ecdc
+ ff8726fb1ae983f9c65cad4e6965a3482de2ecdc arm64: dts: qcom: starqltechn: remove extra empty line
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4281f29ac8d753f2a71919a26ad6e3c6498c0369
+ 4281f29ac8d753f2a71919a26ad6e3c6498c0369 arm64: dts: qcom: sdm845-starqltechn: remove (address|size)-cells
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c485073c6dc41a981a070e7a81592ff174a65268
+ c485073c6dc41a981a070e7a81592ff174a65268 arm64: dts: qcom: x1e80100: Add missing quirk for HS only USB controller
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5a29abbf769214bc1be92cd3867a27bf2ddf2f56
+ 5a29abbf769214bc1be92cd3867a27bf2ddf2f56 arm64: dts: qcom: x1e80100: Fix compile warnings for USB HS controller
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c39270d3c360b2e90c2c9fa2a0eae61c394ef5aa
+ c39270d3c360b2e90c2c9fa2a0eae61c394ef5aa firmware: imx: scu-irq: fix OF node leak in
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d08176735cdde18771b8ab825eb5e2890639e07b
+ d08176735cdde18771b8ab825eb5e2890639e07b arm64: dts: ti: k3-am62p: Fix memory ranges for GPU
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/01cbf3e5fd8de858397d78fd2176361769ad2f42
+ 01cbf3e5fd8de858397d78fd2176361769ad2f42 PCI: endpoint: pci-epf-test: Fix sleeping function being called from atomic context
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/93d7f654c14396c7220377cfb6fed022733308f1
+ 93d7f654c14396c7220377cfb6fed022733308f1 leds: upboard: Fix module alias
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8061eb96851a333c50809fa18fd2845d1c1923d1
+ 8061eb96851a333c50809fa18fd2845d1c1923d1 wifi: ath12k: restore register window after global reset
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fd3c3c644253fc44550763ced24b5a8f3b38f4bc
+ fd3c3c644253fc44550763ced24b5a8f3b38f4bc tools/power turbostat: Regression fix Uncore MHz printed in hex
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c496661f562ae73cd16d0baa1324cf363da78e2b
+ c496661f562ae73cd16d0baa1324cf363da78e2b s390/ap: Don't leak debug feature files if AP instructions are not available
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/678ddc2b583b669be0b28e8607080ae49783f93c
+ 678ddc2b583b669be0b28e8607080ae49783f93c scsi: ufs: core: Move the ufshcd_enable_intr() declaration
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5eaadac18c79664c9a36f71102bd54bb4ea288d5
+ 5eaadac18c79664c9a36f71102bd54bb4ea288d5 s390/smp: Fix fallback CPU detection
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/381096a417b7019896e93e86f4c585c592bf98e2
+ 381096a417b7019896e93e86f4c585c592bf98e2 wifi: ath11k: fix peer HE MCS assignment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/07068825930ed29f3132462f1156b3abc2295139
+ 07068825930ed29f3132462f1156b3abc2295139 wifi: ath11k: fix VHT MCS assignment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/59e25476ec46a3676129c63a0deb22de82692a59
+ 59e25476ec46a3676129c63a0deb22de82692a59 crypto: hisilicon/qm - restore original qos values
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6af753ac5205115e6c310c8c4236c01b59a1c44f
+ 6af753ac5205115e6c310c8c4236c01b59a1c44f crypto: asymmetric_keys - prevent overflow in asymmetric_key_generate_id
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fcd33a6757997b26ed31440a22b441ff2543d02e
+ fcd33a6757997b26ed31440a22b441ff2543d02e soc: qcom: gsbi: fix double disable caused by devm
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9e111340661512db7d0b8190b046dfa61f8f9d06
+ 9e111340661512db7d0b8190b046dfa61f8f9d06 clk: qcom: camcc-sm7150: Fix PLL config of PLL2
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4563a1c95f2fe96a38aa02e08b187401abef3369
+ 4563a1c95f2fe96a38aa02e08b187401abef3369 clk: qcom: camcc-sm6350: Fix PLL config of PLL2
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/383b1c3f55057696fee13cf9e7a751b23d14555f
+ 383b1c3f55057696fee13cf9e7a751b23d14555f clk: qcom: gcc-ipq5424: Correct the icc_first_node_id
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b3fec8dfd0bd5dc8544f649bae43acb88615b568
+ b3fec8dfd0bd5dc8544f649bae43acb88615b568 clk: qcom: gcc-sm8750: Add a new frequency for sdcc2 clock
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ec7db4fd7d317195cc0ec4ee1f46fd6791d264c2
+ ec7db4fd7d317195cc0ec4ee1f46fd6791d264c2 clk: qcom: camcc-sm6350: Specify Titan GDSC power domain as a parent to other
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/094bff66d4c5c48c26ddd4b3fb206502fc61226a
+ 094bff66d4c5c48c26ddd4b3fb206502fc61226a clk: qcom: camcc-sm8550: Specify Titan GDSC power domain as a parent to other
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b5c4b1da1ee23111700db0389ffa507ae68832e9
+ b5c4b1da1ee23111700db0389ffa507ae68832e9 tty: serial: imx: Only configure the wake register when device is set as wakeup source
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ef883fcf200e791225864600833ed68736205903
+ ef883fcf200e791225864600833ed68736205903 tty: introduce tty_port_tty guard()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6711a06409b30ba7f24c628feea10791d90e329f
+ 6711a06409b30ba7f24c628feea10791d90e329f uio: uio_fsl_elbc_gpcm:: Add null pointer check to uio_fsl_elbc_gpcm_probe
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4b2dd125b300a391ec0f044190a8c63e595e7c43
+ 4b2dd125b300a391ec0f044190a8c63e595e7c43 PCI: rcar-gen2: Drop ARM dependency from PCI_RCAR_GEN2
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/b15148b0de4726d8e06a1a749ac2af1320440199
+ b15148b0de4726d8e06a1a749ac2af1320440199 arm64: dts: exynos: gs101: fix sysreg_apm reg property
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/63ea7190abc825ad47380b2faa566a7462e4d959
+ 63ea7190abc825ad47380b2faa566a7462e4d959 perf annotate: Check return value of evsel__get_arch() properly
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4b80482a9c0d5ad77e033fa1ec6726e138d0ad1c
+ 4b80482a9c0d5ad77e033fa1ec6726e138d0ad1c arm64: dts: imx95-15x15-evk: add fan-supply property for pwm-fan
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/789aecf1a96594ef6b1924cb925df62b5296f0b1
+ 789aecf1a96594ef6b1924cb925df62b5296f0b1 arm64: dts: imx8mp-venice-gw702x: remove off-board sdhc1
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/22d15cafbd20216e454bda8aa8951230404642ff
+ 22d15cafbd20216e454bda8aa8951230404642ff arm64: dts: imx8mp-venice-gw702x: remove off-board uart
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1958281be921558eaa9e4da6cbfa2b1e8faf08f3
+ 1958281be921558eaa9e4da6cbfa2b1e8faf08f3 arm64: dts: imx8mm-venice-gw72xx: remove unused sdhc1 pinctrl
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f7d0689223048409a8f2a09b36fa43af4e0e5f08
+ f7d0689223048409a8f2a09b36fa43af4e0e5f08 arm64: dts: freescale: imx8mp-venice-gw7905-2x: remove duplicate usdhc1 props
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7ee38c193b8219f2b55e5006142202c151ce9eeb
+ 7ee38c193b8219f2b55e5006142202c151ce9eeb block/mq-deadline: Switch back to a single dispatch list
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ab42a4aca670c0c3cfae20fb9b8a40a2eb6c267e
+ ab42a4aca670c0c3cfae20fb9b8a40a2eb6c267e block/mq-deadline: Introduce dd_start_request()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/64377e66e187164bd6737112d07257f5f0feb681
+ 64377e66e187164bd6737112d07257f5f0feb681 crypto: aead - Fix reqsize handling
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/db71b03ccba34b48ad824ef2a3e67480e9b26b33
+ db71b03ccba34b48ad824ef2a3e67480e9b26b33 firmware: qcom: tzmem: fix qcom_tzmem_policy kernel-doc
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/723e90324838b9c4f26a9488781c96020d166f68
+ 723e90324838b9c4f26a9488781c96020d166f68 iio: imu: st_lsm6dsx: Fix measurement unit for odr struct member
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/266d59964135091717192311e96a2373d0a7af2b
+ 266d59964135091717192311e96a2373d0a7af2b inet: Avoid ehash lookup race in inet_twsk_hashdance_schedule()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5e95de89febb2bbb9258fe9edce30096505b2bf0
+ 5e95de89febb2bbb9258fe9edce30096505b2bf0 inet: Avoid ehash lookup race in inet_ehash_insert()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/36ae22415416fcd19891be913f7fea05953de13b
+ 36ae22415416fcd19891be913f7fea05953de13b rculist: Add hlist_nulls_replace_rcu() and hlist_nulls_replace_init_rcu()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0baec5114dfe52bbb862796897aadb4841c4d74d
+ 0baec5114dfe52bbb862796897aadb4841c4d74d clk: qcom: gcc-x1e80100: Add missing USB4 clocks/resets
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/64ec73e2479296d2656a5f6b7344b1e81d2d23f6
+ 64ec73e2479296d2656a5f6b7344b1e81d2d23f6 dt-bindings: clock: qcom,x1e80100-gcc: Add missing USB4 clocks/resets
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d88d4b455b6794f48d7adad52593f1700c7bd50e
+ d88d4b455b6794f48d7adad52593f1700c7bd50e ntfs3: Fix uninit buffer allocated by __getname()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/46f2a881e5a7311d41551edb3915e4d4e8802341
+ 46f2a881e5a7311d41551edb3915e4d4e8802341 ntfs3: fix uninit memory after failed mi_read in mi_format_new
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/9d4ad001abfd02d60ac03f779b9bc153f2855896
+ 9d4ad001abfd02d60ac03f779b9bc153f2855896 crypto: authenc - Correctly pass EINPROGRESS back up to the caller
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/45edcc89ff45772259599e7c19e9b1f6f48bbfc2
+ 45edcc89ff45772259599e7c19e9b1f6f48bbfc2 irqchip/qcom-irq-combiner: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/97d1ff6571a0ef7c8542bd057e4e0cf6f0dc9822
+ 97d1ff6571a0ef7c8542bd057e4e0cf6f0dc9822 irqchip/starfive-jh8100: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c055a6262609427a3edb15b0a0880b78c675b21e
+ c055a6262609427a3edb15b0a0880b78c675b21e irqchip/renesas-rzg2l: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/488810d5d8539ac064e122e9cdb9e040988324c9
+ 488810d5d8539ac064e122e9cdb9e040988324c9 irqchip/imx-mu-msi: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2b839a6f393d47523149506e721c20c970f6e420
+ 2b839a6f393d47523149506e721c20c970f6e420 irqchip/irq-brcmstb-l2: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4ae4ebed50587f7755eed87b42a7f57e176422cb
+ 4ae4ebed50587f7755eed87b42a7f57e176422cb irqchip/irq-bcm7120-l2: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d6e9b52bb834650856459e490dae6889c03b1db4
+ d6e9b52bb834650856459e490dae6889c03b1db4 irqchip/irq-bcm7038-l1: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/05a16ba75696e08504b29e9351be8e51f0cd06e0
+ 05a16ba75696e08504b29e9351be8e51f0cd06e0 irqchip/bcm2712-mip: Fix section mismatch
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0289299c167eb886ad4e97627907783d865a1e87
+ 0289299c167eb886ad4e97627907783d865a1e87 irqchip/bcm2712-mip: Fix OF node reference imbalance
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/fba422bcba5ecad73f5b94c2b72cde81105f5e96
+ fba422bcba5ecad73f5b94c2b72cde81105f5e96 sched/fair: Forfeit vruntime on yield
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/31d3c519ff01c6e110c00b54ef06f6b5281785ae
+ 31d3c519ff01c6e110c00b54ef06f6b5281785ae wifi: ath12k: fix TX and RX MCS rate configurations in HE mode
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6e062ec45818e89393c4b31731a19f936b19a78c
+ 6e062ec45818e89393c4b31731a19f936b19a78c wifi: ath12k: fix VHT MCS assignment
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5ff5a9d71cdc49c3400f30583a784ad0a17d01ec
+ 5ff5a9d71cdc49c3400f30583a784ad0a17d01ec wifi: ath12k: Fix MSDU buffer types handling in RX error path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/dc6768d42881f67452e20ff7938b019d690665a1
+ dc6768d42881f67452e20ff7938b019d690665a1 wifi: ath11k: restore register window after global reset
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/11313a2c1b52a2adfc294d60214ee896374085cc
+ 11313a2c1b52a2adfc294d60214ee896374085cc wifi: ath10k: move recovery check logic into a new work
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/77cf96d4eb06e21178bb9cf4e2076f93909eb7e7
+ 77cf96d4eb06e21178bb9cf4e2076f93909eb7e7 perf parse-events: Fix legacy cache events if event is duplicated in a PMU
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/0388a18848a01f6764da2074292d513c8cc5a035
+ 0388a18848a01f6764da2074292d513c8cc5a035 accel/ivpu: Fix race condition when mapping dmabuf
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/e0ca72a0e9d4ff32f66dc08a1d5424141ea32b5b
+ e0ca72a0e9d4ff32f66dc08a1d5424141ea32b5b objtool: Fix weak symbol detection
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/5222997661c13f3910d0c88e0c890f0123e391a6
+ 5222997661c13f3910d0c88e0c890f0123e391a6 objtool: Fix standalone --hacks=jump_label
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/f5ae21777e9809ac61f6795ad799b5819f158b2b
+ f5ae21777e9809ac61f6795ad799b5819f158b2b remoteproc: imx_rproc: Fix runtime PM cleanup and improve remove path
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/37b36e076561efb5ef026fd337a5d14bf084e2d9
+ 37b36e076561efb5ef026fd337a5d14bf084e2d9 HID: logitech-hidpp: Do not assume FAP in hidpp_send_message_sync()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/97fb80ed61a59800a9d6661ff686adae6ca97209
+ 97fb80ed61a59800a9d6661ff686adae6ca97209 drm: atmel-hlcdc: fix atmel_xlcdc_plane_setup_scaler()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/542d866b165bfb50239f8b8837e3b20313a6a14f
+ 542d866b165bfb50239f8b8837e3b20313a6a14f clk: renesas: cpg-mssr: Read back reset registers to assure values latched
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/3a64ded81a0edcc5b30808f6dd9cc015a2426ff8
+ 3a64ded81a0edcc5b30808f6dd9cc015a2426ff8 clk: renesas: cpg-mssr: Add missing 1ms delay into reset toggle callback
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1178ddf1f5e0dd477aae2e78d5e10dc2b8138282
+ 1178ddf1f5e0dd477aae2e78d5e10dc2b8138282 pinctrl: renesas: rzg2l: Fix PMC restore
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/6b3cae1e0923d45428894ee6034eb74596d6cce8
+ 6b3cae1e0923d45428894ee6034eb74596d6cce8 ima: Attach CREDS_CHECK IMA hook to bprm_creds_from_file LSM hook
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/446e2d76204acb7bb91a0375a35575ba1a171c33
+ 446e2d76204acb7bb91a0375a35575ba1a171c33 perf bpf_counter: Fix opening of "any"(-1) CPU events
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/267e3a0d1f0a94ca09bc16cff8860a7e4c78947f
+ 267e3a0d1f0a94ca09bc16cff8860a7e4c78947f USB: Fix descriptor count when handling invalid MBIM extended descriptor
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a2e6c0a9f570f93ebf2a0f2290a5eae27118f08f
+ a2e6c0a9f570f93ebf2a0f2290a5eae27118f08f tools/nolibc: handle NULL wstatus argument to waitpid()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/1ed49d0822300fb68bf1a79fdb7425b117cc1687
+ 1ed49d0822300fb68bf1a79fdb7425b117cc1687 bpf: Cleanup unused func args in rqspinlock implementation
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/4f335cb8fad69b2be5accf0ebac3a8b345915f4e
+ 4f335cb8fad69b2be5accf0ebac3a8b345915f4e drm/vgem-fence: Fix potential deadlock on release
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7559a892d295263b49c6f04d414defd4099794d2
+ 7559a892d295263b49c6f04d414defd4099794d2 accel/ivpu: Fix DCT active percent format
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/18b9f433a62e67dd51e1ba3d530b41446925f443
+ 18b9f433a62e67dd51e1ba3d530b41446925f443 accel/ivpu: Make function parameter names consistent
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/8172838a284c27190fa6782c2740a97020434750
+ 8172838a284c27190fa6782c2740a97020434750 accel/ivpu: Fix page fault in ivpu_bo_unbind_all_bos_from_context()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/2c1d871893f1ade35f4ede9ab9e67e17b5389953
+ 2c1d871893f1ade35f4ede9ab9e67e17b5389953 accel/ivpu: Rework bind/unbind of imported buffers
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/70f30620602a97e81380e08146807b1aa9726d7e
+ 70f30620602a97e81380e08146807b1aa9726d7e drm/panel: visionox-rm69299: Don't clear all mode flags
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ecbcfdc3ad4a5159232e7ddc5e2a1c00feecb34e
+ ecbcfdc3ad4a5159232e7ddc5e2a1c00feecb34e drm/panel: visionox-rm69299: Fix clock frequency for SHIFT6mq
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/104adb41b5eb8cfd3a5362a6782d88027f701b3f
+ 104adb41b5eb8cfd3a5362a6782d88027f701b3f accel/ivpu: Ensure rpm_runtime_put in case of engine reset/resume fail
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/d138f73ffb0c57ded473c577719e6e551b7b1f27
+ d138f73ffb0c57ded473c577719e6e551b7b1f27 gpu: host1x: Fix race in syncpt alloc/free
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/a2b1d3740a20f6acf8b6f68a54ab6f643bc5a8d9
+ a2b1d3740a20f6acf8b6f68a54ab6f643bc5a8d9 smack: fix bug: setting task label silently ignores input garbage
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/64aa81250171b6bb6803e97ea7a5d73bfa061f6e
+ 64aa81250171b6bb6803e97ea7a5d73bfa061f6e smack: fix bug: unprivileged task can create labels
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/04c4e57b82c76cc51611f1df462543edf53604dd
+ 04c4e57b82c76cc51611f1df462543edf53604dd smack: fix bug: invalid label of unix socket file
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/ea6016e14cd882258b68ab084137b58233dcc6a9
+ ea6016e14cd882258b68ab084137b58233dcc6a9 smack: always "instantiate" inode in smack_inode_init_security()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/7141613b3c9085b893eb6b7b771ed4eff76fb2b1
+ 7141613b3c9085b893eb6b7b771ed4eff76fb2b1 smack: deduplicate xattr setting in smack_inode_init_security()
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/c92a59f157e408e338d789741cc4ed860b0c5077
+ c92a59f157e408e338d789741cc4ed860b0c5077 smack: fix bug: SMACK64TRANSMUTE set on non-directory
+
+https://gitlab.com/cki-project/kernel-ark/-/commit/240a3c7797a02ce199e0fb7132124be49a11e086
+ 240a3c7797a02ce199e0fb7132124be49a11e086 smack: deduplicate "does access rule request transmutation"
+
 https://gitlab.com/cki-project/kernel-ark/-/commit/bddaba0f55a560c71fb245c91ae01ac34cdbba25
  bddaba0f55a560c71fb245c91ae01ac34cdbba25 Revert "gpio: swnode: don't use the swnode's name as the key for GPIO lookup"
 
