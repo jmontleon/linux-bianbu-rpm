@@ -1,0 +1,238 @@
+From c85421cff793297c1f830f26eec8cf4d0de65326 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Fri, 15 Aug 2025 10:27:59 -0400
+Subject: [PATCH 0003/1233] Revert "clk: spacemit: set up reset auxiliary
+ devices"
+
+This reverts commit 988543522ebd6a9af53c288833503f0501e401b0.
+---
+ drivers/clk/spacemit/Kconfig     |   1 -
+ drivers/clk/spacemit/ccu-k1.c    | 104 +++----------------------------
+ include/soc/spacemit/k1-syscon.h |  12 ----
+ 3 files changed, 10 insertions(+), 107 deletions(-)
+
+diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
+index 3854f6ae6d0ea..4c4df845b3cb2 100644
+--- a/drivers/clk/spacemit/Kconfig
++++ b/drivers/clk/spacemit/Kconfig
+@@ -3,7 +3,6 @@
+ config SPACEMIT_CCU
+ 	tristate "Clock support for SpacemiT SoCs"
+ 	depends on ARCH_SPACEMIT || COMPILE_TEST
+-	select AUXILIARY_BUS
+ 	select MFD_SYSCON
+ 	help
+ 	  Say Y to enable clock controller unit support for SpacemiT SoCs.
+diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
+index 9953788dd3686..703c96aff3fe6 100644
+--- a/drivers/clk/spacemit/ccu-k1.c
++++ b/drivers/clk/spacemit/ccu-k1.c
+@@ -5,15 +5,12 @@
+  */
+ 
+ #include <linux/array_size.h>
+-#include <linux/auxiliary_bus.h>
+ #include <linux/clk-provider.h>
+ #include <linux/delay.h>
+-#include <linux/idr.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/minmax.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include <linux/slab.h>
+ #include <soc/spacemit/k1-syscon.h>
+ 
+ #include "ccu_common.h"
+@@ -24,13 +21,10 @@
+ #include <dt-bindings/clock/spacemit,k1-syscon.h>
+ 
+ struct spacemit_ccu_data {
+-	const char *reset_name;
+ 	struct clk_hw **hws;
+ 	size_t num;
+ };
+ 
+-static DEFINE_IDA(auxiliary_ids);
+-
+ /* APBS clocks start, APBS region contains and only contains all PLL clocks */
+ 
+ /*
+@@ -748,9 +742,8 @@ static struct clk_hw *k1_ccu_pll_hws[] = {
+ };
+ 
+ static const struct spacemit_ccu_data k1_ccu_pll_data = {
+-	/* The PLL CCU implements no resets */
+-	.hws		= k1_ccu_pll_hws,
+-	.num		= ARRAY_SIZE(k1_ccu_pll_hws),
++	.hws	= k1_ccu_pll_hws,
++	.num	= ARRAY_SIZE(k1_ccu_pll_hws),
+ };
+ 
+ static struct clk_hw *k1_ccu_mpmu_hws[] = {
+@@ -794,9 +787,8 @@ static struct clk_hw *k1_ccu_mpmu_hws[] = {
+ };
+ 
+ static const struct spacemit_ccu_data k1_ccu_mpmu_data = {
+-	.reset_name	= "mpmu-reset",
+-	.hws		= k1_ccu_mpmu_hws,
+-	.num		= ARRAY_SIZE(k1_ccu_mpmu_hws),
++	.hws	= k1_ccu_mpmu_hws,
++	.num	= ARRAY_SIZE(k1_ccu_mpmu_hws),
+ };
+ 
+ static struct clk_hw *k1_ccu_apbc_hws[] = {
+@@ -903,9 +895,8 @@ static struct clk_hw *k1_ccu_apbc_hws[] = {
+ };
+ 
+ static const struct spacemit_ccu_data k1_ccu_apbc_data = {
+-	.reset_name	= "apbc-reset",
+-	.hws		= k1_ccu_apbc_hws,
+-	.num		= ARRAY_SIZE(k1_ccu_apbc_hws),
++	.hws	= k1_ccu_apbc_hws,
++	.num	= ARRAY_SIZE(k1_ccu_apbc_hws),
+ };
+ 
+ static struct clk_hw *k1_ccu_apmu_hws[] = {
+@@ -974,9 +965,8 @@ static struct clk_hw *k1_ccu_apmu_hws[] = {
+ };
+ 
+ static const struct spacemit_ccu_data k1_ccu_apmu_data = {
+-	.reset_name	= "apmu-reset",
+-	.hws		= k1_ccu_apmu_hws,
+-	.num		= ARRAY_SIZE(k1_ccu_apmu_hws),
++	.hws	= k1_ccu_apmu_hws,
++	.num	= ARRAY_SIZE(k1_ccu_apmu_hws),
+ };
+ 
+ static const struct spacemit_ccu_data k1_ccu_rcpu_data = {
+@@ -999,10 +989,6 @@ static int spacemit_ccu_register(struct device *dev,
+ 	struct clk_hw_onecell_data *clk_data;
+ 	int i, ret;
+ 
+-	/* Nothing to do if the CCU does not implement any clocks */
+-	if (!data->hws)
+-		return 0;
+-
+ 	clk_data = devm_kzalloc(dev, struct_size(clk_data, hws, data->num),
+ 				GFP_KERNEL);
+ 	if (!clk_data)
+@@ -1043,74 +1029,9 @@ static int spacemit_ccu_register(struct device *dev,
+ 	return ret;
+ }
+ 
+-static void spacemit_cadev_release(struct device *dev)
+-{
+-	struct auxiliary_device *adev = to_auxiliary_dev(dev);
+-
+-	ida_free(&auxiliary_ids, adev->id);
+-	kfree(to_spacemit_ccu_adev(adev));
+-}
+-
+-static void spacemit_adev_unregister(void *data)
+-{
+-	struct auxiliary_device *adev = data;
+-
+-	auxiliary_device_delete(adev);
+-	auxiliary_device_uninit(adev);
+-}
+-
+-static int spacemit_ccu_reset_register(struct device *dev,
+-				       struct regmap *regmap,
+-				       const char *reset_name)
+-{
+-	struct spacemit_ccu_adev *cadev;
+-	struct auxiliary_device *adev;
+-	int ret;
+-
+-	/* Nothing to do if the CCU does not implement a reset controller */
+-	if (!reset_name)
+-		return 0;
+-
+-	cadev = kzalloc(sizeof(*cadev), GFP_KERNEL);
+-	if (!cadev)
+-		return -ENOMEM;
+-
+-	cadev->regmap = regmap;
+-
+-	adev = &cadev->adev;
+-	adev->name = reset_name;
+-	adev->dev.parent = dev;
+-	adev->dev.release = spacemit_cadev_release;
+-	adev->dev.of_node = dev->of_node;
+-	ret = ida_alloc(&auxiliary_ids, GFP_KERNEL);
+-	if (ret < 0)
+-		goto err_free_cadev;
+-	adev->id = ret;
+-
+-	ret = auxiliary_device_init(adev);
+-	if (ret)
+-		goto err_free_aux_id;
+-
+-	ret = auxiliary_device_add(adev);
+-	if (ret) {
+-		auxiliary_device_uninit(adev);
+-		return ret;
+-	}
+-
+-	return devm_add_action_or_reset(dev, spacemit_adev_unregister, adev);
+-
+-err_free_aux_id:
+-	ida_free(&auxiliary_ids, adev->id);
+-err_free_cadev:
+-	kfree(cadev);
+-
+-	return ret;
+-}
+-
+ static int k1_ccu_probe(struct platform_device *pdev)
+ {
+ 	struct regmap *base_regmap, *lock_regmap = NULL;
+-	const struct spacemit_ccu_data *data;
+ 	struct device *dev = &pdev->dev;
+ 	int ret;
+ 
+@@ -1139,16 +1060,11 @@ static int k1_ccu_probe(struct platform_device *pdev)
+ 					     "failed to get lock regmap\n");
+ 	}
+ 
+-	data = of_device_get_match_data(dev);
+-
+-	ret = spacemit_ccu_register(dev, base_regmap, lock_regmap, data);
++	ret = spacemit_ccu_register(dev, base_regmap, lock_regmap,
++				    of_device_get_match_data(dev));
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "failed to register clocks\n");
+ 
+-	ret = spacemit_ccu_reset_register(dev, base_regmap, data->reset_name);
+-	if (ret)
+-		return dev_err_probe(dev, ret, "failed to register resets\n");
+-
+ 	return 0;
+ }
+ 
+diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
+index 354751562c555..331cc1d35bbb7 100644
+--- a/include/soc/spacemit/k1-syscon.h
++++ b/include/soc/spacemit/k1-syscon.h
+@@ -5,18 +5,6 @@
+ #ifndef __SOC_K1_SYSCON_H__
+ #define __SOC_K1_SYSCON_H__
+ 
+-/* Auxiliary device used to represent a CCU reset controller */
+-struct spacemit_ccu_adev {
+-	struct auxiliary_device adev;
+-	struct regmap *regmap;
+-};
+-
+-static inline struct spacemit_ccu_adev *
+-to_spacemit_ccu_adev(struct auxiliary_device *adev)
+-{
+-	return container_of(adev, struct spacemit_ccu_adev, adev);
+-}
+-
+ /* APBS register offset */
+ #define APBS_PLL1_SWCR1			0x100
+ #define APBS_PLL1_SWCR2			0x104
+-- 
+2.52.0
+

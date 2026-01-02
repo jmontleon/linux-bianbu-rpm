@@ -1,0 +1,25 @@
+From 8f14e79d90f657b593b73400b5b03b416331e318 Mon Sep 17 00:00:00 2001
+From: wanlong <long.wan@spacemit.com>
+Date: Sat, 23 Dec 2023 19:03:17 +0800
+Subject: [PATCH 0256/1233] usb: hid: enable raw HID device support
+
+Change-Id: I1edd910947cdd139c391fce6a4168ad65f7e5f52
+---
+ arch/riscv/configs/k1-x_evb_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
+index 037c0569f444f..ce2541938b378 100644
+--- a/arch/riscv/configs/k1-x_evb_defconfig
++++ b/arch/riscv/configs/k1-x_evb_defconfig
+@@ -319,6 +319,7 @@ CONFIG_SPACEMIT_MIPI_PANEL=y
+ CONFIG_POWERVR_ROGUE=y
+ CONFIG_FB=y
+ # CONFIG_VGA_CONSOLE is not set
++CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+-- 
+2.52.0
+
