@@ -23,7 +23,6 @@
  drivers/hwtracing/coresight/coresight-etm4x-core.c |  19 ++++
  drivers/input/rmi4/rmi_driver.c                    | 124 ++++++++++++---------
  drivers/iommu/iommu.c                              |  22 ++++
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c       |   4 +-
  drivers/pci/quirks.c                               |  24 ++++
  drivers/scsi/sd.c                                  |  10 ++
  drivers/usb/core/hub.c                             |   7 ++
@@ -42,10 +41,10 @@
  security/lockdown/lockdown.c                       |  11 ++
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 ------
- 44 files changed, 552 insertions(+), 218 deletions(-)
+ 43 files changed, 550 insertions(+), 216 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 17415fdcd358..3d4466d564e4 100644
+index 7b431af09b32..c68c3acc0033 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -1126,28 +1125,6 @@ index 59244c744eab..183f4eaab6e2 100644
  /**
   * iommu_setup_default_domain - Set the default_domain for the group
   * @group: Group to change
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-index 607fcea6f4ef..0f002ef261fc 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-@@ -1599,7 +1599,7 @@ static void _iwl_op_mode_stop(struct iwl_drv *drv)
-  */
- static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
- {
--	unsigned int min_core, max_core, loaded_core;
-+	int min_core, max_core, loaded_core;
- 	struct iwl_drv *drv = context;
- 	struct iwl_fw *fw = &drv->fw;
- 	const struct iwl_ucode_header *ucode;
-@@ -1678,7 +1678,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
- 	if (loaded_core < min_core || loaded_core > max_core) {
- 		IWL_ERR(drv,
- 			"Driver unable to support your firmware API. "
--			"Driver supports FW core %u..%u, firmware is %u.\n",
-+			"Driver supports FW core %d..%d, firmware is %d.\n",
- 			min_core, max_core, loaded_core);
- 		goto try_again;
- 	}
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
 index b9c252aa6fe0..166a5815e1ef 100644
 --- a/drivers/pci/quirks.c
