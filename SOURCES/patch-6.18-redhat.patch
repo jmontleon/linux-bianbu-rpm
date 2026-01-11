@@ -26,6 +26,7 @@
  drivers/pci/quirks.c                               |  24 ++++
  drivers/scsi/sd.c                                  |  10 ++
  drivers/usb/core/hub.c                             |   7 ++
+ fs/erofs/super.c                                   |  19 +++-
  include/linux/efi.h                                |  22 ++--
  include/linux/lsm_hook_defs.h                      |   1 +
  include/linux/module.h                             |   1 +
@@ -41,10 +42,10 @@
  security/lockdown/lockdown.c                       |  11 ++
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 ------
- 43 files changed, 550 insertions(+), 216 deletions(-)
+ 44 files changed, 563 insertions(+), 222 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7b431af09b32..c68c3acc0033 100644
+index 30c332829b0f..fb93f8fdd6a0 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -1206,6 +1207,38 @@ index 256fe8c86828..2e4a09948df8 100644
  	/* Lock the device, then check to see if we were
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 937a215f626c..5136cda5972a 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -644,14 +644,21 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		 * fs contexts (including its own) due to self-controlled RO
+ 		 * accesses/contexts and no side-effect changes that need to
+ 		 * context save & restore so it can reuse the current thread
+-		 * context.  However, it still needs to bump `s_stack_depth` to
+-		 * avoid kernel stack overflow from nested filesystems.
++		 * context.
++		 * However, we still need to prevent kernel stack overflow due
++		 * to filesystem nesting: just ensure that s_stack_depth is 0
++		 * to disallow mounting EROFS on stacked filesystems.
++		 * Note: s_stack_depth is not incremented here for now, since
++		 * EROFS is the only fs supporting file-backed mounts for now.
++		 * It MUST change if another fs plans to support them, which
++		 * may also require adjusting FILESYSTEM_MAX_STACK_DEPTH.
+ 		 */
+ 		if (erofs_is_fileio_mode(sbi)) {
+-			sb->s_stack_depth =
+-				file_inode(sbi->dif0.file)->i_sb->s_stack_depth + 1;
+-			if (sb->s_stack_depth > FILESYSTEM_MAX_STACK_DEPTH) {
+-				erofs_err(sb, "maximum fs stacking depth exceeded");
++			inode = file_inode(sbi->dif0.file);
++			if ((inode->i_sb->s_op == &erofs_sops &&
++			     !inode->i_sb->s_bdev) ||
++			    inode->i_sb->s_stack_depth) {
++				erofs_err(sb, "file-backed mounts cannot be applied to stacked fses");
+ 				return -ENOTBLK;
+ 			}
+ 		}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
 index a98cc39e7aaa..00f31eefd0c5 100644
 --- a/include/linux/efi.h

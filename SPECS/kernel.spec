@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.18.4
-%define specversion 6.18.4
+%define specrpmversion 6.18.5
+%define specversion 6.18.5
 %define patchversion 6.18
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.18.4
+%define tarfile_release 6.18.5
 # This is needed to do merge window version magic
 %define patchlevel 18
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.18.4
+%define kabiversion 6.18.5
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6996,6 +6996,11 @@ fi\
 #
 #
 %changelog
+* Sun Jan 11 2026 Justin M. Forbes <jforbes@fedoraproject.org> [6.18.5-0]
+- erofs: fix file-backed mounts no longer working on EROFS partitions (Gao Xiang)
+- erofs: don't bother with s_stack_depth increasing for now (Gao Xiang)
+- Linux v6.18.5
+
 * Thu Jan 08 2026 Justin M. Forbes <jforbes@fedoraproject.org> [6.18.4-0]
 - Linux v6.18.4
 
