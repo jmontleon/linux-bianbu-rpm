@@ -1,4 +1,4 @@
-From 85d1c3b5b51aa5947d0b9c61fe1a02040a3ba929 Mon Sep 17 00:00:00 2001
+From c17d84f6efb502bc59bb9c553c2c72c924b1516a Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Wed, 13 Mar 2024 19:23:47 +0800
 Subject: [PATCH 0505/1233] more flexable configuration for image itb build
@@ -10,10 +10,10 @@ Change-Id: I16a819e627d987374f20808242dbefbcfc5fd603
  2 files changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index 96e3de6d44a7d..1d6345d4ee87f 100644
+index c844d12664cc8..d520c7791b3bf 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
-@@ -67,6 +67,21 @@ $(obj)/Image.xz: $(obj)/Image FORCE
+@@ -63,6 +63,21 @@ $(obj)/Image.xz: $(obj)/Image FORCE
  $(obj)/loader.bin: $(obj)/loader FORCE
  	$(call if_changed,objcopy)
  
@@ -35,7 +35,7 @@ index 96e3de6d44a7d..1d6345d4ee87f 100644
  quiet_cmd_its_cat = CAT     $@
        cmd_its_cat = cat $(real-prereqs) >$@
  
-@@ -76,12 +91,16 @@ $(obj)/Image.its.S: $(addprefix $(srctree)/arch/riscv/generic/,$(ITS_INPUTS)) FO
+@@ -72,12 +87,16 @@ $(obj)/Image.its.S: $(addprefix $(srctree)/arch/riscv/generic/,$(ITS_INPUTS)) FO
  quiet_cmd_cpp_its_S = ITS     $@
        cmd_cpp_its_S = $(CPP) -P -C -o $@ $< \
  		-DKERNEL_NAME="\"Linux $(KERNELRELEASE)\"" \

@@ -1,4 +1,4 @@
-From 10529ab6571a55a046bb6bcf2f56048a778ad697 Mon Sep 17 00:00:00 2001
+From 7c1594ecc9d37dabb7c6e11272c5a3ce5cd94b93 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Mon, 11 Mar 2024 17:40:22 +0800
 Subject: [PATCH 0489/1233] add kernel image itb build support
@@ -40,10 +40,10 @@ index 4c6de57f65ef0..c58b5eada1399 100644
  
  # the install target always installs KBUILD_IMAGE (which may be compressed)
 diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index bfc3d0b75b9b2..96e3de6d44a7d 100644
+index 5301adf5f3f5d..c844d12664cc8 100644
 --- a/arch/riscv/boot/Makefile
 +++ b/arch/riscv/boot/Makefile
-@@ -67,6 +67,34 @@ $(obj)/Image.xz: $(obj)/Image FORCE
+@@ -63,6 +63,34 @@ $(obj)/Image.xz: $(obj)/Image FORCE
  $(obj)/loader.bin: $(obj)/loader FORCE
  	$(call if_changed,objcopy)
  
