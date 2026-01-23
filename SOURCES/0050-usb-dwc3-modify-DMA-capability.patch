@@ -1,4 +1,4 @@
-From 57f330dbbdf1a2677625e0dfc58eb395a45de930 Mon Sep 17 00:00:00 2001
+From 05c073809bae7f8fed0738ea52b5aefbd8691392 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 May 2023 14:56:16 +0800
 Subject: [PATCH 0050/1233] usb: dwc3: modify DMA capability
@@ -9,10 +9,10 @@ Change-Id: Ibea2f1e19752884356d1dd8dff1d2813225ecf8d
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index c2ce2f5e60a19..7df95d5eb8822 100644
+index eb10490a6d92c..01dd5d8ec076b 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -2247,6 +2247,11 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
+@@ -2249,6 +2249,11 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
  		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
  		if (ret)
  			goto err_disable_clks;

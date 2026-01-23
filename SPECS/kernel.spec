@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.18.6
-%define specversion 6.18.6
+%define specrpmversion 6.18.7
+%define specversion 6.18.7
 %define patchversion 6.18
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.18.6
+%define tarfile_release 6.18.7
 # This is needed to do merge window version magic
 %define patchlevel 18
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.18.6
+%define kabiversion 6.18.7
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
@@ -6996,6 +6996,10 @@ fi\
 #
 #
 %changelog
+* Fri Jan 23 2026 Augusto Caringi <acaringi@redhat.com> [6.18.7-0]
+- Fix up the configs for CONFIG_DEVICE_PRIVATE (Justin M. Forbes)
+- Linux v6.18.7
+
 * Sun Jan 18 2026 Justin M. Forbes <jforbes@fedoraproject.org> [6.18.6-0]
 - Conifg update for 6.18.6 backports (Justin M. Forbes)
 - fedora: aarch64: Enable TI_SCI_INTR_IRQCHIP as built-in (Ayush Singh)

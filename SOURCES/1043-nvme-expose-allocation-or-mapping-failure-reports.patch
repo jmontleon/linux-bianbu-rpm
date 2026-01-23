@@ -1,4 +1,4 @@
-From ffb224a1f4916ce1b3c2c6a92368e15ba336ea4f Mon Sep 17 00:00:00 2001
+From dfdc7dd803c5e5b6e940334e91ea862a0463a139 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 10:30:37 +0800
 Subject: [PATCH 1043/1233] nvme: expose allocation or mapping failure reports
@@ -9,10 +9,10 @@ Change-Id: Id61d1a9caaea249c41fce1174c068d417d77e6f4
  1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 72fb675a696f4..419bbba8e560c 100644
+index 28f638413e122..6abeacbc53487 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
-@@ -2289,7 +2289,7 @@ static void nvme_free_host_mem_multi(struct nvme_dev *dev)
+@@ -2292,7 +2292,7 @@ static void nvme_free_host_mem_multi(struct nvme_dev *dev)
  
  		dma_free_attrs(dev->dev, size, dev->host_mem_desc_bufs[i],
  			       le64_to_cpu(desc->addr),
@@ -21,7 +21,7 @@ index 72fb675a696f4..419bbba8e560c 100644
  	}
  
  	kfree(dev->host_mem_desc_bufs);
-@@ -2369,7 +2369,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
+@@ -2372,7 +2372,7 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
  
  		len = min_t(u64, chunk_size, preferred - size);
  		bufs[i] = dma_alloc_attrs(dev->dev, len, &dma_addr, GFP_KERNEL,
@@ -30,7 +30,7 @@ index 72fb675a696f4..419bbba8e560c 100644
  		if (!bufs[i])
  			break;
  
-@@ -2390,6 +2390,14 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
+@@ -2393,6 +2393,14 @@ static int nvme_alloc_host_mem_multi(struct nvme_dev *dev, u64 preferred,
  	return 0;
  
  out_free_bufs:
