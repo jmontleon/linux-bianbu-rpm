@@ -88,7 +88,7 @@ index 2adc174fb576c..068a5906b1774 100644
  The driver will load the first matching firmware and skip the rest. If no matching firmware is found, it will proceed to the next pattern in the specified order. If all searches fail, the default Intel firmware, listed last in the order above, will be loaded.
  
 diff --git a/Makefile b/Makefile
-index e3e3b82d94c01..3518f25552e0c 100644
+index 6b6539f2f11df..4cef8dbc27d6c 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)

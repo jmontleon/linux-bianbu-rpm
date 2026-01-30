@@ -1,4 +1,4 @@
-From 1935d70cb95b523bfd6d54b7a2051822aeda9a59 Mon Sep 17 00:00:00 2001
+From 7f2507c9dabdb3b596ed96dd9f0477b698cd4cec Mon Sep 17 00:00:00 2001
 From: Dengbo <bo.deng@spacemit.com>
 Date: Tue, 21 Nov 2023 13:58:40 +0800
 Subject: [PATCH 0177/1233] gpu: Add spacemit gpu driver
@@ -1061,7 +1061,7 @@ index 07cd6ac76650d..ce9ecbe0c6504 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 33d34e93569ab..87692b42c6cc1 100644
+index 879dbe3daa9b9..cdc01fdfda0dd 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -400,6 +400,10 @@ source "drivers/gpu/drm/tyr/Kconfig"
@@ -1076,10 +1076,10 @@ index 33d34e93569ab..87692b42c6cc1 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && HYPERV_VMBUS
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 7c4f4044bd1c3..4f3ccdd7d55c0 100644
+index 8719cc808642d..a3687b72d63cf 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
-@@ -233,6 +233,8 @@ obj-$(CONFIG_DRM_SPRD) += sprd/
+@@ -235,6 +235,8 @@ obj-$(CONFIG_DRM_SPRD) += sprd/
  obj-$(CONFIG_DRM_LOONGSON) += loongson/
  obj-$(CONFIG_DRM_POWERVR) += imagination/
  obj-$(CONFIG_DRM_SPACEMIT) += spacemit/
