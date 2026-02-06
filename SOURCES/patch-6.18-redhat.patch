@@ -25,6 +25,9 @@
  drivers/hwtracing/coresight/coresight-etm4x-core.c |  19 ++++
  drivers/input/rmi4/rmi_driver.c                    | 124 ++++++++++++---------
  drivers/iommu/iommu.c                              |  22 ++++
+ drivers/media/i2c/ov02c10.c                        |  29 ++++-
+ drivers/media/pci/intel/Kconfig                    |   2 +-
+ drivers/media/pci/intel/ipu-bridge.c               |  29 +++++
  drivers/pci/quirks.c                               |  24 ++++
  drivers/scsi/sd.c                                  |  10 ++
  drivers/usb/core/hub.c                             |   7 ++
@@ -43,7 +46,7 @@
  security/lockdown/lockdown.c                       |  11 ++
  tools/testing/selftests/bpf/Makefile               |   2 +-
  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |  31 ------
- 45 files changed, 619 insertions(+), 222 deletions(-)
+ 48 files changed, 672 insertions(+), 229 deletions(-)
 
 diff --git a/Documentation/hid/intel-ish-hid.rst b/Documentation/hid/intel-ish-hid.rst
 index 2adc174fb576c..068a5906b1774 100644
@@ -88,7 +91,7 @@ index 2adc174fb576c..068a5906b1774 100644
  The driver will load the first matching firmware and skip the rest. If no matching firmware is found, it will proceed to the next pattern in the specified order. If all searches fail, the default Intel firmware, listed last in the order above, will be loaded.
  
 diff --git a/Makefile b/Makefile
-index 6b6539f2f11df..4cef8dbc27d6c 100644
+index 64af72f16125b..4c05f97d3b5a8 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -133,7 +136,7 @@ index 6b6539f2f11df..4cef8dbc27d6c 100644
  endef
  
  $(version_h): private PATCHLEVEL := $(or $(PATCHLEVEL), 0)
-@@ -1931,6 +1950,23 @@ endif
+@@ -1932,6 +1951,23 @@ endif
  
  ifdef CONFIG_MODULES
  
@@ -1271,6 +1274,139 @@ index 59244c744eabd..183f4eaab6e20 100644
  /**
   * iommu_setup_default_domain - Set the default_domain for the group
   * @group: Group to change
+diff --git a/drivers/media/i2c/ov02c10.c b/drivers/media/i2c/ov02c10.c
+index 8c4d85dc7922e..cf93d36032e14 100644
+--- a/drivers/media/i2c/ov02c10.c
++++ b/drivers/media/i2c/ov02c10.c
+@@ -165,16 +165,12 @@ static const struct reg_sequence sensor_1928x1092_30fps_setting[] = {
+ 	{0x3809, 0x88},
+ 	{0x380a, 0x04},
+ 	{0x380b, 0x44},
+-	{0x3810, 0x00},
+-	{0x3811, 0x02},
+-	{0x3812, 0x00},
+-	{0x3813, 0x02},
+ 	{0x3814, 0x01},
+ 	{0x3815, 0x01},
+ 	{0x3816, 0x01},
+ 	{0x3817, 0x01},
+ 
+-	{0x3820, 0xb0},
++	{0x3820, 0xa8},
+ 	{0x3821, 0x00},
+ 	{0x3822, 0x80},
+ 	{0x3823, 0x08},
+@@ -462,6 +458,20 @@ static int ov02c10_set_ctrl(struct v4l2_ctrl *ctrl)
+ 		ret = ov02c10_test_pattern(ov02c10, ctrl->val);
+ 		break;
+ 
++	case V4L2_CID_HFLIP:
++		cci_write(ov02c10->regmap, OV02C10_ISP_X_WIN_CONTROL,
++			  ctrl->val ? 2 : 1, &ret);
++		cci_update_bits(ov02c10->regmap, OV02C10_ROTATE_CONTROL,
++				BIT(3), ctrl->val ? 0 : BIT(3), &ret);
++		break;
++
++	case V4L2_CID_VFLIP:
++		cci_write(ov02c10->regmap, OV02C10_ISP_Y_WIN_CONTROL,
++			  ctrl->val ? 2 : 1, &ret);
++		cci_update_bits(ov02c10->regmap, OV02C10_ROTATE_CONTROL,
++				BIT(4), ctrl->val << 4, &ret);
++		break;
++
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+@@ -485,7 +495,7 @@ static int ov02c10_init_controls(struct ov02c10 *ov02c10)
+ 	s64 exposure_max, h_blank, pixel_rate;
+ 	int ret;
+ 
+-	v4l2_ctrl_handler_init(ctrl_hdlr, 10);
++	v4l2_ctrl_handler_init(ctrl_hdlr, 12);
+ 
+ 	ov02c10->link_freq = v4l2_ctrl_new_int_menu(ctrl_hdlr,
+ 						    &ov02c10_ctrl_ops,
+@@ -536,6 +546,13 @@ static int ov02c10_init_controls(struct ov02c10 *ov02c10)
+ 					      exposure_max,
+ 					      OV02C10_EXPOSURE_STEP,
+ 					      exposure_max);
++
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops, V4L2_CID_HFLIP,
++			  0, 1, 1, 0);
++
++	v4l2_ctrl_new_std(ctrl_hdlr, &ov02c10_ctrl_ops, V4L2_CID_VFLIP,
++			  0, 1, 1, 0);
++
+ 	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &ov02c10_ctrl_ops,
+ 				     V4L2_CID_TEST_PATTERN,
+ 				     ARRAY_SIZE(ov02c10_test_pattern_menu) - 1,
+diff --git a/drivers/media/pci/intel/Kconfig b/drivers/media/pci/intel/Kconfig
+index d9fcddce028bf..3f14ca110d06c 100644
+--- a/drivers/media/pci/intel/Kconfig
++++ b/drivers/media/pci/intel/Kconfig
+@@ -6,7 +6,7 @@ source "drivers/media/pci/intel/ivsc/Kconfig"
+ 
+ config IPU_BRIDGE
+ 	tristate "Intel IPU Bridge"
+-	depends on ACPI || COMPILE_TEST
++	depends on ACPI
+ 	depends on I2C
+ 	help
+ 	  The IPU bridge is a helper library for Intel IPU drivers to
+diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
+index 4e579352ab2c0..27007327d2307 100644
+--- a/drivers/media/pci/intel/ipu-bridge.c
++++ b/drivers/media/pci/intel/ipu-bridge.c
+@@ -5,6 +5,7 @@
+ #include <acpi/acpi_bus.h>
+ #include <linux/cleanup.h>
+ #include <linux/device.h>
++#include <linux/dmi.h>
+ #include <linux/i2c.h>
+ #include <linux/mei_cl_bus.h>
+ #include <linux/platform_device.h>
+@@ -94,6 +95,28 @@ static const struct ipu_sensor_config ipu_supported_sensors[] = {
+ 	IPU_SENSOR_CONFIG("XMCC0003", 1, 321468000),
+ };
+ 
++/*
++ * DMI matches for laptops which have their sensor mounted upside-down
++ * without reporting a rotation of 180° in neither the SSDB nor the _PLD.
++ */
++static const struct dmi_system_id upside_down_sensor_dmi_ids[] = {
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS 13 9350"),
++		},
++		.driver_data = "OVTI02C1",
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS 16 9640"),
++		},
++		.driver_data = "OVTI02C1",
++	},
++	{} /* Terminating entry */
++};
++
+ static const struct ipu_property_names prop_names = {
+ 	.clock_frequency = "clock-frequency",
+ 	.rotation = "rotation",
+@@ -244,6 +267,12 @@ static int ipu_bridge_read_acpi_buffer(struct acpi_device *adev, char *id,
+ static u32 ipu_bridge_parse_rotation(struct acpi_device *adev,
+ 				     struct ipu_sensor_ssdb *ssdb)
+ {
++	const struct dmi_system_id *dmi_id;
++
++	dmi_id = dmi_first_match(upside_down_sensor_dmi_ids);
++	if (dmi_id && acpi_dev_hid_match(adev, dmi_id->driver_data))
++		return 180;
++
+ 	switch (ssdb->degree) {
+ 	case IPU_SENSOR_ROTATION_NORMAL:
+ 		return 0;
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
 index b9c252aa6fe08..166a5815e1efb 100644
 --- a/drivers/pci/quirks.c

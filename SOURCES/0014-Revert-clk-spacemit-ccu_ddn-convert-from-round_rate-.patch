@@ -1,0 +1,46 @@
+From 31e14cde8f91623da2aaa408393ac220a8024e64 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sun, 12 Oct 2025 17:50:10 -0400
+Subject: [PATCH 0014/1234] Revert "clk: spacemit: ccu_ddn: convert from
+ round_rate() to determine_rate()"
+
+This reverts commit b4a7b0d2c4485d11d37dec721709660f3967efcf.
+---
+ drivers/clk/spacemit/ccu_ddn.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
+index 02b68ea84db9b..be311b045698e 100644
+--- a/drivers/clk/spacemit/ccu_ddn.c
++++ b/drivers/clk/spacemit/ccu_ddn.c
+@@ -39,16 +39,13 @@ static unsigned long ccu_ddn_calc_best_rate(struct ccu_ddn *ddn,
+ 	return ccu_ddn_calc_rate(prate, *num, *den);
+ }
+ 
+-static int ccu_ddn_determine_rate(struct clk_hw *hw,
+-				  struct clk_rate_request *req)
++static long ccu_ddn_round_rate(struct clk_hw *hw, unsigned long rate,
++			       unsigned long *prate)
+ {
+ 	struct ccu_ddn *ddn = hw_to_ccu_ddn(hw);
+ 	unsigned long num, den;
+ 
+-	req->rate = ccu_ddn_calc_best_rate(ddn, req->rate,
+-					   req->best_parent_rate, &num, &den);
+-
+-	return 0;
++	return ccu_ddn_calc_best_rate(ddn, rate, *prate, &num, &den);
+ }
+ 
+ static unsigned long ccu_ddn_recalc_rate(struct clk_hw *hw, unsigned long prate)
+@@ -81,6 +78,6 @@ static int ccu_ddn_set_rate(struct clk_hw *hw, unsigned long rate,
+ 
+ const struct clk_ops spacemit_ccu_ddn_ops = {
+ 	.recalc_rate	= ccu_ddn_recalc_rate,
+-	.determine_rate = ccu_ddn_determine_rate,
++	.round_rate	= ccu_ddn_round_rate,
+ 	.set_rate	= ccu_ddn_set_rate,
+ };
+-- 
+2.53.0
+
