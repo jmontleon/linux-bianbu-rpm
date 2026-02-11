@@ -1,0 +1,71 @@
+From d4491838518a0b6e2dc29e7dfa4c3ad33c604cd4 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sun, 12 Oct 2025 17:52:21 -0400
+Subject: [PATCH 0018/1235] Revert "riscv: dts: spacemit: Add OrangePi RV2
+ board device tree"
+
+This reverts commit bab8dea259100a99e047fd11a48940b229d30031.
+---
+ arch/riscv/boot/dts/spacemit/Makefile         |  1 -
+ .../boot/dts/spacemit/k1-orangepi-rv2.dts     | 40 -------------------
+ 2 files changed, 41 deletions(-)
+ delete mode 100644 arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
+
+diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
+index 1528326448706..92e13ce1c16d5 100644
+--- a/arch/riscv/boot/dts/spacemit/Makefile
++++ b/arch/riscv/boot/dts/spacemit/Makefile
+@@ -1,4 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-bananapi-f3.dtb
+ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
+-dtb-$(CONFIG_ARCH_SPACEMIT) += k1-orangepi-rv2.dtb
+diff --git a/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
+deleted file mode 100644
+index 337240ebb7b79..0000000000000
+--- a/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
++++ /dev/null
+@@ -1,40 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+-/*
+- * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
+- * Copyright (C) 2025 Hendrik Hamerlinck <hendrik.hamerlinck@hammernet.be>
+- */
+-
+-/dts-v1/;
+-
+-#include "k1.dtsi"
+-#include "k1-pinctrl.dtsi"
+-
+-/ {
+-	model = "OrangePi RV2";
+-	compatible = "xunlong,orangepi-rv2", "spacemit,k1";
+-
+-	aliases {
+-		serial0 = &uart0;
+-	};
+-
+-	chosen {
+-		stdout-path = "serial0";
+-	};
+-
+-	leds {
+-		compatible = "gpio-leds";
+-
+-		led1 {
+-			label = "sys-led";
+-			gpios = <&gpio K1_GPIO(96) GPIO_ACTIVE_LOW>;
+-			linux,default-trigger = "heartbeat";
+-			default-state = "on";
+-		};
+-	};
+-};
+-
+-&uart0 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&uart0_2_cfg>;
+-	status = "okay";
+-};
+-- 
+2.53.0
+

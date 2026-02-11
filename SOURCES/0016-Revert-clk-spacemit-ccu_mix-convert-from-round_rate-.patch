@@ -1,0 +1,52 @@
+From 4bf55648748e28ddc5a3151886ce07f3508559e2 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sun, 12 Oct 2025 17:50:34 -0400
+Subject: [PATCH 0016/1235] Revert "clk: spacemit: ccu_mix: convert from
+ round_rate() to determine_rate()"
+
+This reverts commit 56737edda7db58549550776092da12fe03600399.
+---
+ drivers/clk/spacemit/ccu_mix.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
+index 7b79908753723..9b852aa61f78a 100644
+--- a/drivers/clk/spacemit/ccu_mix.c
++++ b/drivers/clk/spacemit/ccu_mix.c
+@@ -80,12 +80,10 @@ static int ccu_mix_trigger_fc(struct clk_hw *hw)
+ 					       MIX_FC_TIMEOUT_US);
+ }
+ 
+-static int ccu_factor_determine_rate(struct clk_hw *hw,
+-				     struct clk_rate_request *req)
++static long ccu_factor_round_rate(struct clk_hw *hw, unsigned long rate,
++				  unsigned long *prate)
+ {
+-	req->rate = ccu_factor_recalc_rate(hw, req->best_parent_rate);
+-
+-	return 0;
++	return ccu_factor_recalc_rate(hw, *prate);
+ }
+ 
+ static int ccu_factor_set_rate(struct clk_hw *hw, unsigned long rate,
+@@ -200,7 +198,7 @@ const struct clk_ops spacemit_ccu_gate_ops = {
+ };
+ 
+ const struct clk_ops spacemit_ccu_factor_ops = {
+-	.determine_rate = ccu_factor_determine_rate,
++	.round_rate	= ccu_factor_round_rate,
+ 	.recalc_rate	= ccu_factor_recalc_rate,
+ 	.set_rate	= ccu_factor_set_rate,
+ };
+@@ -222,7 +220,7 @@ const struct clk_ops spacemit_ccu_factor_gate_ops = {
+ 	.enable		= ccu_gate_enable,
+ 	.is_enabled	= ccu_gate_is_enabled,
+ 
+-	.determine_rate = ccu_factor_determine_rate,
++	.round_rate	= ccu_factor_round_rate,
+ 	.recalc_rate	= ccu_factor_recalc_rate,
+ 	.set_rate	= ccu_factor_set_rate,
+ };
+-- 
+2.53.0
+
