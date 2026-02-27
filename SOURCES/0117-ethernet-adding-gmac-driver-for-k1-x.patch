@@ -1,4 +1,4 @@
-From da1f2bc5494b9981d1befea4b183aace3f1b893a Mon Sep 17 00:00:00 2001
+From 92301322654e23fdfda5e04de1346325c57b4384 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 29 Aug 2023 21:17:51 +0800
 Subject: [PATCH 0117/1236] ethernet: adding gmac driver for k1-x
@@ -22,7 +22,7 @@ Change-Id: I7b607342ae09ef36413ee404bafcd0b5aad55f1e
  create mode 100755 drivers/net/ethernet/spacemit/k1x-emac.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 5516f0b5f2b85..a10f426d88f39 100644
+index 5516f0b5f2b8..a10f426d88f3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -121,6 +121,20 @@ pll_clk_uart: clock-pll_clk_uart {
@@ -69,7 +69,7 @@ index 5516f0b5f2b85..a10f426d88f39 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 06857d9204c96..2f151bd941121 100644
+index 06857d9204c9..2f151bd94112 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -64,8 +64,53 @@ CONFIG_BLK_DEV_SD=y
@@ -137,7 +137,7 @@ index 06857d9204c96..2f151bd941121 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index f86d4557d8d77..aead145dd91d1 100644
+index f86d4557d8d7..aead145dd91d 100644
 --- a/drivers/net/ethernet/Kconfig
 +++ b/drivers/net/ethernet/Kconfig
 @@ -188,6 +188,7 @@ source "drivers/net/ethernet/sis/Kconfig"
@@ -149,7 +149,7 @@ index f86d4557d8d77..aead145dd91d1 100644
  source "drivers/net/ethernet/sun/Kconfig"
  source "drivers/net/ethernet/sunplus/Kconfig"
 diff --git a/drivers/net/ethernet/Makefile b/drivers/net/ethernet/Makefile
-index 67182339469a0..998dd628b202c 100644
+index 67182339469a..998dd628b202 100644
 --- a/drivers/net/ethernet/Makefile
 +++ b/drivers/net/ethernet/Makefile
 @@ -91,6 +91,7 @@ obj-$(CONFIG_NET_VENDOR_SOLARFLARE) += sfc/
@@ -162,7 +162,7 @@ index 67182339469a0..998dd628b202c 100644
  obj-$(CONFIG_NET_VENDOR_SUNPLUS) += sunplus/
 diff --git a/drivers/net/ethernet/spacemit/Kconfig b/drivers/net/ethernet/spacemit/Kconfig
 new file mode 100755
-index 0000000000000..efd443c6e2fbb
+index 000000000000..efd443c6e2fb
 --- /dev/null
 +++ b/drivers/net/ethernet/spacemit/Kconfig
 @@ -0,0 +1,24 @@
@@ -192,7 +192,7 @@ index 0000000000000..efd443c6e2fbb
 +endif # NET_VENDOR_SPACEMIT
 diff --git a/drivers/net/ethernet/spacemit/Makefile b/drivers/net/ethernet/spacemit/Makefile
 new file mode 100755
-index 0000000000000..cea94e5a847cf
+index 000000000000..cea94e5a847c
 --- /dev/null
 +++ b/drivers/net/ethernet/spacemit/Makefile
 @@ -0,0 +1,6 @@
@@ -204,7 +204,7 @@ index 0000000000000..cea94e5a847cf
 +obj-$(CONFIG_K1X_EMAC) += k1x-emac.o emac_ptp.o
 diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
 new file mode 100755
-index 0000000000000..dd0c163f5d8b3
+index 000000000000..dd0c163f5d8b
 --- /dev/null
 +++ b/drivers/net/ethernet/spacemit/emac_ptp.c
 @@ -0,0 +1,369 @@
@@ -579,7 +579,7 @@ index 0000000000000..dd0c163f5d8b3
 +}
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
 new file mode 100755
-index 0000000000000..75e2c06506429
+index 000000000000..75e2c0650642
 --- /dev/null
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -0,0 +1,2867 @@
@@ -3452,7 +3452,7 @@ index 0000000000000..75e2c06506429
 +MODULE_ALIAS("platform:spacemit_eth");
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.h b/drivers/net/ethernet/spacemit/k1x-emac.h
 new file mode 100755
-index 0000000000000..002f685f8ce87
+index 000000000000..002f685f8ce8
 --- /dev/null
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.h
 @@ -0,0 +1,723 @@

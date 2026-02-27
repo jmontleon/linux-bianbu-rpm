@@ -1,4 +1,4 @@
-From 908841114601fec9fc0507910b379e280d3f20d3 Mon Sep 17 00:00:00 2001
+From 1257dd6ea110ad0d7c77d363327070a331b94de5 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Aug 2024 16:59:23 +0800
 Subject: [PATCH 0965/1236] k1x:i2c: add one callback of power-off
@@ -61,7 +61,7 @@ Change-Id: Ie1b089f32a0e34b328fd7a835151e77b14333b51
  1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index 53a8019ff3ef1..f1761704f182f 100644
+index 53a8019ff3ef..f1761704f182 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1228,16 +1228,25 @@ static int spacemit_i2c_pio_xfer(struct spacemit_i2c_dev *spacemit_i2c)

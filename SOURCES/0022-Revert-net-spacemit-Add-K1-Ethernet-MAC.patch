@@ -1,4 +1,4 @@
-From a15e9d3c88a8129b0988b7a23e66de8c5ed49b3d Mon Sep 17 00:00:00 2001
+From 3072d9fbc10ae4b5918ef37d7b01afdb44783ed1 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 18:41:19 -0400
 Subject: [PATCH 0022/1236] Revert "net: spacemit: Add K1 Ethernet MAC"
@@ -18,7 +18,7 @@ This reverts commit bfec6d7f2001c7470c3cd261ae65a3ba8737f226.
  delete mode 100644 drivers/net/ethernet/spacemit/k1_emac.h
 
 diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index aead145dd91d1..f86d4557d8d77 100644
+index aead145dd91d..f86d4557d8d7 100644
 --- a/drivers/net/ethernet/Kconfig
 +++ b/drivers/net/ethernet/Kconfig
 @@ -188,7 +188,6 @@ source "drivers/net/ethernet/sis/Kconfig"
@@ -30,7 +30,7 @@ index aead145dd91d1..f86d4557d8d77 100644
  source "drivers/net/ethernet/sun/Kconfig"
  source "drivers/net/ethernet/sunplus/Kconfig"
 diff --git a/drivers/net/ethernet/Makefile b/drivers/net/ethernet/Makefile
-index 998dd628b202c..67182339469a0 100644
+index 998dd628b202..67182339469a 100644
 --- a/drivers/net/ethernet/Makefile
 +++ b/drivers/net/ethernet/Makefile
 @@ -91,7 +91,6 @@ obj-$(CONFIG_NET_VENDOR_SOLARFLARE) += sfc/
@@ -43,7 +43,7 @@ index 998dd628b202c..67182339469a0 100644
  obj-$(CONFIG_NET_VENDOR_SUNPLUS) += sunplus/
 diff --git a/drivers/net/ethernet/spacemit/Kconfig b/drivers/net/ethernet/spacemit/Kconfig
 deleted file mode 100644
-index 85ef61a9b4eff..0000000000000
+index 85ef61a9b4ef..000000000000
 --- a/drivers/net/ethernet/spacemit/Kconfig
 +++ /dev/null
 @@ -1,29 +0,0 @@
@@ -78,7 +78,7 @@ index 85ef61a9b4eff..0000000000000
 -endif # NET_VENDOR_SPACEMIT
 diff --git a/drivers/net/ethernet/spacemit/Makefile b/drivers/net/ethernet/spacemit/Makefile
 deleted file mode 100644
-index d29efd997a4ff..0000000000000
+index d29efd997a4f..000000000000
 --- a/drivers/net/ethernet/spacemit/Makefile
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -90,7 +90,7 @@ index d29efd997a4ff..0000000000000
 -obj-$(CONFIG_SPACEMIT_K1_EMAC) += k1_emac.o
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
 deleted file mode 100644
-index 928fea02198c3..0000000000000
+index 928fea02198c..000000000000
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ /dev/null
 @@ -1,2159 +0,0 @@
@@ -2255,7 +2255,7 @@ index 928fea02198c3..0000000000000
 -MODULE_LICENSE("GPL");
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.h b/drivers/net/ethernet/spacemit/k1_emac.h
 deleted file mode 100644
-index 5a09e946a276f..0000000000000
+index 5a09e946a276..000000000000
 --- a/drivers/net/ethernet/spacemit/k1_emac.h
 +++ /dev/null
 @@ -1,416 +0,0 @@

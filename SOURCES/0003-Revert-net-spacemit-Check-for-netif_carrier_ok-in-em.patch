@@ -1,4 +1,4 @@
-From 1ada5c9f05948d0af8c42f008ae537d20ff5d4db Mon Sep 17 00:00:00 2001
+From 2cc46053f860d6bd4571c704e2243893342b4dd0 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 6 Feb 2026 11:29:34 -0500
 Subject: [PATCH 0003/1236] Revert "net: spacemit: Check for netif_carrier_ok()
@@ -10,7 +10,7 @@ This reverts commit fdb99161cbef29dffed56a1cbec13fce301167db.
  1 file changed, 7 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index 88e9424d2d51a..220eb5ce75833 100644
+index 88e9424d2d51..220eb5ce7583 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -1099,13 +1099,7 @@ static int emac_read_stat_cnt(struct emac_priv *priv, u8 cnt, u32 *res,

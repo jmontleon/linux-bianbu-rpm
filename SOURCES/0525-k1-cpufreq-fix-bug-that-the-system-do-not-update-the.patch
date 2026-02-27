@@ -1,4 +1,4 @@
-From 759837aefdfa31abd5d4c12ccd57ff79bfdbda9e Mon Sep 17 00:00:00 2001
+From dddfc5062b1a9fad2725a07936f255d8eceeedc8 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 22 Mar 2024 10:49:58 +0800
 Subject: [PATCH 0525/1236] k1:cpufreq: fix bug that the system do not update
@@ -10,7 +10,7 @@ Change-Id: I284cb700bc7b6328c4f51abfec40e813f0342d34
  1 file changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index cd9d29c3878d3..3da356a9f1062 100644
+index cd9d29c3878d..3da356a9f106 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -9,22 +9,22 @@

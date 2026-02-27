@@ -1,4 +1,4 @@
-From bfb7a2cdf7c06423da1e07c3d4976930e9a65713 Mon Sep 17 00:00:00 2001
+From acac1d4e5ae5226980a1f11aa01ec5095d7157ee Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 26 Jan 2024 15:42:02 +0800
 Subject: [PATCH 0423/1236] display: disable kernel logo
@@ -11,7 +11,7 @@ Change-Id: I5bd3a35aaa9f097ec9c9eb4de2e935d10ecf7771
  3 files changed, 1602 insertions(+), 11012 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index e73d8707cf953..20bea54d79fb4 100644
+index e73d8707cf95..20bea54d79fb 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -536,7 +536,6 @@ CONFIG_FB=y
@@ -23,7 +23,7 @@ index e73d8707cf953..20bea54d79fb4 100644
  CONFIG_USB=y
  CONFIG_USB_XHCI_HCD=y
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 26a90223ec2fe..e7e07eb2142eb 100644
+index 26a90223ec2f..e7e07eb2142e 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
 @@ -1154,7 +1154,6 @@ static void fbcon_init(struct vc_data *vc, bool init)
@@ -43,7 +43,7 @@ index 26a90223ec2fe..e7e07eb2142eb 100644
  
  		logo_shown = fg_console;
 diff --git a/drivers/video/logo/logo_linux_clut224.ppm b/drivers/video/logo/logo_linux_clut224.ppm
-index e7275acdd326c..3c14e43b82fef 100644
+index e7275acdd326..3c14e43b82fe 100644
 --- a/drivers/video/logo/logo_linux_clut224.ppm
 +++ b/drivers/video/logo/logo_linux_clut224.ppm
 @@ -1,11011 +1,1604 @@

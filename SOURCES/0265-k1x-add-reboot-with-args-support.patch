@@ -1,4 +1,4 @@
-From 62f21895f182503e1e2ceec6c7f658c3794f732e Mon Sep 17 00:00:00 2001
+From f569d276b0bbb81187068bf8126de1d421b48606 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 25 Dec 2023 10:15:16 +0800
 Subject: [PATCH 0265/1236] k1x:add reboot with args support
@@ -13,7 +13,7 @@ Change-Id: I589c7e7690f087d202eaaa859f32a2be6019bb1d
  create mode 100755 drivers/soc/spacemit/spacemit_reboot.c
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 7fd8d6687de6f..772b6af95d4d1 100644
+index 7fd8d6687de6..772b6af95d4d 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -369,6 +369,7 @@ CONFIG_SPACEMIT_K1X_CCU=y
@@ -25,7 +25,7 @@ index 7fd8d6687de6f..772b6af95d4d1 100644
  CONFIG_PWM=y
  CONFIG_PWM_PXA=y
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index 6ef88f2bbbddb..97dc2852aaa9f 100644
+index 6ef88f2bbbdd..97dc2852aaa9 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -15,4 +15,10 @@ config SPACEMIT_PM_DOMAINS
@@ -40,7 +40,7 @@ index 6ef88f2bbbddb..97dc2852aaa9f 100644
 +
  source "drivers/soc/spacemit/jpu/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index d29e71be0e0d5..dac69bdd65236 100644
+index d29e71be0e0d..dac69bdd6523 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1,2 +1,3 @@
@@ -49,7 +49,7 @@ index d29e71be0e0d5..dac69bdd65236 100644
 +obj-$(CONFIG_SPACEMIT_REBOOT_CONTROL)	+= spacemit_reboot.o
 diff --git a/drivers/soc/spacemit/spacemit_reboot.c b/drivers/soc/spacemit/spacemit_reboot.c
 new file mode 100755
-index 0000000000000..b472fc4f21cb4
+index 000000000000..b472fc4f21cb
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit_reboot.c
 @@ -0,0 +1,87 @@

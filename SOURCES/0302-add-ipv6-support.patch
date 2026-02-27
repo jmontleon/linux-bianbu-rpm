@@ -1,4 +1,4 @@
-From d79de00c04d1e4ee3caca68051976b0fe791acc5 Mon Sep 17 00:00:00 2001
+From a97d25ff5c60ddd69296bfbdb8907a20fe6b9264 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Fri, 29 Dec 2023 20:30:34 +0800
 Subject: [PATCH 0302/1236] add ipv6 support
@@ -9,7 +9,7 @@ Change-Id: I214aec153bf253deb5093d23dcb3c9c40fc3f7d4
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 671108009e8ef..3f25266773cc6 100644
+index 671108009e8e..3f25266773cc 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -52,7 +52,12 @@ CONFIG_UNIX=y

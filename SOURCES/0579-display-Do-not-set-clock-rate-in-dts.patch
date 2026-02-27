@@ -1,4 +1,4 @@
-From 48623b301aa04f9122b2b8663e5a781210f26027 Mon Sep 17 00:00:00 2001
+From c32f2293165553fc8076bfa4e189817eadec9834 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Sun, 7 Apr 2024 17:56:53 +0800
 Subject: [PATCH 0579/1236] display: Do not set clock rate in dts
@@ -12,7 +12,7 @@ Change-Id: I80eb097dd745ee1a805dff0c34963bb971423668
  4 files changed, 16 insertions(+), 19 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
-index bab7c1618ed01..dffc749ef95f4 100644
+index bab7c1618ed0..dffc749ef95f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 @@ -15,9 +15,6 @@ dpu_online2_hdmi: port@c0440000 {
@@ -36,7 +36,7 @@ index bab7c1618ed01..dffc749ef95f4 100644
  		status = "disabled";
  
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 9d216889d2420..c769afdb57f2d 100644
+index 9d216889d242..c769afdb57f2 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -478,15 +478,26 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
@@ -68,7 +68,7 @@ index 9d216889d2420..c769afdb57f2d 100644
  		clk_prepare_enable(clk_ctx->pxclk);
  		clk_prepare_enable(clk_ctx->mclk);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index f819a16e98e88..85c471bf8a416 100644
+index f819a16e98e8..85c471bf8a41 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -306,13 +306,13 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
@@ -102,7 +102,7 @@ index f819a16e98e88..85c471bf8a416 100644
  	spin_lock_irq(&drm->event_lock);
  	if (crtc->state->event) {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index a59e80f7615cf..40a35bb7da4c9 100644
+index a59e80f7615c..40a35bb7da4c 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -670,12 +670,6 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)

@@ -1,4 +1,4 @@
-From ab488bcb1e4b346c172d3e729a301208a0d1a722 Mon Sep 17 00:00:00 2001
+From 3dd80c009483324c1aeb66c6691bd60807433aba Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 31 Jan 2024 11:11:43 +0800
 Subject: [PATCH 0427/1236] performance optimize
@@ -15,7 +15,7 @@ Change-Id: Iad956a3805c75fecf20da1f4e77c27788acd3a33
  4 files changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
-index ea07e698dca5e..48d623a7745e6 100644
+index ea07e698dca5..48d623a7745e 100644
 --- a/arch/riscv/configs/k1-x_deb1_defconfig
 +++ b/arch/riscv/configs/k1-x_deb1_defconfig
 @@ -29,7 +29,6 @@ CONFIG_SOC_SPACEMIT_K1X=y
@@ -36,7 +36,7 @@ index ea07e698dca5e..48d623a7745e6 100644
  CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
  CONFIG_DEBUG_ATOMIC_SLEEP=y
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index a8bb80232aae7..0b56be782b987 100644
+index a8bb80232aae..0b56be782b98 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -29,7 +29,6 @@ CONFIG_SOC_SPACEMIT_K1X=y
@@ -57,7 +57,7 @@ index a8bb80232aae7..0b56be782b987 100644
  CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
  CONFIG_DEBUG_ATOMIC_SLEEP=y
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index d6cf3df8fa650..08702a156d524 100644
+index d6cf3df8fa65..08702a156d52 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -29,7 +29,6 @@ CONFIG_SOC_SPACEMIT_K1X=y
@@ -78,7 +78,7 @@ index d6cf3df8fa650..08702a156d524 100644
  CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=60
  CONFIG_DEBUG_ATOMIC_SLEEP=y
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 20bea54d79fb4..7e72cda065199 100644
+index 20bea54d79fb..7e72cda06519 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -44,7 +44,6 @@ CONFIG_SOC_SPACEMIT_K1X=y

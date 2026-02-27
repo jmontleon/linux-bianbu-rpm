@@ -1,4 +1,4 @@
-From 8e5dc1a4e3f9f9ceb283235cec08d851945bd054 Mon Sep 17 00:00:00 2001
+From b35ba2b88ba5a36a8652c6da6b906f07a79a26ac Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 19 Dec 2023 14:21:02 +0800
 Subject: [PATCH 0222/1236] clock: fix the result of set_rate is not the
@@ -11,7 +11,7 @@ Change-Id: I011cf75dbdb6c93d905ed5a4ffb710fb0621ae60
  2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index cbab9946c9945..4cedf35a29ae1 100755
+index cbab9946c994..4cedf35a29ae 100755
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -192,10 +192,11 @@ static long ccu_mix_round_rate(struct clk_hw *hw, unsigned long rate,
@@ -30,7 +30,7 @@ index cbab9946c9945..4cedf35a29ae1 100755
  
  static int ccu_mix_set_rate(struct clk_hw *hw, unsigned long rate,
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index 65b72eb46f8ab..920f3509d8a23 100755
+index 65b72eb46f8a..920f3509d8a2 100755
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -271,7 +271,7 @@ struct ccu_mix {

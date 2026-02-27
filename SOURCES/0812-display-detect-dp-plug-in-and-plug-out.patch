@@ -1,4 +1,4 @@
-From 49f575649036216c98f227db7b2ee0f022033714 Mon Sep 17 00:00:00 2001
+From 448f0b61b8a77d5bfec42f9eb8f678b5090a300f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 2 Jul 2024 17:11:00 +0800
 Subject: [PATCH 0812/1236] display: detect dp plug in and plug out
@@ -11,7 +11,7 @@ Change-Id: Id92d8f8c52bb66f6621832554a47d2a3678c8426
  3 files changed, 109 insertions(+), 45 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
-index e24b9ed815733..0696c6509c07a 100644
+index e24b9ed81573..0696c6509c07 100644
 --- a/drivers/gpu/drm/spacemit/lt9711.c
 +++ b/drivers/gpu/drm/spacemit/lt9711.c
 @@ -34,6 +34,8 @@
@@ -231,7 +231,7 @@ index e24b9ed815733..0696c6509c07a 100644
  
  	return ret;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 52f5faadbde1a..03e9b1e2d9098 100644
+index 52f5faadbde1..03e9b1e2d909 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -19,13 +19,6 @@
@@ -311,7 +311,7 @@ index 52f5faadbde1a..03e9b1e2d9098 100644
  		ctx->id = tmp;
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
-index 38996bb095910..988184c06d908 100644
+index 38996bb09591..988184c06d90 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
 @@ -182,6 +182,13 @@ struct spacemit_dsi_rx_buf {

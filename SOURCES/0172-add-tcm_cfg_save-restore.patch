@@ -1,4 +1,4 @@
-From 32a9bccd1632d018a8352bd37897e772d0ab4a33 Mon Sep 17 00:00:00 2001
+From 84415049415630d3729f63e14579ef8f30dc94a6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E7=8E=8B=E6=A5=9A?= <chu.wang@spacemit.com>
 Date: Wed, 27 Sep 2023 19:25:54 +0800
 Subject: [PATCH 0172/1236] add tcm_cfg_save/restore
@@ -9,7 +9,7 @@ Change-Id: Idb486570aeecbf530d3cee1d5a363d4b2b04bb7c
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 4a37a98398ad3..7c5250db0ed98 100644
+index 4a37a98398ad..7c5250db0ed9 100644
 --- a/arch/riscv/include/asm/csr.h
 +++ b/arch/riscv/include/asm/csr.h
 @@ -444,6 +444,11 @@

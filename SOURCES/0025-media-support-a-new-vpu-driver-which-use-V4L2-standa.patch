@@ -1,4 +1,4 @@
-From 5c8f9cde05847a3c71e570f06613b3f4d52b5c25 Mon Sep 17 00:00:00 2001
+From 3d1dfa78d64d937ec7dc1e9e35e5f9a3eb67e770 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@space-t.cn>
 Date: Tue, 31 Jan 2023 19:59:20 +0800
 Subject: [PATCH 0025/1236] media: support a new vpu driver which use V4L2
@@ -140,7 +140,7 @@ Change-Id: Ic0abe48d6f799e230b4e4c2f3d2cd2a2dec0e79b
  create mode 100755 drivers/media/vpu/sconscript
 
 diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-index 6abc9302cd84d..ec6f7e453de7f 100644
+index 6abc9302cd84..ec6f7e453de7 100644
 --- a/drivers/media/Kconfig
 +++ b/drivers/media/Kconfig
 @@ -262,6 +262,7 @@ source "drivers/media/i2c/Kconfig"
@@ -152,7 +152,7 @@ index 6abc9302cd84d..ec6f7e453de7f 100644
  endmenu
  
 diff --git a/drivers/media/Makefile b/drivers/media/Makefile
-index 20fac24e4f0f1..9ccd860d37339 100644
+index 20fac24e4f0f..9ccd860d3733 100644
 --- a/drivers/media/Makefile
 +++ b/drivers/media/Makefile
 @@ -29,6 +29,6 @@ obj-$(CONFIG_CEC_CORE) += cec/
@@ -165,7 +165,7 @@ index 20fac24e4f0f1..9ccd860d37339 100644
  
 diff --git a/drivers/media/vpu/Kbuild b/drivers/media/vpu/Kbuild
 new file mode 100755
-index 0000000000000..3f5396ac5b3ed
+index 000000000000..3f5396ac5b3e
 --- /dev/null
 +++ b/drivers/media/vpu/Kbuild
 @@ -0,0 +1,52 @@
@@ -223,7 +223,7 @@ index 0000000000000..3f5396ac5b3ed
 +	  $(if-y) $(dev-y)
 diff --git a/drivers/media/vpu/Kconfig b/drivers/media/vpu/Kconfig
 new file mode 100755
-index 0000000000000..ff68fd869afea
+index 000000000000..ff68fd869afe
 --- /dev/null
 +++ b/drivers/media/vpu/Kconfig
 @@ -0,0 +1,16 @@
@@ -245,7 +245,7 @@ index 0000000000000..ff68fd869afea
 +	default y
 diff --git a/drivers/media/vpu/Makefile b/drivers/media/vpu/Makefile
 new file mode 100755
-index 0000000000000..7861be84b1bfa
+index 000000000000..7861be84b1bf
 --- /dev/null
 +++ b/drivers/media/vpu/Makefile
 @@ -0,0 +1,11 @@
@@ -262,7 +262,7 @@ index 0000000000000..7861be84b1bfa
 +	@rm -f modules.order
 diff --git a/drivers/media/vpu/dev/mvx_dev.c b/drivers/media/vpu/dev/mvx_dev.c
 new file mode 100755
-index 0000000000000..7a286d8dbbb82
+index 000000000000..7a286d8dbbb8
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_dev.c
 @@ -0,0 +1,676 @@
@@ -944,7 +944,7 @@ index 0000000000000..7a286d8dbbb82
 +}
 diff --git a/drivers/media/vpu/dev/mvx_dev.h b/drivers/media/vpu/dev/mvx_dev.h
 new file mode 100755
-index 0000000000000..eb8cda687b293
+index 000000000000..eb8cda687b29
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_dev.h
 @@ -0,0 +1,49 @@
@@ -999,7 +999,7 @@ index 0000000000000..eb8cda687b293
 +#endif /* _MVX_DEV_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_hwreg.c b/drivers/media/vpu/dev/mvx_hwreg.c
 new file mode 100755
-index 0000000000000..397e15a0bf6f8
+index 000000000000..397e15a0bf6f
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg.c
 @@ -0,0 +1,460 @@
@@ -1465,7 +1465,7 @@ index 0000000000000..397e15a0bf6f8
 +}
 diff --git a/drivers/media/vpu/dev/mvx_hwreg.h b/drivers/media/vpu/dev/mvx_hwreg.h
 new file mode 100755
-index 0000000000000..de4d1f9cacbc9
+index 000000000000..de4d1f9cacbc
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg.h
 @@ -0,0 +1,229 @@
@@ -1700,7 +1700,7 @@ index 0000000000000..de4d1f9cacbc9
 +#endif /* _MVX_HW_REG_ */
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v500.c b/drivers/media/vpu/dev/mvx_hwreg_v500.c
 new file mode 100755
-index 0000000000000..89ad917c21ef2
+index 000000000000..89ad917c21ef
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v500.c
 @@ -0,0 +1,65 @@
@@ -1771,7 +1771,7 @@ index 0000000000000..89ad917c21ef2
 +}
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v500.h b/drivers/media/vpu/dev/mvx_hwreg_v500.h
 new file mode 100755
-index 0000000000000..76bed453280c4
+index 000000000000..76bed453280c
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v500.h
 @@ -0,0 +1,48 @@
@@ -1825,7 +1825,7 @@ index 0000000000000..76bed453280c4
 +#endif /* _MVX_HWREG_V500_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v52_v76.c b/drivers/media/vpu/dev/mvx_hwreg_v52_v76.c
 new file mode 100755
-index 0000000000000..bbc227f84a6b0
+index 000000000000..bbc227f84a6b
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v52_v76.c
 @@ -0,0 +1,97 @@
@@ -1928,7 +1928,7 @@ index 0000000000000..bbc227f84a6b0
 +}
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v52_v76.h b/drivers/media/vpu/dev/mvx_hwreg_v52_v76.h
 new file mode 100755
-index 0000000000000..6ea760a22f796
+index 000000000000..6ea760a22f79
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v52_v76.h
 @@ -0,0 +1,49 @@
@@ -1983,7 +1983,7 @@ index 0000000000000..6ea760a22f796
 +#endif /* _MVX_HWREG_V52_V76_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v550.c b/drivers/media/vpu/dev/mvx_hwreg_v550.c
 new file mode 100755
-index 0000000000000..b8e5c9ba6948e
+index 000000000000..b8e5c9ba6948
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v550.c
 @@ -0,0 +1,82 @@
@@ -2071,7 +2071,7 @@ index 0000000000000..b8e5c9ba6948e
 +}
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v550.h b/drivers/media/vpu/dev/mvx_hwreg_v550.h
 new file mode 100755
-index 0000000000000..6a599fd11af9c
+index 000000000000..6a599fd11af9
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v550.h
 @@ -0,0 +1,48 @@
@@ -2125,7 +2125,7 @@ index 0000000000000..6a599fd11af9c
 +#endif /* _MVX_HWREG_V550_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v61.c b/drivers/media/vpu/dev/mvx_hwreg_v61.c
 new file mode 100755
-index 0000000000000..bb95aaf0ee6ec
+index 000000000000..bb95aaf0ee6e
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v61.c
 @@ -0,0 +1,95 @@
@@ -2226,7 +2226,7 @@ index 0000000000000..bb95aaf0ee6ec
 +}
 diff --git a/drivers/media/vpu/dev/mvx_hwreg_v61.h b/drivers/media/vpu/dev/mvx_hwreg_v61.h
 new file mode 100755
-index 0000000000000..a4320d8cf5a48
+index 000000000000..a4320d8cf5a4
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_hwreg_v61.h
 @@ -0,0 +1,49 @@
@@ -2281,7 +2281,7 @@ index 0000000000000..a4320d8cf5a48
 +#endif /* _MVX_HWREG_V61_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_lsid.c b/drivers/media/vpu/dev/mvx_lsid.c
 new file mode 100755
-index 0000000000000..f01fa9b91c92b
+index 000000000000..f01fa9b91c92
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_lsid.c
 @@ -0,0 +1,341 @@
@@ -2628,7 +2628,7 @@ index 0000000000000..f01fa9b91c92b
 +}
 diff --git a/drivers/media/vpu/dev/mvx_lsid.h b/drivers/media/vpu/dev/mvx_lsid.h
 new file mode 100755
-index 0000000000000..ab608acfaa70e
+index 000000000000..ab608acfaa70
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_lsid.h
 @@ -0,0 +1,166 @@
@@ -2800,7 +2800,7 @@ index 0000000000000..ab608acfaa70e
 +#endif /* _MVX_LSID_H_ */
 diff --git a/drivers/media/vpu/dev/mvx_scheduler.c b/drivers/media/vpu/dev/mvx_scheduler.c
 new file mode 100755
-index 0000000000000..21c323c6ce745
+index 000000000000..21c323c6ce74
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_scheduler.c
 @@ -0,0 +1,723 @@
@@ -3529,7 +3529,7 @@ index 0000000000000..21c323c6ce745
 +}
 diff --git a/drivers/media/vpu/dev/mvx_scheduler.h b/drivers/media/vpu/dev/mvx_scheduler.h
 new file mode 100755
-index 0000000000000..a1b1b1c00c992
+index 000000000000..a1b1b1c00c99
 --- /dev/null
 +++ b/drivers/media/vpu/dev/mvx_scheduler.h
 @@ -0,0 +1,194 @@
@@ -3729,7 +3729,7 @@ index 0000000000000..a1b1b1c00c992
 +#endif /* _MVX_SCHEDULER_H_ */
 diff --git a/drivers/media/vpu/external/fw_v2/mve_protocol_def.h b/drivers/media/vpu/external/fw_v2/mve_protocol_def.h
 new file mode 100755
-index 0000000000000..37b44bf12aea5
+index 000000000000..37b44bf12aea
 --- /dev/null
 +++ b/drivers/media/vpu/external/fw_v2/mve_protocol_def.h
 @@ -0,0 +1,1773 @@
@@ -5508,7 +5508,7 @@ index 0000000000000..37b44bf12aea5
 +#endif /* __FW_INCLUDE__MVE_PROTOCOL_DEF_H__ */
 diff --git a/drivers/media/vpu/external/fw_v3/mve_protocol_def.h b/drivers/media/vpu/external/fw_v3/mve_protocol_def.h
 new file mode 100755
-index 0000000000000..514bde9fbfc67
+index 000000000000..514bde9fbfc6
 --- /dev/null
 +++ b/drivers/media/vpu/external/fw_v3/mve_protocol_def.h
 @@ -0,0 +1,1740 @@
@@ -7254,7 +7254,7 @@ index 0000000000000..514bde9fbfc67
 +#endif /* __FW_INCLUDE__MVE_PROTOCOL_DEF_H__ */
 diff --git a/drivers/media/vpu/if/mvx_bitops.h b/drivers/media/vpu/if/mvx_bitops.h
 new file mode 100755
-index 0000000000000..fbd52670fcde6
+index 000000000000..fbd52670fcde
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_bitops.h
 @@ -0,0 +1,91 @@
@@ -7351,7 +7351,7 @@ index 0000000000000..fbd52670fcde6
 +#endif /* _MVX_BITOPS_H_ */
 diff --git a/drivers/media/vpu/if/mvx_buffer.c b/drivers/media/vpu/if/mvx_buffer.c
 new file mode 100755
-index 0000000000000..bba0ba0d15347
+index 000000000000..bba0ba0d1534
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_buffer.c
 @@ -0,0 +1,506 @@
@@ -7863,7 +7863,7 @@ index 0000000000000..bba0ba0d15347
 +}
 diff --git a/drivers/media/vpu/if/mvx_buffer.h b/drivers/media/vpu/if/mvx_buffer.h
 new file mode 100755
-index 0000000000000..4f7692ca554a1
+index 000000000000..4f7692ca554a
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_buffer.h
 @@ -0,0 +1,396 @@
@@ -8265,7 +8265,7 @@ index 0000000000000..4f7692ca554a1
 +#endif /* _MVX_BUFFER_H_ */
 diff --git a/drivers/media/vpu/if/mvx_firmware.c b/drivers/media/vpu/if/mvx_firmware.c
 new file mode 100755
-index 0000000000000..e51a9eefb8c23
+index 000000000000..e51a9eefb8c2
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware.c
 @@ -0,0 +1,600 @@
@@ -8871,7 +8871,7 @@ index 0000000000000..e51a9eefb8c23
 +}
 diff --git a/drivers/media/vpu/if/mvx_firmware.h b/drivers/media/vpu/if/mvx_firmware.h
 new file mode 100755
-index 0000000000000..ae54a5f494526
+index 000000000000..ae54a5f49452
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware.h
 @@ -0,0 +1,901 @@
@@ -9778,7 +9778,7 @@ index 0000000000000..ae54a5f494526
 +#endif /* _MVX_FIRMWARE_H_ */
 diff --git a/drivers/media/vpu/if/mvx_firmware_cache.c b/drivers/media/vpu/if/mvx_firmware_cache.c
 new file mode 100755
-index 0000000000000..63510658c16a4
+index 000000000000..63510658c16a
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware_cache.c
 @@ -0,0 +1,779 @@
@@ -10563,7 +10563,7 @@ index 0000000000000..63510658c16a4
 +}
 diff --git a/drivers/media/vpu/if/mvx_firmware_cache.h b/drivers/media/vpu/if/mvx_firmware_cache.h
 new file mode 100755
-index 0000000000000..3fcad2d7cb0c4
+index 000000000000..3fcad2d7cb0c
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware_cache.h
 @@ -0,0 +1,246 @@
@@ -10815,7 +10815,7 @@ index 0000000000000..3fcad2d7cb0c4
 +#endif /* _MVX_FIRMWARE_CACHE_H_ */
 diff --git a/drivers/media/vpu/if/mvx_firmware_priv.h b/drivers/media/vpu/if/mvx_firmware_priv.h
 new file mode 100755
-index 0000000000000..7c3bcbc1a9187
+index 000000000000..7c3bcbc1a918
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware_priv.h
 @@ -0,0 +1,163 @@
@@ -10984,7 +10984,7 @@ index 0000000000000..7c3bcbc1a9187
 +#endif
 diff --git a/drivers/media/vpu/if/mvx_firmware_v2.c b/drivers/media/vpu/if/mvx_firmware_v2.c
 new file mode 100755
-index 0000000000000..33e2709f67908
+index 000000000000..33e2709f6790
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware_v2.c
 @@ -0,0 +1,3175 @@
@@ -14165,7 +14165,7 @@ index 0000000000000..33e2709f67908
 +}
 diff --git a/drivers/media/vpu/if/mvx_firmware_v3.c b/drivers/media/vpu/if/mvx_firmware_v3.c
 new file mode 100755
-index 0000000000000..6e6dc406c52ce
+index 000000000000..6e6dc406c52c
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_firmware_v3.c
 @@ -0,0 +1,171 @@
@@ -14342,7 +14342,7 @@ index 0000000000000..6e6dc406c52ce
 +}
 diff --git a/drivers/media/vpu/if/mvx_if.c b/drivers/media/vpu/if/mvx_if.c
 new file mode 100755
-index 0000000000000..8cd27860b1c8f
+index 000000000000..8cd27860b1c8
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_if.c
 @@ -0,0 +1,239 @@
@@ -14587,7 +14587,7 @@ index 0000000000000..8cd27860b1c8f
 +}
 diff --git a/drivers/media/vpu/if/mvx_if.h b/drivers/media/vpu/if/mvx_if.h
 new file mode 100755
-index 0000000000000..18090f01bb40b
+index 000000000000..18090f01bb40
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_if.h
 @@ -0,0 +1,469 @@
@@ -15062,7 +15062,7 @@ index 0000000000000..18090f01bb40b
 +#endif /* _MVX_IF_H_ */
 diff --git a/drivers/media/vpu/if/mvx_mmu.c b/drivers/media/vpu/if/mvx_mmu.c
 new file mode 100755
-index 0000000000000..ff39537d6c74b
+index 000000000000..ff39537d6c74
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_mmu.c
 @@ -0,0 +1,1302 @@
@@ -16370,7 +16370,7 @@ index 0000000000000..ff39537d6c74b
 +}
 diff --git a/drivers/media/vpu/if/mvx_mmu.h b/drivers/media/vpu/if/mvx_mmu.h
 new file mode 100755
-index 0000000000000..bde1ce4c623ca
+index 000000000000..bde1ce4c623c
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_mmu.h
 @@ -0,0 +1,451 @@
@@ -16827,7 +16827,7 @@ index 0000000000000..bde1ce4c623ca
 +#endif /* _MVX_MMU_H_ */
 diff --git a/drivers/media/vpu/if/mvx_secure.c b/drivers/media/vpu/if/mvx_secure.c
 new file mode 100755
-index 0000000000000..a5fa5d8de5987
+index 000000000000..a5fa5d8de598
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_secure.c
 @@ -0,0 +1,402 @@
@@ -17235,7 +17235,7 @@ index 0000000000000..a5fa5d8de5987
 +}
 diff --git a/drivers/media/vpu/if/mvx_secure.h b/drivers/media/vpu/if/mvx_secure.h
 new file mode 100755
-index 0000000000000..be7ec0ccdf36b
+index 000000000000..be7ec0ccdf36
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_secure.h
 @@ -0,0 +1,139 @@
@@ -17380,7 +17380,7 @@ index 0000000000000..be7ec0ccdf36b
 +#endif /* _MVX_SECURE_H_ */
 diff --git a/drivers/media/vpu/if/mvx_session.c b/drivers/media/vpu/if/mvx_session.c
 new file mode 100755
-index 0000000000000..6495ef586e480
+index 000000000000..6495ef586e48
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_session.c
 @@ -0,0 +1,3231 @@
@@ -20618,7 +20618,7 @@ index 0000000000000..6495ef586e480
 \ No newline at end of file
 diff --git a/drivers/media/vpu/if/mvx_session.h b/drivers/media/vpu/if/mvx_session.h
 new file mode 100755
-index 0000000000000..163a581a64bbd
+index 000000000000..163a581a64bb
 --- /dev/null
 +++ b/drivers/media/vpu/if/mvx_session.h
 @@ -0,0 +1,1111 @@
@@ -21735,7 +21735,7 @@ index 0000000000000..163a581a64bbd
 +#endif /* _MVX_SESSION_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h b/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 new file mode 100755
-index 0000000000000..63cd4df6cb24c
+index 000000000000..63cd4df6cb24
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx-v4l2-controls.h
 @@ -0,0 +1,475 @@
@@ -22216,7 +22216,7 @@ index 0000000000000..63cd4df6cb24c
 +#endif /* _MVX_V4L2_CONTROLS_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_if.h b/drivers/media/vpu/if/v4l2/mvx_ext_if.h
 new file mode 100755
-index 0000000000000..373a7a2078ba5
+index 000000000000..373a7a2078ba
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_ext_if.h
 @@ -0,0 +1,87 @@
@@ -22309,7 +22309,7 @@ index 0000000000000..373a7a2078ba5
 +#endif /* _MVX_EXT_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 new file mode 100755
-index 0000000000000..1735b3a7ee6c0
+index 000000000000..1735b3a7ee6c
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 @@ -0,0 +1,172 @@
@@ -22487,7 +22487,7 @@ index 0000000000000..1735b3a7ee6c0
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 new file mode 100755
-index 0000000000000..ae84b0b5f5a48
+index 000000000000..ae84b0b5f5a4
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 @@ -0,0 +1,476 @@
@@ -22969,7 +22969,7 @@ index 0000000000000..ae84b0b5f5a48
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.h
 new file mode 100755
-index 0000000000000..e14fdc044fd50
+index 000000000000..e14fdc044fd5
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.h
 @@ -0,0 +1,167 @@
@@ -23142,7 +23142,7 @@ index 0000000000000..e14fdc044fd50
 +#endif /* _MVX_V4L2_BUFFER_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c
 new file mode 100755
-index 0000000000000..3f69d43ad0491
+index 000000000000..3f69d43ad049
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.c
 @@ -0,0 +1,1257 @@
@@ -24405,7 +24405,7 @@ index 0000000000000..3f69d43ad0491
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.h
 new file mode 100755
-index 0000000000000..489244562c978
+index 000000000000..489244562c97
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_ctrls.h
 @@ -0,0 +1,64 @@
@@ -24475,7 +24475,7 @@ index 0000000000000..489244562c978
 +#endif /* _MVX_V4L2_CTRLS_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c
 new file mode 100755
-index 0000000000000..6d514174dd44e
+index 000000000000..6d514174dd44
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.c
 @@ -0,0 +1,203 @@
@@ -24684,7 +24684,7 @@ index 0000000000000..6d514174dd44e
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.h
 new file mode 100755
-index 0000000000000..7c6d34ef0ed62
+index 000000000000..7c6d34ef0ed6
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_fops.h
 @@ -0,0 +1,64 @@
@@ -24754,7 +24754,7 @@ index 0000000000000..7c6d34ef0ed62
 +#endif /* _MVX_V4L2_FOPS_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 new file mode 100755
-index 0000000000000..9e663a2c26287
+index 000000000000..9e663a2c2628
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.c
 @@ -0,0 +1,514 @@
@@ -25275,7 +25275,7 @@ index 0000000000000..9e663a2c26287
 \ No newline at end of file
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_session.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.h
 new file mode 100755
-index 0000000000000..07b2303ea913c
+index 000000000000..07b2303ea913
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_session.h
 @@ -0,0 +1,245 @@
@@ -25526,7 +25526,7 @@ index 0000000000000..07b2303ea913c
 +#endif /* _MVX_V4L2_SESSION_H_ */
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 new file mode 100755
-index 0000000000000..40c1aed6bfdf9
+index 000000000000..40c1aed6bfdf
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.c
 @@ -0,0 +1,1556 @@
@@ -27088,7 +27088,7 @@ index 0000000000000..40c1aed6bfdf9
 +}
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h
 new file mode 100755
-index 0000000000000..200d4603d60ea
+index 000000000000..200d4603d60e
 --- /dev/null
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_vidioc.h
 @@ -0,0 +1,141 @@
@@ -27235,10 +27235,10 @@ index 0000000000000..200d4603d60ea
 +#endif /* _MVX_V4L2_VIDIOC_H_ */
 diff --git a/drivers/media/vpu/modules.builtin b/drivers/media/vpu/modules.builtin
 new file mode 100755
-index 0000000000000..e69de29bb2d1d
+index 000000000000..e69de29bb2d1
 diff --git a/drivers/media/vpu/mvx_driver.c b/drivers/media/vpu/mvx_driver.c
 new file mode 100755
-index 0000000000000..f61cabe827e9c
+index 000000000000..f61cabe827e9
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_driver.c
 @@ -0,0 +1,70 @@
@@ -27314,7 +27314,7 @@ index 0000000000000..f61cabe827e9c
 +module_exit(mvx_exit);
 diff --git a/drivers/media/vpu/mvx_log.c b/drivers/media/vpu/mvx_log.c
 new file mode 100755
-index 0000000000000..5f095b55b90fa
+index 000000000000..5f095b55b90f
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_log.c
 @@ -0,0 +1,939 @@
@@ -28259,7 +28259,7 @@ index 0000000000000..5f095b55b90fa
 +}
 diff --git a/drivers/media/vpu/mvx_log.h b/drivers/media/vpu/mvx_log.h
 new file mode 100755
-index 0000000000000..0dd86ca83600f
+index 000000000000..0dd86ca83600
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_log.h
 @@ -0,0 +1,386 @@
@@ -28651,7 +28651,7 @@ index 0000000000000..0dd86ca83600f
 +#endif /* MVX_LOG_H */
 diff --git a/drivers/media/vpu/mvx_log_group.c b/drivers/media/vpu/mvx_log_group.c
 new file mode 100755
-index 0000000000000..06fcd43258e55
+index 000000000000..06fcd43258e5
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_log_group.c
 @@ -0,0 +1,168 @@
@@ -28825,7 +28825,7 @@ index 0000000000000..06fcd43258e55
 +}
 diff --git a/drivers/media/vpu/mvx_log_group.h b/drivers/media/vpu/mvx_log_group.h
 new file mode 100755
-index 0000000000000..f1e198382dec5
+index 000000000000..f1e198382dec
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_log_group.h
 @@ -0,0 +1,68 @@
@@ -28899,7 +28899,7 @@ index 0000000000000..f1e198382dec5
 +#endif /* _MVX_LOG_GROUP_H_ */
 diff --git a/drivers/media/vpu/mvx_log_ram.h b/drivers/media/vpu/mvx_log_ram.h
 new file mode 100755
-index 0000000000000..705c6f6f1dc13
+index 000000000000..705c6f6f1dc1
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_log_ram.h
 @@ -0,0 +1,212 @@
@@ -29117,7 +29117,7 @@ index 0000000000000..705c6f6f1dc13
 +#endif /* MVX_LOG_RAM_H */
 diff --git a/drivers/media/vpu/mvx_pm_runtime.c b/drivers/media/vpu/mvx_pm_runtime.c
 new file mode 100755
-index 0000000000000..8a6c96dea25dc
+index 000000000000..8a6c96dea25d
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_pm_runtime.c
 @@ -0,0 +1,65 @@
@@ -29188,7 +29188,7 @@ index 0000000000000..8a6c96dea25dc
 +}
 diff --git a/drivers/media/vpu/mvx_pm_runtime.h b/drivers/media/vpu/mvx_pm_runtime.h
 new file mode 100755
-index 0000000000000..caade760fccb0
+index 000000000000..caade760fccb
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_pm_runtime.h
 @@ -0,0 +1,67 @@
@@ -29261,7 +29261,7 @@ index 0000000000000..caade760fccb0
 +#endif /* _MVX_PM_RUNTIME_H_ */
 diff --git a/drivers/media/vpu/mvx_seq.c b/drivers/media/vpu/mvx_seq.c
 new file mode 100755
-index 0000000000000..8608986e6ac21
+index 000000000000..8608986e6ac2
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_seq.c
 @@ -0,0 +1,95 @@
@@ -29362,7 +29362,7 @@ index 0000000000000..8608986e6ac21
 +}
 diff --git a/drivers/media/vpu/mvx_seq.h b/drivers/media/vpu/mvx_seq.h
 new file mode 100755
-index 0000000000000..c994f6bb3004e
+index 000000000000..c994f6bb3004
 --- /dev/null
 +++ b/drivers/media/vpu/mvx_seq.h
 @@ -0,0 +1,94 @@
@@ -29462,7 +29462,7 @@ index 0000000000000..c994f6bb3004e
 +#endif /* _MVX_SEQ_H_ */
 diff --git a/drivers/media/vpu/sconscript b/drivers/media/vpu/sconscript
 new file mode 100755
-index 0000000000000..3a1f19ccc1a90
+index 000000000000..3a1f19ccc1a9
 --- /dev/null
 +++ b/drivers/media/vpu/sconscript
 @@ -0,0 +1,36 @@
@@ -29503,7 +29503,7 @@ index 0000000000000..3a1f19ccc1a90
 +# Install user space header files
 +env.Install(env['INCLUDE_DIR'], ['if/v4l2/mvx-v4l2-controls.h'])
 diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-index 6f7a58350441b..d3c745e7cdab2 100644
+index 6f7a58350441..d3c745e7cdab 100644
 --- a/include/media/v4l2-ioctl.h
 +++ b/include/media/v4l2-ioctl.h
 @@ -299,10 +299,14 @@ struct v4l2_ioctl_ops {

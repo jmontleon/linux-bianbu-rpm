@@ -1,4 +1,4 @@
-From 4453544870d83c247eb513d0197bf6ccc23c5df2 Mon Sep 17 00:00:00 2001
+From 36687829a96dc0433435631dc87f3d8255c73c03 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 6 Aug 2024 13:45:56 +0800
 Subject: [PATCH 0887/1236] display: add resume and suspend for lt9711 driver
@@ -10,7 +10,7 @@ Change-Id: I08cef92ff31611d0b4a467f7162df9c707e57a8d
  2 files changed, 80 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 14d911614f249..4f5cbdb670e49 100644
+index 14d911614f24..4f5cbdb670e4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -395,6 +395,9 @@ lt9711_i2c@41 {
@@ -24,7 +24,7 @@ index 14d911614f249..4f5cbdb670e49 100644
  				lt9711_in: endpoint {
  					remote-endpoint = <&dsi1_output>;
 diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
-index 0696c6509c07a..68f53d99155aa 100644
+index 0696c6509c07..68f53d99155a 100644
 --- a/drivers/gpu/drm/spacemit/lt9711.c
 +++ b/drivers/gpu/drm/spacemit/lt9711.c
 @@ -64,7 +64,8 @@ struct lt9711 {

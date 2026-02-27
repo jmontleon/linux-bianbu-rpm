@@ -1,4 +1,4 @@
-From 1ceb891cdf946e0dc3181ec2631ce8519b230e43 Mon Sep 17 00:00:00 2001
+From a9388f8882dbac9f66683311afcd36e813805c5c Mon Sep 17 00:00:00 2001
 From: liangbaihui <baihui.liang@spacemit.com>
 Date: Mon, 18 Nov 2024 11:41:48 +0800
 Subject: [PATCH 1172/1236] gpu: upgrade to 24.2
@@ -330,7 +330,7 @@ Change-Id: Ic28664d4f2d4973867235859d69132df527703bc
  create mode 100644 drivers/gpu/drm/img-rogue/rgxlayer_impl_common.c
 
 diff --git a/drivers/gpu/drm/img-rogue/Makefile b/drivers/gpu/drm/img-rogue/Makefile
-index f9116dfef0ed7..7750db1a95e40 100644
+index f9116dfef0ed..7750db1a95e4 100644
 --- a/drivers/gpu/drm/img-rogue/Makefile
 +++ b/drivers/gpu/drm/img-rogue/Makefile
 @@ -51,6 +51,7 @@ pvrsrvkm-y += \
@@ -394,7 +394,7 @@ index f9116dfef0ed7..7750db1a95e40 100644
   pvr_platform_drv.o \
   pvr_sw_fence.o \
 diff --git a/drivers/gpu/drm/img-rogue/allocmem.c b/drivers/gpu/drm/img-rogue/allocmem.c
-index 46a112d3ab7cc..817680376d79f 100644
+index 46a112d3ab7c..817680376d79 100644
 --- a/drivers/gpu/drm/img-rogue/allocmem.c
 +++ b/drivers/gpu/drm/img-rogue/allocmem.c
 @@ -49,9 +49,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -485,7 +485,7 @@ index 46a112d3ab7cc..817680376d79f 100644
  	{
  		if (!is_vmalloc_addr(pvMem))
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c
-index 76895df4559fa..3e39517fe3080 100644
+index 76895df4559f..3e39517fe308 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_crtc.c
 @@ -1084,21 +1084,3 @@ void pdp_crtc_irq_handler(struct drm_crtc *crtc)
@@ -511,7 +511,7 @@ index 76895df4559fa..3e39517fe3080 100644
 -}
 -#endif
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c
-index 5725fd173800c..949577c9758b9 100644
+index 5725fd173800..949577c9758b 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_debugfs.c
 @@ -110,7 +110,7 @@ static ssize_t display_enabled_write(struct file *file,
@@ -560,7 +560,7 @@ index 5725fd173800c..949577c9758b9 100644
  		DRM_INFO("failed to create '%s' debugfs entry\n",
  			 PDP_DEBUGFS_DISPLAY_ENABLED);
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c
-index a1f5462dd66ab..d36a0b986f9dc 100644
+index a1f5462dd66a..d36a0b986f9d 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.c
 @@ -43,7 +43,7 @@
@@ -813,7 +813,7 @@ index a1f5462dd66ab..d36a0b986f9dc 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h
-index e58bf53b548d7..fe6083a7a3cb9 100644
+index e58bf53b548d..fe6083a7a3cb 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_drv.h
 @@ -55,9 +55,7 @@
@@ -837,7 +837,7 @@ index e58bf53b548d7..fe6083a7a3cb9 100644
  struct drm_connector *pdp_dvi_connector_create(struct drm_device *dev);
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c
-index 49c901afdb2b0..92a99a81a906c 100644
+index 49c901afdb2b..92a99a81a906 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_dvi.c
 @@ -77,24 +77,6 @@ struct pdp_mode_data {
@@ -866,7 +866,7 @@ index 49c901afdb2b0..92a99a81a906c 100644
  
  static char preferred_mode_name[DRM_DISPLAY_MODE_LEN] = "\0";
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c
-index 5370ee250841c..1faf6716b66dd 100644
+index 5370ee250841..1faf6716b66d 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_fb.c
 @@ -74,37 +74,7 @@ static struct fb_ops pdp_fbdev_ops = {
@@ -924,7 +924,7 @@ index 5370ee250841c..1faf6716b66dd 100644
  	info->flags |= FBINFO_CAN_FORCE_OUTPUT;
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c
-index 3b2a81d4b71e3..88fa77c56c994 100644
+index 3b2a81d4b71e..88fa77c56c99 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.c
 @@ -453,7 +453,6 @@ struct dma_buf *pdp_gem_prime_export(
@@ -952,7 +952,7 @@ index 3b2a81d4b71e3..88fa77c56c994 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h
-index 5bb228b8f3aff..f8c04dad95219 100644
+index 5bb228b8f3af..f8c04dad9521 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_gem.h
 @@ -53,9 +53,7 @@
@@ -966,7 +966,7 @@ index 5bb228b8f3aff..f8c04dad95219 100644
  #include "drm_pdp_drv.h"
  #include "pvr_dma_resv.h"
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
-index dd1ad0ea4d191..6586209b3aea2 100644
+index dd1ad0ea4d19..6586209b3aea 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_modeset.c
 @@ -54,9 +54,7 @@
@@ -1074,7 +1074,7 @@ index dd1ad0ea4d191..6586209b3aea2 100644
  
  void pdp_modeset_late_cleanup(struct pdp_drm_private *dev_priv)
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c
-index 9431154b83f40..57c0bea8c2336 100644
+index 9431154b83f4..57c0bea8c233 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_plane.c
 @@ -325,7 +325,7 @@ void pdp_plane_set_surface(struct drm_crtc *crtc, struct drm_plane *plane,
@@ -1087,7 +1087,7 @@ index 9431154b83f40..57c0bea8c2336 100644
  #endif
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c
-index 915ef3c5a38c3..b9c30f5453a4f 100644
+index 915ef3c5a38c..b9c30f5453a4 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/drm_pdp_tmds.c
 @@ -48,12 +48,8 @@
@@ -1104,7 +1104,7 @@ index 915ef3c5a38c3..b9c30f5453a4f 100644
  #include "kernel_compatibility.h"
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/odin_defs.h b/drivers/gpu/drm/img-rogue/apollo/odin_defs.h
-index 6234887a1bfd6..10ca9b6d43820 100644
+index 6234887a1bfd..10ca9b6d4382 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/odin_defs.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/odin_defs.h
 @@ -46,6 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -1142,7 +1142,7 @@ index 6234887a1bfd6..10ca9b6d43820 100644
     Other defines
  */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/sysconfig.c b/drivers/gpu/drm/img-rogue/apollo/sysconfig.c
-index 7f3b056659a48..d198df48e2926 100644
+index 7f3b056659a4..d198df48e292 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/sysconfig.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/sysconfig.c
 @@ -52,6 +52,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -1670,7 +1670,7 @@ index 7f3b056659a48..d198df48e2926 100644
 +	PostMigrationDeviceResume(psDestDrmDev);
 +}
 diff --git a/drivers/gpu/drm/img-rogue/apollo/sysinfo.h b/drivers/gpu/drm/img-rogue/apollo/sysinfo.h
-index b71df887b113b..6355a98482c31 100644
+index b71df887b113..6355a98482c3 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/sysinfo.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/sysinfo.h
 @@ -55,6 +55,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -1689,7 +1689,7 @@ index b71df887b113b..6355a98482c31 100644
  
  #endif /* !defined(__SYSINFO_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
-index 3fbf0defb77e9..618c017b8c0f0 100644
+index 3fbf0defb77e..618c017b8c0f 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 @@ -153,13 +153,8 @@ static int spi_read(struct tc_device *tc, u32 off, u32 *val)
@@ -1841,7 +1841,7 @@ index 3fbf0defb77e9..618c017b8c0f0 100644
  		err = apollo_thermal_get_temp(apollo_pdata.thermal_zone, &t);
  		if (err)
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv.c b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
-index cb10915ac950a..5be3eaca04c6a 100644
+index cb10915ac950..5be3eaca04c6 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
 @@ -145,6 +145,10 @@ static struct debugfs_blob_wrapper tc_debugfs_rogue_name_blobs[] = {
@@ -2085,7 +2085,7 @@ index cb10915ac950a..5be3eaca04c6a 100644
  				 str_fpga_rev, size_fpga_rev,
  				 str_tcf_core_rev, size_tcf_core_rev,
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv.h b/drivers/gpu/drm/img-rogue/apollo/tc_drv.h
-index c2d7ebe7f3110..84016d1351ca1 100644
+index c2d7ebe7f311..84016d1351ca 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_drv.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv.h
 @@ -60,6 +60,7 @@
@@ -2115,7 +2115,7 @@ index c2d7ebe7f3110..84016d1351ca1 100644
  int tc_enable(struct device *dev);
  void tc_disable(struct device *dev);
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h b/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h
-index 97d6ecf4c33c4..b10ba49091b4a 100644
+index 97d6ecf4c33c..b10ba49091b4 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv_internal.h
 @@ -93,6 +93,7 @@ enum tc_version_t {
@@ -2154,7 +2154,7 @@ index 97d6ecf4c33c4..b10ba49091b4a 100644
  	spinlock_t interrupt_enable_lock;
  
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
-index 25c84b7a613bc..2e676ac7e3421 100644
+index 25c84b7a613b..2e676ac7e342 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 @@ -798,6 +798,16 @@ static int odin_hard_reset_fpga(struct tc_device *tc,
@@ -2493,7 +2493,7 @@ index 25c84b7a613bc..2e676ac7e3421 100644
  			err = PTR_ERR(chan);
  			dev_err(&tc->pdev->dev,
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h b/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h
-index 55a47efdb7b2b..0914d08cbd495 100644
+index 55a47efdb7b2..0914d08cbd49 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin_common_regs.h
 @@ -59,20 +59,25 @@ enum odin_common_regs {
@@ -2541,7 +2541,7 @@ index 55a47efdb7b2b..0914d08cbd495 100644
  		return common_regs[reg].orion_name;
  }
 diff --git a/drivers/gpu/drm/img-rogue/cache_km.c b/drivers/gpu/drm/img-rogue/cache_km.c
-index f36f3370cf2f3..b7cac8f45209f 100644
+index f36f3370cf2f..b7cac8f45209 100644
 --- a/drivers/gpu/drm/img-rogue/cache_km.c
 +++ b/drivers/gpu/drm/img-rogue/cache_km.c
 @@ -829,6 +829,8 @@ static INLINE PVRSRV_ERROR CacheOpValidateUMVA(PMR *psPMR,
@@ -2579,7 +2579,7 @@ index f36f3370cf2f3..b7cac8f45209f 100644
  		eError = PMRLockSysPhysAddresses(psPMR);
  		PVR_LOG_RETURN_IF_ERROR(eError, "PMRLockSysPhysAddresses");
 diff --git a/drivers/gpu/drm/img-rogue/client_mm_bridge.h b/drivers/gpu/drm/img-rogue/client_mm_bridge.h
-index 4f00526c8f3ef..fe2494bc472e2 100644
+index 4f00526c8f3e..fe2494bc472e 100644
 --- a/drivers/gpu/drm/img-rogue/client_mm_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/client_mm_bridge.h
 @@ -85,8 +85,6 @@ IMG_INTERNAL PVRSRV_ERROR BridgePMRLocalImportPMR(IMG_HANDLE hBridge,
@@ -2651,7 +2651,7 @@ index 4f00526c8f3ef..fe2494bc472e2 100644
  IMG_INTERNAL PVRSRV_ERROR BridgeDevmemIsVDevAddrValid(IMG_HANDLE hBridge,
  						      IMG_HANDLE hDevmemCtx,
 diff --git a/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c
-index 184355b3abbff..a1d1bd895f5f0 100644
+index 184355b3abbf..a1d1bd895f5f 100644
 --- a/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/client_mm_direct_bridge.c
 @@ -217,19 +217,6 @@ IMG_INTERNAL PVRSRV_ERROR BridgePMRUnrefPMR(IMG_HANDLE hBridge, IMG_HANDLE hPMR)
@@ -2842,7 +2842,7 @@ index 184355b3abbff..a1d1bd895f5f0 100644
  	return eError;
  }
 diff --git a/drivers/gpu/drm/img-rogue/client_ri_bridge.h b/drivers/gpu/drm/img-rogue/client_ri_bridge.h
-index b3c42e6f496e4..c419e21e9d07f 100644
+index b3c42e6f496e..c419e21e9d07 100644
 --- a/drivers/gpu/drm/img-rogue/client_ri_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/client_ri_bridge.h
 @@ -62,8 +62,7 @@ IMG_INTERNAL PVRSRV_ERROR BridgeRIWriteMEMDESCEntry(IMG_HANDLE hBridge,
@@ -2856,7 +2856,7 @@ index b3c42e6f496e4..c419e21e9d07f 100644
  IMG_INTERNAL PVRSRV_ERROR BridgeRIWriteProcListEntry(IMG_HANDLE hBridge,
  						     IMG_UINT32 ui32TextBSize,
 diff --git a/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c b/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c
-index 74eaf18e4aeb2..6e60293d68e2f 100644
+index 74eaf18e4aeb..6e60293d68e2 100644
 --- a/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/client_ri_direct_bridge.c
 @@ -70,21 +70,19 @@ IMG_INTERNAL PVRSRV_ERROR BridgeRIWriteMEMDESCEntry(IMG_HANDLE hBridge,
@@ -2886,7 +2886,7 @@ index 74eaf18e4aeb2..6e60293d68e2f 100644
  	*phRIHandle = psRIHandleInt;
  	return eError;
 diff --git a/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h b/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h
-index 7547d9f762979..cc631e3e11169 100644
+index 7547d9f76297..cc631e3e1116 100644
 --- a/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_dmabuf_bridge.h
 @@ -55,8 +55,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -2954,7 +2954,7 @@ index 7547d9f762979..cc631e3e11169 100644
              PhysmemImportSparseDmaBuf
   *******************************************/
 diff --git a/drivers/gpu/drm/img-rogue/common_mm_bridge.h b/drivers/gpu/drm/img-rogue/common_mm_bridge.h
-index cf9f8834c48f3..80fa1baeb390b 100644
+index cf9f8834c48f..80fa1baeb390 100644
 --- a/drivers/gpu/drm/img-rogue/common_mm_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_mm_bridge.h
 @@ -64,36 +64,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3145,7 +3145,7 @@ index cf9f8834c48f3..80fa1baeb390b 100644
  
  /* Bridge out structure for ChangeSparseMem */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h
-index 7f5687d826d53..aa1d2b73985a5 100644
+index 7f5687d826d5..aa1d2b73985a 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxcmp_bridge.h
 @@ -58,13 +58,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3323,7 +3323,7 @@ index 7f5687d826d53..aa1d2b73985a5 100644
 +
  #endif /* COMMON_RGXCMP_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h
-index a92ae9bfdb8d5..534b8e9536ed0 100644
+index a92ae9bfdb8d..534b8e9536ed 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxfwdbg_bridge.h
 @@ -58,8 +58,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3425,7 +3425,7 @@ index a92ae9bfdb8d5..534b8e9536ed0 100644
  
  /* Bridge out structure for RGXCurrentTime */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h
-index 609429400ae20..4d86216c81972 100644
+index 609429400ae2..4d86216c8197 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxhwperf_bridge.h
 @@ -55,18 +55,72 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3619,7 +3619,7 @@ index 609429400ae20..4d86216c81972 100644
 -
  #endif /* COMMON_RGXHWPERF_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h
-index 7974b67352808..849d18cc78a86 100644
+index 7974b6735280..849d18cc78a8 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxta3d_bridge.h
 @@ -57,66 +57,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3875,7 +3875,7 @@ index 7974b67352808..849d18cc78a86 100644
 +
  #endif /* COMMON_RGXTA3D_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h
-index 9d8397fc90bf8..f20fca015dc06 100644
+index 9d8397fc90bf..f20fca015dc0 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxtq2_bridge.h
 @@ -63,7 +63,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -3945,7 +3945,7 @@ index 9d8397fc90bf8..f20fca015dc06 100644
 +
  #endif /* COMMON_RGXTQ2_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h b/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h
-index b4a9be2bd9775..31d90dc0f9938 100644
+index b4a9be2bd977..31d90dc0f993 100644
 --- a/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_rgxtq_bridge.h
 @@ -62,7 +62,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -4007,7 +4007,7 @@ index b4a9be2bd9775..31d90dc0f9938 100644
 +
  #endif /* COMMON_RGXTQ_BRIDGE_H */
 diff --git a/drivers/gpu/drm/img-rogue/common_ri_bridge.h b/drivers/gpu/drm/img-rogue/common_ri_bridge.h
-index 967ed53955186..baa41adccdfe7 100644
+index 967ed5395518..baa41adccdfe 100644
 --- a/drivers/gpu/drm/img-rogue/common_ri_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/common_ri_bridge.h
 @@ -88,13 +88,12 @@ typedef struct PVRSRV_BRIDGE_OUT_RIWRITEPMRENTRY_TAG
@@ -4026,7 +4026,7 @@ index 967ed53955186..baa41adccdfe7 100644
  
  /* Bridge out structure for RIWriteMEMDESCEntry */
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
-index 540767d31894e..09747a8a950fa 100644
+index 540767d31894..09747a8a950f 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.h
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -2,11 +2,12 @@
@@ -4256,7 +4256,7 @@ index 540767d31894e..09747a8a950fa 100644
  #define PVRSRV_USE_LINUX_CONFIG_INIT_ON_ALLOC 1
  #define SUPPORT_NATIVE_FENCE_SYNC
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.mk b/drivers/gpu/drm/img-rogue/config_kernel.mk
-index 7a87f28235264..c1c9e873d6a4b 100644
+index 7a87f2823526..c1c9e873d6a4 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.mk
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.mk
 @@ -1,4 +1,5 @@
@@ -4296,7 +4296,7 @@ index 7a87f28235264..c1c9e873d6a4b 100644
  override SUPPORT_BUFFER_SYNC := 1
 diff --git a/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_1.V.4.5.h b/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_1.V.4.5.h
 new file mode 100644
-index 0000000000000..1af637872cf90
+index 000000000000..1af637872cf9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/configs/rgxconfig_km_1.V.4.5.h
 @@ -0,0 +1,81 @@
@@ -4382,7 +4382,7 @@ index 0000000000000..1af637872cf90
 +
 +#endif /* RGXCONFIG_KM_1_V_4_5_H */
 diff --git a/drivers/gpu/drm/img-rogue/connection_server.c b/drivers/gpu/drm/img-rogue/connection_server.c
-index 559a4be802d8c..b519ee14de22c 100644
+index 559a4be802d8..b519ee14de22 100644
 --- a/drivers/gpu/drm/img-rogue/connection_server.c
 +++ b/drivers/gpu/drm/img-rogue/connection_server.c
 @@ -54,6 +54,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -4585,7 +4585,7 @@ index 559a4be802d8c..b519ee14de22c 100644
  			/* Move the write offset to the end of the current string */
  			uiPos += i;
 diff --git a/drivers/gpu/drm/img-rogue/connection_server.h b/drivers/gpu/drm/img-rogue/connection_server.h
-index d9eb515c2e5a2..673c37c02a3c1 100644
+index d9eb515c2e5a..673c37c02a3c 100644
 --- a/drivers/gpu/drm/img-rogue/connection_server.h
 +++ b/drivers/gpu/drm/img-rogue/connection_server.h
 @@ -99,7 +99,6 @@ typedef struct _CONNECTION_DATA_
@@ -4606,7 +4606,7 @@ index d9eb515c2e5a2..673c37c02a3c1 100644
  #include "osconnection_server.h"
 diff --git a/drivers/gpu/drm/img-rogue/cores/rgxcore_km_1.82.4.5.h b/drivers/gpu/drm/img-rogue/cores/rgxcore_km_1.82.4.5.h
 new file mode 100644
-index 0000000000000..ae53d7ceef27f
+index 000000000000..ae53d7ceef27
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/cores/rgxcore_km_1.82.4.5.h
 @@ -0,0 +1,69 @@
@@ -4680,7 +4680,7 @@ index 0000000000000..ae53d7ceef27f
 +
 +#endif /* RGXCORE_KM_1_82_4_5_H */
 diff --git a/drivers/gpu/drm/img-rogue/debug_common.c b/drivers/gpu/drm/img-rogue/debug_common.c
-index 98e7dbe6ed296..16746b5d550ab 100644
+index 98e7dbe6ed29..16746b5d550a 100644
 --- a/drivers/gpu/drm/img-rogue/debug_common.c
 +++ b/drivers/gpu/drm/img-rogue/debug_common.c
 @@ -69,9 +69,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -5478,7 +5478,7 @@ index 98e7dbe6ed296..16746b5d550ab 100644
  		DIDestroyEntry(psDebugInfo->psRiscvDmiDIEntry);
  		psDebugInfo->psRiscvDmiDIEntry = NULL;
 diff --git a/drivers/gpu/drm/img-rogue/debug_common.h b/drivers/gpu/drm/img-rogue/debug_common.h
-index c098696f740e4..aba576d273a1d 100644
+index c098696f740e..aba576d273a1 100644
 --- a/drivers/gpu/drm/img-rogue/debug_common.h
 +++ b/drivers/gpu/drm/img-rogue/debug_common.h
 @@ -50,6 +50,8 @@ PVRSRV_ERROR DebugCommonInitDriver(void);
@@ -5491,7 +5491,7 @@ index c098696f740e4..aba576d273a1d 100644
  PVRSRV_ERROR DebugCommonInitDevice(PVRSRV_DEVICE_NODE *psDeviceNode);
  void DebugCommonDeInitDevice(PVRSRV_DEVICE_NODE *psDeviceNode);
 diff --git a/drivers/gpu/drm/img-rogue/device.h b/drivers/gpu/drm/img-rogue/device.h
-index 20e8770aa5070..4a6975b023cb8 100644
+index 20e8770aa507..4a6975b023cb 100644
 --- a/drivers/gpu/drm/img-rogue/device.h
 +++ b/drivers/gpu/drm/img-rogue/device.h
 @@ -76,6 +76,7 @@ struct _CONNECTION_DATA_;
@@ -5696,7 +5696,7 @@ index 20e8770aa5070..4a6975b023cb8 100644
  
  /*
 diff --git a/drivers/gpu/drm/img-rogue/devicemem.c b/drivers/gpu/drm/img-rogue/devicemem.c
-index 09765b599cc49..916485b77ec16 100644
+index 09765b599cc4..916485b77ec1 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem.c
 +++ b/drivers/gpu/drm/img-rogue/devicemem.c
 @@ -163,10 +163,6 @@ DevmemOverrideFlagsOrPassThrough(SHARED_DEV_CONNECTION hDevConnection, PVRSRV_ME
@@ -6065,7 +6065,7 @@ index 09765b599cc49..916485b77ec16 100644
 + End of file (devicemem.c)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c
-index 1234f76a60c21..9b53d026bb5db 100644
+index 1234f76a60c2..9b53d026bb5d 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c
 +++ b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.c
 @@ -123,6 +123,8 @@ HeapCfgHeapCount(CONNECTION_DATA * psConnection,
@@ -6096,7 +6096,7 @@ index 1234f76a60c21..9b53d026bb5db 100644
  	{
  		return PVRSRV_ERROR_DEVICEMEM_INVALID_HEAP_CONFIG_INDEX;
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h
-index bf49a07cbefdb..3b8c0aa08921d 100644
+index bf49a07cbefd..3b8c0aa08921 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h
 +++ b/drivers/gpu/drm/img-rogue/devicemem_heapcfg.h
 @@ -49,16 +49,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -6117,7 +6117,7 @@ index bf49a07cbefdb..3b8c0aa08921d 100644
  struct _CONNECTION_DATA_;
  struct _DEVMEMINT_HEAP_;
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_history_server.c b/drivers/gpu/drm/img-rogue/devicemem_history_server.c
-index e84e75e7c7d89..f28e96fa55e1f 100644
+index e84e75e7c7d8..f28e96fa55e1 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_history_server.c
 +++ b/drivers/gpu/drm/img-rogue/devicemem_history_server.c
 @@ -772,7 +772,7 @@ static void InitialiseAllocation(RECORD_ALLOCATION *psAlloc,
@@ -6334,7 +6334,7 @@ index e84e75e7c7d89..f28e96fa55e1f 100644
  	PVR_RETURN_IF_NOMEM(psDevHData->sRecords.pasAllocations);
  
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server.c b/drivers/gpu/drm/img-rogue/devicemem_server.c
-index e43f686308ce0..67e7c4fafbdac 100644
+index e43f686308ce..67e7c4fafbda 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_server.c
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server.c
 @@ -66,8 +66,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -8526,7 +8526,7 @@ index e43f686308ce0..67e7c4fafbdac 100644
  										  &uiLog2HeapPageSize);
  	if (eError != PVRSRV_OK)
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server.h b/drivers/gpu/drm/img-rogue/devicemem_server.h
-index 0f893cd9f7b3d..8fa2b90cbda84 100644
+index 0f893cd9f7b3..8fa2b90cbda8 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_server.h
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server.h
 @@ -58,6 +58,7 @@ typedef struct _DEVMEMINT_CTX_EXPORT_ DEVMEMINT_CTX_EXPORT;
@@ -8812,7 +8812,7 @@ index 0f893cd9f7b3d..8fa2b90cbda84 100644
   * Invalidate selected FBSC table indices.
   *
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_server_utils.h b/drivers/gpu/drm/img-rogue/devicemem_server_utils.h
-index ad85c07cdcf66..923bfc9a8f18d 100644
+index ad85c07cdcf6..923bfc9a8f18 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_server_utils.h
 +++ b/drivers/gpu/drm/img-rogue/devicemem_server_utils.h
 @@ -47,8 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -8878,7 +8878,7 @@ index ad85c07cdcf66..923bfc9a8f18d 100644
  												  PVRSRV_MEMALLOCFLAGS_T ulFlags)
  {
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_typedefs.h b/drivers/gpu/drm/img-rogue/devicemem_typedefs.h
-index 683af9a04f04c..d51c099eed7a8 100644
+index 683af9a04f04..d51c099eed7a 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_typedefs.h
 +++ b/drivers/gpu/drm/img-rogue/devicemem_typedefs.h
 @@ -112,16 +112,6 @@ typedef IMG_UINT32 SPARSE_MEM_RESIZE_FLAGS;
@@ -8899,7 +8899,7 @@ index 683af9a04f04c..d51c099eed7a8 100644
   * is desired.
   */
 diff --git a/drivers/gpu/drm/img-rogue/devicemem_utils.c b/drivers/gpu/drm/img-rogue/devicemem_utils.c
-index 7b60110310c17..741063b8b1aad 100644
+index 7b60110310c1..741063b8b1aa 100644
 --- a/drivers/gpu/drm/img-rogue/devicemem_utils.c
 +++ b/drivers/gpu/drm/img-rogue/devicemem_utils.c
 @@ -1022,31 +1022,32 @@ PVRSRV_ERROR DevmemImportStructDevMap(DEVMEM_HEAP *psHeap,
@@ -8981,7 +8981,7 @@ index 7b60110310c17..741063b8b1aad 100644
  
  		psDeviceImport->bMapped = IMG_FALSE;
 diff --git a/drivers/gpu/drm/img-rogue/di_impl_brg.c b/drivers/gpu/drm/img-rogue/di_impl_brg.c
-index 5670af07f6d41..811e13b018e0e 100644
+index 5670af07f6d4..811e13b018e0 100644
 --- a/drivers/gpu/drm/img-rogue/di_impl_brg.c
 +++ b/drivers/gpu/drm/img-rogue/di_impl_brg.c
 @@ -65,12 +65,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -9223,7 +9223,7 @@ index 5670af07f6d41..811e13b018e0e 100644
 + End of file (di_impl_brg.c)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/di_impl_brg.h b/drivers/gpu/drm/img-rogue/di_impl_brg.h
-index 7d5a6ca757e8e..b8cff25d94ecf 100644
+index 7d5a6ca757e8..b8cff25d94ec 100644
 --- a/drivers/gpu/drm/img-rogue/di_impl_brg.h
 +++ b/drivers/gpu/drm/img-rogue/di_impl_brg.h
 @@ -44,6 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -9241,7 +9241,7 @@ index 7d5a6ca757e8e..b8cff25d94ecf 100644
 +
  #endif /* PVR_IMPL_BRG_H */
 diff --git a/drivers/gpu/drm/img-rogue/di_server.c b/drivers/gpu/drm/img-rogue/di_server.c
-index 330d357928193..47046d7ec3a25 100644
+index 330d35792819..47046d7ec3a2 100644
 --- a/drivers/gpu/drm/img-rogue/di_server.c
 +++ b/drivers/gpu/drm/img-rogue/di_server.c
 @@ -135,7 +135,7 @@ PVRSRV_ERROR DIInit(void)
@@ -9263,7 +9263,7 @@ index 330d357928193..47046d7ec3a25 100644
  	psGroup->psParent = psParent;
  	dllist_init(&psGroup->sGroupList);
 diff --git a/drivers/gpu/drm/img-rogue/di_server.h b/drivers/gpu/drm/img-rogue/di_server.h
-index a68894b1b4305..a797890c069ad 100644
+index a68894b1b430..a797890c069a 100644
 --- a/drivers/gpu/drm/img-rogue/di_server.h
 +++ b/drivers/gpu/drm/img-rogue/di_server.h
 @@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -9305,7 +9305,7 @@ index a68894b1b4305..a797890c069ad 100644
  
 diff --git a/drivers/gpu/drm/img-rogue/dkf_server.c b/drivers/gpu/drm/img-rogue/dkf_server.c
 new file mode 100644
-index 0000000000000..6136b627d9ae4
+index 000000000000..6136b627d9ae
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dkf_server.c
 @@ -0,0 +1,409 @@
@@ -9720,7 +9720,7 @@ index 0000000000000..6136b627d9ae4
 +#endif	/* SUPPORT_LINUX_FDINFO */
 diff --git a/drivers/gpu/drm/img-rogue/dkf_server.h b/drivers/gpu/drm/img-rogue/dkf_server.h
 new file mode 100644
-index 0000000000000..304d9bc71b604
+index 000000000000..304d9bc71b60
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dkf_server.h
 @@ -0,0 +1,103 @@
@@ -9829,7 +9829,7 @@ index 0000000000000..304d9bc71b604
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/dkp_impl.h b/drivers/gpu/drm/img-rogue/dkp_impl.h
 new file mode 100644
-index 0000000000000..b5f47f8910a28
+index 000000000000..b5f47f8910a2
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/dkp_impl.h
 @@ -0,0 +1,163 @@
@@ -9997,7 +9997,7 @@ index 0000000000000..b5f47f8910a28
 +
 +#endif /* DKP_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/dma_km.h b/drivers/gpu/drm/img-rogue/dma_km.h
-index ce4d1317279b5..9bf633dfd98f2 100644
+index ce4d1317279b..9bf633dfd98f 100644
 --- a/drivers/gpu/drm/img-rogue/dma_km.h
 +++ b/drivers/gpu/drm/img-rogue/dma_km.h
 @@ -77,7 +77,9 @@ PVRSRV_ERROR DmaTransfer(CONNECTION_DATA *psConnection,
@@ -10013,7 +10013,7 @@ index ce4d1317279b5..9bf633dfd98f2 100644
  
  #endif /* DMA_KM_H */
 diff --git a/drivers/gpu/drm/img-rogue/dma_support.c b/drivers/gpu/drm/img-rogue/dma_support.c
-index 2058584ddf7ca..c561d0622d5ff 100644
+index 2058584ddf7c..c561d0622d5f 100644
 --- a/drivers/gpu/drm/img-rogue/dma_support.c
 +++ b/drivers/gpu/drm/img-rogue/dma_support.c
 @@ -380,7 +380,7 @@ PVRSRV_ERROR SysDmaRegisterForIoRemapping(DMA_ALLOC *psDmaAlloc)
@@ -10026,7 +10026,7 @@ index 2058584ddf7ca..c561d0622d5ff 100644
  
  	if (psDmaAlloc == NULL ||
 diff --git a/drivers/gpu/drm/img-rogue/env_connection.h b/drivers/gpu/drm/img-rogue/env_connection.h
-index 2a6c7d05c4126..d2e4f97433706 100644
+index 2a6c7d05c412..d2e4f9743370 100644
 --- a/drivers/gpu/drm/img-rogue/env_connection.h
 +++ b/drivers/gpu/drm/img-rogue/env_connection.h
 @@ -58,9 +58,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -10051,7 +10051,7 @@ index 2a6c7d05c4126..d2e4f97433706 100644
  #if defined(SUPPORT_NATIVE_FENCE_SYNC)
  	void *pvPvrSyncPrivateData;
 diff --git a/drivers/gpu/drm/img-rogue/event.c b/drivers/gpu/drm/img-rogue/event.c
-index e9847ff68b88f..98b029c926df6 100644
+index e9847ff68b88..98b029c926df 100644
 --- a/drivers/gpu/drm/img-rogue/event.c
 +++ b/drivers/gpu/drm/img-rogue/event.c
 @@ -372,9 +372,11 @@ PVRSRV_ERROR LinuxEventObjectWait(IMG_HANDLE hOSEventObject,
@@ -10068,7 +10068,7 @@ index e9847ff68b88f..98b029c926df6 100644
  	if (psPVRSRVData->eServicesState != PVRSRV_SERVICES_STATE_OK)
  	{
 diff --git a/drivers/gpu/drm/img-rogue/fwload.c b/drivers/gpu/drm/img-rogue/fwload.c
-index 35e52af56a2e8..8c597b3c2e28d 100644
+index 35e52af56a2e..8c597b3c2e28 100644
 --- a/drivers/gpu/drm/img-rogue/fwload.c
 +++ b/drivers/gpu/drm/img-rogue/fwload.c
 @@ -179,19 +179,23 @@ OSLoadFirmware(PVRSRV_DEVICE_NODE *psDeviceNode, const IMG_CHAR *pszBVNCString,
@@ -10098,7 +10098,7 @@ index 35e52af56a2e8..8c597b3c2e28d 100644
  			eError = PVRSRV_ERROR_NOT_READY;
  		}
 diff --git a/drivers/gpu/drm/img-rogue/handle.c b/drivers/gpu/drm/img-rogue/handle.c
-index 286cec731fe7e..421e8256c86e3 100644
+index 286cec731fe7..421e8256c86e 100644
 --- a/drivers/gpu/drm/img-rogue/handle.c
 +++ b/drivers/gpu/drm/img-rogue/handle.c
 @@ -1764,6 +1764,7 @@ PVRSRV_ERROR PVRSRVAllocHandleBase(PVRSRV_HANDLE_BASE **ppsBase,
@@ -10136,7 +10136,7 @@ index 286cec731fe7e..421e8256c86e3 100644
 + End of file (handle.c)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/handle.h b/drivers/gpu/drm/img-rogue/handle.h
-index 92946b6fbb365..27fc7d4fc6587 100644
+index 92946b6fbb36..27fc7d4fc658 100644
 --- a/drivers/gpu/drm/img-rogue/handle.h
 +++ b/drivers/gpu/drm/img-rogue/handle.h
 @@ -203,4 +203,5 @@ PVRSRV_ERROR PVRSRVReleaseProcessHandleBase(PROCESS_HANDLE_BASE *psBase, IMG_PID
@@ -10146,7 +10146,7 @@ index 92946b6fbb365..27fc7d4fc6587 100644
 +
  #endif /* !defined(HANDLE_API_H) */
 diff --git a/drivers/gpu/drm/img-rogue/handle_idr.c b/drivers/gpu/drm/img-rogue/handle_idr.c
-index c40e096bfaa54..cb448213d6fa5 100644
+index c40e096bfaa5..cb448213d6fa 100644
 --- a/drivers/gpu/drm/img-rogue/handle_idr.c
 +++ b/drivers/gpu/drm/img-rogue/handle_idr.c
 @@ -41,7 +41,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -10199,7 +10199,7 @@ index c40e096bfaa54..cb448213d6fa5 100644
  	idr_destroy(&psBase->sIdr);
  
 diff --git a/drivers/gpu/drm/img-rogue/handle_types.h b/drivers/gpu/drm/img-rogue/handle_types.h
-index 5ccbc607d5dfe..75ac5c5fa6a0f 100644
+index 5ccbc607d5df..75ac5c5fa6a0 100644
 --- a/drivers/gpu/drm/img-rogue/handle_types.h
 +++ b/drivers/gpu/drm/img-rogue/handle_types.h
 @@ -64,9 +64,6 @@ HANDLETYPE(RGX_SERVER_TQ_TDM_CONTEXT)
@@ -10213,7 +10213,7 @@ index 5ccbc607d5dfe..75ac5c5fa6a0f 100644
  HANDLETYPE(SYNC_RECORD_HANDLE)
  HANDLETYPE(PVRSRV_TIMELINE_SERVER)
 diff --git a/drivers/gpu/drm/img-rogue/hash.c b/drivers/gpu/drm/img-rogue/hash.c
-index 994ae5871f5fe..434c6e967bc40 100644
+index 994ae5871f5f..434c6e967bc4 100644
 --- a/drivers/gpu/drm/img-rogue/hash.c
 +++ b/drivers/gpu/drm/img-rogue/hash.c
 @@ -696,6 +696,19 @@ HASH_Iterate(HASH_TABLE *pHash, HASH_pfnCallback pfnCallback, void* args)
@@ -10237,7 +10237,7 @@ index 994ae5871f5fe..434c6e967bc40 100644
  /*************************************************************************/ /*!
  @Function       HASH_Dump
 diff --git a/drivers/gpu/drm/img-rogue/hash.h b/drivers/gpu/drm/img-rogue/hash.h
-index 92d48990af828..feb879c1489a8 100644
+index 92d48990af82..feb879c1489a 100644
 --- a/drivers/gpu/drm/img-rogue/hash.h
 +++ b/drivers/gpu/drm/img-rogue/hash.h
 @@ -227,6 +227,14 @@ uintptr_t HASH_Retrieve(HASH_TABLE *pHash, uintptr_t k);
@@ -10256,7 +10256,7 @@ index 92d48990af828..feb879c1489a8 100644
  /*************************************************************************/ /*!
  @Function       HASH_Dump
 diff --git a/drivers/gpu/drm/img-rogue/htb_debug.c b/drivers/gpu/drm/img-rogue/htb_debug.c
-index 6f0ede57af139..6290fbd30b31a 100644
+index 6f0ede57af13..6290fbd30b31 100644
 --- a/drivers/gpu/drm/img-rogue/htb_debug.c
 +++ b/drivers/gpu/drm/img-rogue/htb_debug.c
 @@ -647,10 +647,11 @@ typedef struct _HTB_TRACEBUF_LOG_ {
@@ -10352,7 +10352,7 @@ index 6f0ede57af139..6290fbd30b31a 100644
  					PVR_DUMPDEBUG_LOG("%s", pszBuffer);
  					pszBuffer += nPrinted;
 diff --git a/drivers/gpu/drm/img-rogue/htbserver.c b/drivers/gpu/drm/img-rogue/htbserver.c
-index 168cd01e319ae..9ed3283f52b2f 100644
+index 168cd01e319a..9ed3283f52b2 100644
 --- a/drivers/gpu/drm/img-rogue/htbserver.c
 +++ b/drivers/gpu/drm/img-rogue/htbserver.c
 @@ -433,7 +433,6 @@ static IMG_BOOL
@@ -10500,7 +10500,7 @@ index 168cd01e319ae..9ed3283f52b2f 100644
  		g_bConfigured = IMG_TRUE;
  	}
 diff --git a/drivers/gpu/drm/img-rogue/htbuffer_sf.h b/drivers/gpu/drm/img-rogue/htbuffer_sf.h
-index 3bfd06398b83f..83699a2d9547d 100644
+index 3bfd06398b83..83699a2d9547 100644
 --- a/drivers/gpu/drm/img-rogue/htbuffer_sf.h
 +++ b/drivers/gpu/drm/img-rogue/htbuffer_sf.h
 @@ -99,58 +99,60 @@ extern "C" {
@@ -10677,7 +10677,7 @@ index 3bfd06398b83f..83699a2d9547d 100644
  #define HTB_GID_CTRL 1
  #define HTB_ID_MARK_SCALE 10
 diff --git a/drivers/gpu/drm/img-rogue/img_defs.h b/drivers/gpu/drm/img-rogue/img_defs.h
-index 0a755ae134c42..b0992b7188c9b 100644
+index 0a755ae134c4..b0992b7188c9 100644
 --- a/drivers/gpu/drm/img-rogue/img_defs.h
 +++ b/drivers/gpu/drm/img-rogue/img_defs.h
 @@ -210,11 +210,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -10750,7 +10750,7 @@ index 0a755ae134c42..b0992b7188c9b 100644
  /*****************************************************************************
   End of file (img_defs.h)
 diff --git a/drivers/gpu/drm/img-rogue/img_types.h b/drivers/gpu/drm/img-rogue/img_types.h
-index 7b4eb64155156..1ceebc5d55525 100644
+index 7b4eb6415515..1ceebc5d5552 100644
 --- a/drivers/gpu/drm/img-rogue/img_types.h
 +++ b/drivers/gpu/drm/img-rogue/img_types.h
 @@ -69,7 +69,8 @@ extern "C" {
@@ -10782,7 +10782,7 @@ index 7b4eb64155156..1ceebc5d55525 100644
  /* Format specifiers for 'size_t' type */
  #if defined(_MSC_VER)
 diff --git a/drivers/gpu/drm/img-rogue/info_page_client.h b/drivers/gpu/drm/img-rogue/info_page_client.h
-index 9df2461b55fba..56d394dd99a3c 100644
+index 9df2461b55fb..56d394dd99a3 100644
 --- a/drivers/gpu/drm/img-rogue/info_page_client.h
 +++ b/drivers/gpu/drm/img-rogue/info_page_client.h
 @@ -65,9 +65,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -10799,7 +10799,7 @@ index 9df2461b55fba..56d394dd99a3c 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/kernel_compatibility.h b/drivers/gpu/drm/img-rogue/kernel_compatibility.h
-index aab3dc1ef1e26..048f4449ae689 100644
+index aab3dc1ef1e2..048f4449ae68 100644
 --- a/drivers/gpu/drm/img-rogue/kernel_compatibility.h
 +++ b/drivers/gpu/drm/img-rogue/kernel_compatibility.h
 @@ -46,6 +46,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -11108,7 +11108,7 @@ index aab3dc1ef1e26..048f4449ae689 100644
  #define GCC_VERSION_AT_LEAST(major, minor) \
  	(__GNUC__ > (major) || \
 diff --git a/drivers/gpu/drm/img-rogue/kernel_nospec.h b/drivers/gpu/drm/img-rogue/kernel_nospec.h
-index e27a3ebc2ac6a..ef6fee368327b 100644
+index e27a3ebc2ac6..ef6fee368327 100644
 --- a/drivers/gpu/drm/img-rogue/kernel_nospec.h
 +++ b/drivers/gpu/drm/img-rogue/kernel_nospec.h
 @@ -49,9 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -11123,7 +11123,7 @@ index e27a3ebc2ac6a..ef6fee368327b 100644
  #include <linux/bug.h>
  #include <linux/nospec.h>
 diff --git a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h
-index 798c363052618..73c44b77f4984 100644
+index 798c36305261..73c44b77f498 100644
 --- a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h
 +++ b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_defs_km.h
 @@ -75,164 +75,122 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -11542,7 +11542,7 @@ index 798c363052618..73c44b77f4984 100644
  /* Macro used for padding the unavailable values for features with values */
  #define RGX_FEATURE_VALUE_INVALID	(0xFFFFFFFEU)
 diff --git a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h
-index ada0efbf0bca8..d10a0a1ab22d7 100644
+index ada0efbf0bca..d10a0a1ab22d 100644
 --- a/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h
 +++ b/drivers/gpu/drm/img-rogue/km/rgx_bvnc_table_km.h
 @@ -66,15 +66,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -12058,7 +12058,7 @@ index ada0efbf0bca8..d10a0a1ab22d7 100644
  
  #endif /* defined(DEBUG) */
 diff --git a/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h b/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h
-index 31a550ab9364d..dbaaa5faaf970 100644
+index 31a550ab9364..dbaaa5faaf97 100644
 --- a/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h
 +++ b/drivers/gpu/drm/img-rogue/km/rgxdefs_km.h
 @@ -48,7 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -12140,7 +12140,7 @@ index 31a550ab9364d..dbaaa5faaf970 100644
   * Macro used to indicate which version of HWPerf is active
   */
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint.c b/drivers/gpu/drm/img-rogue/km_apphint.c
-index e8d69e21bd2e6..6e9bfd6f07d46 100644
+index e8d69e21bd2e..6e9bfd6f07d4 100644
 --- a/drivers/gpu/drm/img-rogue/km_apphint.c
 +++ b/drivers/gpu/drm/img-rogue/km_apphint.c
 @@ -635,7 +635,7 @@ static int apphint_read(char *buffer, size_t count, APPHINT_ID ue,
@@ -12242,7 +12242,7 @@ index e8d69e21bd2e6..6e9bfd6f07d46 100644
  		apphint.val[ue].device = device;
  	}
 diff --git a/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h b/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h
-index 3bc19a75ac2ba..b3087e79d73a6 100644
+index 3bc19a75ac2b..b3087e79d73a 100644
 --- a/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h
 +++ b/drivers/gpu/drm/img-rogue/km_apphint_defs_common.h
 @@ -80,8 +80,9 @@ X(FWContextSwitchProfile,           UINT32,         VALIDATION,  PVRSRV_APPHINT_
@@ -12326,7 +12326,7 @@ index 3bc19a75ac2ba..b3087e79d73a6 100644
  #else
  #define APPHNT_BLDVAR_ENABLEPAGEFAULTDEBUG      IMG_FALSE
 diff --git a/drivers/gpu/drm/img-rogue/lock.h b/drivers/gpu/drm/img-rogue/lock.h
-index 87953ab847074..72997df1107e4 100644
+index 87953ab84707..72997df1107e 100644
 --- a/drivers/gpu/drm/img-rogue/lock.h
 +++ b/drivers/gpu/drm/img-rogue/lock.h
 @@ -53,6 +53,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -12369,7 +12369,7 @@ index 87953ab847074..72997df1107e4 100644
  #endif
  /**************************************************************************/ /*!
 diff --git a/drivers/gpu/drm/img-rogue/mem_utils.c b/drivers/gpu/drm/img-rogue/mem_utils.c
-index b88537ea3aed7..59f808cfcb20e 100644
+index b88537ea3aed..59f808cfcb20 100644
 --- a/drivers/gpu/drm/img-rogue/mem_utils.c
 +++ b/drivers/gpu/drm/img-rogue/mem_utils.c
 @@ -381,65 +381,65 @@ void DeviceMemSetBytes(void *pvDst, unsigned char ui8Value, size_t uSize)
@@ -12472,7 +12472,7 @@ index b88537ea3aed7..59f808cfcb20e 100644
 +}
 +#endif /* defined(__linux__) && defined(__KERNEL__) */
 diff --git a/drivers/gpu/drm/img-rogue/mmu_common.c b/drivers/gpu/drm/img-rogue/mmu_common.c
-index 6a063742c7be2..3c402ec25c8e9 100644
+index 6a063742c7be..3c402ec25c8e 100644
 --- a/drivers/gpu/drm/img-rogue/mmu_common.c
 +++ b/drivers/gpu/drm/img-rogue/mmu_common.c
 @@ -100,8 +100,12 @@ Let's keep this graph up-to-date:
@@ -14474,7 +14474,7 @@ index 6a063742c7be2..3c402ec25c8e9 100644
  	                   &bStatus);
  
 diff --git a/drivers/gpu/drm/img-rogue/mmu_common.h b/drivers/gpu/drm/img-rogue/mmu_common.h
-index 51218556a5a54..f88d80a5dda4d 100644
+index 51218556a5a5..f88d80a5dda4 100644
 --- a/drivers/gpu/drm/img-rogue/mmu_common.h
 +++ b/drivers/gpu/drm/img-rogue/mmu_common.h
 @@ -142,6 +142,8 @@ typedef struct _MMU_PxE_CONFIG_
@@ -14549,7 +14549,7 @@ index 51218556a5a54..f88d80a5dda4d 100644
                   IMG_DEV_VIRTADDR sDevVAddrBase,
                   IMG_UINT32 ui32PageCount,
 diff --git a/drivers/gpu/drm/img-rogue/module_common.c b/drivers/gpu/drm/img-rogue/module_common.c
-index bd6a6e9ebcc90..8df0593db286f 100644
+index bd6a6e9ebcc9..8df0593db286 100644
 --- a/drivers/gpu/drm/img-rogue/module_common.c
 +++ b/drivers/gpu/drm/img-rogue/module_common.c
 @@ -80,6 +80,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -14765,7 +14765,7 @@ index bd6a6e9ebcc90..8df0593db286f 100644
  		{
  			PVR_DPF((PVR_DBG_ERROR, "%s: invalid init_module (%d)",
 diff --git a/drivers/gpu/drm/img-rogue/module_common.h b/drivers/gpu/drm/img-rogue/module_common.h
-index 811cacdd98ac3..35f33770e2e56 100644
+index 811cacdd98ac..35f33770e2e5 100644
 --- a/drivers/gpu/drm/img-rogue/module_common.h
 +++ b/drivers/gpu/drm/img-rogue/module_common.h
 @@ -80,12 +80,10 @@ typedef struct
@@ -14785,7 +14785,7 @@ index 811cacdd98ac3..35f33770e2e56 100644
  } PVRSRV_CONNECTION_PRIV;
  
 diff --git a/drivers/gpu/drm/img-rogue/osconnection_server.c b/drivers/gpu/drm/img-rogue/osconnection_server.c
-index 3fcf43ca777d7..543b4d8ddabf7 100644
+index 3fcf43ca777d..543b4d8ddabf 100644
 --- a/drivers/gpu/drm/img-rogue/osconnection_server.c
 +++ b/drivers/gpu/drm/img-rogue/osconnection_server.c
 @@ -84,6 +84,7 @@ PVRSRV_ERROR OSConnectionPrivateDataInit(IMG_HANDLE *phOsPrivateData, void *pvOS
@@ -14811,7 +14811,7 @@ index 3fcf43ca777d7..543b4d8ddabf7 100644
 +	return psEnvConnection->psDRMFile;
 +}
 diff --git a/drivers/gpu/drm/img-rogue/osconnection_server.h b/drivers/gpu/drm/img-rogue/osconnection_server.h
-index 28a6dd3825fba..88f7aab29dca1 100644
+index 28a6dd3825fb..88f7aab29dca 100644
 --- a/drivers/gpu/drm/img-rogue/osconnection_server.h
 +++ b/drivers/gpu/drm/img-rogue/osconnection_server.h
 @@ -60,6 +60,10 @@ PVRSRV_ERROR OSConnectionSetHandleOptions(PVRSRV_HANDLE_BASE *psHandleBase);
@@ -14826,7 +14826,7 @@ index 28a6dd3825fba..88f7aab29dca1 100644
  #ifdef INLINE_IS_PRAGMA
  #pragma inline(OSConnectionPrivateDataInit)
 diff --git a/drivers/gpu/drm/img-rogue/osdi_impl.h b/drivers/gpu/drm/img-rogue/osdi_impl.h
-index 65507feea59b6..5be78d6c2b62b 100644
+index 65507feea59b..5be78d6c2b62 100644
 --- a/drivers/gpu/drm/img-rogue/osdi_impl.h
 +++ b/drivers/gpu/drm/img-rogue/osdi_impl.h
 @@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -14860,7 +14860,7 @@ index 65507feea59b6..5be78d6c2b62b 100644
  
      /*! @Function pfnPuts
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
-index 4935536cd631d..efa06b112bb31 100644
+index 4935536cd631..efa06b112bb3 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc.c
 @@ -68,10 +68,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -15428,7 +15428,7 @@ index 4935536cd631d..efa06b112bb31 100644
  
  			psOSCleanupData->uiCount++;
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.h b/drivers/gpu/drm/img-rogue/osfunc.h
-index 550dfa69ccd5c..15ce5e6728b0d 100644
+index 550dfa69ccd5..15ce5e6728b0 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc.h
 +++ b/drivers/gpu/drm/img-rogue/osfunc.h
 @@ -270,41 +270,6 @@ typedef void (*PFN_MISR)(void *pvData);
@@ -15688,7 +15688,7 @@ index 550dfa69ccd5c..15ce5e6728b0d 100644
  /*************************************************************************/ /*!
  @Function       OSCopyToUser
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_arm.c b/drivers/gpu/drm/img-rogue/osfunc_arm.c
-index a249bef51e9a4..d3d3ab9f83fa3 100644
+index a249bef51e9a..d3d3ab9f83fa 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc_arm.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc_arm.c
 @@ -46,9 +46,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -15767,7 +15767,7 @@ index a249bef51e9a4..d3d3ab9f83fa3 100644
  
  /* User Enable Register */
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_arm64.c b/drivers/gpu/drm/img-rogue/osfunc_arm64.c
-index 9b5f5fad35b5a..4722e3d3b34ba 100644
+index 9b5f5fad35b5..4722e3d3b34b 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc_arm64.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc_arm64.c
 @@ -114,11 +114,6 @@ static inline void FlushRange(void *pvRangeAddrStart,
@@ -15824,7 +15824,7 @@ index 9b5f5fad35b5a..4722e3d3b34ba 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_common.h b/drivers/gpu/drm/img-rogue/osfunc_common.h
-index bc47e3bc7a257..d93cb6d61abad 100644
+index bc47e3bc7a25..d93cb6d61aba 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc_common.h
 +++ b/drivers/gpu/drm/img-rogue/osfunc_common.h
 @@ -110,19 +110,28 @@ void DeviceMemSetBytes(void *pvDest, IMG_UINT8 ui8Value, size_t ui32Size);
@@ -15895,7 +15895,7 @@ index bc47e3bc7a257..d93cb6d61abad 100644
  }
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_x86.c b/drivers/gpu/drm/img-rogue/osfunc_x86.c
-index cd9c70eb988d0..2c5c145e268fe 100644
+index cd9c70eb988d..2c5c145e268f 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc_x86.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc_x86.c
 @@ -61,18 +61,14 @@ static void x86_flush_cache_range(const void *pvStart, const void *pvEnd)
@@ -15918,7 +15918,7 @@ index cd9c70eb988d0..2c5c145e268fe 100644
  	mb();
  }
 diff --git a/drivers/gpu/drm/img-rogue/ospvr_gputrace.h b/drivers/gpu/drm/img-rogue/ospvr_gputrace.h
-index 038b3b889468a..6bafc4d6042f2 100644
+index 038b3b889468..6bafc4d6042f 100644
 --- a/drivers/gpu/drm/img-rogue/ospvr_gputrace.h
 +++ b/drivers/gpu/drm/img-rogue/ospvr_gputrace.h
 @@ -49,7 +49,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -15933,7 +15933,7 @@ index 038b3b889468a..6bafc4d6042f2 100644
  /* Early initialisation of GPU Trace events logic.
   * This function is called on *driver* initialisation. */
 diff --git a/drivers/gpu/drm/img-rogue/pci_support.c b/drivers/gpu/drm/img-rogue/pci_support.c
-index c3bbcc46cb2c4..a8321a493e3e9 100644
+index c3bbcc46cb2c..a8321a493e3e 100644
 --- a/drivers/gpu/drm/img-rogue/pci_support.c
 +++ b/drivers/gpu/drm/img-rogue/pci_support.c
 @@ -54,9 +54,7 @@ typedef	struct _PVR_PCI_DEV_TAG
@@ -16077,7 +16077,7 @@ index c3bbcc46cb2c4..a8321a493e3e9 100644
  }
  #endif /* defined(CONFIG_MTRR) */
 diff --git a/drivers/gpu/drm/img-rogue/pdump_km.h b/drivers/gpu/drm/img-rogue/pdump_km.h
-index 7066f1dec5e83..58713cdfa17d7 100644
+index 7066f1dec5e8..58713cdfa17d 100644
 --- a/drivers/gpu/drm/img-rogue/pdump_km.h
 +++ b/drivers/gpu/drm/img-rogue/pdump_km.h
 @@ -90,6 +90,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -16142,7 +16142,7 @@ index 7066f1dec5e83..58713cdfa17d7 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/pdump_mmu.h b/drivers/gpu/drm/img-rogue/pdump_mmu.h
-index 4f3b2cc90b946..5d03e430febd6 100644
+index 4f3b2cc90b94..5d03e430febd 100644
 --- a/drivers/gpu/drm/img-rogue/pdump_mmu.h
 +++ b/drivers/gpu/drm/img-rogue/pdump_mmu.h
 @@ -99,6 +99,9 @@ PDumpMMUDumpPxEntries(PPVRSRV_DEVICE_NODE psDeviceNode,
@@ -16156,7 +16156,7 @@ index 4f3b2cc90b946..5d03e430febd6 100644
  
  PVRSRV_ERROR
 diff --git a/drivers/gpu/drm/img-rogue/physheap.c b/drivers/gpu/drm/img-rogue/physheap.c
-index 4b57898da80da..999f469bfcf3b 100644
+index 4b57898da80d..999f469bfcf3 100644
 --- a/drivers/gpu/drm/img-rogue/physheap.c
 +++ b/drivers/gpu/drm/img-rogue/physheap.c
 @@ -54,6 +54,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -17302,7 +17302,7 @@ index 4b57898da80da..999f469bfcf3b 100644
 + End of file (physheap.c)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/physheap.h b/drivers/gpu/drm/img-rogue/physheap.h
-index 3d9c0f415dbaf..f5e03c655278b 100644
+index 3d9c0f415dba..f5e03c655278 100644
 --- a/drivers/gpu/drm/img-rogue/physheap.h
 +++ b/drivers/gpu/drm/img-rogue/physheap.h
 @@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -17439,7 +17439,7 @@ index 3d9c0f415dbaf..f5e03c655278b 100644
 +
  #endif /* PHYSHEAP_H */
 diff --git a/drivers/gpu/drm/img-rogue/physheap_config.h b/drivers/gpu/drm/img-rogue/physheap_config.h
-index 0ca695652de1c..eb1de937a9c6e 100644
+index 0ca695652de1..eb1de937a9c6 100644
 --- a/drivers/gpu/drm/img-rogue/physheap_config.h
 +++ b/drivers/gpu/drm/img-rogue/physheap_config.h
 @@ -47,6 +47,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -17652,7 +17652,7 @@ index 0ca695652de1c..eb1de937a9c6e 100644
  
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/physmem.c b/drivers/gpu/drm/img-rogue/physmem.c
-index 96deb42f2f5a8..b04ced3638adf 100644
+index 96deb42f2f5a..b04ced3638ad 100644
 --- a/drivers/gpu/drm/img-rogue/physmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem.c
 @@ -50,8 +50,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -17965,7 +17965,7 @@ index 96deb42f2f5a8..b04ced3638adf 100644
  	PVR_LOG_RETURN_IF_INVALID_PARAM(pszAnnotation != NULL, "pszAnnotation");
  
 diff --git a/drivers/gpu/drm/img-rogue/physmem.h b/drivers/gpu/drm/img-rogue/physmem.h
-index d36a73627330f..9730aad076842 100644
+index d36a73627330..9730aad07684 100644
 --- a/drivers/gpu/drm/img-rogue/physmem.h
 +++ b/drivers/gpu/drm/img-rogue/physmem.h
 @@ -234,4 +234,53 @@ PVRSRVPhysHeapGetMemInfoKM(CONNECTION_DATA *psConnection,
@@ -18024,7 +18024,7 @@ index d36a73627330f..9730aad076842 100644
  #endif /* SRVSRV_PHYSMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dlm.h b/drivers/gpu/drm/img-rogue/physmem_dlm.h
 new file mode 100644
-index 0000000000000..7d18fd781f2fa
+index 000000000000..7d18fd781f2f
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_dlm.h
 @@ -0,0 +1,88 @@
@@ -18117,7 +18117,7 @@ index 0000000000000..7d18fd781f2fa
 +
 +#endif /* #ifndef PHYSMEM_DLM_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
-index d11e71f7b2996..3ee76bf27ae6a 100644
+index d11e71f7b299..3ee76bf27ae6 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 @@ -45,15 +45,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -19823,7 +19823,7 @@ index d11e71f7b2996..3ee76bf27ae6a 100644
 -}
 -#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0) || defined(SUPPORT_ION) || defined(KERNEL_HAS_DMABUF_VMAP_MMAP) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.h b/drivers/gpu/drm/img-rogue/physmem_dmabuf.h
-index c36cdecf5c21d..ccb8c087eac67 100644
+index c36cdecf5c21..ccb8c087eac6 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_dmabuf.h
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.h
 @@ -47,6 +47,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -19877,7 +19877,7 @@ index c36cdecf5c21d..ccb8c087eac67 100644
                            PVRSRV_DEVICE_NODE *psDevNode,
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf_internal.h b/drivers/gpu/drm/img-rogue/physmem_dmabuf_internal.h
 new file mode 100644
-index 0000000000000..50a8ab37f4426
+index 000000000000..50a8ab37f442
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf_internal.h
 @@ -0,0 +1,69 @@
@@ -19951,7 +19951,7 @@ index 0000000000000..50a8ab37f4426
 +
 +#endif /* !defined(PHYSMEM_DMABUF_INTERNAL_H) */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem.c b/drivers/gpu/drm/img-rogue/physmem_extmem.c
-index 4ca2c56903c0c..d365524f9a9c1 100644
+index 4ca2c56903c0..d365524f9a9c 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_extmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem.c
 @@ -46,12 +46,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -19969,7 +19969,7 @@ index 4ca2c56903c0c..d365524f9a9c1 100644
  PVRSRV_ERROR
  PhysmemWrapExtMem(CONNECTION_DATA * psConnection,
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c b/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c
-index c18acd7519136..66265c266f22b 100644
+index c18acd751913..66265c266f22 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem_linux.c
 @@ -71,6 +71,7 @@ static void _FreeWrapData(PMR_WRAP_DATA *psPrivData)
@@ -20337,7 +20337,7 @@ index c18acd7519136..66265c266f22b 100644
  };
  
 diff --git a/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h b/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h
-index 5e0480efef503..015360736d034 100644
+index 5e0480efef50..015360736d03 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h
 +++ b/drivers/gpu/drm/img-rogue/physmem_extmem_wrap.h
 @@ -86,7 +86,7 @@ typedef struct _PMR_WRAP_DATA_
@@ -20350,7 +20350,7 @@ index 5e0480efef503..015360736d034 100644
  
  	/* This should always be filled and hold the physical addresses */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_hostmem.c b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
-index 3b8cd6b5f4b82..9b1bbe850b9ff 100644
+index 3b8cd6b5f4b8..9b1bbe850b9f 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 @@ -78,15 +78,12 @@ static PVRSRV_DEVICE_CONFIG gsHostMemDevConfig[];
@@ -20440,7 +20440,7 @@ index 3b8cd6b5f4b82..9b1bbe850b9ff 100644
  void HostMemDeviceDestroy(PVRSRV_DEVICE_NODE *psDeviceNode)
 diff --git a/drivers/gpu/drm/img-rogue/physmem_ima.h b/drivers/gpu/drm/img-rogue/physmem_ima.h
 new file mode 100644
-index 0000000000000..4744dacacb31d
+index 000000000000..4744dacacb31
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_ima.h
 @@ -0,0 +1,77 @@
@@ -20522,7 +20522,7 @@ index 0000000000000..4744dacacb31d
 +
 +#endif /* PHYSMEM_IMA_H_ */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_lma.c b/drivers/gpu/drm/img-rogue/physmem_lma.c
-index ea1e3d1624a6d..6a67f36739784 100644
+index ea1e3d1624a6..6a67f3673978 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_lma.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_lma.c
 @@ -42,139 +42,22 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -23241,7 +23241,7 @@ index ea1e3d1624a6d..6a67f36739784 100644
 -	return eError;
  }
 diff --git a/drivers/gpu/drm/img-rogue/physmem_lma.h b/drivers/gpu/drm/img-rogue/physmem_lma.h
-index 08dba2941135d..af42d8826dac5 100644
+index 08dba2941135..af42d8826dac 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_lma.h
 +++ b/drivers/gpu/drm/img-rogue/physmem_lma.h
 @@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -23278,7 +23278,7 @@ index 08dba2941135d..af42d8826dac5 100644
 -
  #endif /* #ifndef SRVSRV_PHYSMEM_LMA_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem.c b/drivers/gpu/drm/img-rogue/physmem_osmem.c
-index c321840f9973e..cef1ea6208212 100644
+index c321840f9973..cef1ea620821 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_osmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem.c
 @@ -65,7 +65,7 @@ static IMG_UINT32 PhysHeapOSGetPageShift(void)
@@ -23291,7 +23291,7 @@ index c321840f9973e..cef1ea6208212 100644
  	.pfnPagesAlloc = &OSPhyContigPagesAlloc,
  	.pfnPagesFree = &OSPhyContigPagesFree,
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem.h b/drivers/gpu/drm/img-rogue/physmem_osmem.h
-index 28c64f1558b64..5e76513477b6e 100644
+index 28c64f1558b6..5e76513477b6 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_osmem.h
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem.h
 @@ -63,7 +63,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -23372,7 +23372,7 @@ index 28c64f1558b64..5e76513477b6e 100644
                           const IMG_CHAR *pszAnnotation,
                           IMG_PID uiPid,
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
-index da6194baa7244..69c2bd3f3909a 100644
+index da6194baa724..69c2bd3f3909 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 @@ -54,6 +54,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -26672,7 +26672,7 @@ index da6194baa7244..69c2bd3f3909a 100644
  
  	return PVRSRV_OK;
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h
-index 89706fffdc5cd..c9d7e5ce50831 100644
+index 89706fffdc5c..c9d7e5ce5083 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.h
 @@ -43,7 +43,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -26693,7 +26693,7 @@ index 89706fffdc5cd..c9d7e5ce50831 100644
  #endif /* PHYSMEM_OSMEM_LINUX_H */
 diff --git a/drivers/gpu/drm/img-rogue/physmem_ramem.c b/drivers/gpu/drm/img-rogue/physmem_ramem.c
 new file mode 100644
-index 0000000000000..6597042770d94
+index 000000000000..6597042770d9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_ramem.c
 @@ -0,0 +1,2609 @@
@@ -29308,7 +29308,7 @@ index 0000000000000..6597042770d94
 +}
 diff --git a/drivers/gpu/drm/img-rogue/physmem_ramem.h b/drivers/gpu/drm/img-rogue/physmem_ramem.h
 new file mode 100644
-index 0000000000000..9dbf668e21b92
+index 000000000000..9dbf668e21b9
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/physmem_ramem.h
 @@ -0,0 +1,109 @@
@@ -29422,7 +29422,7 @@ index 0000000000000..9dbf668e21b92
 +
 +#endif /* PHYSMEM_RAMEM_H */
 diff --git a/drivers/gpu/drm/img-rogue/plato_drv.h b/drivers/gpu/drm/img-rogue/plato_drv.h
-index 06f3f9270f350..cfebfb05b8f00 100644
+index 06f3f9270f35..cfebfb05b8f0 100644
 --- a/drivers/gpu/drm/img-rogue/plato_drv.h
 +++ b/drivers/gpu/drm/img-rogue/plato_drv.h
 @@ -239,9 +239,7 @@ struct plato_device {
@@ -29436,7 +29436,7 @@ index 06f3f9270f350..cfebfb05b8f00 100644
  };
  
 diff --git a/drivers/gpu/drm/img-rogue/pmr.c b/drivers/gpu/drm/img-rogue/pmr.c
-index 521ea64ec14c4..41d8a12e7a2cf 100644
+index 521ea64ec14c..41d8a12e7a2c 100644
 --- a/drivers/gpu/drm/img-rogue/pmr.c
 +++ b/drivers/gpu/drm/img-rogue/pmr.c
 @@ -66,6 +66,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -31114,7 +31114,7 @@ index 521ea64ec14c4..41d8a12e7a2cf 100644
  
  	OSLockRelease(psDeviceNode->hPMRZombieListLock);
 diff --git a/drivers/gpu/drm/img-rogue/pmr.h b/drivers/gpu/drm/img-rogue/pmr.h
-index 2a86e96c73d24..7cd3fb4d8929b 100644
+index 2a86e96c73d2..7cd3fb4d8929 100644
 --- a/drivers/gpu/drm/img-rogue/pmr.h
 +++ b/drivers/gpu/drm/img-rogue/pmr.h
 @@ -75,7 +75,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -31405,7 +31405,7 @@ index 2a86e96c73d24..7cd3fb4d8929b 100644
  PMRModifyIPAPolicy(PMR *psPMR, IMG_UINT8 ui8NewIPAPolicy);
 diff --git a/drivers/gpu/drm/img-rogue/pmr_env.c b/drivers/gpu/drm/img-rogue/pmr_env.c
 new file mode 100644
-index 0000000000000..e0c74b4b508d8
+index 000000000000..e0c74b4b508d
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr_env.c
 @@ -0,0 +1,83 @@
@@ -31494,7 +31494,7 @@ index 0000000000000..e0c74b4b508d8
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pmr_env.h b/drivers/gpu/drm/img-rogue/pmr_env.h
 new file mode 100644
-index 0000000000000..52a172e80b824
+index 000000000000..52a172e80b82
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pmr_env.h
 @@ -0,0 +1,90 @@
@@ -31589,7 +31589,7 @@ index 0000000000000..52a172e80b824
 +
 +#endif /* !defined(PMR_ENV_H) */
 diff --git a/drivers/gpu/drm/img-rogue/pmr_impl.h b/drivers/gpu/drm/img-rogue/pmr_impl.h
-index 68089ddc6fa85..3c290ca3a6e7f 100644
+index 68089ddc6fa8..3c290ca3a6e7 100644
 --- a/drivers/gpu/drm/img-rogue/pmr_impl.h
 +++ b/drivers/gpu/drm/img-rogue/pmr_impl.h
 @@ -79,6 +79,10 @@ typedef struct _PMR_MAPPING_TABLE_ PMR_MAPPING_TABLE;
@@ -31703,7 +31703,7 @@ index 68089ddc6fa85..3c290ca3a6e7f 100644
      /*! Callback function pointer, see ::PFN_MMAP_FN */
      PFN_MMAP_FN pfnMMap;
 diff --git a/drivers/gpu/drm/img-rogue/pmr_os.c b/drivers/gpu/drm/img-rogue/pmr_os.c
-index 5e82e9ce785d9..5802364a23a79 100644
+index 5e82e9ce785d..5802364a23a7 100644
 --- a/drivers/gpu/drm/img-rogue/pmr_os.c
 +++ b/drivers/gpu/drm/img-rogue/pmr_os.c
 @@ -45,10 +45,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -32002,7 +32002,7 @@ index 5e82e9ce785d9..5802364a23a79 100644
  	return eError;
  }
 diff --git a/drivers/gpu/drm/img-rogue/power.c b/drivers/gpu/drm/img-rogue/power.c
-index 7d2d4627aab44..dfd8abac72a33 100644
+index 7d2d4627aab4..dfd8abac72a3 100644
 --- a/drivers/gpu/drm/img-rogue/power.c
 +++ b/drivers/gpu/drm/img-rogue/power.c
 @@ -40,6 +40,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
@@ -32597,7 +32597,7 @@ index 7d2d4627aab44..dfd8abac72a33 100644
  			if (eError2 != PVRSRV_OK)
  			{
 diff --git a/drivers/gpu/drm/img-rogue/power.h b/drivers/gpu/drm/img-rogue/power.h
-index e4ef6de844bc4..57226d91f6c5e 100644
+index e4ef6de844bc..57226d91f6c5 100644
 --- a/drivers/gpu/drm/img-rogue/power.h
 +++ b/drivers/gpu/drm/img-rogue/power.h
 @@ -66,18 +66,52 @@ typedef IMG_BOOL (*PFN_SYS_DEV_IS_DEFAULT_STATE_OFF)(PVRSRV_POWER_DEV *psPowerDe
@@ -32752,7 +32752,7 @@ index e4ef6de844bc4..57226d91f6c5e 100644
  @Function       PVRSRVDevicePreClockSpeedChange
  
 diff --git a/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h b/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h
-index 92f1d4c97871b..d4717db1cccbb 100644
+index 92f1d4c97871..d4717db1cccb 100644
 --- a/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h
 +++ b/drivers/gpu/drm/img-rogue/powervr/img_drm_fourcc.h
 @@ -140,4 +140,22 @@ THE SOFTWARE.
@@ -32779,7 +32779,7 @@ index 92f1d4c97871b..d4717db1cccbb 100644
 +
  #endif /* IMG_DRM_FOURCC_H */
 diff --git a/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h b/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h
-index 30f7972444cd0..933212e03c17c 100644
+index 30f7972444cd..933212e03c17 100644
 --- a/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h
 +++ b/drivers/gpu/drm/img-rogue/powervr/pvrsrv_sync_ext.h
 @@ -53,6 +53,7 @@ extern "C" {
@@ -32799,7 +32799,7 @@ index 30f7972444cd0..933212e03c17c 100644
  #define PVRSRV_NO_TIMELINE_PTR  NULL
  
 diff --git a/drivers/gpu/drm/img-rogue/proc_stats.h b/drivers/gpu/drm/img-rogue/proc_stats.h
-index 037880e19da57..72c14c5f8e4d6 100644
+index 037880e19da5..72c14c5f8e4d 100644
 --- a/drivers/gpu/drm/img-rogue/proc_stats.h
 +++ b/drivers/gpu/drm/img-rogue/proc_stats.h
 @@ -43,36 +43,140 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -32982,7 +32982,7 @@ index 037880e19da57..72c14c5f8e4d6 100644
  #undef X
  	PVRSRV_PROCESS_STAT_TYPE_COUNT
 diff --git a/drivers/gpu/drm/img-rogue/process_stats.c b/drivers/gpu/drm/img-rogue/process_stats.c
-index e82f0f916e05a..77441c5780890 100644
+index e82f0f916e05..77441c578089 100644
 --- a/drivers/gpu/drm/img-rogue/process_stats.c
 +++ b/drivers/gpu/drm/img-rogue/process_stats.c
 @@ -61,6 +61,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -34423,7 +34423,7 @@ index e82f0f916e05a..77441c5780890 100644
  				    GET_GLOBAL_STAT_VALUE(ui32StatNumber));
  		}
 diff --git a/drivers/gpu/drm/img-rogue/process_stats.h b/drivers/gpu/drm/img-rogue/process_stats.h
-index 5b5539e7f0aaf..c410736e1749d 100644
+index 5b5539e7f0aa..c410736e1749 100644
 --- a/drivers/gpu/drm/img-rogue/process_stats.h
 +++ b/drivers/gpu/drm/img-rogue/process_stats.h
 @@ -103,8 +103,6 @@ PVRSRV_ERROR PVRSRVStatsDeviceConnect(PVRSRV_DEVICE_NODE *psDeviceNode);
@@ -34451,7 +34451,7 @@ index 5b5539e7f0aaf..c410736e1749d 100644
  								 size_t uiBytes,
  								 IMG_PID uiPid);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge.h b/drivers/gpu/drm/img-rogue/pvr_bridge.h
-index 7afdaa856fe5e..dafc51dd57f00 100644
+index 7afdaa856fe5..dafc51dd57f0 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge.h
 @@ -94,9 +94,6 @@ extern "C" {
@@ -34492,7 +34492,7 @@ index 7afdaa856fe5e..dafc51dd57f00 100644
  	| (1U << (PVRSRV_BRIDGE_DEVICEMEMHISTORY - PVRSRV_BRIDGE_FIRST))
  #if defined(PVRSRV_ENABLE_HTB)
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge_k.c b/drivers/gpu/drm/img-rogue/pvr_bridge_k.c
-index 2c23f57eee92f..77739189b0aa2 100644
+index 2c23f57eee92..77739189b0aa 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_bridge_k.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge_k.c
 @@ -79,6 +79,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -34638,7 +34638,7 @@ index 2c23f57eee92f..77739189b0aa2 100644
  	 * Unref the handle immediately, because we have now done
  	 * the required operation on the PMR (whether it succeeded or not)
 diff --git a/drivers/gpu/drm/img-rogue/pvr_bridge_k.h b/drivers/gpu/drm/img-rogue/pvr_bridge_k.h
-index e6464efae23e1..2885dd465eaff 100644
+index e6464efae23e..2885dd465eaf 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_bridge_k.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_bridge_k.h
 @@ -48,6 +48,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -34674,7 +34674,7 @@ index e6464efae23e1..2885dd465eaff 100644
  ******************************************************************************
   @Function      PVRSRVDriverThreadEnter
 diff --git a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
-index 0dc3dffdbad8e..529cafd2bcf3e 100644
+index 0dc3dffdbad8..529cafd2bcf3 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_buffer_sync.c
 @@ -77,13 +77,7 @@ struct pvr_buffer_sync_append_data {
@@ -34693,7 +34693,7 @@ index 0dc3dffdbad8e..529cafd2bcf3e 100644
  
  static int
 diff --git a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
-index 3fa890316dcc0..240872e0b0fdc 100644
+index 3fa890316dcc..240872e0b0fd 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
 @@ -145,6 +145,12 @@ struct pvr_counting_fence_timeline *pvr_counting_fence_timeline_create(
@@ -34723,7 +34723,7 @@ index 3fa890316dcc0..240872e0b0fdc 100644
  	return timeline;
  
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debug.c b/drivers/gpu/drm/img-rogue/pvr_debug.c
-index bf529f9c6a303..cf59a2d5aa3ea 100644
+index bf529f9c6a30..cf59a2d5aa3e 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_debug.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_debug.c
 @@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -34803,7 +34803,7 @@ index bf529f9c6a303..cf59a2d5aa3ea 100644
  		}
  	}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debug.h b/drivers/gpu/drm/img-rogue/pvr_debug.h
-index 2e8599fe67978..46033a0da47e0 100644
+index 2e8599fe6797..46033a0da47e 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_debug.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_debug.h
 @@ -310,7 +310,7 @@ PVRSRVDebugAssertFail(const IMG_CHAR *pszFile,
@@ -35052,7 +35052,7 @@ index 2e8599fe67978..46033a0da47e0 100644
  				return _rc; \
  			} \
 diff --git a/drivers/gpu/drm/img-rogue/pvr_debugfs.c b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
-index 111e61e56b25b..63c557bc84593 100644
+index 111e61e56b25..63c557bc8459 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_debugfs.c
 @@ -121,14 +121,7 @@ static void _WriteData(void *pvNativeHandle, const void *pvData,
@@ -35083,7 +35083,7 @@ index 111e61e56b25b..63c557bc84593 100644
  
  static OSDI_IMPL_ENTRY_CB _g_sEntryCallbacks = {
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
-index a2c2dd62464ea..7458ccb6a8854 100644
+index a2c2dd62464e..7458ccb6a885 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_drm.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
 @@ -61,6 +61,7 @@
@@ -35357,7 +35357,7 @@ index a2c2dd62464ea..7458ccb6a8854 100644
  	.num_ioctls		= ARRAY_SIZE(pvr_drm_ioctls),
  	.fops			= &pvr_drm_fops,
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.h b/drivers/gpu/drm/img-rogue/pvr_drm.h
-index c0d00c98d8c01..bc76ddf9b5973 100644
+index c0d00c98d8c0..bc76ddf9b597 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_drm.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.h
 @@ -85,12 +85,18 @@ struct pvr_sw_sync_create_fence_data {
@@ -35404,7 +35404,7 @@ index c0d00c98d8c01..bc76ddf9b5973 100644
 +
  #endif /* defined(__PVR_DRM_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drv.h b/drivers/gpu/drm/img-rogue/pvr_drv.h
-index ee4fdf44259c1..827145d60c506 100644
+index ee4fdf44259c..827145d60c50 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_drv.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_drv.h
 @@ -90,20 +90,24 @@ struct pvr_drm_private {
@@ -35436,7 +35436,7 @@ index ee4fdf44259c1..827145d60c506 100644
  			    struct drm_file *file);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_export_fence.c b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
 new file mode 100644
-index 0000000000000..9a192b1b6fd16
+index 000000000000..9a192b1b6fd1
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
 @@ -0,0 +1,472 @@
@@ -35914,7 +35914,7 @@ index 0000000000000..9a192b1b6fd16
 +}
 diff --git a/drivers/gpu/drm/img-rogue/pvr_export_fence.h b/drivers/gpu/drm/img-rogue/pvr_export_fence.h
 new file mode 100644
-index 0000000000000..0ffe8a11ce404
+index 000000000000..0ffe8a11ce40
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/pvr_export_fence.h
 @@ -0,0 +1,77 @@
@@ -35996,7 +35996,7 @@ index 0000000000000..0ffe8a11ce404
 +
 +#endif /* !defined(__PVR_EXPORT_FENCES_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.c b/drivers/gpu/drm/img-rogue/pvr_fence.c
-index 52b8aeaffbfbf..b707206bcbf66 100644
+index 52b8aeaffbfb..b707206bcbf6 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_fence.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence.c
 @@ -49,6 +49,7 @@
@@ -36017,7 +36017,7 @@ index 52b8aeaffbfbf..b707206bcbf66 100644
  	srv_err = PVRSRVRegisterCmdCompleteNotify(&fctx->cmd_complete_handle,
  				pvr_fence_context_signal_fences,
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.h b/drivers/gpu/drm/img-rogue/pvr_fence.h
-index 25ecc8bb99114..fb4775d5fb16a 100644
+index 25ecc8bb9911..fb4775d5fb16 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_fence.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence.h
 @@ -44,13 +44,6 @@
@@ -36050,7 +36050,7 @@ index 25ecc8bb99114..fb4775d5fb16a 100644
 -#endif /* (LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)) */
  #endif /* !defined(__PVR_FENCE_H__) */
 diff --git a/drivers/gpu/drm/img-rogue/pvr_fence_trace.h b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
-index e2f044caad1c6..95b2a0dc6c7c8 100644
+index e2f044caad1c..95b2a0dc6c7c 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
 @@ -184,7 +184,7 @@ DECLARE_EVENT_CLASS(pvr_fence_foreign,
@@ -36063,7 +36063,7 @@ index e2f044caad1c6..95b2a0dc6c7c8 100644
  		__entry->foreign_context = fence->fence->context;
  	),
 diff --git a/drivers/gpu/drm/img-rogue/pvr_gputrace.c b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
-index 9c04b99b709ac..723e6d4d9082f 100644
+index 9c04b99b709a..723e6d4d9082 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_gputrace.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
 @@ -42,11 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -36730,7 +36730,7 @@ index 9c04b99b709ac..723e6d4d9082f 100644
   End of file (pvr_gputrace.c)
  ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvr_notifier.c b/drivers/gpu/drm/img-rogue/pvr_notifier.c
-index 5add59562de74..50fd35358ad26 100644
+index 5add59562de7..50fd35358ad2 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_notifier.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_notifier.c
 @@ -207,7 +207,7 @@ PVRSRVSignalDriverWideEO(void)
@@ -36808,7 +36808,7 @@ index 5add59562de74..50fd35358ad26 100644
  	}
  }
 diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
-index 8943913e1144c..4cf76a3e4c55a 100644
+index 8943913e1144..4cf76a3e4c55 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 @@ -161,25 +161,15 @@ static void pvr_devices_unregister(void)
@@ -36924,7 +36924,7 @@ index 8943913e1144c..4cf76a3e4c55a 100644
 +late_initcall(pvr_init);
  module_exit(pvr_exit);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sw_fence.c b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
-index 4f2404a211618..cccc4a64e3212 100644
+index 4f2404a21161..cccc4a64e321 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
 @@ -48,6 +48,7 @@
@@ -36948,7 +36948,7 @@ index 4f2404a211618..cccc4a64e3212 100644
  	atomic_set(&fence_context->seqno, 0);
  	atomic_set(&fence_context->fence_count, 0);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_api.h b/drivers/gpu/drm/img-rogue/pvr_sync_api.h
-index 89b7833ae351d..97dd746439b94 100644
+index 89b7833ae351..97dd746439b9 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_api.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_api.h
 @@ -52,6 +52,8 @@ int pvr_sync_api_rename(void *api_priv, void *user_data);
@@ -36961,7 +36961,7 @@ index 89b7833ae351d..97dd746439b94 100644
  struct file;
  
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_file.c b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
-index e3656108e9637..916d585ffb490 100644
+index e3656108e963..916d585ffb49 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_file.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
 @@ -46,6 +46,7 @@
@@ -37355,7 +37355,7 @@ index e3656108e9637..916d585ffb490 100644
  	return SyncCheckpointRegisterFunctions(&pvr_sync_data.sync_checkpoint_ops);
  }
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c
-index 60ba3555e7792..0e1facde86cb9 100644
+index 60ba3555e779..0e1facde86cb 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.c
 @@ -47,6 +47,9 @@
@@ -37680,7 +37680,7 @@ index 60ba3555e7792..0e1facde86cb9 100644
 +                                 COPY_NONE,
 +                                 COPY_OUT);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h
-index ef12dc298368f..0959e76731645 100644
+index ef12dc298368..0959e7673164 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_common.h
 @@ -46,16 +46,30 @@
@@ -37718,7 +37718,7 @@ index ef12dc298368f..0959e76731645 100644
  bool pvr_sync_set_private_data(void *connection_data,
  			       struct pvr_sync_file_data *fdata);
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c
-index 423c8d3a75eff..313393d09c1ff 100644
+index 423c8d3a75ef..313393d09c1f 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.c
 @@ -127,35 +127,51 @@ void pvr_sync_close(void *connection_data)
@@ -37782,7 +37782,7 @@ index 423c8d3a75eff..313393d09c1ff 100644
  
  int pvr_sync_ioctl_init(void)
 diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h
-index 756ce4bf71e63..93182205ca0b4 100644
+index 756ce4bf71e6..93182205ca0b 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h
 +++ b/drivers/gpu/drm/img-rogue/pvr_sync_ioctl_drm.h
 @@ -58,5 +58,9 @@ int pvr_sw_sync_create_fence_ioctl(struct drm_device *dev, void *arg,
@@ -37796,7 +37796,7 @@ index 756ce4bf71e63..93182205ca0b4 100644
  
  #endif /* _PVR_SYNC_IOCTL_DRM_H */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv.c b/drivers/gpu/drm/img-rogue/pvrsrv.c
-index 0eb314399c602..51f7de420dc5d 100644
+index 0eb314399c60..51f7de420dc5 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv.c
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv.c
 @@ -94,8 +94,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -38793,7 +38793,7 @@ index 0eb314399c602..51f7de420dc5d 100644
   End of file (pvrsrv.c)
  *****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv.h b/drivers/gpu/drm/img-rogue/pvrsrv.h
-index 71e2debfb9c62..86d607092c60a 100644
+index 71e2debfb9c6..86d607092c60 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv.h
 @@ -108,19 +108,9 @@ typedef struct _DRIVER_INFO_
@@ -38923,7 +38923,7 @@ index 71e2debfb9c62..86d607092c60a 100644
  /*************************************************************************/ /*!
  @Function       PVRSRVDeviceFreeze
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c
-index 154298b020401..13beb3f5c4541 100644
+index 154298b02040..13beb3f5c454 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_bridge_init.c
 @@ -121,10 +121,6 @@ void DeinitDEVICEMEMHISTORYBridge(void);
@@ -38959,7 +38959,7 @@ index 154298b020401..13beb3f5c4541 100644
  #if defined(SUPPORT_DISPLAY_CLASS)
  	DeinitDCBridge();
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_device.h b/drivers/gpu/drm/img-rogue/pvrsrv_device.h
-index 8eda99c720896..1ad03bb913233 100644
+index 8eda99c72089..1ad03bb91323 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_device.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_device.h
 @@ -46,7 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -39070,7 +39070,7 @@ index 8eda99c720896..1ad03bb913233 100644
  
  #endif /* PVRSRV_DEVICE_H*/
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_errors.h b/drivers/gpu/drm/img-rogue/pvrsrv_errors.h
-index 99368eff0be29..9fcbab6cf02db 100644
+index 99368eff0be2..9fcbab6cf02d 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_errors.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_errors.h
 @@ -419,3 +419,4 @@ PVRE(PVRSRV_ERROR_INSUFFICIENT_PHYS_HEAP_MEMORY)
@@ -39079,7 +39079,7 @@ index 99368eff0be29..9fcbab6cf02db 100644
  PVRE(PVRSRV_ERROR_KERNEL_CCB_OFFSET)
 +PVRE(PVRSRV_ERROR_PMB_NOT_PAGE_MULTIPLE)
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h b/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h
-index 459da0091e78f..a02fe954cd687 100644
+index 459da0091e78..a02fe954cd68 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_memalloc_physheap.h
 @@ -98,40 +98,29 @@ static_assert(PVRSRV_PHYS_HEAP_LAST <= (0x1FU + 1U), "Ensure enum fits in memall
@@ -39170,7 +39170,7 @@ index 459da0091e78f..a02fe954cd687 100644
  
  /*************************************************************************/ /*!
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h
-index 1e960356eb888..e08777797f65a 100644
+index 1e960356eb88..e08777797f65 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_memallocflags.h
 @@ -67,13 +67,17 @@ typedef IMG_UINT64 PVRSRV_MEMALLOCFLAGS_T;
@@ -39359,7 +39359,7 @@ index 1e960356eb888..e08777797f65a 100644
                                                      PVRSRV_MEMALLOCFLAG_CPU_WRITE_PERMITTED | \
                                                      PVRSRV_MEMALLOCFLAG_CPU_CACHE_CLEAN | \
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_pool.c b/drivers/gpu/drm/img-rogue/pvrsrv_pool.c
-index d62a062a944c0..9fa95ea987562 100644
+index d62a062a944c..9fa95ea98756 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_pool.c
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_pool.c
 @@ -213,7 +213,7 @@ PVRSRV_ERROR PVRSRVPoolGet(PVRSRV_POOL *psPool,
@@ -39372,7 +39372,7 @@ index d62a062a944c0..9fa95ea987562 100644
  	 * waste of cycles.
  	 */
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h b/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h
-index b15bcfa0c7d6f..624b8eb1f47df 100644
+index b15bcfa0c7d6..624b8eb1f47d 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h
 +++ b/drivers/gpu/drm/img-rogue/pvrsrv_tlstreams.h
 @@ -45,7 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -39385,7 +39385,7 @@ index b15bcfa0c7d6f..624b8eb1f47df 100644
  #define PVRSRV_TL_HWPERF_RGX_FW_STREAM      "hwperf_fw_"
  #define PVRSRV_TL_HWPERF_HOST_SERVER_STREAM "hwperf_host_"
 diff --git a/drivers/gpu/drm/img-rogue/pvrsrvkm.mk b/drivers/gpu/drm/img-rogue/pvrsrvkm.mk
-index 1b1f81e45593e..0027108840092 100644
+index 1b1f81e45593..002710884009 100644
 --- a/drivers/gpu/drm/img-rogue/pvrsrvkm.mk
 +++ b/drivers/gpu/drm/img-rogue/pvrsrvkm.mk
 @@ -43,6 +43,7 @@ pvrsrvkm-y += \
@@ -39449,7 +39449,7 @@ index 1b1f81e45593e..0027108840092 100644
   pvr_gputrace.o \
   pvr_platform_drv.o \
 diff --git a/drivers/gpu/drm/img-rogue/pvrversion.h b/drivers/gpu/drm/img-rogue/pvrversion.h
-index 67b258ccb32d2..1026b039627b8 100644
+index 67b258ccb32d..1026b039627b 100644
 --- a/drivers/gpu/drm/img-rogue/pvrversion.h
 +++ b/drivers/gpu/drm/img-rogue/pvrversion.h
 @@ -44,22 +44,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -39484,7 +39484,7 @@ index 67b258ccb32d2..1026b039627b8 100644
  #define PVRVERSION_PACK(MAJOR,MINOR) (((IMG_UINT32)((IMG_UINT32)(MAJOR) & 0xFFFFU) << 16U) | (((MINOR) & 0xFFFFU) << 0U))
  #define PVRVERSION_UNPACK_MAJ(VERSION) (((VERSION) >> 16U) & 0xFFFFU)
 diff --git a/drivers/gpu/drm/img-rogue/ra.c b/drivers/gpu/drm/img-rogue/ra.c
-index 90c05717fef52..d1646b309f6d8 100644
+index 90c05717fef5..d1646b309f6d 100644
 --- a/drivers/gpu/drm/img-rogue/ra.c
 +++ b/drivers/gpu/drm/img-rogue/ra.c
 @@ -172,9 +172,17 @@ struct _RA_ARENA_
@@ -40899,7 +40899,7 @@ index 90c05717fef52..d1646b309f6d8 100644
  RA_BlockDump(RA_ARENA *pArena, void (*pfnLogDump)(void*, IMG_CHAR*, ...), void *pPrivData)
  {
 diff --git a/drivers/gpu/drm/img-rogue/ra.h b/drivers/gpu/drm/img-rogue/ra.h
-index 654c24d40275f..ee4492afa1ed0 100644
+index 654c24d40275..ee4492afa1ed 100644
 --- a/drivers/gpu/drm/img-rogue/ra.h
 +++ b/drivers/gpu/drm/img-rogue/ra.h
 @@ -61,6 +61,9 @@ typedef struct _RA_ARENA_ITERATOR_ RA_ARENA_ITERATOR;
@@ -41165,7 +41165,7 @@ index 654c24d40275f..ee4492afa1ed0 100644
  @Function       RA_BlockDump
  @Description    Debug dump of all memory allocations within the RA and the space
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge.h b/drivers/gpu/drm/img-rogue/rgx_bridge.h
-index af6d0af252385..5168f6f23ea56 100644
+index af6d0af25238..5168f6f23ea5 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_bridge.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge.h
 @@ -50,8 +50,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -41178,7 +41178,7 @@ index af6d0af252385..5168f6f23ea56 100644
  #define RGXFWINITPARAMS_EXTENSION 128
  
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge_init.c b/drivers/gpu/drm/img-rogue/rgx_bridge_init.c
-index 5ab1a0a2f7784..1de4f08dd2b63 100644
+index 5ab1a0a2f778..1de4f08dd2b6 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_bridge_init.c
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge_init.c
 @@ -55,51 +55,112 @@ PVRSRV_ERROR InitRGXRAYBridge(void);
@@ -41306,7 +41306,7 @@ index 5ab1a0a2f7784..1de4f08dd2b63 100644
  #endif
  }
 diff --git a/drivers/gpu/drm/img-rogue/rgx_bridge_init.h b/drivers/gpu/drm/img-rogue/rgx_bridge_init.h
-index 10e8e72ca0957..8622848b51b16 100644
+index 10e8e72ca095..8622848b51b1 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_bridge_init.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_bridge_init.h
 @@ -49,7 +49,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -41321,7 +41321,7 @@ index 10e8e72ca0957..8622848b51b16 100644
  
  #endif /* RGX_BRIDGE_INIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_common.h b/drivers/gpu/drm/img-rogue/rgx_common.h
-index 6a79b9bfdba79..55b0ed450e1c6 100644
+index 6a79b9bfdba7..55b0ed450e1c 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_common.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_common.h
 @@ -54,6 +54,10 @@ extern "C" {
@@ -41401,7 +41401,7 @@ index 6a79b9bfdba79..55b0ed450e1c6 100644
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/rgx_firmware_boot.h b/drivers/gpu/drm/img-rogue/rgx_firmware_boot.h
 new file mode 100644
-index 0000000000000..b0a14683e1a31
+index 000000000000..b0a14683e1a3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_firmware_boot.h
 @@ -0,0 +1,91 @@
@@ -41497,7 +41497,7 @@ index 0000000000000..b0a14683e1a31
 +
 +#endif /* RGX_FIRMWARE_BOOT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h b/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h
-index 84a916a518889..a33b6d541c65d 100644
+index 84a916a51888..a33b6d541c65 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_alignchecks.h
 @@ -159,7 +159,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -41510,7 +41510,7 @@ index 84a916a518889..a33b6d541c65d 100644
  		offsetof(RGXFWIF_SYSINIT, sFwSysData),                       \
  		(IMG_UINT32)sizeof(RGXFWIF_OSINIT),                                      \
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_km.h b/drivers/gpu/drm/img-rogue/rgx_fwif_km.h
-index 8612383519e26..22da7ec4cc9d9 100644
+index 8612383519e2..22da7ec4cc9d 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_fwif_km.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_km.h
 @@ -52,82 +52,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -42924,7 +42924,7 @@ index 8612383519e26..22da7ec4cc9d9 100644
  #endif /* RGX_FWIF_KM_H */
  
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h b/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h
-index 00b7763653dc5..a190875b5e6d3 100644
+index 00b7763653dc..a190875b5e6d 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_sf.h
 @@ -69,7 +69,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -43241,7 +43241,7 @@ index 00b7763653dc5..a190875b5e6d3 100644
  #define RGXFW_SF_PARAMNUM(x) (((IMG_UINT32)(x)>>16) & 0xfU)
  
 diff --git a/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h b/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h
-index 3fe7eb5fe3b43..ccab45ae8fc02 100644
+index 3fe7eb5fe3b4..ccab45ae8fc0 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_fwif_shared.h
 @@ -84,11 +84,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44081,7 +44081,7 @@ index 3fe7eb5fe3b43..ccab45ae8fc02 100644
  
  /******************************************************************************
 diff --git a/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h b/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h
-index f02deeb1ea92b..2628cd82e38e9 100644
+index f02deeb1ea92..2628cd82e38e 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_heap_firmware.h
 @@ -114,13 +114,22 @@ static_assert((RGX_FIRMWARE_RAW_HEAP_SIZE) >= IMG_UINT32_C(0x800000), "MIPS GPU
@@ -44113,7 +44113,7 @@ index f02deeb1ea92b..2628cd82e38e9 100644
 +
  #endif /* RGX_HEAP_FIRMWARE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_heaps.h b/drivers/gpu/drm/img-rogue/rgx_heaps.h
-index e41e4002b2c4d..f8fcfe1fe27e5 100644
+index e41e4002b2c4..f8fcfe1fe27e 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_heaps.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_heaps.h
 @@ -52,7 +52,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44126,7 +44126,7 @@ index e41e4002b2c4d..f8fcfe1fe27e5 100644
  #define RGX_CMP_MISSION_RMW_HEAP_IDENT      "Compute Mission RMW"       /*!< Compute Mission RMW Heap Identifier */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_heaps_server.h b/drivers/gpu/drm/img-rogue/rgx_heaps_server.h
 new file mode 100644
-index 0000000000000..a1dd31113fa3a
+index 000000000000..a1dd31113fa3
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgx_heaps_server.h
 @@ -0,0 +1,86 @@
@@ -44217,7 +44217,7 @@ index 0000000000000..a1dd31113fa3a
 +
 +#endif /* RGX_HEAPS_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h b/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h
-index 6f73eeee17430..23576c7832ac7 100644
+index 6f73eeee1743..23576c7832ac 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf_common.h
 @@ -146,6 +146,7 @@ typedef IMG_UINT32 RGX_HWPERF_EVENT_TYPE;
@@ -44445,7 +44445,7 @@ index 6f73eeee17430..23576c7832ac7 100644
  	                                               data, events ``0x1A`` */
  	RGX_HWPERF_GPU_STATE_CHG_DATA  sGPUSTATECHG;  /*!< GPU utilisation state
 diff --git a/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c
-index 268ba65207ae3..78d731c98eb65 100644
+index 268ba65207ae..78d731c98eb6 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c
 +++ b/drivers/gpu/drm/img-rogue/rgx_hwperf_table.c
 @@ -83,15 +83,12 @@ static bool rgxfw_hwperf_pow_st_direct(RGX_HWPERF_CNTBLK_ID eBlkType, IMG_UINT8
@@ -44533,7 +44533,7 @@ index 268ba65207ae3..78d731c98eb65 100644
  			if (psBlkTypeDesc->ui32CntBlkIdBase == RGX_CNTBLK_ID_TA)
  			{
 diff --git a/drivers/gpu/drm/img-rogue/rgx_meta.h b/drivers/gpu/drm/img-rogue/rgx_meta.h
-index ae91ddf7401ac..1e6214c9ba1c8 100644
+index ae91ddf7401a..1e6214c9ba1c 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_meta.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_meta.h
 @@ -231,6 +231,16 @@ typedef struct
@@ -44581,7 +44581,7 @@ index ae91ddf7401ac..1e6214c9ba1c8 100644
  	#if (RGX_FEATURE_META == MTP218)
  	#define RGX_CR_META_CORE_ID_VALUE 0x19
 diff --git a/drivers/gpu/drm/img-rogue/rgx_options.h b/drivers/gpu/drm/img-rogue/rgx_options.h
-index 364b8db3ad3db..df9c949f4a1ff 100644
+index 364b8db3ad3d..df9c949f4a1f 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_options.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_options.h
 @@ -71,6 +71,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44661,7 +44661,7 @@ index 364b8db3ad3db..df9c949f4a1ff 100644
  
  #endif /* RGX_OPTIONS_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgx_riscv.h b/drivers/gpu/drm/img-rogue/rgx_riscv.h
-index 4c064384608de..f98b77658d8f3 100644
+index 4c064384608d..f98b77658d8f 100644
 --- a/drivers/gpu/drm/img-rogue/rgx_riscv.h
 +++ b/drivers/gpu/drm/img-rogue/rgx_riscv.h
 @@ -49,18 +49,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44709,7 +44709,7 @@ index 4c064384608de..f98b77658d8f3 100644
  #define RGXRISCVFW_SHARED_UNCACHED_DATA_BASE    (RGXRISCVFW_GET_REGION_BASE(RGXRISCVFW_SHARED_UNCACHED_DATA_REGION))
  #define RGXRISCVFW_SHARED_CACHED_DATA_REMAP     (RGXRISCVFW_GET_REMAP(RGXRISCVFW_SHARED_CACHED_DATA_REGION))
 diff --git a/drivers/gpu/drm/img-rogue/rgxapi_km.h b/drivers/gpu/drm/img-rogue/rgxapi_km.h
-index 65ba85d20b4ba..7d7efd0afb5e1 100644
+index 65ba85d20b4b..7d7efd0afb5e 100644
 --- a/drivers/gpu/drm/img-rogue/rgxapi_km.h
 +++ b/drivers/gpu/drm/img-rogue/rgxapi_km.h
 @@ -44,22 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -44736,7 +44736,7 @@ index 65ba85d20b4ba..7d7efd0afb5e1 100644
   * RGX HW Performance Profiling Control API(s)
   *****************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxbvnc.c b/drivers/gpu/drm/img-rogue/rgxbvnc.c
-index 2d551b26872c0..9f82ff1260bbf 100644
+index 2d551b26872c..9f82ff1260bb 100644
 --- a/drivers/gpu/drm/img-rogue/rgxbvnc.c
 +++ b/drivers/gpu/drm/img-rogue/rgxbvnc.c
 @@ -2,7 +2,7 @@
@@ -44893,7 +44893,7 @@ index 2d551b26872c0..9f82ff1260bbf 100644
  
  	return eError;
 diff --git a/drivers/gpu/drm/img-rogue/rgxccb.c b/drivers/gpu/drm/img-rogue/rgxccb.c
-index 10fa9443b6b1a..b30a36d411579 100644
+index 10fa9443b6b1..b30a36d41157 100644
 --- a/drivers/gpu/drm/img-rogue/rgxccb.c
 +++ b/drivers/gpu/drm/img-rogue/rgxccb.c
 @@ -126,7 +126,6 @@ struct _RGX_CLIENT_CCB_ {
@@ -45423,7 +45423,7 @@ index 10fa9443b6b1a..b30a36d411579 100644
  				              MAX_CLIENT_CCB_NAME);
  				psDevInfo->psRGXFWIfFwOsData->ui8SLRLogWp = (psDevInfo->psRGXFWIfFwOsData->ui8SLRLogWp + 1) % PVR_SLR_LOG_ENTRIES;
 diff --git a/drivers/gpu/drm/img-rogue/rgxccb.h b/drivers/gpu/drm/img-rogue/rgxccb.h
-index 1389fd05bb77e..e9edd9a37bc38 100644
+index 1389fd05bb77..e9edd9a37bc3 100644
 --- a/drivers/gpu/drm/img-rogue/rgxccb.h
 +++ b/drivers/gpu/drm/img-rogue/rgxccb.h
 @@ -279,7 +279,8 @@ void RGXCmdHelperInitCmdCCB_CommandSize(PVRSRV_RGXDEV_INFO *psDevInfo,
@@ -45437,7 +45437,7 @@ index 1389fd05bb77e..e9edd9a37bc38 100644
                                        PRGXFWIF_UFO_ADDR *pauiFenceUFOAddress,
                                        IMG_UINT32 *paui32FenceValue,
 diff --git a/drivers/gpu/drm/img-rogue/rgxcompute.c b/drivers/gpu/drm/img-rogue/rgxcompute.c
-index e2d044c3f42e2..119dc69a57c49 100644
+index e2d044c3f42e..119dc69a57c4 100644
 --- a/drivers/gpu/drm/img-rogue/rgxcompute.c
 +++ b/drivers/gpu/drm/img-rogue/rgxcompute.c
 @@ -58,6 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -46261,7 +46261,7 @@ index e2d044c3f42e2..119dc69a57c49 100644
   End of file (rgxcompute.c)
  ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxcompute.h b/drivers/gpu/drm/img-rogue/rgxcompute.h
-index a0ab9c9c25fbc..b93c42efc0446 100644
+index a0ab9c9c25fb..b93c42efc044 100644
 --- a/drivers/gpu/drm/img-rogue/rgxcompute.h
 +++ b/drivers/gpu/drm/img-rogue/rgxcompute.h
 @@ -108,7 +108,6 @@ PVRSRV_ERROR PVRSRVRGXCreateComputeContextKM(CONNECTION_DATA			*psConnection,
@@ -46339,7 +46339,7 @@ index a0ab9c9c25fbc..b93c42efc0446 100644
 +
  #endif /* RGXCOMPUTE_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug.c b/drivers/gpu/drm/img-rogue/rgxdebug.c
-index 23382dca2353c..93738fdf6f9ab 100644
+index 23382dca2353..93738fdf6f9a 100644
 --- a/drivers/gpu/drm/img-rogue/rgxdebug.c
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug.c
 @@ -176,126 +176,6 @@ static const IMG_FLAGS2DESC asDmState2Description[] =
@@ -48607,7 +48607,7 @@ index 23382dca2353c..93738fdf6f9ab 100644
  #undef REG32_FMTSPEC
  #undef REG64_FMTSPEC
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.c b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
-index 4b1393558a511..21a260848711a 100644
+index 4b1393558a51..21a260848711 100644
 --- a/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 @@ -64,6 +64,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -49914,7 +49914,7 @@ index 4b1393558a511..21a260848711a 100644
  		PVRSRVPowerUnlock(psDeviceNode);
  	}
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.h b/drivers/gpu/drm/img-rogue/rgxdebug_common.h
-index d8d5611a599d5..f7707b87fa9f2 100644
+index d8d5611a599d..f7707b87fa9f 100644
 --- a/drivers/gpu/drm/img-rogue/rgxdebug_common.h
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.h
 @@ -72,7 +72,7 @@ extern const IMG_CHAR * const gapszMipsDirtyGlobalValidPTFlags[8];
@@ -50008,7 +50008,7 @@ index d8d5611a599d5..f7707b87fa9f2 100644
  
  #endif /* RGXDEBUG_COMMON_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxdevice.h b/drivers/gpu/drm/img-rogue/rgxdevice.h
-index 8ae09cdf7694e..95e0a0b53ccaa 100644
+index 8ae09cdf7694..95e0a0b53cca 100644
 --- a/drivers/gpu/drm/img-rogue/rgxdevice.h
 +++ b/drivers/gpu/drm/img-rogue/rgxdevice.h
 @@ -69,7 +69,7 @@ typedef struct {
@@ -50287,7 +50287,7 @@ index 8ae09cdf7694e..95e0a0b53ccaa 100644
  /*
  	RGX PDUMP register bank name (prefix)
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c
-index dc39be0d3c19b..d340307d542df 100644
+index dc39be0d3c19..d340307d542d 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c
 +++ b/drivers/gpu/drm/img-rogue/rgxfwcmnctx.c
 @@ -48,6 +48,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -50421,7 +50421,7 @@ index dc39be0d3c19b..d340307d542df 100644
  	if (eError != PVRSRV_OK)
  	{
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwdbg.c b/drivers/gpu/drm/img-rogue/rgxfwdbg.c
-index 9a6add28b218c..2271adf3ea9c5 100644
+index 9a6add28b218..2271adf3ea9c 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwdbg.c
 +++ b/drivers/gpu/drm/img-rogue/rgxfwdbg.c
 @@ -66,13 +66,13 @@ PVRSRVRGXFWDebugQueryFWLogKM(
@@ -50825,7 +50825,7 @@ index 9a6add28b218c..2271adf3ea9c5 100644
  }
 -
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwdbg.h b/drivers/gpu/drm/img-rogue/rgxfwdbg.h
-index eb0eb0bf1c0cb..59c48ed5f4f88 100644
+index eb0eb0bf1c0c..59c48ed5f4f8 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwdbg.h
 +++ b/drivers/gpu/drm/img-rogue/rgxfwdbg.h
 @@ -84,20 +84,20 @@ PVRSRVRGXFWDebugSetDriverTimeSliceKM(
@@ -50868,7 +50868,7 @@ index eb0eb0bf1c0cb..59c48ed5f4f88 100644
  	PVRSRV_DEVICE_NODE *psDeviceNode);
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwimageutils.c b/drivers/gpu/drm/img-rogue/rgxfwimageutils.c
-index 24976382e1675..afc69f7228f86 100644
+index 24976382e167..afc69f7228f8 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwimageutils.c
 +++ b/drivers/gpu/drm/img-rogue/rgxfwimageutils.c
 @@ -48,10 +48,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -50945,7 +50945,7 @@ index 24976382e1675..afc69f7228f86 100644
  				*pui32BootConf++ = 0;
  				*pui32BootConf++ = 0;
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwmemctx.h b/drivers/gpu/drm/img-rogue/rgxfwmemctx.h
-index 2cb40991fee97..49f37b1c27aa6 100644
+index 2cb40991fee9..49f37b1c27aa 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwmemctx.h
 +++ b/drivers/gpu/drm/img-rogue/rgxfwmemctx.h
 @@ -71,18 +71,12 @@ static INLINE void RGXFwSharedMemCPUCacheMode(PVRSRV_DEVICE_NODE *psDeviceNode,
@@ -50977,7 +50977,7 @@ index 2cb40991fee97..49f37b1c27aa6 100644
  
  #define RGXFwSharedMemCacheOpValue(value, cacheop) (RGXFwSharedMemCacheOpExec(&value, sizeof(value), PVRSRV_CACHE_OP_##cacheop))
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwriscv.c b/drivers/gpu/drm/img-rogue/rgxfwriscv.c
-index 15fd27c05dad0..5556910105174 100644
+index 15fd27c05dad..555691010517 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwriscv.c
 +++ b/drivers/gpu/drm/img-rogue/rgxfwriscv.c
 @@ -47,11 +47,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -51277,7 +51277,7 @@ index 15fd27c05dad0..5556910105174 100644
  				ui64Op = DMI_OP_STATUS_SUCCESS;
  				break;
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwriscv.h b/drivers/gpu/drm/img-rogue/rgxfwriscv.h
-index 4a9ac7aedc08b..7821c167fa2ae 100644
+index 4a9ac7aedc08..7821c167fa2a 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwriscv.h
 +++ b/drivers/gpu/drm/img-rogue/rgxfwriscv.h
 @@ -48,6 +48,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -51293,7 +51293,7 @@ index 4a9ac7aedc08b..7821c167fa2ae 100644
  
  /*!
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwutils.c b/drivers/gpu/drm/img-rogue/rgxfwutils.c
-index fc81cb4d904d3..56d4940d2a6c4 100644
+index fc81cb4d904d..56d4940d2a6c 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwutils.c
 +++ b/drivers/gpu/drm/img-rogue/rgxfwutils.c
 @@ -125,10 +125,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -53872,7 +53872,7 @@ index fc81cb4d904d3..56d4940d2a6c4 100644
  	psDevInfo->psRGXFWIfRuntimeCfg->ui32VzConnectionCooldownPeriodInSec = ui32VzConnectionCooldownPeriodInSec;
  	OSWriteMemoryBarrier(&psDevInfo->psRGXFWIfRuntimeCfg->ui32VzConnectionCooldownPeriodInSec);
 diff --git a/drivers/gpu/drm/img-rogue/rgxfwutils.h b/drivers/gpu/drm/img-rogue/rgxfwutils.h
-index 28fc649052438..6752bc95fa18e 100644
+index 28fc64905243..6752bc95fa18 100644
 --- a/drivers/gpu/drm/img-rogue/rgxfwutils.h
 +++ b/drivers/gpu/drm/img-rogue/rgxfwutils.h
 @@ -57,6 +57,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -54148,7 +54148,7 @@ index 28fc649052438..6752bc95fa18e 100644
  #define KM_GET_OS_CONNECTION(psDevInfo)			(RGXFW_CONNECTION_OS_ACTIVE)
  #define KM_SET_OS_CONNECTION(val, psDevInfo)
 diff --git a/drivers/gpu/drm/img-rogue/rgxheapconfig.h b/drivers/gpu/drm/img-rogue/rgxheapconfig.h
-index 92da55c35664b..6825da5caa3be 100644
+index 92da55c35664..6825da5caa3b 100644
 --- a/drivers/gpu/drm/img-rogue/rgxheapconfig.h
 +++ b/drivers/gpu/drm/img-rogue/rgxheapconfig.h
 @@ -46,12 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -54215,7 +54215,7 @@ index 92da55c35664b..6825da5caa3be 100644
  /* 0xEA_4000_0000 - 0xEA_FFFF_FFFF **/
  	/* 937 GiB to 940 GiB, size of 3 GiB : FREE **/
 diff --git a/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h b/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h
-index 13b4a96f7f6f0..66f44dc8c18b0 100644
+index 13b4a96f7f6f..66f44dc8c18b 100644
 --- a/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h
 +++ b/drivers/gpu/drm/img-rogue/rgxheapconfig_65273.h
 @@ -44,17 +44,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -54243,7 +54243,7 @@ index 13b4a96f7f6f0..66f44dc8c18b0 100644
  	      a BRN_65273 WA heap.
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf.c b/drivers/gpu/drm/img-rogue/rgxhwperf.c
-index 1bb4e429ead41..e43fc499d9db5 100644
+index 1bb4e429ead4..e43fc499d9db 100644
 --- a/drivers/gpu/drm/img-rogue/rgxhwperf.c
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf.c
 @@ -135,7 +135,7 @@ PVRSRV_ERROR RGXServerFeatureFlagsToHWPerfFlags(PVRSRV_RGXDEV_INFO *psDevInfo, R
@@ -54367,7 +54367,7 @@ index 1bb4e429ead41..e43fc499d9db5 100644
  				                                 psDevData->psRgxDevNode,
  												 ui16CustomBlockID, ui16NumCustomCounters, pui32CustomCounterIDs);
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf.h b/drivers/gpu/drm/img-rogue/rgxhwperf.h
-index 16a959c7594ad..5191f18f13072 100644
+index 16a959c7594a..5191f18f1307 100644
 --- a/drivers/gpu/drm/img-rogue/rgxhwperf.h
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf.h
 @@ -44,13 +44,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -54411,7 +54411,7 @@ index 16a959c7594ad..5191f18f13072 100644
  PVRSRV_ERROR PVRSRVRGXGetConfiguredHWPerfCounters(PVRSRV_DEVICE_NODE *psDevNode,
                                                    RGXFWIF_HWPERF_CTL *psHWPerfCtl,
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf_common.c b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
-index cf2b4fcf77d53..4a2452651077a 100644
+index cf2b4fcf77d5..4a2452651077 100644
 --- a/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
 @@ -222,30 +222,115 @@ static IMG_UINT32 RGXHWPerfCopyData(PVRSRV_RGXDEV_INFO *psDeviceInfo,
@@ -55438,7 +55438,7 @@ index cf2b4fcf77d53..4a2452651077a 100644
  	PVR_LOG_IF_ERROR(eError, "RGXHWPerfClose");
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf_common.h b/drivers/gpu/drm/img-rogue/rgxhwperf_common.h
-index 6544e524a4a4c..9b14d15cb64f0 100644
+index 6544e524a4a4..9b14d15cb64f 100644
 --- a/drivers/gpu/drm/img-rogue/rgxhwperf_common.h
 +++ b/drivers/gpu/drm/img-rogue/rgxhwperf_common.h
 @@ -53,6 +53,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -55478,7 +55478,7 @@ index 6544e524a4a4c..9b14d15cb64f0 100644
  		(((PVRSRV_RGXDEV_INFO *)CTX->psDeviceNode->pvDevice)->ui32HWPerfHostFilter \
  		& RGX_HWPERF_EVENT_MASK_VALUE(EV))
 diff --git a/drivers/gpu/drm/img-rogue/rgxinit.c b/drivers/gpu/drm/img-rogue/rgxinit.c
-index cbfd04c8d9b4b..88f243d899f79 100644
+index cbfd04c8d9b4..88f243d899f7 100644
 --- a/drivers/gpu/drm/img-rogue/rgxinit.c
 +++ b/drivers/gpu/drm/img-rogue/rgxinit.c
 @@ -53,12 +53,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -58669,7 +58669,7 @@ index cbfd04c8d9b4b..88f243d899f79 100644
  	OSWRLockDestroy(psDevInfo->hCommonCtxtListLock);
  e7:
 diff --git a/drivers/gpu/drm/img-rogue/rgxinit.h b/drivers/gpu/drm/img-rogue/rgxinit.h
-index 6878aee7f0750..807f6a0b6fcef 100644
+index 6878aee7f075..807f6a0b6fce 100644
 --- a/drivers/gpu/drm/img-rogue/rgxinit.h
 +++ b/drivers/gpu/drm/img-rogue/rgxinit.h
 @@ -51,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -58795,7 +58795,7 @@ index 6878aee7f0750..807f6a0b6fcef 100644
  #endif /* RGXINIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxinit_apphints.h b/drivers/gpu/drm/img-rogue/rgxinit_apphints.h
 new file mode 100644
-index 0000000000000..99cecc630b5c3
+index 000000000000..99cecc630b5c
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxinit_apphints.h
 @@ -0,0 +1,120 @@
@@ -58920,7 +58920,7 @@ index 0000000000000..99cecc630b5c3
 + End of file (rgxinit_apphints.h)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxkicksync.c b/drivers/gpu/drm/img-rogue/rgxkicksync.c
-index 2028c5463a3de..6ab8942d84a8d 100644
+index 2028c5463a3d..6ab8942d84a8 100644
 --- a/drivers/gpu/drm/img-rogue/rgxkicksync.c
 +++ b/drivers/gpu/drm/img-rogue/rgxkicksync.c
 @@ -167,16 +167,9 @@ PVRSRV_ERROR PVRSRVRGXDestroyKickSyncContextKM(RGX_SERVER_KICKSYNC_CONTEXT * psK
@@ -58998,7 +58998,7 @@ index 2028c5463a3de..6ab8942d84a8d 100644
  	SyncAddrListRollbackCheckpoints(psKickSyncContext->psDeviceNode, &psKickSyncContext->sSyncAddrListUpdate);
  	if (iUpdateFence != PVRSRV_NO_FENCE)
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer.h b/drivers/gpu/drm/img-rogue/rgxlayer.h
-index 6b4667e43b442..3141db5c4488e 100644
+index 6b4667e43b44..3141db5c4488 100644
 --- a/drivers/gpu/drm/img-rogue/rgxlayer.h
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer.h
 @@ -64,10 +64,10 @@ extern "C" {
@@ -59151,7 +59151,7 @@ index 6b4667e43b442..3141db5c4488e 100644
  }
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer_impl.c b/drivers/gpu/drm/img-rogue/rgxlayer_impl.c
-index 406f7b5801190..2141554bfdae2 100644
+index 406f7b580119..2141554bfdae 100644
 --- a/drivers/gpu/drm/img-rogue/rgxlayer_impl.c
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer_impl.c
 @@ -46,9 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -60103,7 +60103,7 @@ index 406f7b5801190..2141554bfdae2 100644
 -			psDevInfo->pfnRGXAckIrq(psDevInfo) : IMG_TRUE;
 -}
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer_impl.h b/drivers/gpu/drm/img-rogue/rgxlayer_impl.h
-index 4d7c0f0c77986..b46efee8c71cb 100644
+index 4d7c0f0c7798..b46efee8c71c 100644
 --- a/drivers/gpu/drm/img-rogue/rgxlayer_impl.h
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer_impl.h
 @@ -56,12 +56,14 @@ typedef struct _RGX_LAYER_PARAMS_
@@ -60123,7 +60123,7 @@ index 4d7c0f0c77986..b46efee8c71cb 100644
  #endif /* RGXLAYER_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxlayer_impl_common.c b/drivers/gpu/drm/img-rogue/rgxlayer_impl_common.c
 new file mode 100644
-index 0000000000000..7eab6fde4dcdc
+index 000000000000..7eab6fde4dcd
 --- /dev/null
 +++ b/drivers/gpu/drm/img-rogue/rgxlayer_impl_common.c
 @@ -0,0 +1,914 @@
@@ -61042,7 +61042,7 @@ index 0000000000000..7eab6fde4dcdc
 +			psDevInfo->pfnRGXAckIrq(psDevInfo) : IMG_TRUE;
 +}
 diff --git a/drivers/gpu/drm/img-rogue/rgxmem.c b/drivers/gpu/drm/img-rogue/rgxmem.c
-index d9aa6adfada13..4df36ef5d1f06 100644
+index d9aa6adfada1..4df36ef5d1f0 100644
 --- a/drivers/gpu/drm/img-rogue/rgxmem.c
 +++ b/drivers/gpu/drm/img-rogue/rgxmem.c
 @@ -93,6 +93,7 @@ PVRSRV_ERROR RGXInvalidateFBSCTable(PVRSRV_DEVICE_NODE *psDeviceNode,
@@ -61177,7 +61177,7 @@ index d9aa6adfada13..4df36ef5d1f06 100644
  				bRet = IMG_TRUE;
  				break;
 diff --git a/drivers/gpu/drm/img-rogue/rgxmmuinit.c b/drivers/gpu/drm/img-rogue/rgxmmuinit.c
-index d790c2c98e500..fdedebe7b0332 100644
+index d790c2c98e50..fdedebe7b033 100644
 --- a/drivers/gpu/drm/img-rogue/rgxmmuinit.c
 +++ b/drivers/gpu/drm/img-rogue/rgxmmuinit.c
 @@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -61714,7 +61714,7 @@ index d790c2c98e500..fdedebe7b0332 100644
 +}
 +#endif
 diff --git a/drivers/gpu/drm/img-rogue/rgxmmuinit.h b/drivers/gpu/drm/img-rogue/rgxmmuinit.h
-index 0591628d6ad3e..b70ddad0cb643 100644
+index 0591628d6ad3..b70ddad0cb64 100644
 --- a/drivers/gpu/drm/img-rogue/rgxmmuinit.h
 +++ b/drivers/gpu/drm/img-rogue/rgxmmuinit.h
 @@ -56,5 +56,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -61724,7 +61724,7 @@ index 0591628d6ad3e..b70ddad0cb643 100644
 -
  #endif /* #ifndef SRVKM_RGXMMUINIT_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxmulticore.c b/drivers/gpu/drm/img-rogue/rgxmulticore.c
-index 2c8b0cf9c34ec..447c50a78e005 100644
+index 2c8b0cf9c34e..447c50a78e00 100644
 --- a/drivers/gpu/drm/img-rogue/rgxmulticore.c
 +++ b/drivers/gpu/drm/img-rogue/rgxmulticore.c
 @@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -61877,7 +61877,7 @@ index 2c8b0cf9c34ec..447c50a78e005 100644
  
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxpower.c b/drivers/gpu/drm/img-rogue/rgxpower.c
-index 9bc7bf9b3b799..2d608b0f653dd 100644
+index 9bc7bf9b3b79..2d608b0f653d 100644
 --- a/drivers/gpu/drm/img-rogue/rgxpower.c
 +++ b/drivers/gpu/drm/img-rogue/rgxpower.c
 @@ -72,9 +72,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -63534,7 +63534,7 @@ index 9bc7bf9b3b799..2d608b0f653dd 100644
  /******************************************************************************
   End of file (rgxpower.c)
 diff --git a/drivers/gpu/drm/img-rogue/rgxpower.h b/drivers/gpu/drm/img-rogue/rgxpower.h
-index a6cd3f2b2d10b..dbe9130d7a7bf 100644
+index a6cd3f2b2d10..dbe9130d7a7b 100644
 --- a/drivers/gpu/drm/img-rogue/rgxpower.h
 +++ b/drivers/gpu/drm/img-rogue/rgxpower.h
 @@ -59,14 +59,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -63789,7 +63789,7 @@ index a6cd3f2b2d10b..dbe9130d7a7bf 100644
  
  #endif /* RGXPOWER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxregconfig.c b/drivers/gpu/drm/img-rogue/rgxregconfig.c
-index ef39bea255ebb..c2f681c70f12a 100644
+index ef39bea255eb..c2f681c70f12 100644
 --- a/drivers/gpu/drm/img-rogue/rgxregconfig.c
 +++ b/drivers/gpu/drm/img-rogue/rgxregconfig.c
 @@ -57,7 +57,7 @@ PVRSRV_ERROR PVRSRVRGXSetRegConfigTypeKM(CONNECTION_DATA * psDevConnection,
@@ -63918,7 +63918,7 @@ index ef39bea255ebb..c2f681c70f12a 100644
  	return PVRSRV_ERROR_FEATURE_DISABLED;
  #endif
 diff --git a/drivers/gpu/drm/img-rogue/rgxshader.c b/drivers/gpu/drm/img-rogue/rgxshader.c
-index e29a4e3ab683c..85cf498f037ce 100644
+index e29a4e3ab683..85cf498f037c 100644
 --- a/drivers/gpu/drm/img-rogue/rgxshader.c
 +++ b/drivers/gpu/drm/img-rogue/rgxshader.c
 @@ -51,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -64036,7 +64036,7 @@ index e29a4e3ab683c..85cf498f037ce 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxshader.h b/drivers/gpu/drm/img-rogue/rgxshader.h
-index 7676ede51b7fa..4ba50fc3fc861 100644
+index 7676ede51b7f..4ba50fc3fc86 100644
 --- a/drivers/gpu/drm/img-rogue/rgxshader.h
 +++ b/drivers/gpu/drm/img-rogue/rgxshader.h
 @@ -66,12 +66,10 @@ PVRSRVTQLoadShaders(PVRSRV_DEVICE_NODE *psDeviceNode);
@@ -64054,7 +64054,7 @@ index 7676ede51b7fa..4ba50fc3fc861 100644
  /*************************************************************************/ /*!
  @Function       PVRSRVTQUnLoadShaders
 diff --git a/drivers/gpu/drm/img-rogue/rgxsrvinit.c b/drivers/gpu/drm/img-rogue/rgxsrvinit.c
-index fd6516cc1e987..9b1077273542c 100644
+index fd6516cc1e98..9b1077273542 100644
 --- a/drivers/gpu/drm/img-rogue/rgxsrvinit.c
 +++ b/drivers/gpu/drm/img-rogue/rgxsrvinit.c
 @@ -54,6 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -65440,7 +65440,7 @@ index fd6516cc1e987..9b1077273542c 100644
  	eError = PVRSRV_OK;
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxstartstop.c b/drivers/gpu/drm/img-rogue/rgxstartstop.c
-index 924c435c55de6..2b93b46ff3efe 100644
+index 924c435c55de..2b93b46ff3ef 100644
 --- a/drivers/gpu/drm/img-rogue/rgxstartstop.c
 +++ b/drivers/gpu/drm/img-rogue/rgxstartstop.c
 @@ -48,33 +48,141 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -66403,7 +66403,7 @@ index 924c435c55de6..2b93b46ff3efe 100644
 + End of file (rgxstartstop.c)
 +******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/rgxta3d.c b/drivers/gpu/drm/img-rogue/rgxta3d.c
-index 9e547542dad90..595c6e6f357eb 100644
+index 9e547542dad9..595c6e6f357e 100644
 --- a/drivers/gpu/drm/img-rogue/rgxta3d.c
 +++ b/drivers/gpu/drm/img-rogue/rgxta3d.c
 @@ -75,6 +75,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -68124,7 +68124,7 @@ index 9e547542dad90..595c6e6f357eb 100644
  	if (eError != PVRSRV_OK)
  	{
 diff --git a/drivers/gpu/drm/img-rogue/rgxta3d.h b/drivers/gpu/drm/img-rogue/rgxta3d.h
-index d789e62a26020..45c71796793e3 100644
+index d789e62a2602..45c71796793e 100644
 --- a/drivers/gpu/drm/img-rogue/rgxta3d.h
 +++ b/drivers/gpu/drm/img-rogue/rgxta3d.h
 @@ -148,6 +148,8 @@ struct _RGX_FREELIST_ {
@@ -68179,7 +68179,7 @@ index d789e62a26020..45c71796793e3 100644
  
  /* Destroy free list */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c
-index 469a81e80bc6b..ff33e864d971e 100644
+index 469a81e80bc6..ff33e864d971 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c
 +++ b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.c
 @@ -71,9 +71,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -68569,7 +68569,7 @@ index 469a81e80bc6b..ff33e864d971e 100644
  	if (eError != PVRSRV_OK)
  	{
 diff --git a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h
-index a7fc39bcf34e1..b0f003cf3ad3e 100644
+index a7fc39bcf34e..b0f003cf3ad3 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h
 +++ b/drivers/gpu/drm/img-rogue/rgxtdmtransfer.h
 @@ -68,14 +68,14 @@ PVRSRV_ERROR PVRSRVRGXTDMCreateTransferContextKM(
@@ -68619,7 +68619,7 @@ index a7fc39bcf34e1..b0f003cf3ad3e 100644
  	RGX_SERVER_TQ_TDM_CONTEXT *psTransferContext,
  	IMG_UINT32                 ui32PDumpFlags);
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimecorr.c b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
-index b70b1e407da5f..29ac662ed418f 100644
+index b70b1e407da5..29ac662ed418 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 +++ b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 @@ -161,23 +161,48 @@ IMG_UINT64 RGXTimeCorrGetClockus64(const PVRSRV_DEVICE_NODE *psDeviceNode)
@@ -68840,7 +68840,7 @@ index b70b1e407da5f..29ac662ed418f 100644
  
  /******************************************************************************
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimecorr.h b/drivers/gpu/drm/img-rogue/rgxtimecorr.h
-index e1cfff9b7abce..9758e61909c8c 100644
+index e1cfff9b7abc..9758e61909c8 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtimecorr.h
 +++ b/drivers/gpu/drm/img-rogue/rgxtimecorr.h
 @@ -48,6 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -68930,7 +68930,7 @@ index e1cfff9b7abce..9758e61909c8c 100644
 +                     IMG_UINT64         *pui64Time);
  #endif /* RGXTIMECORR_H */
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer.c b/drivers/gpu/drm/img-rogue/rgxtransfer.c
-index e8b619d31a8ed..360d6282e674f 100644
+index e8b619d31a8e..360d6282e674 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtransfer.c
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer.c
 @@ -78,6 +78,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -69311,7 +69311,7 @@ index e8b619d31a8ed..360d6282e674f 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer.h b/drivers/gpu/drm/img-rogue/rgxtransfer.h
-index 8bd0b76c75d72..3cdc454d3de00 100644
+index 8bd0b76c75d7..3cdc454d3de0 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtransfer.h
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer.h
 @@ -129,6 +129,27 @@ PVRSRV_ERROR PVRSRVRGXSubmitTransferKM(RGX_SERVER_TQ_CONTEXT	*psTransferContext,
@@ -69353,7 +69353,7 @@ index 8bd0b76c75d72..3cdc454d3de00 100644
  PVRSRV_ERROR PVRSRVRGXTQReleaseSharedMemoryKM(PMR * psUSCPMRMem);
  
 diff --git a/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h b/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h
-index b7b3a645e4530..f261d2d04075a 100644
+index b7b3a645e453..f261d2d04075 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h
 +++ b/drivers/gpu/drm/img-rogue/rgxtransfer_shader.h
 @@ -55,15 +55,13 @@ typedef struct _RGX_SHADER_HEADER_
@@ -69374,7 +69374,7 @@ index b7b3a645e4530..f261d2d04075a 100644
  #define RGX_TQ_SHADERS_VERSION_PACK \
  	(((RGX_TQ_SHADERS_VERSION & 0xFFU) << 16) | ((PVRVERSION_MAJ & 0xFFU) << 8) | ((PVRVERSION_MIN & 0xFFU) << 0))
 diff --git a/drivers/gpu/drm/img-rogue/rgxutils.c b/drivers/gpu/drm/img-rogue/rgxutils.c
-index 7b5bcc804f851..4ffc08c07add0 100644
+index 7b5bcc804f85..4ffc08c07add 100644
 --- a/drivers/gpu/drm/img-rogue/rgxutils.c
 +++ b/drivers/gpu/drm/img-rogue/rgxutils.c
 @@ -51,7 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -69413,7 +69413,7 @@ index 7b5bcc804f851..4ffc08c07add0 100644
  				/* All Firmware heaps are premapped under AutoVz*/
  				ui32Policy = PHYS_HEAP_POLICY_DEFAULT;
 diff --git a/drivers/gpu/drm/img-rogue/rgxutils.h b/drivers/gpu/drm/img-rogue/rgxutils.h
-index 67d4bb840a6a9..be6e586e2279e 100644
+index 67d4bb840a6a..be6e586e2279 100644
 --- a/drivers/gpu/drm/img-rogue/rgxutils.h
 +++ b/drivers/gpu/drm/img-rogue/rgxutils.h
 @@ -187,11 +187,12 @@ const char* RGXStringifyKickTypeDM(RGX_KICK_TYPE_DM eKickTypeDM);
@@ -69462,7 +69462,7 @@ index 67d4bb840a6a9..be6e586e2279e 100644
   End of file (rgxutils.h)
  ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/ri_server.c b/drivers/gpu/drm/img-rogue/ri_server.c
-index 82a26cb69d271..eec752d260175 100644
+index 82a26cb69d27..eec752d26017 100644
 --- a/drivers/gpu/drm/img-rogue/ri_server.c
 +++ b/drivers/gpu/drm/img-rogue/ri_server.c
 @@ -91,15 +91,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -71362,7 +71362,7 @@ index 82a26cb69d271..eec752d260175 100644
  		/*
  		 * If we've deleted the Hash table, return
 diff --git a/drivers/gpu/drm/img-rogue/ri_server.h b/drivers/gpu/drm/img-rogue/ri_server.h
-index 69266b8b5d898..a8bcd9f320396 100644
+index 69266b8b5d89..a8bcd9f32039 100644
 --- a/drivers/gpu/drm/img-rogue/ri_server.h
 +++ b/drivers/gpu/drm/img-rogue/ri_server.h
 @@ -63,16 +63,17 @@ PVRSRV_ERROR RIWritePMREntryKM(PMR *psPMR);
@@ -71404,7 +71404,7 @@ index 69266b8b5d898..a8bcd9f320396 100644
  
  #endif /* RI_SERVER_H */
 diff --git a/drivers/gpu/drm/img-rogue/rogue_trace_events.h b/drivers/gpu/drm/img-rogue/rogue_trace_events.h
-index b079d73af7847..8952bec0f1027 100644
+index b079d73af784..8952bec0f102 100644
 --- a/drivers/gpu/drm/img-rogue/rogue_trace_events.h
 +++ b/drivers/gpu/drm/img-rogue/rogue_trace_events.h
 @@ -59,9 +59,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -71428,7 +71428,7 @@ index b079d73af7847..8952bec0f1027 100644
  		__entry->fw_event = fw_event;
  	),
 diff --git a/drivers/gpu/drm/img-rogue/server_cache_bridge.c b/drivers/gpu/drm/img-rogue/server_cache_bridge.c
-index bddcd95e09532..b2f5267cc5972 100644
+index bddcd95e0953..b2f5267cc597 100644
 --- a/drivers/gpu/drm/img-rogue/server_cache_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_cache_bridge.c
 @@ -423,13 +423,16 @@ PVRSRV_ERROR InitCACHEBridge(void)
@@ -71452,7 +71452,7 @@ index bddcd95e09532..b2f5267cc5972 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_cmm_bridge.c b/drivers/gpu/drm/img-rogue/server_cmm_bridge.c
-index b95f8589ae995..cc658c793d3b8 100644
+index b95f8589ae99..cc658c793d3b 100644
 --- a/drivers/gpu/drm/img-rogue/server_cmm_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_cmm_bridge.c
 @@ -340,17 +340,16 @@ PVRSRVBridgeDevmemIntAcquireRemoteCtx(IMG_UINT32 ui32DispatchTableEntry,
@@ -71499,7 +71499,7 @@ index b95f8589ae995..cc658c793d3b8 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c b/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c
-index 14fc7041b469a..72c6a86a0ec83 100644
+index 14fc7041b469..72c6a86a0ec8 100644
 --- a/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_devicememhistory_bridge.c
 @@ -779,24 +779,33 @@ PVRSRV_ERROR InitDEVICEMEMHISTORYBridge(void)
@@ -71543,7 +71543,7 @@ index 14fc7041b469a..72c6a86a0ec83 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_di_bridge.c b/drivers/gpu/drm/img-rogue/server_di_bridge.c
-index 96acc090a989e..154bccdaae5e7 100644
+index 96acc090a989..154bccdaae5e 100644
 --- a/drivers/gpu/drm/img-rogue/server_di_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_di_bridge.c
 @@ -186,10 +186,36 @@ PVRSRVBridgeDICreateContext(IMG_UINT32 ui32DispatchTableEntry,
@@ -71618,7 +71618,7 @@ index 96acc090a989e..154bccdaae5e7 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c b/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c
-index fdfa03d54e5a0..89aa1477f55af 100644
+index fdfa03d54e5a..89aa1477f55a 100644
 --- a/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_dmabuf_bridge.c
 @@ -221,162 +221,6 @@ PVRSRVBridgePhysmemImportDmaBuf(IMG_UINT32 ui32DispatchTableEntry,
@@ -71890,7 +71890,7 @@ index fdfa03d54e5a0..89aa1477f55af 100644
  				PVRSRV_BRIDGE_DMABUF_PHYSMEMIMPORTSPARSEDMABUF);
  
 diff --git a/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c b/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c
-index 50b4fcbe2dee8..9b730d28e5b43 100644
+index 50b4fcbe2dee..9b730d28e5b4 100644
 --- a/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_htbuffer_bridge.c
 @@ -198,7 +198,9 @@ PVRSRV_ERROR InitHTBUFFERBridge(void)
@@ -71905,7 +71905,7 @@ index 50b4fcbe2dee8..9b730d28e5b43 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_mm_bridge.c b/drivers/gpu/drm/img-rogue/server_mm_bridge.c
-index 7842b7c3516f4..43535d109c8b8 100644
+index 7842b7c3516f..43535d109c8b 100644
 --- a/drivers/gpu/drm/img-rogue/server_mm_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_mm_bridge.c
 @@ -241,18 +241,17 @@ PVRSRVBridgePMRExportPMR(IMG_UINT32 ui32DispatchTableEntry,
@@ -72600,7 +72600,7 @@ index 7842b7c3516f4..43535d109c8b8 100644
  
  	UnsetDispatchTableEntry(PVRSRV_BRIDGE_MM, PVRSRV_BRIDGE_MM_CHANGESPARSEMEM);
 diff --git a/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c b/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c
-index 954713f7691ce..538d04cdf0e07 100644
+index 954713f7691c..538d04cdf0e0 100644
 --- a/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_mmextmem_bridge.c
 @@ -148,7 +148,9 @@ PVRSRV_ERROR InitMMEXTMEMBridge(void)
@@ -72615,7 +72615,7 @@ index 954713f7691ce..538d04cdf0e07 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c b/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c
-index bbf2d33f8daec..9facf794011e2 100644
+index bbf2d33f8dae..9facf794011e 100644
 --- a/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_pvrtl_bridge.c
 @@ -217,17 +217,16 @@ PVRSRVBridgeTLOpenStream(IMG_UINT32 ui32DispatchTableEntry,
@@ -72690,7 +72690,7 @@ index bbf2d33f8daec..9facf794011e2 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c
-index a4b80284cd78e..78fd2b405e92e 100644
+index a4b80284cd78..78fd2b405e92 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxbreakpoint_bridge.c
 @@ -316,23 +316,33 @@ PVRSRV_ERROR InitRGXBREAKPOINTBridge(void)
@@ -72733,7 +72733,7 @@ index a4b80284cd78e..78fd2b405e92e 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c
-index 72836a97b47db..8910cfb5ba6ab 100644
+index 72836a97b47d..8910cfb5ba6a 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxcmp_bridge.c
 @@ -431,6 +431,73 @@ PVRSRVBridgeRGXFlushComputeData(IMG_UINT32 ui32DispatchTableEntry,
@@ -74038,7 +74038,7 @@ index 72836a97b47db..8910cfb5ba6ab 100644
 +
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c
-index b186658608cf8..e5646490aa2d3 100644
+index b186658608cf..e5646490aa2d 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxfwdbg_bridge.c
 @@ -109,43 +109,40 @@ PVRSRVBridgeRGXFWDebugDumpFreelistPageList(IMG_UINT32 ui32DispatchTableEntry,
@@ -74303,7 +74303,7 @@ index b186658608cf8..e5646490aa2d3 100644
  	UnsetDispatchTableEntry(PVRSRV_BRIDGE_RGXFWDBG,
  				PVRSRV_BRIDGE_RGXFWDBG_RGXFWDEBUGSETVZCONNECTIONCOOLDOWNPERIODINSEC);
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c
-index 9a88ae8284977..ea76a5ef2fb1c 100644
+index 9a88ae828497..ea76a5ef2fb1 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxhwperf_bridge.c
 @@ -66,83 +66,37 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -75650,7 +75650,7 @@ index 9a88ae8284977..ea76a5ef2fb1c 100644
  
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c
-index 0c301964e7ce5..8d943cd536e27 100644
+index 0c301964e7ce..8d943cd536e2 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxkicksync_bridge.c
 @@ -540,18 +540,25 @@ PVRSRV_ERROR InitRGXKICKSYNCBridge(void)
@@ -75684,7 +75684,7 @@ index 0c301964e7ce5..8d943cd536e27 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c
-index 4cdcb127299bb..548401470d098 100644
+index 4cdcb127299b..548401470d09 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxregconfig_bridge.c
 @@ -184,23 +184,30 @@ PVRSRV_ERROR InitRGXREGCONFIGBridge(void)
@@ -75724,7 +75724,7 @@ index 4cdcb127299bb..548401470d098 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c
-index b62e4ef1142de..141df870f8742 100644
+index b62e4ef1142d..141df870f874 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxta3d_bridge.c
 @@ -65,995 +65,716 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -79865,7 +79865,7 @@ index b62e4ef1142de..141df870f8742 100644
 +
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c
-index 99e6239cf7a9e..4af3cfc35cbaf 100644
+index 99e6239cf7a9..4af3cfc35cba 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtimerquery_bridge.c
 @@ -136,15 +136,19 @@ PVRSRV_ERROR InitRGXTIMERQUERYBridge(void)
@@ -79892,7 +79892,7 @@ index 99e6239cf7a9e..4af3cfc35cbaf 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c
-index 6ce59c8049c36..1129b824d850b 100644
+index 6ce59c8049c3..1129b824d850 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtq2_bridge.c
 @@ -210,7 +210,9 @@ PVRSRVBridgeRGXTDMCreateTransferContext(IMG_UINT32 ui32DispatchTableEntry,
@@ -80463,7 +80463,7 @@ index 6ce59c8049c36..1129b824d850b 100644
 +
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c b/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c
-index 08bbf7bb601eb..f50c1184676a7 100644
+index 08bbf7bb601e..f50c1184676a 100644
 --- a/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_rgxtq_bridge.c
 @@ -1030,13 +1030,6 @@ static PVRSRV_ERROR _RGXTQGetSharedMemorypsCLIPMRMemIntRelease(void *pvData)
@@ -81335,7 +81335,7 @@ index 08bbf7bb601eb..f50c1184676a7 100644
  }
  #else /* SUPPORT_RGXTQ_BRIDGE */
 diff --git a/drivers/gpu/drm/img-rogue/server_ri_bridge.c b/drivers/gpu/drm/img-rogue/server_ri_bridge.c
-index 122c2ac614737..f8a54d70ef0cd 100644
+index 122c2ac61473..f8a54d70ef0c 100644
 --- a/drivers/gpu/drm/img-rogue/server_ri_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_ri_bridge.c
 @@ -230,13 +230,13 @@ PVRSRVBridgeRIWriteMEMDESCEntry(IMG_UINT32 ui32DispatchTableEntry,
@@ -81413,7 +81413,7 @@ index 122c2ac614737..f8a54d70ef0cd 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
-index 708a143c0cb22..350cfa5e8fc14 100644
+index 708a143c0cb2..350cfa5e8fc1 100644
 --- a/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_srvcore_bridge.c
 @@ -954,55 +954,82 @@ PVRSRV_ERROR InitSRVCOREBridge(void)
@@ -81517,7 +81517,7 @@ index 708a143c0cb22..350cfa5e8fc14 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_sync_bridge.c b/drivers/gpu/drm/img-rogue/server_sync_bridge.c
-index 2b48d10f16f18..a0d9210086c9d 100644
+index 2b48d10f16f1..a0d9210086c9 100644
 --- a/drivers/gpu/drm/img-rogue/server_sync_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_sync_bridge.c
 @@ -167,17 +167,16 @@ PVRSRVBridgeAllocSyncPrimitiveBlock(IMG_UINT32 ui32DispatchTableEntry,
@@ -81605,7 +81605,7 @@ index 2b48d10f16f18..a0d9210086c9d 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c b/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c
-index 93d674bde3797..06757e5ef8d3f 100644
+index 93d674bde379..06757e5ef8d3 100644
 --- a/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c
 +++ b/drivers/gpu/drm/img-rogue/server_synctracking_bridge.c
 @@ -302,10 +302,14 @@ PVRSRV_ERROR InitSYNCTRACKINGBridge(void)
@@ -81626,7 +81626,7 @@ index 93d674bde3797..06757e5ef8d3f 100644
  	return PVRSRV_OK;
  }
 diff --git a/drivers/gpu/drm/img-rogue/services_kernel_client.h b/drivers/gpu/drm/img-rogue/services_kernel_client.h
-index 8b66fcb6dea58..3cfa23116a20a 100644
+index 8b66fcb6dea5..3cfa23116a20 100644
 --- a/drivers/gpu/drm/img-rogue/services_kernel_client.h
 +++ b/drivers/gpu/drm/img-rogue/services_kernel_client.h
 @@ -58,6 +58,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -81690,7 +81690,7 @@ index 8b66fcb6dea58..3cfa23116a20a 100644
  
  enum PVRSRV_ERROR_TAG SyncCheckpointRegisterFunctions(PFN_SYNC_CHECKPOINT_STRUCT *psSyncCheckpointPfns);
 diff --git a/drivers/gpu/drm/img-rogue/servicesext.h b/drivers/gpu/drm/img-rogue/servicesext.h
-index f2d09b71cf8ae..f2887d48aed7d 100644
+index f2d09b71cf8a..f2887d48aed7 100644
 --- a/drivers/gpu/drm/img-rogue/servicesext.h
 +++ b/drivers/gpu/drm/img-rogue/servicesext.h
 @@ -114,40 +114,6 @@ typedef IMG_UINT32 PVRSRV_POWER_FLAGS;
@@ -81735,7 +81735,7 @@ index f2d09b71cf8ae..f2887d48aed7d 100644
   *****************************************************************************
   * This structure is used for OS independent registry (profile) access
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
-index 6a3690fb8d877..ca37ba9212455 100644
+index 6a3690fb8d87..ca37ba921245 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 @@ -126,10 +126,10 @@ PVRSRV_ERROR SysDevInit(void *pvOSDevice, PVRSRV_DEVICE_CONFIG **ppsDevConfig)
@@ -81767,7 +81767,7 @@ index 6a3690fb8d877..ca37ba9212455 100644
  	gsDevices[0].ui32PhysHeapCount = ++ui32NextPhysHeapID;
  
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h b/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h
-index 57046a00c2033..d5184b21b6544 100644
+index 57046a00c203..d5184b21b654 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysinfo.h
 @@ -48,6 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -81779,7 +81779,7 @@ index 57046a00c2033..d5184b21b6544 100644
  #define SYS_RGX_OF_COMPATIBLE "img,rgx"
  
 diff --git a/drivers/gpu/drm/img-rogue/srvcore.c b/drivers/gpu/drm/img-rogue/srvcore.c
-index 75624f3bb3ac4..203c89adda15f 100644
+index 75624f3bb3ac..203c89adda15 100644
 --- a/drivers/gpu/drm/img-rogue/srvcore.c
 +++ b/drivers/gpu/drm/img-rogue/srvcore.c
 @@ -291,27 +291,6 @@ CopyToUserWrapper(CONNECTION_DATA *psConnection,
@@ -81946,7 +81946,7 @@ index 75624f3bb3ac4..203c89adda15f 100644
  							  ui32DispatchTableEntryIndex,
  							  psBridgeIn,
 diff --git a/drivers/gpu/drm/img-rogue/srvcore.h b/drivers/gpu/drm/img-rogue/srvcore.h
-index fa261c2645bdd..8d1385f618d46 100644
+index fa261c2645bd..8d1385f618d4 100644
 --- a/drivers/gpu/drm/img-rogue/srvcore.h
 +++ b/drivers/gpu/drm/img-rogue/srvcore.h
 @@ -53,6 +53,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -82027,7 +82027,7 @@ index fa261c2645bdd..8d1385f618d46 100644
  #define DISPATCH_TABLE_GAP_THRESHOLD 5
  
 diff --git a/drivers/gpu/drm/img-rogue/srvkm.h b/drivers/gpu/drm/img-rogue/srvkm.h
-index ca564763d1687..29418764daa5f 100644
+index ca564763d168..29418764daa5 100644
 --- a/drivers/gpu/drm/img-rogue/srvkm.h
 +++ b/drivers/gpu/drm/img-rogue/srvkm.h
 @@ -110,7 +110,7 @@ exits by its own means (break, return, goto, etc.)
@@ -82070,7 +82070,7 @@ index ca564763d1687..29418764daa5f 100644
  
  #endif /* SRVKM_H */
 diff --git a/drivers/gpu/drm/img-rogue/sync.c b/drivers/gpu/drm/img-rogue/sync.c
-index c87d604b0cb29..3b6e8914d446c 100644
+index c87d604b0cb2..3b6e8914d446 100644
 --- a/drivers/gpu/drm/img-rogue/sync.c
 +++ b/drivers/gpu/drm/img-rogue/sync.c
 @@ -200,9 +200,7 @@ SyncPrimBlockImport(RA_PERARENA_HANDLE hArena,
@@ -82116,7 +82116,7 @@ index c87d604b0cb29..3b6e8914d446c 100644
  	                                NULL,
  	                                NULL,
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint.c b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
-index 52b8898fa8cce..b04d059662ee6 100644
+index 52b8898fa8cc..b04d059662ee 100644
 --- a/drivers/gpu/drm/img-rogue/sync_checkpoint.c
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
 @@ -66,9 +66,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -82591,7 +82591,7 @@ index 52b8898fa8cce..b04d059662ee6 100644
  	while (CHECKPOINT_POOL_VALID(psCtxCtl) && psCtxCtl->ui32SyncCheckpointPoolCount > 0)
  	{
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint.h b/drivers/gpu/drm/img-rogue/sync_checkpoint.h
-index 33c26f4208625..d1f53751dd40e 100644
+index 33c26f420862..d1f53751dd40 100644
 --- a/drivers/gpu/drm/img-rogue/sync_checkpoint.h
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint.h
 @@ -84,6 +84,7 @@ typedef PVRSRV_ERROR (*PFN_SYNC_CHECKPOINT_FENCE_CREATE_FN)(PPVRSRV_DEVICE_NODE
@@ -82719,7 +82719,7 @@ index 33c26f4208625..d1f53751dd40e 100644
  @Function       SyncCheckpointDumpInfoOnStalledUFOs
  
 diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h b/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h
-index 49d1b7810a8da..2514ff3b6973f 100644
+index 49d1b7810a8d..2514ff3b6973 100644
 --- a/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h
 +++ b/drivers/gpu/drm/img-rogue/sync_checkpoint_internal.h
 @@ -54,7 +54,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -82731,7 +82731,7 @@ index 49d1b7810a8da..2514ff3b6973f 100644
  struct SYNC_CHECKPOINT_RECORD;
  
 diff --git a/drivers/gpu/drm/img-rogue/sync_prim_internal.h b/drivers/gpu/drm/img-rogue/sync_prim_internal.h
-index 77164c2356cd7..c4dec49e9ca4b 100644
+index 77164c2356cd..c4dec49e9ca4 100644
 --- a/drivers/gpu/drm/img-rogue/sync_prim_internal.h
 +++ b/drivers/gpu/drm/img-rogue/sync_prim_internal.h
 @@ -71,7 +71,6 @@ typedef struct PVRSRV_CLIENT_SYNC_PRIM_OP_TAG
@@ -82743,7 +82743,7 @@ index 77164c2356cd7..c4dec49e9ca4b 100644
  	PVRSRV_CLIENT_SYNC_PRIM    *psSync;          /*!< Pointer to the client sync primitive */
  	uint32_t                    ui32FenceValue;  /*!< The Fence value (only used if PVRSRV_CLIENT_SYNC_PRIM_OP_CHECK is set) */
 diff --git a/drivers/gpu/drm/img-rogue/sync_server.c b/drivers/gpu/drm/img-rogue/sync_server.c
-index 12a7d1ea8d0bc..1746d946aca1c 100644
+index 12a7d1ea8d0b..1746d946aca1 100644
 --- a/drivers/gpu/drm/img-rogue/sync_server.c
 +++ b/drivers/gpu/drm/img-rogue/sync_server.c
 @@ -571,7 +571,7 @@ PVRSRVSyncRecordAddKM(CONNECTION_DATA *psConnection,
@@ -82810,7 +82810,7 @@ index 12a7d1ea8d0bc..1746d946aca1c 100644
  	}
  }
 diff --git a/drivers/gpu/drm/img-rogue/sysconfig_cmn.c b/drivers/gpu/drm/img-rogue/sysconfig_cmn.c
-index 68d30527eb3f2..d8a09182dc042 100644
+index 68d30527eb3f..d8a09182dc04 100644
 --- a/drivers/gpu/drm/img-rogue/sysconfig_cmn.c
 +++ b/drivers/gpu/drm/img-rogue/sysconfig_cmn.c
 @@ -75,6 +75,8 @@ void SysRGXErrorNotify(IMG_HANDLE hSysData,
@@ -82898,7 +82898,7 @@ index 68d30527eb3f2..d8a09182dc042 100644
  
  IMG_BOOL SysDefaultToCpuLocalHeap(void)
 diff --git a/drivers/gpu/drm/img-rogue/sysvalidation.h b/drivers/gpu/drm/img-rogue/sysvalidation.h
-index 17ad86bbdb00e..e3e731e8b8105 100644
+index 17ad86bbdb00..e3e731e8b810 100644
 --- a/drivers/gpu/drm/img-rogue/sysvalidation.h
 +++ b/drivers/gpu/drm/img-rogue/sysvalidation.h
 @@ -50,9 +50,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -82915,7 +82915,7 @@ index 17ad86bbdb00e..e3e731e8b8105 100644
  #if defined(EMULATOR)
  void SysSetAxiProtOSid(IMG_HANDLE hSysData, IMG_UINT32 ui32OSid, IMG_BOOL bState);
 diff --git a/drivers/gpu/drm/img-rogue/tlclient.c b/drivers/gpu/drm/img-rogue/tlclient.c
-index 76983002c4f10..a72f8118483b9 100644
+index 76983002c4f1..a72f8118483b 100644
 --- a/drivers/gpu/drm/img-rogue/tlclient.c
 +++ b/drivers/gpu/drm/img-rogue/tlclient.c
 @@ -174,7 +174,7 @@ PVRSRV_ERROR TLClientOpenStream(SHARED_DEV_CONNECTION hDevConnection,
@@ -82928,7 +82928,7 @@ index 76983002c4f10..a72f8118483b9 100644
  	/* Return client descriptor handle to caller */
  	*phSD = psSD;
 diff --git a/drivers/gpu/drm/img-rogue/tlintern.c b/drivers/gpu/drm/img-rogue/tlintern.c
-index 2c84ebf7b1940..3bd6b0af17180 100644
+index 2c84ebf7b194..3bd6b0af1718 100644
 --- a/drivers/gpu/drm/img-rogue/tlintern.c
 +++ b/drivers/gpu/drm/img-rogue/tlintern.c
 @@ -335,7 +335,7 @@ IMG_UINT32 TLDiscoverStreamNodes(const IMG_CHAR *pszNamePattern,
@@ -82941,7 +82941,7 @@ index 2c84ebf7b1940..3bd6b0af17180 100644
  		}
  
 diff --git a/drivers/gpu/drm/img-rogue/tlintern.h b/drivers/gpu/drm/img-rogue/tlintern.h
-index c3edce6b8cd17..114f90f985485 100644
+index c3edce6b8cd1..114f90f98548 100644
 --- a/drivers/gpu/drm/img-rogue/tlintern.h
 +++ b/drivers/gpu/drm/img-rogue/tlintern.h
 @@ -94,6 +94,8 @@ typedef struct _TL_STREAM_
@@ -82954,7 +82954,7 @@ index c3edce6b8cd17..114f90f985485 100644
  	void                    *pvProducerUserData;                    /*!< Producer callback user data */
  
 diff --git a/drivers/gpu/drm/img-rogue/tlserver.c b/drivers/gpu/drm/img-rogue/tlserver.c
-index c250dd3dc6189..5c8359271508b 100644
+index c250dd3dc618..5c8359271508 100644
 --- a/drivers/gpu/drm/img-rogue/tlserver.c
 +++ b/drivers/gpu/drm/img-rogue/tlserver.c
 @@ -270,6 +270,8 @@ TLServerCloseStreamKM(PTL_STREAM_DESC psSD)
@@ -83007,7 +83007,7 @@ index c250dd3dc6189..5c8359271508b 100644
  			if (bDataFound)
  			{
 diff --git a/drivers/gpu/drm/img-rogue/tlstream.c b/drivers/gpu/drm/img-rogue/tlstream.c
-index b38a5cf568191..3d13ccf6b3261 100644
+index b38a5cf56819..3d13ccf6b326 100644
 --- a/drivers/gpu/drm/img-rogue/tlstream.c
 +++ b/drivers/gpu/drm/img-rogue/tlstream.c
 @@ -49,6 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -83206,7 +83206,7 @@ index b38a5cf568191..3d13ccf6b3261 100644
 +	return ui32MaxTransfer;
 +}
 diff --git a/drivers/gpu/drm/img-rogue/tlstream.h b/drivers/gpu/drm/img-rogue/tlstream.h
-index 911e720e7cdde..aa237bba4d79c 100644
+index 911e720e7cdd..aa237bba4d79 100644
 --- a/drivers/gpu/drm/img-rogue/tlstream.h
 +++ b/drivers/gpu/drm/img-rogue/tlstream.h
 @@ -181,6 +181,7 @@ typedef PVRSRV_ERROR (*TL_STREAM_SOURCECB)(IMG_HANDLE hStream,
@@ -83266,7 +83266,7 @@ index 911e720e7cdde..aa237bba4d79c 100644
  /*****************************************************************************
   End of file (tlstream.h)
 diff --git a/drivers/gpu/drm/img-rogue/vmm_impl.h b/drivers/gpu/drm/img-rogue/vmm_impl.h
-index 9ac1f50e5d30c..928a3f6bc9ac0 100644
+index 9ac1f50e5d30..928a3f6bc9ac 100644
 --- a/drivers/gpu/drm/img-rogue/vmm_impl.h
 +++ b/drivers/gpu/drm/img-rogue/vmm_impl.h
 @@ -48,6 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -83290,7 +83290,7 @@ index 9ac1f50e5d30c..928a3f6bc9ac0 100644
  
  #endif /* VMM_IMPL_H */
 diff --git a/drivers/gpu/drm/img-rogue/vmm_pvz_server.c b/drivers/gpu/drm/img-rogue/vmm_pvz_server.c
-index 995d3051b95fd..7e67d397a908d 100644
+index 995d3051b95f..7e67d397a908 100644
 --- a/drivers/gpu/drm/img-rogue/vmm_pvz_server.c
 +++ b/drivers/gpu/drm/img-rogue/vmm_pvz_server.c
 @@ -55,15 +55,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -83354,7 +83354,7 @@ index 995d3051b95fd..7e67d397a908d 100644
  #else
  	PVRSRV_ERROR eError = PVRSRV_OK;
 diff --git a/drivers/gpu/drm/img-rogue/vmm_type_stub.c b/drivers/gpu/drm/img-rogue/vmm_type_stub.c
-index cafe57bbab779..8d03474e48399 100644
+index cafe57bbab77..8d03474e4839 100644
 --- a/drivers/gpu/drm/img-rogue/vmm_type_stub.c
 +++ b/drivers/gpu/drm/img-rogue/vmm_type_stub.c
 @@ -94,16 +94,20 @@ static VMM_PVZ_CONNECTION gsStubVmmPvz =
@@ -83381,7 +83381,7 @@ index cafe57bbab779..8d03474e48399 100644
  }
  
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c
-index 5e01219505808..bb7c8f6426c68 100644
+index 5e0121950580..bb7c8f6426c6 100644
 --- a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.c
 @@ -63,8 +63,7 @@ PvzConnectionValidate(void)
@@ -83494,7 +83494,7 @@ index 5e01219505808..bb7c8f6426c68 100644
  
  VMM_PVZ_CONNECTION* PvzConnectionAcquire(void)
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h
-index a354619158665..03d5525936b8d 100644
+index a35461915866..03d5525936b8 100644
 --- a/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_pvz.h
 @@ -56,8 +56,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -83509,7 +83509,7 @@ index a354619158665..03d5525936b8d 100644
  /*!
  *******************************************************************************
 diff --git a/drivers/gpu/drm/img-rogue/vz_vmm_vm.c b/drivers/gpu/drm/img-rogue/vz_vmm_vm.c
-index 7e3a695dbb020..bc737f5acd817 100644
+index 7e3a695dbb02..bc737f5acd81 100644
 --- a/drivers/gpu/drm/img-rogue/vz_vmm_vm.c
 +++ b/drivers/gpu/drm/img-rogue/vz_vmm_vm.c
 @@ -247,11 +247,11 @@ PVRSRV_ERROR PvzVMMConfigure(VMM_CONF_PARAM eVMMParamType,

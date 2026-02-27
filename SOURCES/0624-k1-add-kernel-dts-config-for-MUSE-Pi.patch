@@ -1,4 +1,4 @@
-From 6d21f80e94af27755dd2b033789c16ea37abe2e4 Mon Sep 17 00:00:00 2001
+From 9b936f2031adeed3c98436cbc8a9846a949a49ee Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 19 Apr 2024 14:51:25 +0800
 Subject: [PATCH 0624/1236] k1: add kernel dts config for MUSE-Pi
@@ -11,7 +11,7 @@ Change-Id: Ib4a5404f01604d08ae4605dae2bac9fbeb967e46
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 410a1afa9ea7f..51205d075248b 100644
+index 410a1afa9ea7..51205d075248 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -4,5 +4,6 @@ dtb-$(CONFIG_ARCH_SPACEMIT) += k1-milkv-jupiter.dtb
@@ -24,7 +24,7 @@ index 410a1afa9ea7f..51205d075248b 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 new file mode 100644
-index 0000000000000..806834b23d99d
+index 000000000000..806834b23d99
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -0,0 +1,993 @@

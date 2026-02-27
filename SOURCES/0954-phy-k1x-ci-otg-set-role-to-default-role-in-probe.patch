@@ -1,4 +1,4 @@
-From 744df9fa1b650fd838f6a718a655797ff8f4119f Mon Sep 17 00:00:00 2001
+From ef7ca2d030dcecd9acbbf21e6a823b58adfb8203 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 15 Aug 2024 11:47:11 +0800
 Subject: [PATCH 0954/1236] phy-k1x-ci-otg: set role to default role in probe
@@ -9,7 +9,7 @@ Change-Id: I574f65cf8743bf1ab6a13189c1d9468d5f6a449d
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
-index 54837d3f7dbb6..83d9e02dd69c5 100644
+index 54837d3f7dbb..83d9e02dd69c 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.c
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.c
 @@ -566,6 +566,10 @@ static int mv_otg_setup_role_switch(struct mv_otg *mvotg)

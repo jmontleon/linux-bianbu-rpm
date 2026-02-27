@@ -1,4 +1,4 @@
-From 0d45259228182d59622f5965a05e38e8d49f932b Mon Sep 17 00:00:00 2001
+From dd2d46ac884bd1ac1e31b4d1051b7f72a7f941ed Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 18 Oct 2024 17:50:53 +0800
 Subject: [PATCH 1043/1236] Bluetooth: btrtl: fix oops in
@@ -43,7 +43,7 @@ Change-Id: Iaf296ffbd6623191356c46a420a358233723e728
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 52794db2739bf..33259e64882bb 100644
+index 52794db2739b..33259e64882b 100644
 --- a/drivers/bluetooth/btrtl.c
 +++ b/drivers/bluetooth/btrtl.c
 @@ -419,7 +419,7 @@ static int btrtl_vendor_read_reg16(struct hci_dev *hdev,

@@ -1,4 +1,4 @@
-From a0752f0dfe07dc9745e958791ea1f4daff1d798f Mon Sep 17 00:00:00 2001
+From edce6ab4aa4ad21be6d10a0a10c80a901c7d7edc Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 2 Apr 2024 20:41:32 +0800
 Subject: [PATCH 0564/1236] display: Support hdmi hot plug detection
@@ -11,7 +11,7 @@ Change-Id: I541d543780908967b8321f0f2d18a03ec013f35f
  3 files changed, 142 insertions(+), 27 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
-index 574e0d2b8797f..bab7c1618ed01 100644
+index 574e0d2b8797..bab7c1618ed0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 @@ -37,6 +37,8 @@ dpu_offline0_hdmi_out: endpoint@1 {
@@ -24,7 +24,7 @@ index 574e0d2b8797f..bab7c1618ed01 100644
  		clock-names = "hmclk";
  		assigned-clocks = <&ccu CLK_HDMI>;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 7d4d489d66a07..f819a16e98e88 100644
+index 7d4d489d66a0..f819a16e98e8 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -293,6 +293,9 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
@@ -79,7 +79,7 @@ index 7d4d489d66a07..f819a16e98e88 100644
  
  	spin_lock_irq(&drm->event_lock);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 17b34c38e6f64..f37ff7b91751d 100644
+index 17b34c38e6f6..f37ff7b91751 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -22,7 +22,6 @@

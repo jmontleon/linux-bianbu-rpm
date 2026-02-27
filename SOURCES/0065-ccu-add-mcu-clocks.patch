@@ -1,4 +1,4 @@
-From 5dc585a1d3ae6638cfc20a6ff6344c9f7e8da319 Mon Sep 17 00:00:00 2001
+From 4ebb0850826e7262b59af526c69e4aaff9f07986 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 8 Jun 2023 11:44:44 +0800
 Subject: [PATCH 0065/1236] ccu: add mcu clocks
@@ -10,7 +10,7 @@ Change-Id: I8352c337c092bc30d9d042a05241550b96ed9cde
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
-index 9e0ece5c4e3fa..724411f3df600 100755
+index 9e0ece5c4e3f..724411f3df60 100755
 --- a/drivers/clk/spacemit/k1-pro-ccu.c
 +++ b/drivers/clk/spacemit/k1-pro-ccu.c
 @@ -143,7 +143,9 @@ static struct ccu_clk_data ccu_clocks[] =  {
@@ -25,7 +25,7 @@ index 9e0ece5c4e3fa..724411f3df600 100755
  
  static void ccu_clocks_init(struct device_node *np)
 diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
-index a8d4bc68c8259..281ddbabcebc0 100755
+index a8d4bc68c825..281ddbabcebc 100755
 --- a/include/dt-bindings/clock/k1-pro-ccu-clock.h
 +++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
 @@ -140,6 +140,8 @@

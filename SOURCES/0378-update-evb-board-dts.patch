@@ -1,4 +1,4 @@
-From a6b3e40db8db030057f92fadd3e20754b27c05a3 Mon Sep 17 00:00:00 2001
+From 9520153937b743dd4950d425b257f76983f7a6e1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 12 Jan 2024 19:26:02 +0800
 Subject: [PATCH 0378/1236] update evb board dts
@@ -10,7 +10,7 @@ Change-Id: Ic27f20d1a8164db2413f37c4a24ddd6234ed5c9f
  2 files changed, 104 insertions(+), 55 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 551826d62d5dc..ef893aeebe769 100644
+index 551826d62d5d..ef893aeebe76 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -73,32 +73,6 @@ core3 {
@@ -268,7 +268,7 @@ index 551826d62d5dc..ef893aeebe769 100644
 + *};
 + */
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index f2d93a980b4df..cd0c1efd30c5f 100644
+index f2d93a980b4d..cd0c1efd30c5 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -437,7 +437,6 @@ CONFIG_RESET_CONTROLLER=y

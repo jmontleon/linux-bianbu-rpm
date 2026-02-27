@@ -1,4 +1,4 @@
-From f3eb44f554a38674181d077acca80853aa778562 Mon Sep 17 00:00:00 2001
+From 15b47252e3f744479920410dca10dc38664747dd Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 10 Sep 2024 20:39:21 +0800
 Subject: [PATCH 1012/1236] spacemit-rf: use gpiod_set_value_cansleep() instead
@@ -12,7 +12,7 @@ Change-Id: I3496f04edcf451f50de51eb183d116348e66e8e1
  3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
-index 48677d23778da..ab164855b5361 100644
+index 48677d23778d..ab164855b536 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 @@ -44,11 +44,11 @@ static int spacemit_bt_on(struct bt_pwrseq *pwrseq, bool on_off)
@@ -30,7 +30,7 @@ index 48677d23778da..ab164855b5361 100644
  			spacemit_power_on(pwrseq->parent, 0);
  	}
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
-index 59e9fa277f3e9..e08da8d256ed9 100644
+index 59e9fa277f3e..e08da8d256ed 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-rfkill.c
 @@ -54,12 +54,12 @@ static void spacemit_rfkill_set_pin(struct gpio_desc *gpio, int value,
@@ -49,7 +49,7 @@ index 59e9fa277f3e9..e08da8d256ed9 100644
  
  static int spacemit_rfkill_on(struct rfkill_pwrseq *pwrseq, bool on_off)
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
-index c7a553ba5f768..f9bb8130088ce 100644
+index c7a553ba5f76..f9bb8130088c 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -94,11 +94,11 @@ static int spacemit_wlan_on(struct wlan_pwrseq *pwrseq, bool on_off)

@@ -1,4 +1,4 @@
-From af3e8ae269b1b7f4ab8d48368393473d74e2a91f Mon Sep 17 00:00:00 2001
+From 5ea8255029dcfc46a10e9111a7c194368315a904 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 2 Jul 2024 17:15:35 +0800
 Subject: [PATCH 0814/1236] display: do not operate clock during the pm runtime
@@ -9,7 +9,7 @@ Change-Id: I39f36fccd4f46a2e418148e41e06a0cd7fa27dd9
  1 file changed, 11 insertions(+), 88 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 0c441c18b7812..292f17aa37576 100644
+index 0c441c18b781..292f17aa3757 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -301,14 +301,13 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,

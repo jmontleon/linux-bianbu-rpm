@@ -1,4 +1,4 @@
-From dbe4b8e274f62be5ca5d464226b64fdf235d5598 Mon Sep 17 00:00:00 2001
+From 4c3e0af8b05b577fb47300335c97a0791b6a25e2 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 26 Jan 2024 18:33:14 +0800
 Subject: [PATCH 0424/1236] set cma alloc range from 0x40000000
@@ -11,7 +11,7 @@ Change-Id: I64fa15c02e56ccc630b5f1e7b28159712d4ec6b7
  3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 711d0821232ac..6753a69f14be7 100644
+index 711d0821232a..6753a69f14be 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -90,8 +90,8 @@ reserved-memory {
@@ -26,7 +26,7 @@ index 711d0821232ac..6753a69f14be7 100644
  			size = <0 0x18000000>;
  			/* start address is 1Mbyte aligned */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index edf46cb24229f..e1f09d76656e0 100644
+index edf46cb24229..e1f09d76656e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -90,8 +90,8 @@ reserved-memory {
@@ -41,7 +41,7 @@ index edf46cb24229f..e1f09d76656e0 100644
  			size = <0 0x18000000>;
  			/* start address is 1Mbyte aligned */
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 2f515ac38d7ab..4a8fe6e16bbbf 100644
+index 2f515ac38d7a..4a8fe6e16bbb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -90,8 +90,8 @@ reserved-memory {

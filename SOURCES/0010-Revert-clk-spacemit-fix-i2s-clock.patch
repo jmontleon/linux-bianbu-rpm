@@ -1,4 +1,4 @@
-From 202f2ec2998475a46beb836c194ebd25a889001e Mon Sep 17 00:00:00 2001
+From 8fe6c4c70d2dfe9f7d8a37122ce3ef3cac813ad1 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:35:17 -0400
 Subject: [PATCH 0010/1236] Revert "clk: spacemit: fix i2s clock"
@@ -10,7 +10,7 @@ This reverts commit 519cff1d85694cbdf33b27591740e7e37348e6b4.
  2 files changed, 2 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 57a1a10a48e69..235bd29189029 100644
+index 57a1a10a48e6..235bd2918902 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -134,28 +134,8 @@ CCU_DDN_DEFINE(slow_uart2_48, pll1_d4_614p4, MPMU_SUCCR_1, 16, 13, 0, 13, 2, 0);
@@ -56,7 +56,7 @@ index 57a1a10a48e69..235bd29189029 100644
  
  static const struct spacemit_ccu_data k1_ccu_mpmu_data = {
 diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
-index 3481602950066..039a448c51a07 100644
+index 348160295006..039a448c51a0 100644
 --- a/include/soc/spacemit/k1-syscon.h
 +++ b/include/soc/spacemit/k1-syscon.h
 @@ -18,7 +18,6 @@

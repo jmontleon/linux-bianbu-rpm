@@ -1,4 +1,4 @@
-From 1b414c1cd40e18e9f49145b49dd5315a2df7ccb4 Mon Sep 17 00:00:00 2001
+From 07fcf719d19831e50a28071d6cba877bf2082a45 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Aug 2024 10:10:47 +0800
 Subject: [PATCH 0982/1236] phy-k1x-ci-otg: fix shared reset assert warning
@@ -25,7 +25,7 @@ Change-Id: I01ae83364f5345fb35e56e18d8f0ece111e5aa1d
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
-index 83d9e02dd69c5..2b68e7a704d0a 100644
+index 83d9e02dd69c..2b68e7a704d0 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.c
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.c
 @@ -229,7 +229,6 @@ static int mv_otg_enable_internal(struct mv_otg *mvotg)

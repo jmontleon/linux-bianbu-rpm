@@ -1,4 +1,4 @@
-From 2dee3ba8fff9d0295d66e23bd0f1423f8a3fa250 Mon Sep 17 00:00:00 2001
+From 5c0831f2024a5b0249099ec9f3e66e9c64ff5ec5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 28 Dec 2023 17:59:15 +0800
 Subject: [PATCH 0289/1236] clock: add apbc2 reg base clocks
@@ -11,7 +11,7 @@ Change-Id: I479c6150be26891e691c4f170f7beef7235e599e
  3 files changed, 82 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 9da72995438fd..abe7b4b29daf6 100755
+index 9da72995438f..abe7b4b29daf 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -153,6 +153,16 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -122,7 +122,7 @@ index 9da72995438fd..abe7b4b29daf6 100755
  	ret = spacemit_ccu_probe(np, clk_info, hw_clks);
  	LOG_INFO("init clock finish");
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
-index e31dee144bfeb..46577e2543284 100755
+index e31dee144bfe..46577e254328 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.h
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 @@ -19,6 +19,7 @@ enum ccu_base_type{
@@ -142,7 +142,7 @@ index e31dee144bfeb..46577e2543284 100755
  
  struct clk_hw_table {
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 78ebfc49c7479..71200be019f06 100755
+index 78ebfc49c747..71200be019f0 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -173,5 +173,13 @@

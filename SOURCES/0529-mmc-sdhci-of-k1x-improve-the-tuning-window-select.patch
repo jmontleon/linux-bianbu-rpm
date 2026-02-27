@@ -1,4 +1,4 @@
-From 7bc441dc085c721ff774504689619b00cb22915f Mon Sep 17 00:00:00 2001
+From a5c111a9ae4b521e5e2c1b785e2b14870849d4a5 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 22 Mar 2024 17:30:21 +0800
 Subject: [PATCH 0529/1236] mmc: sdhci-of-k1x: improve the tuning window select
@@ -9,7 +9,7 @@ Change-Id: Iacb934c00e24aa4ec0407bc896d96a76a82aa9d5
  1 file changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index f6789060bb98e..762577c63db96 100644
+index f6789060bb98..762577c63db9 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1039,7 +1039,8 @@ static int spacemit_sw_rx_select_window(struct sdhci_host *host, u32 opcode)

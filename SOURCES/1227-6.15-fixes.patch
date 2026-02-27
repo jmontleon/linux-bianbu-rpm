@@ -1,4 +1,4 @@
-From ec3f231b1344daec37ee75d72f25bc2944161778 Mon Sep 17 00:00:00 2001
+From e3c5764d408e6aefded4a0cd9a04bc31abb0a891 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Mon, 7 Apr 2025 19:34:18 -0400
 Subject: [PATCH 1227/1236] 6.15 fixes
@@ -27,7 +27,7 @@ Subject: [PATCH 1227/1236] 6.15 fixes
  20 files changed, 29 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index fdda9d68196c4..9933af8a6bf27 100644
+index fdda9d68196c..9933af8a6bf2 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
 @@ -2872,10 +2872,14 @@ void remove_boost_sysfs_file(void)
@@ -46,7 +46,7 @@ index fdda9d68196c4..9933af8a6bf27 100644
  	if (cpufreq_boost_supported()) {
  		sysfs_remove_file(&policy->kobj, &local_boost.attr);
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index ac1e7385b81b5..7baaa5f5a8e8d 100644
+index ac1e7385b81b..7baaa5f5a8e8 100644
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -907,10 +907,6 @@ static unsigned int spacemit_crypto_ctxsize(struct crypto_alg *alg, u32 type, u3
@@ -61,7 +61,7 @@ index ac1e7385b81b5..7baaa5f5a8e8d 100644
  
  	return len;
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
-index 618c017b8c0f0..7376563e442ec 100644
+index 618c017b8c0f..7376563e442e 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_apollo.c
 @@ -827,7 +827,7 @@ static int apollo_enable_irq(struct tc_device *tc)
@@ -74,7 +74,7 @@ index 618c017b8c0f0..7376563e442ec 100644
  	iowrite32(0, tc->tcf.registers +
  		TCF_CLK_CTRL_INTERRUPT_ENABLE);
 diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
-index 2e676ac7e3421..9dfa547d7ad9f 100644
+index 2e676ac7e342..9dfa547d7ad9 100644
 --- a/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 +++ b/drivers/gpu/drm/img-rogue/apollo/tc_odin.c
 @@ -1433,7 +1433,7 @@ static int odin_enable_irq(struct tc_device *tc)
@@ -87,7 +87,7 @@ index 2e676ac7e3421..9dfa547d7ad9f 100644
  	iowrite32(0, tc->tcf.registers +
  			common_reg_offset(tc, CORE_INTERRUPT_ENABLE));
 diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
-index efa06b112bb31..2e948492b9598 100644
+index efa06b112bb3..2e948492b959 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc.c
 @@ -1569,7 +1569,7 @@ PVRSRV_ERROR OSDisableTimer (IMG_HANDLE hTimer)
@@ -100,7 +100,7 @@ index efa06b112bb31..2e948492b9598 100644
  	/*
  	 * This second flush is to catch the case where the timer ran
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 959640832bc0f..c1371872f5281 100644
+index 959640832bc0..c1371872f528 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -462,7 +462,7 @@ static int spacemit_dsi_connector_get_modes(struct drm_connector *connector)
@@ -113,7 +113,7 @@ index 959640832bc0f..c1371872f5281 100644
  	enum drm_mode_status mode_status = MODE_OK;
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 00c85c3f0a2d0..03c33fd7691b9 100644
+index 00c85c3f0a2d..03c33fd7691b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -800,7 +800,7 @@ static int spacemit_hdmi_connector_get_modes(struct drm_connector *connector)
@@ -126,7 +126,7 @@ index 00c85c3f0a2d0..03c33fd7691b9 100644
  	return MODE_OK;
  }
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
-index 784bf71bac520..9e5f47752920a 100644
+index 784bf71bac52..9e5f47752920 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -84,7 +84,7 @@ static int spacemit_wb_connector_get_modes(struct drm_connector *connector)
@@ -139,7 +139,7 @@ index 784bf71bac520..9e5f47752920a 100644
  	enum drm_mode_status mode_status = MODE_OK;
  
 diff --git a/drivers/input/touchscreen/gt9xx.c b/drivers/input/touchscreen/gt9xx.c
-index 53d19d1c7b146..2fa81df9d34cb 100644
+index 53d19d1c7b14..2fa81df9d34c 100644
 --- a/drivers/input/touchscreen/gt9xx.c
 +++ b/drivers/input/touchscreen/gt9xx.c
 @@ -1509,9 +1509,8 @@ static int gtp_request_irq(struct goodix_ts_data *ts)
@@ -155,7 +155,7 @@ index 53d19d1c7b146..2fa81df9d34cb 100644
  			      HRTIMER_MODE_REL);
  		set_bit(HRTIMER_USED, &ts->flags);
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
-index 1c50d1b7d7951..d501d47ae5f2d 100644
+index 1c50d1b7d795..d501d47ae5f2 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_session.c
 @@ -95,7 +95,7 @@ static void watchdog_stop(struct mvx_session *session)
@@ -168,7 +168,7 @@ index 1c50d1b7d7951..d501d47ae5f2d 100644
  	/* ret: 0=watchdog expired, 1=watchdog still running */
  	MVX_SESSION_DEBUG(session, "Watchdog stop. ret=%d", ret);
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index e85f79457edad..4a773f5d6f3be 100644
+index e85f79457eda..4a773f5d6f3b 100644
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -2764,7 +2764,7 @@ static int emac_probe(struct platform_device *pdev)
@@ -181,7 +181,7 @@ index e85f79457edad..4a773f5d6f3be 100644
  	clk_disable_unprepare(priv->mac_clk);
  err_netdev:
 diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
-index e53a60d2ea0a9..3c27b0e9c4e51 100644
+index e53a60d2ea0a..3c27b0e9c4e5 100644
 --- a/drivers/net/usb/qmi_wwan_f.c
 +++ b/drivers/net/usb/qmi_wwan_f.c
 @@ -1197,8 +1197,7 @@ static int qmap_register_device(sQmiWwanQmap * pDev, u8 offset_id)
@@ -195,7 +195,7 @@ index e53a60d2ea0a9..3c27b0e9c4e51 100644
      ktime_get_ts64(&priv->agg_time);
      spin_lock_init(&priv->agg_lock);
 diff --git a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
-index 15d00eb72cbba..318b67ad6bd8c 100644
+index 15d00eb72cbb..318b67ad6bd8 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
 +++ b/drivers/net/wireless/realtek/rtl8852be/include/osdep_service_linux.h
 @@ -764,12 +764,12 @@ __inline static void _set_timer(_timer *ptimer, u32 delay_time)
@@ -214,7 +214,7 @@ index 15d00eb72cbba..318b67ad6bd8c 100644
  
  /*work*/
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
-index d3eb947c6116b..b5be8be5ba749 100644
+index d3eb947c6116..b5be8be5ba74 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
 +++ b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
 @@ -760,12 +760,12 @@ __inline static void _set_timer(_timer *ptimer, u32 delay_time)
@@ -233,7 +233,7 @@ index d3eb947c6116b..b5be8be5ba749 100644
  
  /*work*/
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
-index a4a49253c34b2..cf3a9029a325c 100644
+index a4a49253c34b..cf3a9029a325 100644
 --- a/drivers/spi/spi-k1x.c
 +++ b/drivers/spi/spi-k1x.c
 @@ -255,7 +255,7 @@ static void giveback(struct spi_driver_data *drv_data)
@@ -246,7 +246,7 @@ index a4a49253c34b2..cf3a9029a325c 100644
  }
  
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index ab1f607434a0f..74caac83a705c 100644
+index ab1f607434a0..74caac83a705 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -1860,7 +1860,7 @@ static int serial_pxa_suspend(struct device *dev)
@@ -259,7 +259,7 @@ index ab1f607434a0f..74caac83a705c 100644
  	}
  #endif
 diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
-index fd06316a38bc8..c854ab926e522 100644
+index fd06316a38bc..c854ab926e52 100644
 --- a/drivers/watchdog/k1x_wdt.c
 +++ b/drivers/watchdog/k1x_wdt.c
 @@ -680,8 +680,7 @@ static int spa_wdt_probe(struct platform_device *pdev)
@@ -273,7 +273,7 @@ index fd06316a38bc8..c854ab926e522 100644
  	platform_set_drvdata(pdev, info);
  
 diff --git a/sound/soc/codecs/es8156.c b/sound/soc/codecs/es8156.c
-index da26b4737fd8f..2f73cf77660aa 100644
+index da26b4737fd8..2f73cf77660a 100644
 --- a/sound/soc/codecs/es8156.c
 +++ b/sound/soc/codecs/es8156.c
 @@ -336,10 +336,10 @@ static int es8156_set_dai_fmt(struct snd_soc_dai *codec_dai,
@@ -290,7 +290,7 @@ index da26b4737fd8f..2f73cf77660aa 100644
  		break;
  	default:
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 99378d4c63dc2..21da71c79b37c 100644
+index 99378d4c63dc..21da71c79b37 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -258,7 +258,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
@@ -312,7 +312,7 @@ index 99378d4c63dc2..21da71c79b37c 100644
  card_parse_end:
  	of_node_put(dai_link);
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index 61f3c1b95c486..7d8078233d6f6 100644
+index 61f3c1b95c48..7d8078233d6f 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -103,7 +103,7 @@ static int i2s_sspa_startup(struct snd_pcm_substream *substream,

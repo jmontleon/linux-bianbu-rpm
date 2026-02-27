@@ -1,4 +1,4 @@
-From bb869e98ee1065e45618152465ea5c9016532d97 Mon Sep 17 00:00:00 2001
+From ff51ff4917b2319dabcd2b093d2e491ebd8e637a Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 25 Dec 2023 10:12:08 +0800
 Subject: [PATCH 0264/1236] k1x:add watchdog driver support
@@ -13,7 +13,7 @@ Change-Id: I10b9e616c862ef093673f3f30d21743244c1a9ed
  create mode 100755 drivers/watchdog/k1x_wdt.c
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index a0ca9cdade3dd..7fd8d6687de6f 100644
+index a0ca9cdade3d..7fd8d6687de6 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -159,6 +159,8 @@ CONFIG_PINCTRL_SINGLE=y
@@ -26,7 +26,7 @@ index a0ca9cdade3dd..7fd8d6687de6f 100644
  CONFIG_MFD_SPACEMIT_PMIC=y
  CONFIG_REGULATOR=y
 diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 05008d937e405..828649dea5d0a 100644
+index 05008d937e40..828649dea5d0 100644
 --- a/drivers/watchdog/Kconfig
 +++ b/drivers/watchdog/Kconfig
 @@ -2354,4 +2354,18 @@ config KEEMBAY_WATCHDOG
@@ -49,7 +49,7 @@ index 05008d937e405..828649dea5d0a 100644
 +
  endif # WATCHDOG
 diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index b680e4d3c1bc2..4818f503c512d 100644
+index b680e4d3c1bc..4818f503c512 100644
 --- a/drivers/watchdog/Makefile
 +++ b/drivers/watchdog/Makefile
 @@ -37,6 +37,7 @@ obj-$(CONFIG_USBPCWATCHDOG) += pcwd_usb.o
@@ -62,7 +62,7 @@ index b680e4d3c1bc2..4818f503c512d 100644
  obj-$(CONFIG_ARMADA_37XX_WATCHDOG) += armada_37xx_wdt.o
 diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
 new file mode 100755
-index 0000000000000..35fdea70aa565
+index 000000000000..35fdea70aa56
 --- /dev/null
 +++ b/drivers/watchdog/k1x_wdt.c
 @@ -0,0 +1,832 @@

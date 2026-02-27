@@ -1,4 +1,4 @@
-From 89769f50ec9acda474c7c658e51da8ac04a9f4e2 Mon Sep 17 00:00:00 2001
+From fc6665b2450d5bea9610b7a7026b9736e395dba0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 1 Apr 2024 15:57:34 +0800
 Subject: [PATCH 0558/1236] i2s: fix LR channel mapping incorrect issue
@@ -9,7 +9,7 @@ Change-Id: I881667dc054e566fcf14b6456ac7f0b4f99f944c
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-spi.c b/sound/soc/spacemit/spacemit-snd-spi.c
-index 4b90cd0910419..74bd5f0bb21d5 100755
+index 4b90cd091041..74bd5f0bb21d 100755
 --- a/sound/soc/spacemit/spacemit-snd-spi.c
 +++ b/sound/soc/spacemit/spacemit-snd-spi.c
 @@ -101,7 +101,7 @@ static int mmp_sspa_startup(struct snd_pcm_substream *substream,

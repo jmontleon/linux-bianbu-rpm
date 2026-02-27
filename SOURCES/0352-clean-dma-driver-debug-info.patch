@@ -1,4 +1,4 @@
-From 3fcece1602fd36dfe43eaf60b168a6cc8be228b6 Mon Sep 17 00:00:00 2001
+From ce51c4cc3ece0a8f4dd043c6ea5a9154e9efbcd8 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:25:03 +0800
 Subject: [PATCH 0352/1236] clean dma driver debug info
@@ -10,7 +10,7 @@ Change-Id: I4ef0640b0afb079a84c4320ad7c37872da72a72f
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index 5c79fb733ca0b..943a05f7b0a1a 100644
+index 5c79fb733ca0..943a05f7b0a1 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -1473,7 +1473,7 @@ static int mmp_pdma_probe(struct platform_device *op)
@@ -32,7 +32,7 @@ index 5c79fb733ca0b..943a05f7b0a1a 100644
  
  err_rst:
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
-index 9a62f5e4b7794..07e7b49554d53 100644
+index 9a62f5e4b779..07e7b49554d5 100644
 --- a/drivers/dma/udma.c
 +++ b/drivers/dma/udma.c
 @@ -412,7 +412,7 @@ static int dma_init(void)

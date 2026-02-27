@@ -1,4 +1,4 @@
-From bed78ad7cd4919ce9ed53812d3684771bbe96d20 Mon Sep 17 00:00:00 2001
+From 3e2ac91f8a11eea88e252455ab02208894d0586c Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 2 Sep 2024 13:39:19 +0800
 Subject: [PATCH 1025/1236] k1:reboot: add a flag indicating whether to
@@ -11,7 +11,7 @@ Change-Id: I049d4441c72f7dc0bae96a0a4ccf2285caffaa29
  2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 1d009248fd2eb..ef9ce982bc03f 100644
+index 1d009248fd2e..ef9ce982bc03 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -39,6 +39,8 @@ static const struct restart_config_info config_info[] = {
@@ -41,7 +41,7 @@ index 1d009248fd2eb..ef9ce982bc03f 100644
  		for (i = 0; i < ARRAY_SIZE(config_info); i++) {
  			if (0 == strcmp(cmd, config_info[i].cmd_para)) {
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index ec7de4509768a..886b29c6251f0 100644
+index ec7de4509768..886b29c6251f 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -83,7 +83,7 @@ enum SPM8821_reg {

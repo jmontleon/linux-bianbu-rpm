@@ -1,4 +1,4 @@
-From 0628c217a69305de4bd7271b57e0f845db56817a Mon Sep 17 00:00:00 2001
+From ccf4c7164251144122b8cb3a48bdd36bf6d90388 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:34:15 +0800
 Subject: [PATCH 1144/1236] pxa: k1x: adapt to linux kernel new version
@@ -9,7 +9,7 @@ Change-Id: Id2faab2c5aa4c7d2bc15f09b84cb350c778650ad
  1 file changed, 15 insertions(+), 126 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index af1d2d0cad703..ab1f607434a0f 100644
+index af1d2d0cad70..ab1f607434a0 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -350,41 +350,12 @@ static inline void receive_chars(struct uart_pxa_port *up, int *status)

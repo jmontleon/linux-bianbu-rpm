@@ -1,4 +1,4 @@
-From e59ea3322f162eb95f9606c131ef2d7dfd6d7500 Mon Sep 17 00:00:00 2001
+From 8d83d67a6e02337218351f63387be6e7acee814a Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 23 Apr 2024 17:51:33 +0800
 Subject: [PATCH 0626/1236] spi: fix the bug of accessing illegal pointers when
@@ -16,7 +16,7 @@ Change-Id: I10d11842901b3b177bedc5aaf40ecf3fad8eaa79
  2 files changed, 7 insertions(+)
 
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
-index f013b91d6c096..359954541a71c 100644
+index f013b91d6c09..359954541a71 100644
 --- a/drivers/spi/spi-k1x.c
 +++ b/drivers/spi/spi-k1x.c
 @@ -297,6 +297,7 @@ static void giveback(struct spi_driver_data *drv_data)
@@ -49,7 +49,7 @@ index f013b91d6c096..359954541a71c 100644
  	platform_set_drvdata(pdev, drv_data);
  	status = devm_spi_register_master(&pdev->dev, master);
 diff --git a/drivers/spi/spi-k1x.h b/drivers/spi/spi-k1x.h
-index d576c87655c59..24f62bac10b92 100755
+index d576c87655c5..24f62bac10b9 100755
 --- a/drivers/spi/spi-k1x.h
 +++ b/drivers/spi/spi-k1x.h
 @@ -184,6 +184,7 @@ struct spi_driver_data {

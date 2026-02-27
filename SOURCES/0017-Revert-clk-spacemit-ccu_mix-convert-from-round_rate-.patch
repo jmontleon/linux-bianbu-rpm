@@ -1,4 +1,4 @@
-From 1faf674d431e78db747ed474eabf515cd8fa98da Mon Sep 17 00:00:00 2001
+From 80ed47267897c775f1cbebef32e71b06999f011d Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:50:34 -0400
 Subject: [PATCH 0017/1236] Revert "clk: spacemit: ccu_mix: convert from
@@ -10,7 +10,7 @@ This reverts commit 56737edda7db58549550776092da12fe03600399.
  1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 7b79908753723..9b852aa61f78a 100644
+index 7b7990875372..9b852aa61f78 100644
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -80,12 +80,10 @@ static int ccu_mix_trigger_fc(struct clk_hw *hw)

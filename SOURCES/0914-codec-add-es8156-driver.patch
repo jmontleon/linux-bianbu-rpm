@@ -1,4 +1,4 @@
-From 973d769a90be9a6aa5600a655d59033d48671188 Mon Sep 17 00:00:00 2001
+From e7bdeeee6e990c32c3e1994bede84faabfb5dca9 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Tue, 25 Jun 2024 14:24:02 +0800
 Subject: [PATCH 0914/1236] codec: add es8156 driver
@@ -16,7 +16,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  create mode 100644 sound/soc/codecs/es8156.h
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 315e95b8f78fa..5d3d023daaeec 100644
+index 315e95b8f78f..5d3d023daaee 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -572,6 +572,7 @@ CONFIG_SND_SOC=y
@@ -28,7 +28,7 @@ index 315e95b8f78fa..5d3d023daaeec 100644
  CONFIG_SND_SIMPLE_CARD=y
  CONFIG_UHID=y
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 90979113df498..78f554ff2aa31 100644
+index 90979113df49..78f554ff2aa3 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -115,6 +115,7 @@ config SND_SOC_ALL_CODECS
@@ -51,7 +51,7 @@ index 90979113df498..78f554ff2aa31 100644
  	tristate "Everest Semi ES8311 CODEC"
  	depends on I2C
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index c82762f16cb1e..e7ea1b93bdfdd 100644
+index c82762f16cb1..e7ea1b93bdfd 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
 @@ -128,6 +128,7 @@ snd-soc-es7134-y := es7134.o
@@ -72,7 +72,7 @@ index c82762f16cb1e..e7ea1b93bdfdd 100644
  obj-$(CONFIG_SND_SOC_ES8323)	+= snd-soc-es8323.o
 diff --git a/sound/soc/codecs/es8156.c b/sound/soc/codecs/es8156.c
 new file mode 100644
-index 0000000000000..da26b4737fd8f
+index 000000000000..da26b4737fd8
 --- /dev/null
 +++ b/sound/soc/codecs/es8156.c
 @@ -0,0 +1,871 @@
@@ -949,7 +949,7 @@ index 0000000000000..da26b4737fd8f
 +MODULE_LICENSE("GPL");
 diff --git a/sound/soc/codecs/es8156.h b/sound/soc/codecs/es8156.h
 new file mode 100644
-index 0000000000000..fdbbf31e5ded2
+index 000000000000..fdbbf31e5ded
 --- /dev/null
 +++ b/sound/soc/codecs/es8156.h
 @@ -0,0 +1,85 @@

@@ -1,4 +1,4 @@
-From 0f12cec84ae8a7ffa7d30d55a1467ecb50c58f0b Mon Sep 17 00:00:00 2001
+From 7e74f43183bb274b3fc0437ff3922b867f72c91e Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Wed, 3 Apr 2024 10:50:30 +0800
 Subject: [PATCH 0583/1236] vpu: support suspend and resume
@@ -9,7 +9,7 @@ Change-Id: Iee951bf2574d3ff482f96b92c9097ff1a08e7399
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
-index e7ba28352b0f7..49a0f6c09a8ee 100644
+index e7ba28352b0f..49a0f6c09a8e 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/dev/mvx_dev.c
 @@ -576,7 +576,7 @@ static int mvx_pm_poweron(struct device *dev)

@@ -1,4 +1,4 @@
-From 50c2bc5343333524ed755912f5cb09f1860c0e71 Mon Sep 17 00:00:00 2001
+From 6d8fd271a30801b3f636f5133491ff38529ff27a Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 25 Dec 2023 22:33:57 +0800
 Subject: [PATCH 0267/1236] k1x:spacemit timer driver add clk&reset interface
@@ -9,7 +9,7 @@ Change-Id: I58df6e4185a8e84186fd92045420c3c1e9795558
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/clocksource/timer-k1x.c b/drivers/clocksource/timer-k1x.c
-index 8daddf9cc46fd..c66416af37e6b 100644
+index 8daddf9cc46f..c66416af37e6 100644
 --- a/drivers/clocksource/timer-k1x.c
 +++ b/drivers/clocksource/timer-k1x.c
 @@ -22,6 +22,7 @@

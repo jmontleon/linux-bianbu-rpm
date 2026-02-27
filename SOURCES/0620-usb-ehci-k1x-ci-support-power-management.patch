@@ -1,4 +1,4 @@
-From 6bfe604b32eb7e2bba5dde8656f307cfde583a0a Mon Sep 17 00:00:00 2001
+From 6308c93e1f899197b5df3029b2cfa0f65046205b Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 17 Apr 2024 22:19:34 +0800
 Subject: [PATCH 0620/1236] usb: ehci-k1x-ci: support power management
@@ -10,7 +10,7 @@ Change-Id: I98e9cd418572e37183e15cdfd78beec2b620427f
  2 files changed, 70 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 7052c73d41724..472857ce226d8 100644
+index 7052c73d4172..472857ce226d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1705,6 +1705,10 @@ ehci: ehci@c0900100 {
@@ -36,7 +36,7 @@ index 7052c73d41724..472857ce226d8 100644
  			interconnects = <&dram_range0>;
  			interconnect-names = "dma-mem";
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index ec615c4d3488c..c8bcd7a7255ce 100755
+index ec615c4d3488..c8bcd7a7255c 100755
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -343,6 +343,11 @@ static int mv_ehci_probe(struct platform_device *pdev)

@@ -1,4 +1,4 @@
-From 34f31af9e746b8c87fc4ef33ed1d94396286d00c Mon Sep 17 00:00:00 2001
+From 31eda8607d2753515db5e33fcc020fc76df32e42 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 11:24:01 +0800
 Subject: [PATCH 0943/1236] usb: fix compiler warning
@@ -9,7 +9,7 @@ Change-Id: Ie89f5ba969311e86c59514c807a922cf026cc176
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 514f12e2baec8..dae5be9edbc36 100644
+index 514f12e2baec..dae5be9edbc3 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -215,7 +215,7 @@ static int process_ep_req(struct mv_udc *udc, int index,

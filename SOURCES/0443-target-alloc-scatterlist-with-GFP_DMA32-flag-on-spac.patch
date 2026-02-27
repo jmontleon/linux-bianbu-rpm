@@ -1,4 +1,4 @@
-From 4b6d8602e092eb730baae3a6ec375b13ae1ded0c Mon Sep 17 00:00:00 2001
+From 5c201ecc3849086460b1d6fbf47c72e1254daa39 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 22 Feb 2024 11:59:21 +0800
 Subject: [PATCH 0443/1236] target: alloc scatterlist with GFP_DMA32 flag on
@@ -10,7 +10,7 @@ Change-Id: Ie5d9270a36044ef2064dc2bb880d6a992286ae36
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 3b2c75317885f..6a703fb422e07 100644
+index 3b2c75317885..6a703fb422e0 100644
 --- a/drivers/target/target_core_transport.c
 +++ b/drivers/target/target_core_transport.c
 @@ -2770,6 +2770,9 @@ target_alloc_sgl(struct scatterlist **sgl, unsigned int *nents, u32 length,

@@ -1,4 +1,4 @@
-From f9a7e16e69e83dd851b598a0c8d7d4a52aaee809 Mon Sep 17 00:00:00 2001
+From c5156682ed75d2053aca5d2d8e65194d3153b3f1 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Sun, 28 Apr 2024 09:36:21 +0800
 Subject: [PATCH 0634/1236] Move GPU alloc page from DMA32 to Normal zone
@@ -14,7 +14,7 @@ Change-Id: I42c4987c5f1c39593321b7701153483df98d9ee6
  6 files changed, 112 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/config_kernel.h b/drivers/gpu/drm/img-rogue/config_kernel.h
-index a35c16b120bbf..540767d31894e 100644
+index a35c16b120bb..540767d31894 100644
 --- a/drivers/gpu/drm/img-rogue/config_kernel.h
 +++ b/drivers/gpu/drm/img-rogue/config_kernel.h
 @@ -200,3 +200,4 @@
@@ -23,7 +23,7 @@ index a35c16b120bbf..540767d31894e 100644
  #define LMA
 +#define PVR_LINUX_PHYSMEM_USE_HIGHMEM_ONLY
 diff --git a/drivers/gpu/drm/img-rogue/osfunc_riscv.c b/drivers/gpu/drm/img-rogue/osfunc_riscv.c
-index 911736abf2d88..f5f1e0333d625 100644
+index 911736abf2d8..f5f1e0333d62 100644
 --- a/drivers/gpu/drm/img-rogue/osfunc_riscv.c
 +++ b/drivers/gpu/drm/img-rogue/osfunc_riscv.c
 @@ -46,6 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -95,7 +95,7 @@ index 911736abf2d88..f5f1e0333d625 100644
  		//PVR_DPF((PVR_DBG_WARNING,
  		//         "%s: System doesn't implement cache maintenance. Skipping!",
 diff --git a/drivers/gpu/drm/img-rogue/physmem_hostmem.c b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
-index c8c0d5b12ed22..3b8cd6b5f4b82 100644
+index c8c0d5b12ed2..3b8cd6b5f4b8 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_hostmem.c
 @@ -51,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -143,7 +143,7 @@ index c8c0d5b12ed22..3b8cd6b5f4b82 100644
  	}
  }
 diff --git a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
-index 9bcf643628899..da6194baa7244 100644
+index 9bcf64362889..da6194baa724 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_osmem_linux.c
 @@ -97,6 +97,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -164,7 +164,7 @@ index 9bcf643628899..da6194baa7244 100644
  
  	return sPA;
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
-index 50237a7e950a6..6a3690fb8d877 100644
+index 50237a7e950a..6a3690fb8d87 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.c
 @@ -72,13 +72,13 @@ void UMAPhysHeapCpuPAddrToDevPAddr(IMG_HANDLE hPrivData,
@@ -274,7 +274,7 @@ index 50237a7e950a6..6a3690fb8d877 100644
   End of file (sysconfig.c)
  ******************************************************************************/
 diff --git a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
-index d34e2b49a7031..051579154ad91 100644
+index d34e2b49a703..051579154ad9 100644
 --- a/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 +++ b/drivers/gpu/drm/img-rogue/spacemit/sysconfig.h
 @@ -53,6 +53,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

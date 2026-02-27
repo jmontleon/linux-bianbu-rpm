@@ -1,4 +1,4 @@
-From 9b41eacc728e0e88f1d6bffdc1460ca9e6f8d265 Mon Sep 17 00:00:00 2001
+From 56c78a6b6d51e9e2384316598370cd1d3f07fa3d Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Fri, 14 Jun 2024 16:18:09 +0800
 Subject: [PATCH 0736/1236] camera: fix call_get_fmt -EINVAL return to support
@@ -11,7 +11,7 @@ Change-Id: I018454e0ee0af3c33db6d8c61e48f58c047b982a
  2 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index 72e40a72b3230..5999097bc2ff0 100755
+index 72e40a72b323..5999097bc2ff 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -1779,6 +1779,7 @@ static int fe_dwt_subdev_pad_set_fmt(struct v4l2_subdev *sd,
@@ -23,7 +23,7 @@ index 72e40a72b3230..5999097bc2ff0 100755
  		ret = v4l2_subdev_call(remote_sd_in, pad, set_fmt, NULL, &sd_format);
  		if (ret) {
 diff --git a/drivers/media/platform/spacemit/camera/vi/mlink.c b/drivers/media/platform/spacemit/camera/vi/mlink.c
-index 3efead97383bd..403691dca506a 100755
+index 3efead97383b..403691dca506 100755
 --- a/drivers/media/platform/spacemit/camera/vi/mlink.c
 +++ b/drivers/media/platform/spacemit/camera/vi/mlink.c
 @@ -365,14 +365,19 @@ static int spm_mlink_apply_format_forward(struct media_entity *me)

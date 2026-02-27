@@ -1,4 +1,4 @@
-From 4747d377724d0be0045e2316380252cf45046494 Mon Sep 17 00:00:00 2001
+From 6c57d7e7f2b8a1caf3a1241ff86aa2ac0dd5931f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Mon, 28 Oct 2024 09:16:08 +0800
 Subject: [PATCH 1113/1236] es8326: cleanup unused code
@@ -9,7 +9,7 @@ Change-Id: Idfcb81cfd153d9b0e20c1e06c5752d8877f2aa75
  1 file changed, 8 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index f510746f71589..c264acbba22fb 100644
+index f510746f7158..c264acbba22f 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -960,20 +960,12 @@ static void es8326_jack_detect_handler(struct work_struct *work)

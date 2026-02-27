@@ -1,4 +1,4 @@
-From e471dc18a723fbe20e9c765774372cbd4a80e903 Mon Sep 17 00:00:00 2001
+From 4a2cbb3268746ee2b7843a187cfd9b88cea94fad Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 25 Jul 2023 17:11:46 +0800
 Subject: [PATCH 0093/1236] cpufreq: support scmi cpufreq driver spacemit
@@ -11,7 +11,7 @@ Change-Id: I5dc8e6dc0589ede8d72c9148b46b075914217937
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
-index 7bf002daab8f8..efb6ced14777d 100644
+index 7bf002daab8f..efb6ced14777 100644
 --- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -64,7 +64,12 @@ regulator_devgpu: regulator@1 {
@@ -29,7 +29,7 @@ index 7bf002daab8f8..efb6ced14777d 100644
  	};
  };
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 94d931ed15576..7dd75a9d4eb88 100644
+index 94d931ed1557..7dd75a9d4eb8 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -30,6 +30,12 @@ CONFIG_HZ_100=y

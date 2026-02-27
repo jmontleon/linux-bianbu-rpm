@@ -1,4 +1,4 @@
-From b229723c3e8b0e5ef5f89de8a8acdcc756aa2238 Mon Sep 17 00:00:00 2001
+From 4b079f15c5f29207789e7c0ef46e46c67ff91dc0 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 18 Dec 2023 14:47:02 +0800
 Subject: [PATCH 0213/1236] gmac: modify the config for k1x gmac controller
@@ -15,7 +15,7 @@ Change-Id: Ia7dc0e0d7f3e53ae9db5a24f1a256218b433cace
  3 files changed, 34 insertions(+), 33 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index f305263f09b84..687941d10c52c 100644
+index f305263f09b8..687941d10c52 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1339,7 +1339,7 @@ eth1: ethernet@cac81000 {
@@ -28,7 +28,7 @@ index f305263f09b84..687941d10c52c 100644
  			ptp-support;
  			ptp-clk-rate = <10000000>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 86187b17a75ed..ca161917a3061 100644
+index 86187b17a75e..ca161917a306 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -241,22 +241,22 @@ K1X_PADCONF(GPIO_90,    MUX_MODE5, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i
@@ -110,7 +110,7 @@ index 86187b17a75ed..ca161917a3061 100644
      };
  
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 21e0a78a93a81..85e7f112389ed 100644
+index 21e0a78a93a8..85e7f112389e 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -120,6 +120,7 @@ CONFIG_K1X_EMAC=y

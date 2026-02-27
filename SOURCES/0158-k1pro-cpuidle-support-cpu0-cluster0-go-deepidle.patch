@@ -1,4 +1,4 @@
-From 7d44b8d18e8028435f291067a0c0b8a9bc090bd5 Mon Sep 17 00:00:00 2001
+From d2d4f6b8d2fd083fde76b3cf01e9fee9b44d90ae Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 16 Oct 2023 16:27:35 +0800
 Subject: [PATCH 0158/1236] k1pro:cpuidle: support cpu0 & cluster0 go deepidle
@@ -10,7 +10,7 @@ Change-Id: Iaa86a280c87e25d33650c661cdd5ff3724d01f96
  2 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index d440efaa5a430..30538df033560 100644
+index d440efaa5a43..30538df03356 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -120,15 +120,16 @@ cpu3_intc: interrupt-controller {
@@ -85,7 +85,7 @@ index d440efaa5a430..30538df033560 100644
  
  			CLUSTER_PD1: cpu-cluster1 {
 diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
-index 8e53d23623767..41eb691b471b7 100644
+index 8e53d2362376..41eb691b471b 100644
 --- a/drivers/clocksource/dw_apb_timer.c
 +++ b/drivers/clocksource/dw_apb_timer.c
 @@ -75,7 +75,6 @@ static void apbt_eoi(struct dw_apb_timer *timer)

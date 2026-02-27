@@ -1,4 +1,4 @@
-From 69dec9aa40892e17bfb74f76765df6b511a4f0df Mon Sep 17 00:00:00 2001
+From af670a909efc13d88c526c86ea2a35d9581a4b6f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 6 Jan 2024 16:19:44 +0800
 Subject: [PATCH 0345/1236] k1x:pmic:support power-key driver
@@ -14,7 +14,7 @@ Change-Id: Ifd49f342de92762bc71e1a6cf72dfb150667fb18
  create mode 100644 drivers/input/misc/spacemit-pwrkey.c
 
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index cc2558630797e..866a2da4e1ac6 100644
+index cc2558630797..866a2da4e1ac 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
 @@ -953,6 +953,15 @@ config INPUT_QNAP_MCU
@@ -34,7 +34,7 @@ index cc2558630797e..866a2da4e1ac6 100644
  	tristate "RAVE SP Power button Driver"
  	depends on RAVE_SP_CORE
 diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index f5ebfa9d99831..424c2551295fd 100644
+index f5ebfa9d9983..424c2551295f 100644
 --- a/drivers/input/misc/Makefile
 +++ b/drivers/input/misc/Makefile
 @@ -95,3 +95,4 @@ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
@@ -44,7 +44,7 @@ index f5ebfa9d99831..424c2551295fd 100644
 +obj-$(CONFIG_INPUT_SPACEMIT_POWERKEY)	+= spacemit-pwrkey.o
 diff --git a/drivers/input/misc/spacemit-pwrkey.c b/drivers/input/misc/spacemit-pwrkey.c
 new file mode 100644
-index 0000000000000..e65d20fbd3ac6
+index 000000000000..e65d20fbd3ac
 --- /dev/null
 +++ b/drivers/input/misc/spacemit-pwrkey.c
 @@ -0,0 +1,142 @@
@@ -191,7 +191,7 @@ index 0000000000000..e65d20fbd3ac6
 +MODULE_DESCRIPTION("SPACEMIT Power Key driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 6a9c15f2a2735..4a82233b262bb 100644
+index 6a9c15f2a273..4a82233b262b 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -7,16 +7,21 @@
@@ -267,7 +267,7 @@ index 6a9c15f2a2735..4a82233b262bb 100644
  		pr_err("failed to add MFD devices %d\n", ret);
  		return -EINVAL;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index a589749115661..675edf6a4c4ba 100644
+index a58974911566..675edf6a4c4b 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -84,19 +84,6 @@ enum SPM8821_reg {

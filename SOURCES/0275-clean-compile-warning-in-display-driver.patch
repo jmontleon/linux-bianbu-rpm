@@ -1,4 +1,4 @@
-From 08cc66dc72f4f33d1d04136be85efdb3d984c62a Mon Sep 17 00:00:00 2001
+From 7e313e582bcd67375396c5162f8e748c2a5056d9 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:36:28 +0800
 Subject: [PATCH 0275/1236] clean compile warning in display driver
@@ -10,7 +10,7 @@ Change-Id: I2fb05b060da534fc905b34691763f4396ce2e505
  2 files changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 3a9089f83a656..c7974fc1fdd72 100644
+index 3a9089f83a65..c7974fc1fdd7 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -140,18 +140,18 @@ static int spacemit_drm_dump_show(struct seq_file *s, void *data)
@@ -49,7 +49,7 @@ index 3a9089f83a656..c7974fc1fdd72 100644
  	DRM_INFO("%s()\n", __func__);
  	drm_debugfs_create_files(spacemit_debugfs_files,
 diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.c b/drivers/gpu/drm/spacemit/spacemit_lib.c
-index 235e46b2c53cd..43e08d9baab08 100644
+index 235e46b2c53c..43e08d9baab0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_lib.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_lib.c
 @@ -13,6 +13,7 @@

@@ -1,4 +1,4 @@
-From b2b2db2cb283729143bd282a01105049ca3d1181 Mon Sep 17 00:00:00 2001
+From 830ed03eb35bac3d20763d0cb01e616c37792e71 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Sat, 13 Jan 2024 00:15:17 +0800
 Subject: [PATCH 0390/1236] use performance governor as default
@@ -9,7 +9,7 @@ Change-Id: I105da9aa9d3668f7cac983695016f116bd8dbbe8
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 594cdb3540459..3ab10ddfd0528 100644
+index 594cdb354045..3ab10ddfd052 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -35,8 +35,7 @@ CONFIG_RISCV_SBI_V01=y

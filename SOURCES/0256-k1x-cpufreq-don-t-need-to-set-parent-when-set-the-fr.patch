@@ -1,4 +1,4 @@
-From 447ba93c819501b3ee63892cdcd813fbf30e0af2 Mon Sep 17 00:00:00 2001
+From e12d67c0089487cf3b1f65e618bde27d65232583 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 22 Dec 2023 09:48:25 +0800
 Subject: [PATCH 0256/1236] k1x:cpufreq: don't need to set parent when set the
@@ -14,7 +14,7 @@ Change-Id: Ie9f667274f25b025ae44e0e8effe57b1a0c9bd76
  delete mode 100644 drivers/cpufreq/spacemit-cpufreq.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 2e41cda7b83e2..8765cca607aa1 100644
+index 2e41cda7b83e..8765cca607aa 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -47,8 +47,6 @@ cpu_0: cpu@0 {
@@ -192,7 +192,7 @@ index 2e41cda7b83e2..8765cca607aa1 100644
  	};
  
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 685f38af91a0a..037c0569f444f 100644
+index 685f38af91a0..037c0569f444 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -33,6 +33,12 @@ CONFIG_HZ_100=y
@@ -209,7 +209,7 @@ index 685f38af91a0a..037c0569f444f 100644
  CONFIG_MODULE_UNLOAD=y
  # CONFIG_BLK_DEBUG_FS is not set
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index 58f7e09441367..681d687b5a18e 100644
+index 58f7e0944136..681d687b5a18 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
 @@ -107,4 +107,3 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
@@ -219,7 +219,7 @@ index 58f7e09441367..681d687b5a18e 100644
 -obj-$(CONFIG_SPACEMIT_K1X_CPUFREQ)	+= spacemit-cpufreq.o
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
 deleted file mode 100644
-index 4f1a467272804..0000000000000
+index 4f1a46727280..000000000000
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ /dev/null
 @@ -1,41 +0,0 @@

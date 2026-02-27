@@ -1,4 +1,4 @@
-From b83e7a6ad2640fcb80e768940569c746e8213db7 Mon Sep 17 00:00:00 2001
+From 30b0660fccb46035962d0d19e1c673b2c3f4d32c Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 14 Dec 2023 15:38:31 +0800
 Subject: [PATCH 0220/1236] display: Add lcd gc9503v_mipi
@@ -11,7 +11,7 @@ Change-Id: I13017e43a1c4a19d9ec747bdb8890402aee0c1e4
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
-index b2b1fe98a1730..f6f596fd5b907 100644
+index b2b1fe98a173..f6f596fd5b90 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -4,6 +4,7 @@
@@ -133,7 +133,7 @@ index b2b1fe98a1730..f6f596fd5b907 100644
  	memory@0 {
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
 new file mode 100644
-index 0000000000000..84c80076cc28c
+index 000000000000..84c80076cc28
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gc9503v_mipi.dtsi
 @@ -0,0 +1,105 @@

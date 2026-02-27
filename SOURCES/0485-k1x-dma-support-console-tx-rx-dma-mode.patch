@@ -1,4 +1,4 @@
-From aa9b218e08f9579933e86febac83bb30eee8f8bc Mon Sep 17 00:00:00 2001
+From 399085b3028626029b871464952467174ee19fc4 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 9 Mar 2024 16:47:48 +0800
 Subject: [PATCH 0485/1236] k1x-dma:support console tx/rx dma-mode
@@ -10,7 +10,7 @@ Change-Id: If5b66528d2572dbb34dfdc6fcd30f256d4ed1972
  2 files changed, 6 insertions(+), 16 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 6cfc53b5ba84d..39ec67bcf8a5c 100644
+index 6cfc53b5ba84..39ec67bcf8a5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -828,6 +828,9 @@ uart0: serial@d4017000 {
@@ -24,7 +24,7 @@ index 6cfc53b5ba84d..39ec67bcf8a5c 100644
  			interconnect-names = "dma-mem";
  			status = "ok";
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 1737ea7e8d35a..c75131730f063 100644
+index 1737ea7e8d35..c75131730f06 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -57,7 +57,7 @@

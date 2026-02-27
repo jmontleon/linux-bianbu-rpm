@@ -1,4 +1,4 @@
-From fde0bb347e8f49bac2b05e23eb94a99d4d917a0b Mon Sep 17 00:00:00 2001
+From 902c4061d937a98fe59521354d618d905eb72040 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 3 Jan 2024 22:25:56 +0800
 Subject: [PATCH 0331/1236] k1x:cpufreq: support adjust the ace/tcm's frequency
@@ -15,7 +15,7 @@ Change-Id: Ie375efff2c4432426a44d8a5a7406aa7904abd74
  create mode 100644 drivers/cpufreq/spacemit-cpufreq.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 41645a0e588c3..94e43259e0b71 100644
+index 41645a0e588c..94e43259e0b7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -298,8 +298,14 @@ clst0_core_opp_table: opp_table0 {
@@ -108,7 +108,7 @@ index 41645a0e588c3..94e43259e0b71 100644
  				clock-latency-ns = <200000>;
  			};
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index 681d687b5a18e..58f7e09441367 100644
+index 681d687b5a18..58f7e0944136 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
 @@ -107,3 +107,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
@@ -118,7 +118,7 @@ index 681d687b5a18e..58f7e09441367 100644
 +obj-$(CONFIG_SPACEMIT_K1X_CPUFREQ)	+= spacemit-cpufreq.o
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
 new file mode 100644
-index 0000000000000..ee1109b99cf20
+index 000000000000..ee1109b99cf2
 --- /dev/null
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -0,0 +1,185 @@

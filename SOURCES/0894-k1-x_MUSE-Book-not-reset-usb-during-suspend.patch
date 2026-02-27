@@ -1,4 +1,4 @@
-From c8c18ff2881d4ddea0dd89b47300076f019ac93c Mon Sep 17 00:00:00 2001
+From 4294575f957b07f3e7f6be9afb8889a5b6c2bd59 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 29 Jul 2024 21:09:57 +0800
 Subject: [PATCH 0894/1236] k1-x_MUSE-Book: not reset usb during suspend
@@ -9,7 +9,7 @@ Change-Id: I0b6e58f20658a8c0612bd7f4f702d978000f9ee1
  1 file changed, 1 insertion(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index c73c45ba4be80..27f75160bbafa 100644
+index c73c45ba4be8..27f75160bbaf 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -369,11 +369,6 @@ dcdc_4: DCDC_REG4 {

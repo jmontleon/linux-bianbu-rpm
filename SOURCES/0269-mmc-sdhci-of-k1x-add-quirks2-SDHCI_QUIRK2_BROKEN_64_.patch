@@ -1,4 +1,4 @@
-From fba5d8ccf1992dc40af979a99b6285069050ad36 Mon Sep 17 00:00:00 2001
+From 645cb2b8814208f0169975e447d9a956088c3de9 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 26 Dec 2023 12:23:28 +0800
 Subject: [PATCH 0269/1236] mmc: sdhci-of-k1x: add quirks2
@@ -10,7 +10,7 @@ Change-Id: I0bcb97c81c4eb275ed408a13b2d556df4e3a4ed1
  1 file changed, 1 insertion(+), 33 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index bb4b8027bbcbb..1c69fd41720a1 100644
+index bb4b8027bbcb..1c69fd41720a 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -516,38 +516,6 @@ static void spacemit_sdhci_set_clock(struct sdhci_host *host, unsigned int clock

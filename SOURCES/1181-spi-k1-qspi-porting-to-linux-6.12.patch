@@ -1,4 +1,4 @@
-From d2ad0c352aa52004c06ac13d6a9ae84054175b8a Mon Sep 17 00:00:00 2001
+From 58227dfd6149280a02d38b0394043d6c565892f0 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:17:17 +0800
 Subject: [PATCH 1181/1236] spi: k1/qspi: porting to linux-6.12
@@ -9,7 +9,7 @@ Change-Id: I10d0b0e0e21ea485b3f42e3ea156392334fdade5
  1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index bab70e1bc0c1d..7acc1bf389aa9 100644
+index bab70e1bc0c1..7acc1bf389aa 100644
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -530,11 +530,11 @@ static void qspi_write_rbct(struct k1x_qspi *qspi, uint32_t val)

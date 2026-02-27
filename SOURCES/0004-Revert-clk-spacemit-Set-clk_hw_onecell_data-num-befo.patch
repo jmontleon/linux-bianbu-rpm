@@ -1,4 +1,4 @@
-From b0d0ff6ccceac370eec3625a5b93d60915ec4e59 Mon Sep 17 00:00:00 2001
+From d258fd89a464fb40913c7d9fc4d0966685bd26f4 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 18 Dec 2025 14:43:45 -0500
 Subject: [PATCH 0004/1236] Revert "clk: spacemit: Set clk_hw_onecell_data::num
@@ -10,7 +10,7 @@ This reverts commit ee5b0b28c9938b1cc88f23842aedef86e617e18b.
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 4761bc1e3b6e6..f5a9fe6ba1859 100644
+index 4761bc1e3b6e..f5a9fe6ba185 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -1018,8 +1018,6 @@ static int spacemit_ccu_register(struct device *dev,

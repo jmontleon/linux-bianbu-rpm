@@ -1,4 +1,4 @@
-From 5ed54c7abeee035bb1689f85575d600f5a7d826d Mon Sep 17 00:00:00 2001
+From 5c776b807963a9cc38b2f288a5c1967694e8696e Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 3 Jul 2023 14:45:16 +0800
 Subject: [PATCH 0088/1236] arm_scmi:regulator: enable an dummy regulator using
@@ -11,7 +11,7 @@ Change-Id: I22dbbbcefa7a10a18d8efd63ce7737875d76a6b6
  2 files changed, 17 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
-index cb0da2c8e7009..4156450781a4b 100644
+index cb0da2c8e700..4156450781a4 100644
 --- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -40,6 +40,21 @@ scmi {
@@ -37,7 +37,7 @@ index cb0da2c8e7009..4156450781a4b 100644
  	};
  };
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index b709a96bbe34b..86ada597ebd8a 100644
+index b709a96bbe34..86ada597ebd8 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -135,6 +135,8 @@ CONFIG_PINCTRL_K1PRO=y

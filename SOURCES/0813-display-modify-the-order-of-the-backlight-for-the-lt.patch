@@ -1,4 +1,4 @@
-From c7e7d3abbd536c0d55b2b3c270d516f653187df0 Mon Sep 17 00:00:00 2001
+From 7e0942f25096ee8bbd6f966f9a638d616210fbfc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Tue, 2 Jul 2024 14:46:15 +0800
 Subject: [PATCH 0813/1236] display: modify the order of the backlight for the
@@ -10,7 +10,7 @@ Change-Id: Ieb3591a8264c099914433eb2fe9f0044370c9ccc
  1 file changed, 28 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index ccda58bc8e2f6..0552570780265 100644
+index ccda58bc8e2f..055257078026 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -422,14 +422,14 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)

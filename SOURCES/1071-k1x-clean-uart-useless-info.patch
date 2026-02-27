@@ -1,4 +1,4 @@
-From f4726e241a7af36d55ecbf8c2ebb9cae31f48bbe Mon Sep 17 00:00:00 2001
+From f3befe05ebb17fbd4c6f6c4d286c536bcbcb8b72 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 31 Oct 2024 14:27:39 +0800
 Subject: [PATCH 1071/1236] k1x:clean uart useless info
@@ -9,7 +9,7 @@ Change-Id: Ic7f476c0769c79028c937f5c57847ced83ac14d6
  1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 50d49151a0974..af1d2d0cad703 100644
+index 50d49151a097..af1d2d0cad70 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -667,7 +667,7 @@ static void serial_pxa_set_mctrl(struct uart_port *port, unsigned int mctrl)

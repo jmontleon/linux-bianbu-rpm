@@ -1,4 +1,4 @@
-From a0e203ed2dd43de4a9f61782795f3035b073445e Mon Sep 17 00:00:00 2001
+From 764a99db25637e072d525fe014085d2aa0c53603 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:52:02 +0800
 Subject: [PATCH 1155/1236] drm: spacemit:porting drm driver to linux-6.12
@@ -22,7 +22,7 @@ Change-Id: I41cf838018aa10ffd3dff840c55b30e9fb5c4d3d
  14 files changed, 36 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/Kconfig b/drivers/gpu/drm/spacemit/Kconfig
-index 67de8a3b9f72d..491298d6df0de 100644
+index 67de8a3b9f72..491298d6df0d 100644
 --- a/drivers/gpu/drm/spacemit/Kconfig
 +++ b/drivers/gpu/drm/spacemit/Kconfig
 @@ -2,15 +2,16 @@
@@ -51,7 +51,7 @@ index 67de8a3b9f72d..491298d6df0de 100644
 \ No newline at end of file
 +	  Support for Lontium LT9711 DSI to eDP driver.
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_trace.h b/drivers/gpu/drm/spacemit/dpu/dpu_trace.h
-index 51f56217c1bf4..8c81871c22896 100644
+index 51f56217c1bf..8c81871c2289 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_trace.h
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_trace.h
 @@ -109,7 +109,7 @@ DECLARE_EVENT_CLASS(dpu_status_template,
@@ -91,7 +91,7 @@ index 51f56217c1bf4..8c81871c22896 100644
  		__entry->reg_num = reg_num;
  	),
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
-index d759c9ac46ddc..b437904a0e7b1 100644
+index d759c9ac46dd..b437904a0e7b 100644
 --- a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 @@ -168,7 +168,7 @@ int get_afbc_data_plane_min_rdma_mem_size(u8 rdma_work_mode, u32 drm_4cc_fmt,
@@ -104,7 +104,7 @@ index d759c9ac46ddc..b437904a0e7b1 100644
  {
  	struct drm_crtc_state *crtc_state = state->crtc->state;
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h
-index 738e50ae40c93..9ccd399f47c7b 100644
+index 738e50ae40c9..9ccd399f47c7 100644
 --- a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h
 @@ -34,7 +34,7 @@ int saturn_cal_layer_fbcmem_size(struct drm_plane *plane, \
@@ -117,7 +117,7 @@ index 738e50ae40c93..9ccd399f47c7b 100644
  
  #endif
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 84ab49676381a..7d222c80f075f 100644
+index 84ab49676381..7d222c80f075 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -20,7 +20,7 @@
@@ -130,7 +130,7 @@ index 84ab49676381a..7d222c80f075f 100644
  #include <drm/drm_atomic_helper.h>
  #include <drm/drm_bridge.h>
 diff --git a/drivers/gpu/drm/spacemit/lt9711.c b/drivers/gpu/drm/spacemit/lt9711.c
-index 3014340a46fb1..1714251fadfee 100644
+index 3014340a46fb..1714251fadfe 100644
 --- a/drivers/gpu/drm/spacemit/lt9711.c
 +++ b/drivers/gpu/drm/spacemit/lt9711.c
 @@ -20,7 +20,7 @@
@@ -143,7 +143,7 @@ index 3014340a46fb1..1714251fadfee 100644
  #include <drm/drm_atomic_helper.h>
  #include <drm/drm_bridge.h>
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 752e26eab725a..9d71efee42687 100644
+index 752e26eab725..9d71efee4268 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -405,7 +405,7 @@ static void spacemit_crtc_atomic_flush(struct drm_crtc *crtc,
@@ -176,7 +176,7 @@ index 752e26eab725a..9d71efee42687 100644
  
  static int dpu_pm_suspend(struct device *dev)
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index da25ec8b3f3ac..4c7b372a2d3eb 100644
+index da25ec8b3f3a..4c7b372a2d3e 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -6,11 +6,11 @@
@@ -223,7 +223,7 @@ index da25ec8b3f3ac..4c7b372a2d3eb 100644
  
  static void spacemit_drm_shutdown(struct platform_device *pdev)
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
-index 03e9b1e2d9098..959640832bc0f 100644
+index 03e9b1e2d909..959640832bc0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dsi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -725,11 +725,9 @@ static int spacemit_dsi_probe(struct platform_device *pdev)
@@ -240,7 +240,7 @@ index 03e9b1e2d9098..959640832bc0f 100644
  
  static const struct of_device_id spacemit_dsi_of_match[] = {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 40ff51db3957a..09f4eef6f7285 100644
+index 40ff51db3957..09f4eef6f728 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -7,6 +7,7 @@
@@ -252,7 +252,7 @@ index 40ff51db3957a..09f4eef6f7285 100644
  #include <drm/drm_gem_dma_helper.h>
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 7531fe51cb456..fa59b6b874dd5 100644
+index 7531fe51cb45..fa59b6b874dd 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -114,13 +114,10 @@ static int spacemit_hdmi_config_video_vsi(struct spacemit_hdmi *hdmi,
@@ -343,7 +343,7 @@ index 7531fe51cb456..fa59b6b874dd5 100644
  
  static int hdmi_rt_pm_resume(struct device *dev)
 diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.c b/drivers/gpu/drm/spacemit/spacemit_lib.c
-index 60aa57b691c78..c43f844ddc54d 100644
+index 60aa57b691c7..c43f844ddc54 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_lib.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_lib.c
 @@ -6,11 +6,14 @@
@@ -362,7 +362,7 @@ index 60aa57b691c78..c43f844ddc54d 100644
  
  struct bmp_header {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
-index 7ac03567728fd..a979f8612609f 100644
+index 7ac03567728f..a979f8612609 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_planes.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -13,6 +13,7 @@
@@ -384,7 +384,7 @@ index 7ac03567728fd..a979f8612609f 100644
  
  	if (WARN_ON(supported_encodings == 0 ||
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
-index 3bcadfdf3caee..6aa3360e578d9 100644
+index 3bcadfdf3cae..6aa3360e578d 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_wb.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -66,9 +66,11 @@ static const struct drm_encoder_helper_funcs spacemit_wb_encoder_helper_funcs =

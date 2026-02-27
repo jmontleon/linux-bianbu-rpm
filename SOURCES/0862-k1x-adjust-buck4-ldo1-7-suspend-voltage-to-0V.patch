@@ -1,4 +1,4 @@
-From d145294c93e2fdf8016cfa24d74da6482f1c58e1 Mon Sep 17 00:00:00 2001
+From ce1364d566c5cc703f051565412e7888b512ebfb Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 5 Jun 2024 20:54:40 +0800
 Subject: [PATCH 0862/1236] k1x:adjust buck4&ldo1-7 suspend voltage to 0V
@@ -11,7 +11,7 @@ Change-Id: I5edbdb61f9b5347b7b5c8f164e9f2b4f9d9e0a92
  3 files changed, 122 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 5e72498fb1bad..e9d9fb41a96d4 100644
+index 5e72498fb1ba..e9d9fb41a96d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -466,6 +466,11 @@ dcdc_4: DCDC_REG4 {
@@ -106,7 +106,7 @@ index 5e72498fb1bad..e9d9fb41a96d4 100644
  
  			ldo_8: LDO_REG8 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 9cdc511f8124c..89245a2489ad7 100644
+index 9cdc511f8124..89245a2489ad 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -388,6 +388,11 @@ dcdc_4: DCDC_REG4 {
@@ -202,7 +202,7 @@ index 9cdc511f8124c..89245a2489ad7 100644
  
  			ldo_8: LDO_REG8 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 8490951625439..9b7e84db64f18 100644
+index 849095162543..9b7e84db64f1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -390,6 +390,11 @@ dcdc_4: DCDC_REG4 {

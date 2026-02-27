@@ -1,4 +1,4 @@
-From 6ea04da1d373ef5d4bedfb7fab2d92bef027d897 Mon Sep 17 00:00:00 2001
+From eb413f7ae8a8ad126bc353df7d09af62ee688da9 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 12 Jul 2023 14:20:57 +0800
 Subject: [PATCH 0090/1236] ethernet: support ethernet qos
@@ -17,7 +17,7 @@ Change-Id: I2c7a91c1acfcdd0716231e1bb7a2091f7fe2b9a0
  create mode 100755 drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 81a52e2cea123..b8f25e551f16c 100644
+index 81a52e2cea12..b8f25e551f16 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -519,17 +519,18 @@ qspi0: spi@2ce00000 {
@@ -46,7 +46,7 @@ index 81a52e2cea123..b8f25e551f16c 100644
  			snps,fixed-burst;
  			snps,axi-config = <&stmmac_axi_setup>;
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 86ada597ebd8a..4a94067d3eb93 100644
+index 86ada597ebd8..4a94067d3eb9 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -101,6 +101,7 @@ CONFIG_NETDEVICES=y
@@ -58,7 +58,7 @@ index 86ada597ebd8a..4a94067d3eb93 100644
  # CONFIG_NET_VENDOR_VERTEXCOM is not set
  # CONFIG_NET_VENDOR_VIA is not set
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 7ce9fbb8c61e4..8196cddd4e9f3 100644
+index 7ce9fbb8c61e..8196cddd4e9f 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
 +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
 @@ -346,6 +346,16 @@ config DWMAC_SPACEMIT
@@ -79,7 +79,7 @@ index 7ce9fbb8c61e4..8196cddd4e9f3 100644
  
  config DWMAC_INTEL
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index 8df92930df489..f22c6e0ad2d68 100644
+index 8df92930df48..f22c6e0ad2d6 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
 +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
 @@ -33,6 +33,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
@@ -92,7 +92,7 @@ index 8df92930df489..f22c6e0ad2d68 100644
  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
 new file mode 100755
-index 0000000000000..79405467c127a
+index 000000000000..79405467c127
 --- /dev/null
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit-ethqos.c
 @@ -0,0 +1,325 @@
@@ -423,7 +423,7 @@ index 0000000000000..79405467c127a
 +MODULE_LICENSE("GPL v2");
 \ No newline at end of file
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
-index 28cbbfb019a20..cc17e7169bb55 100755
+index 28cbbfb019a2..cc17e7169bb5 100755
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-spacemit.c
 @@ -23,8 +23,6 @@ struct spacemit_dwmac_priv_data {

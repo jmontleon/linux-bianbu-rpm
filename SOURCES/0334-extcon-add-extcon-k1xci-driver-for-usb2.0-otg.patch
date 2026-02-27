@@ -1,4 +1,4 @@
-From 26acf1a5c7fe323a93dce168c20099fc6a40229d Mon Sep 17 00:00:00 2001
+From 31d38a4ddc3959f0e715ba5787645f60f6fc8848 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 4 Jan 2024 19:19:32 +0800
 Subject: [PATCH 0334/1236] extcon: add extcon-k1xci driver for usb2.0 otg
@@ -12,7 +12,7 @@ Change-Id: I747ece41e555ff3bb0c189cdeb0e3dda0eb7adc9
  create mode 100644 drivers/extcon/extcon-k1xci.c
 
 diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-index aec46bf03302c..536185ccd5b57 100644
+index aec46bf03302..536185ccd5b5 100644
 --- a/drivers/extcon/Kconfig
 +++ b/drivers/extcon/Kconfig
 @@ -41,6 +41,13 @@ config EXTCON_FSA9480
@@ -30,7 +30,7 @@ index aec46bf03302c..536185ccd5b57 100644
  	tristate "GPIO extcon support"
  	depends on GPIOLIB || COMPILE_TEST
 diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
-index 6482f2bfd6611..b32af2f474ea3 100644
+index 6482f2bfd661..b32af2f474ea 100644
 --- a/drivers/extcon/Makefile
 +++ b/drivers/extcon/Makefile
 @@ -24,6 +24,7 @@ obj-$(CONFIG_EXTCON_PTN5150)	+= extcon-ptn5150.o
@@ -43,7 +43,7 @@ index 6482f2bfd6611..b32af2f474ea3 100644
  obj-$(CONFIG_EXTCON_USBC_TUSB320) += extcon-usbc-tusb320.o
 diff --git a/drivers/extcon/extcon-k1xci.c b/drivers/extcon/extcon-k1xci.c
 new file mode 100644
-index 0000000000000..4ca0334d543b0
+index 000000000000..4ca0334d543b
 --- /dev/null
 +++ b/drivers/extcon/extcon-k1xci.c
 @@ -0,0 +1,358 @@

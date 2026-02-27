@@ -1,4 +1,4 @@
-From f340cd457d2066df72369d78dbaec6fcbcfa5392 Mon Sep 17 00:00:00 2001
+From bf15979d11eef5493c4251b847a5b4be707f7886 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 26 Mar 2024 20:53:59 +0800
 Subject: [PATCH 0545/1236] display: Modify hdmi and mipi dsi qos
@@ -9,7 +9,7 @@ Change-Id: I1ea1e9fae0ed145b4da999606c8135f48dedfd4e
  1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 4eab2c9aeb029..c5bd9bbdcc02a 100644
+index 4eab2c9aeb02..c5bd9bbdcc02 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -1469,14 +1469,13 @@ static int dpu_init(struct spacemit_dpu *dpu)

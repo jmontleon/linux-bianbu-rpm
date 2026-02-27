@@ -1,4 +1,4 @@
-From 2ee03f2682cee1dd166e5b9d7409a82ebc0c1ad5 Mon Sep 17 00:00:00 2001
+From f1351e1e0eb87953cbb60acad69f200862b6f6ba Mon Sep 17 00:00:00 2001
 From: xuhaodong <haodong.xu@spacemit.com>
 Date: Tue, 10 Sep 2024 10:20:32 +0800
 Subject: [PATCH 1110/1236] es8326:support headphone notifier call chain
@@ -9,7 +9,7 @@ Change-Id: I832160f10cf833f62acd05bafc9d91e811d98c22
  1 file changed, 152 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index f1c8838800237..c19cb2e6b278f 100644
+index f1c883880023..c19cb2e6b278 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -19,6 +19,10 @@

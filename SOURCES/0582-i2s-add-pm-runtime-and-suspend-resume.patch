@@ -1,4 +1,4 @@
-From 8822083e771ccf4cd6e32d86b84b854d91f2c5b3 Mon Sep 17 00:00:00 2001
+From a979539aac20716572edc17c44c4bf2ae49f699a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sun, 7 Apr 2024 20:20:13 +0800
 Subject: [PATCH 0582/1236] i2s: add pm-runtime and suspend/resume
@@ -10,7 +10,7 @@ Change-Id: I993c0b70d1eb64c31e93ef7753191acda239e66c
  2 files changed, 61 insertions(+), 33 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 22462529401ce..163d26665568b 100644
+index 22462529401c..163d26665568 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2360,6 +2360,16 @@ spacemit_i2s: i2s {
@@ -31,7 +31,7 @@ index 22462529401ce..163d26665568b 100644
  	};
  
 diff --git a/sound/soc/spacemit/spacemit-snd-spi.c b/sound/soc/spacemit/spacemit-snd-spi.c
-index 74bd5f0bb21d5..4abcb3e57bb10 100755
+index 74bd5f0bb21d..4abcb3e57bb1 100755
 --- a/sound/soc/spacemit/spacemit-snd-spi.c
 +++ b/sound/soc/spacemit/spacemit-snd-spi.c
 @@ -8,6 +8,9 @@

@@ -1,4 +1,4 @@
-From 66746d3cef7a60877a36b56c29f0b4c324da8621 Mon Sep 17 00:00:00 2001
+From 82e8a1cbb7f00db08099f626d3b3b5cf9e7789db Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 6 Aug 2024 09:18:59 +0800
 Subject: [PATCH 0881/1236] reset: add rcpu i2c reset
@@ -10,7 +10,7 @@ Change-Id: Ic47324ffb32bdaadfdaec8e1edbc5a53477fe77a
  2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 1cba454051f66..377ccd8ae3fa9 100644
+index 1cba454051f6..377ccd8ae3fa 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -130,6 +130,7 @@
@@ -30,7 +30,7 @@ index 1cba454051f66..377ccd8ae3fa9 100644
  
  static struct spacemit_reset *to_spacemit_reset(
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index e3cb57034a508..cd720cdeae9af 100644
+index e3cb57034a50..cd720cdeae9a 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -116,7 +116,8 @@

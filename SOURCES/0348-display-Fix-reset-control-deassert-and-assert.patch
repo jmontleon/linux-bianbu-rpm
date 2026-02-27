@@ -1,4 +1,4 @@
-From caaf5f4413a551f33262e10e78a7677371ba31bb Mon Sep 17 00:00:00 2001
+From 7206865ca58cdc56fa2d4100cadc87bba24e64d6 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 8 Jan 2024 21:55:53 +0800
 Subject: [PATCH 0348/1236] display: Fix reset control deassert and assert
@@ -10,7 +10,7 @@ Change-Id: I11c0e0a3436682de58430bdf5e06f5f36c70a2ed
  2 files changed, 17 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 29adf0800eb1f..0c18512eb7037 100644
+index 29adf0800eb1..0c18512eb703 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -220,34 +220,31 @@ static int dpu_parse_dt(struct spacemit_dpu *dpu, struct device_node *np)
@@ -56,7 +56,7 @@ index 29adf0800eb1f..0c18512eb7037 100644
  
  	clk_ctx->hmclk = of_clk_get_by_name(np, "hmclk");
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index d971d41a923cc..cef69a81392fa 100644
+index d971d41a923c..cef69a81392f 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -846,31 +846,31 @@ static void spacemit_dpu_unbind(struct device *dev, struct device *master,

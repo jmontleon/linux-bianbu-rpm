@@ -1,4 +1,4 @@
-From 0a7bf36fd0d25f4a9280c4b3353fdb1f9788bf18 Mon Sep 17 00:00:00 2001
+From 71e6058955db068a5b0007feabd4107a51fe1776 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Thu, 31 Oct 2024 16:04:58 +0800
 Subject: [PATCH 1074/1236] orangepi-rv2: add es8323 config and modify
@@ -10,7 +10,7 @@ Change-Id: Ia3dc0401c96982868d362fb49956429e5fde9cf2
  1 file changed, 9 insertions(+), 13 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
-index 306af22d9d598..ba7901464c35d 100644
+index 306af22d9d59..ba7901464c35 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 @@ -272,17 +272,13 @@ mac_address1: mac_address1@6 {

@@ -1,4 +1,4 @@
-From 9dd6d5708fc62457959081b91f264955738431c1 Mon Sep 17 00:00:00 2001
+From 9317fc9f7b733ec054ec8b120487a44a902f5940 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 3 Apr 2024 20:17:20 +0800
 Subject: [PATCH 0563/1236] k1x/i2c: update i2c driver
@@ -12,7 +12,7 @@ Change-Id: Iedf3b41a6b92d240e2f2600065247d85e3060145
  1 file changed, 17 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index 6c522fdb3b2ba..ddb3a48bfa511 100644
+index 6c522fdb3b2b..ddb3a48bfa51 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -954,6 +954,12 @@ static irqreturn_t spacemit_i2c_int_handler(int irq, void *devid)

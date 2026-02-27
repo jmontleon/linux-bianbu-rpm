@@ -1,4 +1,4 @@
-From d3692e4e28f3d1f155343fe869ffbedcadf91025 Mon Sep 17 00:00:00 2001
+From 8ad552318713673fa804589fd43eea188e0eca84 Mon Sep 17 00:00:00 2001
 From: liangbaihui <baihui.liang@spacemit.com>
 Date: Thu, 21 Nov 2024 10:25:50 +0800
 Subject: [PATCH 1173/1236] gpu: img-rogue: add judgment of linux version and
@@ -10,7 +10,7 @@ Change-Id: Ib527eb76d6db69786c9de4231b147cc0eb714147
  1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
-index 3ee76bf27ae6a..af1dcd9963e8f 100644
+index 3ee76bf27ae6..af1dcd9963e8 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 @@ -1118,7 +1118,11 @@ static void PMRFinalizeDmaBuf(PMR_IMPL_PRIVDATA pvPriv)

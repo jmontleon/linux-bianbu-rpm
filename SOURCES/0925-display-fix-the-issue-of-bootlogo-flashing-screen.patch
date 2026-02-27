@@ -1,4 +1,4 @@
-From 77227645cb8de15bfef19837cd1fbc6345275b9c Mon Sep 17 00:00:00 2001
+From be2563324264d018f19779b4cc255039a5cb520d Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 9 Aug 2024 15:38:55 +0800
 Subject: [PATCH 0925/1236] display: fix the issue of bootlogo flashing screen
@@ -13,7 +13,7 @@ Change-Id: I5975e3353e1ae874045c8dc3324a15282c0fc076
  5 files changed, 47 insertions(+), 18 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index a5e295049122e..570987cc8527c 100644
+index a5e295049122..570987cc8527 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -198,6 +198,7 @@ &dpu_online2_dsi {
@@ -33,7 +33,7 @@ index a5e295049122e..570987cc8527c 100644
  		standby-gpio = <&gpio 92 0>;
  
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 9cd2d1a917b91..a77ad3d2837d3 100644
+index 9cd2d1a917b9..a77ad3d2837d 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -572,7 +572,8 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)
@@ -75,7 +75,7 @@ index 9cd2d1a917b91..a77ad3d2837d3 100644
  			clk_disable_unprepare(clk_ctx->hmclk);
  		} else if (dpu->type == DSI) {
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 06c042fd3ffe7..6065698ece855 100644
+index 06c042fd3ffe..6065698ece85 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -1167,10 +1167,13 @@ static int lt8911exb_panel_disable(struct drm_panel *panel)
@@ -156,7 +156,7 @@ index 06c042fd3ffe7..6065698ece855 100644
  	mipi_dsi_driver_unregister(&lt8911exb_dsi_driver);
  }
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 2db7d090c9b94..752e26eab725a 100644
+index 2db7d090c9b9..752e26eab725 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -308,6 +308,10 @@ static void spacemit_crtc_atomic_enable(struct drm_crtc *crtc,
@@ -225,7 +225,7 @@ index 2db7d090c9b94..752e26eab725a 100644
  			ret = of_address_to_resource(fb_np, 0, &rsrv_mem);
  			if (ret < 0) {
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index aea9efa761357..5f2a4998d14be 100644
+index aea9efa76135..5f2a4998d14b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -16,6 +16,8 @@

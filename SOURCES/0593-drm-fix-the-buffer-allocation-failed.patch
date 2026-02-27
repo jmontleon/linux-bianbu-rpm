@@ -1,4 +1,4 @@
-From 6b98c281dba1adebe745ce1d7dc131ab49e60c2a Mon Sep 17 00:00:00 2001
+From 9b094b1d0aab9b1853578dba218ff3986635e324 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Apr 2024 14:24:13 +0800
 Subject: [PATCH 0593/1236] drm: fix the buffer allocation failed
@@ -13,7 +13,7 @@ Change-Id: I0fd6879cdb2ca5270e37caa94d8a171fd7ea89b0
  1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 95b7c89da715c..9b5772a055560 100644
+index 95b7c89da715..9b5772a05556 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -33,12 +33,8 @@ static struct page *__alloc_largest_available(size_t size,

@@ -1,4 +1,4 @@
-From a9ca585a9e5192598d41c0fd176e59b51f285bf7 Mon Sep 17 00:00:00 2001
+From f3f3e3c935a5c30ebc8bb2a114b4ad539f5eef2c Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 6 Aug 2024 17:13:34 +0800
 Subject: [PATCH 0891/1236] k1x:add MUSE-Paper-mini-4g dts support
@@ -11,7 +11,7 @@ Change-Id: I4c0d85d823ad87ce2e5fd837cbccfb34aa1c82c4
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 8debd77eda71e..1062f7d4ac3a6 100644
+index 8debd77eda71..1062f7d4ac3a 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,6 +5,7 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
@@ -26,7 +26,7 @@ index 8debd77eda71e..1062f7d4ac3a6 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 new file mode 100644
-index 0000000000000..bbc7e32cdae14
+index 000000000000..bbc7e32cdae1
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper-mini-4g.dts
 @@ -0,0 +1,777 @@

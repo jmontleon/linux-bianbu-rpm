@@ -1,4 +1,4 @@
-From 64ff372a8e4567a508113f54f2fd8eab922ce328 Mon Sep 17 00:00:00 2001
+From 4bc0805bd272c689f5690856aaf8203e6424af53 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 14 May 2024 17:59:31 +0800
 Subject: [PATCH 0673/1236] rtc:fix read rtc error when the registers of pmic
@@ -14,7 +14,7 @@ Change-Id: I4c29aa23e6fe56feb20c16ce5080eb75690b0b64
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
-index bc8f0a234407e..64f3781cc9206 100644
+index bc8f0a234407..64f3781cc920 100644
 --- a/drivers/rtc/rtc-spt-pmic.c
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -132,7 +132,7 @@ static int spt_rtc_read_time(struct device *dev, struct rtc_time *tm)

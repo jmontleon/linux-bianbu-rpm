@@ -1,4 +1,4 @@
-From 5f479389d018d832659fc0551f99c99ed2fc576e Mon Sep 17 00:00:00 2001
+From 8a4898a638d074934baf9b3fd7c58825d2aca92a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Wed, 28 Jun 2023 18:55:37 +0800
 Subject: [PATCH 0077/1236] clk: add spinlock and mailbox clock for mcu system
@@ -10,7 +10,7 @@ Change-Id: Ifa4419508e3d0689fb3c46bc979f0b91b31ed205
  2 files changed, 100 insertions(+), 100 deletions(-)
 
 diff --git a/drivers/clk/spacemit/k1-pro-ccu.c b/drivers/clk/spacemit/k1-pro-ccu.c
-index 724411f3df600..db4deed19c790 100755
+index 724411f3df60..db4deed19c79 100755
 --- a/drivers/clk/spacemit/k1-pro-ccu.c
 +++ b/drivers/clk/spacemit/k1-pro-ccu.c
 @@ -52,8 +52,6 @@ static struct ccu_clk_data ccu_clocks[] =  {
@@ -32,7 +32,7 @@ index 724411f3df600..db4deed19c790 100755
  };
  
 diff --git a/include/dt-bindings/clock/k1-pro-ccu-clock.h b/include/dt-bindings/clock/k1-pro-ccu-clock.h
-index 281ddbabcebc0..ba842c09138c8 100755
+index 281ddbabcebc..ba842c09138c 100755
 --- a/include/dt-bindings/clock/k1-pro-ccu-clock.h
 +++ b/include/dt-bindings/clock/k1-pro-ccu-clock.h
 @@ -37,111 +37,111 @@

@@ -1,4 +1,4 @@
-From 558fc1280bebd0389f0bff1b46f2185ab250c510 Mon Sep 17 00:00:00 2001
+From da7681460db86f31e7039591994c268b609b76ce Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 1 Jul 2024 20:23:18 +0800
 Subject: [PATCH 0797/1236] pm:pinctrl: support edge-detect wakeup functoin
@@ -12,7 +12,7 @@ Change-Id: I7e9480e078d24cd1e842e2430bf75c385f16549f
  4 files changed, 148 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index f994ad3549339..0bb6c5093ac6f 100644
+index f994ad354933..0bb6c5093ac6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -698,8 +698,9 @@ &cpu7_intc 11 &cpu7_intc 9
@@ -45,7 +45,7 @@ index f994ad3549339..0bb6c5093ac6f 100644
  				#pinctrl-single,gpio-range-cells = <3>;
  			};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index ea30bf701e0d8..796786ea6a70a 100644
+index ea30bf701e0d..796786ea6a70 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -572,6 +572,12 @@ K1X_PADCONF(GPIO_43, MUX_MODE1, (EDGE_NONE | PULL_DIS | PAD_1V8_DS2))	/* gmac1_i
@@ -62,7 +62,7 @@ index ea30bf701e0d8..796786ea6a70a 100644
  
  &gpio{
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 65a06b8a94867..9353085ca1065 100644
+index 65a06b8a9486..9353085ca106 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -28,6 +28,11 @@
@@ -293,7 +293,7 @@ index 65a06b8a94867..9353085ca1065 100644
  };
  MODULE_DEVICE_TABLE(of, pcs_of_match);
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 4a2dd1b2e553f..cd741e3113135 100644
+index 4a2dd1b2e553..cd741e311313 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -41,7 +41,8 @@

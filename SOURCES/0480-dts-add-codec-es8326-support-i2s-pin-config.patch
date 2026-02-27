@@ -1,4 +1,4 @@
-From df6b091aafe045f5501786754b9e1e11fc3b1bda Mon Sep 17 00:00:00 2001
+From 59840dcb57781aaa1ba0eb9f0443d8c97855e1f3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 7 Mar 2024 11:34:12 +0800
 Subject: [PATCH 0480/1236] dts: add codec es8326 support, i2s pin config
@@ -10,7 +10,7 @@ Change-Id: I1e17d1f10fc84b250bea1113ba22ca4279adab2f
  2 files changed, 31 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 3b9bd44992bf1..764c1c2a7a5c6 100644
+index 3b9bd44992bf..764c1c2a7a5c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -246,6 +246,16 @@ mac_address1: mac_address1@6 {
@@ -41,7 +41,7 @@ index 3b9bd44992bf1..764c1c2a7a5c6 100644
 +        status = "okay";
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 21bd0060ff573..b8dcf0e2c6e21 100644
+index 21bd0060ff57..b8dcf0e2c6e2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -188,6 +188,16 @@ &i2c2 {

@@ -1,4 +1,4 @@
-From 6fffc1cabadc51de76e4fdb25a6cecd92ea64f37 Mon Sep 17 00:00:00 2001
+From 4ec238f4650bc278eb712eba1167789d654ade66 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 5 Jul 2024 10:32:38 +0800
 Subject: [PATCH 0818/1236] ccu: fix rpwm clk sel
@@ -9,7 +9,7 @@ Change-Id: If119c97eb70b72ce642e6e91c1a6c76daa6a59ef
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index cd8176a5ea796..5e562b7a527e3 100644
+index cd8176a5ea79..5e562b7a527e 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1124,7 +1124,7 @@ static SPACEMIT_CCU_GATE_NO_PARENT(rcan_bus_clk, "rcan_bus_clk", NULL,

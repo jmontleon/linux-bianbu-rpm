@@ -1,4 +1,4 @@
-From 6b87a6f25135415aa713008cb98aefe1b89eee01 Mon Sep 17 00:00:00 2001
+From 413ed86fda941ba39026467ab13c0a4954c0d3e7 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 24 Aug 2024 15:45:37 +0800
 Subject: [PATCH 0978/1236] k1x:support rcpu ir
@@ -11,7 +11,7 @@ Change-Id: Ie0dd8dcf8f1704c9adf025daa1e06d92929c12b4
  3 files changed, 175 insertions(+), 51 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 99a1c6301c45c..5cf2ba13617f0 100644
+index 99a1c6301c45..5cf2ba13617f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1624,6 +1624,27 @@ rpwm2: pwm@c0888300 {
@@ -43,7 +43,7 @@ index 99a1c6301c45c..5cf2ba13617f0 100644
  			compatible = "spacemit,soc-timer";
  			reg = <0x0 0xd4014000 0x0 0xc8>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 0841ddfdab4bb..04fc08d016fd9 100644
+index 0841ddfdab4b..04fc08d016fd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -391,6 +391,18 @@ K1X_PADCONF(GPIO_58, MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* ir_rx */
@@ -66,7 +66,7 @@ index 0841ddfdab4bb..04fc08d016fd9 100644
  		pinctrl-single,pins = <
  			K1X_PADCONF(MMC1_DAT3, MUX_MODE5, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* pwm0 */
 diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
-index e022603e743cd..65572dbb24187 100644
+index e022603e743c..65572dbb2418 100644
 --- a/drivers/media/rc/ir-spacemit.c
 +++ b/drivers/media/rc/ir-spacemit.c
 @@ -10,8 +10,13 @@

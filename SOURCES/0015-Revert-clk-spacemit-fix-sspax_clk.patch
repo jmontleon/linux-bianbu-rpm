@@ -1,4 +1,4 @@
-From a382bfcf3e785dc95c7275b7689aa472e655e3a7 Mon Sep 17 00:00:00 2001
+From ec6a9a067b4afc478062386182f4aa74c97802a1 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:49:19 -0400
 Subject: [PATCH 0015/1236] Revert "clk: spacemit: fix sspax_clk"
@@ -9,7 +9,7 @@ This reverts commit c536e00d58dc8db3e1e430a8e6830bc22d2a38e3.
  1 file changed, 4 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index a3cecf2c241fe..8a0dd8146dbd5 100644
+index a3cecf2c241f..8a0dd8146dbd 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -343,14 +343,7 @@ CCU_GATE_DEFINE(aib_clk, CCU_PARENT_NAME(vctcxo_24m), APBC_AIB_CLK_RST, BIT(1),

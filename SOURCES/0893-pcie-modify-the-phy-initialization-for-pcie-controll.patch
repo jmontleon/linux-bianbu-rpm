@@ -1,4 +1,4 @@
-From 3074313e3ccdc0ec53de8964752877a0788dc337 Mon Sep 17 00:00:00 2001
+From b9e76e8ddd79ab5ac3aeafcdc8d7680185ab4b8d Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 3 Jun 2024 09:25:29 +0800
 Subject: [PATCH 0893/1236] pcie: modify the phy initialization for pcie
@@ -14,7 +14,7 @@ Change-Id: I5a8480b72ae3e843ac1eb1834073f504b00a8986
  1 file changed, 19 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index cbdf51ef0be40..77ec5722e351a 100644
+index cbdf51ef0be4..77ec5722e351 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -263,7 +263,6 @@ void porta_rterm(struct k1x_pcie *k1x)

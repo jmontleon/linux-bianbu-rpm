@@ -1,4 +1,4 @@
-From 579e90195ff1f7562658c51950d5fb4103121298 Mon Sep 17 00:00:00 2001
+From 3d7b86d62d4e3d12c5c619b603fa17ee8bd9b677 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 3 Jan 2024 19:47:54 +0800
 Subject: [PATCH 0326/1236] usb: f_tcm: support mutltiple cmds, enhance
@@ -11,7 +11,7 @@ Change-Id: I9b323e182614482fecf0c0b719387d46d8c541dd
  2 files changed, 201 insertions(+), 235 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
-index 6e8804f04baa7..5ab8ebd001eea 100644
+index 6e8804f04baa..5ab8ebd001ee 100644
 --- a/drivers/usb/gadget/function/f_tcm.c
 +++ b/drivers/usb/gadget/function/f_tcm.c
 @@ -63,11 +63,10 @@ static void bot_status_complete(struct usb_ep *ep, struct usb_request *req)
@@ -971,7 +971,7 @@ index 6e8804f04baa7..5ab8ebd001eea 100644
  	if (ret)
  		return ret;
 diff --git a/drivers/usb/gadget/function/tcm.h b/drivers/usb/gadget/function/tcm.h
-index 009974d81d66b..ea73fce74478f 100644
+index 009974d81d66..ea73fce74478 100644
 --- a/drivers/usb/gadget/function/tcm.h
 +++ b/drivers/usb/gadget/function/tcm.h
 @@ -4,7 +4,6 @@

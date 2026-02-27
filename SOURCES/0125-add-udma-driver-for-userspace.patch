@@ -1,4 +1,4 @@
-From 979de0149c74541e50a53e40a2918fdebeeea7e4 Mon Sep 17 00:00:00 2001
+From fdf0b12c2d2509db0a873c30f6114a66a4113655 Mon Sep 17 00:00:00 2001
 From: wangchu <chu.wang@spacemit.com>
 Date: Fri, 26 May 2023 17:26:33 +0800
 Subject: [PATCH 0125/1236] add udma driver for userspace
@@ -12,7 +12,7 @@ Change-Id: Ie84319fc6da89696b664cbf0b6c937187ffcb794
  create mode 100644 drivers/dma/udma.c
 
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 233fc16ae6115..3ff0569bf55ed 100644
+index 233fc16ae611..3ff0569bf55e 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -768,6 +768,12 @@ config XILINX_ZYNQMP_DPDMA
@@ -29,7 +29,7 @@ index 233fc16ae6115..3ff0569bf55ed 100644
  source "drivers/dma/amd/Kconfig"
  
 diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 20bfcefa668fe..a9f3209523493 100644
+index 20bfcefa668f..a9f320952349 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
 @@ -84,6 +84,7 @@ obj-$(CONFIG_UNIPHIER_MDMAC) += uniphier-mdmac.o
@@ -42,7 +42,7 @@ index 20bfcefa668fe..a9f3209523493 100644
  
 diff --git a/drivers/dma/udma.c b/drivers/dma/udma.c
 new file mode 100644
-index 0000000000000..35845e949fde9
+index 000000000000..35845e949fde
 --- /dev/null
 +++ b/drivers/dma/udma.c
 @@ -0,0 +1,359 @@

@@ -1,4 +1,4 @@
-From 22d0199e828a3d630bd025ca003d5ee70ed47b07 Mon Sep 17 00:00:00 2001
+From e03481537af57b50a28b15247c7552f81dd215ab Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 13 Aug 2024 14:05:59 +0800
 Subject: [PATCH 0930/1236] thermal: add hwmon sysfs node for some debug tools
@@ -9,7 +9,7 @@ Change-Id: I812d0b4d77603615e47db19952a4965deba475dc
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/thermal/k1x-thermal.c b/drivers/thermal/k1x-thermal.c
-index 02b8a577daed6..9c66a0a23b1b5 100644
+index 02b8a577daed..9c66a0a23b1b 100644
 --- a/drivers/thermal/k1x-thermal.c
 +++ b/drivers/thermal/k1x-thermal.c
 @@ -9,6 +9,7 @@

@@ -1,4 +1,4 @@
-From d3d13e2eb5f31db5eba120b27da587eab635eb37 Mon Sep 17 00:00:00 2001
+From ad4182f8d63743ade7998079f1f56cbaad1468ca Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Fri, 14 Jun 2024 09:42:54 +0800
 Subject: [PATCH 0869/1236] change error to warning when frequency table is
@@ -10,7 +10,7 @@ Change-Id: I5486c455f9242b33af82d478807ab68cb0aca89b
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/rgxtimecorr.c b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
-index 3fc284ca5a52c..b70b1e407da5f 100644
+index 3fc284ca5a52..b70b1e407da5 100644
 --- a/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 +++ b/drivers/gpu/drm/img-rogue/rgxtimecorr.c
 @@ -428,7 +428,7 @@ static inline IMG_UINT32 _RGXGPUFreqGetIndex(RGX_GPU_DVFS_TABLE *psGpuDVFSTable,

@@ -1,4 +1,4 @@
-From e26d268a19f4759f8591faf0706a4eb396d04ee3 Mon Sep 17 00:00:00 2001
+From 76560655b98ef03a7ced16f4b05dde4b681ef867 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 30 Aug 2024 17:54:05 +0800
 Subject: [PATCH 1004/1236] k1x_udc_core: fix enable after disable may fail
@@ -9,7 +9,7 @@ Change-Id: Iadbbed7fbc707f47b2b8b694928398baefbc54f8
  1 file changed, 7 insertions(+)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index f05ef390979f6..8686609442bee 100644
+index f05ef390979f..8686609442be 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -626,6 +626,8 @@ static int mv_ep_enable(struct usb_ep *_ep,

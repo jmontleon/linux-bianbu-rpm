@@ -1,4 +1,4 @@
-From 8d93155114685f621b9a6425d32c75ad94cbd27c Mon Sep 17 00:00:00 2001
+From d88ad0b9d353c79edafb369124b18f054e172bc2 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:26:51 +0800
 Subject: [PATCH 0701/1236] k1: gt9xx: delete i2c_device_id args
@@ -11,7 +11,7 @@ Change-Id: I892d578ff50101b4f83d35c4efda1d8bd472a2fd
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/input/touchscreen/gt9xx.c b/drivers/input/touchscreen/gt9xx.c
-index 7a018dae50fcc..53d19d1c7b146 100755
+index 7a018dae50fc..53d19d1c7b14 100755
 --- a/drivers/input/touchscreen/gt9xx.c
 +++ b/drivers/input/touchscreen/gt9xx.c
 @@ -1896,7 +1896,7 @@ static void gtp_shutdown(struct i2c_client *client)
@@ -24,7 +24,7 @@ index 7a018dae50fcc..53d19d1c7b146 100755
  	int ret = -1;
  	struct goodix_ts_data *ts;
 diff --git a/drivers/input/touchscreen/gt9xx.h b/drivers/input/touchscreen/gt9xx.h
-index fd6d13c8d3d2e..d4af535c3ea65 100755
+index fd6d13c8d3d2..d4af535c3ea6 100755
 --- a/drivers/input/touchscreen/gt9xx.h
 +++ b/drivers/input/touchscreen/gt9xx.h
 @@ -36,6 +36,7 @@

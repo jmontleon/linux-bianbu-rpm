@@ -1,4 +1,4 @@
-From e859f6cf042716a8ab46be6b305b57d135851bc7 Mon Sep 17 00:00:00 2001
+From 5889abd4cda7bee38bb74703b1c673ff3ddd4b59 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Fri, 16 Aug 2024 11:49:15 +0800
 Subject: [PATCH 0950/1236] k1x:x60-can and rcpu can separate
@@ -11,7 +11,7 @@ Change-Id: Ic425e342cdc383d36ae21bb8ee2059fe86322a20
  3 files changed, 46 insertions(+), 11 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 0fa82a0ce791a..b8f6a1a1021b1 100644
+index 0fa82a0ce791..b8f6a1a1021b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1656,11 +1656,10 @@ flexcan0: fdcan@d4028000 {
@@ -29,7 +29,7 @@ index 0fa82a0ce791a..b8f6a1a1021b1 100644
  			clocks = <&ccu CLK_RCPU_CAN>,<&ccu CLK_RCPU_CAN_BUS>;
  			clock-names = "per","ipg";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index c1a007b281aec..33c2a75e00a83 100644
+index c1a007b281ae..33c2a75e00a8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -978,6 +978,20 @@ K1X_PADCONF(GPIO_55, MUX_MODE2, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))	/* can_rx0
@@ -54,7 +54,7 @@ index c1a007b281aec..33c2a75e00a83 100644
  		pinctrl-single,pins = <
  			K1X_PADCONF(GPIO_86, MUX_MODE1, (EDGE_NONE | PULL_UP   | PAD_1V8_DS2))	/* hdmi_tx_hscl */
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 64edb781db80c..fdeae44216b9f 100644
+index 64edb781db80..fdeae44216b9 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -38,13 +38,12 @@

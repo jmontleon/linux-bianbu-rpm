@@ -1,4 +1,4 @@
-From fb2a04768d4718c980e0f764fa6c58052b420835 Mon Sep 17 00:00:00 2001
+From b4f9f133957ecadf09d95393dfef230854104be2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 30 Sep 2024 10:14:53 +0800
 Subject: [PATCH 1022/1236] k1:suspend: skip system sync in kernel
@@ -9,7 +9,7 @@ Change-Id: I35db24793de6af69f2b3fc320395e63b2024aaf0
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index f90e68fcc9d04..4c8afce2e9733 100644
+index f90e68fcc9d0..4c8afce2e973 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -52,6 +52,7 @@ CONFIG_SMP=y

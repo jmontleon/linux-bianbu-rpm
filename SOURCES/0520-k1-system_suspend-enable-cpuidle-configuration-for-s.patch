@@ -1,4 +1,4 @@
-From 5a97a998e9fdf8508b53ee1077f450b84fec19c7 Mon Sep 17 00:00:00 2001
+From d21a16ee8d98347ae7c701f7572ee4a16025f23a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 13 Mar 2024 17:27:52 +0800
 Subject: [PATCH 0520/1236] k1:system_suspend: enable cpuidle configuration for
@@ -10,7 +10,7 @@ Change-Id: I33829631e95848d80b5f946850cb291afdd8891e
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 1707034935762..8d29d80d4d169 100644
+index 170703493576..8d29d80d4d16 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -47,6 +47,7 @@ CONFIG_NR_CPUS=8

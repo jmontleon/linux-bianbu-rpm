@@ -1,4 +1,4 @@
-From 6960e2b8ceef6b759955e5e1e6ad6aca01885f09 Mon Sep 17 00:00:00 2001
+From ed2d5fa5dce865a92aad9d54d5f0990d36372e0f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 6 Aug 2024 10:13:51 +0800
 Subject: [PATCH 0878/1236] k1:hotplug: close the SCMI configuration
@@ -10,7 +10,7 @@ Change-Id: I6015fcabf3181e0901a7fb4ae224dbd98013b3f8
  2 files changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index e597758251796..455c4b2605783 100644
+index e59775825179..455c4b260578 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -217,7 +217,6 @@ CONFIG_PCIEPORTBUS=y
@@ -30,7 +30,7 @@ index e597758251796..455c4b2605783 100644
  # CONFIG_RESET_K1MATRIX_SPACEMIT is not set
  # CONFIG_PHY_MVEBU_A3700_UTMI is not set
 diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-index f0110eb5c5771..9d1484da541e7 100644
+index f0110eb5c577..9d1484da541e 100644
 --- a/arch/riscv/kernel/cpu_ops_sbi.c
 +++ b/arch/riscv/kernel/cpu_ops_sbi.c
 @@ -94,7 +94,7 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)

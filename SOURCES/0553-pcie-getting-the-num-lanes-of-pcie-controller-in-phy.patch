@@ -1,4 +1,4 @@
-From 1043e4ddc0ea79c257b992c9d118a3ea52e0ece0 Mon Sep 17 00:00:00 2001
+From 69bff01d64a382eb96cc6a0a07320a7dd9974bde Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Fri, 29 Mar 2024 17:48:16 +0800
 Subject: [PATCH 0553/1236] pcie: getting the num lanes of pcie controller in
@@ -10,7 +10,7 @@ Change-Id: I77b4f4f1041cf9b931bebb435d3b1dd1b2007a94
  1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index ffbb316ed8646..9988e1405aaa7 100755
+index ffbb316ed864..9988e1405aaa 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -137,6 +137,7 @@ struct k1x_pcie {

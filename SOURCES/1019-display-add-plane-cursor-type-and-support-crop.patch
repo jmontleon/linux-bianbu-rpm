@@ -1,4 +1,4 @@
-From 259185aa33baddc657225177457a1eb9b4745c2f Mon Sep 17 00:00:00 2001
+From 792a2f97b9017fabe7512113e8a75ae61554b0db Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Thu, 19 Sep 2024 16:58:33 +0800
 Subject: [PATCH 1019/1236] display: add plane cursor type and support crop
@@ -13,7 +13,7 @@ Change-Id: Ied6ada2b5d492382f09a8a3419b7185c705aeefc
  5 files changed, 130 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index a77ad3d2837d3..e4862f19032eb 100644
+index a77ad3d2837d..e4862f19032e 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -1006,6 +1006,26 @@ void spacemit_plane_update_hw_channel(struct drm_plane *plane)
@@ -44,7 +44,7 @@ index a77ad3d2837d3..e4862f19032eb 100644
  		solid_en = true;
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
-index e91853cf0092a..220eb8fc726fd 100644
+index e91853cf0092..220eb8fc726f 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 @@ -33,8 +33,9 @@ static inline void spacemit_dmmu_fill_pgtable(uint32_t *ttbr, struct sg_table *s
@@ -59,7 +59,7 @@ index e91853cf0092a..220eb8fc726fd 100644
  	struct spacemit_hw_device *hwdev = priv->hwdev;
  	const struct drm_format_info *format = NULL;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.h b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
-index a5998c3565bbd..b21ba36260c8f 100644
+index a5998c3565bb..b21ba36260c8 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 @@ -87,7 +87,7 @@ struct tbu_instance {
@@ -72,7 +72,7 @@ index a5998c3565bbd..b21ba36260c8f 100644
  
  #endif /* _SPACEMIT_DMMU_H_ */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index 5f2a4998d14be..0e5012cdf02f3 100644
+index 5f2a4998d14b..0e5012cdf02f 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -229,6 +229,17 @@ struct spacemit_plane_state {
@@ -94,7 +94,7 @@ index 5f2a4998d14be..0e5012cdf02f3 100644
  	struct cmdlist cl;
  	uint64_t afbc_effc;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
-index f47bbcc474c8d..c49b9fe5b33bb 100644
+index f47bbcc474c8..c49b9fe5b33b 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_planes.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -257,9 +257,83 @@ static void spacemit_plane_atomic_update(struct drm_plane *plane,

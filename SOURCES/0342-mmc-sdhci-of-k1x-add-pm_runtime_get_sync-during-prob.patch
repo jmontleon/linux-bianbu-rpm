@@ -1,4 +1,4 @@
-From d8beac7555f2848c73e68eb932a98a3bb61dd53d Mon Sep 17 00:00:00 2001
+From 01b4735db85d08d3b4e688cc95106cf7263d461d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 5 Jan 2024 15:24:11 +0800
 Subject: [PATCH 0342/1236] mmc: sdhci-of-k1x: add pm_runtime_get_sync during
@@ -10,7 +10,7 @@ Change-Id: I104504ea9d1fcf18a20c53d97fbaad244e502d5d
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index a3d27cc542b87..1291b714679f3 100644
+index a3d27cc542b8..1291b714679f 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1326,6 +1326,7 @@ static int spacemit_sdhci_probe(struct platform_device *pdev)

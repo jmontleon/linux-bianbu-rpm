@@ -1,4 +1,4 @@
-From c5be37910c07ef13b5c395e7d3dd02a28a0a6625 Mon Sep 17 00:00:00 2001
+From ab7d1800b767250e2c66e9bb8c69a4af26638760 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 15 May 2024 20:32:55 +0800
 Subject: [PATCH 0679/1236] pcie: Add a timeout to do while to prevent an
@@ -10,7 +10,7 @@ Change-Id: Ie622d75edafd6e14ffd890f8482b9dc412d71890
  1 file changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index dc7922d003ab0..22290dec4ffe2 100755
+index dc7922d003ab..22290dec4ffe 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -258,7 +258,7 @@ static int porta_init_done = 0;

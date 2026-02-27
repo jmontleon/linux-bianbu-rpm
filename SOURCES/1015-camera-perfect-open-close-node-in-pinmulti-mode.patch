@@ -1,4 +1,4 @@
-From 3676a2b6eea627892d94cdeb142f5e7225cd4a36 Mon Sep 17 00:00:00 2001
+From 3b5cebd37434ef971c5060aee2d9eb29582ed61d Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Fri, 13 Sep 2024 18:02:32 +0800
 Subject: [PATCH 1015/1236] camera: perfect open/close node in pinmulti mode
@@ -10,7 +10,7 @@ Change-Id: I87da6e8472a05231ee5202a855f3fddb4dd4d6c5
  2 files changed, 99 insertions(+), 74 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index e0c71e9d613dd..8504c7a4eeaf1 100644
+index e0c71e9d613d..8504c7a4eeaf 100644
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -1094,102 +1094,124 @@ static long camsnr_compat_ioctl(struct file *file, unsigned int cmd, unsigned lo
@@ -230,7 +230,7 @@ index e0c71e9d613dd..8504c7a4eeaf1 100644
  
  #ifdef CONFIG_ARCH_ZYNQMP
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
-index d70ed1bba2235..b75a2ce8d78f9 100644
+index d70ed1bba223..b75a2ce8d78f 100644
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 @@ -36,6 +36,7 @@ struct cam_sensor_device {

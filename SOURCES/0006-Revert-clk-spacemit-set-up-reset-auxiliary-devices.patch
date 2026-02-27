@@ -1,4 +1,4 @@
-From bc6cd163ebaa29b22600f6d7ee8e8e0bf332a371 Mon Sep 17 00:00:00 2001
+From fc66a35b35e662f1651e8ca1b2bef37ebed8e672 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 10:27:59 -0400
 Subject: [PATCH 0006/1236] Revert "clk: spacemit: set up reset auxiliary
@@ -12,7 +12,7 @@ This reverts commit 988543522ebd6a9af53c288833503f0501e401b0.
  3 files changed, 10 insertions(+), 107 deletions(-)
 
 diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
-index 3854f6ae6d0ea..4c4df845b3cb2 100644
+index 3854f6ae6d0e..4c4df845b3cb 100644
 --- a/drivers/clk/spacemit/Kconfig
 +++ b/drivers/clk/spacemit/Kconfig
 @@ -3,7 +3,6 @@
@@ -24,7 +24,7 @@ index 3854f6ae6d0ea..4c4df845b3cb2 100644
  	help
  	  Say Y to enable clock controller unit support for SpacemiT SoCs.
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 9953788dd3686..703c96aff3fe6 100644
+index 9953788dd368..703c96aff3fe 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -5,15 +5,12 @@
@@ -211,7 +211,7 @@ index 9953788dd3686..703c96aff3fe6 100644
  }
  
 diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
-index 354751562c555..331cc1d35bbb7 100644
+index 354751562c55..331cc1d35bbb 100644
 --- a/include/soc/spacemit/k1-syscon.h
 +++ b/include/soc/spacemit/k1-syscon.h
 @@ -5,18 +5,6 @@

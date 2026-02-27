@@ -1,4 +1,4 @@
-From b6a81e2eb36e67caee372cd2495bfe845788ffab Mon Sep 17 00:00:00 2001
+From 98a2f1712324f5f29e1e72c970d7b734d514ebd2 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 10:39:27 +0800
 Subject: [PATCH 0945/1236] gmac: fix compiler warning
@@ -9,7 +9,7 @@ Change-Id: Id1bf5886524ff5cc3a69c9962bc3ad64abd46c65
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index dea7e3b776e2b..8932171243b42 100644
+index dea7e3b776e2..8932171243b4 100644
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -2562,7 +2562,7 @@ static int emac_config_dt(struct platform_device *pdev, struct emac_priv *priv)

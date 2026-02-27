@@ -1,4 +1,4 @@
-From 69e046cec7bfe9ed9327be634be3aff407ad8cfb Mon Sep 17 00:00:00 2001
+From 6629d16b59c5f39e927d2ae49a213b6ec4814492 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Mon, 29 Jul 2024 17:21:57 +0800
 Subject: [PATCH 0911/1236] k1-x_lpi3a.dts: fix no interrupt of ctp
@@ -10,7 +10,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index e02cf1191fcca..0070f898c4efa 100644
+index e02cf1191fcc..0070f898c4ef 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -378,13 +378,14 @@ &i2c6 {

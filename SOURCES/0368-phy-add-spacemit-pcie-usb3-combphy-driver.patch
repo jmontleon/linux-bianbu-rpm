@@ -1,4 +1,4 @@
-From b25a65feddc59f884e9823028aea2bcc7d529dda Mon Sep 17 00:00:00 2001
+From 91544f0cdf7d1ec3bd0c07d0c708a23d3105ab9f Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 18:26:21 +0800
 Subject: [PATCH 0368/1236] phy: add spacemit pcie&usb3 combphy driver
@@ -18,7 +18,7 @@ Change-Id: I5b0540099cdb15918856b4dd0615bc35fd3afb0c
  create mode 100644 drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
 
 diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index 678dd0452f0aa..a5e4d79bc19b1 100644
+index 678dd0452f0a..a5e4d79bc19b 100644
 --- a/drivers/phy/Kconfig
 +++ b/drivers/phy/Kconfig
 @@ -130,5 +130,6 @@ source "drivers/phy/tegra/Kconfig"
@@ -29,7 +29,7 @@ index 678dd0452f0aa..a5e4d79bc19b1 100644
  
  endmenu
 diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-index bfb27fb5a4942..d10fc1ca0ee21 100644
+index bfb27fb5a494..d10fc1ca0ee2 100644
 --- a/drivers/phy/Makefile
 +++ b/drivers/phy/Makefile
 @@ -41,4 +41,5 @@ obj-y					+= allwinner/	\
@@ -40,7 +40,7 @@ index bfb27fb5a4942..d10fc1ca0ee21 100644
  					   xilinx/
 diff --git a/drivers/phy/spacemit/Kconfig b/drivers/phy/spacemit/Kconfig
 new file mode 100644
-index 0000000000000..8dfa10d10feed
+index 000000000000..8dfa10d10fee
 --- /dev/null
 +++ b/drivers/phy/spacemit/Kconfig
 @@ -0,0 +1,11 @@
@@ -57,7 +57,7 @@ index 0000000000000..8dfa10d10feed
 +	  USB3 and PCIE Combo PHY Support for Spacemit k1-x Soc
 diff --git a/drivers/phy/spacemit/Makefile b/drivers/phy/spacemit/Makefile
 new file mode 100644
-index 0000000000000..e28d038e47806
+index 000000000000..e28d038e4780
 --- /dev/null
 +++ b/drivers/phy/spacemit/Makefile
 @@ -0,0 +1,2 @@
@@ -65,7 +65,7 @@ index 0000000000000..e28d038e47806
 +obj-$(CONFIG_PHY_SPACEMIT_K1X_COMBPHY)	+= phy-spacemit-k1x-combphy.o
 diff --git a/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
 new file mode 100644
-index 0000000000000..6a041e92d7ebe
+index 000000000000..6a041e92d7eb
 --- /dev/null
 +++ b/drivers/phy/spacemit/phy-spacemit-k1x-combphy.c
 @@ -0,0 +1,258 @@

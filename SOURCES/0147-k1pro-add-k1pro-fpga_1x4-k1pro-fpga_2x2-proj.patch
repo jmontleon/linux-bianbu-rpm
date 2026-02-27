@@ -1,4 +1,4 @@
-From b8ebf60b06e2feb94e53ff653279e85a20254a73 Mon Sep 17 00:00:00 2001
+From 65662881529224e0f03d69c1ddad0d3d193f4b85 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 23 Sep 2023 14:50:42 +0800
 Subject: [PATCH 0147/1236] k1pro: add k1pro-fpga_1x4 & k1pro-fpga_2x2 proj
@@ -17,7 +17,7 @@ Change-Id: Id5819e01b51f9a2503588f325f89c619f0569cf5
  create mode 100644 arch/riscv/configs/k1-pro_fpga_2x2_defconfig
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index b0c33708d5152..882d3c7ef2ba4 100644
+index b0c33708d515..882d3c7ef2ba 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,6 +1,6 @@
@@ -30,7 +30,7 @@ index b0c33708d5152..882d3c7ef2ba4 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_fpga_1x4.dts b/arch/riscv/boot/dts/spacemit/k1-pro_fpga_1x4.dts
 new file mode 100644
-index 0000000000000..74ca770327bca
+index 000000000000..74ca770327bc
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_fpga_1x4.dts
 @@ -0,0 +1,161 @@
@@ -197,7 +197,7 @@ index 0000000000000..74ca770327bca
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro_fpga_2x2.dts b/arch/riscv/boot/dts/spacemit/k1-pro_fpga_2x2.dts
 new file mode 100644
-index 0000000000000..c44f9dd52a591
+index 000000000000..c44f9dd52a59
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro_fpga_2x2.dts
 @@ -0,0 +1,162 @@
@@ -365,7 +365,7 @@ index 0000000000000..c44f9dd52a591
 +};
 diff --git a/arch/riscv/configs/k1-pro_fpga_1x4_defconfig b/arch/riscv/configs/k1-pro_fpga_1x4_defconfig
 new file mode 100644
-index 0000000000000..acc987b7ade47
+index 000000000000..acc987b7ade4
 --- /dev/null
 +++ b/arch/riscv/configs/k1-pro_fpga_1x4_defconfig
 @@ -0,0 +1,278 @@
@@ -649,7 +649,7 @@ index 0000000000000..acc987b7ade47
 +# CONFIG_RUNTIME_TESTING_MENU is not set
 diff --git a/arch/riscv/configs/k1-pro_fpga_2x2_defconfig b/arch/riscv/configs/k1-pro_fpga_2x2_defconfig
 new file mode 100644
-index 0000000000000..acc987b7ade47
+index 000000000000..acc987b7ade4
 --- /dev/null
 +++ b/arch/riscv/configs/k1-pro_fpga_2x2_defconfig
 @@ -0,0 +1,278 @@

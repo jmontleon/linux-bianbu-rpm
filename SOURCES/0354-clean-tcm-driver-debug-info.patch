@@ -1,4 +1,4 @@
-From 4728b5b38de8db1908e0887825d9a6b98c33b751 Mon Sep 17 00:00:00 2001
+From 2571778c7c30baaad8f3ba139541e5d3e56ea764 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:27:29 +0800
 Subject: [PATCH 0354/1236] clean tcm driver debug info
@@ -9,7 +9,7 @@ Change-Id: I3d39400c01d7d91bf8f22ddc4c9aa93c089e82b9
  1 file changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
-index 0f953719d84a2..ebc0b2ab2bae1 100644
+index 0f953719d84a..ebc0b2ab2bae 100644
 --- a/drivers/misc/tcm.c
 +++ b/drivers/misc/tcm.c
 @@ -98,19 +98,19 @@ static void add_node(mm_heap_t *heap, list_manager_t *list, mm_node_t *node, cha

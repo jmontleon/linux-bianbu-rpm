@@ -1,4 +1,4 @@
-From 9cf5e5ae86d512282df6c3ae3f3fd805b9f9d328 Mon Sep 17 00:00:00 2001
+From 50c0cbbbadad262b24212c835b778afc2c6cd942 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Mon, 8 Apr 2024 13:58:59 +0800
 Subject: [PATCH 0585/1236] display: Fix the minimum brightness for the lcd
@@ -13,7 +13,7 @@ Change-Id: I13e06cfe5afa3304a2625eb257d74d4ca647dcfd
  5 files changed, 22 insertions(+), 21 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 55e3fd4c85c6a..d4497a4e15339 100644
+index 55e3fd4c85c6..d4497a4e1533 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -835,11 +835,11 @@ flash@0 {
@@ -41,7 +41,7 @@ index 55e3fd4c85c6a..d4497a4e15339 100644
  &backsensor {
  	af_2v8-supply = <&ldo_3>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index b0dc558df5ad4..99c4b6d969d6b 100644
+index b0dc558df5ad..99c4b6d969d6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -797,11 +797,11 @@ flash@0 {
@@ -61,7 +61,7 @@ index b0dc558df5ad4..99c4b6d969d6b 100644
  		64  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79
  		80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 8125c2036de52..55b2701d5a240 100644
+index 8125c2036de5..55b2701d5a24 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -748,11 +748,11 @@ flash@0 {
@@ -81,7 +81,7 @@ index 8125c2036de52..55b2701d5a240 100644
  		64  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79
  		80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 25982115b2686..c61f6643a4ccc 100644
+index 25982115b268..c61f6643a4cc 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -706,10 +706,10 @@ flash@0 {
@@ -100,7 +100,7 @@ index 25982115b2686..c61f6643a4ccc 100644
  		80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95
  		96  97  98  99  100 101 102 103 104 105 106 107 108 109 110 111
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index a53bda8a42ba2..ce271347fc620 100644
+index a53bda8a42ba..ce271347fc62 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -673,12 +673,12 @@ flash@0 {

@@ -1,4 +1,4 @@
-From 8d669ea6ae81da5f873158cac02d2abe19f280cb Mon Sep 17 00:00:00 2001
+From bf7481316a6023675473b8cf5e95d213dcdeeb9d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 28 Feb 2024 14:56:29 +0800
 Subject: [PATCH 0473/1236] mmc: sdhci-of-k1x: update phy dll config
@@ -10,7 +10,7 @@ Change-Id: I954b0ffe0fa81c5accc3039bcde92f3131473e30
  2 files changed, 20 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 14185718c1479..1968ec44de577 100644
+index 14185718c147..1968ec44de57 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -72,7 +72,12 @@
@@ -70,7 +70,7 @@ index 14185718c1479..1968ec44de577 100644
  }
  
 diff --git a/include/linux/platform_data/k1x_sdhci.h b/include/linux/platform_data/k1x_sdhci.h
-index c3a4fe7e13d16..862b4017904d7 100644
+index c3a4fe7e13d1..862b4017904d 100644
 --- a/include/linux/platform_data/k1x_sdhci.h
 +++ b/include/linux/platform_data/k1x_sdhci.h
 @@ -81,6 +81,7 @@ struct k1x_sdhci_platdata {

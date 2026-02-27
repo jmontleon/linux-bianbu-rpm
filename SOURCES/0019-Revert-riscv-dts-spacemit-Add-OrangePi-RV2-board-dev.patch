@@ -1,4 +1,4 @@
-From 27f0a41511d53e221ae3af71f6666a37339b912b Mon Sep 17 00:00:00 2001
+From 0b786fb095362f7a0d72fb0207e965ef12fac995 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:52:21 -0400
 Subject: [PATCH 0019/1236] Revert "riscv: dts: spacemit: Add OrangePi RV2
@@ -12,7 +12,7 @@ This reverts commit bab8dea259100a99e047fd11a48940b229d30031.
  delete mode 100644 arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 1528326448706..92e13ce1c16d5 100644
+index 152832644870..92e13ce1c16d 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -1,4 +1,3 @@
@@ -22,7 +22,7 @@ index 1528326448706..92e13ce1c16d5 100644
 -dtb-$(CONFIG_ARCH_SPACEMIT) += k1-orangepi-rv2.dtb
 diff --git a/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
 deleted file mode 100644
-index 337240ebb7b79..0000000000000
+index 337240ebb7b7..000000000000
 --- a/arch/riscv/boot/dts/spacemit/k1-orangepi-rv2.dts
 +++ /dev/null
 @@ -1,40 +0,0 @@

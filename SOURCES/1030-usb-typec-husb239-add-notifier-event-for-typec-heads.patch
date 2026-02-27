@@ -1,4 +1,4 @@
-From 3ef6f8e096191dbb768ea04ff2d63c392c7a0c78 Mon Sep 17 00:00:00 2001
+From 52f4b438b9c4a90caa0af2be2e597d75135b4099 Mon Sep 17 00:00:00 2001
 From: xuhaodong <haodong.xu@spacemit.com>
 Date: Wed, 11 Sep 2024 11:48:20 +0800
 Subject: [PATCH 1030/1236] usb:typec:husb239:add notifier event for typec
@@ -10,7 +10,7 @@ Change-Id: I77427a012da42cfb10ab871ecd6a66d13b737aff
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index 1f78b30825707..e40a6d082714e 100644
+index 1f78b3082570..e40a6d082714 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -19,6 +19,7 @@

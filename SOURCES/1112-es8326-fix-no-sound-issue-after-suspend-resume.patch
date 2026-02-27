@@ -1,4 +1,4 @@
-From b1465f1987705d4567053cc7e657f1e5f96b1275 Mon Sep 17 00:00:00 2001
+From 3cfca4a49ab3578f30fb08b1a23c1f09fa0b05a4 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 25 Oct 2024 10:47:35 +0800
 Subject: [PATCH 1112/1236] es8326: fix no sound issue after suspend/resume
@@ -9,7 +9,7 @@ Change-Id: I57bab21d811ed1aff8688dba4772d37e3ef39904
  1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index f94ce8ec01dd6..f510746f71589 100644
+index f94ce8ec01dd..f510746f7158 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -22,6 +22,7 @@

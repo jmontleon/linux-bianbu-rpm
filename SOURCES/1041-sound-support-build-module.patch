@@ -1,4 +1,4 @@
-From ae31f572ea42d005592cb34fc3de4f7848926a3d Mon Sep 17 00:00:00 2001
+From d3df9c8fe0ff983f1cec35d67003775c771ab5de Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 18 Oct 2024 19:08:59 +0800
 Subject: [PATCH 1041/1236] sound: support build module
@@ -14,7 +14,7 @@ Change-Id: Id24a41b1183c07ade15dfca2937094dff2d006c7
  6 files changed, 81 insertions(+), 51 deletions(-)
 
 diff --git a/sound/soc/spacemit/Kconfig b/sound/soc/spacemit/Kconfig
-index 6e0a73fd25773..15e91c6930ae7 100644
+index 6e0a73fd2577..15e91c6930ae 100644
 --- a/sound/soc/spacemit/Kconfig
 +++ b/sound/soc/spacemit/Kconfig
 @@ -3,7 +3,37 @@ config SND_SOC_SPACEMIT
@@ -57,7 +57,7 @@ index 6e0a73fd25773..15e91c6930ae7 100644
  config SPACEMIT_AUDIO_DATA_DEBUG
          bool "Audio Data Dump"
 diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
-index a079b5973f32f..b4357e2acb7fa 100644
+index a079b5973f32..b4357e2acb7f 100644
 --- a/sound/soc/spacemit/Makefile
 +++ b/sound/soc/spacemit/Makefile
 @@ -1,4 +1,17 @@
@@ -83,7 +83,7 @@ index a079b5973f32f..b4357e2acb7fa 100644
 +
 +
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 6eca7511038cc..a4bc789c2d45a 100644
+index 6eca7511038c..a4bc789c2d45 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -422,6 +422,12 @@ static struct platform_driver asoc_simple_card = {
@@ -100,7 +100,7 @@ index 6eca7511038cc..a4bc789c2d45a 100644
  {
  	return platform_driver_register(&asoc_simple_card);
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index d0a19656fea04..7e07cad86244f 100644
+index d0a19656fea0..7e07cad86244 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -160,7 +160,7 @@ static int i2s_sspa_set_dai_fmt(struct snd_soc_dai *cpu_dai,
@@ -153,7 +153,7 @@ index d0a19656fea04..7e07cad86244f 100644
  MODULE_DESCRIPTION("I2S SSPA SoC driver");
  MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index c844276f8ed17..c71f78e6543dd 100644
+index c844276f8ed1..c71f78e6543d 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -1058,7 +1058,7 @@ static int spacemit_snd_pcm_new(struct snd_soc_component *component, struct snd_
@@ -213,7 +213,7 @@ index c844276f8ed17..c71f78e6543dd 100644
  #ifdef CONFIG_SPACEMIT_AUDIO_DATA_DEBUG
  
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 971457c638c91..59144a3975333 100644
+index 971457c638c9..59144a397533 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -261,6 +261,16 @@ static int spacemit_snd_sspa_pdev_probe(struct platform_device *pdev)

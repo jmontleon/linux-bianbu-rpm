@@ -1,4 +1,4 @@
-From a8c783fd5090b3b48a80ad4c1432dcea56e86e58 Mon Sep 17 00:00:00 2001
+From 01de61b9b255047d6eca7620c95028a9c56b2d73 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:16:51 +0800
 Subject: [PATCH 1180/1236] spi: k1/spi: porting to linux-6.12
@@ -11,7 +11,7 @@ Change-Id: I9fda71546b5889f98ed345471ced547b1eda1656
  3 files changed, 72 insertions(+), 174 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-dma.c b/drivers/spi/spi-k1x-dma.c
-index 7b0e16aad9ba2..dbe7d4eb63585 100644
+index 7b0e16aad9ba..dbe7d4eb6358 100644
 --- a/drivers/spi/spi-k1x-dma.c
 +++ b/drivers/spi/spi-k1x-dma.c
 @@ -304,7 +304,7 @@ void k1x_spi_dma_start(struct spi_driver_data *drv_data)
@@ -24,7 +24,7 @@ index 7b0e16aad9ba2..dbe7d4eb63585 100644
  	dma_cap_mask_t mask;
  
 diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
-index 67a28851bb1b6..a4a49253c34b2 100644
+index 67a28851bb1b..a4a49253c34b 100644
 --- a/drivers/spi/spi-k1x.c
 +++ b/drivers/spi/spi-k1x.c
 @@ -27,6 +27,7 @@
@@ -521,7 +521,7 @@ index 67a28851bb1b6..a4a49253c34b2 100644
  
  static struct platform_driver driver = {
 diff --git a/drivers/spi/spi-k1x.h b/drivers/spi/spi-k1x.h
-index 24f62bac10b92..7a864146b0355 100644
+index 24f62bac10b9..7a864146b035 100644
 --- a/drivers/spi/spi-k1x.h
 +++ b/drivers/spi/spi-k1x.h
 @@ -150,10 +150,10 @@ struct spi_driver_data {
