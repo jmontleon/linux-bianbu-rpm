@@ -91,7 +91,7 @@ index 2adc174fb576c..068a5906b1774 100644
  The driver will load the first matching firmware and skip the rest. If no matching firmware is found, it will proceed to the next pattern in the specified order. If all searches fail, the default Intel firmware, listed last in the order above, will be loaded.
  
 diff --git a/Makefile b/Makefile
-index c4b22ec262784..585e46592cc65 100644
+index d166d06950999..ca2d6e2ba30de 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -136,7 +136,7 @@ index c4b22ec262784..585e46592cc65 100644
  endef
  
  $(version_h): private PATCHLEVEL := $(or $(PATCHLEVEL), 0)
-@@ -1932,6 +1951,23 @@ endif
+@@ -1941,6 +1960,23 @@ endif
  
  ifdef CONFIG_MODULES
  
@@ -544,7 +544,7 @@ index 8efbcf699e4ff..96d5a1ca981df 100644
  obj-$(CONFIG_EFI_RCI2_TABLE)		+= rci2-table.o
  obj-$(CONFIG_EFI_EMBEDDED_FIRMWARE)	+= embedded-firmware.o
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index fc407d891348f..43e706613c512 100644
+index c3cf5541ed682..27db3b3c18288 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -33,6 +33,7 @@
@@ -1408,7 +1408,7 @@ index 4e579352ab2c0..27007327d2307 100644
  	case IPU_SENSOR_ROTATION_NORMAL:
  		return 0;
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index b9c252aa6fe08..166a5815e1efb 100644
+index 9e073321b2dd2..cdbadf66e6497 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
 @@ -4453,6 +4453,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
@@ -1569,7 +1569,7 @@ index 8c42b4bde09c0..694ce5c5bcd43 100644
  LSM_HOOK(int, 0, perf_event_open, int type)
  LSM_HOOK(int, 0, perf_event_alloc, struct perf_event *event)
 diff --git a/include/linux/module.h b/include/linux/module.h
-index e135cc79aceea..65a08753a2e72 100644
+index 4decae2b16755..a07bb59740647 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -418,6 +418,7 @@ struct module {
@@ -1785,7 +1785,7 @@ index cf83afa1d879a..aba751e7abffe 100644
  	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
  };
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e59b2bbf8d920..ac86a0947f601 100644
+index 591e7e77f89ba..c58a3a575f362 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
 @@ -503,7 +503,7 @@ LSKELS := fexit_sleep.c trace_printk.c trace_vprintk.c map_ptr_kern.c 	\
