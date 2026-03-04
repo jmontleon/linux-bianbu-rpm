@@ -1,4 +1,4 @@
-From aa5259d0d7b97ca931744b6a85f67c4c8a950bda Mon Sep 17 00:00:00 2001
+From 8cad3e456b5c7c1585e181cccc7059ad3a2e345f Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 Apr 2024 18:32:22 +0800
 Subject: [PATCH 0690/1236] net: usb: add asix usb nic driver, ver: v3.1.0
@@ -44,10 +44,10 @@ Change-Id: I8d62eea450b69c7569eb1eebdc4be6269b6f7319
  create mode 100755 drivers/net/usb/asix_usb/axcmd.c
 
 diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index 856e648d804e..522c51dd37b1 100644
+index da0f6a138f4f..93f5577ca440 100644
 --- a/drivers/net/usb/Kconfig
 +++ b/drivers/net/usb/Kconfig
-@@ -642,4 +642,5 @@ config USB_RTL8153_ECM
+@@ -641,4 +641,5 @@ config USB_RTL8153_ECM
  	  CONFIG_USB_RTL8152 is not set, or the RTL8153 device is not
  	  supported by r8152 driver.
  

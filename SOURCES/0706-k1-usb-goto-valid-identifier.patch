@@ -1,4 +1,4 @@
-From c03348a95b346514fe61f33aa1b27764eb45d925 Mon Sep 17 00:00:00 2001
+From 180798a4432395549ebfd64b064f173437952d9d Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:41:50 +0800
 Subject: [PATCH 0706/1236] k1: usb: goto valid identifier
@@ -10,10 +10,10 @@ Change-Id: I528ec7db161cdef545cb1910874cb945fb23c6ed
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 3eb791ec2cfb..3ecb6a4edd55 100644
+index d6b26772bd32..b23972eaa7e7 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -2253,7 +2253,7 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
+@@ -2268,7 +2268,7 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
  		IS_ENABLED(CONFIG_SOC_SPACEMIT_K1PRO)) {
  		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(40));
  		if (ret)
@@ -22,7 +22,7 @@ index 3eb791ec2cfb..3ecb6a4edd55 100644
  	}
  
  	/*
-@@ -2273,7 +2273,7 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
+@@ -2288,7 +2288,7 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
  	if (IS_ENABLED(CONFIG_SOC_SPACEMIT_K1X)) {
  		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
  		if (ret)

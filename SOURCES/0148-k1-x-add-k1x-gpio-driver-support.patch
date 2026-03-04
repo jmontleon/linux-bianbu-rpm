@@ -1,4 +1,4 @@
-From 1cc6356a2abb9c126f0257de53239a6069e82fba Mon Sep 17 00:00:00 2001
+From 16eb43b4d9b6229aee7ab039736e4802d2125487 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 7 Oct 2023 17:35:13 +0800
 Subject: [PATCH 0148/1236] k1-x:add k1x gpio driver support
@@ -65,7 +65,7 @@ index 5354ac132849..6b0d32537096 100644
  CONFIG_MFD_SYSCON=y
  # CONFIG_VGA_CONSOLE is not set
 diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index e053524c5e35..9e5b4a07918d 100644
+index 4d644dcecad9..9e80fd6834fc 100644
 --- a/drivers/gpio/Kconfig
 +++ b/drivers/gpio/Kconfig
 @@ -920,6 +920,15 @@ config GPIO_IDT3243X

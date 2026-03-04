@@ -1,4 +1,4 @@
-From 29e2ce75c02a0550ead33f961d3becf3e7e9f915 Mon Sep 17 00:00:00 2001
+From 2bda0265970c86f7e31862a9c180445f565f14d1 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 27 Aug 2024 14:08:26 +0800
 Subject: [PATCH 0986/1236] qmi_wwan_f: add fibocom qmi modem driver
@@ -17,10 +17,10 @@ Change-Id: I5fdfb2907e705289dbbe4968495bf93b4f5ffc5b
  create mode 100644 drivers/net/usb/qmi_wwan_f.c
 
 diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index 522c51dd37b1..d61afdbe90db 100644
+index 93f5577ca440..ffe181622ff9 100644
 --- a/drivers/net/usb/Kconfig
 +++ b/drivers/net/usb/Kconfig
-@@ -528,6 +528,29 @@ config USB_NET_KALMIA
+@@ -527,6 +527,29 @@ config USB_NET_KALMIA
  	  To compile this driver as a module, choose M here: the
  	  module will be called kalmia.
  

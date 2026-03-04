@@ -91,7 +91,7 @@ index 2adc174fb576c..068a5906b1774 100644
  The driver will load the first matching firmware and skip the rest. If no matching firmware is found, it will proceed to the next pattern in the specified order. If all searches fail, the default Intel firmware, listed last in the order above, will be loaded.
  
 diff --git a/Makefile b/Makefile
-index e4aa2e76ea563..8a5e8b5acee8d 100644
+index 35c1fcb095717..efba71c039b6d 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -355,6 +355,17 @@ ifneq ($(filter install,$(MAKECMDGOALS)),)
@@ -286,7 +286,7 @@ index 892fce2b75497..eefbda45ac47a 100644
  	/* boot_command_line has been already set up in early.c */
  	*cmdline_p = boot_command_line;
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 1b2edd07a3e17..1c434c6900ebe 100644
+index 383d4a4784f5b..45f428436e2d9 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -21,6 +21,7 @@
@@ -297,7 +297,7 @@ index 1b2edd07a3e17..1c434c6900ebe 100644
  #include <linux/static_call.h>
  #include <linux/swiotlb.h>
  #include <linux/tboot.h>
-@@ -991,6 +992,13 @@ void __init setup_arch(char **cmdline_p)
+@@ -997,6 +998,13 @@ void __init setup_arch(char **cmdline_p)
  	if (efi_enabled(EFI_BOOT))
  		efi_init();
  
@@ -311,7 +311,7 @@ index 1b2edd07a3e17..1c434c6900ebe 100644
  	reserve_ibft_region();
  	x86_init.resources.dmi_setup();
  
-@@ -1154,19 +1162,7 @@ void __init setup_arch(char **cmdline_p)
+@@ -1160,19 +1168,7 @@ void __init setup_arch(char **cmdline_p)
  	/* Allocate bigger log buffer */
  	setup_log_buf(1);
  
@@ -1408,10 +1408,10 @@ index 4e579352ab2c0..27007327d2307 100644
  	case IPU_SENSOR_ROTATION_NORMAL:
  		return 0;
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 9e073321b2dd2..cdbadf66e6497 100644
+index d32a47e81fcf3..f5eb4f079395e 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -4453,6 +4453,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
+@@ -4481,6 +4481,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9000,
  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9084,
  				quirk_bridge_cavm_thrx2_pcie_root);
  
@@ -1669,7 +1669,7 @@ index 1d581ba5df66f..7826803444df9 100644
  objtool-args = $(objtool-args-y)					\
  	$(if $(delay-objtool), --link)					\
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 47c8aa2a69392..de98c5afa921e 100644
+index 133dfa16308a3..f17e7313f9b08 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
 @@ -27,6 +27,7 @@
@@ -1680,7 +1680,7 @@ index 47c8aa2a69392..de98c5afa921e 100644
  
  #define MODULE_NS_PREFIX "module:"
  
-@@ -2029,6 +2030,12 @@ static void write_buf(struct buffer *b, const char *fname)
+@@ -2033,6 +2034,12 @@ static void write_buf(struct buffer *b, const char *fname)
  	}
  }
  
@@ -1693,7 +1693,7 @@ index 47c8aa2a69392..de98c5afa921e 100644
  static void write_if_changed(struct buffer *b, const char *fname)
  {
  	char *tmp;
-@@ -2113,6 +2120,7 @@ static void write_mod_c_file(struct module *mod)
+@@ -2117,6 +2124,7 @@ static void write_mod_c_file(struct module *mod)
  	}
  
  	add_srcversion(&buf, mod);

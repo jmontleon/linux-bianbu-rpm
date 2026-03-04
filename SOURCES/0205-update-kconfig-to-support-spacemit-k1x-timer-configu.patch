@@ -1,4 +1,4 @@
-From 00429130e45da459dad2983276fe399762625ba1 Mon Sep 17 00:00:00 2001
+From 49cd15700edf6c9acf73443b1c6ad7ee489d903a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 15 Dec 2023 23:15:12 +0800
 Subject: [PATCH 0205/1236] update kconfig to support spacemit k1x timer
@@ -11,7 +11,7 @@ Change-Id: I1f234df22bfb8a20e9a066ae0c9e4b22d9fc65dc
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index ffcd23668763..cc5442ae7aae 100644
+index 1119fbd52e1c..5bc44e2b1322 100644
 --- a/drivers/clocksource/Kconfig
 +++ b/drivers/clocksource/Kconfig
 @@ -152,6 +152,13 @@ config REALTEK_OTTO_TIMER
