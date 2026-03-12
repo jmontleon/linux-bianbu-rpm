@@ -1,4 +1,4 @@
-From 515e9d850fcc301102776d2c5052edc7098866ab Mon Sep 17 00:00:00 2001
+From 6bc3371a0050da24619f99e3549ed110f04fb48d Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 17 Aug 2025 23:24:26 -0400
 Subject: [PATCH 1236/1236] 6.17 Fixes
@@ -284,10 +284,10 @@ index 715671b76672..7895a6d634fc 100644
  {
  	RTW_INFO("%s\n", __func__);
 diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 96e89046614d..13b5340e75ac 100644
+index d32ee1fa3cf8..90627626b0e5 100644
 --- a/drivers/pci/controller/dwc/pcie-designware.h
 +++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -416,6 +416,7 @@ struct dw_pcie_rp {
+@@ -420,6 +420,7 @@ struct dw_pcie_rp {
  	const struct dw_pcie_host_ops *ops;
  	int			msi_irq[MAX_MSI_CTRLS];
  	struct irq_domain	*irq_domain;

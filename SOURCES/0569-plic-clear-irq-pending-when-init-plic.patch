@@ -1,4 +1,4 @@
-From d4327a9b585d26d2a3ef72d345bac0aa33d7e317 Mon Sep 17 00:00:00 2001
+From a532655c8493ebf815571d9de0c664becdbf5fa8 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 6 Apr 2024 13:35:59 +0800
 Subject: [PATCH 0569/1236] plic: clear irq pending when init plic
@@ -16,7 +16,7 @@ Change-Id: I88db4db0af7f7e8a9893b0ffb9db07b7d0203c37
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index f113df9192cd..7a5534d48053 100644
+index 4165bb3957ea..612b52520a93 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -47,6 +47,7 @@
@@ -27,7 +27,7 @@ index f113df9192cd..7a5534d48053 100644
  #define CONTEXT_ENABLE_BASE		0x2080
  #define CONTEXT_ENABLE_SIZE		0x100
  #else
-@@ -668,6 +669,10 @@ static int plic_probe(struct fwnode_handle *fwnode)
+@@ -673,6 +674,10 @@ static int plic_probe(struct fwnode_handle *fwnode)
  done:
  		for (hwirq = 1; hwirq <= nr_irqs; hwirq++) {
  			plic_toggle(handler, hwirq, 0);

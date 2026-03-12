@@ -1,4 +1,4 @@
-From 1e727165dd424d53cceb7f517efc9ab122715771 Mon Sep 17 00:00:00 2001
+From f365eb34742847b4b612da36b9d2d83eca4ca65e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:39:12 +0800
 Subject: [PATCH 1147/1236] nvme: remove segment buffer size limit
@@ -9,7 +9,7 @@ Change-Id: I826be53dd5999197b5f0405aa79953543472d82a
  1 file changed, 4 deletions(-)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index fc8dc8a742a3..f1f719351f3f 100644
+index 612778f84f4c..2ba7244fdaf1 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
 @@ -2387,10 +2387,6 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
