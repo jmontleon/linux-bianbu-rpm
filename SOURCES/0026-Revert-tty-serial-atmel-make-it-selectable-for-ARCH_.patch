@@ -1,0 +1,27 @@
+From 7f6fa58c40093e6056e8097626bdfbcdfda2a9d7 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sun, 19 Oct 2025 12:07:56 -0400
+Subject: [PATCH 0026/1239] Revert "tty: serial: atmel: make it selectable for
+ ARCH_MICROCHIP"
+
+This reverts commit 9fc0a7e0ee896b1b4e66b1ffe38efe2f4af20891.
+---
+ drivers/tty/serial/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 2b9c8b39d68f..77deb2f3855f 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -128,7 +128,7 @@ config SERIAL_SB1250_DUART_CONSOLE
+ config SERIAL_ATMEL
+ 	bool "AT91 on-chip serial port support"
+ 	depends on COMMON_CLK
+-	depends on ARCH_MICROCHIP || COMPILE_TEST
++	depends on ARCH_AT91 || ARCH_LAN969X || COMPILE_TEST
+ 	select SERIAL_CORE
+ 	select SERIAL_MCTRL_GPIO if GPIOLIB
+ 	select MFD_AT91_USART
+-- 
+2.53.0
+

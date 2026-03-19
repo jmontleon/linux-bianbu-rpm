@@ -1,0 +1,28 @@
+From 3126ccec3f992735fbb3a61e24afb27c9c517348 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 13 Nov 2025 13:47:32 -0500
+Subject: [PATCH 0023/1239] Revert "net: spacemit: Check netif_running() in
+ emac_set_pauseparam()"
+
+This reverts commit 5556f23478e6eb5d6a0321d4135e2c37a3c78a1e.
+---
+ drivers/net/ethernet/spacemit/k1_emac.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
+index 220eb5ce7583..e1c5faff3b71 100644
+--- a/drivers/net/ethernet/spacemit/k1_emac.c
++++ b/drivers/net/ethernet/spacemit/k1_emac.c
+@@ -1441,9 +1441,6 @@ static int emac_set_pauseparam(struct net_device *dev,
+ 	struct emac_priv *priv = netdev_priv(dev);
+ 	u8 fc = 0;
+ 
+-	if (!netif_running(dev))
+-		return -ENETDOWN;
+-
+ 	priv->flow_control_autoneg = pause->autoneg;
+ 
+ 	if (pause->autoneg) {
+-- 
+2.53.0
+

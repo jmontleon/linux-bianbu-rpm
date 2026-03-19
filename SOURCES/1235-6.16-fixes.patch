@@ -1,0 +1,389 @@
+From 1b2ced25cd0d1e9ce04aaf306cafce15951b2bbf Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Tue, 10 Jun 2025 00:33:02 -0400
+Subject: [PATCH 1235/1239] 6.16 fixes
+
+---
+ drivers/gpu/drm/img-rogue/apollo/tc_drv.c     |   2 +-
+ drivers/gpu/drm/img-rogue/osfunc.c            |   2 +-
+ .../gpu/drm/img-rogue/pvr_counting_timeline.c |   2 -
+ drivers/gpu/drm/img-rogue/pvr_export_fence.c  |  16 ---
+ drivers/gpu/drm/img-rogue/pvr_fence.c         | 104 ------------------
+ drivers/gpu/drm/img-rogue/pvr_fence_trace.h   |  10 --
+ drivers/gpu/drm/img-rogue/pvr_sw_fence.c      |  15 ---
+ drivers/gpu/drm/img-rogue/pvr_sync_file.c     |   2 -
+ drivers/mmc/core/sd.c                         |   2 +-
+ drivers/net/ethernet/spacemit/k1x-emac.c      |   2 +-
+ .../rtl8852bs/include/osdep_service_linux.h   |   2 +-
+ drivers/spi/spi-k1x.c                         |   2 +-
+ drivers/tty/serial/pxa_k1x.c                  |   2 +-
+ 13 files changed, 7 insertions(+), 156 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/apollo/tc_drv.c b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
+index 5be3eaca04c6..0ca6e0031aff 100644
+--- a/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
++++ b/drivers/gpu/drm/img-rogue/apollo/tc_drv.c
+@@ -335,7 +335,7 @@ int setup_io_region(struct pci_dev *pdev,
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+ void tc_irq_fake_wrapper(struct timer_list *t)
+ {
+-	struct tc_device *tc = from_timer(tc, t, timer);
++	struct tc_device *tc = timer_container_of(tc, t, timer);
+ #else
+ void tc_irq_fake_wrapper(unsigned long data)
+ {
+diff --git a/drivers/gpu/drm/img-rogue/osfunc.c b/drivers/gpu/drm/img-rogue/osfunc.c
+index 2e948492b959..f9f922408dc4 100644
+--- a/drivers/gpu/drm/img-rogue/osfunc.c
++++ b/drivers/gpu/drm/img-rogue/osfunc.c
+@@ -1427,7 +1427,7 @@ static void OSTimerCallbackBody(TIMER_CALLBACK_DATA *psTimerCBData)
+ */ /**************************************************************************/
+ static void OSTimerCallbackWrapper(struct timer_list *psTimer)
+ {
+-	TIMER_CALLBACK_DATA *psTimerCBData = from_timer(psTimerCBData, psTimer, sTimer);
++	TIMER_CALLBACK_DATA *psTimerCBData = timer_container_of(psTimerCBData, psTimer, sTimer);
+ #else
+ /*************************************************************************/ /*!
+ @Function       OSTimerCallbackWrapper
+diff --git a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
+index 240872e0b0fd..2a63bf6b981d 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
++++ b/drivers/gpu/drm/img-rogue/pvr_counting_timeline.c
+@@ -121,8 +121,6 @@ pvr_counting_fence_timeline_debug_request(void *data, u32 verbosity,
+ 				  value, timeline->current_value);
+ 		list_for_each_entry(obj, &timeline->active_fences,
+ 				    active_list_entry) {
+-			obj->fence->ops->fence_value_str(obj->fence,
+-							 value, sizeof(value));
+ 			PVR_DUMPDEBUG_LOG(pfnDumpDebugPrintf, pvDumpDebugFile,
+ 					  " @%s: val=%llu", value, obj->value);
+ 		}
+diff --git a/drivers/gpu/drm/img-rogue/pvr_export_fence.c b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
+index 9a192b1b6fd1..38a790b1c378 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_export_fence.c
++++ b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
+@@ -195,20 +195,6 @@ static const char *pvr_exp_fence_get_timeline_name(struct dma_fence *fence)
+ 		return "***NO_TIMELINE***";
+ }
+ 
+-static void pvr_exp_fence_value_str(struct dma_fence *fence, char *str, int size)
+-{
+-	snprintf(str, size, "%llu", (u64) fence->seqno);
+-}
+-
+-static void pvr_exp_fence_timeline_value_str(struct dma_fence *fence,
+-					    char *str, int size)
+-{
+-	struct pvr_exp_fence *pvr_exp_fence = to_pvr_exp_fence(fence);
+-
+-	if (pvr_exp_fence && pvr_exp_fence->fence_context)
+-		pvr_exp_fence_context_value_str(pvr_exp_fence->fence_context, str, size);
+-}
+-
+ static bool pvr_exp_fence_enable_signaling(struct dma_fence *fence)
+ {
+ 	struct pvr_exp_fence *exp_fence = to_pvr_exp_fence(fence);
+@@ -276,8 +262,6 @@ static void pvr_exp_fence_release(struct dma_fence *fence)
+ static const struct dma_fence_ops pvr_exp_fence_ops = {
+ 	.get_driver_name = pvr_exp_fence_get_driver_name,
+ 	.get_timeline_name = pvr_exp_fence_get_timeline_name,
+-	.fence_value_str = pvr_exp_fence_value_str,
+-	.timeline_value_str = pvr_exp_fence_timeline_value_str,
+ 	.enable_signaling = pvr_exp_fence_enable_signaling,
+ 	.wait = dma_fence_default_wait,
+ 	.release = pvr_exp_fence_release,
+diff --git a/drivers/gpu/drm/img-rogue/pvr_fence.c b/drivers/gpu/drm/img-rogue/pvr_fence.c
+index b707206bcbf6..957a3604738b 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_fence.c
++++ b/drivers/gpu/drm/img-rogue/pvr_fence.c
+@@ -128,37 +128,13 @@ pvr_fence_context_fences_dump(struct pvr_fence_context *fctx,
+ 			 "%s: @%s", fctx->name, value);
+ 	list_for_each_entry(pvr_fence, &fctx->fence_list, fence_head) {
+ 		struct dma_fence *fence = pvr_fence->fence;
+-		const char *timeline_value_str = "unknown timeline value";
+-		const char *fence_value_str = "unknown fence value";
+ 
+-		pvr_fence->base.ops->fence_value_str(&pvr_fence->base, value,
+-						     sizeof(value));
+ 		PVR_DUMPDEBUG_LOG(pfnDumpDebugPrintf, pvDumpDebugFile,
+ 				  " @%s", value);
+ 
+ 		if (is_pvr_fence(fence))
+ 			continue;
+ 
+-		if (fence->ops->timeline_value_str) {
+-			fence->ops->timeline_value_str(fence, value,
+-						       sizeof(value));
+-			timeline_value_str = value;
+-		}
+-
+-		PVR_DUMPDEBUG_LOG(pfnDumpDebugPrintf, pvDumpDebugFile,
+-				  " | %s: %s (driver: %s)",
+-				  fence->ops->get_timeline_name(fence),
+-				  timeline_value_str,
+-				  fence->ops->get_driver_name(fence));
+-
+-		if (fence->ops->fence_value_str) {
+-			fence->ops->fence_value_str(fence, value,
+-						    sizeof(value));
+-			fence_value_str = value;
+-		}
+-
+-		PVR_DUMPDEBUG_LOG(pfnDumpDebugPrintf, pvDumpDebugFile,
+-				  " |  @%s (foreign)", fence_value_str);
+ 	}
+ 	spin_unlock_irqrestore(&fctx->list_lock, flags);
+ }
+@@ -543,40 +519,6 @@ pvr_fence_get_timeline_name(struct dma_fence *fence)
+ 	return NULL;
+ }
+ 
+-static
+-void pvr_fence_fence_value_str(struct dma_fence *fence, char *str, int size)
+-{
+-	struct pvr_fence *pvr_fence = to_pvr_fence(fence);
+-
+-	if (!pvr_fence)
+-		return;
+-
+-	snprintf(str, size,
+-		 "%llu: (%s%s) refs=%u fwaddr=%#08x enqueue=%u status=%-9s %s%s",
+-		 (u64) pvr_fence->fence->seqno,
+-		 test_bit(DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+-			  &pvr_fence->fence->flags) ? "+" : "-",
+-		 test_bit(DMA_FENCE_FLAG_SIGNALED_BIT,
+-			  &pvr_fence->fence->flags) ? "+" : "-",
+-		 refcount_read(&pvr_fence->fence->refcount.refcount),
+-		 SyncCheckpointGetFirmwareAddr(
+-			 pvr_fence->sync_checkpoint),
+-		 SyncCheckpointGetEnqueuedCount(pvr_fence->sync_checkpoint),
+-		 SyncCheckpointGetStateString(pvr_fence->sync_checkpoint),
+-		 pvr_fence->name,
+-		 (&pvr_fence->base != pvr_fence->fence) ?
+-		 "(foreign)" : "");
+-}
+-
+-static
+-void pvr_fence_timeline_value_str(struct dma_fence *fence, char *str, int size)
+-{
+-	struct pvr_fence *pvr_fence = to_pvr_fence(fence);
+-
+-	if (pvr_fence)
+-		pvr_context_value_str(pvr_fence->fctx, str, size);
+-}
+-
+ static bool
+ pvr_fence_enable_signaling(struct dma_fence *fence)
+ {
+@@ -640,8 +582,6 @@ pvr_fence_release(struct dma_fence *fence)
+ const struct dma_fence_ops pvr_fence_ops = {
+ 	.get_driver_name = pvr_fence_get_driver_name,
+ 	.get_timeline_name = pvr_fence_get_timeline_name,
+-	.fence_value_str = pvr_fence_fence_value_str,
+-	.timeline_value_str = pvr_fence_timeline_value_str,
+ 	.enable_signaling = pvr_fence_enable_signaling,
+ 	.signaled = pvr_fence_is_signaled,
+ 	.wait = dma_fence_default_wait,
+@@ -734,48 +674,6 @@ pvr_fence_foreign_get_timeline_name(struct dma_fence *fence)
+ 	return "foreign";
+ }
+ 
+-static
+-void pvr_fence_foreign_fence_value_str(struct dma_fence *fence, char *str,
+-				       int size)
+-{
+-	struct pvr_fence *pvr_fence = to_pvr_fence(fence);
+-	u32 sync_addr = 0;
+-	u32 sync_value_next;
+-
+-	if (WARN_ON(!pvr_fence))
+-		return;
+-
+-	sync_addr = SyncCheckpointGetFirmwareAddr(pvr_fence->sync_checkpoint);
+-	sync_value_next = PVRSRV_SYNC_CHECKPOINT_SIGNALLED;
+-
+-	/*
+-	 * Include the fence flag bits from the foreign fence instead of our
+-	 * shadow copy. This is done as the shadow fence flag bits aren't used.
+-	 */
+-	snprintf(str, size,
+-		 "%llu: (%s%s) refs=%u fwaddr=%#08x cur=%#08x nxt=%#08x %s",
+-		 (u64) fence->seqno,
+-		 test_bit(DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+-			  &pvr_fence->fence->flags) ? "+" : "-",
+-		 test_bit(DMA_FENCE_FLAG_SIGNALED_BIT,
+-			  &pvr_fence->fence->flags) ? "+" : "-",
+-		 refcount_read(&fence->refcount.refcount),
+-		 sync_addr,
+-		 pvr_fence_sync_value(pvr_fence),
+-		 sync_value_next,
+-		 pvr_fence->name);
+-}
+-
+-static
+-void pvr_fence_foreign_timeline_value_str(struct dma_fence *fence, char *str,
+-					  int size)
+-{
+-	struct pvr_fence *pvr_fence = to_pvr_fence(fence);
+-
+-	if (pvr_fence)
+-		pvr_context_value_str(pvr_fence->fctx, str, size);
+-}
+-
+ static bool
+ pvr_fence_foreign_enable_signaling(struct dma_fence *fence)
+ {
+@@ -821,8 +719,6 @@ pvr_fence_foreign_release(struct dma_fence *fence)
+ const struct dma_fence_ops pvr_fence_foreign_ops = {
+ 	.get_driver_name = pvr_fence_foreign_get_driver_name,
+ 	.get_timeline_name = pvr_fence_foreign_get_timeline_name,
+-	.fence_value_str = pvr_fence_foreign_fence_value_str,
+-	.timeline_value_str = pvr_fence_foreign_timeline_value_str,
+ 	.enable_signaling = pvr_fence_foreign_enable_signaling,
+ 	.wait = pvr_fence_foreign_wait,
+ 	.release = pvr_fence_foreign_release,
+diff --git a/drivers/gpu/drm/img-rogue/pvr_fence_trace.h b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
+index 94f8d8041ef4..190b55959c39 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
++++ b/drivers/gpu/drm/img-rogue/pvr_fence_trace.h
+@@ -108,8 +108,6 @@ DECLARE_EVENT_CLASS(pvr_fence,
+ 	TP_fast_assign(
+ 		__assign_str(driver);
+ 		__assign_str(timeline);
+-		fence->base.ops->fence_value_str(&fence->base,
+-			__entry->val, sizeof(__entry->val));
+ 		__entry->context = fence->base.context;
+ 	),
+ 
+@@ -165,17 +163,9 @@ DECLARE_EVENT_CLASS(pvr_fence_foreign,
+ 	TP_fast_assign(
+ 		__assign_str(driver);
+ 		__assign_str(timeline);
+-		fence->base.ops->fence_value_str(&fence->base, __entry->val,
+-			sizeof(__entry->val));
+ 		__entry->context = fence->base.context;
+ 		__assign_str(foreign_driver);
+ 		__assign_str(foreign_timeline);
+-		fence->fence->ops->fence_value_str ?
+-			fence->fence->ops->fence_value_str(
+-				fence->fence, __entry->foreign_val,
+-				sizeof(__entry->foreign_val)) :
+-			(void) OSStringSafeCopy(__entry->foreign_val,
+-				"unknown", sizeof(__entry->foreign_val));
+ 		__entry->foreign_context = fence->fence->context;
+ 	),
+ 
+diff --git a/drivers/gpu/drm/img-rogue/pvr_sw_fence.c b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
+index cccc4a64e321..dd389d5afc6e 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
++++ b/drivers/gpu/drm/img-rogue/pvr_sw_fence.c
+@@ -98,19 +98,6 @@ static const char *pvr_sw_fence_get_timeline_name(struct dma_fence *fence)
+ 	return pvr_sw_fence_context_name(pvr_sw_fence->fence_context);
+ }
+ 
+-static void pvr_sw_fence_value_str(struct dma_fence *fence, char *str, int size)
+-{
+-	snprintf(str, size, "%llu", (u64) fence->seqno);
+-}
+-
+-static void pvr_sw_fence_timeline_value_str(struct dma_fence *fence,
+-					    char *str, int size)
+-{
+-	struct pvr_sw_fence *pvr_sw_fence = to_pvr_sw_fence(fence);
+-
+-	pvr_sw_fence_context_value_str(pvr_sw_fence->fence_context, str, size);
+-}
+-
+ static bool pvr_sw_fence_enable_signaling(struct dma_fence *fence)
+ {
+ 	return true;
+@@ -143,8 +130,6 @@ static void pvr_sw_fence_release(struct dma_fence *fence)
+ static const struct dma_fence_ops pvr_sw_fence_ops = {
+ 	.get_driver_name = pvr_sw_fence_get_driver_name,
+ 	.get_timeline_name = pvr_sw_fence_get_timeline_name,
+-	.fence_value_str = pvr_sw_fence_value_str,
+-	.timeline_value_str = pvr_sw_fence_timeline_value_str,
+ 	.enable_signaling = pvr_sw_fence_enable_signaling,
+ 	.wait = dma_fence_default_wait,
+ 	.release = pvr_sw_fence_release,
+diff --git a/drivers/gpu/drm/img-rogue/pvr_sync_file.c b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
+index 916d585ffb49..9590ae76ef13 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_sync_file.c
++++ b/drivers/gpu/drm/img-rogue/pvr_sync_file.c
+@@ -1245,8 +1245,6 @@ static void _dump_sync_point(struct dma_fence *fence,
+ 	bool signaled = dma_fence_is_signaled(fence);
+ 	char time[16] = { '\0' };
+ 
+-	fence_ops->timeline_value_str(fence, time, sizeof(time));
+-
+ 	PVR_DUMPDEBUG_LOG(dump_debug_printf,
+ 					  dump_debug_file,
+ 					  "<%p> Seq#=%llu TS=%s State=%s TLN=%s",
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 8c06507f2a0f..76c14761922b 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -1531,7 +1531,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 		card->sw_caps.sd3_bus_mode &= ~SD_MODE_UHS_SDR104;
+ #endif
+  	/* Initialization sequence for UHS-I cards */
+- 	if (rocr & SD_ROCR_S18A && mmc_host_uhs(host)) {
++ 	if (rocr & SD_ROCR_S18A && mmc_host_can_uhs(host)) {
+  		err = mmc_sd_init_uhs_card(card);
+ #ifdef CONFIG_SOC_SPACEMIT_K1X
+ 		if (err && err == -EIO) {
+diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
+index 4a773f5d6f3b..122e5c8eff95 100644
+--- a/drivers/net/ethernet/spacemit/k1x-emac.c
++++ b/drivers/net/ethernet/spacemit/k1x-emac.c
+@@ -392,7 +392,7 @@ static void emac_tx_coal_timer_resched(struct emac_priv *priv)
+ 
+ static void emac_tx_coal_timer(struct timer_list *t)
+ {
+-	struct emac_priv *priv = from_timer(priv, t, txtimer);
++	struct emac_priv *priv = timer_container_of(priv, t, txtimer);
+ 
+ 	if (likely(napi_schedule_prep(&priv->napi)))
+ 		__napi_schedule(&priv->napi);
+diff --git a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
+index b5be8be5ba74..8249d7085241 100644
+--- a/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
++++ b/drivers/net/wireless/realtek/rtl8852bs/include/osdep_service_linux.h
+@@ -720,7 +720,7 @@ struct rtw_timer_list {
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+ static inline void timer_hdl(struct timer_list *in_timer)
+ {
+-	_timer *ptimer = from_timer(ptimer, in_timer, timer);
++	_timer *ptimer = timer_container_of(ptimer, in_timer, timer);
+ 
+ 	ptimer->function(ptimer->arg);
+ }
+diff --git a/drivers/spi/spi-k1x.c b/drivers/spi/spi-k1x.c
+index cf3a9029a325..9e06620f53e1 100644
+--- a/drivers/spi/spi-k1x.c
++++ b/drivers/spi/spi-k1x.c
+@@ -423,7 +423,7 @@ static irqreturn_t ssp_int(int irq, void *dev_id)
+ }
+ 
+ static void slave_rx_timer_expired(struct timer_list *t) {
+-	struct spi_driver_data *drv_data = from_timer(drv_data, t, slave_rx_timer);
++	struct spi_driver_data *drv_data = timer_container_of(drv_data, t, slave_rx_timer);
+ #ifdef CONFIG_K1X_SSP_DEBUG
+ 	pr_err("%s\n", __func__);
+ 	pr_err("spi top = 0x%x\n", k1x_spi_read(drv_data, TOP_CTRL));
+diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
+index 74caac83a705..1832fdd6a011 100644
+--- a/drivers/tty/serial/pxa_k1x.c
++++ b/drivers/tty/serial/pxa_k1x.c
+@@ -1915,7 +1915,7 @@ static void _pxa_timer_handler(struct uart_pxa_port *up)
+ 
+ static void pxa_timer_handler(struct timer_list *t)
+ {
+-	struct uart_pxa_port *up = from_timer(up, t, pxa_timer);
++	struct uart_pxa_port *up = timer_container_of(up, t, pxa_timer);
+ 
+ 	_pxa_timer_handler(up);
+ }
+-- 
+2.53.0
+

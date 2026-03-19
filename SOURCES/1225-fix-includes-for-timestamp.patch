@@ -1,0 +1,25 @@
+From cf327ded4f391e1e1531730bf6081709fdde5121 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Dec 2024 15:26:26 -0500
+Subject: [PATCH 1225/1239] fix includes for timestamp
+
+---
+ include/uapi/linux/videodev2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index becd08fdbddb..20b57312cda6 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -58,7 +58,7 @@
+ #define _UAPI__LINUX_VIDEODEV2_H
+ 
+ #ifndef __KERNEL__
+-#include <sys/time.h>
++#include <linux/time.h>
+ #endif
+ #include <linux/compiler.h>
+ #include <linux/ioctl.h>
+-- 
+2.53.0
+

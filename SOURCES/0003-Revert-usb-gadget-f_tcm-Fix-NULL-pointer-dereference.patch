@@ -1,0 +1,46 @@
+From 165fedf43b55766ef02a5e86686dde8c9040275d Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 19 Mar 2026 12:44:48 -0400
+Subject: [PATCH 0003/1239] Revert "usb: gadget: f_tcm: Fix NULL pointer
+ dereferences in nexus handling"
+
+This reverts commit 3d309b37633c4a847fc149939a2c9576f1aa1065.
+---
+ drivers/usb/gadget/function/f_tcm.c | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
+index 7b27f8082ace..6e8804f04baa 100644
+--- a/drivers/usb/gadget/function/f_tcm.c
++++ b/drivers/usb/gadget/function/f_tcm.c
+@@ -1222,13 +1222,6 @@ static void usbg_submit_cmd(struct usbg_cmd *cmd)
+ 	se_cmd = &cmd->se_cmd;
+ 	tpg = cmd->fu->tpg;
+ 	tv_nexus = tpg->tpg_nexus;
+-	if (!tv_nexus) {
+-		struct usb_gadget *gadget = fuas_to_gadget(cmd->fu);
+-
+-		dev_err(&gadget->dev, "Missing nexus, ignoring command\n");
+-		return;
+-	}
+-
+ 	dir = get_cmd_dir(cmd->cmd_buf);
+ 	if (dir < 0)
+ 		goto out;
+@@ -1489,13 +1482,6 @@ static void bot_cmd_work(struct work_struct *work)
+ 	se_cmd = &cmd->se_cmd;
+ 	tpg = cmd->fu->tpg;
+ 	tv_nexus = tpg->tpg_nexus;
+-	if (!tv_nexus) {
+-		struct usb_gadget *gadget = fuas_to_gadget(cmd->fu);
+-
+-		dev_err(&gadget->dev, "Missing nexus, ignoring command\n");
+-		return;
+-	}
+-
+ 	dir = get_cmd_dir(cmd->cmd_buf);
+ 	if (dir < 0)
+ 		goto out;
+-- 
+2.53.0
+
