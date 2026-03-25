@@ -1,4 +1,4 @@
-From b2ca872ddd43510af5a6ecbb344bafada3e95afc Mon Sep 17 00:00:00 2001
+From eea68b874f6b66583565b1609d876cd8249e601d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
 Subject: [PATCH 0121/1239] mmc: support spacemit k1x platform
@@ -2006,7 +2006,7 @@ index 000000000000..030bc3845fed
 +MODULE_DESCRIPTION("SDHCI platform driver for Spacemit");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index ac7e11f37af7..529b03d67141 100644
+index fec9329e1edb..f4797bf4de8f 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,6 +1733,15 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -2165,7 +2165,7 @@ index ac7e11f37af7..529b03d67141 100644
  
  		if (host->ops->irq) {
  			intmask = host->ops->irq(host, intmask);
-@@ -4630,6 +4737,11 @@ int sdhci_setup_host(struct sdhci_host *host)
+@@ -4637,6 +4744,11 @@ int sdhci_setup_host(struct sdhci_host *host)
  	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
  
