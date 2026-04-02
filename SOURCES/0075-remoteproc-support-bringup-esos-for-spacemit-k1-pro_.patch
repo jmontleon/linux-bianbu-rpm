@@ -1,4 +1,4 @@
-From cdf44ab039f4f19803cd3c962d10aeb33cef8f61 Mon Sep 17 00:00:00 2001
+From d7ebac58e6dfcc522ee604de6c9c668d3eb7f7ce Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Jun 2023 15:56:53 +0800
 Subject: [PATCH 0075/1239] remoteproc: support bringup esos for spacemit
@@ -18,7 +18,7 @@ Change-Id: I897dea2ecb42f558be113a0f6d4c593bf6fc19b0
  create mode 100644 drivers/remoteproc/spacemit_rproc.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 7b8f1b6497b9..1f123fd033ac 100644
+index 7b8f1b6497b98..1f123fd033ac5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -171,6 +171,13 @@ pll_clk_qspi: clock-pll_spi {
@@ -58,7 +58,7 @@ index 7b8f1b6497b9..1f123fd033ac 100644
  
  	pmu {
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 54f45049f32d..31382a963683 100644
+index 54f45049f32d2..31382a9636834 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -149,6 +149,8 @@ CONFIG_UDMABUF=y
@@ -71,7 +71,7 @@ index 54f45049f32d..31382a963683 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 48a0d3a69ed0..78c07045122a 100644
+index 48a0d3a69ed08..78c07045122ac 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -161,6 +161,12 @@ config PRU_REMOTEPROC
@@ -88,7 +88,7 @@ index 48a0d3a69ed0..78c07045122a 100644
  	tristate
  
 diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-index 1c7598b8475d..b372d236e911 100644
+index 1c7598b8475d6..b372d236e911e 100644
 --- a/drivers/remoteproc/Makefile
 +++ b/drivers/remoteproc/Makefile
 @@ -40,3 +40,4 @@ obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o ti_k3_common.o
@@ -98,7 +98,7 @@ index 1c7598b8475d..b372d236e911 100644
 +obj-$(CONFIG_SPACEMIT_REMOTEPROC)	+= spacemit_rproc.o 
 diff --git a/drivers/remoteproc/spacemit_rproc.c b/drivers/remoteproc/spacemit_rproc.c
 new file mode 100644
-index 000000000000..513d5824b360
+index 0000000000000..513d5824b3602
 --- /dev/null
 +++ b/drivers/remoteproc/spacemit_rproc.c
 @@ -0,0 +1,360 @@

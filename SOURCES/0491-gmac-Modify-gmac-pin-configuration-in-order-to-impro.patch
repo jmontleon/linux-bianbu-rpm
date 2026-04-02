@@ -1,4 +1,4 @@
-From 909ca6ccc0fb8f02fcb1d7c205e611ce46e9661b Mon Sep 17 00:00:00 2001
+From 7c60f142f03dd75bade01befce24608691bf90a3 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 11 Mar 2024 20:40:27 +0800
 Subject: [PATCH 0491/1239] gmac: Modify gmac pin configuration in order to
@@ -10,7 +10,7 @@ Change-Id: I6ec8c271496a7192d41eddbd47191a7d107f454b
  1 file changed, 43 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 764c1c2a7a5c..60e125d35312 100644
+index 764c1c2a7a5c6..60e125d353122 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -496,6 +496,48 @@ K1X_PADCONF(GPIO_47,   MUX_MODE1, (EDGE_NONE | PULL_UP | PAD_3V_DS4))	/* r_uart0

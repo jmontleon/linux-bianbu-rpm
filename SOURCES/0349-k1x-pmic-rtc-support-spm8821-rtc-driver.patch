@@ -1,4 +1,4 @@
-From 5dbed82547869190e83db9e58ef498672dccf905 Mon Sep 17 00:00:00 2001
+From 8ff7040ed50609024afff3f2db2a889f460b70d6 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 9 Jan 2024 11:38:49 +0800
 Subject: [PATCH 0349/1239] k1x:pmic:rtc: support spm8821 rtc driver
@@ -15,7 +15,7 @@ Change-Id: I137d8856ab1970be531d9207c2f90ff105583caa
  create mode 100644 drivers/rtc/rtc-spt-pmic.c
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 4a82233b262b..3599d7602cfb 100644
+index 4a82233b262bb..3599d7602cfb3 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -15,6 +15,7 @@ SPM8821_CHIP_ID_REG;
@@ -27,7 +27,7 @@ index 4a82233b262b..3599d7602cfb 100644
  
  PM853_MFD_CELL;
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 975806ab39c3..b2625f2633e4 100644
+index 975806ab39c38..b2625f2633e4f 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
 @@ -785,6 +785,13 @@ config RTC_DRV_SD3078
@@ -45,7 +45,7 @@ index 975806ab39c3..b2625f2633e4 100644
  
  comment "SPI RTC drivers"
 diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 8221bda6e6dc..8b6acc9b0680 100644
+index 8221bda6e6dca..8b6acc9b06809 100644
 --- a/drivers/rtc/Makefile
 +++ b/drivers/rtc/Makefile
 @@ -197,3 +197,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
@@ -55,7 +55,7 @@ index 8221bda6e6dc..8b6acc9b0680 100644
 +obj-$(CONFIG_RTC_DRV_SPT_PMIC) += rtc-spt-pmic.o
 diff --git a/drivers/rtc/rtc-spt-pmic.c b/drivers/rtc/rtc-spt-pmic.c
 new file mode 100644
-index 000000000000..3ab5a80adab6
+index 0000000000000..3ab5a80adab67
 --- /dev/null
 +++ b/drivers/rtc/rtc-spt-pmic.c
 @@ -0,0 +1,446 @@
@@ -506,7 +506,7 @@ index 000000000000..3ab5a80adab6
 +MODULE_DESCRIPTION("PMIC RTC driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 9bf12dd93d58..6b98a1c37d97 100644
+index 9bf12dd93d58e..6b98a1c37d97a 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -27,6 +27,7 @@ struct spacemit_pmic {
@@ -613,7 +613,7 @@ index 9bf12dd93d58..6b98a1c37d97 100644
  	unsigned char device_id_reg;
  	unsigned char version_id_reg;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 675edf6a4c4b..ef4b326edfaa 100644
+index 675edf6a4c4ba..ef4b326edfaa4 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -647,7 +647,6 @@ static const struct regmap_irq_chip spm8821_irq_chip = {	\

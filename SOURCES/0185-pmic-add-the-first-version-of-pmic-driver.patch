@@ -1,4 +1,4 @@
-From 835867a1b60522bc484b173cccba4b9214cefcf2 Mon Sep 17 00:00:00 2001
+From 6c49b3f80abb3c063b22a03fb42a74f0f995c3eb Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 10 Nov 2023 14:39:01 +0800
 Subject: [PATCH 0185/1239] pmic: add the first version of pmic driver
@@ -20,7 +20,7 @@ Change-Id: I8e142173295b937fe7c7577c10bba18c3c8d4b6d
  create mode 100644 include/linux/mfd/spacemit/spm8821.h
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 55a9fea95195..edcdfacbcfde 100644
+index 55a9fea95195b..edcdfacbcfdea 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
 @@ -2393,6 +2393,16 @@ config MFD_QCOM_PM8008
@@ -41,7 +41,7 @@ index 55a9fea95195..edcdfacbcfde 100644
  	depends on ARCH_SA1100
  
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 865e9f12faff..a113a24c0732 100644
+index 865e9f12faff0..a113a24c07329 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
 @@ -303,3 +303,5 @@ obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu_spi.o rsmu_core.o
@@ -52,7 +52,7 @@ index 865e9f12faff..a113a24c0732 100644
 +obj-$(CONFIG_MFD_SPACEMIT_PMIC) += spacemit-mfd.o
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
 new file mode 100644
-index 000000000000..ea8ab1c92adf
+index 0000000000000..ea8ab1c92adfc
 --- /dev/null
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -0,0 +1,140 @@
@@ -197,7 +197,7 @@ index 000000000000..ea8ab1c92adf
 +
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index d84f3d054c59..88b58b4e0a26 100644
+index d84f3d054c59d..88b58b4e0a26e 100644
 --- a/drivers/regulator/Kconfig
 +++ b/drivers/regulator/Kconfig
 @@ -1818,4 +1818,12 @@ config REGULATOR_QCOM_LABIBB
@@ -214,7 +214,7 @@ index d84f3d054c59..88b58b4e0a26 100644
 +	
  endif
 diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index b3101376029d..35c09464f7a6 100644
+index b3101376029d7..35c09464f7a68 100644
 --- a/drivers/regulator/Makefile
 +++ b/drivers/regulator/Makefile
 @@ -210,5 +210,6 @@ obj-$(CONFIG_REGULATOR_WM831X) += wm831x-ldo.o
@@ -226,7 +226,7 @@ index b3101376029d..35c09464f7a6 100644
  ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
 new file mode 100644
-index 000000000000..f775a54cf708
+index 0000000000000..f775a54cf7083
 --- /dev/null
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -0,0 +1,77 @@
@@ -309,7 +309,7 @@ index 000000000000..f775a54cf708
 +
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
 new file mode 100644
-index 000000000000..f5200dfc856a
+index 0000000000000..f5200dfc856aa
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -0,0 +1,62 @@
@@ -377,7 +377,7 @@ index 000000000000..f5200dfc856a
 +#endif /* __SPACEMIT_PMIC_H__ */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
 new file mode 100644
-index 000000000000..6393008aaa4e
+index 0000000000000..6393008aaa4e6
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -0,0 +1,180 @@

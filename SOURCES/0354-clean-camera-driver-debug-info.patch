@@ -1,4 +1,4 @@
-From 0f6c90eb79a38b89e77fdd96d732a60079fa30a9 Mon Sep 17 00:00:00 2001
+From 91fbef301136afc0e00becc57c463ef16493c121 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:21:23 +0800
 Subject: [PATCH 0354/1239] clean camera driver debug info
@@ -19,7 +19,7 @@ Change-Id: Ia97f7cef468f3f615442d590af5f8ae2e0773178
  11 files changed, 39 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
-index d631bab34436..ff8baf3ac03a 100755
+index d631bab34436c..ff8baf3ac03a6 100755
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 @@ -345,7 +345,7 @@ static int ccic_clk_set_rate(struct ccic_ctrl *ctrl_dev, int mode)
@@ -68,7 +68,7 @@ index d631bab34436..ff8baf3ac03a 100755
  	return ret;
  }
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
-index d962b0d51027..e43623b27f49 100755
+index d962b0d510277..e43623b27f493 100755
 --- a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 @@ -256,7 +256,7 @@ static int k1x_csiphy_probe(struct platform_device *pdev)
@@ -99,7 +99,7 @@ index d962b0d51027..e43623b27f49 100755
  	return 0;
  }
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
-index f5d37c404e35..da8df1577feb 100755
+index f5d37c404e35c..da8df1577feb3 100755
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 @@ -793,7 +793,7 @@ int cpp_iommu_register(struct cpp_device *cpp_dev)
@@ -112,7 +112,7 @@ index f5d37c404e35..da8df1577feb 100755
  	}
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
-index fe0f677dc5c7..1990736cc298 100755
+index fe0f677dc5c74..1990736cc298a 100755
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 @@ -909,7 +909,7 @@ static int cpp_update_clock_rate(struct cpp_device *cpp_dev,
@@ -161,7 +161,7 @@ index fe0f677dc5c7..1990736cc298 100755
  	return 0;
  }
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
-index 434b5868420c..14e2d0e385ee 100755
+index 434b5868420ca..14e2d0e385eee 100755
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 @@ -667,7 +667,7 @@ static int k1xisp_dev_probe(struct platform_device *pdev)
@@ -192,7 +192,7 @@ index 434b5868420c..14e2d0e385ee 100755
  }
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
-index cfe3afe259df..affac933649a 100755
+index cfe3afe259df4..affac933649aa 100755
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 @@ -190,7 +190,7 @@ static int k1xisp_pipe_open(struct inode *inode, struct file *filp)
@@ -223,7 +223,7 @@ index cfe3afe259df..affac933649a 100755
  		isp_pipe_stop_job(pipe_dev, ISP_PIPE_WORK_TYPE_CAPTURE);
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
-index d67d7aa0acdf..36a1ebecabc9 100755
+index d67d7aa0acdff..36a1ebecabc94 100755
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 @@ -602,7 +602,7 @@ int k1xisp_stat_flush_buffer(struct k1xisp_stats_node *stats_node)
@@ -236,7 +236,7 @@ index d67d7aa0acdf..36a1ebecabc9 100755
  
  	k1xisp_stat_bufqueue_init(stats_node);
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index cce34e4ca399..7cbc95a06324 100755
+index cce34e4ca3990..7cbc95a06324e 100755
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -124,7 +124,7 @@ static int cam_sensor_power_set(struct cam_sensor_device *msnr_dev, u32 on)
@@ -303,7 +303,7 @@ index cce34e4ca399..7cbc95a06324 100755
  	return ret;
  }
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index bd6158892e0a..f5a0787f787b 100755
+index bd6158892e0aa..f5a0787f787ba 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -1135,7 +1135,7 @@ static int fe_rawdump_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
@@ -361,7 +361,7 @@ index bd6158892e0a..f5a0787f787b 100755
  
  	isp_ctx->mmu_dev = isp_iommu_create(dev, isp_ctx->base_addr);
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
-index 2e3f88db11e0..b96e4ef3ee70 100755
+index 2e3f88db11e0b..b96e4ef3ee704 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 @@ -450,7 +450,7 @@ static int k1xvi_probe(struct platform_device *pdev)
@@ -383,7 +383,7 @@ index 2e3f88db11e0..b96e4ef3ee70 100755
  	return 0;
  entities_fail:
 diff --git a/drivers/media/platform/spacemit/v2d/v2d_drv.c b/drivers/media/platform/spacemit/v2d/v2d_drv.c
-index 8222380e7c13..fc016490509f 100644
+index 8222380e7c135..fc016490509fb 100644
 --- a/drivers/media/platform/spacemit/v2d/v2d_drv.c
 +++ b/drivers/media/platform/spacemit/v2d/v2d_drv.c
 @@ -802,7 +802,7 @@ static int v2d_probe(struct platform_device *pdev)

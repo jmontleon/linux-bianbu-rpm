@@ -1,4 +1,4 @@
-From d91fc1e7be255b321e66483524f7fd5d561fd62f Mon Sep 17 00:00:00 2001
+From 9db2a4839dff1ba7fc0a0482dbcaa559e267027d Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 21 Jun 2024 14:20:44 +0800
 Subject: [PATCH 0782/1239] audio: fix i2s audio noise due to dmabuffer is
@@ -10,7 +10,7 @@ Change-Id: I3dca1845dc103e9c77cc847030a3ccb2d8d32944
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index f32426b2e424..191462fbacbd 100644
+index f32426b2e4246..191462fbacbd8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2500,6 +2500,8 @@ sound_hdmi: snd-card@0 {

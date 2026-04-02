@@ -1,4 +1,4 @@
-From 289e8ac6dfd59450d61b0770e82ab8f48c9283b7 Mon Sep 17 00:00:00 2001
+From baeecfbe8a24e3c5dc3e9a68a29da18f960891f9 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 25 Jan 2024 17:35:45 +0800
 Subject: [PATCH 0421/1239] display: Fix dpu reset issue
@@ -10,7 +10,7 @@ Change-Id: Iddd2d878625eb83f779daf36546dd965bab711a9
  2 files changed, 50 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 0b067bb4cbf1..521d2cb521fc 100644
+index 0b067bb4cbf1d..521d2cb521fce 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -916,6 +916,7 @@ static int spacemit_dpu_probe(struct platform_device *pdev)
@@ -107,7 +107,7 @@ index 0b067bb4cbf1..521d2cb521fc 100644
  		dpu->core->enable_clk(dpu);
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
-index c1772f0c494b..cee729b84120 100644
+index c1772f0c494b7..cee729b841208 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -130,6 +130,7 @@ struct spacemit_dpu {

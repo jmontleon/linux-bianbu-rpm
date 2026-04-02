@@ -1,4 +1,4 @@
-From e8ab3d456aff0d9957fc0779e489c5546722b1a3 Mon Sep 17 00:00:00 2001
+From 39b5455c94938980b025d8850f7fc687fea89088 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Tue, 24 Dec 2024 17:15:33 -0500
 Subject: [PATCH 1218/1239] Revert "riscv: Fix IPIs usage in
@@ -10,7 +10,7 @@ This reverts commit b3431a8bb336cece8adc452437befa7d4534b2fd.
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfence.h
-index d08bf7fb3aee..7388edd88986 100644
+index d08bf7fb3aee6..7388edd88986f 100644
 --- a/arch/riscv/include/asm/kfence.h
 +++ b/arch/riscv/include/asm/kfence.h
 @@ -22,9 +22,7 @@ static inline bool kfence_protect_page(unsigned long addr, bool protect)

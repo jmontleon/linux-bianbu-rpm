@@ -1,4 +1,4 @@
-From 27ee015d4511e4c6a4ba6a26b616d83014cf222d Mon Sep 17 00:00:00 2001
+From 2dfbaf29d65e553e88b9074d904a8ef72bdffae3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 16 Jan 2024 15:25:21 +0800
 Subject: [PATCH 0405/1239] k1x:pmic: support pwr-key & rtc & pinctrl function
@@ -11,7 +11,7 @@ Change-Id: Ic8c4f3fb8f2116b93de1283387f6fba5eaae7205
  3 files changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
-index 848cbbc09cc9..1e00befaf76b 100644
+index 848cbbc09cc9e..1e00befaf76b9 100644
 --- a/arch/riscv/configs/k1-x_deb1_defconfig
 +++ b/arch/riscv/configs/k1-x_deb1_defconfig
 @@ -199,6 +199,8 @@ CONFIG_AIC_LOADFW_SUPPORT=m
@@ -40,7 +40,7 @@ index 848cbbc09cc9..1e00befaf76b 100644
  CONFIG_DMADEVICES=y
  CONFIG_MMP_PDMA_DRIVER=y
 diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
-index 3bc6968e8353..7ae03057bc68 100644
+index 3bc6968e8353e..7ae03057bc689 100644
 --- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
 +++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 @@ -13,6 +13,8 @@
@@ -70,7 +70,7 @@ index 3bc6968e8353..7ae03057bc68 100644
  
  static const struct pinctrl_ops spacemit_gpio_pinctrl_ops = {
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 298da432885f..172d11c29569 100644
+index 298da432885fa..172d11c295695 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -185,7 +185,7 @@ static const struct regulator_desc spm8821_reg[] = {	\

@@ -1,4 +1,4 @@
-From 5d4372098e9b2fc94511fe6250378b11b071deb5 Mon Sep 17 00:00:00 2001
+From 061c7194a2f821596bf2e253e62e7a28a863348b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Thu, 21 Dec 2023 10:30:28 +0800
 Subject: [PATCH 0234/1239] k1x-dma 1.add pm func in dma driver 2.modify
@@ -12,7 +12,7 @@ Change-Id: Ia6978dd5cdb545afd5accfa5500bf6c8c8d3f325
  3 files changed, 6 insertions(+), 65 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index abbfabc670d0..0dc7257d0c72 100644
+index abbfabc670d04..0dc7257d0c72f 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -331,6 +331,7 @@ CONFIG_MMC_SDHCI=y
@@ -24,7 +24,7 @@ index abbfabc670d0..0dc7257d0c72 100644
  CONFIG_USERSPACE_DMA=y
  CONFIG_SW_SYNC=y
 diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 3ff0569bf55e..8ae36afeed74 100644
+index 3ff0569bf55ed..8ae36afeed74c 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -448,11 +448,12 @@ config MILBEAUT_XDMAC
@@ -54,7 +54,7 @@ index 3ff0569bf55e..8ae36afeed74 100644
  config SPACEMIT_PDMA_SUPPORT_64BIT
  	bool "MMP PDMA support the 64-bit address"
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index 8d45bccbbca1..5c79fb733ca0 100644
+index 8d45bccbbca13..5c79fb733ca0b 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -162,7 +162,6 @@ struct mmp_pdma_device {

@@ -1,4 +1,4 @@
-From 3621efbde67c8c6b70ca6b5bc58684f71a6899e3 Mon Sep 17 00:00:00 2001
+From 4349ac7535757e4e9f900ee58f4defc06b065f8c Mon Sep 17 00:00:00 2001
 From: zhenglilang <lilang.zheng@spacemit.com>
 Date: Thu, 5 Sep 2024 16:57:28 +0800
 Subject: [PATCH 1012/1239] display: reduce panel lt8911exb resume time
@@ -9,7 +9,7 @@ Change-Id: I03f0c69bd97450a5ad50be08e79ace37eeb75409
  1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 6065698ece85..84ab49676381 100644
+index 6065698ece855..84ab49676381a 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -380,7 +380,7 @@ void lt8911exb_read_edid(struct lt8911exb *lt8911exb)

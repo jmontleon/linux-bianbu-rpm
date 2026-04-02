@@ -1,4 +1,4 @@
-From 25f580a711d360b4ef184d6dd3602beddf2b7d30 Mon Sep 17 00:00:00 2001
+From 17d100416a3cea765310070bb99da94f3576124b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 30 May 2023 11:44:19 +0800
 Subject: [PATCH 0061/1239] mmc: modify reset card only once
@@ -12,7 +12,7 @@ Change-Id: I482c0f5fa730543286d8e67ff270788b90c1a33d
  1 file changed, 6 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
-index f334efd373c4..765b4e729c46 100644
+index f334efd373c42..765b4e729c465 100644
 --- a/drivers/mmc/host/sdhci-of-spacemit.c
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -4,7 +4,7 @@

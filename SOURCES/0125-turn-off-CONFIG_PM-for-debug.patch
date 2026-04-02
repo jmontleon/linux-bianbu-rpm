@@ -1,4 +1,4 @@
-From ba0ddef29a8d729d52a5c75d6f60742425723582 Mon Sep 17 00:00:00 2001
+From b31890bae55846c00ba92ddacf1ae89b7eb8aa0d Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 5 Sep 2023 19:41:50 +0800
 Subject: [PATCH 0125/1239] turn off CONFIG_PM for debug
@@ -10,7 +10,7 @@ Change-Id: If7a92d7e779138ac6e15574c1747a2d0291b33a2
  2 files changed, 4 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
-index f9cb64c8971e..2a78b43c72a9 100644
+index f9cb64c8971ec..2a78b43c72a9e 100644
 --- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 @@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y
@@ -30,7 +30,7 @@ index f9cb64c8971e..2a78b43c72a9 100644
  # CONFIG_DPAA2_CONSOLE is not set
  CONFIG_GENERIC_PHY=y
 diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
-index f9cb64c8971e..2a78b43c72a9 100644
+index f9cb64c8971ec..2a78b43c72a9e 100644
 --- a/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 @@ -32,7 +32,6 @@ CONFIG_HOTPLUG_CPU=y

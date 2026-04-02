@@ -1,4 +1,4 @@
-From b0e4c027416f9c9395795c4752fde2de0f264d13 Mon Sep 17 00:00:00 2001
+From eb63df41f302c11fdc96bcf1d4d490f8eb345092 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 12 Apr 2024 20:05:28 +0800
 Subject: [PATCH 0614/1239] aud: support snd-card config in dts
@@ -18,7 +18,7 @@ Change-Id: If4e060cba2de63647748964eb371e1ae4c91f168
  rename sound/soc/spacemit/{spacemit-snd-spi.h => spacemit-snd-i2s.h} (100%)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index d363217454cc..6f6642620c2c 100644
+index d363217454cc9..6f6642620c2c6 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -562,6 +562,7 @@ CONFIG_SND=y
@@ -30,7 +30,7 @@ index d363217454cc..6f6642620c2c 100644
  CONFIG_HID_MULTITOUCH=y
  CONFIG_USB_HIDDEV=y
 diff --git a/sound/soc/spacemit/Makefile b/sound/soc/spacemit/Makefile
-index 448cb5ff2394..a079b5973f32 100644
+index 448cb5ff23943..a079b5973f32f 100644
 --- a/sound/soc/spacemit/Makefile
 +++ b/sound/soc/spacemit/Makefile
 @@ -1,4 +1,4 @@
@@ -42,7 +42,7 @@ index 448cb5ff2394..a079b5973f32 100644
  obj-$(CONFIG_SND_SOC_SPACEMIT) += snd-soc-spacemit.o
 diff --git a/sound/soc/spacemit/spacemit-dummy-codec.c b/sound/soc/spacemit/spacemit-dummy-codec.c
 new file mode 100755
-index 000000000000..1eef016fe249
+index 0000000000000..1eef016fe249c
 --- /dev/null
 +++ b/sound/soc/spacemit/spacemit-dummy-codec.c
 @@ -0,0 +1,73 @@
@@ -122,7 +122,7 @@ index 000000000000..1eef016fe249
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
 old mode 100644
 new mode 100755
-index 98b4ade6cc7c..046862749993
+index 98b4ade6cc7c1..046862749993a
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -3,158 +3,372 @@
@@ -607,7 +607,7 @@ diff --git a/sound/soc/spacemit/spacemit-snd-spi.c b/sound/soc/spacemit/spacemit
 similarity index 63%
 rename from sound/soc/spacemit/spacemit-snd-spi.c
 rename to sound/soc/spacemit/spacemit-snd-i2s.c
-index 4abcb3e57bb1..c4cc2cc62224 100755
+index 4abcb3e57bb10..c4cc2cc622245 100755
 --- a/sound/soc/spacemit/spacemit-snd-spi.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -20,9 +20,9 @@

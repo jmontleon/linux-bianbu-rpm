@@ -1,4 +1,4 @@
-From e0e3b0c09601a3127b503d3971cc79a3fb43c794 Mon Sep 17 00:00:00 2001
+From cdfa5b1c10c892aa715059447d26a2d7e5d2a102 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 30 Aug 2024 11:02:25 +0800
 Subject: [PATCH 1035/1239] clock: add dpll and ddr clocks
@@ -20,7 +20,7 @@ Change-Id: Ic72f607334094c48977b732f758712f1519c56f9
  create mode 100644 drivers/clk/spacemit/ccu_dpll.h
 
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
-index 02efb5f39a26..61f3fa43222b 100644
+index 02efb5f39a26d..61f3fa43222bb 100644
 --- a/drivers/clk/spacemit/Makefile
 +++ b/drivers/clk/spacemit/Makefile
 @@ -4,5 +4,5 @@
@@ -31,7 +31,7 @@ index 02efb5f39a26..61f3fa43222b 100644
 +obj-$(CONFIG_SPACEMIT_K1X_CCU)     += ccu-spacemit-k1x.o ccu_mix.o ccu_pll.o ccu_dpll.o ccu_ddn.o ccu_ddr.o
  obj-$(CONFIG_SPACEMIT_K1PRO_CCU)   += ccu-spacemit-k1pro.o
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 2aa5727a6a00..9a9da1cc1232 100644
+index 2aa5727a6a009..9a9da1cc1232e 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -17,6 +17,8 @@
@@ -218,7 +218,7 @@ index 2aa5727a6a00..9a9da1cc1232 100644
  
 diff --git a/drivers/clk/spacemit/ccu_ddr.c b/drivers/clk/spacemit/ccu_ddr.c
 new file mode 100644
-index 000000000000..ae5af8f88742
+index 0000000000000..ae5af8f88742c
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_ddr.c
 @@ -0,0 +1,266 @@
@@ -490,7 +490,7 @@ index 000000000000..ae5af8f88742
 +
 diff --git a/drivers/clk/spacemit/ccu_ddr.h b/drivers/clk/spacemit/ccu_ddr.h
 new file mode 100644
-index 000000000000..e4fed50b1349
+index 0000000000000..e4fed50b1349e
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_ddr.h
 @@ -0,0 +1,48 @@
@@ -544,7 +544,7 @@ index 000000000000..e4fed50b1349
 +#endif /* _CCU_DDR_H_ */
 diff --git a/drivers/clk/spacemit/ccu_dpll.c b/drivers/clk/spacemit/ccu_dpll.c
 new file mode 100644
-index 000000000000..e7fd840c5aca
+index 0000000000000..e7fd840c5aca0
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_dpll.c
 @@ -0,0 +1,125 @@
@@ -675,7 +675,7 @@ index 000000000000..e7fd840c5aca
 +
 diff --git a/drivers/clk/spacemit/ccu_dpll.h b/drivers/clk/spacemit/ccu_dpll.h
 new file mode 100644
-index 000000000000..49a7fe504dcc
+index 0000000000000..49a7fe504dcc0
 --- /dev/null
 +++ b/drivers/clk/spacemit/ccu_dpll.h
 @@ -0,0 +1,80 @@
@@ -760,7 +760,7 @@ index 000000000000..49a7fe504dcc
 +
 +#endif
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index f0dfeb91b713..91f7ce8cd830 100644
+index f0dfeb91b713a..91f7ce8cd8305 100644
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -323,6 +323,24 @@ struct ccu_mix {
@@ -789,7 +789,7 @@ index f0dfeb91b713..91f7ce8cd830 100644
  					  _mshift, _mwidth, _fc, _muxshift, _muxwidth, _flags)					\
  	struct ccu_mix _struct = {					\
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index df27435111dd..be4c4e1f834b 100644
+index df27435111dd8..be4c4e1f834b2 100644
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -203,6 +203,18 @@

@@ -1,4 +1,4 @@
-From 8c1b428e7b6e7fd13d8afce80f26dd3e81315ec0 Mon Sep 17 00:00:00 2001
+From 529d2dc783b9706850ebbc6ca635a095ceb3f98b Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 14 Aug 2024 21:40:07 +0800
 Subject: [PATCH 0950/1239] k1:muse_book:support hall to wakeup system
@@ -10,7 +10,7 @@ Change-Id: I6bfd078334ade395366f115d57bdf4769e560ecf
  2 files changed, 48 insertions(+), 58 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 570987cc8527..7c16c526e860 100644
+index 570987cc8527c..7c16c526e8600 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -140,8 +140,11 @@ vcc4v0_baseboard: vcc4v0-baseboard {
@@ -57,7 +57,7 @@ index 570987cc8527..7c16c526e860 100644
  		&pinctrl 78  GPIO_78  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/drivers/soc/spacemit/spacemit_lid.c b/drivers/soc/spacemit/spacemit_lid.c
-index 37031d806aeb..1046afe8af1f 100644
+index 37031d806aeb6..1046afe8af1f7 100644
 --- a/drivers/soc/spacemit/spacemit_lid.c
 +++ b/drivers/soc/spacemit/spacemit_lid.c
 @@ -9,95 +9,78 @@

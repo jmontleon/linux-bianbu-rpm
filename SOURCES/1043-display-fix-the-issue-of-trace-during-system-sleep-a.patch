@@ -1,4 +1,4 @@
-From bb6f0b3572bb3ee59e6ed6ee81cc9aa39aeeebf8 Mon Sep 17 00:00:00 2001
+From f331fcf7d59f7cded81886c12fec8741a7c2762a Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 17 Oct 2024 14:10:39 +0800
 Subject: [PATCH 1043/1239] display: fix the issue of trace during system
@@ -10,7 +10,7 @@ Change-Id: I6774d18091dab82a46f3502a590f88091b8f802c
  1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
-index c49b9fe5b33b..7ac03567728f 100644
+index c49b9fe5b33bb..7ac03567728fd 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_planes.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -390,7 +390,9 @@ static void spacemit_plane_reset(struct drm_plane *plane)

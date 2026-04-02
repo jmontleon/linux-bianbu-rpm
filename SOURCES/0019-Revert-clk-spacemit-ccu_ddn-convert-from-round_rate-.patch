@@ -1,4 +1,4 @@
-From 2b5525c2fd1f03af6c2a810f1533049308a4fdc4 Mon Sep 17 00:00:00 2001
+From 937dfa68f98378de022595f3b226f4cd1dac025d Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:50:10 -0400
 Subject: [PATCH 0019/1239] Revert "clk: spacemit: ccu_ddn: convert from
@@ -10,7 +10,7 @@ This reverts commit b4a7b0d2c4485d11d37dec721709660f3967efcf.
  1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
-index 02b68ea84db9..be311b045698 100644
+index 02b68ea84db9b..be311b045698e 100644
 --- a/drivers/clk/spacemit/ccu_ddn.c
 +++ b/drivers/clk/spacemit/ccu_ddn.c
 @@ -39,16 +39,13 @@ static unsigned long ccu_ddn_calc_best_rate(struct ccu_ddn *ddn,

@@ -1,4 +1,4 @@
-From 57b0bd4c0228c381f2b485f89160023419f14e0a Mon Sep 17 00:00:00 2001
+From bd3c920a508ace9a50fc55baee4dffd3d1b77fff Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 3 Jan 2024 19:41:54 +0800
 Subject: [PATCH 0328/1239] target: add task management values and overlapped
@@ -11,7 +11,7 @@ Change-Id: I2829950ded80e17e39d337d432b69a3adb7cbc85
  2 files changed, 15 insertions(+)
 
 diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 88544c911949..3b2c75317885 100644
+index 88544c911949c..3b2c75317885f 100644
 --- a/drivers/target/target_core_transport.c
 +++ b/drivers/target/target_core_transport.c
 @@ -3139,6 +3139,10 @@ static const char *target_tmf_name(enum tcm_tmreq_table tmf)
@@ -39,7 +39,7 @@ index 88544c911949..3b2c75317885 100644
  		pr_err("Unknown TMR function: 0x%02x.\n",
  				tmr->function);
 diff --git a/include/target/target_core_base.h b/include/target/target_core_base.h
-index 27e1f9d5f0c6..67e106f10d59 100644
+index 27e1f9d5f0c6c..67e106f10d595 100644
 --- a/include/target/target_core_base.h
 +++ b/include/target/target_core_base.h
 @@ -223,6 +223,10 @@ enum tcm_tmreq_table {

@@ -1,4 +1,4 @@
-From 45769e83cfd9b444e58959081ebcb03f142989c6 Mon Sep 17 00:00:00 2001
+From ab8be078df7b7825b4c62e6aa7047abb252e236f Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 19 Mar 2026 12:44:48 -0400
 Subject: [PATCH 0003/1239] Revert "usb: gadget: f_tcm: Fix NULL pointer
@@ -10,7 +10,7 @@ This reverts commit 3d309b37633c4a847fc149939a2c9576f1aa1065.
  1 file changed, 14 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
-index 7b27f8082ace..6e8804f04baa 100644
+index 7b27f8082ace6..6e8804f04baa7 100644
 --- a/drivers/usb/gadget/function/f_tcm.c
 +++ b/drivers/usb/gadget/function/f_tcm.c
 @@ -1222,13 +1222,6 @@ static void usbg_submit_cmd(struct usbg_cmd *cmd)

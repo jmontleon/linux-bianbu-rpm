@@ -1,4 +1,4 @@
-From e8c218d161c332df8428a7d1f120519b3e9515ac Mon Sep 17 00:00:00 2001
+From 7cbdd558b342c6e028656037f1057836db7f49b9 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 17 Nov 2023 15:49:08 +0800
 Subject: [PATCH 0179/1239] usb: add reset and clk configurations
@@ -12,7 +12,7 @@ Change-Id: Iaf2eafd8ca61504ef958bbcb0cfc77d2f74c029b
  4 files changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 30ac61cb020f..4f94b38b2c04 100644
+index 30ac61cb020f2..4f94b38b2c04e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -296,13 +296,6 @@ pll_clk_emac_ptp: clock-pll_clk_emac_ptp {
@@ -62,7 +62,7 @@ index 30ac61cb020f..4f94b38b2c04 100644
  			interrupts = <149>;
  			ranges;
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 0f4ddbaef791..6da8db13f776 100755
+index 0f4ddbaef791c..6da8db13f776d 100755
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -157,7 +157,7 @@ static const struct dwc3_spacemit_driverdata spacemit_k1pro_drvdata = {
@@ -75,7 +75,7 @@ index 0f4ddbaef791..6da8db13f776 100755
  };
  
 diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
-index 04dc2479682b..0eedd4de92d2 100755
+index 04dc2479682b6..0eedd4de92d21 100755
 --- a/drivers/usb/gadget/udc/k1x_ci_udc.h
 +++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
 @@ -234,6 +234,9 @@ struct mv_udc {
@@ -89,7 +89,7 @@ index 04dc2479682b..0eedd4de92d2 100755
  	struct power_supply udc_psy;
  
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 546292b3c778..9dcd8b769e9c 100755
+index 546292b3c7784..9dcd8b769e9ca 100755
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -35,6 +35,7 @@

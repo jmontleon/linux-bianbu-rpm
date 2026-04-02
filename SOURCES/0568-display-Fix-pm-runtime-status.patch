@@ -1,4 +1,4 @@
-From 6c5b42f5bc74b43b7897835ac60600da11d542f5 Mon Sep 17 00:00:00 2001
+From 5f91530f1021b04c71e0e68eaf68277642f5317b Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Wed, 3 Apr 2024 15:31:05 +0800
 Subject: [PATCH 0568/1239] display: Fix pm runtime status
@@ -9,7 +9,7 @@ Change-Id: I5b0f08e145ad98448c9de7e43a1345f32b2d38b1
  1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index f37ff7b91751..a59e80f7615c 100644
+index f37ff7b91751d..a59e80f7615cf 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -637,6 +637,7 @@ spacemit_hdmi_connector_detect(struct drm_connector *connector, bool force)

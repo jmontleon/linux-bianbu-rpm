@@ -1,4 +1,4 @@
-From 120d0ab78a0f0ba8b1c86231c552dfa5929ade08 Mon Sep 17 00:00:00 2001
+From d0a7aad32bb3a784415368b91d3d694184b14ca4 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 18 Dec 2023 21:16:28 +0800
 Subject: [PATCH 0221/1239] k1-x: pinctrl: add fast config for sdcard
@@ -9,7 +9,7 @@ Change-Id: Ia0ace332a1c2330f2ee4b79d00215976549d7ea3
  1 file changed, 11 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index ca161917a306..19daed5fb354 100644
+index ca161917a3061..19daed5fb354c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -41,6 +41,17 @@ K1X_PADCONF(MMC1_CLK,  MUX_MODE0, (EDGE_NONE | PULL_DOWN | PAD_3V_DS4))       /*

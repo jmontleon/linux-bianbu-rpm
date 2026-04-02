@@ -1,4 +1,4 @@
-From cb7720a2dbbe1f60165f093d8931ad3b3f295330 Mon Sep 17 00:00:00 2001
+From 4c1d37883d8d6efbaa54d923912152628b97dd79 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Tue, 2 Jan 2024 15:44:26 +0800
 Subject: [PATCH 0320/1239] k1x:pmic: refine some code
@@ -15,7 +15,7 @@ Change-Id: I583d8e4882fb456438c3ee5a97201df1f7ac96e9
  4 files changed, 91 insertions(+), 45 deletions(-)
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index e85b75533a61..6a9c15f2a273 100644
+index e85b75533a611..6a9c15f2a2735 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -11,13 +11,15 @@
@@ -95,7 +95,7 @@ index e85b75533a61..6a9c15f2a273 100644
  	switch (pmic->variant) {
  	case SPM8821_ID:
 diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
-index 0d04ad1341eb..c08585b530b1 100644
+index 0d04ad1341eb8..c08585b530b1d 100644
 --- a/include/linux/mfd/spacemit/pm853.h
 +++ b/include/linux/mfd/spacemit/pm853.h
 @@ -32,8 +32,6 @@ enum PM853_reg {
@@ -121,7 +121,7 @@ index 0d04ad1341eb..c08585b530b1 100644
  	static const struct mfd_cell pm853[] = {				\
  		{								\
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index f69b15655f75..9bf12dd93d58 100644
+index f69b15655f75c..9bf12dd93d58e 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -17,7 +17,7 @@ struct spacemit_pmic {
@@ -151,7 +151,7 @@ index f69b15655f75..9bf12dd93d58 100644
  
  /* common regulator defination */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 1473ac595925..47027e14314e 100644
+index 1473ac5959256..47027e14314eb 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -22,7 +22,6 @@ enum SPM8821_reg {

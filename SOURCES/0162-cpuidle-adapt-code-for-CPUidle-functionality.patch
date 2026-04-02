@@ -1,4 +1,4 @@
-From 67542227ef9202236c6a621c03cbd1f3f644bdb6 Mon Sep 17 00:00:00 2001
+From 9e7808e60ed27a338e61526f47123a7a669c353a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 16 Oct 2023 15:40:56 +0800
 Subject: [PATCH 0162/1239] cpuidle: adapt code for CPUidle functionality
@@ -17,7 +17,7 @@ Change-Id: Id13e5e17384726183fd98d232b5edfab838f6134
  3 files changed, 43 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
-index 41eb691b471b..6a5186e13a11 100644
+index 41eb691b471b7..6a5186e13a11f 100644
 --- a/drivers/clocksource/dw_apb_timer.c
 +++ b/drivers/clocksource/dw_apb_timer.c
 @@ -34,6 +34,8 @@
@@ -94,7 +94,7 @@ index 41eb691b471b..6a5186e13a11 100644
  	if (err) {
  		pr_err("failed to request timer irq\n");
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index 0799c15c745d..bc9e57b18300 100644
+index 0799c15c745d4..bc9e57b183009 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -40,27 +40,38 @@
@@ -164,7 +164,7 @@ index 0799c15c745d..bc9e57b18300 100644
  }
  
 diff --git a/include/linux/dw_apb_timer.h b/include/linux/dw_apb_timer.h
-index f8811c46b89e..0351c2987038 100644
+index f8811c46b89e7..0351c29870383 100644
 --- a/include/linux/dw_apb_timer.h
 +++ b/include/linux/dw_apb_timer.h
 @@ -12,6 +12,7 @@

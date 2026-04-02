@@ -1,4 +1,4 @@
-From 4c753e366c34a9df3609dd620e3ebd1344232468 Mon Sep 17 00:00:00 2001
+From 0540e935bc621840e376d31a9fdf066046a9585c Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:22:02 +0800
 Subject: [PATCH 1138/1239] plic: fix error on some offset macro definition
@@ -9,7 +9,7 @@ Change-Id: Ifddb0786d5c400e7a6c490a4f7204c626668e4ec
  1 file changed, 2 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index 612b52520a93..45cb45012bfc 100644
+index 612b52520a93d..45cb45012bfca 100644
 --- a/drivers/irqchip/irq-sifive-plic.c
 +++ b/drivers/irqchip/irq-sifive-plic.c
 @@ -48,25 +48,18 @@

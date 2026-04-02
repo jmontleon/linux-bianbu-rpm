@@ -1,4 +1,4 @@
-From f99bde0c1eca94e67804acc48d6ed39913ea1755 Mon Sep 17 00:00:00 2001
+From d55e779a7273c4d7903c28035388cbabdd686fcd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 1 Mar 2024 09:15:14 +0800
 Subject: [PATCH 0477/1239] aud: modify hdmi audio period_size, fix coding
@@ -15,7 +15,7 @@ Change-Id: I89ff3f3d098861cb1d4adc3962d70208f727cb5e
  delete mode 100644 sound/soc/spacemit/spacemit-snd.h
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 2aa12dd3af9b..a8ff6a72f6e7 100644
+index 2aa12dd3af9b4..a8ff6a72f6e75 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -1,6 +1,6 @@
@@ -36,7 +36,7 @@ index 2aa12dd3af9b..a8ff6a72f6e7 100644
  	DAILINK_COMP_ARRAY(COMP_DUMMY()));
  
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index a7588fe9099a..b82908733c4d 100755
+index a7588fe9099ac..b82908733c4d0 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -1,6 +1,6 @@
@@ -295,7 +295,7 @@ index a7588fe9099a..b82908733c4d 100755
 +MODULE_DESCRIPTION("SPACEMIT ASoC PCM Platform Driver");
  MODULE_LICENSE("GPL");
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index a6562b2e52b5..4f51c1ba9bab 100644
+index a6562b2e52b58..4f51c1ba9bab2 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -1,6 +1,6 @@
@@ -533,7 +533,7 @@ index a6562b2e52b5..4f51c1ba9bab 100644
  MODULE_LICENSE("GPL");
  
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.h b/sound/soc/spacemit/spacemit-snd-sspa.h
-index e4d226a0898b..d762f62b632a 100644
+index e4d226a0898b0..d762f62b632aa 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.h
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.h
 @@ -1,6 +1,6 @@
@@ -546,7 +546,7 @@ index e4d226a0898b..d762f62b632a 100644
  #ifndef _SPACEMIT_SND_SSPA_H_
 diff --git a/sound/soc/spacemit/spacemit-snd.h b/sound/soc/spacemit/spacemit-snd.h
 deleted file mode 100644
-index dcec4c65e89a..000000000000
+index dcec4c65e89a6..0000000000000
 --- a/sound/soc/spacemit/spacemit-snd.h
 +++ /dev/null
 @@ -1,16 +0,0 @@

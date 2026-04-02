@@ -1,4 +1,4 @@
-From c9a43417616ea77cb864ab48eb84786c3623213c Mon Sep 17 00:00:00 2001
+From 24aacec52ddc72b86770cf4394b673a432da2adc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 29 Dec 2023 17:18:44 +0800
 Subject: [PATCH 0294/1239] clock: add CLK_IGNORE_UNUSED flag for some clocks
@@ -9,7 +9,7 @@ Change-Id: Iad69503c3895a886f036e52d30446c6c61e69d18
  1 file changed, 53 insertions(+), 53 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index abe7b4b29daf..b443adec6c72 100755
+index abe7b4b29daf6..b443adec6c728 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -181,140 +181,140 @@ static const struct ccu_pll_rate_tbl pll3_rate_tbl[] = {

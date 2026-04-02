@@ -1,4 +1,4 @@
-From a7ede6bfbbf41624b093184adc731d3299a68bc4 Mon Sep 17 00:00:00 2001
+From 9ac117390e9ddb7b1af752a426db15ee21c21358 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jul 2024 12:42:18 +0800
 Subject: [PATCH 0824/1239] socinfo: add spacemit soc information driver
@@ -12,7 +12,7 @@ Change-Id: I7d1038a3f561d699ec16d4cb77ee9958bc4a7ee1
  create mode 100644 drivers/soc/spacemit/spacemit-socinfo.c
 
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index c36e986f25bb..c1c3536488d8 100644
+index c36e986f25bb8..c1c3536488d88 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -34,6 +34,15 @@ config SPACEMI_K1X_DMA_RANGE
@@ -32,7 +32,7 @@ index c36e986f25bb..c1c3536488d8 100644
  source "drivers/soc/spacemit/v2d/Kconfig"
  source "drivers/soc/spacemit/spacemit-rf/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index e5e23be15e73..523fe88365b9 100644
+index e5e23be15e738..523fe88365b9f 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1,8 +1,9 @@
@@ -52,7 +52,7 @@ index e5e23be15e73..523fe88365b9 100644
 +obj-$(CONFIG_SPACEMIT_V2D)    += v2d/
 diff --git a/drivers/soc/spacemit/spacemit-socinfo.c b/drivers/soc/spacemit/spacemit-socinfo.c
 new file mode 100644
-index 000000000000..0dfec63b7a8d
+index 0000000000000..0dfec63b7a8d4
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-socinfo.c
 @@ -0,0 +1,205 @@

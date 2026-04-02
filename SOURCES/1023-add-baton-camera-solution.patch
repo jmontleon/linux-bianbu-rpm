@@ -1,4 +1,4 @@
-From c58220f04d476a5e8eeb63af6039077f76af5cf7 Mon Sep 17 00:00:00 2001
+From 17f62884eca29853de88fb7c620e574ce4834690 Mon Sep 17 00:00:00 2001
 From: huanghaiqiang <chris.huang@spacemit.com>
 Date: Sun, 29 Sep 2024 09:38:42 +0800
 Subject: [PATCH 1023/1239] add baton-camera solution
@@ -11,7 +11,7 @@ Change-Id: Ib9317122ab0b647ea41d5a12cbfb4e05648c8964
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 1062f7d4ac3a..39a2fb81051f 100644
+index 1062f7d4ac3a6..39a2fb81051f2 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -6,6 +6,6 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -24,7 +24,7 @@ index 1062f7d4ac3a..39a2fb81051f 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
 new file mode 100644
-index 000000000000..e9096c1ccaf6
+index 0000000000000..e9096c1ccaf64
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_baton-camera.dts
 @@ -0,0 +1,911 @@

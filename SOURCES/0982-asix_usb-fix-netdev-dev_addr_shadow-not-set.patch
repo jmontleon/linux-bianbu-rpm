@@ -1,4 +1,4 @@
-From 6aea6462ecfeb5283c2baa6d22362f3122149455 Mon Sep 17 00:00:00 2001
+From 7c789204f693cd4f64541cd087436fe1909c4337 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 26 Aug 2024 10:07:32 +0800
 Subject: [PATCH 0982/1239] asix_usb: fix netdev->dev_addr_shadow not set
@@ -13,7 +13,7 @@ Change-Id: Ieb63e7b3c727a3bbf2dea695edebffe05ee0c11a
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/usb/asix_usb/ax_main.c b/drivers/net/usb/asix_usb/ax_main.c
-index 93253f0e144f..20fbb2bf04ce 100644
+index 93253f0e144ff..20fbb2bf04cee 100644
 --- a/drivers/net/usb/asix_usb/ax_main.c
 +++ b/drivers/net/usb/asix_usb/ax_main.c
 @@ -2095,12 +2095,17 @@ static int ax_get_mac_address(struct ax_device *axdev)

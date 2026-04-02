@@ -1,4 +1,4 @@
-From 094fe8e65a6ac795f24a711c54967ebb22bde4d1 Mon Sep 17 00:00:00 2001
+From 200d2eef991ba576bc05df26fc9297a4c22b1587 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:20:50 +0800
 Subject: [PATCH 1137/1239] i2c: k1x: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: Ic730f2be2564d8acfa57cef3710e7ae51eea1dfa
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index f1761704f182..cece92ecb653 100644
+index f1761704f182f..cece92ecb6531 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -2022,7 +2022,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)

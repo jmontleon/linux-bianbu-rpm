@@ -1,4 +1,4 @@
-From 4c6227cbc34bd677954fa3f06c4266154e9ba08e Mon Sep 17 00:00:00 2001
+From 34f10182cbbc46679fc272ca8d67b8839a07acbf Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:48:35 +0800
 Subject: [PATCH 1119/1239] riscv: spackemit: add of node get for process
@@ -10,7 +10,7 @@ Change-Id: Ia7072f4b47f67f4dff1c0f9fe71514964f44520c
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index eba298034062..84f93296e40f 100644
+index eba2980340622..84f93296e40fa 100644
 --- a/arch/riscv/kernel/cpu.c
 +++ b/arch/riscv/kernel/cpu.c
 @@ -336,8 +336,12 @@ static int c_show(struct seq_file *m, void *v)

@@ -1,4 +1,4 @@
-From 5291c1b0f21bd8ea81a4cb3a49646f94b4b02527 Mon Sep 17 00:00:00 2001
+From 16ab8d5bd4ca9867dd7d0ce19fcdc8d87dc9f229 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 28 Dec 2023 17:43:17 +0800
 Subject: [PATCH 0291/1239] dts: add apbc2 reg base for clock and reset
@@ -9,7 +9,7 @@ Change-Id: I6294ccc33e76e337621dab1fe47fc99da5e1172e
  1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c8de3f16dda6..87ba95d003f6 100644
+index c8de3f16dda6d..87ba95d003f65 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -462,8 +462,9 @@ ccu: clock-controller@d4050000 {

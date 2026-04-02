@@ -1,4 +1,4 @@
-From 72150c5b56f19c9c5666fdd65b9677f5a98e5fb7 Mon Sep 17 00:00:00 2001
+From 4e6f3b209b706b095cc02602bb9c770e0859a78b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 22 Dec 2023 20:58:33 +0800
 Subject: [PATCH 0256/1239] clock: fix camm2 no clock issue, change enable bit
@@ -9,7 +9,7 @@ Change-Id: I508eabd59ce6d475f79cb72ec7af43dbbb6e36b7
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 14cdf0c57aba..17b7e653d34e 100755
+index 14cdf0c57abac..17b7e653d34e0 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -703,7 +703,7 @@ static SPACEMIT_CCU_DIV_MUX_GATE(camm1_clk, "camm1_clk", camm_parent_names,

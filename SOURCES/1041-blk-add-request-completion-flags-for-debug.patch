@@ -1,4 +1,4 @@
-From 9b3341626f3069709c94d19d8ea948106c1837f0 Mon Sep 17 00:00:00 2001
+From 39dee05844b72e17f578df89ba77093dcda243ca Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 14 Oct 2024 18:10:42 +0800
 Subject: [PATCH 1041/1239] blk: add request completion flags for debug
@@ -10,7 +10,7 @@ Change-Id: Ib84003e68d537173a9d550071d43eab587d10fb6
  2 files changed, 3 insertions(+)
 
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index a03f52ab87d6..e43f232fa5b5 100644
+index 4ebb92014eae1..80d91b4a776f8 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
 @@ -1286,6 +1286,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
@@ -30,7 +30,7 @@ index a03f52ab87d6..e43f232fa5b5 100644
  }
  
 diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index b25d12545f46..6566cda8f402 100644
+index b25d12545f46d..6566cda8f4027 100644
 --- a/include/linux/blk-mq.h
 +++ b/include/linux/blk-mq.h
 @@ -206,6 +206,7 @@ struct request {

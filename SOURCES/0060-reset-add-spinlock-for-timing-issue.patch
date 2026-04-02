@@ -1,4 +1,4 @@
-From 71bb0b0b6ca25eca665959df150ffadc6b782434 Mon Sep 17 00:00:00 2001
+From 47f36955db916acb57426ab9d8ae9ef08d00e691 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 26 May 2023 14:56:08 +0800
 Subject: [PATCH 0060/1239] reset: add spinlock for timing issue
@@ -9,7 +9,7 @@ Change-Id: I0556774f22f299afe5918e80e14e4249dd2532dd
  1 file changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index 38957c64a168..354690dd4715 100755
+index 38957c64a1683..354690dd4715b 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -14,6 +14,7 @@

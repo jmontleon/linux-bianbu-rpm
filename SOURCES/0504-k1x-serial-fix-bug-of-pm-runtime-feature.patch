@@ -1,4 +1,4 @@
-From c662442006b255df985b648cab9e63753a5de4fe Mon Sep 17 00:00:00 2001
+From ddf522b6d8848cb2c3f0c3d13fdc3be26390b3f5 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 13 Mar 2024 09:58:38 +0800
 Subject: [PATCH 0504/1239] k1x:serial: fix bug of pm-runtime feature
@@ -9,7 +9,7 @@ Change-Id: I4f84d46f995a50f014323d3ea6baec526cf8a29e
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index c75131730f06..6900aa9b95a4 100644
+index c75131730f063..6900aa9b95a44 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -2005,7 +2005,7 @@ static const struct dev_pm_ops serial_pxa_pm_ops = {

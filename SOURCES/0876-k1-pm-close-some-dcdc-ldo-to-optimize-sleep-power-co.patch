@@ -1,4 +1,4 @@
-From 1baaf64f0fb26060d25a2187b5b46c1d0ae8e77b Mon Sep 17 00:00:00 2001
+From b8f4a949ffeb2ea7a9df981857059944ccb064d2 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 20:15:32 +0800
 Subject: [PATCH 0876/1239] k1:pm: close some dcdc & ldo to optimize sleep
@@ -13,7 +13,7 @@ Change-Id: Ia2c30d80cb898bf91df3b73410f2b03f1e36d4d4
  4 files changed, 48 insertions(+), 11 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index d5bd449e260a..14d911614f24 100644
+index d5bd449e260a7..14d911614f249 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -466,7 +466,6 @@ dcdc_4: DCDC_REG4 {
@@ -25,7 +25,7 @@ index d5bd449e260a..14d911614f24 100644
  					regulator-off-in-suspend;
  					regulator-suspend-microvolt = <3300000>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 9b7e84db64f1..c654bf5a5eda 100644
+index 9b7e84db64f18..c654bf5a5eda1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -390,7 +390,6 @@ dcdc_4: DCDC_REG4 {
@@ -109,7 +109,7 @@ index 9b7e84db64f1..c654bf5a5eda 100644
  
  		pwr_key: key {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index 86513dc17ac1..ef12ee374d36 100644
+index 86513dc17ac19..ef12ee374d362 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -360,6 +360,11 @@ dcdc_4: DCDC_REG4 {
@@ -203,7 +203,7 @@ index 86513dc17ac1..ef12ee374d36 100644
  
  			ldo_8: LDO_REG8 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index 0af4f239aef8..ecd2460b4890 100644
+index 0af4f239aef81..ecd2460b4890f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -487,7 +487,7 @@ ldo_6: LDO_REG6 {

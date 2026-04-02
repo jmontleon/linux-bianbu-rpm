@@ -1,4 +1,4 @@
-From 5ac04c77a734623aab40165e8b791ed9405378f6 Mon Sep 17 00:00:00 2001
+From c0e0fc1168fb72d09e892bb220f102c79c3cccc6 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 5 Sep 2024 15:48:45 +0800
 Subject: [PATCH 1011/1239] usb: typec: husb239: update pd contract
@@ -9,7 +9,7 @@ Change-Id: Ia373ead70b280e0cd07a3fac5b0d65c796884a20
  1 file changed, 216 insertions(+), 116 deletions(-)
 
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
-index 1bc6e441a05e..1f78b3082570 100644
+index 1bc6e441a05ed..1f78b30825707 100644
 --- a/drivers/usb/typec/husb239.c
 +++ b/drivers/usb/typec/husb239.c
 @@ -41,6 +41,9 @@

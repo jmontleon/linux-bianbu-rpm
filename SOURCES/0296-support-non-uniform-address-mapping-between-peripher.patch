@@ -1,4 +1,4 @@
-From b0eac4eaf7a9c2a7adc87f88902c31b5c03f6bd4 Mon Sep 17 00:00:00 2001
+From eafc39985f00574c258217523224324452aaed47 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 27 Dec 2023 17:01:21 +0800
 Subject: [PATCH 0296/1239] support non-uniform address mapping between
@@ -20,7 +20,7 @@ Change-Id: I74fa236a31fd1ec4f8e5d8ef5776d5ced235568a
  2 files changed, 94 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 87ba95d003f6..3706fc179110 100644
+index 87ba95d003f65..3706fc1791105 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -439,6 +439,25 @@ soc {
@@ -365,7 +365,7 @@ index 87ba95d003f6..3706fc179110 100644
  		};
  	};
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index c7cc77db9c4c..d8cbb110a21c 100644
+index c7cc77db9c4c0..d8cbb110a21c3 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -294,7 +294,12 @@ static void __init setup_bootmem(void)

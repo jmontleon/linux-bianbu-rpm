@@ -1,4 +1,4 @@
-From b81e7f3f604abda56f8cc024f7460a9928f64943 Mon Sep 17 00:00:00 2001
+From 362e228b8963588c6949c2ca8761159b729277aa Mon Sep 17 00:00:00 2001
 From: Yanko Kaneti <yaneti@declera.com>
 Date: Thu, 13 Mar 2025 16:44:57 +0200
 Subject: [PATCH 1228/1239] Add bit-brick k1 devicetree from bianbu
@@ -12,7 +12,7 @@ Subject: [PATCH 1228/1239] Add bit-brick k1 devicetree from bianbu
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365aainx101_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index d5cb5d41ad0e..5c515f4fda24 100644
+index d5cb5d41ad0ef..5c515f4fda247 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -9,5 +9,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1X) += k1-x_fpga.dtb k1-x_fpga_1x4.dtb k1-x_fpga_2x2.
@@ -24,7 +24,7 @@ index d5cb5d41ad0e..5c515f4fda24 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
 new file mode 100644
-index 000000000000..ef7f4765bc62
+index 0000000000000..ef7f4765bc62d
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_bit-brick.dts
 @@ -0,0 +1,1105 @@
@@ -1135,7 +1135,7 @@ index 000000000000..ef7f4765bc62
 +
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365aainx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365aainx101_mipi.dtsi
 new file mode 100644
-index 000000000000..76304c0b178d
+index 0000000000000..76304c0b178df
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365aainx101_mipi.dtsi
 @@ -0,0 +1,262 @@

@@ -1,4 +1,4 @@
-From 70dc292ae48b4f67d3c2315c4e5a7a580314630d Mon Sep 17 00:00:00 2001
+From 720b2f905b91f1a4baca91488f26693c3627afb9 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 27 Aug 2024 14:08:26 +0800
 Subject: [PATCH 0989/1239] qmi_wwan_f: add fibocom qmi modem driver
@@ -17,7 +17,7 @@ Change-Id: I5fdfb2907e705289dbbe4968495bf93b4f5ffc5b
  create mode 100644 drivers/net/usb/qmi_wwan_f.c
 
 diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index 93f5577ca440..ffe181622ff9 100644
+index 93f5577ca4406..ffe181622ff94 100644
 --- a/drivers/net/usb/Kconfig
 +++ b/drivers/net/usb/Kconfig
 @@ -527,6 +527,29 @@ config USB_NET_KALMIA
@@ -51,7 +51,7 @@ index 93f5577ca440..ffe181622ff9 100644
  	tristate "QMI WWAN driver for Qualcomm MSM based 3G and LTE modems"
  	depends on USB_USBNET
 diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
-index d6b22ee47ba4..cccef21b099d 100644
+index d6b22ee47ba48..cccef21b099d0 100644
 --- a/drivers/net/usb/Makefile
 +++ b/drivers/net/usb/Makefile
 @@ -38,6 +38,7 @@ obj-$(CONFIG_USB_NET_CX82310_ETH)	+= cx82310_eth.o
@@ -64,7 +64,7 @@ index d6b22ee47ba4..cccef21b099d 100644
  obj-$(CONFIG_USB_NET_CH9200)	+= ch9200.o
 diff --git a/drivers/net/usb/qmi_wwan_f.c b/drivers/net/usb/qmi_wwan_f.c
 new file mode 100644
-index 000000000000..08dd67d30996
+index 0000000000000..08dd67d30996c
 --- /dev/null
 +++ b/drivers/net/usb/qmi_wwan_f.c
 @@ -0,0 +1,2537 @@

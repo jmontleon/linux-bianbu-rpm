@@ -1,4 +1,4 @@
-From 271218b5f9b0efaf079e08054f06921a3cceb9b0 Mon Sep 17 00:00:00 2001
+From da81065fa4c85c01d12d624cc1991df3cba22577 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 15 May 2024 10:26:42 +0800
 Subject: [PATCH 0680/1239] k1:rproc: increase initialization level of rproc
@@ -10,7 +10,7 @@ Change-Id: I5b736bbf3690be1126251fba33b233ee79ff2024
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 319497971f20..c92bdb462efa 100644
+index 319497971f206..c92bdb462efa8 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -669,7 +669,11 @@ static struct platform_driver spacemit_rproc_driver = {

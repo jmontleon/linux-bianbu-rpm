@@ -1,4 +1,4 @@
-From cd4619ebd4de764e074a5198856e99e445d13aaa Mon Sep 17 00:00:00 2001
+From f0979aef12858314110731f2e3a9897a6ac517cb Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 14 Mar 2024 18:00:45 +0800
 Subject: [PATCH 0575/1239] k1:qspi: support pm-runtime & system suspend
@@ -12,7 +12,7 @@ Change-Id: I9fa07eb61b81af1004e4be59a005405faee1e22f
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
 old mode 100755
 new mode 100644
-index 38024eca3c5e..b517b96cd999
+index 38024eca3c5e3..b517b96cd9996
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -1551,11 +1551,14 @@ static int k1x_qspi_probe(struct platform_device *pdev)

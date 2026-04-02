@@ -1,4 +1,4 @@
-From f075a86f2d7e7d49061f3ff6e96c132c242ddb77 Mon Sep 17 00:00:00 2001
+From 5f1d48ca507a2260a49cddcc7f6a5df9e76b1a7c Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 2 Jul 2024 11:51:52 +0800
 Subject: [PATCH 0802/1239] k1: modify wlan hostwake to pinctl
@@ -15,7 +15,7 @@ Change-Id: I0b57df8354713779446e0e2240632c6077405e6a
  7 files changed, 91 insertions(+), 27 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 2322b6e1b081..51eb7d02ce3b 100644
+index 2322b6e1b081e..51eb7d02ce3b9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -143,8 +143,11 @@ rf_pwrseq: rf-pwrseq {
@@ -64,7 +64,7 @@ index 2322b6e1b081..51eb7d02ce3b 100644
  		&pinctrl 79 GPIO_79 1
  		&pinctrl 90 GPIO_90 1
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 41ab67c26b6a..451de7cc0be8 100644
+index 41ab67c26b6ad..451de7cc0be81 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -147,8 +147,11 @@ rf_pwrseq: rf-pwrseq {
@@ -114,7 +114,7 @@ index 41ab67c26b6a..451de7cc0be8 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 79  GPIO_79  1
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 796786ea6a70..59601d1e0b4f 100644
+index 796786ea6a70a..59601d1e0b4f6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -147,8 +147,11 @@ rf_pwrseq: rf-pwrseq {
@@ -151,7 +151,7 @@ index 796786ea6a70..59601d1e0b4f 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 4aa0a52a2496..61a28b257c06 100644
+index 4aa0a52a2496c..61a28b257c063 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -147,8 +147,11 @@ rf_pwrseq: rf-pwrseq {
@@ -200,7 +200,7 @@ index 4aa0a52a2496..61a28b257c06 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index 32b4f0876ad3..d7be57021907 100644
+index 32b4f0876ad30..d7be57021907b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -148,7 +148,10 @@ rf_pwrseq: rf-pwrseq {
@@ -247,7 +247,7 @@ index 32b4f0876ad3..d7be57021907 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 380d75bda682..7a9796351c83 100644
+index 380d75bda6823..7a9796351c83c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -142,8 +142,11 @@ rf_pwrseq: rf-pwrseq {
@@ -296,7 +296,7 @@ index 380d75bda682..7a9796351c83 100644
  		&pinctrl 74  GPIO_74  1
  		&pinctrl 80  GPIO_80  4
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index b4f1c4ab9ec6..917638102a48 100644
+index b4f1c4ab9ec66..917638102a486 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -147,8 +147,11 @@ rf_pwrseq: rf-pwrseq {

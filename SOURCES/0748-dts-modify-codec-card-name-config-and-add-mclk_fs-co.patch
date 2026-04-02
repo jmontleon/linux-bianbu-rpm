@@ -1,4 +1,4 @@
-From ca252d743a51ab5acb46aa13a2ac2b029d0b3270 Mon Sep 17 00:00:00 2001
+From 8558322ab93bd9cdf637153c6396d573b78edd47 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Tue, 4 Jun 2024 11:24:02 +0800
 Subject: [PATCH 0748/1239] dts: modify codec card-name config and add mclk_fs
@@ -14,7 +14,7 @@ Change-Id: Iae98be03c6e91892b03fd759caedb0bf57c67e82
  5 files changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 599bf9f25906..2353b484a090 100644
+index 599bf9f25906e..2353b484a090d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2510,9 +2510,8 @@ simple-audio-card,codec {
@@ -29,7 +29,7 @@ index 599bf9f25906..2353b484a090 100644
  		status = "disabled";
  		spacemit,init-jack;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index fc56a8bc5415..41ab67c26b6a 100644
+index fc56a8bc5415f..41ab67c26b6ad 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -995,8 +995,10 @@ &sound_hdmi {
@@ -45,7 +45,7 @@ index fc56a8bc5415..41ab67c26b6a 100644
  		sound-dai = <&es8326>;
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 4fdb50bbe6bc..05a5da884939 100644
+index 4fdb50bbe6bcf..05a5da8849393 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -980,8 +980,10 @@ &sound_hdmi {
@@ -61,7 +61,7 @@ index 4fdb50bbe6bc..05a5da884939 100644
  		sound-dai = <&es8326>;
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 9dc8c0afd67c..7ca153e78218 100644
+index 9dc8c0afd67c3..7ca153e782185 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -778,8 +778,10 @@ &sound_hdmi {
@@ -77,7 +77,7 @@ index 9dc8c0afd67c..7ca153e78218 100644
  		sound-dai = <&es8326>;
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index d6f735945504..db98c0813574 100644
+index d6f7359455044..db98c0813574c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -762,8 +762,10 @@ &sound_hdmi {

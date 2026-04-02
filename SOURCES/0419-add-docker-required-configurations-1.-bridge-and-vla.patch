@@ -1,4 +1,4 @@
-From 1709b45d69fcd927edb8776b9340ea7de26d2d56 Mon Sep 17 00:00:00 2001
+From ba4bcb67907060abe303bdc6bea5ec5f6cffb7ef Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Wed, 24 Jan 2024 15:02:16 +0800
 Subject: [PATCH 0419/1239] add docker required configurations 1. bridge and
@@ -11,7 +11,7 @@ Change-Id: I565c5599876c6f9a97f6e97d0fa6262575230d94
  1 file changed, 156 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 5888595c87ce..a5216adbb39c 100644
+index 5888595c87ce1..a5216adbb39ca 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -9,11 +9,26 @@ CONFIG_PREEMPT=y

@@ -1,4 +1,4 @@
-From 0d606b1878204ed1ce58ea7258889e1b91905327 Mon Sep 17 00:00:00 2001
+From 4d41361d1d6df981aa2a4fecd0608cde64247c63 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Wed, 28 Jun 2023 18:56:30 +0800
 Subject: [PATCH 0081/1239] reset: add spinlock and mailbox reset for mcu
@@ -11,7 +11,7 @@ Change-Id: I45eb56aa411847227edf21b2d36c34e505752ee7
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index 354690dd4715..4c418c70165e 100755
+index 354690dd4715b..4c418c70165e2 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -193,6 +193,8 @@ static const struct k1pro_reset_signal
@@ -24,7 +24,7 @@ index 354690dd4715..4c418c70165e 100755
  };
  
 diff --git a/include/dt-bindings/reset/k1-pro-reset.h b/include/dt-bindings/reset/k1-pro-reset.h
-index aa7129489028..74e938ec6041 100755
+index aa71294890286..74e938ec6041f 100755
 --- a/include/dt-bindings/reset/k1-pro-reset.h
 +++ b/include/dt-bindings/reset/k1-pro-reset.h
 @@ -118,10 +118,12 @@

@@ -1,4 +1,4 @@
-From 2a085936fc4bcb6b3c6b4bca013fad1d49b81f9b Mon Sep 17 00:00:00 2001
+From ee947bcaf22440278a6b0a5710db705b38385eeb Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 13 Jul 2023 10:10:04 +0800
 Subject: [PATCH 0094/1239] scmi: enable scmi power domain protocol
@@ -10,7 +10,7 @@ Change-Id: I26d4e6cb66cc0bf8d65dea4da48f3729a7809672
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
-index 4156450781a4..ae50a1d6c116 100644
+index 4156450781a4b..ae50a1d6c116c 100644
 --- a/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/spacemit-scmi.dtsi
 @@ -53,8 +53,12 @@ regulator_devdummy: regulator@0 {
@@ -28,7 +28,7 @@ index 4156450781a4..ae50a1d6c116 100644
  	};
  };
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 4a94067d3eb9..94d931ed1557 100644
+index 4a94067d3eb93..94d931ed15576 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -29,6 +29,7 @@ CONFIG_NR_CPUS=4

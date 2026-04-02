@@ -1,4 +1,4 @@
-From 8127238aebd768c7690f32047eedc3e3f3324ba6 Mon Sep 17 00:00:00 2001
+From 2bd0ebe0d63014419e50ac53ddfb5754c1e8af0d Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 18 Apr 2024 12:04:50 +0800
 Subject: [PATCH 0624/1239] usb: spacemit_onboard_hub: support power management
@@ -10,7 +10,7 @@ Change-Id: Iee2e62c35b8502391e74d8fbec8f2b1f667aafe9
  2 files changed, 90 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
-index e63fcd90840f..522c7e75aa14 100644
+index e63fcd90840f2..522c7e75aa146 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.c
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -19,7 +19,7 @@
@@ -108,7 +108,7 @@ index e63fcd90840f..522c7e75aa14 100644
  };
  
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.h b/drivers/usb/misc/spacemit_onboard_hub.h
-index a59c80059dd4..dec341e17e1a 100644
+index a59c80059dd47..dec341e17e1a0 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.h
 +++ b/drivers/usb/misc/spacemit_onboard_hub.h
 @@ -20,6 +20,8 @@ struct spacemit_hub_priv {

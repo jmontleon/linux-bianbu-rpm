@@ -1,4 +1,4 @@
-From a4fa05acae8f96c5247e7e17ac324e0baf357ab7 Mon Sep 17 00:00:00 2001
+From b25c78394fd0c439a6c3a561a72a3c2c55f27a9b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:20:28 +0800
 Subject: [PATCH 0541/1239] mmc: sdhci-of-k1x: add tx delaycode attr for
@@ -10,7 +10,7 @@ Change-Id: I5bbfbcb4bd09cf2f9b5925a6b65995b42b8f67c8
  1 file changed, 28 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 762577c63db9..9588dca97a10 100644
+index 762577c63db96..9588dca97a10c 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1199,6 +1199,7 @@ static int spacemit_sdhci_execute_sw_tuning(struct sdhci_host *host, u32 opcode)

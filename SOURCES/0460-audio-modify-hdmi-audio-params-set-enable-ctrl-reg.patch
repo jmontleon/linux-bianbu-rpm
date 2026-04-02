@@ -1,4 +1,4 @@
-From 843bcceb44007645609fce6113932fdf16ec447a Mon Sep 17 00:00:00 2001
+From 51d60e4e62144f65679ea74ef7761a119df379b9 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 23 Feb 2024 10:52:57 +0800
 Subject: [PATCH 0460/1239] audio: modify hdmi audio params, set enable ctrl
@@ -12,7 +12,7 @@ Change-Id: I2652d0da2801f2c9d735937ed04189460e9b81a5
  3 files changed, 54 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index f53bba1ffb02..94b0883b27b9 100644
+index f53bba1ffb02b..94b0883b27b94 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -88,7 +88,23 @@ static struct platform_driver spacemit_snd_pdrv = {
@@ -40,7 +40,7 @@ index f53bba1ffb02..94b0883b27b9 100644
  /* Module information */
  MODULE_DESCRIPTION("SPACEMIT ASoC Machine Driver");
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 61e25f3e9f64..a7588fe9099a 100755
+index 61e25f3e9f643..a7588fe9099ac 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -110,9 +110,9 @@ static int spacemit_snd_dma_init(struct device *paraent, struct spacemit_snd_soc
@@ -104,7 +104,7 @@ index 61e25f3e9f64..a7588fe9099a 100755
  		return ret;
  
 diff --git a/sound/soc/spacemit/spacemit-snd-sspa.c b/sound/soc/spacemit/spacemit-snd-sspa.c
-index 74af804da309..a6562b2e52b5 100644
+index 74af804da309c..a6562b2e52b58 100644
 --- a/sound/soc/spacemit/spacemit-snd-sspa.c
 +++ b/sound/soc/spacemit/spacemit-snd-sspa.c
 @@ -39,13 +39,24 @@ struct sspa_priv {

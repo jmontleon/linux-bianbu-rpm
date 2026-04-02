@@ -1,4 +1,4 @@
-From a5d158cc67005d0752e786f8b844b4ace49f4ae2 Mon Sep 17 00:00:00 2001
+From cc153a1120f270f278da884fe1ba28829a503884 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 2 Apr 2024 11:29:24 +0800
 Subject: [PATCH 0578/1239] eth: support suspend and resume for pm
@@ -11,7 +11,7 @@ Change-Id: I35f181e8bca560d59579540bf2eec39699a4ab1e
  3 files changed, 45 insertions(+), 37 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 5684959d49b1..c21363603675 100644
+index 5684959d49b19..c213636036758 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1608,7 +1608,9 @@ eth0: ethernet@cac80000 {
@@ -37,7 +37,7 @@ index 5684959d49b1..c21363603675 100644
  			interconnect-names = "dma-mem";
  			status = "disabled";
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index 6f1bd85eaf62..210f5bc52cc6 100755
+index 6f1bd85eaf620..210f5bc52cc66 100755
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -29,7 +29,8 @@
@@ -222,7 +222,7 @@ index 6f1bd85eaf62..210f5bc52cc6 100755
  };
  
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.h b/drivers/net/ethernet/spacemit/k1x-emac.h
-index 41232ce1730d..fb74de9d5f4e 100755
+index 41232ce1730d2..fb74de9d5f4e5 100755
 --- a/drivers/net/ethernet/spacemit/k1x-emac.h
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.h
 @@ -679,7 +679,6 @@ struct emac_priv {

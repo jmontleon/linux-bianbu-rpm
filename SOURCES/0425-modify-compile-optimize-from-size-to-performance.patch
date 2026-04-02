@@ -1,4 +1,4 @@
-From 757ec2a021dc2871d41e44e478c4c162e13036a0 Mon Sep 17 00:00:00 2001
+From 3c4f3a10d1ab1cb99d0ac0eaeb2621136d834c68 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 26 Jan 2024 13:42:12 +0800
 Subject: [PATCH 0425/1239] modify compile optimize from size to performance
@@ -12,7 +12,7 @@ Change-Id: Idf7e475f16c6721a25631007a137c743a0abb645
  4 files changed, 4 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
-index 2f9ff03b60e8..ea07e698dca5 100644
+index 2f9ff03b60e87..ea07e698dca5e 100644
 --- a/arch/riscv/configs/k1-x_deb1_defconfig
 +++ b/arch/riscv/configs/k1-x_deb1_defconfig
 @@ -20,7 +20,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
@@ -24,7 +24,7 @@ index 2f9ff03b60e8..ea07e698dca5 100644
  # CONFIG_BUG is not set
  CONFIG_KALLSYMS_ALL=y
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 3751eba38d96..a8bb80232aae 100644
+index 3751eba38d96a..a8bb80232aae7 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -20,7 +20,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
@@ -36,7 +36,7 @@ index 3751eba38d96..a8bb80232aae 100644
  # CONFIG_BUG is not set
  CONFIG_KALLSYMS_ALL=y
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index fdf9956a3ec3..d6cf3df8fa65 100644
+index fdf9956a3ec39..d6cf3df8fa650 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -20,7 +20,6 @@ CONFIG_INITRAMFS_SOURCE="rootfs.cpio.gz"
@@ -48,7 +48,7 @@ index fdf9956a3ec3..d6cf3df8fa65 100644
  # CONFIG_BUG is not set
  CONFIG_KALLSYMS_ALL=y
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index a5216adbb39c..e73d8707cf95 100644
+index a5216adbb39ca..e73d8707cf953 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -35,7 +35,6 @@ CONFIG_BLK_DEV_INITRD=y

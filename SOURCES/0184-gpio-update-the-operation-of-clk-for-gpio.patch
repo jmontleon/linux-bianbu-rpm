@@ -1,4 +1,4 @@
-From a067caf45525accec5b2448792b80e70d5f728ac Mon Sep 17 00:00:00 2001
+From db5fa79d8b481284887916a8d1f2e9343943fde6 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 22 Nov 2023 15:45:50 +0800
 Subject: [PATCH 0184/1239] gpio: update the operation of clk for gpio
@@ -10,7 +10,7 @@ Change-Id: If5a50d10f10211387fe7db7af1fa3350f7a4b418
  2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 9e61cda44f5a..d2dc33006806 100644
+index 9e61cda44f5a9..d2dc330068066 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -650,6 +650,7 @@ gpio: gpio@d4019000 {
@@ -22,7 +22,7 @@ index 9e61cda44f5a..d2dc33006806 100644
  			interrupt-parent = <&intc>;
  
 diff --git a/drivers/gpio/gpio-k1x.c b/drivers/gpio/gpio-k1x.c
-index ab12b847fea1..d4609f679fed 100644
+index ab12b847fea1d..d4609f679fedf 100644
 --- a/drivers/gpio/gpio-k1x.c
 +++ b/drivers/gpio/gpio-k1x.c
 @@ -317,9 +317,8 @@ static int k1x_gpio_probe(struct platform_device *pdev)

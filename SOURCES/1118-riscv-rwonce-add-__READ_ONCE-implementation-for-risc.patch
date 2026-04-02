@@ -1,4 +1,4 @@
-From 7da68c08795caf7993586d21868eef60f7f768e9 Mon Sep 17 00:00:00 2001
+From 8ef3715e2ebee8e8de46d5c875bdf30d319ef42e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 14 Nov 2024 18:40:14 +0800
 Subject: [PATCH 1118/1239] riscv:rwonce: add __READ_ONCE implementation for
@@ -12,7 +12,7 @@ Change-Id: I6a0c54e2c5d425f53a57218f4dc59c25357c2877
  create mode 100644 arch/riscv/include/asm/rwonce.h
 
 diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 57e3f5d8a21b..6be43144b45c 100644
+index 57e3f5d8a21bc..6be43144b45c6 100644
 --- a/arch/riscv/Kconfig.socs
 +++ b/arch/riscv/Kconfig.socs
 @@ -156,6 +156,13 @@ config BIND_THREAD_TO_AICORES
@@ -31,7 +31,7 @@ index 57e3f5d8a21b..6be43144b45c 100644
  endmenu # "SoC selection"
 diff --git a/arch/riscv/include/asm/rwonce.h b/arch/riscv/include/asm/rwonce.h
 new file mode 100644
-index 000000000000..349b8792aedb
+index 0000000000000..349b8792aedb2
 --- /dev/null
 +++ b/arch/riscv/include/asm/rwonce.h
 @@ -0,0 +1,44 @@

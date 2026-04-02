@@ -1,4 +1,4 @@
-From aad5c55d81e74c3b72ff0dfd716b877614dd1339 Mon Sep 17 00:00:00 2001
+From d50563778e9ee8f64285cde04c3c5ef16844f1c8 Mon Sep 17 00:00:00 2001
 From: James Deng <james.deng@spacemit.com>
 Date: Wed, 21 Aug 2024 15:21:53 +0800
 Subject: [PATCH 0980/1239] arch:riscv:configs: Update k1_defconfig
@@ -11,7 +11,7 @@ Change-Id: If5f9dfe6a003d1c3e44fe3db0e0bc9f23a7db9d8
  1 file changed, 626 insertions(+), 135 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 26b0e298dc87..c015784a09b5 100644
+index 26b0e298dc879..c015784a09b5d 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -2,18 +2,24 @@ CONFIG_COMPILE_TEST=y

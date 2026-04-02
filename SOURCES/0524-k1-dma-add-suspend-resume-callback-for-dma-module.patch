@@ -1,4 +1,4 @@
-From 4626efcb090e63b0875a1404a1edc0b283ad6a02 Mon Sep 17 00:00:00 2001
+From aa361be2c6860e9de809f70999772000819463f3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 14 Mar 2024 10:45:17 +0800
 Subject: [PATCH 0524/1239] k1:dma: add suspend/resume callback for dma module
@@ -9,7 +9,7 @@ Change-Id: I5c66d5594de2f6146696fbb69667e6d3af03e95f
  1 file changed, 28 insertions(+)
 
 diff --git a/drivers/dma/mmp_pdma_k1x.c b/drivers/dma/mmp_pdma_k1x.c
-index 943a05f7b0a1..c8fd6668ac09 100644
+index 943a05f7b0a1a..c8fd6668ac094 100644
 --- a/drivers/dma/mmp_pdma_k1x.c
 +++ b/drivers/dma/mmp_pdma_k1x.c
 @@ -1610,9 +1610,37 @@ static const struct platform_device_id mmp_pdma_id_table[] = {

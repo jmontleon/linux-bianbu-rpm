@@ -1,4 +1,4 @@
-From c82d330a2db09ca9c8041c74a2a17bcd855c2a02 Mon Sep 17 00:00:00 2001
+From 2d26a8de1da7d662c132b647d848edab96ee9d3f Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 9 Nov 2024 17:01:08 +0800
 Subject: [PATCH 1112/1239] k1x:clear charger useless info
@@ -10,7 +10,7 @@ Change-Id: I120da9f3d74f121e99eef998cdf9c7db8ecbc678
  2 files changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/drivers/power/supply/sgm4154x_charger.c b/drivers/power/supply/sgm4154x_charger.c
-index 47586366abab..beb560de834a 100644
+index 47586366abab2..beb560de834a4 100644
 --- a/drivers/power/supply/sgm4154x_charger.c
 +++ b/drivers/power/supply/sgm4154x_charger.c
 @@ -711,7 +711,7 @@ static int sgm4154x_get_state(struct sgm4154x_device *sgm,
@@ -37,7 +37,7 @@ index 47586366abab..beb560de834a 100644
  }
  
 diff --git a/drivers/power/supply/sgm4154x_charger.h b/drivers/power/supply/sgm4154x_charger.h
-index 48130723d4f9..e0c1eeacea4d 100644
+index 48130723d4f92..e0c1eeacea4d3 100644
 --- a/drivers/power/supply/sgm4154x_charger.h
 +++ b/drivers/power/supply/sgm4154x_charger.h
 @@ -251,7 +251,6 @@ struct sgm4154x_state {

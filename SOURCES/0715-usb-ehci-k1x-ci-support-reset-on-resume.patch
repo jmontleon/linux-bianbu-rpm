@@ -1,4 +1,4 @@
-From 130a477eccb8906caceb9c4b882c66a329b6f862 Mon Sep 17 00:00:00 2001
+From 8848c274b8f5acb12600b20e6510273a181c927e Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 16:21:48 +0800
 Subject: [PATCH 0715/1239] usb: ehci-k1x-ci: support reset-on-resume
@@ -18,7 +18,7 @@ Change-Id: I11a9ded8b5cf323f13c2eacb0a4975c19f40992c
  10 files changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index c394ed224f02..5d921c85b07b 100644
+index c394ed224f026..5d921c85b07bd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -615,6 +615,7 @@ &usbphy {
@@ -38,7 +38,7 @@ index c394ed224f02..5d921c85b07b 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 685236365772..21641345482a 100644
+index 685236365772c..21641345482a6 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -630,6 +630,7 @@ &usbphy1 {
@@ -50,7 +50,7 @@ index 685236365772..21641345482a 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index a1199db2393f..8d1a9c365f63 100644
+index a1199db2393f6..8d1a9c365f634 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -780,6 +780,7 @@ &usbphy1 {
@@ -62,7 +62,7 @@ index a1199db2393f..8d1a9c365f63 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 49e5a9b61a31..33427ba984ba 100644
+index 49e5a9b61a31b..33427ba984bab 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -763,6 +763,7 @@ &usbphy1 {
@@ -74,7 +74,7 @@ index 49e5a9b61a31..33427ba984ba 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 1834f8734382..acacce49cdc5 100644
+index 1834f87343828..acacce49cdc58 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -736,6 +736,7 @@ &usbphy1 {
@@ -86,7 +86,7 @@ index 1834f8734382..acacce49cdc5 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 32f8f05437fa..fda758eb3b3d 100644
+index 32f8f05437faf..fda758eb3b3d7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -696,6 +696,7 @@ &udc {
@@ -106,7 +106,7 @@ index 32f8f05437fa..fda758eb3b3d 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 72a8d088d4d4..d2b130724e9e 100644
+index 72a8d088d4d49..d2b130724e9e9 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -660,6 +660,7 @@ &usbphy1 {
@@ -118,7 +118,7 @@ index 72a8d088d4d4..d2b130724e9e 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index c01092c1162d..c6eade59683d 100644
+index c01092c1162d3..c6eade59683da 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -623,6 +623,7 @@ &usbphy1 {
@@ -130,7 +130,7 @@ index c01092c1162d..c6eade59683d 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 3e608dc0bda7..170fa75ed9f6 100644
+index 3e608dc0bda71..170fa75ed9f63 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -506,6 +506,7 @@ &usbphy1 {
@@ -142,7 +142,7 @@ index 3e608dc0bda7..170fa75ed9f6 100644
  };
  
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index c8bcd7a7255c..57af956a24bd 100755
+index c8bcd7a7255ce..57af956a24bdb 100755
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -47,6 +47,7 @@ struct ehci_hcd_mv {

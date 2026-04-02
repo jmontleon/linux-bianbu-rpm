@@ -1,4 +1,4 @@
-From 208b13d72495b4b61b9a69df4e4a51e6f3abe667 Mon Sep 17 00:00:00 2001
+From f09f2e1f1c179e07e3cd9aefb9b454265031cebe Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 30 Jul 2024 13:42:17 +0800
 Subject: [PATCH 0910/1239] pcie: fix the bug that Samsung nvme ssd link
@@ -14,7 +14,7 @@ Change-Id: I15d0d9ea74ffb6b6fc7fbf4307c1d16252f800f0
  1 file changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index bc06bebcbed5..083a9ac82804 100644
+index bc06bebcbed5d..083a9ac82804d 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -469,7 +469,7 @@ void rterm_force(struct k1x_pcie *k1x, u32 pcie_rcal)

@@ -1,4 +1,4 @@
-From 2ddad2504180b794b944ee1d67f6482f3adaed65 Mon Sep 17 00:00:00 2001
+From f342befa09fa76d8befb1e0124a0080d93b7a46d Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 28 Mar 2024 21:48:09 +0800
 Subject: [PATCH 0554/1239] display: modify mipi dsi dpu bit clock
@@ -14,7 +14,7 @@ Change-Id: I4df65598b72a12d2d9e7db6cfca90a55cd2d8741
  6 files changed, 4 insertions(+), 13 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
-index 4bb5c4fa5db1..5af4c16848c6 100644
+index 4bb5c4fa5db17..5af4c16848c6b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 @@ -19,16 +19,6 @@ dpu_online2_dsi: port@c0340000 {
@@ -35,7 +35,7 @@ index 4bb5c4fa5db1..5af4c16848c6 100644
  			<&reset RESET_LCD_MCLK>,
  			<&reset RESET_LCD>,
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 30548c76455a..63b8f3faf8d5 100644
+index 30548c76455a2..63b8f3faf8d57 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -190,6 +190,7 @@ &pwm14 {
@@ -47,7 +47,7 @@ index 30548c76455a..63b8f3faf8d5 100644
  	vin-supply-names = "dsi_1v2";
  	status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index fb622e42c66d..dd7b38f614aa 100644
+index fb622e42c66d2..dd7b38f614aa4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -178,6 +178,7 @@ &pwm14 {
@@ -59,7 +59,7 @@ index fb622e42c66d..dd7b38f614aa 100644
  	vin-supply-names = "dsi_1v2";
  	status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 5c22ce29a472..9b1163279110 100644
+index 5c22ce29a4724..9b1163279110b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -151,6 +151,7 @@ &pwm1 {
@@ -71,7 +71,7 @@ index 5c22ce29a472..9b1163279110 100644
  	lcd_1v8-supply = <&ldo_15>;
  	dsi_1v2-supply = <&ldo_17>;
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
-index 6428088e8c1c..21988de03012 100644
+index 6428088e8c1ce..21988de030122 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_gx09inx101_mipi.dtsi
 @@ -26,7 +26,7 @@ lcd_gx09inx101_mipi: lcd_gx09inx101_mipi {
@@ -84,7 +84,7 @@ index 6428088e8c1c..21988de03012 100644
  		eotp-enable = <0>;
  		burst-mode = <2>;
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index c5bd9bbdcc02..9d216889d242 100644
+index c5bd9bbdcc02a..9d216889d2420 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -496,8 +496,6 @@ static int dpu_enable_clocks(struct spacemit_dpu *dpu)

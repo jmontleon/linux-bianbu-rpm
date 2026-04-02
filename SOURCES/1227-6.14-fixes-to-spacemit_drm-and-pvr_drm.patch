@@ -1,4 +1,4 @@
-From fe09e23943604090fedfcd0aaca654cf89b2533f Mon Sep 17 00:00:00 2001
+From a5ee9486abda5511902d5d3fc834fae8a25cc234 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Mon, 3 Feb 2025 13:41:26 -0500
 Subject: [PATCH 1227/1239] 6.14 fixes to spacemit_drm and pvr_drm
@@ -9,7 +9,7 @@ Subject: [PATCH 1227/1239] 6.14 fixes to spacemit_drm and pvr_drm
  2 files changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/pvr_drm.c b/drivers/gpu/drm/img-rogue/pvr_drm.c
-index d2d732c09911..babb592921ab 100644
+index d2d732c099112..babb592921abf 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_drm.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_drm.c
 @@ -78,7 +78,6 @@
@@ -29,7 +29,7 @@ index d2d732c09911..babb592921ab 100644
  	.minor			= PVRVERSION_MIN,
  	.patchlevel		= PVRVERSION_BUILD,
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index f408f85da95a..0d2e79b2789b 100644
+index f408f85da95a8..0d2e79b2789b3 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -13,7 +13,7 @@

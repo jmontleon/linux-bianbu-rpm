@@ -1,4 +1,4 @@
-From c65af1625bd9494597c7a276ec91af5a1f947cb2 Mon Sep 17 00:00:00 2001
+From 6785d099f4c5d5cb0abf664e7b5f3f718367ca5b Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Tue, 11 Jun 2024 17:37:55 +0800
 Subject: [PATCH 0723/1239] k1:jpu: fix compile error on 6.6
@@ -9,7 +9,7 @@ Change-Id: I15837459f054b4a5f316ebc22c725959b35d8e18
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
-index 93dc44d82449..8594854857ff 100644
+index 93dc44d824496..8594854857ff7 100644
 --- a/drivers/soc/spacemit/jpu/jpu.c
 +++ b/drivers/soc/spacemit/jpu/jpu.c
 @@ -1279,7 +1279,7 @@ static int jpu_map_to_register(struct file *fp, struct vm_area_struct *vm)

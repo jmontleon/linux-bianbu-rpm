@@ -1,4 +1,4 @@
-From 9dd04425bc723403ebb6d950ecad032ed6e5b1c3 Mon Sep 17 00:00:00 2001
+From 7ce2751b81b08c169e873ff288731b8a2b31defa Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Thu, 9 May 2024 09:55:48 +0800
 Subject: [PATCH 0659/1239] camera: switch unknow ioctl print level to warning
@@ -10,7 +10,7 @@ Change-Id: I8751680397314ebc86551ccaf187a464903ea416
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.c b/drivers/media/platform/spacemit/camera/vi/subdev.c
-index 5602a8e7b373..2280bd21ebe3 100755
+index 5602a8e7b3735..2280bd21ebe34 100755
 --- a/drivers/media/platform/spacemit/camera/vi/subdev.c
 +++ b/drivers/media/platform/spacemit/camera/vi/subdev.c
 @@ -159,7 +159,7 @@ long spm_subdev_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
@@ -23,7 +23,7 @@ index 5602a8e7b373..2280bd21ebe3 100755
  	}
  	return 0;
 diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.c b/drivers/media/platform/spacemit/camera/vi/vdev.c
-index fb54e4018034..c38658c1bf1c 100755
+index fb54e40180342..c38658c1bf1ca 100755
 --- a/drivers/media/platform/spacemit/camera/vi/vdev.c
 +++ b/drivers/media/platform/spacemit/camera/vi/vdev.c
 @@ -1610,7 +1610,7 @@ static long spm_vdev_vidioc_default(struct file *file,

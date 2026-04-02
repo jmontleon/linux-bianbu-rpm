@@ -1,4 +1,4 @@
-From ad4fce719dc6e81afc86dea9571bb30138a3b4f5 Mon Sep 17 00:00:00 2001
+From 809ecdf29911cf9e109dabb7a41aa3071c088761 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:18:40 +0800
 Subject: [PATCH 1186/1239] usb: gadget: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: Ia64f55355194ef621c11ed8dad6e88459bfb4f1e
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
-index 629f7bbc7eeb..85960a6505ce 100644
+index 629f7bbc7eeb8..85960a6505ce9 100644
 --- a/drivers/usb/gadget/udc/k1x_ci_udc.h
 +++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
 @@ -334,17 +334,17 @@ struct mv_dtd {

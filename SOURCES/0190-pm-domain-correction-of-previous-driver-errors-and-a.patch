@@ -1,4 +1,4 @@
-From 2360bc77703b45969e01a557235a31507ed94050 Mon Sep 17 00:00:00 2001
+From 1be6c2b7d0ba0aba50fb739b0da6606f617c9434 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 24 Nov 2023 16:20:40 +0800
 Subject: [PATCH 0190/1239] pm-domain: correction of previous driver errors and
@@ -19,7 +19,7 @@ Change-Id: I8c008d414a95b2a0e043e9c9a121537737a348ca
  create mode 100644 include/dt-bindings/pmu/k1x_pmu.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi b/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi
-index fbbc575a9eb6..319c1247ea3d 100644
+index fbbc575a9eb65..319c1247ea3d1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1x_pm_domain.dtsi
 @@ -21,7 +21,7 @@ power: power-controller {
@@ -141,7 +141,7 @@ index fbbc575a9eb6..319c1247ea3d 100644
  	};
  };
 diff --git a/drivers/soc/spacemit/pm_domain/pm_domain.c b/drivers/soc/spacemit/pm_domain/pm_domain.c
-index b70d97678ede..4d2690553b9a 100644
+index b70d97678edeb..4d2690553b9ad 100644
 --- a/drivers/soc/spacemit/pm_domain/pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/pm_domain.c
 @@ -19,8 +19,10 @@
@@ -483,7 +483,7 @@ index b70d97678ede..4d2690553b9a 100644
 +core_initcall(spacemit_pm_domain_drv_register);
 diff --git a/include/dt-bindings/pmu/k1x_pmu.h b/include/dt-bindings/pmu/k1x_pmu.h
 new file mode 100644
-index 000000000000..4ca807c65713
+index 0000000000000..4ca807c65713c
 --- /dev/null
 +++ b/include/dt-bindings/pmu/k1x_pmu.h
 @@ -0,0 +1,13 @@

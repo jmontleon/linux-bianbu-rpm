@@ -1,4 +1,4 @@
-From 8b8b64f378ad4e416121ddc3c1fb69db6ee7b922 Mon Sep 17 00:00:00 2001
+From 52aadc8b4e1f64cd37cb509bc31a8f2904cb8e1d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Sun, 7 Apr 2024 11:54:52 +0800
 Subject: [PATCH 0583/1239] reset: add audio resets
@@ -11,7 +11,7 @@ Change-Id: If2c2fae606b869f1c6c13bc9f4cf67f05a2e7b3e
  3 files changed, 26 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d52f07c46480..e62889b9c063 100644
+index d52f07c464800..e62889b9c063d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -609,8 +609,9 @@ reset: reset-controller@d4050000 {
@@ -27,7 +27,7 @@ index d52f07c46480..e62889b9c063 100644
  			status = "okay";
  		};
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 58780258dc41..14095c381603 100644
+index 58780258dc414..14095c381603b 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -127,6 +127,10 @@
@@ -100,7 +100,7 @@ index 58780258dc41..14095c381603 100644
  
  	reset->lock = &g_cru_lock;
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index d8074e07e619..ea82147027cf 100644
+index d8074e07e6192..ea82147027cf0 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -112,6 +112,8 @@

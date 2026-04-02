@@ -1,4 +1,4 @@
-From de8fd2accefaaa0274ad577b22fced0875608fc0 Mon Sep 17 00:00:00 2001
+From ff1e1f3535cc15799bdbb72f8267e2737fc633f5 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 24 Oct 2024 15:03:41 +0800
 Subject: [PATCH 1053/1239] jpu: Fix dma_buf warning with enabled lockdep
@@ -9,7 +9,7 @@ Change-Id: I5dafe87e9fed918c9274cc9c726780e581b6a3af
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
-index c57548c4974d..7106f79978c8 100644
+index c57548c4974d4..7106f79978c8d 100644
 --- a/drivers/soc/spacemit/jpu/jpu.c
 +++ b/drivers/soc/spacemit/jpu/jpu.c
 @@ -658,7 +658,7 @@ static dma_addr_t get_addr_from_fd(struct jpu_device *jpu_dev, int fd,

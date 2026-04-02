@@ -1,4 +1,4 @@
-From cc8c1d384c77309c42f243bdbf29abadf17c5ee8 Mon Sep 17 00:00:00 2001
+From 097796c7d3a4ae31c0eed52e083a320227d42037 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 13 Aug 2024 10:06:32 +0800
 Subject: [PATCH 0932/1239] k1x:flexcan do ram init by iowrite32 instead of
@@ -10,7 +10,7 @@ Change-Id: I5384d5564246be1412154005a22e6b2905c2ece6
  1 file changed, 46 insertions(+)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 23640d7c7552..64edb781db80 100644
+index 23640d7c75528..64edb781db80c 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -307,7 +307,9 @@ struct instance_data {

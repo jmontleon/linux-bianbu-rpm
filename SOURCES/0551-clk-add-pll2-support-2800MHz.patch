@@ -1,4 +1,4 @@
-From 327fb13921cee6ac8bfc2997c31091243ee80fab Mon Sep 17 00:00:00 2001
+From bb70d8bedde8ee1719557f3bf45ee1d575fc6717 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Thu, 28 Mar 2024 10:47:52 +0800
 Subject: [PATCH 0551/1239] clk: add pll2 support 2800MHz
@@ -9,7 +9,7 @@ Change-Id: Ic7966768f15a31fccb89f13472ab31ed88aa2c48
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index e70933692406..d4370c4dcdda 100755
+index e709336924063..d4370c4dcdda9 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -172,6 +172,7 @@ static const struct ccu_pll_rate_tbl pll2_rate_tbl[] = {

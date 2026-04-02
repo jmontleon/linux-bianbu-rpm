@@ -1,4 +1,4 @@
-From f126633cb7ac5fb38380cc8fe1907a3adbd30d37 Mon Sep 17 00:00:00 2001
+From bace0965afa95716b94b9d9644f125a09fb1b71a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 28 Feb 2024 14:50:58 +0800
 Subject: [PATCH 0471/1239] eeprom/at24: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: If214581d7f9e297f12ed76e51a5879e3cc854634
  1 file changed, 6 deletions(-)
 
 diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 3e234bc87a98..79f518d7083e 100644
+index 3e234bc87a982..79f518d7083ed 100644
 --- a/drivers/misc/eeprom/at24.c
 +++ b/drivers/misc/eeprom/at24.c
 @@ -799,17 +799,11 @@ static void at24_remove(struct i2c_client *client)

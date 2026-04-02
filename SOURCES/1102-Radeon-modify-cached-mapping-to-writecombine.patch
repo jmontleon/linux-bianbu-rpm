@@ -1,4 +1,4 @@
-From 8a3abe28dc6eaec8e1b673ff24a755c4a506fe83 Mon Sep 17 00:00:00 2001
+From ad2c18b6d7d9595a1bd88bebd2f0dff6a549e627 Mon Sep 17 00:00:00 2001
 From: liyeshan <yeshan.li@spacemit.com>
 Date: Thu, 7 Nov 2024 21:52:42 +0800
 Subject: [PATCH 1102/1239] Radeon: modify cached mapping to writecombine
@@ -10,7 +10,7 @@ Change-Id: Ib80ff1fa4d62bc3794ec1e2407608f908d6317d5
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-index 616d25c8c2de..4630cab5541d 100644
+index 616d25c8c2de7..4630cab5541d0 100644
 --- a/drivers/gpu/drm/radeon/radeon_ttm.c
 +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
 @@ -503,7 +503,7 @@ static struct ttm_tt *radeon_ttm_tt_create(struct ttm_buffer_object *bo,
@@ -23,7 +23,7 @@ index 616d25c8c2de..4630cab5541d 100644
  		kfree(gtt);
  		return NULL;
 diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
-index b3fffe7b5062..1319178edf03 100644
+index b3fffe7b5062a..1319178edf03e 100644
 --- a/drivers/gpu/drm/ttm/ttm_module.c
 +++ b/drivers/gpu/drm/ttm/ttm_module.c
 @@ -74,7 +74,8 @@ pgprot_t ttm_prot_from_caching(enum ttm_caching caching, pgprot_t tmp)

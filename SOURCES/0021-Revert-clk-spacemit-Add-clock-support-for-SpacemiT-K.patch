@@ -1,4 +1,4 @@
-From 2e4219faba457bf2962de6bd02c4230eecc478c7 Mon Sep 17 00:00:00 2001
+From 33ace2821b0608d34131ec7f5880e3c070551914 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 8 Jun 2025 19:19:38 -0400
 Subject: [PATCH 0021/1239] Revert "clk: spacemit: Add clock support for
@@ -31,7 +31,7 @@ This reverts commit 1b72c59db0add8e47fa116b21f78ed0b09a264f3.
  delete mode 100644 drivers/clk/spacemit/ccu_pll.h
 
 diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 3a1611008e48..358008f616f1 100644
+index 3a1611008e48e..358008f616f19 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
 @@ -536,7 +536,6 @@ source "drivers/clk/samsung/Kconfig"
@@ -43,7 +43,7 @@ index 3a1611008e48..358008f616f1 100644
  source "drivers/clk/starfive/Kconfig"
  source "drivers/clk/sunxi/Kconfig"
 diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 61ec08404442..480a91811789 100644
+index 61ec08404442b..480a918117896 100644
 --- a/drivers/clk/Makefile
 +++ b/drivers/clk/Makefile
 @@ -147,7 +147,6 @@ obj-$(CONFIG_COMMON_CLK_SAMSUNG)	+= samsung/
@@ -56,7 +56,7 @@ index 61ec08404442..480a91811789 100644
  obj-$(CONFIG_ARCH_STI)			+= st/
 diff --git a/drivers/clk/spacemit/Kconfig b/drivers/clk/spacemit/Kconfig
 deleted file mode 100644
-index 4c4df845b3cb..000000000000
+index 4c4df845b3cb2..0000000000000
 --- a/drivers/clk/spacemit/Kconfig
 +++ /dev/null
 @@ -1,18 +0,0 @@
@@ -80,7 +80,7 @@ index 4c4df845b3cb..000000000000
 -endif
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
 deleted file mode 100644
-index 5ec6da61db98..000000000000
+index 5ec6da61db98e..0000000000000
 --- a/drivers/clk/spacemit/Makefile
 +++ /dev/null
 @@ -1,5 +0,0 @@
@@ -91,7 +91,7 @@ index 5ec6da61db98..000000000000
 -spacemit-ccu-k1-y		+= ccu-k1.o
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
 deleted file mode 100644
-index 8a0dd8146dbd..000000000000
+index 8a0dd8146dbd5..0000000000000
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ /dev/null
 @@ -1,1154 +0,0 @@
@@ -1251,7 +1251,7 @@ index 8a0dd8146dbd..000000000000
 -MODULE_LICENSE("GPL");
 diff --git a/drivers/clk/spacemit/ccu_common.h b/drivers/clk/spacemit/ccu_common.h
 deleted file mode 100644
-index da72f3836e0b..000000000000
+index da72f3836e0b5..0000000000000
 --- a/drivers/clk/spacemit/ccu_common.h
 +++ /dev/null
 @@ -1,48 +0,0 @@
@@ -1305,7 +1305,7 @@ index da72f3836e0b..000000000000
 -#endif /* _CCU_COMMON_H_ */
 diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
 deleted file mode 100644
-index be311b045698..000000000000
+index be311b045698e..0000000000000
 --- a/drivers/clk/spacemit/ccu_ddn.c
 +++ /dev/null
 @@ -1,83 +0,0 @@
@@ -1394,7 +1394,7 @@ index be311b045698..000000000000
 -};
 diff --git a/drivers/clk/spacemit/ccu_ddn.h b/drivers/clk/spacemit/ccu_ddn.h
 deleted file mode 100644
-index a52fabe77d62..000000000000
+index a52fabe77d62e..0000000000000
 --- a/drivers/clk/spacemit/ccu_ddn.h
 +++ /dev/null
 @@ -1,48 +0,0 @@
@@ -1448,7 +1448,7 @@ index a52fabe77d62..000000000000
 -#endif
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
 deleted file mode 100644
-index 9b852aa61f78..000000000000
+index 9b852aa61f78a..0000000000000
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ /dev/null
 @@ -1,268 +0,0 @@
@@ -1722,7 +1722,7 @@ index 9b852aa61f78..000000000000
 -};
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
 deleted file mode 100644
-index 51d19f5d6aac..000000000000
+index 51d19f5d6aacb..0000000000000
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ /dev/null
 @@ -1,218 +0,0 @@
@@ -1946,7 +1946,7 @@ index 51d19f5d6aac..000000000000
 -#endif /* _CCU_DIV_H_ */
 diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
 deleted file mode 100644
-index 4427dcfbbb97..000000000000
+index 4427dcfbbb97f..0000000000000
 --- a/drivers/clk/spacemit/ccu_pll.c
 +++ /dev/null
 @@ -1,157 +0,0 @@
@@ -2109,7 +2109,7 @@ index 4427dcfbbb97..000000000000
 -};
 diff --git a/drivers/clk/spacemit/ccu_pll.h b/drivers/clk/spacemit/ccu_pll.h
 deleted file mode 100644
-index 0592f4c3068c..000000000000
+index 0592f4c3068c7..0000000000000
 --- a/drivers/clk/spacemit/ccu_pll.h
 +++ /dev/null
 @@ -1,86 +0,0 @@

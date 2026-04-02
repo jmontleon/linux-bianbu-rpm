@@ -1,4 +1,4 @@
-From 96283ba715ce2f0a2efca4156d70e1954e686f7c Mon Sep 17 00:00:00 2001
+From 66386ea4bd1aabf0ef01caa2bb4c2c9ff66675b5 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 3 Jan 2024 16:50:38 +0800
 Subject: [PATCH 0325/1239] pcie: adding dram_range1 for pcie0/pcie1/pci2
@@ -9,7 +9,7 @@ Change-Id: I0ff4c17acc51672a602493fc0a774db9d61f067d
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 1368d421829e..6d8703051f97 100644
+index 1368d421829e5..6d8703051f978 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1628,6 +1628,8 @@ pcie0_rc: pcie@ca000000 {

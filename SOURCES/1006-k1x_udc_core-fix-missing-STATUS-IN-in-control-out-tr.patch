@@ -1,4 +1,4 @@
-From d7491a8cb32fafcb81cbcd55f76cf3d115efb41d Mon Sep 17 00:00:00 2001
+From e1bb1da0d2150b054c7ece7956e40932743a9708 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 29 Aug 2024 18:40:43 +0800
 Subject: [PATCH 1006/1239] k1x_udc_core: fix missing STATUS IN in control out
@@ -17,7 +17,7 @@ Change-Id: Ic23b286507af4496e2d11ce8b139906feb32efc0
  1 file changed, 4 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index dae5be9edbc3..f05ef390979f 100644
+index dae5be9edbc36..f05ef390979f6 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -839,10 +839,6 @@ mv_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)

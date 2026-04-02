@@ -1,4 +1,4 @@
-From f43032fafde7a776abf39cfcbe41e915c673e4be Mon Sep 17 00:00:00 2001
+From e862d17f53bcceff294146474dd4bf3eacd5f4b4 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 27 Dec 2023 17:23:53 +0800
 Subject: [PATCH 0286/1239] mmc: sdhci-of-k1x: update sdio scan interface
@@ -9,7 +9,7 @@ Change-Id: Ib9723ebf583d02306b67ed0a532d1dc4f40d468a
  1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 1c69fd41720a..a3d27cc542b8 100644
+index 1c69fd41720a1..a3d27cc542b87 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -337,10 +337,20 @@ static void spacemit_save_sdhci_regs(struct sdhci_host *host, u32 cmd)

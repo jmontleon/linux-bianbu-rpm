@@ -1,4 +1,4 @@
-From 4a2839e5b891c58fffceaa1cfe56299071d07f13 Mon Sep 17 00:00:00 2001
+From e971d31e586d47fbe17eaa460128c1b024c4c126 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 26 Feb 2026 21:36:34 -0500
 Subject: [PATCH 0004/1239] Revert "clk: spacemit: Respect Kconfig setting when
@@ -16,7 +16,7 @@ This reverts commit e9ed7237b8249227943c5d15240b36bdcad26602.
  delete mode 100644 drivers/clk/spacemit/ccu_common.c
 
 diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
-index ad2bf315109b..5ec6da61db98 100644
+index ad2bf315109b8..5ec6da61db98e 100644
 --- a/drivers/clk/spacemit/Makefile
 +++ b/drivers/clk/spacemit/Makefile
 @@ -1,10 +1,5 @@
@@ -33,7 +33,7 @@ index ad2bf315109b..5ec6da61db98 100644
 +spacemit-ccu-k1-y		= ccu_pll.o ccu_mix.o ccu_ddn.o
  spacemit-ccu-k1-y		+= ccu-k1.o
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 01d9485b615d..4761bc1e3b6e 100644
+index 01d9485b615d3..4761bc1e3b6e6 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -1204,7 +1204,6 @@ static struct platform_driver k1_ccu_driver = {
@@ -46,7 +46,7 @@ index 01d9485b615d..4761bc1e3b6e 100644
  MODULE_LICENSE("GPL");
 diff --git a/drivers/clk/spacemit/ccu_common.c b/drivers/clk/spacemit/ccu_common.c
 deleted file mode 100644
-index 4412c4104dab..000000000000
+index 4412c4104dabb..0000000000000
 --- a/drivers/clk/spacemit/ccu_common.c
 +++ /dev/null
 @@ -1,6 +0,0 @@
@@ -57,7 +57,7 @@ index 4412c4104dab..000000000000
 -MODULE_DESCRIPTION("SpacemiT CCU common clock driver");
 -MODULE_LICENSE("GPL");
 diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
-index b5540e0781ff..5b16e273bee5 100644
+index b5540e0781ffa..5b16e273bee5b 100644
 --- a/drivers/clk/spacemit/ccu_ddn.c
 +++ b/drivers/clk/spacemit/ccu_ddn.c
 @@ -84,4 +84,3 @@ const struct clk_ops spacemit_ccu_ddn_ops = {
@@ -66,7 +66,7 @@ index b5540e0781ff..5b16e273bee5 100644
  };
 -EXPORT_SYMBOL_NS_GPL(spacemit_ccu_ddn_ops, "CLK_SPACEMIT");
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 67f8b12b4f5b..7b7990875372 100644
+index 67f8b12b4f5b7..7b79908753723 100644
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -198,28 +198,24 @@ const struct clk_ops spacemit_ccu_gate_ops = {
@@ -136,7 +136,7 @@ index 67f8b12b4f5b..7b7990875372 100644
  };
 -EXPORT_SYMBOL_NS_GPL(spacemit_ccu_mux_div_ops, "CLK_SPACEMIT");
 diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
-index 76d0244873d8..d92f0dae65a4 100644
+index 76d0244873d87..d92f0dae65a49 100644
 --- a/drivers/clk/spacemit/ccu_pll.c
 +++ b/drivers/clk/spacemit/ccu_pll.c
 @@ -157,4 +157,3 @@ const struct clk_ops spacemit_ccu_pll_ops = {

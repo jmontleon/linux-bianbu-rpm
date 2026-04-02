@@ -1,4 +1,4 @@
-From 2200f163c771056a4fffd91d583c5d69bb1d5b6a Mon Sep 17 00:00:00 2001
+From b5e5a281e00c8b83d2773ce9565cef7e3b9ca986 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 12 Oct 2023 19:24:26 +0800
 Subject: [PATCH 0157/1239] qspi: adding driver for k1x qspi controller
@@ -13,7 +13,7 @@ Change-Id: I387f8c5823bd9d0d10206bd771c5f1663fc35bab
  create mode 100755 drivers/spi/spi-k1x-qspi.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d55106762211..cade7cecf55c 100644
+index d55106762211a..cade7cecf55c8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -317,7 +317,7 @@ pdma0: pdma@d4000000 {
@@ -58,7 +58,7 @@ index d55106762211..cade7cecf55c 100644
  			compatible = "spacemit,k1-x-tcm";
  			reg = <0x0 0xd8000000 0x0 0x80000>;
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 7d77b5df4d9c..b3c922abca60 100644
+index 7d77b5df4d9cd..b3c922abca601 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -352,6 +352,14 @@ config SPI_DESIGNWARE_EXT
@@ -77,7 +77,7 @@ index 7d77b5df4d9c..b3c922abca60 100644
  	tristate "DesignWare SPI controller core support"
  	imply SPI_MEM
 diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 11b7aed5b59b..d8c77fc3ca6c 100644
+index 11b7aed5b59bb..d8c77fc3ca6cc 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
 @@ -50,6 +50,7 @@ obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
@@ -90,7 +90,7 @@ index 11b7aed5b59b..d8c77fc3ca6c 100644
  spi-dw-$(CONFIG_SPI_DW_DMA)		+= spi-dw-dma.o
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
 new file mode 100755
-index 000000000000..781f8bf91165
+index 0000000000000..781f8bf911652
 --- /dev/null
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -0,0 +1,1778 @@

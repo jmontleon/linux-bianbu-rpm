@@ -1,4 +1,4 @@
-From 596aef260e6db7e2b94d85ce0c207ae705288d31 Mon Sep 17 00:00:00 2001
+From bc70071efa9614b6db41f375e4807347973f96ab Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 29 Jun 2023 20:33:35 +0800
 Subject: [PATCH 0089/1239] vpu: remove severity and drain file node for probe
@@ -11,7 +11,7 @@ Change-Id: I13b2dec7297900c0e89ec789dc22f5e363b13c03
  2 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
-index ae84b0b5f5a4..da602881b63f 100755
+index ae84b0b5f5a48..da602881b63fa 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_v4l2_buffer.c
 @@ -326,6 +326,7 @@ static int update_v4l2_bytesused(struct mvx_v4l2_buffer *vbuf)
@@ -23,7 +23,7 @@ index ae84b0b5f5a4..da602881b63f 100755
  
  	return 0;
 diff --git a/drivers/media/vpu/mvx_log.c b/drivers/media/vpu/mvx_log.c
-index 5f095b55b90f..a6f36ab71fbf 100755
+index 5f095b55b90fa..a6f36ab71fbf2 100755
 --- a/drivers/media/vpu/mvx_log.c
 +++ b/drivers/media/vpu/mvx_log.c
 @@ -900,24 +900,24 @@ int mvx_log_group_add(struct mvx_log *log,

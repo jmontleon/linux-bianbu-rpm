@@ -1,4 +1,4 @@
-From df94902f18a8078bfba86b9188981656fcda15c2 Mon Sep 17 00:00:00 2001
+From 430b6340569448acbe68365a1af7708bf5226c59 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 30 Apr 2024 14:30:28 +0800
 Subject: [PATCH 0647/1239] k1x:support x60 operate can-controller in rcpu
@@ -9,7 +9,7 @@ Change-Id: Ibeafb98c6cb8e7ee39710bb2d588b682bbd2c788
  1 file changed, 121 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 5fb1bf05c246..3e5e954ad8e6 100644
+index 5fb1bf05c2460..3e5e954ad8e65 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -34,9 +34,17 @@

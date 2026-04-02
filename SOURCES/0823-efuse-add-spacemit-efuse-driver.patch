@@ -1,4 +1,4 @@
-From 3d66c72bb78a06787a38f3cae06ea2f0b93b0a2b Mon Sep 17 00:00:00 2001
+From 6fbf3737290237099a9003d6194abf72858b63d6 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 4 Jul 2024 12:41:43 +0800
 Subject: [PATCH 0823/1239] efuse: add spacemit efuse driver
@@ -15,7 +15,7 @@ Change-Id: Id880a5bf36fb4093eb55e2edc17eba6fbf4205ee
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi
 new file mode 100644
-index 000000000000..5aee36ef11f6
+index 0000000000000..5aee36ef11f64
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-efuse.dtsi
 @@ -0,0 +1,52 @@
@@ -72,7 +72,7 @@ index 000000000000..5aee36ef11f6
 +};
 +
 diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 11b098705ec6..0688f820d14e 100644
+index 11b098705ec62..0688f820d14e6 100644
 --- a/drivers/nvmem/Kconfig
 +++ b/drivers/nvmem/Kconfig
 @@ -356,6 +356,16 @@ config NVMEM_SNVS_LPGPR
@@ -93,7 +93,7 @@ index 11b098705ec6..0688f820d14e 100644
  	tristate "SPMI SDAM Support"
  	depends on SPMI
 diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 70a4464dcb1e..db83a5495f78 100644
+index 70a4464dcb1e2..db83a5495f788 100644
 --- a/drivers/nvmem/Makefile
 +++ b/drivers/nvmem/Makefile
 @@ -70,6 +70,8 @@ obj-$(CONFIG_NVMEM_SC27XX_EFUSE)	+= nvmem-sc27xx-efuse.o
@@ -107,7 +107,7 @@ index 70a4464dcb1e..db83a5495f78 100644
  obj-$(CONFIG_NVMEM_SPRD_EFUSE)		+= nvmem_sprd_efuse.o
 diff --git a/drivers/nvmem/spacemit-efuse.c b/drivers/nvmem/spacemit-efuse.c
 new file mode 100644
-index 000000000000..782dbf02a8ff
+index 0000000000000..782dbf02a8ffa
 --- /dev/null
 +++ b/drivers/nvmem/spacemit-efuse.c
 @@ -0,0 +1,172 @@

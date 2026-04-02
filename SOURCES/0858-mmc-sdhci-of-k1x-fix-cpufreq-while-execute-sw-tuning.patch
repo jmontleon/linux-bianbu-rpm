@@ -1,4 +1,4 @@
-From 66604b28efc4f81fc7860a0c2e8862df1819c867 Mon Sep 17 00:00:00 2001
+From ba3d4e03605f735bef5a223a89acb99cddab5642 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 24 Jul 2024 11:53:15 +0800
 Subject: [PATCH 0858/1239] mmc: sdhci-of-k1x: fix cpufreq while execute sw
@@ -11,7 +11,7 @@ Change-Id: I4030f004b07d173ad64ed5b910c6be820f978952
  2 files changed, 36 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 6fc6555b4c75..fc9d388d637b 100644
+index 6fc6555b4c75e..fc9d388d637b2 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -31,6 +31,7 @@
@@ -100,7 +100,7 @@ index 6fc6555b4c75..fc9d388d637b 100644
  }
  
 diff --git a/include/linux/platform_data/k1x_sdhci.h b/include/linux/platform_data/k1x_sdhci.h
-index 96ba444ada34..043b3d732089 100644
+index 96ba444ada340..043b3d732089a 100644
 --- a/include/linux/platform_data/k1x_sdhci.h
 +++ b/include/linux/platform_data/k1x_sdhci.h
 @@ -90,6 +90,7 @@ struct k1x_sdhci_platdata {

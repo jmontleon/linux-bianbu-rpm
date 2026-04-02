@@ -1,4 +1,4 @@
-From 70f2cf30c7dc42cae8917d50638bf0a9c4407311 Mon Sep 17 00:00:00 2001
+From 616b1a5fb31a7c627e3c63d6d421bbfd2032d6cd Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Fri, 5 Jan 2024 17:04:28 +0800
 Subject: [PATCH 0346/1239] pcie: Optimize phy initialization code for k1x pcie
@@ -10,7 +10,7 @@ Change-Id: Ic26498de34e792ae5cd895ff0adfbf879e2347a3
  1 file changed, 77 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 7741fd65f5b3..ffbb316ed864 100755
+index 7741fd65f5b33..ffbb316ed8646 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -244,7 +244,7 @@ static inline void k1x_pcie_phy0_reg_writel(struct k1x_pcie *pcie, u32 offset,

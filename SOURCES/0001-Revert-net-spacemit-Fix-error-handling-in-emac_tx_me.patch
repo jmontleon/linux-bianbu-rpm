@@ -1,4 +1,4 @@
-From b7b34a8e5cc2ce666b5ec32a1fcaf62aa2ad9cf6 Mon Sep 17 00:00:00 2001
+From 9a2631e4c3207a764f9dda0228b118d8344867aa Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 19 Mar 2026 12:43:00 -0400
 Subject: [PATCH 0001/1239] Revert "net: spacemit: Fix error handling in
@@ -10,7 +10,7 @@ This reverts commit edeaba385318f60ec1b32470da4d5eb800294d16.
  1 file changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index d64ca7bbda9e..5de69a105168 100644
+index d64ca7bbda9ea..5de69a105168a 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -750,7 +750,7 @@ static void emac_tx_mem_map(struct emac_priv *priv, struct sk_buff *skb)

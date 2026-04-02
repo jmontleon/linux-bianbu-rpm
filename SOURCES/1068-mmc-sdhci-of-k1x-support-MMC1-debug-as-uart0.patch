@@ -1,4 +1,4 @@
-From 886b69697496fbeaf47afb0b9c0259b1d6422a03 Mon Sep 17 00:00:00 2001
+From b871e84b78f9050aee2a8fc7e5bdb62176e8af85 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 29 Oct 2024 16:39:44 +0800
 Subject: [PATCH 1068/1239] mmc: sdhci-of-k1x: support MMC1 debug as uart0
@@ -9,7 +9,7 @@ Change-Id: I5269f6ab618421bc84a72de0da03f6e5bef67e03
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 4fb3092ac5db..8ea334cc4c4e 100644
+index 4fb3092ac5dbb..8ea334cc4c4e7 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -665,14 +665,19 @@ static void spacemit_sdhci_set_clock(struct sdhci_host *host, unsigned int clock

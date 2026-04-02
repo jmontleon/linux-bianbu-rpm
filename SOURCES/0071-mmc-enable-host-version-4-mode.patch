@@ -1,4 +1,4 @@
-From 920a74994b16fe79df14a92494a378c1e52a6a94 Mon Sep 17 00:00:00 2001
+From ca4d99f6973a1f764df736e137233241dc3d2cbb Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 13 Jun 2023 14:54:49 +0800
 Subject: [PATCH 0071/1239] mmc: enable host version 4 mode
@@ -9,7 +9,7 @@ Change-Id: If7f5816201856cfd11f880cca1a8e734da3b0a6b
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/mmc/host/sdhci-of-spacemit.c b/drivers/mmc/host/sdhci-of-spacemit.c
-index 765b4e729c46..ccb6dc59da71 100644
+index 765b4e729c465..ccb6dc59da710 100644
 --- a/drivers/mmc/host/sdhci-of-spacemit.c
 +++ b/drivers/mmc/host/sdhci-of-spacemit.c
 @@ -292,6 +292,8 @@ static int dwcmshc_probe(struct platform_device *pdev)

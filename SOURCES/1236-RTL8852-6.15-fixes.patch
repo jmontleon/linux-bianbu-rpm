@@ -1,4 +1,4 @@
-From 7be43dd39ca2b335637a8bd7d28fd4b785e339a3 Mon Sep 17 00:00:00 2001
+From b88e0e2759283ea244f45afb1721694368eff91c Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 29 Jun 2025 18:21:38 -0400
 Subject: [PATCH 1236/1239] RTL8852 6.15 fixes
@@ -50,7 +50,7 @@ Subject: [PATCH 1236/1239] RTL8852 6.15 fixes
  43 files changed, 616 insertions(+), 616 deletions(-)
 
 diff --git a/drivers/net/wireless/realtek/rtl8852be/Makefile b/drivers/net/wireless/realtek/rtl8852be/Makefile
-index 96a1a0fec8a4..4dee94857d27 100644
+index 96a1a0fec8a43..4dee94857d27b 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/Makefile
 +++ b/drivers/net/wireless/realtek/rtl8852be/Makefile
 @@ -1,41 +1,41 @@
@@ -694,7 +694,7 @@ index 96a1a0fec8a4..4dee94857d27 100644
  )
  _INC_CFLAGS := \
 diff --git a/drivers/net/wireless/realtek/rtl8852be/common.mk b/drivers/net/wireless/realtek/rtl8852be/common.mk
-index 8a4c0b97b6c4..4f8b3facf4e6 100644
+index 8a4c0b97b6c44..4f8b3facf4e60 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/common.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/common.mk
 @@ -96,7 +96,7 @@ _CORE_FILES :=	core/rtw_cmd.o \
@@ -707,7 +707,7 @@ index 8a4c0b97b6c4..4f8b3facf4e6 100644
  		core/crypto/aes-internal-enc.o \
  		core/crypto/aes-gcm.o \
 diff --git a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/rtl8852b/rtl8852b.mk b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/rtl8852b/rtl8852b.mk
-index 7a8c7ed9e04c..9f9282d0bb88 100644
+index 7a8c7ed9e04c8..9f9282d0bb882 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/rtl8852b/rtl8852b.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/phl/hal_g6/rtl8852b/rtl8852b.mk
 @@ -1,20 +1,20 @@
@@ -736,7 +736,7 @@ index 7a8c7ed9e04c..9f9282d0bb88 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/phl/phl.mk b/drivers/net/wireless/realtek/rtl8852be/phl/phl.mk
-index 20c1368ca3a5..d19a37b78cc9 100644
+index 20c1368ca3a5d..d19a37b78cc9e 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/phl/phl.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/phl/phl.mk
 @@ -116,5 +116,5 @@ endif
@@ -747,7 +747,7 @@ index 20c1368ca3a5..d19a37b78cc9 100644
 +ccflags-y += -I$(phl_path_d1)
  include $(phl_path_d1)/hal.mk
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905.mk b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905.mk
-index a65552eb669c..b52f0c305ac9 100644
+index a65552eb669cf..b52f0c305ac9b 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905.mk
 @@ -1,12 +1,12 @@
@@ -825,7 +825,7 @@ index a65552eb669c..b52f0c305ac9 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905_l3a.mk b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905_l3a.mk
-index 65e2de28d485..c529989f6fa9 100644
+index 65e2de28d4853..c529989f6fa96 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905_l3a.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s905_l3a.mk
 @@ -1,11 +1,11 @@
@@ -890,7 +890,7 @@ index 65e2de28d485..c529989f6fa9 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s928x.mk b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s928x.mk
-index 4819b7a096f1..b0a290f4c83f 100644
+index 4819b7a096f1f..b0a290f4c83f8 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/aml_s928x.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/aml_s928x.mk
 @@ -1,13 +1,13 @@
@@ -956,7 +956,7 @@ index 4819b7a096f1..b0a290f4c83f 100644
  
  ifeq ($(CONFIG_RTL8852B), y)
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/android_intel_x86.mk b/drivers/net/wireless/realtek/rtl8852be/platform/android_intel_x86.mk
-index 3f277817b473..ba1b8271041b 100644
+index 3f277817b473f..ba1b8271041b5 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/android_intel_x86.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/android_intel_x86.mk
 @@ -1,11 +1,11 @@
@@ -979,7 +979,7 @@ index 3f277817b473..ba1b8271041b 100644
  endif
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/android_x86.mk b/drivers/net/wireless/realtek/rtl8852be/platform/android_x86.mk
-index 7a7aef70442f..5423728aa3af 100644
+index 7a7aef70442f2..5423728aa3afd 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/android_x86.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/android_x86.mk
 @@ -1,5 +1,5 @@
@@ -990,7 +990,7 @@ index 7a7aef70442f..5423728aa3af 100644
  ARCH := $(SUBARCH)
  CROSS_COMPILE := /media/DATA-2/android-x86/ics-x86_20120130/prebuilt/linux-x86/toolchain/i686-unknown-linux-gnu-4.2.1/bin/i686-unknown-linux-gnu-
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/arm_1319.mk b/drivers/net/wireless/realtek/rtl8852be/platform/arm_1319.mk
-index 7cdee5474903..a4b45a43c1d3 100644
+index 7cdee54749036..a4b45a43c1d3a 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/arm_1319.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/arm_1319.mk
 @@ -1,17 +1,17 @@
@@ -1052,7 +1052,7 @@ index 7cdee5474903..a4b45a43c1d3 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/arm_1619b.mk b/drivers/net/wireless/realtek/rtl8852be/platform/arm_1619b.mk
-index 4faece20d736..f892bfb195da 100644
+index 4faece20d736e..f892bfb195daa 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/arm_1619b.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/arm_1619b.mk
 @@ -1,19 +1,19 @@
@@ -1114,7 +1114,7 @@ index 4faece20d736..f892bfb195da 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/arm_rk.mk b/drivers/net/wireless/realtek/rtl8852be/platform/arm_rk.mk
-index a3fd062315b1..938376e4f1f0 100644
+index a3fd062315b12..938376e4f1f09 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/arm_rk.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/arm_rk.mk
 @@ -1,11 +1,11 @@
@@ -1167,7 +1167,7 @@ index a3fd062315b1..938376e4f1f0 100644
  
  ifeq ($(CONFIG_SDIO_HCI), y)
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/arm_sunxi.mk b/drivers/net/wireless/realtek/rtl8852be/platform/arm_sunxi.mk
-index d6c613c6d8e7..7dc04e81296b 100644
+index d6c613c6d8e7c..7dc04e81296b0 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/arm_sunxi.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/arm_sunxi.mk
 @@ -1,18 +1,18 @@
@@ -1197,7 +1197,7 @@ index d6c613c6d8e7..7dc04e81296b 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/i386_pc.mk b/drivers/net/wireless/realtek/rtl8852be/platform/i386_pc.mk
-index 3e3fe570c55c..fc2becac1378 100644
+index 3e3fe570c55c4..fc2becac13783 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/i386_pc.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/i386_pc.mk
 @@ -1,12 +1,12 @@
@@ -1236,7 +1236,7 @@ index 3e3fe570c55c..fc2becac1378 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/mips_98d.mk b/drivers/net/wireless/realtek/rtl8852be/platform/mips_98d.mk
-index 67c35abdc15e..f045d59d2de0 100644
+index 67c35abdc15ec..f045d59d2de0a 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/mips_98d.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/mips_98d.mk
 @@ -1,14 +1,14 @@
@@ -1260,7 +1260,7 @@ index 67c35abdc15e..f045d59d2de0 100644
 \ No newline at end of file
 +endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1.mk b/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1.mk
-index 2e0da7e1d639..4cdef87ce8a0 100644
+index 2e0da7e1d6395..4cdef87ce8a0f 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1.mk
 @@ -1,14 +1,14 @@
@@ -1287,7 +1287,7 @@ index 2e0da7e1d639..4cdef87ce8a0 100644
  
  CROSS_COMPILE := /mnt/newdisk/android_sdk/nvidia_tk1/android_L/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi-
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1_ubuntu.mk b/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1_ubuntu.mk
-index a404578fcc24..7cd322ceaa8d 100644
+index a404578fcc245..7cd322ceaa8d7 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1_ubuntu.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/nv_tk1_ubuntu.mk
 @@ -1,7 +1,7 @@
@@ -1302,7 +1302,7 @@ index a404578fcc24..7cd322ceaa8d 100644
  ARCH ?= arm
  
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/plat_huanglong.mk b/drivers/net/wireless/realtek/rtl8852be/platform/plat_huanglong.mk
-index 52f00e1b2c4b..eba893c1bb5a 100644
+index 52f00e1b2c4ba..eba893c1bb5aa 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/plat_huanglong.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/plat_huanglong.mk
 @@ -1,21 +1,21 @@
@@ -1358,7 +1358,7 @@ index 52f00e1b2c4b..eba893c1bb5a 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk b/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
-index 5a9580bda8e6..9b00d8af786d 100644
+index 5a9580bda8e68..9b00d8af786d3 100644
 --- a/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
 +++ b/drivers/net/wireless/realtek/rtl8852be/platform/riscv_spacemit.mk
 @@ -1,12 +1,12 @@
@@ -1406,7 +1406,7 @@ index 5a9580bda8e6..9b00d8af786d 100644
  endif
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/Makefile b/drivers/net/wireless/realtek/rtl8852bs/Makefile
-index 25839207288a..bdaf0097d599 100644
+index 25839207288ad..bdaf0097d599b 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/Makefile
 +++ b/drivers/net/wireless/realtek/rtl8852bs/Makefile
 @@ -1,46 +1,46 @@
@@ -2017,7 +2017,7 @@ index 25839207288a..bdaf0097d599 100644
  )
  _INC_CFLAGS := \
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/common.mk b/drivers/net/wireless/realtek/rtl8852bs/common.mk
-index f1149b83d438..5ad0d777a735 100644
+index f1149b83d4388..5ad0d777a7359 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/common.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/common.mk
 @@ -95,7 +95,7 @@ _CORE_FILES :=	core/rtw_cmd.o \
@@ -2030,7 +2030,7 @@ index f1149b83d438..5ad0d777a735 100644
  		core/crypto/aes-internal-enc.o \
  		core/crypto/aes-gcm.o \
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ccm.c b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ccm.c
-index dceec778a6d7..67651d07f04d 100644
+index dceec778a6d76..67651d07f04df 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ccm.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ccm.c
 @@ -40,7 +40,7 @@ static void aes_ccm_auth_start(void *aes, size_t M, size_t L, const u8 *nonce,
@@ -2109,7 +2109,7 @@ index dceec778a6d7..67651d07f04d 100644
  		t[i] = auth[i] ^ tmp[i];
  	wpa_hexdump_key(_MSG_EXCESSIVE_, "CCM T", t, M);
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ctr.c b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ctr.c
-index 6c06851ddc68..9361ba964f4b 100644
+index 6c06851ddc68b..9361ba964f4b3 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ctr.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-ctr.c
 @@ -36,7 +36,7 @@ int aes_ctr_encrypt(const u8 *key, size_t key_len, const u8 *nonce,
@@ -2122,7 +2122,7 @@ index 6c06851ddc68..9361ba964f4b 100644
  		len = (left < AES_BLOCK_SIZE) ? left : AES_BLOCK_SIZE;
  		for (j = 0; j < len; j++)
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-gcm.c b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-gcm.c
-index 47088102b9cc..72f9bd9a03b5 100644
+index 47088102b9cc7..72f9bd9a03b59 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-gcm.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-gcm.c
 @@ -154,7 +154,7 @@ static void aes_gctr(void *aes, const u8 *icb, const u8 *x, size_t xlen, u8 *y)
@@ -2153,7 +2153,7 @@ index 47088102b9cc..72f9bd9a03b5 100644
  			H, AES_BLOCK_SIZE);
  	return aes;
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-internal-enc.c b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-internal-enc.c
-index 69e256be95ce..71b70fa60c9f 100644
+index 69e256be95cec..71b70fa60c9fd 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-internal-enc.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-internal-enc.c
 @@ -114,7 +114,7 @@ void * aes_encrypt_init(const u8 *key, size_t len)
@@ -2166,7 +2166,7 @@ index 69e256be95ce..71b70fa60c9f 100644
  	u32 *rk = ctx;
  	rijndaelEncrypt(ctx, rk[AES_PRIV_NR_POS], plain, crypt);
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-omac1.c b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-omac1.c
-index 30b52629f4be..6a69172db765 100644
+index 30b52629f4be6..6a69172db765f 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-omac1.c
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes-omac1.c
 @@ -81,12 +81,12 @@ int omac1_aes_vector(const u8 *key, size_t key_len, size_t num_elem,
@@ -2194,7 +2194,7 @@ index 30b52629f4be..6a69172db765 100644
  	return 0;
  }
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes.h b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes.h
-index 8ab3de2ee83f..ed5ee1ed139e 100644
+index 8ab3de2ee83f3..ed5ee1ed139e9 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes.h
 +++ b/drivers/net/wireless/realtek/rtl8852bs/core/crypto/aes.h
 @@ -12,7 +12,7 @@
@@ -2207,7 +2207,7 @@ index 8ab3de2ee83f..ed5ee1ed139e 100644
  void * aes_decrypt_init(const u8 *key, size_t len);
  int aes_decrypt(void *ctx, const u8 *crypt, u8 *plain);
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/rtl8852b/rtl8852b.mk b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/rtl8852b/rtl8852b.mk
-index e6781db4f0cb..823468211927 100644
+index e6781db4f0cba..823468211927e 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/rtl8852b/rtl8852b.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/phl/hal_g6/rtl8852b/rtl8852b.mk
 @@ -1,16 +1,16 @@
@@ -2231,7 +2231,7 @@ index e6781db4f0cb..823468211927 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/phl/phl.mk b/drivers/net/wireless/realtek/rtl8852bs/phl/phl.mk
-index f78ea9f5e651..1c4cad5cd0f9 100644
+index f78ea9f5e651b..1c4cad5cd0f95 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/phl/phl.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/phl/phl.mk
 @@ -118,5 +118,5 @@ endif
@@ -2242,7 +2242,7 @@ index f78ea9f5e651..1c4cad5cd0f9 100644
 +ccflags-y += -I$(phl_path_d1)
  include $(phl_path_d1)/hal.mk
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905.mk
-index 865ac029fa68..69f5da61ed0d 100644
+index 865ac029fa680..69f5da61ed0df 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905.mk
 @@ -1,11 +1,11 @@
@@ -2315,7 +2315,7 @@ index 865ac029fa68..69f5da61ed0d 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905_l3a.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905_l3a.mk
-index b78d77825714..3bf2849e82b9 100644
+index b78d77825714e..3bf2849e82b97 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905_l3a.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/aml_s905_l3a.mk
 @@ -1,11 +1,11 @@
@@ -2362,7 +2362,7 @@ index b78d77825714..3bf2849e82b9 100644
  
  ifeq ($(CONFIG_RTL8852B), y)
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/android_intel_x86.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/android_intel_x86.mk
-index 3f277817b473..ba1b8271041b 100644
+index 3f277817b473f..ba1b8271041b5 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/android_intel_x86.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/android_intel_x86.mk
 @@ -1,11 +1,11 @@
@@ -2385,7 +2385,7 @@ index 3f277817b473..ba1b8271041b 100644
  endif
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/android_x86.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/android_x86.mk
-index 7a7aef70442f..5423728aa3af 100644
+index 7a7aef70442f2..5423728aa3afd 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/android_x86.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/android_x86.mk
 @@ -1,5 +1,5 @@
@@ -2396,7 +2396,7 @@ index 7a7aef70442f..5423728aa3af 100644
  ARCH := $(SUBARCH)
  CROSS_COMPILE := /media/DATA-2/android-x86/ics-x86_20120130/prebuilt/linux-x86/toolchain/i686-unknown-linux-gnu-4.2.1/bin/i686-unknown-linux-gnu-
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1319.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1319.mk
-index c25bd30056f2..dda4faae911b 100644
+index c25bd30056f2f..dda4faae911be 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1319.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1319.mk
 @@ -1,14 +1,14 @@
@@ -2443,7 +2443,7 @@ index c25bd30056f2..dda4faae911b 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1619b.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1619b.mk
-index 326691143818..942cdeb77c6d 100644
+index 3266911438185..942cdeb77c6df 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1619b.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_1619b.mk
 @@ -1,19 +1,19 @@
@@ -2493,7 +2493,7 @@ index 326691143818..942cdeb77c6d 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_rk.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_rk.mk
-index 57f1437b6748..87efafcf495f 100644
+index 57f1437b67488..87efafcf495fc 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_rk.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_rk.mk
 @@ -1,11 +1,11 @@
@@ -2536,7 +2536,7 @@ index 57f1437b6748..87efafcf495f 100644
  
  ifeq ($(CONFIG_SDIO_HCI), y)
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_sunxi.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_sunxi.mk
-index d6c613c6d8e7..7dc04e81296b 100644
+index d6c613c6d8e7c..7dc04e81296b0 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/arm_sunxi.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/arm_sunxi.mk
 @@ -1,18 +1,18 @@
@@ -2566,7 +2566,7 @@ index d6c613c6d8e7..7dc04e81296b 100644
  endif
  
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/i386_pc.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/i386_pc.mk
-index b63529ff9336..4de7f7054482 100644
+index b63529ff93367..4de7f70544826 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/i386_pc.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/i386_pc.mk
 @@ -1,12 +1,12 @@
@@ -2597,7 +2597,7 @@ index b63529ff9336..4de7f7054482 100644
  OBJS += $(_PLATFORM_FILES)
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/mips_98d.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/mips_98d.mk
-index 67c35abdc15e..f045d59d2de0 100644
+index 67c35abdc15ec..f045d59d2de0a 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/mips_98d.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/mips_98d.mk
 @@ -1,14 +1,14 @@
@@ -2621,7 +2621,7 @@ index 67c35abdc15e..f045d59d2de0 100644
 \ No newline at end of file
 +endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1.mk
-index 2e0da7e1d639..4cdef87ce8a0 100644
+index 2e0da7e1d6395..4cdef87ce8a0f 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1.mk
 @@ -1,14 +1,14 @@
@@ -2648,7 +2648,7 @@ index 2e0da7e1d639..4cdef87ce8a0 100644
  
  CROSS_COMPILE := /mnt/newdisk/android_sdk/nvidia_tk1/android_L/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi-
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1_ubuntu.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1_ubuntu.mk
-index a404578fcc24..7cd322ceaa8d 100644
+index a404578fcc245..7cd322ceaa8d7 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1_ubuntu.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/nv_tk1_ubuntu.mk
 @@ -1,7 +1,7 @@
@@ -2663,7 +2663,7 @@ index a404578fcc24..7cd322ceaa8d 100644
  ARCH ?= arm
  
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/plat_huanglong.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/plat_huanglong.mk
-index abc3ccbce71c..9d6eb55245fc 100644
+index abc3ccbce71cb..9d6eb55245fcc 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/plat_huanglong.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/plat_huanglong.mk
 @@ -1,21 +1,21 @@
@@ -2716,7 +2716,7 @@ index abc3ccbce71c..9d6eb55245fc 100644
  _PLATFORM_FILES += platform/platform_ops.o
  endif
 diff --git a/drivers/net/wireless/realtek/rtl8852bs/platform/riscv_spacemit.mk b/drivers/net/wireless/realtek/rtl8852bs/platform/riscv_spacemit.mk
-index 64012a26edc4..75ac9cbdcec4 100644
+index 64012a26edc41..75ac9cbdcec43 100644
 --- a/drivers/net/wireless/realtek/rtl8852bs/platform/riscv_spacemit.mk
 +++ b/drivers/net/wireless/realtek/rtl8852bs/platform/riscv_spacemit.mk
 @@ -1,12 +1,12 @@

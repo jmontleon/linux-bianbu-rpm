@@ -1,4 +1,4 @@
-From 5b2f4969e8cc4c9190e93f583257f8c9448bbee3 Mon Sep 17 00:00:00 2001
+From 64a28b0c88b3c03969db1f7d9b07dffe815e3d63 Mon Sep 17 00:00:00 2001
 From: chris <chris.huang@spacemit.com>
 Date: Tue, 30 Apr 2024 16:40:06 +0800
 Subject: [PATCH 0650/1239] 1.increase command line buffer size to 2KB.
@@ -9,7 +9,7 @@ Change-Id: I27b2d54996c06f81335342607d7f8ee701638807
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/include/uapi/asm/setup.h b/arch/riscv/include/uapi/asm/setup.h
-index 66b13a522880..93b727010d50 100644
+index 66b13a5228808..93b727010d501 100644
 --- a/arch/riscv/include/uapi/asm/setup.h
 +++ b/arch/riscv/include/uapi/asm/setup.h
 @@ -3,6 +3,6 @@

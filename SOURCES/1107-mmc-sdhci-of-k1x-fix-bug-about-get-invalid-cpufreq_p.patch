@@ -1,4 +1,4 @@
-From 42a8c3aebafd308b7e62edb77798e555ea50eb9d Mon Sep 17 00:00:00 2001
+From b5f4d78ceb869c8f66c0e08ce58601df0792f088 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Sat, 9 Nov 2024 11:50:48 +0800
 Subject: [PATCH 1107/1239] mmc: sdhci-of-k1x: fix bug about get invalid
@@ -10,7 +10,7 @@ Change-Id: I8b7190983fec01d1c76172a5c09cd009a2868275
  1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 8ea334cc4c4e..1c91e1a73431 100644
+index 8ea334cc4c4e7..1c91e1a73431f 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -1187,7 +1187,7 @@ static int spacemit_sdhci_execute_sw_tuning(struct sdhci_host *host, u32 opcode)

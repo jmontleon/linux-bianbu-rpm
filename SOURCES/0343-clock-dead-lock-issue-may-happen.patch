@@ -1,4 +1,4 @@
-From 53ccc75a00ef140756cdfdc2de2e8a10cc68b738 Mon Sep 17 00:00:00 2001
+From c1de8d87f8b02570d6e5a971102867d9a9e30506 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 5 Jan 2024 18:35:06 +0800
 Subject: [PATCH 0343/1239] clock: dead-lock issue may happen
@@ -9,7 +9,7 @@ Change-Id: Ibef30eb906baa2c1c77fe8c948421756c1f306d0
  1 file changed, 18 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 041d771cb1aa..efb97306aa07 100755
+index 041d771cb1aaf..efb97306aa075 100755
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -58,6 +58,9 @@ static void ccu_mix_disable(struct clk_hw *hw)

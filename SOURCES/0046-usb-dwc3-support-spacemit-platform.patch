@@ -1,4 +1,4 @@
-From 1abb39a70a9f6526e861105c73befed11093cd34 Mon Sep 17 00:00:00 2001
+From c40bd4e55ab24f86d25082151ba89eec960911dd Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 15 May 2023 20:17:09 +0800
 Subject: [PATCH 0046/1239] usb: dwc3: support spacemit platform
@@ -12,7 +12,7 @@ Change-Id: I9643695b0ff63dfb841c151203e39006fae35fed
  create mode 100755 drivers/usb/dwc3/dwc3-spacemit.c
 
 diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 4925d15084f8..c77ffa0cc5cc 100644
+index 4925d15084f81..c77ffa0cc5cc4 100644
 --- a/drivers/usb/dwc3/Kconfig
 +++ b/drivers/usb/dwc3/Kconfig
 @@ -200,4 +200,11 @@ config USB_DWC3_GENERIC_PLAT
@@ -28,7 +28,7 @@ index 4925d15084f8..c77ffa0cc5cc 100644
 +
  endif
 diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
-index 96469e48ff9d..dccb376957b0 100644
+index 96469e48ff9d1..dccb376957b01 100644
 --- a/drivers/usb/dwc3/Makefile
 +++ b/drivers/usb/dwc3/Makefile
 @@ -58,3 +58,4 @@ obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
@@ -38,7 +38,7 @@ index 96469e48ff9d..dccb376957b0 100644
 +obj-$(CONFIG_USB_DWC3_SPACEMIT)		+= dwc3-spacemit.o
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
 new file mode 100755
-index 000000000000..5fa11489d1b2
+index 0000000000000..5fa11489d1b2b
 --- /dev/null
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -0,0 +1,260 @@

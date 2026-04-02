@@ -1,4 +1,4 @@
-From ffcfe805af2303d4f99cfa4b1597946fb183b185 Mon Sep 17 00:00:00 2001
+From 23884716c3e58c12ff3b2b30284fcb3412d4e60c Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 2 Dec 2024 16:58:57 +0800
 Subject: [PATCH 1169/1239] k1:regulator: enable the driver of regulator
@@ -10,7 +10,7 @@ Change-Id: Ic5e414c9e9a8ca62b535116d835a0714eec222d1
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 6d639c3a6d10..39d5ecb559a1 100644
+index 6d639c3a6d109..39d5ecb559a16 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -684,7 +684,9 @@ CONFIG_CPU_THERMAL=y
@@ -24,7 +24,7 @@ index 6d639c3a6d10..39d5ecb559a1 100644
  CONFIG_RC_DEVICES=y
  CONFIG_IR_SPACEMIT=y
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index 4e28ef0025f3..ddeb84ce7778 100644
+index 4e28ef0025f35..ddeb84ce7778f 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -13,6 +13,7 @@

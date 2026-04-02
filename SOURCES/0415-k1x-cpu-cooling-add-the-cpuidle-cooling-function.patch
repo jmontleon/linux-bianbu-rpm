@@ -1,4 +1,4 @@
-From a02e14df698dd6de6f05d461d37b1d829a1db12c Mon Sep 17 00:00:00 2001
+From ffeda3ec44f362660ae67450fc2d78b02b0863a1 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 20 Jan 2024 17:50:50 +0800
 Subject: [PATCH 0415/1239] k1x:cpu-cooling: add the cpuidle cooling function
@@ -15,7 +15,7 @@ Change-Id: Ibf031e3f27af999544f67733596f183b06749c7a
  1 file changed, 66 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 576b3b38fa19..76cf244cb632 100644
+index 576b3b38fa197..76cf244cb6329 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -64,6 +64,12 @@ cpu0_intc: interrupt-controller {

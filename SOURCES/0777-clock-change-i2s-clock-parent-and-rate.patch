@@ -1,4 +1,4 @@
-From 4fb1a0f51e572765ddee9b5acbadb5c5c284c3cb Mon Sep 17 00:00:00 2001
+From 9ea44628a1a5b6719d6351e488349c903cc2f63f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Mon, 3 Jun 2024 16:28:00 +0800
 Subject: [PATCH 0777/1239] clock: change i2s clock parent and rate
@@ -9,7 +9,7 @@ Change-Id: Ib2f7259b073044271d10c6291be7953ca0a58409
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index b1b1ff299b4a..cd8176a5ea79 100644
+index b1b1ff299b4ab..cd8176a5ea796 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -643,10 +643,10 @@ static SPACEMIT_CCU_GATE_NO_PARENT(onewire_clk, "onewire_clk", NULL,

@@ -1,4 +1,4 @@
-From 0eee9cbd6e646edd795e01d7b11f206fdb234f1f Mon Sep 17 00:00:00 2001
+From 17eb2d7bd52dc76e05353d48964d1eda585d7c54 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 11 Jul 2024 19:16:28 +0800
 Subject: [PATCH 0837/1239] mipi: fix compile warninng
@@ -9,7 +9,7 @@ Change-Id: Ia9f5b8d635086d8011b6a1a21780b76e35318b7c
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
-index be1c6da15a76..c955c738375b 100644
+index be1c6da15a765..c955c738375b2 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -194,7 +194,6 @@ static int spacemit_panel_prepare(struct drm_panel *p)

@@ -1,4 +1,4 @@
-From b10e253ff4b31494cf947a2eef2a9c5a19ebf701 Mon Sep 17 00:00:00 2001
+From aaa87501a6d3a6071404098f4b6f3c25e5fac511 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 7 May 2024 14:31:16 +0800
 Subject: [PATCH 0653/1239] display: add drm resume and suspend
@@ -11,7 +11,7 @@ Change-Id: I0b7259bdbcaffb28ef94d9562ec67c241b073b96
  3 files changed, 44 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index d1e92d4c4233..d311c3302e48 100644
+index d1e92d4c4233b..d311c3302e48a 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -475,22 +475,28 @@ static int dpu_update_bw(struct spacemit_dpu *dpu, uint64_t bw)
@@ -73,7 +73,7 @@ index d1e92d4c4233..d311c3302e48 100644
  		DRM_DEBUG("%s mipi dsi int reg4 0x910:0x%x\n", __func__, value);
  		value = readl_relaxed(base + 0x938);
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 108cf40902b8..fe26dc568efe 100644
+index 108cf40902b80..fe26dc568efef 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -456,6 +456,29 @@ static void spacemit_drm_shutdown(struct platform_device *pdev)
@@ -115,7 +115,7 @@ index 108cf40902b8..fe26dc568efe 100644
  };
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 50c954e1f770..cad53ed63cab 100644
+index 50c954e1f7702..cad53ed63cab5 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -545,13 +545,12 @@ void hdmi_init (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth){

@@ -1,4 +1,4 @@
-From 5d7910aadb4c6eb4feb7e53be6f798fc4550bb39 Mon Sep 17 00:00:00 2001
+From 393139df137770b3bc9b680d6c3c690acee04a4f Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 6 Aug 2024 09:17:10 +0800
 Subject: [PATCH 0883/1239] clock: add rcpu i2c clock
@@ -10,7 +10,7 @@ Change-Id: Ie052102a8445c97dc8f499d4481b09ef4eb53a28
  2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 05e6c40c8913..b018c3060895 100644
+index 05e6c40c89135..b018c30608954 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -169,6 +169,7 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -46,7 +46,7 @@ index 05e6c40c8913..b018c3060895 100644
  	.num = CLK_MAX_NO,
  };
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 209856ec1f57..183c435ddf18 100644
+index 209856ec1f578..183c435ddf183 100644
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -196,6 +196,7 @@

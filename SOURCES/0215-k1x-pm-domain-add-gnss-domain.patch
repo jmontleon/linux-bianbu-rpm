@@ -1,4 +1,4 @@
-From bf4eabb852525d011d6b389cd8699076faf461f3 Mon Sep 17 00:00:00 2001
+From 84c87cc98a703c9e1575e5e60acba03089715641 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 18 Dec 2023 11:27:08 +0800
 Subject: [PATCH 0215/1239] k1x:pm-domain: add gnss domain
@@ -11,7 +11,7 @@ Change-Id: I53aea139233bc99745168280c6663a4b5e2b0b8b
  3 files changed, 22 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 49cc631ec29c..f305263f09b8 100644
+index 49cc631ec29c5..f305263f09b84 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -529,7 +529,7 @@ mpmu: mpmu@1 {
@@ -58,7 +58,7 @@ index 49cc631ec29c..f305263f09b8 100644
  				};
  			};
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 95fcf6488549..568a7093be77 100644
+index 95fcf6488549c..568a7093be77d 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -279,9 +279,9 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
@@ -83,7 +83,7 @@ index 95fcf6488549..568a7093be77 100644
  	}
  
 diff --git a/include/dt-bindings/pmu/k1x_pmu.h b/include/dt-bindings/pmu/k1x_pmu.h
-index e31cdfd06454..dac61d1662be 100644
+index e31cdfd06454c..dac61d1662bee 100644
 --- a/include/dt-bindings/pmu/k1x_pmu.h
 +++ b/include/dt-bindings/pmu/k1x_pmu.h
 @@ -9,6 +9,7 @@

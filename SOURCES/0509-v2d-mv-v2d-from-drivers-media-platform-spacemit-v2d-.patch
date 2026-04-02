@@ -1,4 +1,4 @@
-From dd77565672908a47f8c293ac0df305e86904e5c5 Mon Sep 17 00:00:00 2001
+From aee829cbbef36fd54f0b28a8cbefed8f95378af4 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 14 Mar 2024 16:33:37 +0800
 Subject: [PATCH 0509/1239] v2d : mv v2d from
@@ -35,7 +35,7 @@ Signed-off-by: fuqiang <qiang.fu@spacemit.com>
  rename drivers/{media/platform => soc}/spacemit/v2d/v2d_reg.h (100%)
 
 diff --git a/drivers/media/platform/spacemit/Kconfig b/drivers/media/platform/spacemit/Kconfig
-index a31a599b320c..5e602f78d651 100644
+index a31a599b320c7..5e602f78d651e 100644
 --- a/drivers/media/platform/spacemit/Kconfig
 +++ b/drivers/media/platform/spacemit/Kconfig
 @@ -3,5 +3,4 @@
@@ -45,7 +45,7 @@ index a31a599b320c..5e602f78d651 100644
 -source "drivers/media/platform/spacemit/v2d/Kconfig"
  source "drivers/media/platform/spacemit/camera/Kconfig"
 diff --git a/drivers/media/platform/spacemit/Makefile b/drivers/media/platform/spacemit/Makefile
-index cc22a9f000eb..16c63023baba 100644
+index cc22a9f000ebb..16c63023baba9 100644
 --- a/drivers/media/platform/spacemit/Makefile
 +++ b/drivers/media/platform/spacemit/Makefile
 @@ -1,4 +1,3 @@
@@ -54,7 +54,7 @@ index cc22a9f000eb..16c63023baba 100644
 -obj-y += v2d/
  obj-y += camera/
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index cb6f565ab3ee..88612802f0eb 100644
+index cb6f565ab3ee6..88612802f0ebb 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -29,4 +29,5 @@ config SPACEMI_K1X_DMA_RANGE
@@ -64,7 +64,7 @@ index cb6f565ab3ee..88612802f0eb 100644
 +source "drivers/soc/spacemit/v2d/Kconfig"
  source "drivers/soc/spacemit/spacemit-rf/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index 39afd7a33819..5d865c275a69 100644
+index 39afd7a338191..5d865c275a69e 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1,5 +1,6 @@

@@ -1,4 +1,4 @@
-From a99073677b4fbe7bb691f06b6aface7a330a9eec Mon Sep 17 00:00:00 2001
+From 2496d5611138b5592537e17abe781d13f1063e56 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 14 Jun 2024 19:04:36 +0800
 Subject: [PATCH 0749/1239] muse-book: add muse-book board dts support
@@ -13,7 +13,7 @@ Change-Id: I96ed33f79e91864222be34d523e279fd34c49517
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index 51205d075248..933b26960ab8 100644
+index 51205d075248b..933b26960ab85 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -5,5 +5,5 @@ dtb-$(CONFIG_SOC_SPACEMIT_K1PRO) += k1-pro_sim.dtb k1-pro_fpga.dtb k1-pro_fpga_1
@@ -25,7 +25,7 @@ index 51205d075248..933b26960ab8 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 new file mode 100644
-index 000000000000..56342110e777
+index 0000000000000..56342110e777a
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -0,0 +1,820 @@
@@ -851,7 +851,7 @@ index 000000000000..56342110e777
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 new file mode 100644
-index 000000000000..d5c156f89d08
+index 0000000000000..d5c156f89d08c
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -0,0 +1,1014 @@

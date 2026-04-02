@@ -1,4 +1,4 @@
-From b7ef0d8a56e50535e15458a2e97d5b3c0c03c69a Mon Sep 17 00:00:00 2001
+From 144e5f1a5cdaf5b665d1f1c1de936e335fa0fa03 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 30 Mar 2024 17:22:16 +0800
 Subject: [PATCH 0577/1239] k1x-aes:add aes clk&reset and suspend/resume
@@ -12,7 +12,7 @@ Change-Id: If9a3cc74dd4c750e981c14e01caaafd5a52aba40
  3 files changed, 64 insertions(+), 9 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 433379936f86..5684959d49b1 100644
+index 433379936f86d..5684959d49b19 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2253,13 +2253,15 @@ imggpu: imggpu@cac00000 {
@@ -39,7 +39,7 @@ index 433379936f86..5684959d49b1 100644
  		ciu: ciu@d4282c00 {
  			compatible = "spacemit,aquila-ciu", "spacemit,ciu", "syscon";
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index ead35c811cc6..0c3f78cf4b0d 100755
+index ead35c811cc63..0c3f78cf4b0dc 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -31,7 +31,11 @@
@@ -142,7 +142,7 @@ index ead35c811cc6..0c3f78cf4b0d 100755
  	},
  	.probe = crypto_engine_probe,
 diff --git a/drivers/crypto/spacemit/spacemit_engine.h b/drivers/crypto/spacemit/spacemit_engine.h
-index daec1e1bd77a..76fbecddafa3 100755
+index daec1e1bd77a6..76fbecddafa38 100755
 --- a/drivers/crypto/spacemit/spacemit_engine.h
 +++ b/drivers/crypto/spacemit/spacemit_engine.h
 @@ -4,6 +4,8 @@

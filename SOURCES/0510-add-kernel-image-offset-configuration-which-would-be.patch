@@ -1,4 +1,4 @@
-From a8cb84dd8d2091736fbada0ec258a611e677db61 Mon Sep 17 00:00:00 2001
+From 5cec1451c87ff920b1ea29de8344256fca390a20 Mon Sep 17 00:00:00 2001
 From: zhouxl <zhouxl@spacemit.com>
 Date: Wed, 13 Mar 2024 19:21:33 +0800
 Subject: [PATCH 0510/1239] add kernel image offset configuration which would
@@ -11,7 +11,7 @@ Change-Id: I540d5cebb12889628f4efebab5f30c93c08b457b
  2 files changed, 9 insertions(+)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index c901ae6f0a84..0bbdc00cfd33 100644
+index c901ae6f0a84f..0bbdc00cfd336 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
 @@ -1336,6 +1336,14 @@ config PORTABLE
@@ -30,7 +30,7 @@ index c901ae6f0a84..0bbdc00cfd33 100644
  
  source "kernel/power/Kconfig"
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index a5449ed7d004..39b0d39f9dfc 100644
+index a5449ed7d004c..39b0d39f9dfc5 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -47,6 +47,7 @@ CONFIG_NR_CPUS=8

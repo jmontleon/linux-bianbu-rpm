@@ -1,4 +1,4 @@
-From 25ee3b7898e6f5b8c287bfdcc281ec066fc57a7a Mon Sep 17 00:00:00 2001
+From 2d6b2c65da612df65d3fb94f6feffbd26d31d813 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 3 Sep 2024 15:37:15 +0800
 Subject: [PATCH 1002/1239] pcie: print MSIX_AFIFO_FULL information once
@@ -9,7 +9,7 @@ Change-Id: I207d887edd30224eea081b53d43ad4320e7c5186
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index b8cc64d37cac..62bf0d95984b 100644
+index b8cc64d37cac4..62bf0d95984b1 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -741,7 +741,7 @@ irqreturn_t k1x_handle_msi_irq(struct dw_pcie_rp *pp)

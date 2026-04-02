@@ -1,4 +1,4 @@
-From 0dd013a60bf198f73389130ac2c0ddbf089d7b9f Mon Sep 17 00:00:00 2001
+From b4d0f9f2a7c2566f77813d9c2ab4bde1b2def8ab Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Wed, 20 Dec 2023 17:14:52 +0800
 Subject: [PATCH 0236/1239] k1x: i2c driver add pm-domains revision
@@ -10,7 +10,7 @@ Change-Id: I54e3dafa51598ee0c1af9f3f570b4700e9ac7815
  2 files changed, 19 insertions(+), 44 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index ab2832cf3460..fd492aaa8702 100644
+index ab2832cf3460a..fd492aaa87020 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -824,9 +824,10 @@ i2c0: i2c@d4010800 {
@@ -122,7 +122,7 @@ index ab2832cf3460..fd492aaa8702 100644
                  };
  
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index d4ca4dc94dfc..f9bdb669b50c 100644
+index d4ca4dc94dfcc..f9bdb669b50cc 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1615,36 +1615,6 @@ static const struct file_operations spacemit_i2c_dbgfs_ops = {

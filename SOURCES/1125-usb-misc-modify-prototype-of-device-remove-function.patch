@@ -1,4 +1,4 @@
-From 8d3ac011e08972fc5a8db4baf47b2d5d48ad1331 Mon Sep 17 00:00:00 2001
+From ad6b1d09cfa25a4631d9aaf97504b403ee8d14cc Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:58:17 +0800
 Subject: [PATCH 1125/1239] usb: misc: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I2bd0f483e2f4556f593d51e052afd4c48d276ff0
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
-index 66ce825e1076..65ca72420a51 100644
+index 66ce825e1076a..65ca72420a512 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.c
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -173,7 +173,7 @@ static int spacemit_hub_probe(struct platform_device *pdev)

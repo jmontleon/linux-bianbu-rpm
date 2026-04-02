@@ -1,4 +1,4 @@
-From 9ce87c6a4de6ac65d727ba35fa8e05e16bcc37ca Mon Sep 17 00:00:00 2001
+From 2aabf0d2d8f4dde4edc4e61ea6aed7bd70c2c736 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:45:01 +0800
 Subject: [PATCH 1153/1239] emac: k1x: fix compile warning on function
@@ -12,7 +12,7 @@ Change-Id: I47d2e3515c4ffc1443a04be88db1ae285c080b91
  3 files changed, 24 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/emac_ptp.c b/drivers/net/ethernet/spacemit/emac_ptp.c
-index 1dc34544b0c6..7caa692f9a87 100644
+index 1dc34544b0c6d..7caa692f9a873 100644
 --- a/drivers/net/ethernet/spacemit/emac_ptp.c
 +++ b/drivers/net/ethernet/spacemit/emac_ptp.c
 @@ -47,7 +47,7 @@
@@ -88,7 +88,7 @@ index 1dc34544b0c6..7caa692f9a87 100644
  	.config_systime_increment = emac_hw_config_systime_increment,
  	.init_systime = emac_hw_init_systime,
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index 8932171243b4..e85f79457eda 100644
+index 8932171243b42..e85f79457edad 100644
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -148,7 +148,7 @@ static int emac_sw_init(struct emac_priv *priv);
@@ -220,7 +220,7 @@ index 8932171243b4..e85f79457eda 100644
  
  static void emac_shutdown(struct platform_device *pdev)
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.h b/drivers/net/ethernet/spacemit/k1x-emac.h
-index fde9ce3743e8..30b39903d5a7 100644
+index fde9ce3743e83..30b39903d5a75 100644
 --- a/drivers/net/ethernet/spacemit/k1x-emac.h
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.h
 @@ -724,8 +724,8 @@ void emac_free_rx_resources(struct emac_priv *priv);

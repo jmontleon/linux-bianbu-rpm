@@ -1,4 +1,4 @@
-From cdfc5ef235dd83d401b1db84cfbc1051a4dae96a Mon Sep 17 00:00:00 2001
+From dab4eee4a5978ef62b5939e0b7656a1a5344a6e2 Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 24 Oct 2024 15:02:49 +0800
 Subject: [PATCH 1052/1239] vpu: Fix dma_buf warning with enabled lockdep
@@ -9,7 +9,7 @@ Change-Id: Iafec5527d7f255c6224b14bd2a945cd1c3243773
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
-index b50c19f83ece..a6d174a03b4f 100644
+index b50c19f83ece2..a6d174a03b4fe 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/mvx_mmu.c
 @@ -866,7 +866,7 @@ struct mvx_mmu_pages *mvx_mmu_alloc_pages_dma_buf(struct device *dev,

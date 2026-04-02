@@ -1,4 +1,4 @@
-From f0ae31bae3a37cda1fff7e7499650391223fc809 Mon Sep 17 00:00:00 2001
+From 6bb0b87706b53b9beeb29356f1c3292246798549 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 11 Apr 2024 17:22:05 +0800
 Subject: [PATCH 0608/1239] swiotlb: adjust the size and segsize of io tlb
@@ -12,7 +12,7 @@ Change-Id: Ib2f787e448991e2bc4a6088e9d4175467d6c3428
  1 file changed, 4 insertions(+)
 
 diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 3dae0f592063..29a64f4d0b6f 100644
+index 3dae0f592063e..29a64f4d0b6f0 100644
 --- a/include/linux/swiotlb.h
 +++ b/include/linux/swiotlb.h
 @@ -23,7 +23,11 @@ struct scatterlist;

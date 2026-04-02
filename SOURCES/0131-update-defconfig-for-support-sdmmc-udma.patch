@@ -1,4 +1,4 @@
-From fb3351f37d1d15d74b55472bdd929ea86545080d Mon Sep 17 00:00:00 2001
+From d587e13dd8eb72d5bc1175f6d221fe5c3dc1d24b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Mon, 11 Sep 2023 20:43:17 +0800
 Subject: [PATCH 0131/1239] update defconfig for support sdmmc/udma
@@ -11,7 +11,7 @@ Change-Id: I27c08e1f5f08fdf27ede8b1d8d42a1ce4a18437b
  3 files changed, 17 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_fpga_1x4_defconfig b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
-index 0f8cc810c1e4..a9199b2ae807 100644
+index 0f8cc810c1e4e..a9199b2ae8077 100644
 --- a/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_1x4_defconfig
 @@ -128,12 +128,20 @@ CONFIG_MFD_SYSCON=y
@@ -36,7 +36,7 @@ index 0f8cc810c1e4..a9199b2ae807 100644
  # CONFIG_DPAA2_CONSOLE is not set
  CONFIG_GENERIC_PHY=y
 diff --git a/arch/riscv/configs/k1-x_fpga_2x2_defconfig b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
-index 0f8cc810c1e4..a9199b2ae807 100644
+index 0f8cc810c1e4e..a9199b2ae8077 100644
 --- a/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_2x2_defconfig
 @@ -128,12 +128,20 @@ CONFIG_MFD_SYSCON=y
@@ -61,7 +61,7 @@ index 0f8cc810c1e4..a9199b2ae807 100644
  # CONFIG_DPAA2_CONSOLE is not set
  CONFIG_GENERIC_PHY=y
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 1d9b7ad5d684..a9199b2ae807 100644
+index 1d9b7ad5d684c..a9199b2ae8077 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -134,6 +134,7 @@ CONFIG_MMC_SDHCI_PLTFM=y
