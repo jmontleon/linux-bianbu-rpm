@@ -173,18 +173,18 @@ Summary: The Linux kernel
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
 %define buildid .spacemit
-%define specrpmversion 6.18.23
-%define specversion 6.18.23
+%define specrpmversion 6.18.24
+%define specversion 6.18.24
 %define patchversion 6.18
 %define pkgrelease 200
 %define kversion 6
-%define tarfile_release 6.18.23
+%define tarfile_release 6.18.24
 # This is needed to do merge window version magic
 %define patchlevel 18
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease 200%{?buildid}%{?dist}
 # This defines the kabi tarball version
-%define kabiversion 6.18.23
+%define kabiversion 6.18.24
 
 # If this variable is set to 1, a bpf selftests build failure will cause a
 # fatal kernel package build error
