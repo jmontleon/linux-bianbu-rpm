@@ -1,4 +1,4 @@
-From 18152b450d6ec5a4bee9b8a4c5cbf5ee35c66b9f Mon Sep 17 00:00:00 2001
+From 388872a83e7a8c362866c4124020316f26d8e674 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 11 Apr 2024 17:33:56 +0800
 Subject: [PATCH 0602/1239] dts: k1-x_deb1: use PAD_1V8_DS0 for DVL1 and
@@ -10,7 +10,7 @@ Change-Id: I614ad3b87644b75b8b93cb1ef56ce6dc880a8565
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index d4497a4e15339..c1fe2113d1e17 100644
+index d4497a4e1533..c1fe2113d1e1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -502,7 +502,8 @@ &range GPIO_80  1 (MUX_MODE0 | EDGE_NONE | PULL_UP   | PAD_3V_DS4)
@@ -33,5 +33,5 @@ index d4497a4e15339..c1fe2113d1e17 100644
  		&range GPIO_125 3 (MUX_MODE0 | EDGE_NONE | PULL_DOWN | PAD_1V8_DS2)
  	>;
 -- 
-2.53.0
+2.54.0
 

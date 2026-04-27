@@ -1,4 +1,4 @@
-From a7e0261a71ac411f9c9873e4f4135839caa013c1 Mon Sep 17 00:00:00 2001
+From 625f78ffb619412f0f4d3b9bffc8f37acb984ef2 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Mon, 3 Jun 2024 16:41:45 +0800
 Subject: [PATCH 0778/1239] audio: add mclk config flow
@@ -10,7 +10,7 @@ Change-Id: Ib430cae631b81442f301b6bcce20c25deaf86ccf
  2 files changed, 88 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-card.c b/sound/soc/spacemit/spacemit-snd-card.c
-index 7538d229c43fe..77eb384f8d86e 100644
+index 7538d229c43f..77eb384f8d86 100644
 --- a/sound/soc/spacemit/spacemit-snd-card.c
 +++ b/sound/soc/spacemit/spacemit-snd-card.c
 @@ -21,6 +21,54 @@
@@ -90,7 +90,7 @@ index 7538d229c43fe..77eb384f8d86e 100644
  	asoc_simple_canonicalize_platform(dai_link->platforms, dai_link->cpus);
  
 diff --git a/sound/soc/spacemit/spacemit-snd-i2s.c b/sound/soc/spacemit/spacemit-snd-i2s.c
-index faca36129b356..36522fb909fea 100644
+index faca36129b35..36522fb909fe 100644
 --- a/sound/soc/spacemit/spacemit-snd-i2s.c
 +++ b/sound/soc/spacemit/spacemit-snd-i2s.c
 @@ -85,6 +85,7 @@ struct sspa_priv {
@@ -165,5 +165,5 @@ index faca36129b356..36522fb909fea 100644
  	if (dai->id == 0)
  	{
 -- 
-2.53.0
+2.54.0
 

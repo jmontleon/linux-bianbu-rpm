@@ -1,4 +1,4 @@
-From 6e8de553bad66a706d4122fe6e0b9609829e5835 Mon Sep 17 00:00:00 2001
+From c1b2a6bf844f1b89e5a995bc8bd8dfb05f75d539 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 14:16:48 +0800
 Subject: [PATCH 0940/1239] camera: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I173e1bfc3ecf27ca069ca4ba1734c69f582fbbd5
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
-index affac933649aa..606f8977f55a0 100644
+index affac933649a..606f8977f55a 100644
 --- a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 @@ -929,6 +929,7 @@ long k1xisp_pipe_ioctl_core(struct file *file, unsigned int cmd, unsigned long a
@@ -30,5 +30,5 @@ index affac933649aa..606f8977f55a0 100644
  		if (pipe_dev->isp_reg_mem[user_regs->mem_index].config) {
  			if (pipe_dev->isp_reg_mem[user_regs->mem_index].mem.fd != user_regs->mem.fd) {
 -- 
-2.53.0
+2.54.0
 

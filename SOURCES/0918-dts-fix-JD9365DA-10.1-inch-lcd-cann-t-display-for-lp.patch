@@ -1,4 +1,4 @@
-From 70d881709ec308d8c34e3d9007f72cd4df7d04b8 Mon Sep 17 00:00:00 2001
+From 5bfca736cf1d17e6c00945a6071161f69888115f Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Wed, 17 Jul 2024 20:15:16 +0800
 Subject: [PATCH 0918/1239] dts: fix JD9365DA 10.1 inch lcd cann't display for
@@ -12,7 +12,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  2 files changed, 61 insertions(+), 62 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index 0070f898c4efa..94c912b26f3a3 100644
+index 0070f898c4ef..94c912b26f3a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -239,12 +239,11 @@ panel2: panel2@0 {
@@ -31,7 +31,7 @@ index 0070f898c4efa..94c912b26f3a3 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
-index e7952c0d2104e..37b2ec4cc26d2 100644
+index e7952c0d2104..37b2ec4cc26d 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_jd9365da_mipi_1280x800.dtsi
 @@ -1,66 +1,66 @@
@@ -161,5 +161,5 @@ index e7952c0d2104e..37b2ec4cc26d2 100644
 +	};
  };};
 -- 
-2.53.0
+2.54.0
 

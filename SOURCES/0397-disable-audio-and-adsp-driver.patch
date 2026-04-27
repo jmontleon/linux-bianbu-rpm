@@ -1,4 +1,4 @@
-From 5411e3b4c5891803a30b26c5ef71d3b2fd963400 Mon Sep 17 00:00:00 2001
+From a96861b0131858bfe4543f37e5228ff7cec413f6 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 13 Jan 2024 03:38:41 +0800
 Subject: [PATCH 0397/1239] disable audio and adsp driver
@@ -9,7 +9,7 @@ Change-Id: I36aad6782d2a6076c32a6a2f825353dc82b17659
  1 file changed, 5 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index a0fc0ddb38d46..848cbbc09cc9e 100644
+index a0fc0ddb38d4..848cbbc09cc9 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -199,7 +199,6 @@ CONFIG_AIC_LOADFW_SUPPORT=m
@@ -32,5 +32,5 @@ index a0fc0ddb38d46..848cbbc09cc9e 100644
  CONFIG_LOGO=y
  CONFIG_USB_HIDDEV=y
 -- 
-2.53.0
+2.54.0
 

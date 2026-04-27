@@ -1,4 +1,4 @@
-From 25cb1534996e8cfd156f85470ab92f3c3cced571 Mon Sep 17 00:00:00 2001
+From d199da0fb1a63ff58604fea08a9b8f4c949d9c06 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 14 Mar 2024 18:19:39 +0800
 Subject: [PATCH 0513/1239] mmc: sdhci-of-k1x: support disable caps
@@ -9,7 +9,7 @@ Change-Id: I53e6314b72e6a795463dfff2d2cbfec3fb0f602a
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 4abbb4e89b68f..f6789060bb98e 100644
+index 4abbb4e89b68..f6789060bb98 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -351,7 +351,7 @@ static u32 spacemit_handle_interrupt(struct sdhci_host *host, u32 intmask)
@@ -40,5 +40,5 @@ index 4abbb4e89b68f..f6789060bb98e 100644
  		pr_debug("%s: get card pinctrl\n", mmc_hostname(host->mmc));
  		spacemit->pinctrl = devm_pinctrl_get(&pdev->dev);
 -- 
-2.53.0
+2.54.0
 

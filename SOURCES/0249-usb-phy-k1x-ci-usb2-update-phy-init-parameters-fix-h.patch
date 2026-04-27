@@ -1,4 +1,4 @@
-From 87b20d863a599544171f87d404c99d1141a96606 Mon Sep 17 00:00:00 2001
+From 6589e6f0d59aef1d939e4ef8f9ebe8dbe3dc25f8 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 21 Dec 2023 21:21:44 +0800
 Subject: [PATCH 0249/1239] usb: phy-k1x-ci-usb2: update phy init parameters,
@@ -10,7 +10,7 @@ Change-Id: Id2c81fc43629f46745d105792ab6e2fc504f479f
  1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index 7f2a36cb43c22..4ef932dc80e3d 100755
+index 7f2a36cb43c2..4ef932dc80e3 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -27,6 +27,7 @@
@@ -58,5 +58,5 @@ index 7f2a36cb43c22..4ef932dc80e3d 100755
  	if (mv_phy == NULL) {
  		dev_err(&pdev->dev, "failed to allocate memory\n");
 -- 
-2.53.0
+2.54.0
 

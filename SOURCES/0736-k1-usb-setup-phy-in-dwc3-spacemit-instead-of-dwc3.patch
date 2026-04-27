@@ -1,4 +1,4 @@
-From 28cb57cfb82538d227e644f759f03f81d883c47e Mon Sep 17 00:00:00 2001
+From 24ea21eaeb3c7055b83954440be23acf87ad3710 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 22 May 2024 11:27:04 +0800
 Subject: [PATCH 0736/1239] k1: usb: setup phy in dwc3-spacemit instead of dwc3
@@ -9,7 +9,7 @@ Change-Id: I61bd504159dda16d32fc1bf4010f4b26fbcc82cd
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 50fc9bc18e81d..599bf9f25906e 100644
+index 50fc9bc18e81..599bf9f25906 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1873,6 +1873,9 @@ usbdrd3: usb3@0 {
@@ -33,5 +33,5 @@ index 50fc9bc18e81d..599bf9f25906e 100644
  		};
  
 -- 
-2.53.0
+2.54.0
 

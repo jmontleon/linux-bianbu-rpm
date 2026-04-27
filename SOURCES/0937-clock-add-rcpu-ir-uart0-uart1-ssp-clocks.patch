@@ -1,4 +1,4 @@
-From c3ecb28c0471b9bad89953379d8e605011d27633 Mon Sep 17 00:00:00 2001
+From e943cd66c57e7782a68088dcbbc17af88b934d12 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 13 Aug 2024 19:30:42 +0800
 Subject: [PATCH 0937/1239] clock: add rcpu ir/uart0/uart1/ssp clocks
@@ -10,7 +10,7 @@ Change-Id: I5c45b1c25df8a86c0935b842a530f135d9f908ea
  2 files changed, 45 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index b018c30608954..cf6f08326559b 100644
+index b018c3060895..cf6f08326559 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -170,6 +170,11 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -81,7 +81,7 @@ index b018c30608954..cf6f08326559b 100644
  	.num = CLK_MAX_NO,
  };
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 183c435ddf183..df27435111dd8 100644
+index 183c435ddf18..df27435111dd 100644
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -196,7 +196,13 @@
@@ -100,5 +100,5 @@ index 183c435ddf183..df27435111dd8 100644
 +#define CLK_MAX_NO      192
  #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
 -- 
-2.53.0
+2.54.0
 

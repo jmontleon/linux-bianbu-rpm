@@ -1,4 +1,4 @@
-From 02015e8830984a8874988516aa0e760421b6568f Mon Sep 17 00:00:00 2001
+From 70bb7ae506b3719a7246bf62b26178a0e7ddfbec Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 10:31:24 -0400
 Subject: [PATCH 0012/1239] Revert "reset: spacemit: add support for SpacemiT
@@ -14,7 +14,7 @@ This reverts commit c479d7cf06c3d65532442fa368b058e05dbba1a2.
  delete mode 100644 drivers/reset/reset-spacemit.c
 
 diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index b3b9e0f9d8c48..01269c27cb5dd 100644
+index b3b9e0f9d8c4..01269c27cb5d 100644
 --- a/drivers/reset/Kconfig
 +++ b/drivers/reset/Kconfig
 @@ -286,15 +286,6 @@ config RESET_SOCFPGA
@@ -34,7 +34,7 @@ index b3b9e0f9d8c48..01269c27cb5dd 100644
  	bool "Sunplus SoCs Reset Driver" if COMPILE_TEST
  	default ARCH_SUNPLUS
 diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index f7934f9fb90bb..bea92ca9d0458 100644
+index f7934f9fb90b..bea92ca9d045 100644
 --- a/drivers/reset/Makefile
 +++ b/drivers/reset/Makefile
 @@ -37,7 +37,6 @@ obj-$(CONFIG_RESET_RZV2H_USB2PHY) += reset-rzv2h-usb2phy.o
@@ -47,7 +47,7 @@ index f7934f9fb90bb..bea92ca9d0458 100644
  obj-$(CONFIG_RESET_TH1520) += reset-th1520.o
 diff --git a/drivers/reset/reset-spacemit.c b/drivers/reset/reset-spacemit.c
 deleted file mode 100644
-index e1272aff28f74..0000000000000
+index e1272aff28f7..000000000000
 --- a/drivers/reset/reset-spacemit.c
 +++ /dev/null
 @@ -1,304 +0,0 @@
@@ -356,7 +356,7 @@ index e1272aff28f74..0000000000000
 -MODULE_DESCRIPTION("SpacemiT reset controller driver");
 -MODULE_LICENSE("GPL");
 diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
-index 331cc1d35bbb7..3481602950066 100644
+index 331cc1d35bbb..348160295006 100644
 --- a/include/soc/spacemit/k1-syscon.h
 +++ b/include/soc/spacemit/k1-syscon.h
 @@ -116,34 +116,4 @@
@@ -395,5 +395,5 @@ index 331cc1d35bbb7..3481602950066 100644
 -
  #endif /* __SOC_K1_SYSCON_H__ */
 -- 
-2.53.0
+2.54.0
 

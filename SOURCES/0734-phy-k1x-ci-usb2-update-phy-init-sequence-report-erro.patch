@@ -1,4 +1,4 @@
-From 218186e85c6428d67480691c5c9c68e8f633bbf6 Mon Sep 17 00:00:00 2001
+From fbae5718281a86a0023921cd71db57ab8ed0665a Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 16:34:51 +0800
 Subject: [PATCH 0734/1239] phy-k1x-ci-usb2: update phy init sequence, report
@@ -11,7 +11,7 @@ Change-Id: Ie258fcac99c1d8cffaa68683fb5ae4e61d783062
  2 files changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index 116e8fd84f4b4..f252707e32f51 100755
+index 116e8fd84f4b..f252707e32f5 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -29,8 +29,6 @@ static int mv_usb2_phy_init(struct usb_phy *phy)
@@ -51,7 +51,7 @@ index 116e8fd84f4b4..f252707e32f51 100755
  	/* auto clear host disc*/
  	temp = readl(base + USB2_PHY_REG04);
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.h b/drivers/usb/phy/phy-k1x-ci-usb2.h
-index 2a001de2f4561..fc8d21c2da876 100755
+index 2a001de2f456..fc8d21c2da87 100755
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.h
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.h
 @@ -21,6 +21,15 @@
@@ -71,5 +71,5 @@ index 2a001de2f4561..fc8d21c2da876 100755
  
  struct mv_usb2_phy {
 -- 
-2.53.0
+2.54.0
 

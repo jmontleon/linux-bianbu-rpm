@@ -1,4 +1,4 @@
-From 80065725e66333264c082c466c840c24c48129f4 Mon Sep 17 00:00:00 2001
+From 165cf96ffa6e549819bfa44ab438e71f832bf2ed Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 6 Dec 2023 10:49:10 +0800
 Subject: [PATCH 0203/1239] k1x-uart:add clock&reset in uart driver
@@ -10,7 +10,7 @@ Change-Id: I67f2f59ba678072295b57e23f5eed90e613c9b77
  2 files changed, 101 insertions(+), 67 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 666a5373682ab..49ba46a38646b 100644
+index 666a5373682a..49ba46a38646 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -16,9 +16,14 @@ / {
@@ -198,7 +198,7 @@ index 666a5373682ab..49ba46a38646b 100644
  			compatible = "spacemit,pdma-1.0";
  			reg = <0x0 0xd4000000 0x0 0x4000>;
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 4bf9343be8eeb..44bd8aa1a3531 100644
+index 4bf9343be8ee..44bd8aa1a353 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -34,6 +34,7 @@
@@ -286,5 +286,5 @@ index 4bf9343be8eeb..44bd8aa1a3531 100644
  	clk_unprepare(sport->clk);
  	clk_put(sport->clk);
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From ef99d147c30a38a6a0ed3e0109d1bc5a1be8551c Mon Sep 17 00:00:00 2001
+From ddc108ccc739b90200b13e91240d72382e57f81b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 23 Dec 2023 17:42:43 +0800
 Subject: [PATCH 0261/1239] sync dts with device/board.dts
@@ -10,7 +10,7 @@ Change-Id: Idf9ea26e764bb4779b06dd60a769e69ec612ec67
  2 files changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index f8c0f04603336..baed67ba0147f 100644
+index f8c0f0460333..baed67ba0147 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -71,15 +71,16 @@ core3 {
@@ -55,7 +55,7 @@ index f8c0f04603336..baed67ba0147f 100644
  
  &qspi {
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
-index 78207f36e6ebe..e459306f6f6eb 100644
+index 78207f36e6eb..e459306f6f6e 100644
 --- a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9911c_mipi.dtsi
 @@ -1,6 +1,6 @@
@@ -67,5 +67,5 @@ index 78207f36e6ebe..e459306f6f6eb 100644
  		dsi-work-mode = <1>; /* video burst mode*/
  		dsi-lane-number = <4>;
 -- 
-2.53.0
+2.54.0
 

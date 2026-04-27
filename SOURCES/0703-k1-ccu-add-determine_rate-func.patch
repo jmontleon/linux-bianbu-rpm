@@ -1,4 +1,4 @@
-From d872a2515c2a0a2763010ce3f38403962a898b88 Mon Sep 17 00:00:00 2001
+From ff3aa70e2422ccaf1089014d8fe967c1f63de17e Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:23:48 +0800
 Subject: [PATCH 0703/1239] k1: ccu: add determine_rate() func
@@ -12,7 +12,7 @@ Change-Id: If87c09b8666c161bc76ac24b5656df7ffe954f2d
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index efb97306aa075..92927998d7672 100755
+index efb97306aa07..92927998d767 100755
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -304,6 +304,11 @@ unsigned long ccu_mix_calc_best_rate(struct clk_hw *hw, unsigned long rate, u32
@@ -36,5 +36,5 @@ index efb97306aa075..92927998d7672 100755
  	.recalc_rate = ccu_mix_recalc_rate,
  	.set_rate	 = ccu_mix_set_rate,
 -- 
-2.53.0
+2.54.0
 

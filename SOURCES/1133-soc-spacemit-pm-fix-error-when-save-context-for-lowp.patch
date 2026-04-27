@@ -1,4 +1,4 @@
-From 7fe41ff7843bda7534f054e52022a5a48f68f7f5 Mon Sep 17 00:00:00 2001
+From daf1c35ffc0fe8a8a71067bcc2eed12d43ae4dfc Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:17:12 +0800
 Subject: [PATCH 1133/1239] soc: spacemit-pm: fix error when save context for
@@ -11,7 +11,7 @@ Change-Id: I0423a5eebb3cdcfcbb33b9b6ad858a3dac7a5635
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soc/spacemit/pm/platform_pm.c b/drivers/soc/spacemit/pm/platform_pm.c
-index 7498d689d86f9..4175e127ea3d4 100644
+index 7498d689d86f..4175e127ea3d 100644
 --- a/drivers/soc/spacemit/pm/platform_pm.c
 +++ b/drivers/soc/spacemit/pm/platform_pm.c
 @@ -15,7 +15,8 @@
@@ -36,7 +36,7 @@ index 7498d689d86f9..4175e127ea3d4 100644
  	csr_write(CSR_IE, context->ie);
  
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index 5346153746fdc..7722687ea32f5 100644
+index 5346153746fd..7722687ea32f 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -14,6 +14,7 @@
@@ -48,5 +48,5 @@ index 5346153746fdc..7722687ea32f5 100644
  #include <linux/regmap.h>
  #include <linux/pm_qos.h>
 -- 
-2.53.0
+2.54.0
 

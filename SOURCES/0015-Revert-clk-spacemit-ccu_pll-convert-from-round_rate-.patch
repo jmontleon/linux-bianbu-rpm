@@ -1,4 +1,4 @@
-From 90d9590a86db261cf69523d93a4302493ead356d Mon Sep 17 00:00:00 2001
+From f0dd8a85daf61d0e4279096cf4ad0bca3c336bf4 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 17:38:20 -0400
 Subject: [PATCH 0015/1239] Revert "clk: spacemit: ccu_pll: convert from
@@ -10,7 +10,7 @@ This reverts commit d02c71cba7bba453d233a49497412ddbf2d44871.
  1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
-index d92f0dae65a49..45f540073a656 100644
+index d92f0dae65a4..45f540073a65 100644
 --- a/drivers/clk/spacemit/ccu_pll.c
 +++ b/drivers/clk/spacemit/ccu_pll.c
 @@ -125,14 +125,12 @@ static unsigned long ccu_pll_recalc_rate(struct clk_hw *hw,
@@ -40,5 +40,5 @@ index d92f0dae65a49..45f540073a656 100644
  	.is_enabled	= ccu_pll_is_enabled,
  };
 -- 
-2.53.0
+2.54.0
 

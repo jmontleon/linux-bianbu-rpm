@@ -1,4 +1,4 @@
-From 5a7fcfb4eb483dd0cab4646a1e89e53bd7b7827e Mon Sep 17 00:00:00 2001
+From 412ec134d86eb4beafd3fb695d40ce0781e2fb3a Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 12 Jan 2024 23:17:17 +0800
 Subject: [PATCH 0391/1239] clear compile warning
@@ -9,7 +9,7 @@ Change-Id: Ic6ce4c85b15485d1d5576f6604d3a15441b7f31a
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
-index 6ea4ebd19322a..1031f50197a8d 100644
+index 6ea4ebd19322..1031f50197a8 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/mvx_dvfs.c
 @@ -970,7 +970,7 @@ static int vpu_set_cur_state(struct thermal_cooling_device *cdev,
@@ -22,5 +22,5 @@ index 6ea4ebd19322a..1031f50197a8d 100644
      .get_cur_state		= vpu_get_cur_state,
      .set_cur_state		= vpu_set_cur_state,
 -- 
-2.53.0
+2.54.0
 

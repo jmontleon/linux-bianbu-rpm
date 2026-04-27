@@ -1,4 +1,4 @@
-From cb92d4b9cf27d99e05a34d1c6751a1b5aa9d039c Mon Sep 17 00:00:00 2001
+From 4e2e06d2340142f7c775ff9616939b483aa4f313 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Wed, 29 Nov 2023 16:37:27 +0800
 Subject: [PATCH 0197/1239] display: Add spacemit drm debugfs node
@@ -9,7 +9,7 @@ Change-Id: I263458ec60889950ac1e89033e90765c9e3560f7
  1 file changed, 113 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 2f987b91ad9ae..3a9089f83a656 100644
+index 2f987b91ad9a..3a9089f83a65 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -7,6 +7,7 @@
@@ -173,5 +173,5 @@ index 2f987b91ad9ae..3a9089f83a656 100644
  		DRM_WARN("drm device is not available, no shutdown\n");
  		return;
 -- 
-2.53.0
+2.54.0
 

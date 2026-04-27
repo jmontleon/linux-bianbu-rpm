@@ -1,4 +1,4 @@
-From 1185fbb9f49ee22b139efec89bfbefdb6a589437 Mon Sep 17 00:00:00 2001
+From 265a0a65d85374f4697c216136cbcee4e21bacda Mon Sep 17 00:00:00 2001
 From: fuqiang <qiang.fu@spacemit.com>
 Date: Thu, 29 Jun 2023 20:32:44 +0800
 Subject: [PATCH 0088/1239] vpu: add device caps config
@@ -9,7 +9,7 @@ Change-Id: I5d59a43ac5087bbb1614ee561cd6f93baa3c6927
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
-index 1735b3a7ee6c0..4e49976cd1aaa 100755
+index 1735b3a7ee6c..4e49976cd1aa 100755
 --- a/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 +++ b/drivers/media/vpu/if/v4l2/mvx_ext_v4l2.c
 @@ -113,7 +113,6 @@ int mvx_ext_if_construct(struct mvx_ext_if *ext,
@@ -29,5 +29,5 @@ index 1735b3a7ee6c0..4e49976cd1aaa 100755
  	ret = video_register_device(&ext->vdev, VFL_TYPE_VIDEO, -1);
  	if (ret != 0) {
 -- 
-2.53.0
+2.54.0
 

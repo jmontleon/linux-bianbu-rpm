@@ -1,4 +1,4 @@
-From 2bf619678732cdd9fe4b00c442ca173f052387dc Mon Sep 17 00:00:00 2001
+From b7a97f0b5ba81b6fa6908c47e938d2e5692acf89 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 12:27:58 +0800
 Subject: [PATCH 1164/1239] defconfig: disable some modules which not ready
@@ -9,7 +9,7 @@ Change-Id: Ie567a3c635b090eb905a33ea083db91d05bfae75
  1 file changed, 7 insertions(+), 220 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index e8e44df6d84a0..0cdba02bc954d 100644
+index e8e44df6d84a..0cdba02bc954 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -321,7 +321,6 @@ CONFIG_IP_NF_MANGLE=m
@@ -449,5 +449,5 @@ index e8e44df6d84a0..0cdba02bc954d 100644
  CONFIG_DMA_CMA=y
  CONFIG_IRQ_POLL=y
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 2b8a39def50b4df5b232eb202e28e1b5b2b7d6ec Mon Sep 17 00:00:00 2001
+From 2f916913b1c19e0df71d8f84ba3da884179ef37b Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 2 Dec 2024 20:37:51 +0800
 Subject: [PATCH 1171/1239] i2c: spacemit/k1: fix strcpy func in i2c driver
@@ -9,7 +9,7 @@ Change-Id: I2126d941fe0a82b49299fbbed5c16c50f17674ef
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index cece92ecb6531..58c3e11b85005 100644
+index cece92ecb653..58c3e11b8500 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -1964,7 +1964,7 @@ static int spacemit_i2c_probe(struct platform_device *pdev)
@@ -22,5 +22,5 @@ index cece92ecb6531..58c3e11b85005 100644
  
  	if (!spacemit_i2c->dma_disable)
 -- 
-2.53.0
+2.54.0
 

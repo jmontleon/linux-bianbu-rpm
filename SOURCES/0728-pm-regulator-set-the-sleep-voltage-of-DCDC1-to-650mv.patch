@@ -1,4 +1,4 @@
-From 570c767f7554ee7161e5449c2313450742174180 Mon Sep 17 00:00:00 2001
+From 53138469ce9c4a76bd8ae7a047503875f5ecfc00 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 13 Jun 2024 15:54:26 +0800
 Subject: [PATCH 0728/1239] pm:regulator:set the sleep voltage of DCDC1 to
@@ -13,7 +13,7 @@ Change-Id: I5625c164575c557bdcae7198658411da8ffd6189
  4 files changed, 36 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 39ae6ed03a40a..6753e98c05060 100644
+index 39ae6ed03a40..6753e98c0506 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -346,6 +346,11 @@ dcdc_1: DCDC_REG1 {
@@ -29,7 +29,7 @@ index 39ae6ed03a40a..6753e98c05060 100644
  
  			dcdc_2: DCDC_REG2 {
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index b96323366cf0c..4e28ef0025f35 100644
+index b96323366cf0..4e28ef0025f3 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -17,6 +17,31 @@
@@ -81,7 +81,7 @@ index b96323366cf0c..4e28ef0025f35 100644
  	int i;
  
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 78d0b209e525a..e519487be838f 100644
+index 78d0b209e525..e519487be838 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -197,6 +197,7 @@ struct mfd_match_data {
@@ -93,7 +93,7 @@ index 78d0b209e525a..e519487be838f 100644
  	const char *name;
  };
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 43e4506b221ce..5266e47be514e 100644
+index 43e4506b221c..5266e47be514 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -83,6 +83,8 @@ enum SPM8821_reg {
@@ -123,5 +123,5 @@ index 43e4506b221ce..5266e47be514e 100644
  
  #endif /* __SPM8821_H__ */
 -- 
-2.53.0
+2.54.0
 

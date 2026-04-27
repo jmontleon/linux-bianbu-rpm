@@ -1,4 +1,4 @@
-From 1aa87646b99c2f91f357218aac36a31ee618fef3 Mon Sep 17 00:00:00 2001
+From cb7cf1adf8896e5bcd2c370e0412ab4d12348309 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 7 May 2024 11:00:08 +0800
 Subject: [PATCH 0651/1239] k1x-uart3:fix compatible error in dts
@@ -9,7 +9,7 @@ Change-Id: I19189e8369ecdadba8caaba3bdfe674a5334dd86
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index b8477559d6939..670eea84e9863 100644
+index b8477559d693..670eea84e986 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -826,7 +826,7 @@ uart2: uart@d4017100 {
@@ -22,5 +22,5 @@ index b8477559d6939..670eea84e9863 100644
  			interrupt-parent = <&intc>;
  			interrupts = <45>;
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From b311e21aa61fa89d0156257fb38693fc84edf85e Mon Sep 17 00:00:00 2001
+From 4cee8ced71ed4d5a5b36d42ac02c21860e0f9d7f Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Tue, 18 Jun 2024 17:33:53 +0800
 Subject: [PATCH 0742/1239] gpu: enable gpu in linux6.6
@@ -11,7 +11,7 @@ Change-Id: I73c1f7c0f518e757015bbc112e34e2ab6bf5c5fd
  3 files changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 117aab0972b1a..bf4010ec2dce8 100644
+index 117aab0972b1..bf4010ec2dce 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -552,6 +552,7 @@ CONFIG_SPACEMIT_K1X_SENSOR_V2=y
@@ -23,7 +23,7 @@ index 117aab0972b1a..bf4010ec2dce8 100644
  CONFIG_BACKLIGHT_CLASS_DEVICE=y
  CONFIG_BACKLIGHT_PWM=y
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
-index 4017051a68eea..00b78d5fb6257 100644
+index 4017051a68ee..00b78d5fb625 100644
 --- a/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_drv.c
 @@ -2513,7 +2513,9 @@ static struct drm_driver nulldisp_drm_driver = {
@@ -37,7 +37,7 @@ index 4017051a68eea..00b78d5fb6257 100644
  #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0))
  	.gem_prime_res_obj		= nulldisp_gem_prime_res_obj,
 diff --git a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
-index a5e8a742bcd1d..02073914ac692 100644
+index a5e8a742bcd1..02073914ac69 100644
 --- a/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
 +++ b/drivers/gpu/drm/nulldisp/drm_nulldisp_netlink.c
 @@ -172,7 +172,12 @@ static struct nlpvrdpy *nlpvrdpy_lookup(u32 minor)
@@ -70,5 +70,5 @@ index a5e8a742bcd1d..02073914ac692 100644
  				struct genl_info *info)
  {
 -- 
-2.53.0
+2.54.0
 

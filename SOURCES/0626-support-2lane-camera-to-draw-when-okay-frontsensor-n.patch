@@ -1,4 +1,4 @@
-From 048e495f0038c2b3d5695e1238138803b267e42a Mon Sep 17 00:00:00 2001
+From 41b31c1bb7c4567a1a616bffcf5faf87f1ddcb5f Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Thu, 18 Apr 2024 15:10:14 +0800
 Subject: [PATCH 0626/1239] support 2lane camera to draw when okay frontsensor
@@ -12,7 +12,7 @@ Change-Id: I757b3f06bab83d99dceb280692f3bd7eeb6e1fad
  3 files changed, 32 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 967591b2aba0c..3d0e4029cff41 100644
+index 967591b2aba0..3d0e4029cff4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -882,10 +882,19 @@ &backsensor_aux {
@@ -36,7 +36,7 @@ index 967591b2aba0c..3d0e4029cff41 100644
  };
  &csiphy0 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 9462616627f5e..c94f6ee3666fa 100644
+index 9462616627f5..c94f6ee3666f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -843,10 +843,19 @@ &backsensor_aux {
@@ -60,7 +60,7 @@ index 9462616627f5e..c94f6ee3666fa 100644
  };
  &csiphy0 {
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index 343737d19b3f7..8635db4d48e83 100755
+index 343737d19b3f..8635db4d48e8 100755
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -1198,8 +1198,8 @@ static int camsnr_of_parse(struct cam_sensor_device *sensor)
@@ -113,5 +113,5 @@ index 343737d19b3f7..8635db4d48e83 100755
  	sensor->pwdn = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_HIGH);
  	if (IS_ERR(sensor->pwdn)) {
 -- 
-2.53.0
+2.54.0
 

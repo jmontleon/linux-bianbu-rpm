@@ -1,4 +1,4 @@
-From 95a168edede5ec10547475a89cc3ecda6ee039d3 Mon Sep 17 00:00:00 2001
+From 11c5ec09b29c4f3c378339743ce6fda675f2097b Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 28 May 2024 13:48:40 +0800
 Subject: [PATCH 0882/1239] pcie: supporting PCIe interface power management
@@ -11,7 +11,7 @@ Change-Id: I6c22d6684c791801793a12c1548124a124c75da6
  1 file changed, 28 insertions(+)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 22290dec4ffe2..cbdf51ef0be40 100644
+index 22290dec4ffe..cbdf51ef0be4 100644
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -160,6 +160,7 @@ struct k1x_pcie {
@@ -85,5 +85,5 @@ index 22290dec4ffe2..cbdf51ef0be40 100644
  	k1x_pcie_host_init(pp);
  	dw_pcie_setup_rc(pp);
 -- 
-2.53.0
+2.54.0
 

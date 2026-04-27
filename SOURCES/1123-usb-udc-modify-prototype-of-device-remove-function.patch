@@ -1,4 +1,4 @@
-From 8c76740b7d73c79a8250e451d4517f475d96189d Mon Sep 17 00:00:00 2001
+From 078cc15e521f00ba5c90139afe0055c373993177 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:57:48 +0800
 Subject: [PATCH 1123/1239] usb: udc: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I2ca660fe2188a28aa147045cf029983cd935e103
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 157a0d90dac21..84a3a4d4b2aa3 100644
+index 157a0d90dac2..84a3a4d4b2aa 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -32,7 +32,7 @@
@@ -41,5 +41,5 @@ index 157a0d90dac21..84a3a4d4b2aa3 100644
  
  static int mv_udc_dt_parse(struct platform_device *pdev,
 -- 
-2.53.0
+2.54.0
 

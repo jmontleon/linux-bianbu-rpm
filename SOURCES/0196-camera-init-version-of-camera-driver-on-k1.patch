@@ -1,4 +1,4 @@
-From eecc138f1c8b8c6a25ac4943c8906b7cba2101f6 Mon Sep 17 00:00:00 2001
+From 055ef806faa9490b77b8b66788e2c0499895cde6 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Wed, 15 Nov 2023 10:49:47 +0800
 Subject: [PATCH 0196/1239] camera: init version of camera driver on k1
@@ -150,7 +150,7 @@ Change-Id: I3356ee5c532a805138e7f8fd7ca5e2456f05a85d
  create mode 100755 include/uapi/media/k1x/k1x_videodev2.h
 
 diff --git a/drivers/media/platform/spacemit/Kconfig b/drivers/media/platform/spacemit/Kconfig
-index 4cc04c56cab03..a31a599b320c7 100644
+index 4cc04c56cab0..a31a599b320c 100644
 --- a/drivers/media/platform/spacemit/Kconfig
 +++ b/drivers/media/platform/spacemit/Kconfig
 @@ -4,3 +4,4 @@ comment "Spacemit media platform drivers"
@@ -159,7 +159,7 @@ index 4cc04c56cab03..a31a599b320c7 100644
  source "drivers/media/platform/spacemit/v2d/Kconfig"
 +source "drivers/media/platform/spacemit/camera/Kconfig"
 diff --git a/drivers/media/platform/spacemit/Makefile b/drivers/media/platform/spacemit/Makefile
-index e2f0c3052a644..cc22a9f000ebb 100644
+index e2f0c3052a64..cc22a9f000eb 100644
 --- a/drivers/media/platform/spacemit/Makefile
 +++ b/drivers/media/platform/spacemit/Makefile
 @@ -1,3 +1,4 @@
@@ -169,7 +169,7 @@ index e2f0c3052a644..cc22a9f000ebb 100644
 +obj-y += camera/
 diff --git a/drivers/media/platform/spacemit/camera/Kconfig b/drivers/media/platform/spacemit/camera/Kconfig
 new file mode 100755
-index 0000000000000..a7d90b3603c2f
+index 000000000000..a7d90b3603c2
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/Kconfig
 @@ -0,0 +1,56 @@
@@ -231,7 +231,7 @@ index 0000000000000..a7d90b3603c2f
 +      Enable support for sensor v2
 diff --git a/drivers/media/platform/spacemit/camera/Makefile b/drivers/media/platform/spacemit/camera/Makefile
 new file mode 100755
-index 0000000000000..1bb84e6b437ad
+index 000000000000..1bb84e6b437a
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/Makefile
 @@ -0,0 +1,36 @@
@@ -273,7 +273,7 @@ index 0000000000000..1bb84e6b437ad
 +#leds-aw36515-objs += flash/leds-aw36515.o
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 new file mode 100755
-index 0000000000000..d631bab34436c
+index 000000000000..d631bab34436
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.c
 @@ -0,0 +1,863 @@
@@ -1142,7 +1142,7 @@ index 0000000000000..d631bab34436c
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
 new file mode 100755
-index 0000000000000..e54587c6f0f29
+index 000000000000..e54587c6f0f2
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_drv.h
 @@ -0,0 +1,224 @@
@@ -1372,7 +1372,7 @@ index 0000000000000..e54587c6f0f29
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 new file mode 100755
-index 0000000000000..917877aa63ecf
+index 000000000000..917877aa63ec
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.c
 @@ -0,0 +1,353 @@
@@ -1731,7 +1731,7 @@ index 0000000000000..917877aa63ecf
 +}
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
 new file mode 100755
-index 0000000000000..65db3b2711f39
+index 000000000000..65db3b2711f3
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/ccic_hwreg.h
 @@ -0,0 +1,237 @@
@@ -1974,7 +1974,7 @@ index 0000000000000..65db3b2711f39
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 new file mode 100755
-index 0000000000000..d962b0d510277
+index 000000000000..d962b0d51027
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.c
 @@ -0,0 +1,364 @@
@@ -2344,7 +2344,7 @@ index 0000000000000..d962b0d510277
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h
 new file mode 100755
-index 0000000000000..1185348817304
+index 000000000000..118534881730
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/csiphy.h
 @@ -0,0 +1,25 @@
@@ -2375,7 +2375,7 @@ index 0000000000000..1185348817304
 +#endif /* ifndef __CSIPHY_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c
 new file mode 100755
-index 0000000000000..a2ffe5f8a2d4b
+index 000000000000..a2ffe5f8a2d4
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.c
 @@ -0,0 +1,747 @@
@@ -3128,7 +3128,7 @@ index 0000000000000..a2ffe5f8a2d4b
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h
 new file mode 100755
-index 0000000000000..2244e8619ef9d
+index 000000000000..2244e8619ef9
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_drv.h
 @@ -0,0 +1,110 @@
@@ -3244,7 +3244,7 @@ index 0000000000000..2244e8619ef9d
 +#endif /* ifndef __DPTC_DRV_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h
 new file mode 100755
-index 0000000000000..d00e403c69d67
+index 000000000000..d00e403c69d6
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_ccic/dptc_pll_setting.h
 @@ -0,0 +1,56 @@
@@ -3306,7 +3306,7 @@ index 0000000000000..d00e403c69d67
 +#endif /*DPTC_PLL_SETTING_H_ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c
 new file mode 100755
-index 0000000000000..bb39ce4e1e3e8
+index 000000000000..bb39ce4e1e3e
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp-v2p0.c
 @@ -0,0 +1,555 @@
@@ -3867,7 +3867,7 @@ index 0000000000000..bb39ce4e1e3e8
 +};
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c
 new file mode 100755
-index 0000000000000..58320d177d3e9
+index 000000000000..58320d177d3e
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.c
 @@ -0,0 +1,166 @@
@@ -4039,7 +4039,7 @@ index 0000000000000..58320d177d3e9
 +#endif /* CONFIG_COMPAT */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h
 new file mode 100755
-index 0000000000000..ddb6195248187
+index 000000000000..ddb619524818
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_compat_ioctl32.h
 @@ -0,0 +1,12 @@
@@ -4057,7 +4057,7 @@ index 0000000000000..ddb6195248187
 +#endif /* end of include guard: __CPP_COMPAT_IOCTL32_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c
 new file mode 100755
-index 0000000000000..1ee2d26914c95
+index 000000000000..1ee2d26914c9
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.c
 @@ -0,0 +1,250 @@
@@ -4313,7 +4313,7 @@ index 0000000000000..1ee2d26914c95
 +}
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h
 new file mode 100755
-index 0000000000000..e325f539f7bb9
+index 000000000000..e325f539f7bb
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_dmabuf.h
 @@ -0,0 +1,85 @@
@@ -4404,7 +4404,7 @@ index 0000000000000..e325f539f7bb9
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 new file mode 100755
-index 0000000000000..2b65726e1314a
+index 000000000000..2b65726e1314
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.c
 @@ -0,0 +1,831 @@
@@ -5241,7 +5241,7 @@ index 0000000000000..2b65726e1314a
 +EXPORT_SYMBOL(cpp_iommu_unregister);
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h
 new file mode 100755
-index 0000000000000..33a7959dceb92
+index 000000000000..33a7959dceb9
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/cpp_iommu.h
 @@ -0,0 +1,73 @@
@@ -5320,7 +5320,7 @@ index 0000000000000..33a7959dceb92
 +#endif /* ifndef __CPP_IOMMU_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 new file mode 100755
-index 0000000000000..509130104a486
+index 000000000000..509130104a48
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 @@ -0,0 +1,1451 @@
@@ -6777,7 +6777,7 @@ index 0000000000000..509130104a486
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h
 new file mode 100755
-index 0000000000000..907da027f0d1c
+index 000000000000..907da027f0d1
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.h
 @@ -0,0 +1,188 @@
@@ -6971,7 +6971,7 @@ index 0000000000000..907da027f0d1c
 +#endif /* ifndef __K1X_CPP_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h
 new file mode 100755
-index 0000000000000..0ecf6e002f003
+index 000000000000..0ecf6e002f00
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-iommu.h
 @@ -0,0 +1,37 @@
@@ -7014,7 +7014,7 @@ index 0000000000000..0ecf6e002f003
 +#endif /* ifndef __REGS_CPP_IOMMU_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h
 new file mode 100755
-index 0000000000000..c2fc88aecde56
+index 000000000000..c2fc88aecde5
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/regs-cpp-v2p0.h
 @@ -0,0 +1,147 @@
@@ -7167,7 +7167,7 @@ index 0000000000000..c2fc88aecde56
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h b/drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h
 new file mode 100755
-index 0000000000000..6fdd9bf10d176
+index 000000000000..6fdd9bf10d17
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/regs-fbc-v2p0.h
 @@ -0,0 +1,70 @@
@@ -7243,7 +7243,7 @@ index 0000000000000..6fdd9bf10d176
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 new file mode 100755
-index 0000000000000..434b5868420ca
+index 000000000000..434b5868420c
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.c
 @@ -0,0 +1,794 @@
@@ -8043,7 +8043,7 @@ index 0000000000000..434b5868420ca
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h
 new file mode 100755
-index 0000000000000..c9f4fc4241790
+index 000000000000..c9f4fc424179
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_drv.h
 @@ -0,0 +1,469 @@
@@ -8518,7 +8518,7 @@ index 0000000000000..c9f4fc4241790
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 new file mode 100755
-index 0000000000000..cfe3afe259df4
+index 000000000000..cfe3afe259df
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.c
 @@ -0,0 +1,1845 @@
@@ -10369,7 +10369,7 @@ index 0000000000000..cfe3afe259df4
 +}
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h
 new file mode 100755
-index 0000000000000..6638456edaf37
+index 000000000000..6638456edaf3
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_pipe.h
 @@ -0,0 +1,12 @@
@@ -10387,7 +10387,7 @@ index 0000000000000..6638456edaf37
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c
 new file mode 100755
-index 0000000000000..256839bb6f74b
+index 000000000000..256839bb6f74
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.c
 @@ -0,0 +1,171 @@
@@ -10564,7 +10564,7 @@ index 0000000000000..256839bb6f74b
 +
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h
 new file mode 100755
-index 0000000000000..5e214c827b7f2
+index 000000000000..5e214c827b7f
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_reg.h
 @@ -0,0 +1,117 @@
@@ -10687,7 +10687,7 @@ index 0000000000000..5e214c827b7f2
 +#endif //K1X_ISP_REG_H
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 new file mode 100755
-index 0000000000000..d67d7aa0acdff
+index 000000000000..d67d7aa0acdf
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.c
 @@ -0,0 +1,1255 @@
@@ -11948,7 +11948,7 @@ index 0000000000000..d67d7aa0acdff
 +}
 diff --git a/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h
 new file mode 100755
-index 0000000000000..67d775e877115
+index 000000000000..67d775e87711
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_isp/k1x_isp_statistic.h
 @@ -0,0 +1,144 @@
@@ -12098,7 +12098,7 @@ index 0000000000000..67d775e877115
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 new file mode 100755
-index 0000000000000..a3b4b47f7ffe8
+index 000000000000..a3b4b47f7ffe
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.c
 @@ -0,0 +1,278 @@
@@ -12382,7 +12382,7 @@ index 0000000000000..a3b4b47f7ffe8
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
 new file mode 100755
-index 0000000000000..f9aaf8ca0604a
+index 000000000000..f9aaf8ca0604
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_plat/cam_plat.h
 @@ -0,0 +1,177 @@
@@ -12565,7 +12565,7 @@ index 0000000000000..f9aaf8ca0604a
 +#endif /* ifndef __PLAT_CAM_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 new file mode 100755
-index 0000000000000..c44ec6e736e6c
+index 000000000000..c44ec6e736e6
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -0,0 +1,1421 @@
@@ -13992,7 +13992,7 @@ index 0000000000000..c44ec6e736e6c
 +module_exit(cam_sensor_exit);
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 new file mode 100755
-index 0000000000000..7eb45f5d85e77
+index 000000000000..7eb45f5d85e7
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 @@ -0,0 +1,42 @@
@@ -14040,7 +14040,7 @@ index 0000000000000..7eb45f5d85e77
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c
 new file mode 100755
-index 0000000000000..df404b1f89854
+index 000000000000..df404b1f8985
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.c
 @@ -0,0 +1,90 @@
@@ -14136,7 +14136,7 @@ index 0000000000000..df404b1f89854
 +module_param(debug_mdl, uint, 0644);
 diff --git a/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
 new file mode 100755
-index 0000000000000..bcf88b892951c
+index 000000000000..bcf88b892951
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/cam_util/cam_dbg.h
 @@ -0,0 +1,96 @@
@@ -14238,7 +14238,7 @@ index 0000000000000..bcf88b892951c
 +#endif /* ifndef __CAM_DBG_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/vi/cam_block.c b/drivers/media/platform/spacemit/camera/vi/cam_block.c
 new file mode 100755
-index 0000000000000..0fca4ad6cd938
+index 000000000000..0fca4ad6cd93
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/cam_block.c
 @@ -0,0 +1,58 @@
@@ -14302,7 +14302,7 @@ index 0000000000000..0fca4ad6cd938
 +
 diff --git a/drivers/media/platform/spacemit/camera/vi/cam_block.h b/drivers/media/platform/spacemit/camera/vi/cam_block.h
 new file mode 100755
-index 0000000000000..b94dee5a8275b
+index 000000000000..b94dee5a8275
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/cam_block.h
 @@ -0,0 +1,34 @@
@@ -14342,7 +14342,7 @@ index 0000000000000..b94dee5a8275b
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 new file mode 100755
-index 0000000000000..e4536bdaa26b4
+index 000000000000..e4536bdaa26b
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -0,0 +1,5397 @@
@@ -19745,7 +19745,7 @@ index 0000000000000..e4536bdaa26b4
 +};
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h
 new file mode 100755
-index 0000000000000..f24c235e772cb
+index 000000000000..f24c235e772c
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.h
 @@ -0,0 +1,284 @@
@@ -20035,7 +20035,7 @@ index 0000000000000..f24c235e772cb
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c
 new file mode 100755
-index 0000000000000..1cdd37cf1c00e
+index 000000000000..1cdd37cf1c00
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.c
 @@ -0,0 +1,55 @@
@@ -20096,7 +20096,7 @@ index 0000000000000..1cdd37cf1c00e
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h
 new file mode 100755
-index 0000000000000..14d1766ab3699
+index 000000000000..14d1766ab369
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_ccic.h
 @@ -0,0 +1,25 @@
@@ -20127,7 +20127,7 @@ index 0000000000000..14d1766ab3699
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c
 new file mode 100755
-index 0000000000000..80cf6dee908d3
+index 000000000000..80cf6dee908d
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.c
 @@ -0,0 +1,346 @@
@@ -20479,7 +20479,7 @@ index 0000000000000..80cf6dee908d3
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h
 new file mode 100755
-index 0000000000000..8447ba65040e2
+index 000000000000..8447ba65040e
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_dma.h
 @@ -0,0 +1,134 @@
@@ -20619,7 +20619,7 @@ index 0000000000000..8447ba65040e2
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
 new file mode 100755
-index 0000000000000..c3a69151c42d5
+index 000000000000..c3a69151c42d
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.c
 @@ -0,0 +1,373 @@
@@ -20998,7 +20998,7 @@ index 0000000000000..c3a69151c42d5
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h
 new file mode 100755
-index 0000000000000..c4bb77c53369e
+index 000000000000..c4bb77c53369
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_iommu.h
 @@ -0,0 +1,66 @@
@@ -21070,7 +21070,7 @@ index 0000000000000..c4bb77c53369e
 +#endif /* ifndef __ISP_IOMMU_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
 new file mode 100755
-index 0000000000000..c8249f1c47271
+index 000000000000..c8249f1c4727
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
 @@ -0,0 +1,579 @@
@@ -21655,7 +21655,7 @@ index 0000000000000..c8249f1c47271
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
 new file mode 100755
-index 0000000000000..c1a439694ecc9
+index 000000000000..c1a439694ecc
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
 @@ -0,0 +1,171 @@
@@ -21832,7 +21832,7 @@ index 0000000000000..c1a439694ecc9
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c
 new file mode 100755
-index 0000000000000..111f0e5019266
+index 000000000000..111f0e501926
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.c
 @@ -0,0 +1,143 @@
@@ -21981,7 +21981,7 @@ index 0000000000000..111f0e5019266
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h
 new file mode 100755
-index 0000000000000..803a0fae14ac3
+index 000000000000..803a0fae14ac
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_postpipe.h
 @@ -0,0 +1,57 @@
@@ -22044,7 +22044,7 @@ index 0000000000000..803a0fae14ac3
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h
 new file mode 100755
-index 0000000000000..21fcc9c2ef185
+index 000000000000..21fcc9c2ef18
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg.h
 @@ -0,0 +1,650 @@
@@ -22700,7 +22700,7 @@ index 0000000000000..21fcc9c2ef185
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h
 new file mode 100755
-index 0000000000000..55b24f6915750
+index 000000000000..55b24f691575
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_reg_iommu.h
 @@ -0,0 +1,40 @@
@@ -22746,7 +22746,7 @@ index 0000000000000..55b24f6915750
 +#endif /* ifndef __REGS_ISP_IOMMU_H__ */
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 new file mode 100755
-index 0000000000000..2e3f88db11e0b
+index 000000000000..2e3f88db11e0
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.c
 @@ -0,0 +1,565 @@
@@ -23317,7 +23317,7 @@ index 0000000000000..2e3f88db11e0b
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h
 new file mode 100755
-index 0000000000000..bad8c4a62be8b
+index 000000000000..bad8c4a62be8
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/k1xvi.h
 @@ -0,0 +1,59 @@
@@ -23382,7 +23382,7 @@ index 0000000000000..bad8c4a62be8b
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/mlink.c b/drivers/media/platform/spacemit/camera/vi/mlink.c
 new file mode 100755
-index 0000000000000..3efead97383bd
+index 000000000000..3efead97383b
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/mlink.c
 @@ -0,0 +1,831 @@
@@ -24219,7 +24219,7 @@ index 0000000000000..3efead97383bd
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/mlink.h b/drivers/media/platform/spacemit/camera/vi/mlink.h
 new file mode 100755
-index 0000000000000..4f2c047a761ab
+index 000000000000..4f2c047a761a
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/mlink.h
 @@ -0,0 +1,171 @@
@@ -24396,7 +24396,7 @@ index 0000000000000..4f2c047a761ab
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h b/drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h
 new file mode 100755
-index 0000000000000..47d195d8b06d1
+index 000000000000..47d195d8b06d
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/spacemit_videobuf2.h
 @@ -0,0 +1,41 @@
@@ -24443,7 +24443,7 @@ index 0000000000000..47d195d8b06d1
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.c b/drivers/media/platform/spacemit/camera/vi/subdev.c
 new file mode 100755
-index 0000000000000..5602a8e7b3735
+index 000000000000..5602a8e7b373
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/subdev.c
 @@ -0,0 +1,476 @@
@@ -24925,7 +24925,7 @@ index 0000000000000..5602a8e7b3735
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/subdev.h b/drivers/media/platform/spacemit/camera/vi/subdev.h
 new file mode 100755
-index 0000000000000..9e5d4208b71ca
+index 000000000000..9e5d4208b71c
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/subdev.h
 @@ -0,0 +1,79 @@
@@ -25010,7 +25010,7 @@ index 0000000000000..9e5d4208b71ca
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.c b/drivers/media/platform/spacemit/camera/vi/vdev.c
 new file mode 100755
-index 0000000000000..fb54e40180342
+index 000000000000..fb54e4018034
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/vdev.c
 @@ -0,0 +1,2384 @@
@@ -27400,7 +27400,7 @@ index 0000000000000..fb54e40180342
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/vdev.h b/drivers/media/platform/spacemit/camera/vi/vdev.h
 new file mode 100755
-index 0000000000000..a6ea793d9730a
+index 000000000000..a6ea793d9730
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/vdev.h
 @@ -0,0 +1,170 @@
@@ -27576,7 +27576,7 @@ index 0000000000000..a6ea793d9730a
 +#endif
 diff --git a/drivers/media/platform/spacemit/camera/vi/vsensor.c b/drivers/media/platform/spacemit/camera/vi/vsensor.c
 new file mode 100755
-index 0000000000000..51279b3da85a6
+index 000000000000..51279b3da85a
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/vsensor.c
 @@ -0,0 +1,238 @@
@@ -27820,7 +27820,7 @@ index 0000000000000..51279b3da85a6
 +}
 diff --git a/drivers/media/platform/spacemit/camera/vi/vsensor.h b/drivers/media/platform/spacemit/camera/vi/vsensor.h
 new file mode 100755
-index 0000000000000..a925e8b46537a
+index 000000000000..a925e8b46537
 --- /dev/null
 +++ b/drivers/media/platform/spacemit/camera/vi/vsensor.h
 @@ -0,0 +1,49 @@
@@ -27875,7 +27875,7 @@ index 0000000000000..a925e8b46537a
 +#endif
 diff --git a/include/uapi/media/k1x/cam_sensor_uapi.h b/include/uapi/media/k1x/cam_sensor_uapi.h
 new file mode 100755
-index 0000000000000..d5ce50aa9f3d4
+index 000000000000..d5ce50aa9f3d
 --- /dev/null
 +++ b/include/uapi/media/k1x/cam_sensor_uapi.h
 @@ -0,0 +1,117 @@
@@ -27998,7 +27998,7 @@ index 0000000000000..d5ce50aa9f3d4
 +#endif /* __CAM_SENSOR_UAPI_H__ */
 diff --git a/include/uapi/media/k1x/k1x_cpp_uapi.h b/include/uapi/media/k1x/k1x_cpp_uapi.h
 new file mode 100755
-index 0000000000000..3ee11b6ee96d3
+index 000000000000..3ee11b6ee96d
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_cpp_uapi.h
 @@ -0,0 +1,157 @@
@@ -28161,7 +28161,7 @@ index 0000000000000..3ee11b6ee96d3
 +#endif /* __K1X_CPP_UAPI_H__ */
 diff --git a/include/uapi/media/k1x/k1x_isp_drv_uapi.h b/include/uapi/media/k1x/k1x_isp_drv_uapi.h
 new file mode 100755
-index 0000000000000..fd009e1bbcd49
+index 000000000000..fd009e1bbcd4
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_isp_drv_uapi.h
 @@ -0,0 +1,248 @@
@@ -28415,7 +28415,7 @@ index 0000000000000..fd009e1bbcd49
 +#endif
 diff --git a/include/uapi/media/k1x/k1x_media_bus_format.h b/include/uapi/media/k1x/k1x_media_bus_format.h
 new file mode 100755
-index 0000000000000..562d89886028e
+index 000000000000..562d89886028
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_media_bus_format.h
 @@ -0,0 +1,45 @@
@@ -28466,7 +28466,7 @@ index 0000000000000..562d89886028e
 +#endif
 diff --git a/include/uapi/media/k1x/k1x_plat_cam.h b/include/uapi/media/k1x/k1x_plat_cam.h
 new file mode 100755
-index 0000000000000..c752e8d757080
+index 000000000000..c752e8d75708
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_plat_cam.h
 @@ -0,0 +1,19 @@
@@ -28491,7 +28491,7 @@ index 0000000000000..c752e8d757080
 +#endif /* _UAPI_K1X_PLAT_CAM_H */
 diff --git a/include/uapi/media/k1x/k1x_videodev2.h b/include/uapi/media/k1x/k1x_videodev2.h
 new file mode 100755
-index 0000000000000..d0846948d8d62
+index 000000000000..d0846948d8d6
 --- /dev/null
 +++ b/include/uapi/media/k1x/k1x_videodev2.h
 @@ -0,0 +1,125 @@
@@ -28621,5 +28621,5 @@ index 0000000000000..d0846948d8d62
 +#define VIDIOC_G_ENTITY_INFO	_IOWR('V', BASE_VIDIOC_VI + 40, struct v4l2_vi_entity_info)
 +#endif
 -- 
-2.53.0
+2.54.0
 

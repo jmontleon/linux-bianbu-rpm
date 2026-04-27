@@ -1,4 +1,4 @@
-From 9316e0ada95f3ee4f7ca023cd655b818c365fc6b Mon Sep 17 00:00:00 2001
+From 842825df77ecfd8d3012d418296d98a03ff93e67 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 8 Jun 2025 19:19:37 -0400
 Subject: [PATCH 0008/1239] Revert "clk: spacemit: k1: Add TWSI8 bus and
@@ -10,7 +10,7 @@ This reverts commit 49625c6e4d90a9221127c49a11eb8c95732bb690.
  1 file changed, 10 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index f5a9fe6ba1859..9953788dd3686 100644
+index f5a9fe6ba185..9953788dd368 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -246,12 +246,6 @@ CCU_MUX_GATE_DEFINE(twsi4_clk, twsi_parents, APBC_TWSI4_CLK_RST, 4, 3, BIT(1), 0
@@ -52,5 +52,5 @@ index f5a9fe6ba1859..9953788dd3686 100644
  	[CLK_TIMERS2_BUS]	= &timers2_bus_clk.common.hw,
  	[CLK_AIB_BUS]		= &aib_bus_clk.common.hw,
 -- 
-2.53.0
+2.54.0
 

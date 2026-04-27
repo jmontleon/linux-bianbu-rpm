@@ -1,4 +1,4 @@
-From 5d5c3d5308f0b47b4f42367b329e6804b4edfee0 Mon Sep 17 00:00:00 2001
+From 84a73c33cfffe088cd201130ff3c18c7021c3833 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Wed, 28 Jun 2023 19:17:22 +0800
 Subject: [PATCH 0085/1239] pinctrl: support the driver of spacemit pinctrl
@@ -21,7 +21,7 @@ Change-Id: I224d54ce41e204286fd191ef9ac1c5233074fe67
  create mode 100755 include/dt-bindings/pinctrl/k1-pro-pinctrl.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index f92963cbbaf86..8165ebc8127a6 100644
+index f92963cbbaf8..8165ebc8127a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -7,6 +7,7 @@
@@ -68,7 +68,7 @@ index f92963cbbaf86..8165ebc8127a6 100644
  			compatible = "ipms,can";
  			reg = <0x0 0x2cfd0000 0x0 0x1000>;
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 4a2eb68d581ec..212eb4aba5c0b 100644
+index 4a2eb68d581e..212eb4aba5c0 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -129,6 +129,11 @@ CONFIG_VIRTIO_CONSOLE=y
@@ -84,7 +84,7 @@ index 4a2eb68d581ec..212eb4aba5c0b 100644
  # CONFIG_MEDIA_CEC_SUPPORT is not set
  CONFIG_MEDIA_SUPPORT=y
 diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 4f8507ebbdacd..8abadadd3d57a 100644
+index 4f8507ebbdac..8abadadd3d57 100644
 --- a/drivers/pinctrl/Kconfig
 +++ b/drivers/pinctrl/Kconfig
 @@ -712,5 +712,6 @@ source "drivers/pinctrl/ti/Kconfig"
@@ -95,7 +95,7 @@ index 4f8507ebbdacd..8abadadd3d57a 100644
  
  endif
 diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index e0cfb9b7c99ba..cc3680875a360 100644
+index e0cfb9b7c99b..cc3680875a36 100644
 --- a/drivers/pinctrl/Makefile
 +++ b/drivers/pinctrl/Makefile
 @@ -87,6 +87,7 @@ obj-y				+= spacemit/
@@ -108,7 +108,7 @@ index e0cfb9b7c99ba..cc3680875a360 100644
  obj-$(CONFIG_PINCTRL_SUNXI)	+= sunxi/
 diff --git a/drivers/pinctrl/spacemit/pinctrl-k1pro.c b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
 new file mode 100755
-index 0000000000000..52eeeb46f8349
+index 000000000000..52eeeb46f834
 --- /dev/null
 +++ b/drivers/pinctrl/spacemit/pinctrl-k1pro.c
 @@ -0,0 +1,142 @@
@@ -257,7 +257,7 @@ index 0000000000000..52eeeb46f8349
 \ No newline at end of file
 diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.c b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
 new file mode 100755
-index 0000000000000..2042a486710e5
+index 000000000000..2042a486710e
 --- /dev/null
 +++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.c
 @@ -0,0 +1,580 @@
@@ -844,7 +844,7 @@ index 0000000000000..2042a486710e5
 \ No newline at end of file
 diff --git a/drivers/pinctrl/spacemit/pinctrl-spacemit.h b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
 new file mode 100755
-index 0000000000000..7df1df7bcdbe9
+index 000000000000..7df1df7bcdbe
 --- /dev/null
 +++ b/drivers/pinctrl/spacemit/pinctrl-spacemit.h
 @@ -0,0 +1,95 @@
@@ -945,7 +945,7 @@ index 0000000000000..7df1df7bcdbe9
 +#endif /* __PINCTRL_SPACEMIT_H */
 diff --git a/include/dt-bindings/pinctrl/k1-pro-pinctrl.h b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
 new file mode 100755
-index 0000000000000..07cda5ef9a1e2
+index 000000000000..07cda5ef9a1e
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/k1-pro-pinctrl.h
 @@ -0,0 +1,102 @@
@@ -1052,5 +1052,5 @@ index 0000000000000..07cda5ef9a1e2
 +
 +#endif /* __DT_BINDINGS_K1PRO_PINCTRL_H */
 -- 
-2.53.0
+2.54.0
 

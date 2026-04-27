@@ -1,4 +1,4 @@
-From 18da3660e82be21cab0d214450fc9c6b7f552cac Mon Sep 17 00:00:00 2001
+From f4fa1ca613905a4bbdbf8c523d98c66b0e8092be Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Wed, 30 Oct 2024 19:29:24 +0800
 Subject: [PATCH 1076/1239] camera: verify camera success
@@ -9,7 +9,7 @@ Change-Id: I93eaf9a3e3d723391b2e16b072dd116c481434be
  1 file changed, 15 insertions(+), 24 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
-index 28f1645934ad2..306af22d9d598 100644
+index 28f1645934ad..306af22d9d59 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_orangepi-rv2.dts
 @@ -967,18 +967,14 @@ &pwm_bl {
@@ -88,5 +88,5 @@ index 28f1645934ad2..306af22d9d598 100644
  };
  
 -- 
-2.53.0
+2.54.0
 

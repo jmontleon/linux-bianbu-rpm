@@ -1,4 +1,4 @@
-From 51916e8125bcf0c2b23e5a55474982ac02d82740 Mon Sep 17 00:00:00 2001
+From 9070b21789df2c859c022dc7a09404399cf3832f Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 12:36:47 +0800
 Subject: [PATCH 0941/1239] crypto: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: Icdac45f110081d869e52298be86b64051c63a360
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index a6cc7f5a0cdd4..e7b06926c5cdb 100644
+index a6cc7f5a0cdd..e7b06926c5cd 100644
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -50,7 +50,7 @@ static int ecb_encrypt(struct skcipher_request *req)
@@ -67,5 +67,5 @@ index a6cc7f5a0cdd4..e7b06926c5cdb 100644
  	unsigned char* sg_va,*in_buffer,*out_buffer;
  	int total_len = req->cryptlen;
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 9573135c288ff0907df7990f4ee79a0bbe08c6db Mon Sep 17 00:00:00 2001
+From 38a1bffaca2782ab8515b770d45e040f5ea7b675 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 19:53:06 +0800
 Subject: [PATCH 0875/1239] k1:pm-domain: disable wakeup5 by default
@@ -9,7 +9,7 @@ Change-Id: I69f106b67ac0d1f726a73a938aaa49c3be0a7869
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index cd741e3113135..ccf4e5e0317d7 100644
+index cd741e311313..ccf4e5e0317d 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -44,6 +44,10 @@
@@ -47,5 +47,5 @@ index cd741e3113135..ccf4e5e0317d7 100644
  	err = of_property_read_u32(np, "domains", &pmu->number_domains);
  	if (err) {
 -- 
-2.53.0
+2.54.0
 

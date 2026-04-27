@@ -1,4 +1,4 @@
-From 9ae39c1cdcd00af4e6825345c8173f375a7c10d8 Mon Sep 17 00:00:00 2001
+From e050acd226619d36f77a193e6250f22829275183 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Sat, 12 Oct 2024 15:01:23 +0800
 Subject: [PATCH 1037/1239] mmc: sdhci-of-k1x: avoid recovery sdr104 while dts
@@ -10,7 +10,7 @@ Change-Id: Id480dd52a5c24a531909ab731748eb07fa5bcf1c
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 66a183817205e..4fb3092ac5dbb 100644
+index 66a183817205..4fb3092ac5db 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -568,20 +568,20 @@ static int spacemit_sdhci_card_busy(struct mmc_host *mmc)
@@ -39,5 +39,5 @@ index 66a183817205e..4fb3092ac5dbb 100644
  				mmc->caps |= MMC_CAP_UHS_SDR104;
  			}
 -- 
-2.53.0
+2.54.0
 

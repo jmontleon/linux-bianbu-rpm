@@ -1,4 +1,4 @@
-From e535657e8c47c36685d2a266ad51c7aee03a2d36 Mon Sep 17 00:00:00 2001
+From b91a8204f5e7649e35dc8d98a516cdff403b83b8 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 27 Jan 2024 21:34:54 +0800
 Subject: [PATCH 0428/1239] sync board dts from devices configuration
@@ -11,7 +11,7 @@ Change-Id: I95015f20c88717451142ffc4a4a9f1cf3438db9e
  3 files changed, 25 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 6753a69f14be7..9ce0e21faa797 100644
+index 6753a69f14be..9ce0e21faa79 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -815,3 +815,11 @@ &rcpu {
@@ -27,7 +27,7 @@ index 6753a69f14be7..9ce0e21faa797 100644
 +	temperature = <115000>;
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index e1f09d76656e0..00e89208ddbbf 100644
+index e1f09d76656e..00e89208ddbb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -868,3 +868,12 @@ &rcpu {
@@ -44,7 +44,7 @@ index e1f09d76656e0..00e89208ddbbf 100644
 +};
 +
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index 4a8fe6e16bbbf..bacbc2342a5b8 100644
+index 4a8fe6e16bbb..bacbc2342a5b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -825,3 +825,11 @@ &rcpu {
@@ -60,5 +60,5 @@ index 4a8fe6e16bbbf..bacbc2342a5b8 100644
 +	temperature = <115000>;
 +};
 -- 
-2.53.0
+2.54.0
 

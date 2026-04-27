@@ -1,4 +1,4 @@
-From 13e56f0ff9f5d5e605c7607fa87deaaadd80c33a Mon Sep 17 00:00:00 2001
+From 3200b965ffe06537cabef915089f0e889abcc600 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 26 Mar 2024 17:22:56 +0800
 Subject: [PATCH 0547/1239] eth: improve the through of gmac
@@ -12,7 +12,7 @@ Change-Id: I12301d9f7700578d42ed624ad0ff39087d509315
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1x-emac.c b/drivers/net/ethernet/spacemit/k1x-emac.c
-index 9544ebfe41f32..6f1bd85eaf620 100755
+index 9544ebfe41f3..6f1bd85eaf62 100755
 --- a/drivers/net/ethernet/spacemit/k1x-emac.c
 +++ b/drivers/net/ethernet/spacemit/k1x-emac.c
 @@ -1383,7 +1383,7 @@ static int emac_rx_clean_desc(struct emac_priv *priv, int budget)
@@ -42,5 +42,5 @@ index 9544ebfe41f32..6f1bd85eaf620 100755
  	priv->ndev = ndev;
  	priv->pdev = pdev;
 -- 
-2.53.0
+2.54.0
 

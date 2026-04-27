@@ -1,4 +1,4 @@
-From 65122f0376ab7fbe1433d48f59916eb5e513853b Mon Sep 17 00:00:00 2001
+From 70a87390664ed78feb012d92d66f2941a7fc0797 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 10 Jan 2024 08:28:13 +0800
 Subject: [PATCH 0358/1239] clean qspi driver debug info
@@ -9,7 +9,7 @@ Change-Id: I420ab2a36587d73111c1eac88ec7f5f9676adbf7
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index d64d654b2902a..1076d6cdb6a01 100755
+index d64d654b2902..1076d6cdb6a0 100755
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -420,7 +420,7 @@ static int qspi_set_func_clk(struct k1x_qspi *qspi)
@@ -88,5 +88,5 @@ index d64d654b2902a..1076d6cdb6a01 100755
  
  	if (qspi->tx_dma_enable)
 -- 
-2.53.0
+2.54.0
 

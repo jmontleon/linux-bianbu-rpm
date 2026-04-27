@@ -1,4 +1,4 @@
-From 244f80e82d34a38026274ca48cb4a709ac1e2d30 Mon Sep 17 00:00:00 2001
+From 14cfcb5617dff14ef7fdae62ae78b14d0bb07a09 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:20:15 +0800
 Subject: [PATCH 1136/1239] remoteproc: spacemit: modify prototype of device
@@ -11,7 +11,7 @@ Change-Id: Ibfdc78abd3e7863ebb83a76b4b023fa5ce594cae
  2 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/remoteproc/k1pro-rproc.c b/drivers/remoteproc/k1pro-rproc.c
-index c96d4ffb30542..c89eb085c60b3 100644
+index c96d4ffb3054..c89eb085c60b 100644
 --- a/drivers/remoteproc/k1pro-rproc.c
 +++ b/drivers/remoteproc/k1pro-rproc.c
 @@ -332,10 +332,9 @@ static int spacemit_rproc_probe(struct platform_device *pdev)
@@ -27,7 +27,7 @@ index c96d4ffb30542..c89eb085c60b3 100644
  
  static const struct of_device_id spacemit_rproc_of_match[] = {
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index c878912c3f564..8d0c318b5a393 100644
+index c878912c3f56..8d0c318b5a39 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -25,6 +25,7 @@
@@ -56,5 +56,5 @@ index c878912c3f564..8d0c318b5a393 100644
  
  static const struct of_device_id spacemit_rproc_of_match[] = {
 -- 
-2.53.0
+2.54.0
 

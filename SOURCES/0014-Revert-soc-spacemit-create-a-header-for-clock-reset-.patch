@@ -1,4 +1,4 @@
-From 113f5611932e91c49f2ccd7950b593443ddd0e9e Mon Sep 17 00:00:00 2001
+From 34bbf61dd31a6476a6d64e953879bd4f1b531626 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Fri, 15 Aug 2025 10:31:41 -0400
 Subject: [PATCH 0014/1239] Revert "soc: spacemit: create a header for
@@ -12,7 +12,7 @@ This reverts commit bf6239ddaa6a73a44cd8ea3afec5fc82ed900038.
  delete mode 100644 include/soc/spacemit/k1-syscon.h
 
 diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
-index 235bd29189029..74068bd92011d 100644
+index 235bd2918902..74068bd92011 100644
 --- a/drivers/clk/spacemit/ccu-k1.c
 +++ b/drivers/clk/spacemit/ccu-k1.c
 @@ -11,7 +11,6 @@
@@ -142,7 +142,7 @@ index 235bd29189029..74068bd92011d 100644
  	size_t num;
 diff --git a/include/soc/spacemit/k1-syscon.h b/include/soc/spacemit/k1-syscon.h
 deleted file mode 100644
-index 039a448c51a07..0000000000000
+index 039a448c51a0..000000000000
 --- a/include/soc/spacemit/k1-syscon.h
 +++ /dev/null
 @@ -1,118 +0,0 @@
@@ -265,5 +265,5 @@ index 039a448c51a07..0000000000000
 -
 -#endif /* __SOC_K1_SYSCON_H__ */
 -- 
-2.53.0
+2.54.0
 

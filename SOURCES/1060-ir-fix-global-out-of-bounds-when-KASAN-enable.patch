@@ -1,4 +1,4 @@
-From a5ca366280309502f090d02aea6c6237717af66c Mon Sep 17 00:00:00 2001
+From 2e70878005f32b766acd545e69a53312960f3e41 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Fri, 25 Oct 2024 18:12:57 +0800
 Subject: [PATCH 1060/1239] ir: fix global-out-of-bounds when KASAN enable
@@ -58,7 +58,7 @@ Change-Id: I3e46d92f9b53079a414103051cbf8a7462678316
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/media/rc/ir-spacemit.c b/drivers/media/rc/ir-spacemit.c
-index 65572dbb24187..0005461aad9d0 100644
+index 65572dbb2418..0005461aad9d 100644
 --- a/drivers/media/rc/ir-spacemit.c
 +++ b/drivers/media/rc/ir-spacemit.c
 @@ -320,6 +320,7 @@ static const struct of_device_id spacemit_ir_match[] = {
@@ -78,5 +78,5 @@ index 65572dbb24187..0005461aad9d0 100644
  
  static struct platform_driver spacemit_rir_driver = {
 -- 
-2.53.0
+2.54.0
 

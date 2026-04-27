@@ -1,4 +1,4 @@
-From d1112d8fdfbb1b37915514acf9a5872f8e5e0e81 Mon Sep 17 00:00:00 2001
+From af4ce396c9c01df1c4b3a87eef045c17df970058 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:22:21 +0800
 Subject: [PATCH 0494/1239] dtb: adding the dts of linux for MINI-PC board
@@ -11,7 +11,7 @@ Change-Id: I931b27af1dd58d2d3dedc400e59a58368f5e1c8d
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index cb248e69e7d75..17707f0ef1ddf 100644
+index cb248e69e7d7..17707f0ef1dd 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,5 +2,5 @@
@@ -23,7 +23,7 @@ index cb248e69e7d75..17707f0ef1ddf 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 new file mode 100644
-index 0000000000000..7d752223edf81
+index 000000000000..7d752223edf8
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -0,0 +1,694 @@
@@ -722,5 +722,5 @@ index 0000000000000..7d752223edf81
 +        status = "okay";
 +};
 -- 
-2.53.0
+2.54.0
 

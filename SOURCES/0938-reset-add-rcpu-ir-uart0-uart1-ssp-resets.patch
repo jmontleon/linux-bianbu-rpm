@@ -1,4 +1,4 @@
-From c7ab0d5b746826cb88c3e3b3e88877f455fe5a17 Mon Sep 17 00:00:00 2001
+From 66ae49428f8817aaa7849dbc8275509ff9fc13f7 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 13 Aug 2024 19:33:12 +0800
 Subject: [PATCH 0938/1239] reset: add rcpu ir/uart0/uart1/ssp resets
@@ -10,7 +10,7 @@ Change-Id: I516afdbcb686d56063f6efdd3cc44f3fc1c3b39d
  2 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index 377ccd8ae3fa9..b53368c4cfe7d 100644
+index 377ccd8ae3fa..b53368c4cfe7 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -131,6 +131,11 @@
@@ -39,7 +39,7 @@ index 377ccd8ae3fa9..b53368c4cfe7d 100644
  
  static struct spacemit_reset *to_spacemit_reset(
 diff --git a/include/dt-bindings/reset/spacemit-k1x-reset.h b/include/dt-bindings/reset/spacemit-k1x-reset.h
-index cd720cdeae9af..752995127334e 100644
+index cd720cdeae9a..752995127334 100644
 --- a/include/dt-bindings/reset/spacemit-k1x-reset.h
 +++ b/include/dt-bindings/reset/spacemit-k1x-reset.h
 @@ -116,8 +116,13 @@
@@ -58,5 +58,5 @@ index cd720cdeae9af..752995127334e 100644
  
  #endif /* __DT_BINDINGS_RESET_SAPCEMIT_K1X_H__ */
 -- 
-2.53.0
+2.54.0
 

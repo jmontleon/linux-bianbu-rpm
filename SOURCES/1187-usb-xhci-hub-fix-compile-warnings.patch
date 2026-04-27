@@ -1,4 +1,4 @@
-From e6e794a5251125824794602e57242939fdbc7400 Mon Sep 17 00:00:00 2001
+From 193d7e1c61af239c64723748cdcce9291a280fb3 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:19:07 +0800
 Subject: [PATCH 1187/1239] usb: xhci-hub: fix compile warnings
@@ -9,7 +9,7 @@ Change-Id: I59fb905213138fc103ad759b71bb91b55cd8a0f8
  1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index ad86663c89449..2e7bc0b7e1633 100644
+index ad86663c8944..2e7bc0b7e163 100644
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
 @@ -14,6 +14,9 @@
@@ -34,5 +34,5 @@ index ad86663c89449..2e7bc0b7e1633 100644
  		u16 wIndex, __le32 __iomem *addr, u32 port_status)
  {
 -- 
-2.53.0
+2.54.0
 

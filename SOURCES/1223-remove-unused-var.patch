@@ -1,4 +1,4 @@
-From 52bc6475ab507f40858f5ff9dd43e3b93cca31f9 Mon Sep 17 00:00:00 2001
+From e5e0ffefa2daf4a6df5e0bcdf893f79387294112 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 26 Dec 2024 15:24:44 -0500
 Subject: [PATCH 1223/1239] remove unused var
@@ -8,7 +8,7 @@ Subject: [PATCH 1223/1239] remove unused var
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
-index 3d0587207ac98..7c00dff5abb31 100644
+index 3d0587207ac9..7c00dff5abb3 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 @@ -300,13 +300,12 @@ void dpu_dump_reg(struct spacemit_dpu *dpu)
@@ -27,5 +27,5 @@ index 3d0587207ac98..7c00dff5abb31 100644
  	dpu->last_tm.tv_nsec = cur_tm.tv_nsec;
  }
 -- 
-2.53.0
+2.54.0
 

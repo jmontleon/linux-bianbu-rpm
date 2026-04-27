@@ -1,4 +1,4 @@
-From a9fd2b2e1f500e9a2ac82355edec85059c12638e Mon Sep 17 00:00:00 2001
+From ddaad7a2397a0beab57be92d12982a67ee7945f1 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 25 Jul 2024 19:09:48 +0800
 Subject: [PATCH 0888/1239] display: add mipi lcd icnl9951r
@@ -11,7 +11,7 @@ Change-Id: I360f93ffa51b2837742fb3fcd5c6c5bb8c21a5f3
  create mode 100644 arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9951r_mipi.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index f277b12ec0ab1..94dbcb68bdf4a 100644
+index f277b12ec0ab..94dbcb68bdf4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -6,7 +6,7 @@
@@ -67,7 +67,7 @@ index f277b12ec0ab1..94dbcb68bdf4a 100644
  &i2c2 {
 diff --git a/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9951r_mipi.dtsi b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9951r_mipi.dtsi
 new file mode 100644
-index 0000000000000..eb82daa9e4f78
+index 000000000000..eb82daa9e4f7
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/lcd/lcd_icnl9951r_mipi.dtsi
 @@ -0,0 +1,101 @@
@@ -173,5 +173,5 @@ index 0000000000000..eb82daa9e4f78
 +	};
 +};};
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 26181d64532245a6fe3b7551a8f0846824661f65 Mon Sep 17 00:00:00 2001
+From 995af38360820aeccfbaadcc7b2ff37d28e0aea2 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 11 Apr 2024 17:22:05 +0800
 Subject: [PATCH 0608/1239] swiotlb: adjust the size and segsize of io tlb
@@ -12,7 +12,7 @@ Change-Id: Ib2f787e448991e2bc4a6088e9d4175467d6c3428
  1 file changed, 4 insertions(+)
 
 diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 3dae0f592063e..29a64f4d0b6f0 100644
+index 3dae0f592063..29a64f4d0b6f 100644
 --- a/include/linux/swiotlb.h
 +++ b/include/linux/swiotlb.h
 @@ -23,7 +23,11 @@ struct scatterlist;
@@ -28,5 +28,5 @@ index 3dae0f592063e..29a64f4d0b6f0 100644
  /*
   * log of the size of each IO TLB slab.  The number of slabs is command line
 -- 
-2.53.0
+2.54.0
 

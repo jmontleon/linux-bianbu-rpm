@@ -1,4 +1,4 @@
-From 720ed7aa6142e0b32caf3820f11494eb430d3745 Mon Sep 17 00:00:00 2001
+From 7664f5afb5e019d91fc730a5ff78020bd3301a99 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 17 Jul 2024 16:52:26 +0800
 Subject: [PATCH 0848/1239] usb: dwc3: enable linestate1 wakeup mask
@@ -10,7 +10,7 @@ Change-Id: I08286143fee9f967f20c06e6f775b944ba3c37e3
  2 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index eb9107e58ac85..18cd717198868 100644
+index eb9107e58ac8..18cd71719886 100644
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -75,7 +75,7 @@ static void dwc3_spacemit_enable_wakeup_irqs(struct dwc3_spacemit *spacemit)
@@ -52,7 +52,7 @@ index eb9107e58ac85..18cd717198868 100644
  	dwc3_spacemit_clear_wakeup_irqs(spacemit);
  
 diff --git a/drivers/usb/host/ehci-k1x-ci.c b/drivers/usb/host/ehci-k1x-ci.c
-index dcea1a11306c5..1875e9d70ac62 100644
+index dcea1a11306c..1875e9d70ac6 100644
 --- a/drivers/usb/host/ehci-k1x-ci.c
 +++ b/drivers/usb/host/ehci-k1x-ci.c
 @@ -91,7 +91,6 @@ static void mv_ehci_clear_wakeup_irqs(struct ehci_hcd_mv *ehci_mv)
@@ -75,5 +75,5 @@ index dcea1a11306c5..1875e9d70ac62 100644
  	mv_ehci_clear_wakeup_irqs(ehci_mv);
  
 -- 
-2.53.0
+2.54.0
 

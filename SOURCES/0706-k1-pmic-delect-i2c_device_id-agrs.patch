@@ -1,4 +1,4 @@
-From 5f9f32826a54d3092d8b0da8c6f6de262b131e34 Mon Sep 17 00:00:00 2001
+From 019367593efa29e440a68a093f374c3b23437a62 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 10:32:59 +0800
 Subject: [PATCH 0706/1239] k1: pmic: delect i2c_device_id agrs
@@ -11,7 +11,7 @@ Change-Id: I5fd7fe581bc097afa1428b031587ff4b989fd7d3
  2 files changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index 306fa94b8d62e..6db7ea67068e5 100644
+index 306fa94b8d62..6db7ea67068e 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -125,8 +125,7 @@ static int spacemit_prepare_sub_pmic(struct spacemit_pmic *pmic)
@@ -25,7 +25,7 @@ index 306fa94b8d62e..6db7ea67068e5 100644
  	int ret;
  	int nr_cells;
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index c94aa6f1cfc31..43e4506b221ce 100644
+index c94aa6f1cfc3..43e4506b221c 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -643,7 +643,6 @@ static const struct regmap_irq_chip spm8821_irq_chip = {	\
@@ -37,5 +37,5 @@ index c94aa6f1cfc31..43e4506b221ce 100644
  
  /* power-key */
 -- 
-2.53.0
+2.54.0
 

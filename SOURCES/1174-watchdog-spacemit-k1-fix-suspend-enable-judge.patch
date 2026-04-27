@@ -1,4 +1,4 @@
-From 021e73a84cec231ff9ef58b14b18df29f4635a8d Mon Sep 17 00:00:00 2001
+From 295961ffb0a43ae83749f883301f8a3a0164427d Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 3 Dec 2024 10:54:08 +0800
 Subject: [PATCH 1174/1239] watchdog: spacemit/k1: fix suspend enable judge
@@ -9,7 +9,7 @@ Change-Id: Iededfae479a74130e868cb1fdff9ca02303da326
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
-index 3e49550616057..091958e318296 100644
+index 3e4955061605..091958e31829 100644
 --- a/drivers/watchdog/k1x_wdt.c
 +++ b/drivers/watchdog/k1x_wdt.c
 @@ -771,7 +771,7 @@ static int spa_wdt_suspend(struct platform_device *pdev, pm_message_t state)
@@ -22,5 +22,5 @@ index 3e49550616057..091958e318296 100644
  		info->enable_to_suspend = true;
  	}
 -- 
-2.53.0
+2.54.0
 

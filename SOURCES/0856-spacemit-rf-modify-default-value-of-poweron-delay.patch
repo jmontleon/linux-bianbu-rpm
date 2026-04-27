@@ -1,4 +1,4 @@
-From 4fde8f589dd63662fe2fc7460157ca91f7941dcb Mon Sep 17 00:00:00 2001
+From 54b7877cd6c6047b73572eeec7967173f7c8ce73 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 24 Jul 2024 17:03:14 +0800
 Subject: [PATCH 0856/1239] spacemit-rf: modify default value of poweron delay
@@ -9,7 +9,7 @@ Change-Id: Ibfd47033566c9d3112c6cee27e9a1f2f384c74c7
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
-index 4e1b5129ef157..fe9cd20545ef3 100644
+index 4e1b5129ef15..fe9cd20545ef 100644
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 @@ -234,7 +234,7 @@ static int spacemit_pwrseq_probe(struct platform_device *pdev)
@@ -22,5 +22,5 @@ index 4e1b5129ef157..fe9cd20545ef3 100644
  	if(device_property_read_bool(dev, "power-always-on"))
  		pwrseq->always_on = true;
 -- 
-2.53.0
+2.54.0
 

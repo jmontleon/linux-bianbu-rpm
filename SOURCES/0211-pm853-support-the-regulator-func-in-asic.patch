@@ -1,4 +1,4 @@
-From 13aa9aa8797e6a85e1ddec264dccd83861c82408 Mon Sep 17 00:00:00 2001
+From 12555e511e43cc565c6999df451b382c0fb805ec Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sun, 17 Dec 2023 17:01:49 +0800
 Subject: [PATCH 0211/1239] pm853: support the regulator func in asic
@@ -10,7 +10,7 @@ Change-Id: I62c002e500532006b3f21f3f0e26c98246f49bcd
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index ae9d34edfd7af..a6aa5973a9c2e 100644
+index ae9d34edfd7a..a6aa5973a9c2 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -18,8 +18,8 @@
@@ -34,7 +34,7 @@ index ae9d34edfd7af..a6aa5973a9c2e 100644
  		break;
  	default:
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 3bfd02b063007..f69b15655f75c 100644
+index 3bfd02b06300..f69b15655f75 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -83,7 +83,7 @@ struct pin_config_desc {
@@ -47,5 +47,5 @@ index 3bfd02b063007..f69b15655f75c 100644
  /* common regulator defination */
  #define SPM8XX_DESC_COMMON(_id, _match, _supply, _nv, _vr, _vm, _er, _em, _lr, _ops)       \
 -- 
-2.53.0
+2.54.0
 

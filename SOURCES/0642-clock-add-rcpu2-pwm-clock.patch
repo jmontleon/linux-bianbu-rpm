@@ -1,4 +1,4 @@
-From a08193c5355343b85e1c01ac397c6c0af01e3dfe Mon Sep 17 00:00:00 2001
+From c225689caeb8bc0fc5fc07d39873c331ecfc808f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 30 Apr 2024 10:30:18 +0800
 Subject: [PATCH 0642/1239] clock: add rcpu2 pwm clock
@@ -12,7 +12,7 @@ Change-Id: I0f0d337c80691f709c430965117a784c5c96ea90
  4 files changed, 31 insertions(+), 3 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 01a41b5ec0b2a..e6aea6abd7155 100644
+index 01a41b5ec0b2..e6aea6abd715 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -590,8 +590,9 @@ ccu: clock-controller@d4050000 {
@@ -28,7 +28,7 @@ index 01a41b5ec0b2a..e6aea6abd7155 100644
  				<&clk_32k>;
  			clock-names = "vctcxo_24", "vctcxo_3", "vctcxo_1", "pll1_2457p6_vco",
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index f385788418279..752112214a2e7 100755
+index f38578841827..752112214a2e 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -171,6 +171,10 @@ DEFINE_SPINLOCK(g_cru_lock);
@@ -90,7 +90,7 @@ index f385788418279..752112214a2e7 100755
  	ret = spacemit_ccu_probe(np, clk_info, hw_clks);
  	//LOG_INFO("init clock finish");
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.h b/drivers/clk/spacemit/ccu-spacemit-k1x.h
-index 44b81cbf8daaa..e5419644a5c75 100755
+index 44b81cbf8daa..e5419644a5c7 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.h
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.h
 @@ -21,6 +21,7 @@ enum ccu_base_type{
@@ -110,7 +110,7 @@ index 44b81cbf8daaa..e5419644a5c75 100755
  
  struct clk_hw_table {
 diff --git a/include/dt-bindings/clock/spacemit-k1x-clock.h b/include/dt-bindings/clock/spacemit-k1x-clock.h
-index 391f8309052e9..209856ec1f578 100755
+index 391f8309052e..209856ec1f57 100755
 --- a/include/dt-bindings/clock/spacemit-k1x-clock.h
 +++ b/include/dt-bindings/clock/spacemit-k1x-clock.h
 @@ -195,5 +195,7 @@
@@ -123,5 +123,5 @@ index 391f8309052e9..209856ec1f578 100755
 +#define CLK_MAX_NO      187
  #endif /* _DT_BINDINGS_CLK_SPACEMIT_K1X_H_ */
 -- 
-2.53.0
+2.54.0
 

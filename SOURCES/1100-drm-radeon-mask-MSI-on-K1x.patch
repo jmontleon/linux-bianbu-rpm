@@ -1,4 +1,4 @@
-From e2c57e80a10e78a12fd8f6896e6c0b7869e59295 Mon Sep 17 00:00:00 2001
+From 7f62ca5f0af99ec23ba2f48ac1846693221fdfe7 Mon Sep 17 00:00:00 2001
 From: Icenowy Zheng <uwu@icenowy.me>
 Date: Fri, 11 Oct 2024 14:19:03 +0800
 Subject: [PATCH 1100/1239] drm/radeon: mask MSI on K1x
@@ -9,7 +9,7 @@ Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/radeon/radeon_irq_kms.c b/drivers/gpu/drm/radeon/radeon_irq_kms.c
-index 9961251b44ba0..6b6305a2fc0ac 100644
+index 9961251b44ba..6b6305a2fc0a 100644
 --- a/drivers/gpu/drm/radeon/radeon_irq_kms.c
 +++ b/drivers/gpu/drm/radeon/radeon_irq_kms.c
 @@ -245,6 +245,11 @@ static bool radeon_msi_ok(struct radeon_device *rdev)
@@ -25,5 +25,5 @@ index 9961251b44ba0..6b6305a2fc0ac 100644
  	 * Older chips have a HW limitation, they can only generate 40 bits
  	 * of address for "64-bit" MSIs which breaks on some platforms, notably
 -- 
-2.53.0
+2.54.0
 

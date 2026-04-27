@@ -1,4 +1,4 @@
-From e18c1abe8834c9b010f276be003d6ba11b0b2623 Mon Sep 17 00:00:00 2001
+From 633fde16c9940f1ad39f8524e7e1026a66c25adc Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 15 Jul 2024 19:46:15 +0800
 Subject: [PATCH 0851/1239] bluetooth: use kernel btrtl for 8852bu instead of
@@ -10,7 +10,7 @@ Change-Id: I252d8619561f7882b25a632ac8e652de5de69293
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index 866b330409676..bc5d7edbb5448 100644
+index 866b33040967..bc5d7edbb544 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -205,6 +205,7 @@ CONFIG_BT_RFCOMM=y
@@ -22,5 +22,5 @@ index 866b330409676..bc5d7edbb5448 100644
  CONFIG_BT_HCIUART_H4=y
  CONFIG_BT_HCIUART_RTL=y
 -- 
-2.53.0
+2.54.0
 

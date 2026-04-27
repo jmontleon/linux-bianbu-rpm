@@ -1,4 +1,4 @@
-From 12b02f4fd361aca3aaac96f531de936b7dda12da Mon Sep 17 00:00:00 2001
+From c1888f47993477e4622268f53023b6ea207acf4e Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 13 Jun 2024 21:31:46 +0800
 Subject: [PATCH 0963/1239] dwc3-spacemit: add pm domain support
@@ -9,7 +9,7 @@ Change-Id: I2a076c07ddba75cc50292447ca420a979b1f6969
  1 file changed, 10 insertions(+)
 
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index b0fa0eb98009d..6dc59930683d6 100644
+index b0fa0eb98009..6dc59930683d 100644
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -264,6 +264,10 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
@@ -44,5 +44,5 @@ index b0fa0eb98009d..6dc59930683d6 100644
  	return 0;
  }
 -- 
-2.53.0
+2.54.0
 

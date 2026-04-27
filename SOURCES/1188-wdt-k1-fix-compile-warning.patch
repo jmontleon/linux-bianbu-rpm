@@ -1,4 +1,4 @@
-From 832ca6714935ded5adf91ed986ec4c3f8bc5cd97 Mon Sep 17 00:00:00 2001
+From 2dd5e24c89f563bb5916560813087fee107ef84e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:19:40 +0800
 Subject: [PATCH 1188/1239] wdt: k1: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I811b7049561164f91967be7e0a3f1c192644885f
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/watchdog/k1x_wdt.c b/drivers/watchdog/k1x_wdt.c
-index 091958e318296..6d6691e246999 100644
+index 091958e31829..6d6691e24699 100644
 --- a/drivers/watchdog/k1x_wdt.c
 +++ b/drivers/watchdog/k1x_wdt.c
 @@ -107,7 +107,7 @@ struct spa_wdt_info {
@@ -30,5 +30,5 @@ index 091958e318296..6d6691e246999 100644
  static inline u32 spa_wdt_read(struct spa_wdt_info *info,
  				unsigned reg)
 -- 
-2.53.0
+2.54.0
 

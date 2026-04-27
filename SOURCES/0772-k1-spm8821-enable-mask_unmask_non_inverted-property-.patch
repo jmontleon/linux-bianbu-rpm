@@ -1,4 +1,4 @@
-From ed79bd20fc32a57e0363d426a7ad5fcf175355e0 Mon Sep 17 00:00:00 2001
+From 2ec2c60434790a80b647383d44f1ea8c17c4de56 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 19 Jun 2024 21:16:06 +0800
 Subject: [PATCH 0772/1239] k1:spm8821:enable mask_unmask_non_inverted property
@@ -10,7 +10,7 @@ Change-Id: I080e202ec9e5973d715c93db44caae767a6eac64
  1 file changed, 2 insertions(+)
 
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 5266e47be514e..8579632178530 100644
+index 5266e47be514..857963217853 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -643,8 +643,10 @@ static const struct regmap_irq_chip spm8821_irq_chip = {	\
@@ -25,5 +25,5 @@ index 5266e47be514e..8579632178530 100644
  
  /* power-key */
 -- 
-2.53.0
+2.54.0
 

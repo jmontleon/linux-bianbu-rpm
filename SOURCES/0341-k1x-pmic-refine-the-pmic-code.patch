@@ -1,4 +1,4 @@
-From d99eb76c150602cecb611c5a1829ade54512cc39 Mon Sep 17 00:00:00 2001
+From d2248b42840584d2907ca6ee71050aa1a5096fe3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 5 Jan 2024 11:04:06 +0800
 Subject: [PATCH 0341/1239] k1x:pmic: refine the pmic code
@@ -15,7 +15,7 @@ Change-Id: I03b56e80b4b4447967b63e48686ddbf70182018b
  4 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/pinctrl/spacemit-pmic-pinctrl.c b/drivers/pinctrl/spacemit-pmic-pinctrl.c
-index 0c561045c7df0..209ad528b7b84 100644
+index 0c561045c7df..209ad528b7b8 100644
 --- a/drivers/pinctrl/spacemit-pmic-pinctrl.c
 +++ b/drivers/pinctrl/spacemit-pmic-pinctrl.c
 @@ -399,7 +399,7 @@ static int spacemit_pmic_pinctrl_probe(struct platform_device *pdev)
@@ -28,7 +28,7 @@ index 0c561045c7df0..209ad528b7b84 100644
  };
  MODULE_DEVICE_TABLE(of, spacemit_pmic_pinctrl_of_match);
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index a6aa5973a9c2e..78be256723862 100644
+index a6aa5973a9c2..78be25672386 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -17,6 +17,13 @@
@@ -54,7 +54,7 @@ index a6aa5973a9c2e..78be256723862 100644
  };
  
 diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
-index c08585b530b1d..43d4e7e01fc5e 100644
+index c08585b530b1..43d4e7e01fc5 100644
 --- a/include/linux/mfd/spacemit/pm853.h
 +++ b/include/linux/mfd/spacemit/pm853.h
 @@ -115,7 +115,8 @@ enum PM853_reg {
@@ -68,7 +68,7 @@ index c08585b530b1d..43d4e7e01fc5e 100644
  	};
  
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 47027e14314eb..a589749115661 100644
+index 47027e14314e..a58974911566 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -52,7 +52,7 @@ enum SPM8821_reg {
@@ -106,5 +106,5 @@ index 47027e14314eb..a589749115661 100644
  	};
  
 -- 
-2.53.0
+2.54.0
 

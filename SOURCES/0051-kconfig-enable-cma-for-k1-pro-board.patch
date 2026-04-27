@@ -1,4 +1,4 @@
-From 72591fa459c3d6ad35c51a5f7766e6d0751d3c66 Mon Sep 17 00:00:00 2001
+From 30ffcc73dfd3f353851355433e0225906df4574f Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 12:39:14 +0800
 Subject: [PATCH 0051/1239] kconfig: enable cma for k1-pro board
@@ -9,7 +9,7 @@ Change-Id: I71fef276009a8c84d704a210e6515a4db0b9b8c0
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index 542267ac4e149..1dd9b6a758a6d 100644
+index 542267ac4e14..1dd9b6a758a6 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -30,6 +30,7 @@ CONFIG_RISCV_SBI_V01=y
@@ -29,5 +29,5 @@ index 542267ac4e149..1dd9b6a758a6d 100644
  CONFIG_CONSOLE_LOGLEVEL_DEFAULT=8
  CONFIG_CONSOLE_LOGLEVEL_QUIET=8
 -- 
-2.53.0
+2.54.0
 

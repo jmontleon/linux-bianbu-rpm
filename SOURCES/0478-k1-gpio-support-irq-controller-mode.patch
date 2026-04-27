@@ -1,4 +1,4 @@
-From bcf1220b422e75ef54bca6f2f49e9f60a1a28034 Mon Sep 17 00:00:00 2001
+From 273103f394950fee191359c98bb7e69c48e1b649 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Fri, 1 Mar 2024 11:19:08 +0800
 Subject: [PATCH 0478/1239] k1: gpio support irq controller mode
@@ -9,7 +9,7 @@ Change-Id: I11f7af1d78aad4beb8df016342479ae068ed2a03
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 9897f5ca98178..6bd8ad31f6193 100644
+index 9897f5ca9817..6bd8ad31f619 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1603,6 +1603,8 @@ gpio: gpio@d4019000 {
@@ -22,5 +22,5 @@ index 9897f5ca98178..6bd8ad31f6193 100644
  			gcb0: gpio0 {
  				reg-offset = <0x0>;
 -- 
-2.53.0
+2.54.0
 

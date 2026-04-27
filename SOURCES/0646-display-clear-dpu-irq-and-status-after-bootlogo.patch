@@ -1,4 +1,4 @@
-From 76197f346587599ef3330d633ce936f48fd4fb07 Mon Sep 17 00:00:00 2001
+From 5878bb363bb4f6c7a2f0e46d6846056ce077a100 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 30 Apr 2024 15:48:06 +0800
 Subject: [PATCH 0646/1239] display: clear dpu irq and status after bootlogo
@@ -9,7 +9,7 @@ Change-Id: I1cba77d635caf4038f684913433fb5d2f1d3ab3c
  1 file changed, 45 insertions(+)
 
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index 9e18561bbd086..d1e92d4c4233b 100644
+index 9e18561bbd08..d1e92d4c4233 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -475,17 +475,62 @@ static int dpu_update_bw(struct spacemit_dpu *dpu, uint64_t bw)
@@ -76,5 +76,5 @@ index 9e18561bbd086..d1e92d4c4233b 100644
  		iounmap(base);
  	} else {
 -- 
-2.53.0
+2.54.0
 

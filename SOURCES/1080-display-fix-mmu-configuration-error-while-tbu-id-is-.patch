@@ -1,4 +1,4 @@
-From f2bfe36ca3011cc1fb8ad6c5ca1477f876c25afd Mon Sep 17 00:00:00 2001
+From 888124eca73e8b76a1b146409cca79f3bd96731d Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 1 Nov 2024 14:30:09 +0800
 Subject: [PATCH 1080/1239] display: fix mmu configuration error while tbu id
@@ -10,7 +10,7 @@ Change-Id: I1aebfab93e1e7c01a94579b99baf109be3fd1b83
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
-index 220eb8fc726fd..04e87abdaf67d 100644
+index 220eb8fc726f..04e87abdaf67 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 @@ -54,7 +54,7 @@ int spacemit_dmmu_map(struct drm_plane *plane, struct dpu_mmu_tbl *mmu_tbl, u8 t
@@ -32,5 +32,5 @@ index 220eb8fc726fd..04e87abdaf67d 100644
  		CONFIG_RDMA_ADDR_REG(priv, 1, rdma_id, tbu.tbu_va[1]);
  		CONFIG_RDMA_ADDR_REG(priv, 2, rdma_id, tbu.tbu_va[2]);
 -- 
-2.53.0
+2.54.0
 

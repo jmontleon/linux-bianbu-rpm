@@ -1,4 +1,4 @@
-From 80e78f6c6594a0706a011706acfe8a43b8aeef8b Mon Sep 17 00:00:00 2001
+From a2c5d8d5d8a8f09df2dae29563419cf54e295602 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Fri, 26 May 2023 14:56:08 +0800
 Subject: [PATCH 0060/1239] reset: add spinlock for timing issue
@@ -9,7 +9,7 @@ Change-Id: I0556774f22f299afe5918e80e14e4249dd2532dd
  1 file changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/reset/k1-pro-reset.c b/drivers/reset/k1-pro-reset.c
-index 38957c64a1683..354690dd4715b 100755
+index 38957c64a168..354690dd4715 100755
 --- a/drivers/reset/k1-pro-reset.c
 +++ b/drivers/reset/k1-pro-reset.c
 @@ -14,6 +14,7 @@
@@ -84,5 +84,5 @@ index 38957c64a1683..354690dd4715b 100755
      reset->gsr_signals = k1pro_reset_data.gsr_signals;
      reset->rcdev.owner     = THIS_MODULE;
 -- 
-2.53.0
+2.54.0
 

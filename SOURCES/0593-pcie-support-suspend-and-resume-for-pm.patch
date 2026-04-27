@@ -1,4 +1,4 @@
-From e61544b85c69db38d9f0eba8a73d966788f5f1ad Mon Sep 17 00:00:00 2001
+From 1966ced9799d460d6e6c65bcd9e0dcfc4c0e37a6 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Mon, 8 Apr 2024 10:33:49 +0800
 Subject: [PATCH 0593/1239] pcie: support suspend and resume for pm
@@ -10,7 +10,7 @@ Change-Id: Ic170fd485be1f398a0ceb7c7e3365313d3487041
  2 files changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e7a98da6f4831..43dac9f62fcbb 100644
+index e7a98da6f483..43dac9f62fcb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1861,6 +1861,7 @@ pcie0_rc: pcie@ca000000 {
@@ -38,7 +38,7 @@ index e7a98da6f4831..43dac9f62fcbb 100644
  			bus-range = <0x00 0xff>;
  			max-link-speed = <2>;
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index 125b94c7ac92f..c7a92ebc2a72a 100755
+index 125b94c7ac92..c7a92ebc2a72 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -1494,11 +1494,6 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
@@ -67,5 +67,5 @@ index 125b94c7ac92f..c7a92ebc2a72a 100755
  	reset_control_deassert(k1x->reset);
  
 -- 
-2.53.0
+2.54.0
 

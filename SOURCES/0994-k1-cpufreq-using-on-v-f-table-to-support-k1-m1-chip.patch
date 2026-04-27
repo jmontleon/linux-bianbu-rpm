@@ -1,4 +1,4 @@
-From f3d42142dccd7fcf43cfb9a2eb490e727b300b54 Mon Sep 17 00:00:00 2001
+From c75cb3a56b14e6bfa1b6824d13cd4d7d899360e3 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 30 Aug 2024 21:57:56 +0800
 Subject: [PATCH 0994/1239] k1: cpufreq: using on v-f table to support k1 & m1
@@ -22,7 +22,7 @@ Change-Id: Icede3f45019c1b5dbd1d088830c21f73d1798feb
  delete mode 100644 arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 4f5cbdb670e49..383d26f60e531 100644
+index 4f5cbdb670e4..383d26f60e53 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -10,7 +10,7 @@
@@ -35,7 +35,7 @@ index 4f5cbdb670e49..383d26f60e531 100644
  / {
  	model = "spacemit k1-x MINI-PC board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index eed13a50e1ef4..dbc9ecd40d087 100644
+index eed13a50e1ef..dbc9ecd40d08 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -10,7 +10,7 @@
@@ -48,7 +48,7 @@ index eed13a50e1ef4..dbc9ecd40d087 100644
  / {
  	model = "M1-MUSE-BOOK";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
-index 24a15834d1a41..899cec78d01d9 100644
+index 24a15834d1a4..899cec78d01d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Card.dts
 @@ -11,7 +11,7 @@
@@ -61,7 +61,7 @@ index 24a15834d1a41..899cec78d01d9 100644
  / {
  	model = "spacemit k1-x MUSE-Card board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 6d8e6f3c510d8..98f74f8881f70 100644
+index 6d8e6f3c510d..98f74f8881f7 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -11,7 +11,7 @@
@@ -74,7 +74,7 @@ index 6d8e6f3c510d8..98f74f8881f70 100644
  / {
  	model = "spacemit k1-x MUSE-Pi board";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
-index 6826398e7f23b..4d432544c82df 100644
+index 6826398e7f23..4d432544c82d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_opp_table.dtsi
 @@ -1,5 +1,5 @@
@@ -282,7 +282,7 @@ index 6826398e7f23b..4d432544c82df 100644
 +	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
-index 9304607a03ea1..51b190378ba2f 100644
+index 9304607a03ea..51b190378ba2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 @@ -30,26 +30,26 @@ cls0_trip2: cls0-trip-point2 {
@@ -329,7 +329,7 @@ index 9304607a03ea1..51b190378ba2f 100644
  		};
  	};
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index 1cb9348b61a98..65d92dacaa019 100644
+index 1cb9348b61a9..65d92dacaa01 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -10,7 +10,7 @@
@@ -343,7 +343,7 @@ index 1cb9348b61a98..65d92dacaa019 100644
  / {
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 deleted file mode 100644
-index fa02fda0ad36d..0000000000000
+index fa02fda0ad36..000000000000
 --- a/arch/riscv/boot/dts/spacemit/m1-x_opp_table.dtsi
 +++ /dev/null
 @@ -1,234 +0,0 @@
@@ -582,7 +582,7 @@ index fa02fda0ad36d..0000000000000
 -	operating-points-v2 = <&clst_core_opp_table0>, <&clst_core_opp_table1>, <&clst_core_opp_table2>;
 -};
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 16a55f81ca3b9..1dd837c3098ce 100644
+index 16a55f81ca3b..1dd837c3098c 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -156,10 +156,18 @@ static void cpufreq_exit(struct cpufreq_policy *policy)
@@ -606,7 +606,7 @@ index 16a55f81ca3b9..1dd837c3098ce 100644
  	.get = cpufreq_generic_get,
  	.init = cpufreq_init,
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index 6636edaf99917..c51303193e41a 100644
+index 6636edaf9991..c51303193e41 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -28,24 +28,33 @@ struct private_data {
@@ -727,5 +727,5 @@ index 6636edaf99917..c51303193e41a 100644
  	return 0;
  }
 -- 
-2.53.0
+2.54.0
 

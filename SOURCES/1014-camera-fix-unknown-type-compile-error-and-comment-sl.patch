@@ -1,4 +1,4 @@
-From 3919321cd3ccbc873fa7faa82e10a10da61c2972 Mon Sep 17 00:00:00 2001
+From 946aa1728dd39c3a6debf20df73a62e122be9a98 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Fri, 6 Sep 2024 18:00:31 +0800
 Subject: [PATCH 1014/1239] camera: fix unknown type compile error and comment
@@ -13,7 +13,7 @@ Change-Id: I8610c04601f4cd384e4f0f70e7bfc707b1499b0f
  4 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
-index 1990736cc298a..024644514d2c3 100644
+index 1990736cc298..024644514d2c 100644
 --- a/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 +++ b/drivers/media/platform/spacemit/camera/cam_cpp/k1x_cpp.c
 @@ -41,6 +41,7 @@
@@ -25,7 +25,7 @@ index 1990736cc298a..024644514d2c3 100644
  #define ISP_BUS_DEFAULT_FREQ (307200000)
  
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index 5999097bc2ff0..fadc0631de130 100644
+index 5999097bc2ff..fadc0631de13 100644
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -2440,7 +2440,7 @@ static int fe_isp_pipeline_notifier_handler(struct notifier_block *nb,
@@ -62,7 +62,7 @@ index 5999097bc2ff0..fadc0631de130 100644
  	}
  	return sc_pipeline->slice_result;
 diff --git a/include/uapi/media/k1x/cam_sensor_uapi.h b/include/uapi/media/k1x/cam_sensor_uapi.h
-index d5ce50aa9f3d4..fd9a222ed1ef5 100644
+index d5ce50aa9f3d..fd9a222ed1ef 100644
 --- a/include/uapi/media/k1x/cam_sensor_uapi.h
 +++ b/include/uapi/media/k1x/cam_sensor_uapi.h
 @@ -12,6 +12,12 @@
@@ -79,7 +79,7 @@ index d5ce50aa9f3d4..fd9a222ed1ef5 100644
  
  #define CAM_SENSOR_DEV_NAME "/dev/cam_sensor"
 diff --git a/include/uapi/media/k1x/k1x_cpp_uapi.h b/include/uapi/media/k1x/k1x_cpp_uapi.h
-index 3ee11b6ee96d3..df88755fd4ded 100644
+index 3ee11b6ee96d..df88755fd4de 100644
 --- a/include/uapi/media/k1x/k1x_cpp_uapi.h
 +++ b/include/uapi/media/k1x/k1x_cpp_uapi.h
 @@ -10,6 +10,12 @@
@@ -96,5 +96,5 @@ index 3ee11b6ee96d3..df88755fd4ded 100644
   * hw version info:
   * 31:16  Version bits
 -- 
-2.53.0
+2.54.0
 

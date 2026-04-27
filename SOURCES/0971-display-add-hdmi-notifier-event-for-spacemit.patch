@@ -1,4 +1,4 @@
-From b295880834cca6925577f00106c4055bc71dd763 Mon Sep 17 00:00:00 2001
+From 3c550c51720486dacbc152b9ceadc31fb07713e7 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 9 Aug 2024 16:51:57 +0800
 Subject: [PATCH 0971/1239] display: add hdmi notifier event for spacemit
@@ -11,7 +11,7 @@ Change-Id: Ie6a945b540b42384d65ea125b778dd9a1bc2fdff
  3 files changed, 44 insertions(+)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index cde07b9102f05..3cef50d9f8b95 100644
+index cde07b9102f0..3cef50d9f8b9 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -707,6 +707,27 @@ static struct drm_encoder_helper_funcs spacemit_hdmi_encoder_helper_funcs = {
@@ -56,7 +56,7 @@ index cde07b9102f05..3cef50d9f8b95 100644
  	}
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.h b/drivers/gpu/drm/spacemit/spacemit_hdmi.h
-index 21009e49a6ff2..1b1161ed74d8c 100644
+index 21009e49a6ff..1b1161ed74d8 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.h
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.h
 @@ -3,6 +3,11 @@
@@ -82,7 +82,7 @@ index 21009e49a6ff2..1b1161ed74d8c 100644
 +
 +#endif
 diff --git a/include/soc/spacemit/spacemit_panel.h b/include/soc/spacemit/spacemit_panel.h
-index 8af7ef84bc200..cd1d7b1fa6340 100644
+index 8af7ef84bc20..cd1d7b1fa634 100644
 --- a/include/soc/spacemit/spacemit_panel.h
 +++ b/include/soc/spacemit/spacemit_panel.h
 @@ -20,4 +20,14 @@ enum{
@@ -101,5 +101,5 @@ index 8af7ef84bc200..cd1d7b1fa6340 100644
 +
  #endif
 -- 
-2.53.0
+2.54.0
 

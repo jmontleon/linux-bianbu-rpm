@@ -1,4 +1,4 @@
-From f08b201d9f10861a1d369c4341e9160590038a7a Mon Sep 17 00:00:00 2001
+From 7f951f9390b48df42827fe50a2ae20000c02e4be Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:41:03 +0800
 Subject: [PATCH 0621/1239] clean compile warning:
@@ -13,7 +13,7 @@ Change-Id: I0f6a030c4a06287cddbeabf956406c4ed02d6e50
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/remoteproc/k1x-rproc.c b/drivers/remoteproc/k1x-rproc.c
-index 6f8bbe1849ef8..bc49fcc5ca5ff 100644
+index 6f8bbe1849ef..bc49fcc5ca5f 100644
 --- a/drivers/remoteproc/k1x-rproc.c
 +++ b/drivers/remoteproc/k1x-rproc.c
 @@ -582,7 +582,6 @@ static int spacemit_rproc_suspend(struct device *dev)
@@ -25,5 +25,5 @@ index 6f8bbe1849ef8..bc49fcc5ca5ff 100644
  	struct rproc *rproc;
  	struct spacemit_rproc *srproc;
 -- 
-2.53.0
+2.54.0
 

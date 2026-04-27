@@ -1,4 +1,4 @@
-From bf1e15082f1d7402f25a531d947c2ef52c8ac8e8 Mon Sep 17 00:00:00 2001
+From 7b29d5fe0cfae7a7f84d7641163d72b95658df49 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 16 Aug 2024 10:49:55 +0800
 Subject: [PATCH 0961/1239] k1:i2c: support i2c driver of rcpu domain
@@ -10,7 +10,7 @@ Change-Id: I4765e0f24a1456bd52bd4351e014b7235ca862c6
  2 files changed, 168 insertions(+), 12 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 98dfbd259a977..ea332129d37b2 100644
+index 98dfbd259a97..ea332129d37b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1381,6 +1381,38 @@ i2c8: i2c@d401d800 {
@@ -53,7 +53,7 @@ index 98dfbd259a977..ea332129d37b2 100644
  			compatible = "spacemit,k1x-pwm";
  			reg = <0x0 0xd401a000 0x0 0x10>;
 diff --git a/drivers/i2c/busses/i2c-k1x.c b/drivers/i2c/busses/i2c-k1x.c
-index f0b6e9d36fe31..53a8019ff3ef1 100644
+index f0b6e9d36fe3..53a8019ff3ef 100644
 --- a/drivers/i2c/busses/i2c-k1x.c
 +++ b/drivers/i2c/busses/i2c-k1x.c
 @@ -26,9 +26,25 @@
@@ -236,5 +236,5 @@ index f0b6e9d36fe31..53a8019ff3ef1 100644
  MODULE_LICENSE("GPL v2");
  MODULE_ALIAS("platform:i2c-spacemit-k1x");
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 17e7f84eb5e46b51c4bd0af3405bfade4f59605d Mon Sep 17 00:00:00 2001
+From 7fa68953e81555988d28c3c45c0b1d4b6e1bedeb Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 12 Sep 2024 21:07:59 +0800
 Subject: [PATCH 1020/1239] usb: f_uvc: use GFP_DMA32 for vb2_queue at spacemit
@@ -19,7 +19,7 @@ Change-Id: I02028982af567faa61bb57a4fa3b2800f48be26d
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
-index 21d80322cb614..59577e89b1097 100644
+index 21d80322cb61..59577e89b109 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
 +++ b/drivers/usb/gadget/function/uvc_queue.c
 @@ -154,6 +154,9 @@ int uvcg_queue_init(struct uvc_video_queue *queue, struct device *dev, enum v4l2
@@ -33,5 +33,5 @@ index 21d80322cb614..59577e89b1097 100644
  	ret = vb2_queue_init(&queue->queue);
  	if (ret)
 -- 
-2.53.0
+2.54.0
 

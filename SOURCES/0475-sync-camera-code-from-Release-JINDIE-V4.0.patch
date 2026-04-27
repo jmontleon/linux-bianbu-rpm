@@ -1,4 +1,4 @@
-From 1a6ba8fe7985be5f064d2742e51d38628c767181 Mon Sep 17 00:00:00 2001
+From e5dccd1a4f1e82f4efa8e1211794fa0b56e527ec Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Mon, 4 Mar 2024 15:18:54 +0800
 Subject: [PATCH 0475/1239] sync camera code from Release-JINDIE-V4.0
@@ -12,7 +12,7 @@ Change-Id: I57bf8307a7726bf0b34489d20398e52a92b21ab5
  4 files changed, 37 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index 7cbc95a06324e..75ea6a888c183 100755
+index 7cbc95a06324..75ea6a888c18 100755
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -413,7 +413,6 @@ static int camsnr_set_mclk_enable(unsigned long arg, struct cam_sensor_device *m
@@ -24,7 +24,7 @@ index 7cbc95a06324e..75ea6a888c183 100755
  			if (ret < 0)
  				return ret;
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
-index 06eaa9ef2e515..72e40a72b3230 100755
+index 06eaa9ef2e51..72e40a72b323 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/fe_isp.c
 @@ -1049,16 +1049,23 @@ static int fe_rawdump_subdev_video_s_stream(struct v4l2_subdev *sd, int enable)
@@ -103,7 +103,7 @@ index 06eaa9ef2e515..72e40a72b3230 100755
  			while (1) {
  				if (dpu_mclk_exclusive_get()) {
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
-index c8249f1c47271..631cd87c6fff7 100755
+index c8249f1c4727..631cd87c6fff 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.c
 @@ -577,3 +577,11 @@ void hw_isp_top_pipe1_debug_dump(struct spm_camera_block *sc_block)
@@ -120,7 +120,7 @@ index c8249f1c47271..631cd87c6fff7 100755
 +}
 \ No newline at end of file
 diff --git a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
-index c1a439694ecc9..899ae23c3246b 100755
+index c1a439694ecc..899ae23c3246 100755
 --- a/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
 +++ b/drivers/media/platform/spacemit/camera/vi/k1xvi/hw-seq/hw_isp.h
 @@ -168,4 +168,5 @@ unsigned int hw_isp_top_get_idi_fifo_depth(struct spm_camera_block *sc_block);
@@ -130,5 +130,5 @@ index c1a439694ecc9..899ae23c3246b 100755
 +void hw_isp_top_set_speed_ctrl(struct spm_camera_block *sc_block, unsigned int speed_ctrl);
  #endif
 -- 
-2.53.0
+2.54.0
 

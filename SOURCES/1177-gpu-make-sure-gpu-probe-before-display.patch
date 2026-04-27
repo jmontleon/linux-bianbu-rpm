@@ -1,4 +1,4 @@
-From ae98c79f418e976730cc148d1da12dfa2fee9c29 Mon Sep 17 00:00:00 2001
+From c078dd11fcdd11f8c661865dc1f58ffffabba932 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Fri, 29 Nov 2024 16:14:41 +0800
 Subject: [PATCH 1177/1239] gpu: make sure gpu probe before display
@@ -9,7 +9,7 @@ Change-Id: Iadfc9fda2674d7ee753f54dc941e8797e9667ab4
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
-index 4cf76a3e4c55a..4e3e09786b899 100644
+index 4cf76a3e4c55..4e3e09786b89 100644
 --- a/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 +++ b/drivers/gpu/drm/img-rogue/pvr_platform_drv.c
 @@ -306,5 +306,5 @@ static void __exit pvr_exit(void)
@@ -20,5 +20,5 @@ index 4cf76a3e4c55a..4e3e09786b899 100644
 +device_initcall(pvr_init);
  module_exit(pvr_exit);
 -- 
-2.53.0
+2.54.0
 

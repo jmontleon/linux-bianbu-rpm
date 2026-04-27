@@ -1,4 +1,4 @@
-From 7ecb55c7d39f094bb4f9a452d610d2140cc55912 Mon Sep 17 00:00:00 2001
+From 28ec6874e0c03b0510d5380595f46113be59415e Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Aug 2024 17:56:40 +0800
 Subject: [PATCH 0975/1239] k1:serial:register freeze & restore callback for
@@ -10,7 +10,7 @@ Change-Id: I85ff45ec9f4b85453f7a64d31b2ad7525237dbda
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index 43fff0b25cd52..ca16dd56c2313 100644
+index 43fff0b25cd5..ca16dd56c231 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -45,6 +45,7 @@
@@ -34,5 +34,5 @@ index 43fff0b25cd52..ca16dd56c2313 100644
  
  #ifdef CONFIG_PM
 -- 
-2.53.0
+2.54.0
 

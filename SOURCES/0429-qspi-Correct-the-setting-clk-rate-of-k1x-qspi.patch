@@ -1,4 +1,4 @@
-From 5ed5e505d9c74636128db4d056f33492e9551381 Mon Sep 17 00:00:00 2001
+From b1cf714377331bf3ec0077bd40b2f548fb62661a Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 30 Jan 2024 21:17:18 +0800
 Subject: [PATCH 0429/1239] qspi: Correct the setting clk rate of k1x qspi
@@ -9,7 +9,7 @@ Change-Id: I256c9c956b73d62a4da3a15da0fb9ac1ecbfc674
  1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index 1076d6cdb6a01..38024eca3c5e3 100755
+index 1076d6cdb6a0..38024eca3c5e 100755
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -108,7 +108,7 @@
@@ -44,5 +44,5 @@ index 1076d6cdb6a01..38024eca3c5e3 100755
  	else
  		qspi_writel(qspi, QSPI_SMPR_FSPHS_MASK, base + QSPI_SMPR);
 -- 
-2.53.0
+2.54.0
 

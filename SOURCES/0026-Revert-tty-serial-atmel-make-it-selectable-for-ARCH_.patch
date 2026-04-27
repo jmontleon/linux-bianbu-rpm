@@ -1,4 +1,4 @@
-From ac9c3b5872755b2a8b6fee4cc01f6947ecf76edd Mon Sep 17 00:00:00 2001
+From f8c3ef4b3123a1a470f6628aeb0fb3cbcf27a29e Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 19 Oct 2025 12:07:56 -0400
 Subject: [PATCH 0026/1239] Revert "tty: serial: atmel: make it selectable for
@@ -10,7 +10,7 @@ This reverts commit 9fc0a7e0ee896b1b4e66b1ffe38efe2f4af20891.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 2b9c8b39d68f5..77deb2f3855fb 100644
+index 2b9c8b39d68f..77deb2f3855f 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -128,7 +128,7 @@ config SERIAL_SB1250_DUART_CONSOLE
@@ -23,5 +23,5 @@ index 2b9c8b39d68f5..77deb2f3855fb 100644
  	select SERIAL_MCTRL_GPIO if GPIOLIB
  	select MFD_AT91_USART
 -- 
-2.53.0
+2.54.0
 

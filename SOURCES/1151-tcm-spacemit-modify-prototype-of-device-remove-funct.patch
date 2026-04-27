@@ -1,4 +1,4 @@
-From 05cce818bff2525f21e818547176ec18042d55b2 Mon Sep 17 00:00:00 2001
+From 35ed401aa16c4d5c28b31a6beef64d9dac4a45c1 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:39:59 +0800
 Subject: [PATCH 1151/1239] tcm: spacemit: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I5146ee0129be9e82c3e9294ce266eb0a4592e9f4
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/misc/tcm.c b/drivers/misc/tcm.c
-index ebc0b2ab2bae1..63d0f36d94297 100644
+index ebc0b2ab2bae..63d0f36d9429 100644
 --- a/drivers/misc/tcm.c
 +++ b/drivers/misc/tcm.c
 @@ -647,14 +647,12 @@ static int tcm_probe(struct platform_device *pdev)
@@ -30,5 +30,5 @@ index ebc0b2ab2bae1..63d0f36d94297 100644
  
  static struct platform_driver tcm_driver = {
 -- 
-2.53.0
+2.54.0
 

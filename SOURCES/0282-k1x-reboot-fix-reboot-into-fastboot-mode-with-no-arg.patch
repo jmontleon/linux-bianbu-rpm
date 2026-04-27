@@ -1,4 +1,4 @@
-From 1a3614ea27fb23818c8d76aba05480c41fe3ad0c Mon Sep 17 00:00:00 2001
+From 634b4695916eaea74e607c5b587e03342ae6f66d Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Tue, 26 Dec 2023 20:50:28 +0800
 Subject: [PATCH 0282/1239] k1x-reboot:fix reboot into fastboot mode with no
@@ -10,7 +10,7 @@ Change-Id: I4e7fe5c7b3580d91ac6d0b25a661a0b5e315589d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soc/spacemit/spacemit_reboot.c b/drivers/soc/spacemit/spacemit_reboot.c
-index b472fc4f21cb4..21286b4a72b43 100755
+index b472fc4f21cb..21286b4a72b4 100755
 --- a/drivers/soc/spacemit/spacemit_reboot.c
 +++ b/drivers/soc/spacemit/spacemit_reboot.c
 @@ -26,7 +26,7 @@ static int k1x_reset_handler(struct notifier_block *this, unsigned long mode,
@@ -23,5 +23,5 @@ index b472fc4f21cb4..21286b4a72b43 100755
  
  	return NOTIFY_DONE;
 -- 
-2.53.0
+2.54.0
 

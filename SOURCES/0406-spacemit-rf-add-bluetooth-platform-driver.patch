@@ -1,4 +1,4 @@
-From bdabcce50f1e0831ef9ffd75ac19521f6a8c115b Mon Sep 17 00:00:00 2001
+From d795275578b902de50ffe4e5ad832183ccbfc3e0 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 15 Jan 2024 21:04:41 +0800
 Subject: [PATCH 0406/1239] spacemit-rf: add bluetooth platform driver
@@ -15,7 +15,7 @@ Change-Id: Ida78d5e22ab44143e31a354216c421c97c93f93c
  create mode 100755 drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
 
 diff --git a/drivers/soc/spacemit/spacemit-rf/Makefile b/drivers/soc/spacemit/spacemit-rf/Makefile
-index 522245a0ba52f..c2cb0d17295fe 100755
+index 522245a0ba52..c2cb0d17295f 100755
 --- a/drivers/soc/spacemit/spacemit-rf/Makefile
 +++ b/drivers/soc/spacemit/spacemit-rf/Makefile
 @@ -3,4 +3,4 @@
@@ -26,7 +26,7 @@ index 522245a0ba52f..c2cb0d17295fe 100755
 +obj-$(CONFIG_SPACEMIT_RFKILL)   += spacemit-pwrseq.o spacemit-wlan.o spacemit-bt.o
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 new file mode 100755
-index 0000000000000..34e89a7f7ace5
+index 000000000000..34e89a7f7ace
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-bt.c
 @@ -0,0 +1,196 @@
@@ -227,7 +227,7 @@ index 0000000000000..34e89a7f7ace5
 +MODULE_DESCRIPTION("spacemit bt pwrseq driver");
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
-index cc7d910cd0bc7..4e1b5129ef157 100755
+index cc7d910cd0bc..4e1b5129ef15 100755
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.c
 @@ -22,19 +22,14 @@
@@ -441,7 +441,7 @@ index cc7d910cd0bc7..4e1b5129ef157 100755
  
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
 new file mode 100755
-index 0000000000000..75cd875d4e672
+index 000000000000..75cd875d4e67
 --- /dev/null
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-pwrseq.h
 @@ -0,0 +1,24 @@
@@ -470,7 +470,7 @@ index 0000000000000..75cd875d4e672
 +struct spacemit_pwrseq *spacemit_get_pwrseq(void);
 +#endif
 diff --git a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
-index ffa3d0eb60545..2c6a5fa4d3e6b 100755
+index ffa3d0eb6054..2c6a5fa4d3e6 100755
 --- a/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 +++ b/drivers/soc/spacemit/spacemit-rf/spacemit-wlan.c
 @@ -19,6 +19,7 @@
@@ -591,5 +591,5 @@ index ffa3d0eb60545..2c6a5fa4d3e6b 100755
  }
  
 -- 
-2.53.0
+2.54.0
 

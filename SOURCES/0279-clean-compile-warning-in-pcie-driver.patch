@@ -1,4 +1,4 @@
-From 25b2da637451f4f8bd9aeb42022baab471161c70 Mon Sep 17 00:00:00 2001
+From 7b28d814cded236ac768e87a2cbd8d741c0c7a91 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:36:59 +0800
 Subject: [PATCH 0279/1239] clean compile warning in pcie driver
@@ -9,7 +9,7 @@ Change-Id: I9137f9b6888777af5dc998f77430cfc4a87e3997
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index f5174e8d94d1a..4e9becf41c4e8 100755
+index f5174e8d94d1..4e9becf41c4e 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -731,7 +731,7 @@ static irqreturn_t k1x_pcie_irq_handler(int irq, void *arg)
@@ -40,5 +40,5 @@ index f5174e8d94d1a..4e9becf41c4e8 100755
  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
  	struct k1x_pcie *k1x = to_k1x_pcie(pci);
 -- 
-2.53.0
+2.54.0
 

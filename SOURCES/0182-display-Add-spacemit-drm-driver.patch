@@ -1,4 +1,4 @@
-From c81a7a3983e0f625283472d33ae5e9768cd6a04a Mon Sep 17 00:00:00 2001
+From 32f1384fa86c355c8d4736621fcd901d02d544d6 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 17 Nov 2023 09:42:35 +0800
 Subject: [PATCH 0182/1239] display: Add spacemit drm driver
@@ -133,7 +133,7 @@ Change-Id: I831e1fb0eec8448b84a8e873a6a517c5f39c3608
  create mode 100644 include/dt-bindings/display/spacemit-dpu.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d5c0db0888253..62fe605eabecd 100644
+index d5c0db088825..62fe605eabec 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -7,6 +7,7 @@
@@ -253,7 +253,7 @@ index d5c0db0888253..62fe605eabecd 100644
  };
 -
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
-index 0b5c804f30ce8..4a1a62b3cd1be 100644
+index 0b5c804f30ce..4a1a62b3cd1b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -51,6 +51,110 @@ core3 {
@@ -411,7 +411,7 @@ index 0b5c804f30ce8..4a1a62b3cd1be 100644
  	bus-width = <4>;
  	broken-cd;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index 39aca611c0b51..07cd6ac76650d 100644
+index 39aca611c0b5..07cd6ac76650 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -284,6 +284,9 @@ CONFIG_SPACEMIT_V2D=y
@@ -425,7 +425,7 @@ index 39aca611c0b51..07cd6ac76650d 100644
  # CONFIG_HID_GENERIC is not set
  CONFIG_USB=y
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index ed85d0ceee3ba..879dbe3daa9b9 100644
+index ed85d0ceee3b..879dbe3daa9b 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
 @@ -398,6 +398,8 @@ source "drivers/gpu/drm/imagination/Kconfig"
@@ -438,7 +438,7 @@ index ed85d0ceee3ba..879dbe3daa9b9 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && HYPERV_VMBUS
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 742f0d590c5af..8719cc808642d 100644
+index 742f0d590c5a..8719cc808642 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
 @@ -234,6 +234,7 @@ obj-y			+= solomon/
@@ -451,7 +451,7 @@ index 742f0d590c5af..8719cc808642d 100644
  hdrtest-files := \
 diff --git a/drivers/gpu/drm/spacemit/Kconfig b/drivers/gpu/drm/spacemit/Kconfig
 new file mode 100644
-index 0000000000000..7e61e6426d3f3
+index 000000000000..7e61e6426d3f
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/Kconfig
 @@ -0,0 +1,22 @@
@@ -479,7 +479,7 @@ index 0000000000000..7e61e6426d3f3
 +	depends on DRM_SPACEMIT
 diff --git a/drivers/gpu/drm/spacemit/Makefile b/drivers/gpu/drm/spacemit/Makefile
 new file mode 100644
-index 0000000000000..0b52fda724b2d
+index 000000000000..0b52fda724b2
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/Makefile
 @@ -0,0 +1,29 @@
@@ -514,7 +514,7 @@ index 0000000000000..0b52fda724b2d
 +obj-$(CONFIG_SPACEMIT_MIPI_PANEL) += spacemit_mipi_panel.o
 diff --git a/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 new file mode 100644
-index 0000000000000..c222cbb9d26f4
+index 000000000000..c222cbb9d26f
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dphy/spacemit_dphy_drv.c
 @@ -0,0 +1,473 @@
@@ -993,7 +993,7 @@ index 0000000000000..c222cbb9d26f4
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.c b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 new file mode 100644
-index 0000000000000..1133b60a1cab0
+index 000000000000..1133b60a1cab
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.c
 @@ -0,0 +1,318 @@
@@ -1317,7 +1317,7 @@ index 0000000000000..1133b60a1cab0
 +}
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_debug.h b/drivers/gpu/drm/spacemit/dpu/dpu_debug.h
 new file mode 100644
-index 0000000000000..7aebb50d25a1e
+index 000000000000..7aebb50d25a1
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_debug.h
 @@ -0,0 +1,108 @@
@@ -1431,7 +1431,7 @@ index 0000000000000..7aebb50d25a1e
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 new file mode 100644
-index 0000000000000..ee2ca88f1555e
+index 000000000000..ee2ca88f1555
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -0,0 +1,1818 @@
@@ -3255,7 +3255,7 @@ index 0000000000000..ee2ca88f1555e
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h
 new file mode 100644
-index 0000000000000..c04bd525fe308
+index 000000000000..c04bd525fe30
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.h
 @@ -0,0 +1,69 @@
@@ -3330,7 +3330,7 @@ index 0000000000000..c04bd525fe308
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_trace.h b/drivers/gpu/drm/spacemit/dpu/dpu_trace.h
 new file mode 100644
-index 0000000000000..51f56217c1bf4
+index 000000000000..51f56217c1bf
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_trace.h
 @@ -0,0 +1,473 @@
@@ -3809,7 +3809,7 @@ index 0000000000000..51f56217c1bf4
 +#include <trace/define_trace.h>
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 new file mode 100644
-index 0000000000000..9e2e0bbe672e9
+index 000000000000..9e2e0bbe672e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.c
 @@ -0,0 +1,345 @@
@@ -4160,7 +4160,7 @@ index 0000000000000..9e2e0bbe672e9
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h
 new file mode 100644
-index 0000000000000..738e50ae40c93
+index 000000000000..738e50ae40c9
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_fbcmem.h
 @@ -0,0 +1,40 @@
@@ -4206,7 +4206,7 @@ index 0000000000000..738e50ae40c93
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmdlist.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmdlist.h
 new file mode 100644
-index 0000000000000..aad655226f49d
+index 000000000000..aad655226f49
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmdlist.h
 @@ -0,0 +1,95 @@
@@ -4307,7 +4307,7 @@ index 0000000000000..aad655226f49d
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmps_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmps_x.h
 new file mode 100644
-index 0000000000000..bb9834317e9ea
+index 000000000000..bb9834317e9e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/cmps_x.h
 @@ -0,0 +1,515 @@
@@ -4828,7 +4828,7 @@ index 0000000000000..bb9834317e9ea
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/dma_top.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dma_top.h
 new file mode 100644
-index 0000000000000..7fbfee64f6188
+index 000000000000..7fbfee64f618
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dma_top.h
 @@ -0,0 +1,257 @@
@@ -5091,7 +5091,7 @@ index 0000000000000..7fbfee64f6188
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_crg.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_crg.h
 new file mode 100644
-index 0000000000000..5bb92cabbc003
+index 000000000000..5bb92cabbc00
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_crg.h
 @@ -0,0 +1,64 @@
@@ -5161,7 +5161,7 @@ index 0000000000000..5bb92cabbc003
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_ctl.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_ctl.h
 new file mode 100644
-index 0000000000000..cc594d3876c48
+index 000000000000..cc594d3876c4
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_ctl.h
 @@ -0,0 +1,516 @@
@@ -5683,7 +5683,7 @@ index 0000000000000..cc594d3876c48
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_intp.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_intp.h
 new file mode 100644
-index 0000000000000..9d6d41bf2f1f9
+index 000000000000..9d6d41bf2f1f
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_intp.h
 @@ -0,0 +1,611 @@
@@ -6300,7 +6300,7 @@ index 0000000000000..9d6d41bf2f1f9
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_top.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_top.h
 new file mode 100644
-index 0000000000000..e01ae140f0d44
+index 000000000000..e01ae140f0d4
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/dpu_top.h
 @@ -0,0 +1,126 @@
@@ -6432,7 +6432,7 @@ index 0000000000000..e01ae140f0d44
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/mmu.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/mmu.h
 new file mode 100644
-index 0000000000000..e87a5abdf7f76
+index 000000000000..e87a5abdf7f7
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/mmu.h
 @@ -0,0 +1,365 @@
@@ -6803,7 +6803,7 @@ index 0000000000000..e87a5abdf7f76
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_proc_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_proc_x.h
 new file mode 100644
-index 0000000000000..8822f07599c50
+index 000000000000..8822f07599c5
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_proc_x.h
 @@ -0,0 +1,480 @@
@@ -7289,7 +7289,7 @@ index 0000000000000..8822f07599c50
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_top_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_top_x.h
 new file mode 100644
-index 0000000000000..3c443cbe374ae
+index 000000000000..3c443cbe374a
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/outctrl_top_x.h
 @@ -0,0 +1,432 @@
@@ -7727,7 +7727,7 @@ index 0000000000000..3c443cbe374ae
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/prepipe_layer_proc_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/prepipe_layer_proc_x.h
 new file mode 100644
-index 0000000000000..5f975619aac8d
+index 000000000000..5f975619aac8
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/prepipe_layer_proc_x.h
 @@ -0,0 +1,780 @@
@@ -8513,7 +8513,7 @@ index 0000000000000..5f975619aac8d
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/rdma_path_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/rdma_path_x.h
 new file mode 100644
-index 0000000000000..05d27bdb400ef
+index 000000000000..05d27bdb400e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/rdma_path_x.h
 @@ -0,0 +1,516 @@
@@ -9035,7 +9035,7 @@ index 0000000000000..05d27bdb400ef
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/reg_map.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/reg_map.h
 new file mode 100644
-index 0000000000000..88f8c18e94d5c
+index 000000000000..88f8c18e94d5
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/reg_map.h
 @@ -0,0 +1,139 @@
@@ -9180,7 +9180,7 @@ index 0000000000000..88f8c18e94d5c
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/scaler_x.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/scaler_x.h
 new file mode 100644
-index 0000000000000..30da4f1ef7879
+index 000000000000..30da4f1ef787
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/scaler_x.h
 @@ -0,0 +1,222 @@
@@ -9408,7 +9408,7 @@ index 0000000000000..30da4f1ef7879
 +
 diff --git a/drivers/gpu/drm/spacemit/dpu/saturn_regs/wb_top.h b/drivers/gpu/drm/spacemit/dpu/saturn_regs/wb_top.h
 new file mode 100644
-index 0000000000000..87d960f6971d0
+index 000000000000..87d960f6971d
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dpu/saturn_regs/wb_top.h
 @@ -0,0 +1,374 @@
@@ -9788,7 +9788,7 @@ index 0000000000000..87d960f6971d0
 +
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.c
 new file mode 100644
-index 0000000000000..66e239a90a957
+index 000000000000..66e239a90a95
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.c
 @@ -0,0 +1,232 @@
@@ -10026,7 +10026,7 @@ index 0000000000000..66e239a90a957
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
 new file mode 100644
-index 0000000000000..9cc4d49856b50
+index 000000000000..9cc4d49856b5
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dptc_drv.h
 @@ -0,0 +1,41 @@
@@ -10073,7 +10073,7 @@ index 0000000000000..9cc4d49856b50
 +
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 new file mode 100644
-index 0000000000000..34f58dbb33f21
+index 000000000000..34f58dbb33f2
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_drv.c
 @@ -0,0 +1,898 @@
@@ -10977,7 +10977,7 @@ index 0000000000000..34f58dbb33f21
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_hw.h b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_hw.h
 new file mode 100644
-index 0000000000000..55510dcc8f7d7
+index 000000000000..55510dcc8f7d
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/dsi/spacemit_dsi_hw.h
 @@ -0,0 +1,356 @@
@@ -11339,7 +11339,7 @@ index 0000000000000..55510dcc8f7d7
 +#endif /*_SPACEMIT_DSI_HW_H_*/
 diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.c b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 new file mode 100644
-index 0000000000000..c143cc76f2d76
+index 000000000000..c143cc76f2d7
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.c
 @@ -0,0 +1,69 @@
@@ -11414,7 +11414,7 @@ index 0000000000000..c143cc76f2d76
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_bootloader.h b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
 new file mode 100644
-index 0000000000000..30e33b3aab3ea
+index 000000000000..30e33b3aab3e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_bootloader.h
 @@ -0,0 +1,18 @@
@@ -11438,7 +11438,7 @@ index 0000000000000..30e33b3aab3ea
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.c b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
 new file mode 100644
-index 0000000000000..e06c3820e542f
+index 000000000000..e06c3820e542
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.c
 @@ -0,0 +1,249 @@
@@ -11693,7 +11693,7 @@ index 0000000000000..e06c3820e542f
 +}
 diff --git a/drivers/gpu/drm/spacemit/spacemit_cmdlist.h b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
 new file mode 100644
-index 0000000000000..eb649fef2e949
+index 000000000000..eb649fef2e94
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_cmdlist.h
 @@ -0,0 +1,75 @@
@@ -11774,7 +11774,7 @@ index 0000000000000..eb649fef2e949
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.c b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 new file mode 100644
-index 0000000000000..cceedeaeb8e66
+index 000000000000..cceedeaeb8e6
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.c
 @@ -0,0 +1,142 @@
@@ -11922,7 +11922,7 @@ index 0000000000000..cceedeaeb8e66
 +}
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dmmu.h b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 new file mode 100644
-index 0000000000000..d37d1a30e674c
+index 000000000000..d37d1a30e674
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dmmu.h
 @@ -0,0 +1,93 @@
@@ -12021,7 +12021,7 @@ index 0000000000000..d37d1a30e674c
 +#endif /* _SPACEMIT_DMMU_H_ */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.c b/drivers/gpu/drm/spacemit/spacemit_dphy.c
 new file mode 100644
-index 0000000000000..9f5ab0d3b47a9
+index 000000000000..9f5ab0d3b47a
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dphy.c
 @@ -0,0 +1,153 @@
@@ -12180,7 +12180,7 @@ index 0000000000000..9f5ab0d3b47a9
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dphy.h b/drivers/gpu/drm/spacemit/spacemit_dphy.h
 new file mode 100644
-index 0000000000000..2a2462b75f3be
+index 000000000000..2a2462b75f3b
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dphy.h
 @@ -0,0 +1,100 @@
@@ -12286,7 +12286,7 @@ index 0000000000000..2a2462b75f3be
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 new file mode 100644
-index 0000000000000..810b1d4ded71c
+index 000000000000..810b1d4ded71
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -0,0 +1,993 @@
@@ -13285,7 +13285,7 @@ index 0000000000000..810b1d4ded71c
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.h b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 new file mode 100644
-index 0000000000000..a32ecd1a08e4d
+index 000000000000..a32ecd1a08e4
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.h
 @@ -0,0 +1,239 @@
@@ -13530,7 +13530,7 @@ index 0000000000000..a32ecd1a08e4d
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu_reg.h b/drivers/gpu/drm/spacemit/spacemit_dpu_reg.h
 new file mode 100644
-index 0000000000000..bd9ca396f376d
+index 000000000000..bd9ca396f376
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu_reg.h
 @@ -0,0 +1,40 @@
@@ -13576,7 +13576,7 @@ index 0000000000000..bd9ca396f376d
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
 new file mode 100644
-index 0000000000000..2f987b91ad9ae
+index 000000000000..2f987b91ad9a
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -0,0 +1,408 @@
@@ -13990,7 +13990,7 @@ index 0000000000000..2f987b91ad9ae
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.h b/drivers/gpu/drm/spacemit/spacemit_drm.h
 new file mode 100644
-index 0000000000000..a5eb35faa05dc
+index 000000000000..a5eb35faa05d
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.h
 @@ -0,0 +1,52 @@
@@ -14048,7 +14048,7 @@ index 0000000000000..a5eb35faa05dc
 +#endif /* _SPACEMIT_DRM_H_ */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.c b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 new file mode 100644
-index 0000000000000..403e120038ebd
+index 000000000000..403e120038eb
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.c
 @@ -0,0 +1,737 @@
@@ -14791,7 +14791,7 @@ index 0000000000000..403e120038ebd
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dsi.h b/drivers/gpu/drm/spacemit/spacemit_dsi.h
 new file mode 100644
-index 0000000000000..e2696925709ed
+index 000000000000..e2696925709e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_dsi.h
 @@ -0,0 +1,226 @@
@@ -15023,7 +15023,7 @@ index 0000000000000..e2696925709ed
 +#endif /* _SPACEMIT_DSI_H_ */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
 new file mode 100644
-index 0000000000000..95b7c89da715c
+index 000000000000..95b7c89da715
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -0,0 +1,450 @@
@@ -15479,7 +15479,7 @@ index 0000000000000..95b7c89da715c
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.h b/drivers/gpu/drm/spacemit/spacemit_gem.h
 new file mode 100644
-index 0000000000000..c0dc1999bc1c7
+index 000000000000..c0dc1999bc1c
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.h
 @@ -0,0 +1,37 @@
@@ -15522,7 +15522,7 @@ index 0000000000000..c0dc1999bc1c7
 +#endif /* _SPACEMIT_GEM_H_ */
 diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.c b/drivers/gpu/drm/spacemit/spacemit_lib.c
 new file mode 100644
-index 0000000000000..235e46b2c53cd
+index 000000000000..235e46b2c53c
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_lib.c
 @@ -0,0 +1,245 @@
@@ -15773,7 +15773,7 @@ index 0000000000000..235e46b2c53cd
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_lib.h b/drivers/gpu/drm/spacemit/spacemit_lib.h
 new file mode 100644
-index 0000000000000..33a3b17f8abbd
+index 000000000000..33a3b17f8abb
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_lib.h
 @@ -0,0 +1,44 @@
@@ -15823,7 +15823,7 @@ index 0000000000000..33a3b17f8abbd
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 new file mode 100644
-index 0000000000000..3c84b5b9dee2d
+index 000000000000..3c84b5b9dee2
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.c
 @@ -0,0 +1,713 @@
@@ -16542,7 +16542,7 @@ index 0000000000000..3c84b5b9dee2d
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 new file mode 100644
-index 0000000000000..842ef1a70a559
+index 000000000000..842ef1a70a55
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_mipi_panel.h
 @@ -0,0 +1,108 @@
@@ -16656,7 +16656,7 @@ index 0000000000000..842ef1a70a559
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_planes.c b/drivers/gpu/drm/spacemit/spacemit_planes.c
 new file mode 100644
-index 0000000000000..eeaf794411c30
+index 000000000000..eeaf794411c3
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_planes.c
 @@ -0,0 +1,695 @@
@@ -17357,7 +17357,7 @@ index 0000000000000..eeaf794411c30
 +}
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.c b/drivers/gpu/drm/spacemit/spacemit_wb.c
 new file mode 100644
-index 0000000000000..60a29dd631768
+index 000000000000..60a29dd63176
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.c
 @@ -0,0 +1,264 @@
@@ -17627,7 +17627,7 @@ index 0000000000000..60a29dd631768
 +
 diff --git a/drivers/gpu/drm/spacemit/spacemit_wb.h b/drivers/gpu/drm/spacemit/spacemit_wb.h
 new file mode 100644
-index 0000000000000..ff1f21a4aff44
+index 000000000000..ff1f21a4aff4
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/spacemit_wb.h
 @@ -0,0 +1,59 @@
@@ -17692,7 +17692,7 @@ index 0000000000000..ff1f21a4aff44
 +#endif
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_class.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_class.c
 new file mode 100644
-index 0000000000000..9c9d60a8514c4
+index 000000000000..9c9d60a8514c
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_class.c
 @@ -0,0 +1,38 @@
@@ -17736,7 +17736,7 @@ index 0000000000000..9c9d60a8514c4
 +
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_display.h b/drivers/gpu/drm/spacemit/sysfs/sysfs_display.h
 new file mode 100644
-index 0000000000000..53057ece9263f
+index 000000000000..53057ece9263
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_display.h
 @@ -0,0 +1,20 @@
@@ -17762,7 +17762,7 @@ index 0000000000000..53057ece9263f
 +
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_dphy.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_dphy.c
 new file mode 100644
-index 0000000000000..33e76c5f3b2ec
+index 000000000000..33e76c5f3b2e
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_dphy.c
 @@ -0,0 +1,34 @@
@@ -17802,7 +17802,7 @@ index 0000000000000..33e76c5f3b2ec
 +
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c
 new file mode 100644
-index 0000000000000..b7c4ca3830272
+index 000000000000..b7c4ca383027
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_dpu.c
 @@ -0,0 +1,157 @@
@@ -17965,7 +17965,7 @@ index 0000000000000..b7c4ca3830272
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_dsi.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_dsi.c
 new file mode 100644
-index 0000000000000..ca7f4c180ad15
+index 000000000000..ca7f4c180ad1
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_dsi.c
 @@ -0,0 +1,28 @@
@@ -17999,7 +17999,7 @@ index 0000000000000..ca7f4c180ad15
 +
 diff --git a/drivers/gpu/drm/spacemit/sysfs/sysfs_mipi_panel.c b/drivers/gpu/drm/spacemit/sysfs/sysfs_mipi_panel.c
 new file mode 100644
-index 0000000000000..99584df350786
+index 000000000000..99584df35078
 --- /dev/null
 +++ b/drivers/gpu/drm/spacemit/sysfs/sysfs_mipi_panel.c
 @@ -0,0 +1,26 @@
@@ -18031,7 +18031,7 @@ index 0000000000000..99584df350786
 +MODULE_LICENSE("GPL v2");
 diff --git a/include/dt-bindings/display/spacemit-dpu.h b/include/dt-bindings/display/spacemit-dpu.h
 new file mode 100644
-index 0000000000000..cac81efd508ff
+index 000000000000..cac81efd508f
 --- /dev/null
 +++ b/include/dt-bindings/display/spacemit-dpu.h
 @@ -0,0 +1,36 @@
@@ -18072,5 +18072,5 @@ index 0000000000000..cac81efd508ff
 +#endif /* SPACEMIT_DT_BINDINGS_DISPLAY_DPU_H */
 +
 -- 
-2.53.0
+2.54.0
 

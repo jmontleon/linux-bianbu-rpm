@@ -1,4 +1,4 @@
-From f178ffc6802069cc719a76abc8ab6b5d2a495414 Mon Sep 17 00:00:00 2001
+From 44b42dc58f6d2bc39446c89e0019947686f2a341 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 12 Sep 2024 19:03:49 +0800
 Subject: [PATCH 1017/1239] k1:pm_domain:lcd: don't open the power-switch again
@@ -10,7 +10,7 @@ Change-Id: Iced956e183b3558a0f8296969cbb59a42e8e2be0
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
-index e08f373626eec..392c735a926d6 100644
+index e08f373626ee..392c735a926d 100644
 --- a/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 +++ b/drivers/soc/spacemit/pm_domain/k1x-pm_domain.c
 @@ -262,6 +262,9 @@ static int spacemit_pd_power_on(struct generic_pm_domain *domain)
@@ -24,5 +24,5 @@ index e08f373626eec..392c735a926d6 100644
  			/* this is the sw type */
  			regmap_read(gpmu->regmap[APMU_REGMAP_INDEX], spd->param.reg_pwr_ctrl, &val);
 -- 
-2.53.0
+2.54.0
 

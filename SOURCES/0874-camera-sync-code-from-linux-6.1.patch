@@ -1,4 +1,4 @@
-From 181c4f49254b8606d06c3a971897e2e6f040fbc1 Mon Sep 17 00:00:00 2001
+From d951ddf6f31aa49eeb19383106d429518426cc27 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Mon, 5 Aug 2024 17:00:56 +0800
 Subject: [PATCH 0874/1239] camera: sync code from linux-6.1
@@ -15,7 +15,7 @@ Change-Id: Ib86c59db49c18b04207c58d433f77df0c7abc3fd
  3 files changed, 165 insertions(+), 51 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 89245a2489ad7..2475978cc61a3 100644
+index 89245a2489ad..2475978cc61a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -936,36 +936,61 @@ &pwm_bl {
@@ -88,7 +88,7 @@ index 89245a2489ad7..2475978cc61a3 100644
  &csiphy0 {
  
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index 50f9f4e05f1ea..e0c71e9d613dd 100644
+index 50f9f4e05f1e..e0c71e9d613d 100644
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -1099,10 +1099,68 @@ static int camsnr_open(struct inode *inode, struct file *file)
@@ -315,7 +315,7 @@ index 50f9f4e05f1ea..e0c71e9d613dd 100644
  	return ret;
  }
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
-index 7eb45f5d85e77..d70ed1bba2235 100644
+index 7eb45f5d85e7..d70ed1bba223 100644
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.h
 @@ -34,6 +34,10 @@ struct cam_sensor_device {
@@ -330,5 +330,5 @@ index 7eb45f5d85e77..d70ed1bba2235 100644
  	atomic_t usr_cnt;
  	struct mutex lock;	/* Protects streaming, format, interval */
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 244897dd8d7f660ff159fc4830036d5ee7787851 Mon Sep 17 00:00:00 2001
+From b19dcbf3c045573c2a1d09e5ac66c70757f49ed3 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 20 May 2024 10:42:10 +0800
 Subject: [PATCH 0690/1239] k1: wireless: disable power-always-on
@@ -14,7 +14,7 @@ Change-Id: If668eeb6b851af5012e810c1dda293581be84cac
  6 files changed, 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index 265faa63a7404..c92a1eaebf46d 100644
+index 265faa63a740..c92a1eaebf46 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -140,7 +140,6 @@ rf_pwrseq: rf-pwrseq {
@@ -26,7 +26,7 @@ index 265faa63a7404..c92a1eaebf46d 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index df21933b1c3d6..0cf7fe78a1eb1 100644
+index df21933b1c3d..0cf7fe78a1eb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -139,7 +139,6 @@ rf_pwrseq: rf-pwrseq {
@@ -38,7 +38,7 @@ index df21933b1c3d6..0cf7fe78a1eb1 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index aeb2346fc14a7..a8c34b2219e40 100644
+index aeb2346fc14a..a8c34b2219e4 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
@@ -50,7 +50,7 @@ index aeb2346fc14a7..a8c34b2219e40 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 6da20d9632150..ae0789c853cc9 100644
+index 6da20d963215..ae0789c853cc 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
@@ -62,7 +62,7 @@ index 6da20d9632150..ae0789c853cc9 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 2dc265057fad5..ac2766711bf38 100644
+index 2dc265057fad..ac2766711bf3 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -143,7 +143,6 @@ rf_pwrseq: rf-pwrseq {
@@ -74,7 +74,7 @@ index 2dc265057fad5..ac2766711bf38 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 48a32dcdf3384..8347f9c77b9e7 100644
+index 48a32dcdf338..8347f9c77b9e 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -138,7 +138,6 @@ rf_pwrseq: rf-pwrseq {
@@ -86,5 +86,5 @@ index 48a32dcdf3384..8347f9c77b9e7 100644
  
  		wlan_pwrseq: wlan-pwrseq {
 -- 
-2.53.0
+2.54.0
 

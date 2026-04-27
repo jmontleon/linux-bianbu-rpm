@@ -1,4 +1,4 @@
-From e5c5e95e0d09dc4171481b41be472cb4fc36307d Mon Sep 17 00:00:00 2001
+From ebaabc71a30906f5612de122e83163c13fe76621 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@spacemit.com>
 Date: Wed, 12 Jun 2024 14:26:39 +0800
 Subject: [PATCH 0725/1239] es8326: support hp/mic detect process
@@ -10,7 +10,7 @@ Change-Id: I1048c0cb3211fb0015937e8bb373ae6317a9aa48
  2 files changed, 249 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 78c4e68f60024..f1c8838800237 100644
+index 78c4e68f6002..f1c883880023 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
 @@ -16,6 +16,8 @@
@@ -416,7 +416,7 @@ index 78c4e68f60024..f1c8838800237 100644
  	if (IS_ERR(es8326->mclk)) {
  		dev_err(&i2c->dev, "unable to get mclk\n");
 diff --git a/sound/soc/codecs/es8326.h b/sound/soc/codecs/es8326.h
-index c3e52e7bdef57..5f538ee7ed1db 100644
+index c3e52e7bdef5..5f538ee7ed1d 100644
 --- a/sound/soc/codecs/es8326.h
 +++ b/sound/soc/codecs/es8326.h
 @@ -197,4 +197,8 @@
@@ -429,5 +429,5 @@ index c3e52e7bdef57..5f538ee7ed1db 100644
 +
  #endif
 -- 
-2.53.0
+2.54.0
 

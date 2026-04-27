@@ -1,4 +1,4 @@
-From cd21ed01df029ed09d5647cce685b1019276de0c Mon Sep 17 00:00:00 2001
+From a9270670bed75b3af830b58d7b22769b2a4b99fe Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:50:00 +0800
 Subject: [PATCH 1157/1239] spi-nor: porting fmsh device driver to linux-6.12
@@ -9,7 +9,7 @@ Change-Id: I69440caaac63d205c7ad1daf50bb7b432847584d
  1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fmsh.c b/drivers/mtd/spi-nor/fmsh.c
-index 73004e94476ed..992643844fda6 100644
+index 73004e94476e..992643844fda 100644
 --- a/drivers/mtd/spi-nor/fmsh.c
 +++ b/drivers/mtd/spi-nor/fmsh.c
 @@ -8,9 +8,12 @@
@@ -29,5 +29,5 @@ index 73004e94476ed..992643844fda6 100644
  
  const struct spi_nor_manufacturer spi_nor_fmsh = {
 -- 
-2.53.0
+2.54.0
 

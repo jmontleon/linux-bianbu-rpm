@@ -1,4 +1,4 @@
-From 03e8d07b3264baa2e356e60585b1fa28a521cc09 Mon Sep 17 00:00:00 2001
+From 4be704fef022ff8d866d9d8bfe89325520aaff3b Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 24 Oct 2024 15:23:52 +0800
 Subject: [PATCH 1054/1239] v2d: fix dmabuf warning with enabled lockdep
@@ -9,7 +9,7 @@ Change-Id: I2590353bbe2d8fb5b1e562f56453b532083b02fb
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/soc/spacemit/v2d/v2d_drv.c b/drivers/soc/spacemit/v2d/v2d_drv.c
-index 529d00f3dae42..a019ee5b1fd20 100644
+index 529d00f3dae4..a019ee5b1fd2 100644
 --- a/drivers/soc/spacemit/v2d/v2d_drv.c
 +++ b/drivers/soc/spacemit/v2d/v2d_drv.c
 @@ -326,7 +326,7 @@ static int get_addr_from_dmabuf(struct v2d_info *v2dinfo, struct v2d_dma_buf_inf
@@ -40,5 +40,5 @@ index 529d00f3dae42..a019ee5b1fd20 100644
  			dma_buf_put(dmabuf);
  		}
 -- 
-2.53.0
+2.54.0
 

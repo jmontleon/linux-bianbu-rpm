@@ -1,4 +1,4 @@
-From cb8fd36040fab431afbcbe8d34ef4bbe0e49b2fc Mon Sep 17 00:00:00 2001
+From 48e036bfce331fd5c1977759dc7a2eac4f9b165f Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:36:05 +0800
 Subject: [PATCH 0923/1239] phy-k1x-ci-otg: refactor otg logic to support more
@@ -20,7 +20,7 @@ Change-Id: If6f77dc17c413461113bbd399bfedf5ea414667d
  3 files changed, 380 insertions(+), 659 deletions(-)
 
 diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
-index d09528f7d92c7..57c5af15bd1ad 100644
+index d09528f7d92c..57c5af15bd1a 100644
 --- a/drivers/usb/phy/Makefile
 +++ b/drivers/usb/phy/Makefile
 @@ -22,5 +22,5 @@ obj-$(CONFIG_USB_MXS_PHY)		+= phy-mxs-usb.o
@@ -34,7 +34,7 @@ index d09528f7d92c7..57c5af15bd1ad 100644
 +obj-$(CONFIG_USB_K1XCI_OTG)		+= phy-k1x-ci-otg.o
 \ No newline at end of file
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
-index 832bb976c7c83..54837d3f7dbb6 100644
+index 832bb976c7c8..54837d3f7dbb 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.c
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.c
 @@ -16,6 +16,8 @@
@@ -1257,7 +1257,7 @@ index 832bb976c7c83..54837d3f7dbb6 100644
  module_platform_driver(mv_otg_driver);
  
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.h b/drivers/usb/phy/phy-k1x-ci-otg.h
-index da4b4b2494a5a..66f084f6310cc 100644
+index da4b4b2494a5..66f084f6310c 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.h
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.h
 @@ -12,99 +12,16 @@
@@ -1422,5 +1422,5 @@ index da4b4b2494a5a..66f084f6310cc 100644
  };
  
 -- 
-2.53.0
+2.54.0
 

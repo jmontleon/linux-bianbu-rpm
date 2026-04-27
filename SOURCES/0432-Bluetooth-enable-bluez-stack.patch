@@ -1,4 +1,4 @@
-From 770a8e46f660fc67fc097375c74151e9c99d1d12 Mon Sep 17 00:00:00 2001
+From 94d64d17bd7a630f238ee62221982e78dd2bfd28 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Fri, 2 Feb 2024 10:51:32 +0800
 Subject: [PATCH 0432/1239] Bluetooth: enable bluez stack
@@ -11,7 +11,7 @@ Change-Id: I5a99bff9164733bc47f1cd80b35712d187c8d6bb
  3 files changed, 27 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-x_deb1_defconfig b/arch/riscv/configs/k1-x_deb1_defconfig
-index f8407a84f8e18..e51870c95b930 100644
+index f8407a84f8e1..e51870c95b93 100644
 --- a/arch/riscv/configs/k1-x_deb1_defconfig
 +++ b/arch/riscv/configs/k1-x_deb1_defconfig
 @@ -62,6 +62,14 @@ CONFIG_VLAN_8021Q_GVRP=y
@@ -38,7 +38,7 @@ index f8407a84f8e18..e51870c95b930 100644
  # CONFIG_HW_RANDOM is not set
  CONFIG_I2C_CHARDEV=y
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 80fcbac22f45b..fe3c9dd2a7f7e 100644
+index 80fcbac22f45..fe3c9dd2a7f7 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -62,6 +62,14 @@ CONFIG_VLAN_8021Q_GVRP=y
@@ -65,7 +65,7 @@ index 80fcbac22f45b..fe3c9dd2a7f7e 100644
  # CONFIG_HW_RANDOM is not set
  CONFIG_I2C_CHARDEV=y
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index b79f883ecc7c5..c151a7587b410 100644
+index b79f883ecc7c..c151a7587b41 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -195,6 +195,14 @@ CONFIG_NET_CLS_CGROUP=y
@@ -92,5 +92,5 @@ index b79f883ecc7c5..c151a7587b410 100644
  # CONFIG_HW_RANDOM is not set
  CONFIG_I2C_CHARDEV=y
 -- 
-2.53.0
+2.54.0
 

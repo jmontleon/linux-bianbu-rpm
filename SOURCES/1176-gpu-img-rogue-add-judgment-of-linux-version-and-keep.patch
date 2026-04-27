@@ -1,4 +1,4 @@
-From 81f2e25eb5b4573e41f577145fd6dc173c0fef95 Mon Sep 17 00:00:00 2001
+From 86462ba5d1337156bf63ac2bb0d7da915a08b11c Mon Sep 17 00:00:00 2001
 From: liangbaihui <baihui.liang@spacemit.com>
 Date: Thu, 21 Nov 2024 10:25:50 +0800
 Subject: [PATCH 1176/1239] gpu: img-rogue: add judgment of linux version and
@@ -10,7 +10,7 @@ Change-Id: Ib527eb76d6db69786c9de4231b147cc0eb714147
  1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
-index 3ee76bf27ae6a..af1dcd9963e8f 100644
+index 3ee76bf27ae6..af1dcd9963e8 100644
 --- a/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 +++ b/drivers/gpu/drm/img-rogue/physmem_dmabuf.c
 @@ -1118,7 +1118,11 @@ static void PMRFinalizeDmaBuf(PMR_IMPL_PRIVDATA pvPriv)
@@ -53,5 +53,5 @@ index 3ee76bf27ae6a..af1dcd9963e8f 100644
  	OSFreeMem(psPrivData->pasDevPhysAddr);
  errFreePrivData:
 -- 
-2.53.0
+2.54.0
 

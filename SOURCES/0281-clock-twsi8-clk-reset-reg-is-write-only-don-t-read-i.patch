@@ -1,4 +1,4 @@
-From 4f41118d48fcc26d4507c7b043669fb69efef221 Mon Sep 17 00:00:00 2001
+From 945d17902f33a8ee3ae5fa2536d69dc9257bc1c4 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 26 Dec 2023 21:08:40 +0800
 Subject: [PATCH 0281/1239] clock: twsi8 clk/reset reg is write-only, don't
@@ -13,7 +13,7 @@ Change-Id: I946c2ce6e9d725666249d6b6c3997be191621129
  4 files changed, 78 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 97fede50d908e..9da72995438fd 100755
+index 97fede50d908..9da72995438f 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -587,7 +587,7 @@ static SPACEMIT_CCU_MUX_GATE(twsi7_clk, "twsi7_clk", twsi_parent_names,
@@ -26,7 +26,7 @@ index 97fede50d908e..9da72995438fd 100755
  static const char *timer_parent_names[] = {
  	"pll1_d192_12p8", "clk_32k", "pll1_d384_6p4", "vctcxo_3", "vctcxo_1"
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index cda4f714beb7b..041d771cb1aaf 100755
+index cda4f714beb7..041d771cb1aa 100755
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -14,7 +14,8 @@
@@ -139,7 +139,7 @@ index cda4f714beb7b..041d771cb1aaf 100755
  
  	if (common->reg_type == CLK_DIV_TYPE_2REG_NOFC_V3
 diff --git a/drivers/clk/spacemit/ccu_mix.h b/drivers/clk/spacemit/ccu_mix.h
-index 636ae25a4656c..f0dfeb91b713a 100755
+index 636ae25a4656..f0dfeb91b713 100755
 --- a/drivers/clk/spacemit/ccu_mix.h
 +++ b/drivers/clk/spacemit/ccu_mix.h
 @@ -87,6 +87,7 @@ struct ccu_mix {
@@ -263,7 +263,7 @@ index 636ae25a4656c..f0dfeb91b713a 100755
  			.num_parents	= ARRAY_SIZE(_parents), 	\
  			.hw.init	= CLK_HW_INIT_PARENTS(_name,		\
 diff --git a/drivers/reset/reset-spacemit-k1x.c b/drivers/reset/reset-spacemit-k1x.c
-index f05e7d851cdf2..a4d9ab3848ee5 100644
+index f05e7d851cdf..a4d9ab3848ee 100644
 --- a/drivers/reset/reset-spacemit-k1x.c
 +++ b/drivers/reset/reset-spacemit-k1x.c
 @@ -367,6 +367,9 @@ static int spacemit_reset_update(struct reset_controller_dev *rcdev,
@@ -277,5 +277,5 @@ index f05e7d851cdf2..a4d9ab3848ee5 100644
  	if(assert == true){
  		spacemit_reset_set(rcdev, id, assert);
 -- 
-2.53.0
+2.54.0
 

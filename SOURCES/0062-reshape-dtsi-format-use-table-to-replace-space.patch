@@ -1,4 +1,4 @@
-From 702e204719fdb4236ea5b9a80367d4b5df73baea Mon Sep 17 00:00:00 2001
+From b5e0678d5f0899e2ee37dbf0f03958b540f1aece Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Thu, 1 Jun 2023 15:07:54 +0800
 Subject: [PATCH 0062/1239] reshape dtsi format, use table to replace space
@@ -9,7 +9,7 @@ Change-Id: Ie81d022ab20c8d570ed6d2dabf3e7c823e756fd9
  1 file changed, 63 insertions(+), 61 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 7bb164f2aa9c1..ae614dbb7be08 100644
+index 7bb164f2aa9c..ae614dbb7be0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -164,12 +164,12 @@ pll_clk_400m: clock-pll_clk_400m {
@@ -180,5 +180,5 @@ index 7bb164f2aa9c1..ae614dbb7be08 100644
  };
  
 -- 
-2.53.0
+2.54.0
 

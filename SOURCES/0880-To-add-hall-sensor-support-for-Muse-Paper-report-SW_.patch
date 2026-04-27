@@ -1,4 +1,4 @@
-From 2b8891ad1d9f7634cb9a4bdf8dadf0a510a27d20 Mon Sep 17 00:00:00 2001
+From 4cff90b2a7d250efd8ee8621929864afffa21bef Mon Sep 17 00:00:00 2001
 From: goumin <min.gou@spacemit.com>
 Date: Tue, 30 Jul 2024 15:40:04 +0800
 Subject: [PATCH 0880/1239] To add hall sensor support for Muse-Paper, report
@@ -15,7 +15,7 @@ Change-Id: Ia91bf1d3966e5a0fa8c67e4c37a7b1a9e1fb0bc7
  create mode 100755 drivers/input/misc/hall_sensor_as1911.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
-index 0492d40ddbd31..ecec756d1645f 100644
+index 0492d40ddbd3..ecec756d1645 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Paper.dts
 @@ -161,6 +161,17 @@ bt_pwrseq: bt-pwrseq {
@@ -37,7 +37,7 @@ index 0492d40ddbd31..ecec756d1645f 100644
  
  &uart0 {
 diff --git a/arch/riscv/configs/k1_defconfig b/arch/riscv/configs/k1_defconfig
-index a9927f1de3180..e597758251796 100644
+index a9927f1de318..e59775825179 100644
 --- a/arch/riscv/configs/k1_defconfig
 +++ b/arch/riscv/configs/k1_defconfig
 @@ -365,6 +365,7 @@ CONFIG_TOUCHSCREEN_GOODIX=y
@@ -49,7 +49,7 @@ index a9927f1de3180..e597758251796 100644
  CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
  CONFIG_SERIAL_PXA=y
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 866a2da4e1ac6..dcae91116a18a 100644
+index 866a2da4e1ac..dcae91116a18 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
 @@ -962,6 +962,13 @@ config INPUT_SPACEMIT_POWERKEY
@@ -67,7 +67,7 @@ index 866a2da4e1ac6..dcae91116a18a 100644
  	tristate "RAVE SP Power button Driver"
  	depends on RAVE_SP_CORE
 diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index 424c2551295fd..104361db99590 100644
+index 424c2551295f..104361db9959 100644
 --- a/drivers/input/misc/Makefile
 +++ b/drivers/input/misc/Makefile
 @@ -96,3 +96,4 @@ obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
@@ -78,7 +78,7 @@ index 424c2551295fd..104361db99590 100644
 \ No newline at end of file
 diff --git a/drivers/input/misc/hall_sensor_as1911.c b/drivers/input/misc/hall_sensor_as1911.c
 new file mode 100755
-index 0000000000000..c80dfff44696d
+index 000000000000..c80dfff44696
 --- /dev/null
 +++ b/drivers/input/misc/hall_sensor_as1911.c
 @@ -0,0 +1,118 @@
@@ -201,5 +201,5 @@ index 0000000000000..c80dfff44696d
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:hall-sensor");
 -- 
-2.53.0
+2.54.0
 

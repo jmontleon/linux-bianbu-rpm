@@ -1,4 +1,4 @@
-From e5098ca1383c468251793d7a92623fa40846ffbf Mon Sep 17 00:00:00 2001
+From a722eef36f2ca4e4143f418e748d82c30c35b3a3 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Thu, 18 Apr 2024 19:52:01 +0800
 Subject: [PATCH 0625/1239] display: Fix the issue caused by alloc pages failed
@@ -9,7 +9,7 @@ Change-Id: I3833327fa573c423f86af0c7e2dc766905118a9e
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 9b5772a055560..eb48f233ec075 100644
+index 9b5772a05556..eb48f233ec07 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -139,6 +139,10 @@ static void spacemit_gem_sysmem_free(struct spacemit_gem_object *spacemit_obj)
@@ -32,5 +32,5 @@ index 9b5772a055560..eb48f233ec075 100644
  	spacemit_obj->vmap_cnt = 0;
  	mutex_init(&spacemit_obj->vmap_lock);
 -- 
-2.53.0
+2.54.0
 

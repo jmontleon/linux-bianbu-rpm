@@ -1,4 +1,4 @@
-From 90e6bbabf35da03aafeeabe8b77380262615d1fd Mon Sep 17 00:00:00 2001
+From df654ba73c8e81b73967cbb111244c7f27486a2d Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 19 Jul 2024 14:19:25 +0800
 Subject: [PATCH 0842/1239] k1:thermal:separate the thermal configuration and
@@ -27,7 +27,7 @@ Change-Id: I66dbccfc8346db1ffeee29ecd820f5f9bbb5bb68
  create mode 100644 arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index c35df005d36f9..1182f14551ec3 100644
+index c35df005d36f..1182f14551ec 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2151,93 +2151,7 @@ thermal: thermal@d4018000 {
@@ -125,7 +125,7 @@ index c35df005d36f9..1182f14551ec3 100644
  
  		tcm: tcm@0xd8000000 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index f58b394bf6905..5e72498fb1bad 100644
+index f58b394bf690..5e72498fb1ba 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -10,6 +10,7 @@
@@ -152,7 +152,7 @@ index f58b394bf6905..5e72498fb1bad 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
-index 4c7708759f0dd..c73c45ba4be80 100644
+index 4c7708759f0d..c73c45ba4be8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Book.dts
 @@ -10,6 +10,7 @@
@@ -179,7 +179,7 @@ index 4c7708759f0dd..c73c45ba4be80 100644
          pinctrl-names = "default";
          pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
-index 3b509c276ff7f..0742e998c9460 100644
+index 3b509c276ff7..0742e998c946 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-N1.dts
 @@ -7,6 +7,7 @@
@@ -203,7 +203,7 @@ index 3b509c276ff7f..0742e998c9460 100644
 -	temperature = <115000>;
 -};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
-index 46c38e50382b2..1570112d4dcdd 100644
+index 46c38e50382b..1570112d4dcd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MUSE-Pi.dts
 @@ -11,6 +11,7 @@
@@ -230,7 +230,7 @@ index 46c38e50382b2..1570112d4dcdd 100644
          pinctrl-names = "default";
          pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 69538b312feb4..fdf9a3a524407 100644
+index 69538b312feb..fdf9a3a52440 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -11,6 +11,7 @@
@@ -257,7 +257,7 @@ index 69538b312feb4..fdf9a3a524407 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 1f75f3ccec215..3b237d7e2f8c2 100644
+index 1f75f3ccec21..3b237d7e2f8c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -11,6 +11,7 @@
@@ -284,7 +284,7 @@ index 1f75f3ccec215..3b237d7e2f8c2 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index b3674883c453b..b2c43f1c2f736 100644
+index b3674883c453..b2c43f1c2f73 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -11,6 +11,7 @@
@@ -311,7 +311,7 @@ index b3674883c453b..b2c43f1c2f736 100644
  	clst-supply = <&edcdc_1>;
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index 036a64893f8bf..0e103a247aba1 100644
+index 036a64893f8b..0e103a247aba 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -10,6 +10,7 @@
@@ -338,7 +338,7 @@ index 036a64893f8bf..0e103a247aba1 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index fed656ef6537b..86513dc17ac19 100644
+index fed656ef6537..86513dc17ac1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -10,6 +10,7 @@
@@ -365,7 +365,7 @@ index fed656ef6537b..86513dc17ac19 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
-index ed63ee3f9945f..4fe6928709000 100644
+index ed63ee3f9945..4fe692870900 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_lpi3a.dts
 @@ -11,6 +11,7 @@
@@ -392,7 +392,7 @@ index ed63ee3f9945f..4fe6928709000 100644
          pinctrl-names = "default";
          pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
-index f4a63ba9583bf..a8ec87256b775 100644
+index f4a63ba9583b..a8ec87256b77 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dts
 @@ -11,6 +11,7 @@
@@ -419,7 +419,7 @@ index f4a63ba9583bf..a8ec87256b775 100644
          pinctrl-names = "default";
          pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
-index 944bab40e5e71..595fe788a0645 100644
+index 944bab40e5e7..595fe788a064 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_mingo.dts
 @@ -7,6 +7,7 @@
@@ -444,7 +444,7 @@ index 944bab40e5e71..595fe788a0645 100644
 -};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 new file mode 100644
-index 0000000000000..9304607a03ea1
+index 000000000000..9304607a03ea
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_thermal_cooling.dtsi
 @@ -0,0 +1,82 @@
@@ -531,7 +531,7 @@ index 0000000000000..9304607a03ea1
 +	};
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
-index 2567721f330e6..72dd1a73262a0 100644
+index 2567721f330e..72dd1a73262a 100644
 --- a/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_milkv-jupiter.dts
 @@ -11,6 +11,7 @@
@@ -559,7 +559,7 @@ index 2567721f330e6..72dd1a73262a0 100644
          pinctrl-0 = <&pinctrl_sspa0_0>;
 diff --git a/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi b/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 new file mode 100644
-index 0000000000000..3a0252791dcb9
+index 000000000000..3a0252791dcb
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/m1-x_thermal_cooling.dtsi
 @@ -0,0 +1,106 @@
@@ -670,5 +670,5 @@ index 0000000000000..3a0252791dcb9
 +	};
 +};
 -- 
-2.53.0
+2.54.0
 

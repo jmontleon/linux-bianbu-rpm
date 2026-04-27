@@ -1,4 +1,4 @@
-From 2c1ca5bc03efa7daf88a2789b797730c5219a26e Mon Sep 17 00:00:00 2001
+From 975207cb5e8dbedc715e1c74961278b83d772078 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 21 Dec 2023 20:39:40 +0800
 Subject: [PATCH 0248/1239] k1x:cpufreq: support cpufreq function
@@ -14,7 +14,7 @@ Change-Id: I0b2253f9a44c1343caf530bf3c223ed01175b562
  create mode 100644 drivers/cpufreq/spacemit-cpufreq.c
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d351a5ca311b9..c87f7dd76fc88 100644
+index d351a5ca311b..c87f7dd76fc8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -46,8 +46,10 @@ cpu_0: cpu@0 {
@@ -227,7 +227,7 @@ index d351a5ca311b9..c87f7dd76fc88 100644
  	};
  
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 20b3bd511f971..f4921d020f1d9 100644
+index 20b3bd511f97..f4921d020f1d 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -33,6 +33,10 @@ CONFIG_HZ_100=y
@@ -242,7 +242,7 @@ index 20b3bd511f971..f4921d020f1d9 100644
  CONFIG_MODULE_UNLOAD=y
  # CONFIG_BLK_DEBUG_FS is not set
 diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index 78702a08364f3..c78240439d9bd 100644
+index 78702a08364f..c78240439d9b 100644
 --- a/drivers/cpufreq/Kconfig
 +++ b/drivers/cpufreq/Kconfig
 @@ -337,6 +337,15 @@ config QORIQ_CPUFREQ
@@ -262,7 +262,7 @@ index 78702a08364f3..c78240439d9bd 100644
  	tristate "CPUFreq driver based on the ACPI CPPC spec"
  	depends on ACPI_PROCESSOR
 diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index 681d687b5a18e..58f7e09441367 100644
+index 681d687b5a18..58f7e0944136 100644
 --- a/drivers/cpufreq/Makefile
 +++ b/drivers/cpufreq/Makefile
 @@ -107,3 +107,4 @@ obj-$(CONFIG_LOONGSON3_CPUFREQ)		+= loongson3_cpufreq.o
@@ -272,7 +272,7 @@ index 681d687b5a18e..58f7e09441367 100644
 +obj-$(CONFIG_SPACEMIT_K1X_CPUFREQ)	+= spacemit-cpufreq.o
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
 new file mode 100644
-index 0000000000000..4f1a467272804
+index 000000000000..4f1a46727280
 --- /dev/null
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -0,0 +1,41 @@
@@ -318,5 +318,5 @@ index 0000000000000..4f1a467272804
 +
 +arch_initcall(spacemit_processor_driver_init);
 -- 
-2.53.0
+2.54.0
 

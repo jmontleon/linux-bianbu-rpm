@@ -1,4 +1,4 @@
-From 44d65ce99e330eff97611cf34030df333cc4cd0a Mon Sep 17 00:00:00 2001
+From 4c288d703c878f26446c0dec8c89b00b5b5cf9d7 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:21:50 +0800
 Subject: [PATCH 1190/1239] cpufreq: k1: fix compile warning
@@ -11,7 +11,7 @@ Change-Id: I826fa15b040720aee1c2f972808fe56cb143fc78
  3 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 63f12747cc2e5..a5f6772f94649 100644
+index 63f12747cc2e..a5f6772f9464 100644
 --- a/drivers/cpufreq/cpufreq-dt.c
 +++ b/drivers/cpufreq/cpufreq-dt.c
 @@ -21,6 +21,9 @@
@@ -37,7 +37,7 @@ index 63f12747cc2e5..a5f6772f94649 100644
  	.flags = CPUFREQ_NEED_INITIAL_FREQ_CHECK |
  		 CPUFREQ_IS_COOLING_DEV,
 diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index ed1d04b4782e2..fdda9d68196c4 100644
+index ed1d04b4782e..fdda9d68196c 100644
 --- a/drivers/cpufreq/cpufreq.c
 +++ b/drivers/cpufreq/cpufreq.c
 @@ -31,6 +31,9 @@
@@ -51,7 +51,7 @@ index ed1d04b4782e2..fdda9d68196c4 100644
  static LIST_HEAD(cpufreq_policy_list);
  
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index 745844e9d2b2a..7b4df5fb79f60 100644
+index 745844e9d2b2..7b4df5fb79f6 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -15,6 +15,8 @@
@@ -74,5 +74,5 @@ index 745844e9d2b2a..7b4df5fb79f60 100644
  {
  	if ((wafer_prop << 16 | product_prop) == PRODUCT_ID_M1) {
 -- 
-2.53.0
+2.54.0
 

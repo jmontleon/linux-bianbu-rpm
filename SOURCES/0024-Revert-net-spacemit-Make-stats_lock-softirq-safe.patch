@@ -1,4 +1,4 @@
-From 7e7c7e759f8e31c6b8f84326c6e79a36d3162848 Mon Sep 17 00:00:00 2001
+From af67a1e075951247f0b88b66fe4200f3c7f695e2 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Sun, 12 Oct 2025 18:41:12 -0400
 Subject: [PATCH 0024/1239] Revert "net: spacemit: Make stats_lock
@@ -10,7 +10,7 @@ This reverts commit 35626012877b80436e0627feb16520db4f0ba53e.
  1 file changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index e1c5faff3b71c..928fea02198c3 100644
+index e1c5faff3b71..928fea02198c 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -135,7 +135,7 @@ struct emac_priv {
@@ -146,5 +146,5 @@ index e1c5faff3b71c..928fea02198c3 100644
  	return 0;
  }
 -- 
-2.53.0
+2.54.0
 

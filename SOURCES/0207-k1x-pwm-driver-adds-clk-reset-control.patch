@@ -1,4 +1,4 @@
-From 34acbd8afb2a45010740f507245dc65fc4d20924 Mon Sep 17 00:00:00 2001
+From f9df936a7e267f12cfc4f33acd3ec1de7a25b607 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 11 Dec 2023 15:35:15 +0800
 Subject: [PATCH 0207/1239] k1x:pwm driver adds clk&reset control
@@ -10,7 +10,7 @@ Change-Id: I17085bc68bbd2542369b73ebc89a44efd7bfe0f9
  2 files changed, 186 insertions(+), 19 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 05f6edb1cc4b1..277e4c6f37a28 100644
+index 05f6edb1cc4b..277e4c6f37a2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -404,13 +404,6 @@ pll_clk_i2c: clock-pll_clk_i2c {
@@ -238,7 +238,7 @@ index 05f6edb1cc4b1..277e4c6f37a28 100644
  
  		timer0: timer@d4014000 {
 diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-index 121fd4cb2bb4e..863011d4a741f 100644
+index 121fd4cb2bb4..863011d4a741 100644
 --- a/drivers/pwm/pwm-pxa.c
 +++ b/drivers/pwm/pwm-pxa.c
 @@ -22,6 +22,7 @@
@@ -284,5 +284,5 @@ index 121fd4cb2bb4e..863011d4a741f 100644
  
  static struct platform_driver pwm_driver = {
 -- 
-2.53.0
+2.54.0
 

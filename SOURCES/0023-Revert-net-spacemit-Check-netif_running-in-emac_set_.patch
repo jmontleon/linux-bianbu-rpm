@@ -1,4 +1,4 @@
-From 8ea95d57db8f6eb88759c18e395566b8e4b6d8a6 Mon Sep 17 00:00:00 2001
+From 50f92a976b46e2e55b8388a63c03245d1f75d9fe Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 13 Nov 2025 13:47:32 -0500
 Subject: [PATCH 0023/1239] Revert "net: spacemit: Check netif_running() in
@@ -10,7 +10,7 @@ This reverts commit 5556f23478e6eb5d6a0321d4135e2c37a3c78a1e.
  1 file changed, 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index 220eb5ce75833..e1c5faff3b71c 100644
+index 220eb5ce7583..e1c5faff3b71 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -1441,9 +1441,6 @@ static int emac_set_pauseparam(struct net_device *dev,
@@ -24,5 +24,5 @@ index 220eb5ce75833..e1c5faff3b71c 100644
  
  	if (pause->autoneg) {
 -- 
-2.53.0
+2.54.0
 

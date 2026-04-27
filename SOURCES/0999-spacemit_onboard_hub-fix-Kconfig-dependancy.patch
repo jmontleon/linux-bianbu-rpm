@@ -1,4 +1,4 @@
-From 6dd937449456c307a6f97d0de76715a1eb0f1b33 Mon Sep 17 00:00:00 2001
+From 3318a4a0ef96fa455c6466f862f149de78c13233 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 2 Sep 2024 11:13:19 +0800
 Subject: [PATCH 0999/1239] spacemit_onboard_hub: fix Kconfig dependancy
@@ -9,7 +9,7 @@ Change-Id: I5e2668023670b1d49872667bc6b0a7e73a6e834b
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 6ae2ae321a341..9ac3b412efe37 100644
+index 6ae2ae321a34..9ac3b412efe3 100644
 --- a/drivers/usb/misc/Kconfig
 +++ b/drivers/usb/misc/Kconfig
 @@ -362,8 +362,8 @@ config USB_ONBOARD_DEV_USB5744
@@ -25,5 +25,5 @@ index 6ae2ae321a341..9ac3b412efe37 100644
  	  platform. If unsure, say Y when compile for Spacemit platform.
 \ No newline at end of file
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From f67e1fcf96c23c3089a1a75228682609e30b2da0 Mon Sep 17 00:00:00 2001
+From 6b7593a3de5dd3348f1b43bd4e3269c52690dea9 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 12 Mar 2024 16:18:20 +0800
 Subject: [PATCH 0497/1239] display: Fix dpu irqs timeout
@@ -21,7 +21,7 @@ Change-Id: Ib04ab3b40115bf0708d5c8bc02647a6944864332
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 new file mode 100755
-index 0000000000000..7bc2b8e09e602
+index 000000000000..7bc2b8e09e60
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-hdmi.dtsi
 @@ -0,0 +1,51 @@
@@ -78,7 +78,7 @@ index 0000000000000..7bc2b8e09e602
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 new file mode 100755
-index 0000000000000..4bb5c4fa5db17
+index 000000000000..4bb5c4fa5db1
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x-lcd.dtsi
 @@ -0,0 +1,99 @@
@@ -182,7 +182,7 @@ index 0000000000000..4bb5c4fa5db17
 +	};
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 39ec67bcf8a5c..28019b03ae3d0 100644
+index 39ec67bcf8a5..28019b03ae3d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -2265,110 +2265,6 @@ jpu@c02f8000 {
@@ -355,7 +355,7 @@ index 39ec67bcf8a5c..28019b03ae3d0 100644
  			compatible = "pwm-backlight";
  			status = "disabled";
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
-index 025b5b4a16fb3..650fd2353e841 100644
+index 025b5b4a16fb..650fd2353e84 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb1.dts
 @@ -6,6 +6,8 @@
@@ -391,7 +391,7 @@ index 025b5b4a16fb3..650fd2353e841 100644
  
  &dpu_online2_hdmi {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 698655439e606..02b65426587ff 100644
+index 698655439e60..02b65426587f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -6,6 +6,8 @@
@@ -404,7 +404,7 @@ index 698655439e606..02b65426587ff 100644
  
  / {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index aa5b41984d46a..f34564514ce10 100644
+index aa5b41984d46..f34564514ce1 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -6,6 +6,8 @@
@@ -417,7 +417,7 @@ index aa5b41984d46a..f34564514ce10 100644
  
  / {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
-index 51d8f1adf3df0..7729308c822f4 100644
+index 51d8f1adf3df..7729308c822f 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga.dts
 @@ -5,6 +5,9 @@
@@ -431,7 +431,7 @@ index 51d8f1adf3df0..7729308c822f4 100644
  	model = "spacemit k1-x fpga board";
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index b8dcf0e2c6e21..8413a8e323f0a 100644
+index b8dcf0e2c6e2..8413a8e323f0 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -5,6 +5,8 @@
@@ -444,7 +444,7 @@ index b8dcf0e2c6e21..8413a8e323f0a 100644
  / {
  	model = "spacemit k1-x hs450 board";
 diff --git a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
-index e128246cb6e56..bf3e362feb029 100644
+index e128246cb6e5..bf3e362feb02 100644
 --- a/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 +++ b/drivers/gpu/drm/spacemit/dpu/dpu_saturn.c
 @@ -1499,9 +1499,17 @@ static uint32_t dpu_isr(struct spacemit_dpu *dpu)
@@ -496,7 +496,7 @@ index e128246cb6e56..bf3e362feb029 100644
  				if (crtc->state->event) {
  					/*
 diff --git a/drivers/gpu/drm/spacemit/spacemit_drm.c b/drivers/gpu/drm/spacemit/spacemit_drm.c
-index 4563e2f7d003a..6888bd64c4e03 100644
+index 4563e2f7d003..6888bd64c4e0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_drm.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_drm.c
 @@ -516,7 +516,7 @@ static void __exit spacemit_drm_drivers_exit(void)
@@ -509,5 +509,5 @@ index 4563e2f7d003a..6888bd64c4e03 100644
  
  MODULE_DESCRIPTION("Spacemit DRM KMS Master Driver");
 -- 
-2.53.0
+2.54.0
 

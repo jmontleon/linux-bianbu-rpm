@@ -1,4 +1,4 @@
-From 3e72442f547fceb30b9e540a45c65a2376b8c66d Mon Sep 17 00:00:00 2001
+From 543ac004c77baa19d314012997c272d7ca835243 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Thu, 13 Jun 2024 20:43:02 +0800
 Subject: [PATCH 0962/1239] spacemit_onboard_hub: add pm domain support
@@ -9,7 +9,7 @@ Change-Id: I214dfb9084718c74413bb7a5bd0c816be63535df
  1 file changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/misc/spacemit_onboard_hub.c b/drivers/usb/misc/spacemit_onboard_hub.c
-index 522c7e75aa146..66ce825e1076a 100644
+index 522c7e75aa14..66ce825e1076 100644
 --- a/drivers/usb/misc/spacemit_onboard_hub.c
 +++ b/drivers/usb/misc/spacemit_onboard_hub.c
 @@ -111,6 +111,7 @@ static int spacemit_hub_probe(struct platform_device *pdev)
@@ -72,5 +72,5 @@ index 522c7e75aa146..66ce825e1076a 100644
  }
  
 -- 
-2.53.0
+2.54.0
 

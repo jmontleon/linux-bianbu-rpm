@@ -1,4 +1,4 @@
-From c5e12e16b39e887ae329ecacfc723909e0ecf41c Mon Sep 17 00:00:00 2001
+From a0631cef7b68b128a73cef6e5da23200476f1308 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 6 Dec 2023 10:51:29 +0800
 Subject: [PATCH 0200/1239] fix cpu node properties defined by linux-6.x.y
@@ -9,7 +9,7 @@ Change-Id: Ic01d6a1c16044fca62ca0ed83e5e2be9eb151471
  1 file changed, 160 insertions(+), 29 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index 8ae126a528f4e..0f67632e1a06a 100644
+index 8ae126a528f4..0f67632e1a06 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -26,20 +26,20 @@ cpus: cpus {
@@ -260,5 +260,5 @@ index 8ae126a528f4e..0f67632e1a06a 100644
  			reg = <0x0 0xE0000000 0x0 0x04000000>;
  			reg-names = "control";
 -- 
-2.53.0
+2.54.0
 

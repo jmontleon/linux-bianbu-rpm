@@ -1,4 +1,4 @@
-From a347c5bbcb929f5babaae2aabce0ad1c2d9c66ee Mon Sep 17 00:00:00 2001
+From 6c55da7cae3e5c2e46ff24603eafbd4ed9fede53 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 3 Jan 2024 12:49:22 +0800
 Subject: [PATCH 0331/1239] sync evb/deb2 board dts from devices
@@ -10,7 +10,7 @@ Change-Id: Iba4c31a358480cba4bc539959d3f8256bff5be6e
  2 files changed, 96 insertions(+), 34 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
-index 18076efbb2305..210aa0a96b565 100644
+index 18076efbb230..210aa0a96b56 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_deb2.dts
 @@ -96,7 +96,7 @@ pwm_bl {
@@ -85,7 +85,7 @@ index 18076efbb2305..210aa0a96b565 100644
  	status = "okay";
  };
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index f83f98063bfb0..551826d62d5dc 100644
+index f83f98063bfb..551826d62d5d 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -96,7 +96,7 @@ pwm_bl {
@@ -276,5 +276,5 @@ index f83f98063bfb0..551826d62d5dc 100644
  	power-domains = <&power K1X_PMU_ISP_PWR_DOMAIN>;
  };
 -- 
-2.53.0
+2.54.0
 

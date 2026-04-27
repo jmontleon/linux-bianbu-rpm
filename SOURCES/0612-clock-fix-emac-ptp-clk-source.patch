@@ -1,4 +1,4 @@
-From 3a172c0c4e9e8843978f7c0b39b128a181c8c507 Mon Sep 17 00:00:00 2001
+From 294b6a987a16865281fb9ce82734a4622a7c5d78 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Tue, 16 Apr 2024 09:56:01 +0800
 Subject: [PATCH 0612/1239] clock: fix emac ptp clk source
@@ -9,7 +9,7 @@ Change-Id: I5b8be6a2fdf6849d0b0e9ad2fc9431ab92377ecf
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index fefd84d2ee0be..8d2a3ddb4023a 100755
+index fefd84d2ee0b..8d2a3ddb4023 100755
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1032,7 +1032,7 @@ static SPACEMIT_CCU_GATE_NO_PARENT(emac0_bus_clk, "emac0_bus_clk", NULL,
@@ -31,5 +31,5 @@ index fefd84d2ee0be..8d2a3ddb4023a 100755
  	BIT(15), BIT(15), 0x0,
  	0);
 -- 
-2.53.0
+2.54.0
 

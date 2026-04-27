@@ -1,4 +1,4 @@
-From bd49738e972c927b3d97f278d6c8fc08991bb80a Mon Sep 17 00:00:00 2001
+From 04aa64ab2c0805c16ba6e84887639eaab021fe0a Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Wed, 21 Feb 2024 11:10:29 +0800
 Subject: [PATCH 0449/1239] k1x: support mailbox driver
@@ -19,7 +19,7 @@ Change-Id: I19921107464db0f219473d24f45b845f34299439
  create mode 100644 drivers/mailbox/spacemit/k1x_mailbox.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e79540a906894..d5b0e11364479 100644
+index e79540a90689..d5b0e1136447 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -924,6 +924,20 @@ uart9: uart@d4017800 {
@@ -44,7 +44,7 @@ index e79540a906894..d5b0e11364479 100644
  			compatible = "spacemit,pdma-1.0";
  			reg = <0x0 0xd4000000 0x0 0x4000>;
 diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 008d1cad303f9..9f708315c721f 100644
+index 008d1cad303f..9f708315c721 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -398,4 +398,20 @@ config SPACEMIT_MAILBOX
@@ -69,7 +69,7 @@ index 008d1cad303f9..9f708315c721f 100644
 +
  endif
 diff --git a/drivers/mailbox/spacemit/Makefile b/drivers/mailbox/spacemit/Makefile
-index 482e1c15fe73a..1194194cc36c8 100644
+index 482e1c15fe73..1194194cc36c 100644
 --- a/drivers/mailbox/spacemit/Makefile
 +++ b/drivers/mailbox/spacemit/Makefile
 @@ -1 +1,2 @@
@@ -80,7 +80,7 @@ diff --git a/drivers/mailbox/spacemit/spacemit-mailbox.c b/drivers/mailbox/space
 similarity index 99%
 rename from drivers/mailbox/spacemit/spacemit-mailbox.c
 rename to drivers/mailbox/spacemit/k1pro-mailbox.c
-index c40a3b00f2423..af65d48be2b10 100644
+index c40a3b00f242..af65d48be2b1 100644
 --- a/drivers/mailbox/spacemit/spacemit-mailbox.c
 +++ b/drivers/mailbox/spacemit/k1pro-mailbox.c
 @@ -15,7 +15,7 @@
@@ -98,7 +98,7 @@ rename from drivers/mailbox/spacemit/spacemit_mailbox.h
 rename to drivers/mailbox/spacemit/k1pro_mailbox.h
 diff --git a/drivers/mailbox/spacemit/k1x-mailbox.c b/drivers/mailbox/spacemit/k1x-mailbox.c
 new file mode 100644
-index 0000000000000..cfeaf16177d49
+index 000000000000..cfeaf16177d4
 --- /dev/null
 +++ b/drivers/mailbox/spacemit/k1x-mailbox.c
 @@ -0,0 +1,237 @@
@@ -341,7 +341,7 @@ index 0000000000000..cfeaf16177d49
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mailbox/spacemit/k1x_mailbox.h b/drivers/mailbox/spacemit/k1x_mailbox.h
 new file mode 100644
-index 0000000000000..59fa80979fafb
+index 000000000000..59fa80979faf
 --- /dev/null
 +++ b/drivers/mailbox/spacemit/k1x_mailbox.h
 @@ -0,0 +1,32 @@
@@ -378,5 +378,5 @@ index 0000000000000..59fa80979fafb
 +
 +#endif /* __SPACEMIT_MAILBOX_H__ */
 -- 
-2.53.0
+2.54.0
 

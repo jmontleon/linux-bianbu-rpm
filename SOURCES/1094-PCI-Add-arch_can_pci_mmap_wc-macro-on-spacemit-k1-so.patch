@@ -1,4 +1,4 @@
-From 0169ebba01af24d130fdf6a60262d45b83b37a45 Mon Sep 17 00:00:00 2001
+From 0aa5acd38358f4a334feed07d28cd55e395760af Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 7 Nov 2024 11:15:20 +0800
 Subject: [PATCH 1094/1239] PCI: Add arch_can_pci_mmap_wc() macro on spacemit
@@ -10,7 +10,7 @@ Change-Id: I7960c3ce287c38c3a76ec3bd098c0741b00ca50e
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-index cc2a184cfc2e1..9f6f59aff2140 100644
+index cc2a184cfc2e..9f6f59aff214 100644
 --- a/arch/riscv/include/asm/pci.h
 +++ b/arch/riscv/include/asm/pci.h
 @@ -27,6 +27,10 @@ static inline int pcibus_to_node(struct pci_bus *bus)
@@ -25,5 +25,5 @@ index cc2a184cfc2e1..9f6f59aff2140 100644
  #include <asm-generic/pci.h>
  
 -- 
-2.53.0
+2.54.0
 

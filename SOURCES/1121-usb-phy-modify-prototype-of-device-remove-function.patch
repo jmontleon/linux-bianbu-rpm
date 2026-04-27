@@ -1,4 +1,4 @@
-From 5685e80928b21055f7fc7320b4b7d1d078364353 Mon Sep 17 00:00:00 2001
+From 35ced9fad7b91e06a42a795cf6446e45a91042a9 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:55:28 +0800
 Subject: [PATCH 1121/1239] usb: phy: modify prototype of device remove
@@ -11,7 +11,7 @@ Change-Id: Id49e2a378a4888bec307bfc317fd29476d5cd7a8
  2 files changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-otg.c b/drivers/usb/phy/phy-k1x-ci-otg.c
-index 2b68e7a704d0a..6c44db696709b 100644
+index 2b68e7a704d0..6c44db696709 100644
 --- a/drivers/usb/phy/phy-k1x-ci-otg.c
 +++ b/drivers/usb/phy/phy-k1x-ci-otg.c
 @@ -448,7 +448,7 @@ static ssize_t set_dr_mode(struct device *dev, struct device_attribute *attr,
@@ -33,7 +33,7 @@ index 2b68e7a704d0a..6c44db696709b 100644
  
  static int mv_otg_dt_parse(struct platform_device *pdev,
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index bd31bc54796e0..6818fe2f9be66 100644
+index bd31bc54796e..6818fe2f9be6 100644
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -146,7 +146,7 @@ static int mv_usb2_phy_probe(struct platform_device *pdev)
@@ -55,5 +55,5 @@ index bd31bc54796e0..6818fe2f9be66 100644
  
  static const struct of_device_id mv_usbphy_dt_match[] = {
 -- 
-2.53.0
+2.54.0
 

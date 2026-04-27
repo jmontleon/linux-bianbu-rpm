@@ -1,4 +1,4 @@
-From b9e679bae32e50b156a5b99a69740ec58cb9d038 Mon Sep 17 00:00:00 2001
+From 6be79bf970f53fffdd38854161430ec5e3a177a3 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@space-t.cn>
 Date: Tue, 14 Mar 2023 13:48:49 +0800
 Subject: [PATCH 0030/1239] update kernel configuration for qemu board
@@ -9,7 +9,7 @@ Change-Id: Ief227bf3a241fcfa9fead9e684103e35749e8f9b
  1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-pro_qemu_defconfig b/arch/riscv/configs/k1-pro_qemu_defconfig
-index d6012878841a2..159b88a2235c7 100644
+index d6012878841a..159b88a2235c 100644
 --- a/arch/riscv/configs/k1-pro_qemu_defconfig
 +++ b/arch/riscv/configs/k1-pro_qemu_defconfig
 @@ -25,7 +25,8 @@ CONFIG_SOC_SPACEMIT=y
@@ -51,5 +51,5 @@ index d6012878841a2..159b88a2235c7 100644
  CONFIG_DEBUG_FS=y
  CONFIG_DETECT_HUNG_TASK=y
 -- 
-2.53.0
+2.54.0
 

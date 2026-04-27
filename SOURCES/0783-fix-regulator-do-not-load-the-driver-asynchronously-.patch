@@ -1,4 +1,4 @@
-From 26f04ab30c912423e83a999b4ccfce4b5ea456fb Mon Sep 17 00:00:00 2001
+From 43bdcf7aaa9fec06c958ff453fe6d4f61483dd11 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Fri, 21 Jun 2024 15:42:47 +0800
 Subject: [PATCH 0783/1239] fix-regulator:do not load the driver asynchronously
@@ -13,7 +13,7 @@ Change-Id: I0a716d4eceb8f4f729c8f059d1d386921f90ace5
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/regulator/fixed.c b/drivers/regulator/fixed.c
-index 254c0a8a45559..7f7f12d33d082 100644
+index 254c0a8a4555..7f7f12d33d08 100644
 --- a/drivers/regulator/fixed.c
 +++ b/drivers/regulator/fixed.c
 @@ -383,7 +383,9 @@ static struct platform_driver regulator_fixed_voltage_driver = {
@@ -27,5 +27,5 @@ index 254c0a8a45559..7f7f12d33d082 100644
  	},
  };
 -- 
-2.53.0
+2.54.0
 

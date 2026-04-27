@@ -1,4 +1,4 @@
-From 50caed82167417ecf5ecb9a8de55588991684c48 Mon Sep 17 00:00:00 2001
+From f30f6acc2e81c87dc6c1e905ea03f1758aad485c Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 20 May 2024 14:55:11 +0800
 Subject: [PATCH 0695/1239] k1: usb: update quirks for usbdrd3 in k1-x_MINI-PC
@@ -9,7 +9,7 @@ Change-Id: I7d49e663109ab8d5be06b1519321ae68eccb2959
  1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
-index f7bf9752810fa..18ae87d0ebddf 100644
+index f7bf9752810f..18ae87d0ebdd 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_MINI-PC.dts
 @@ -649,13 +649,10 @@ dwc3@c0a00000 {
@@ -29,5 +29,5 @@ index f7bf9752810fa..18ae87d0ebddf 100644
  	};
  };
 -- 
-2.53.0
+2.54.0
 

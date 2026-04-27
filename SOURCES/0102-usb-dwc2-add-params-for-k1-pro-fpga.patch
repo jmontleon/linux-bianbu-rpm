@@ -1,4 +1,4 @@
-From c209f39a15c5765cf4641fcd1e5b7f2325446c29 Mon Sep 17 00:00:00 2001
+From 6302687c4affefb714affd458bc8554a9f1c4434 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 27 Jul 2023 11:43:56 +0800
 Subject: [PATCH 0102/1239] usb: dwc2: add params for k1-pro fpga
@@ -11,7 +11,7 @@ Change-Id: Iedbfca6f694c798f1e35c345460ce41727cd32f0
  3 files changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 30eb8506617c0..b7dba3ad4a348 100644
+index 30eb8506617c..b7dba3ad4a34 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
 @@ -5143,9 +5143,9 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
@@ -27,7 +27,7 @@ index 30eb8506617c0..b7dba3ad4a348 100644
  	}
  
 diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 091bfcfef7530..f3665deb99e3a 100644
+index 091bfcfef753..f3665deb99e3 100644
 --- a/drivers/usb/dwc2/params.c
 +++ b/drivers/usb/dwc2/params.c
 @@ -303,6 +303,23 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
@@ -73,7 +73,7 @@ index 091bfcfef7530..f3665deb99e3a 100644
  			valid = 1;
  		break;
 diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index ef0d730770347..dd8661d8bc3c6 100644
+index ef0d73077034..dd8661d8bc3c 100644
 --- a/drivers/usb/dwc2/platform.c
 +++ b/drivers/usb/dwc2/platform.c
 @@ -453,7 +453,7 @@ static int dwc2_driver_probe(struct platform_device *dev)
@@ -86,5 +86,5 @@ index ef0d730770347..dd8661d8bc3c6 100644
  		dev_err(&dev->dev, "can't set coherent DMA mask: %d\n", retval);
  		return retval;
 -- 
-2.53.0
+2.54.0
 

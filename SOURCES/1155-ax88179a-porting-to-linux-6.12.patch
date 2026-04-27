@@ -1,4 +1,4 @@
-From 38782a556ba0afaaa28456671690c0c5433839d4 Mon Sep 17 00:00:00 2001
+From ba99121c8cba0a1414481cff1552200ad6bbe98b Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:46:37 +0800
 Subject: [PATCH 1155/1239] ax88179a: porting to linux-6.12
@@ -9,7 +9,7 @@ Change-Id: I775c1bc9ff735e34e462a0615bde36d72b0837d5
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/usb/asix_usb/ax88179a_772d.c b/drivers/net/usb/asix_usb/ax88179a_772d.c
-index 064fc45b46a50..f771fe9269cbf 100644
+index 064fc45b46a5..f771fe9269cb 100644
 --- a/drivers/net/usb/asix_usb/ax88179a_772d.c
 +++ b/drivers/net/usb/asix_usb/ax88179a_772d.c
 @@ -92,7 +92,7 @@ static int ax88179a_chk_eee(struct ax_device *axdev)
@@ -40,5 +40,5 @@ index 064fc45b46a50..f771fe9269cbf 100644
  	struct ax_device *axdev = netdev_priv(net);
  
 -- 
-2.53.0
+2.54.0
 

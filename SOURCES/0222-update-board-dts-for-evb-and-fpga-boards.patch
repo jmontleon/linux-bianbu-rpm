@@ -1,4 +1,4 @@
-From 995104b93de00da078fdf52a720d917fed5a9cfb Mon Sep 17 00:00:00 2001
+From b29788e7505b52520924731056038f3be9be2e64 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 19 Dec 2023 11:17:14 +0800
 Subject: [PATCH 0222/1239] update board dts for evb and fpga boards
@@ -11,7 +11,7 @@ Change-Id: I166dbcc91e199bce0c9494950abd5ec93114a5d5
  3 files changed, 349 insertions(+), 54 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
-index a4c35a903cb8a..9f058ec0436a1 100644
+index a4c35a903cb8..9f058ec0436a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_evb.dts
 @@ -314,27 +314,46 @@ sw_1: SWITCH_REG1 {
@@ -95,7 +95,7 @@ index a4c35a903cb8a..9f058ec0436a1 100644
  
  &eth0 {
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
-index 3ef9f42c65513..b1a7e10704e83 100644
+index 3ef9f42c6551..b1a7e10704e8 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_1x4.dts
 @@ -10,35 +10,45 @@ / {
@@ -232,7 +232,7 @@ index 3ef9f42c65513..b1a7e10704e83 100644
 +	};
 +};
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
-index 67232c75cf099..d51160756c928 100644
+index 67232c75cf09..d51160756c92 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_fpga_2x2.dts
 @@ -10,37 +10,45 @@ / {
@@ -517,5 +517,5 @@ index 67232c75cf099..d51160756c928 100644
  };
  
 -- 
-2.53.0
+2.54.0
 

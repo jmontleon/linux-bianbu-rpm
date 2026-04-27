@@ -1,4 +1,4 @@
-From 93c50c5d25b88f9609164309839318eab07e9ba0 Mon Sep 17 00:00:00 2001
+From f22cf436af2e4e23b3270e76e68cd9b9a5f8eb9b Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 27 Jul 2023 11:29:39 +0800
 Subject: [PATCH 0101/1239] usb: kconfig: enable dwc2 configuration
@@ -9,7 +9,7 @@ Change-Id: I9259213ae4328150f5e19a6541cc3252ea0ee0de
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index d48e7b56b6d3e..ef9b18b0ed401 100644
+index d48e7b56b6d3..ef9b18b0ed40 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -183,7 +183,17 @@ CONFIG_USB_XHCI_HCD=y
@@ -31,5 +31,5 @@ index d48e7b56b6d3e..ef9b18b0ed401 100644
  CONFIG_USB_CONFIGFS=y
  CONFIG_USB_CONFIGFS_MASS_STORAGE=y
 -- 
-2.53.0
+2.54.0
 

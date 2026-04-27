@@ -1,4 +1,4 @@
-From b7e204771bd308513235a2c9563a64e3d7c45842 Mon Sep 17 00:00:00 2001
+From a2dae1671637e4a35b604adc2ce51cb1eed47d93 Mon Sep 17 00:00:00 2001
 From: max <guoqun.ma@spacemit.com>
 Date: Sat, 13 Jan 2024 00:15:17 +0800
 Subject: [PATCH 0393/1239] use performance governor as default
@@ -9,7 +9,7 @@ Change-Id: I105da9aa9d3668f7cac983695016f116bd8dbbe8
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index 594cdb3540459..3ab10ddfd0528 100644
+index 594cdb354045..3ab10ddfd052 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -35,8 +35,7 @@ CONFIG_RISCV_SBI_V01=y
@@ -23,5 +23,5 @@ index 594cdb3540459..3ab10ddfd0528 100644
  # CONFIG_ARM_MEDIATEK_CPUFREQ_HW is not set
  CONFIG_SPACEMIT_K1X_CPUFREQ=y
 -- 
-2.53.0
+2.54.0
 

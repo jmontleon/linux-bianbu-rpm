@@ -1,4 +1,4 @@
-From efe9b9cc29fbeec1979982c43740362faffb8ae7 Mon Sep 17 00:00:00 2001
+From 0c38f7bbcec57fba7facab7957832bd0cebb8e49 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 10:06:04 +0800
 Subject: [PATCH 1127/1239] qspi: spacemit: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: Ib719419cdf996f42c959207df1d54a68d6cdefe6
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index 3fc36a35b308f..bab70e1bc0c1d 100644
+index 3fc36a35b308..bab70e1bc0c1 100644
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -1607,7 +1607,7 @@ static int k1x_qspi_probe(struct platform_device *pdev)
@@ -31,5 +31,5 @@ index 3fc36a35b308f..bab70e1bc0c1d 100644
  
  #ifdef CONFIG_PM_SLEEP
 -- 
-2.53.0
+2.54.0
 

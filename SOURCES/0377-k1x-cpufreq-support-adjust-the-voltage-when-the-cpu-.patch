@@ -1,4 +1,4 @@
-From be528276e76e53a56683462bba6f1f3e7e7ad81f Mon Sep 17 00:00:00 2001
+From a7262041832aea5424bba5288316574c23d5cb9f Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Thu, 11 Jan 2024 17:21:05 +0800
 Subject: [PATCH 0377/1239] k1x:cpufreq: support adjust the voltage when the
@@ -10,7 +10,7 @@ Change-Id: I50c2bf85afd04a56b4b67e6a43f3a5bbd97060ef
  1 file changed, 56 insertions(+), 43 deletions(-)
 
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index ee1109b99cf20..cd9d29c3878d3 100644
+index ee1109b99cf2..cd9d29c3878d 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -1,3 +1,5 @@
@@ -190,5 +190,5 @@ index ee1109b99cf20..cd9d29c3878d3 100644
  }
  
 -- 
-2.53.0
+2.54.0
 

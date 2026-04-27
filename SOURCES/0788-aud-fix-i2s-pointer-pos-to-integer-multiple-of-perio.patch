@@ -1,4 +1,4 @@
-From 4aa1cc0cc781912a3b8ba2b585edb32eec31c62e Mon Sep 17 00:00:00 2001
+From f7b368805ef8d9c28ce2ecea0f902400320a0ff7 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Tue, 25 Jun 2024 16:03:31 +0800
 Subject: [PATCH 0788/1239] aud: fix i2s pointer pos to integer multiple of
@@ -12,7 +12,7 @@ Change-Id: If9e7f7533e7280f453fa63576cb19fb082866395
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 487b0e3a4cc2e..d248f75096868 100644
+index 487b0e3a4cc2..d248f7509686 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -591,6 +591,7 @@ spacemit_snd_pcm_pointer(struct snd_soc_component *component, struct snd_pcm_sub
@@ -35,5 +35,5 @@ index 487b0e3a4cc2e..d248f75096868 100644
  		runtime->delay = bytes_to_frames(runtime, state.in_flight_bytes);
  	}
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From af81880c56e162de527043ffc46f4e32ff01c6a5 Mon Sep 17 00:00:00 2001
+From 08472d2b949c71602f2e2b7390d1abeca355b2e4 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 15 Dec 2023 23:15:12 +0800
 Subject: [PATCH 0208/1239] update kconfig to support spacemit k1x timer
@@ -11,7 +11,7 @@ Change-Id: I1f234df22bfb8a20e9a066ae0c9e4b22d9fc65dc
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 1119fbd52e1c9..5bc44e2b1322f 100644
+index 1119fbd52e1c..5bc44e2b1322 100644
 --- a/drivers/clocksource/Kconfig
 +++ b/drivers/clocksource/Kconfig
 @@ -152,6 +152,13 @@ config REALTEK_OTTO_TIMER
@@ -29,7 +29,7 @@ index 1119fbd52e1c9..5bc44e2b1322f 100644
  	bool "Sun4i timer driver" if COMPILE_TEST
  	depends on HAS_IOMEM
 diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 28fb3c99bfc67..c835ee7486ff2 100644
+index 28fb3c99bfc6..c835ee7486ff 100644
 --- a/drivers/clocksource/Makefile
 +++ b/drivers/clocksource/Makefile
 @@ -61,7 +61,7 @@ obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o
@@ -42,5 +42,5 @@ index 28fb3c99bfc67..c835ee7486ff2 100644
  obj-$(CONFIG_ARC_TIMERS)		+= arc_timer.o
  obj-$(CONFIG_ARM_ARCH_TIMER)		+= arm_arch_timer.o
 -- 
-2.53.0
+2.54.0
 

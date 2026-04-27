@@ -1,4 +1,4 @@
-From 02a227d26a4aba850dd3df6f3975a12fa9fff9da Mon Sep 17 00:00:00 2001
+From a852ec339d9c3b468d4460b1051b3cd27b563a2e Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Fri, 6 Dec 2024 13:43:57 +0800
 Subject: [PATCH 1207/1239] can: k1/flexcan: fix error on driver.remove
@@ -9,7 +9,7 @@ Change-Id: If2f96a05bb769b0baeeaec6cf1868a01cb6d0f64
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 07e1c7cf23cfe..f114e83b14605 100644
+index 07e1c7cf23cf..f114e83b1460 100644
 --- a/drivers/net/can/flexcan/flexcan-core.c
 +++ b/drivers/net/can/flexcan/flexcan-core.c
 @@ -2615,7 +2615,7 @@ static struct platform_driver r_flexcan_driver = {
@@ -22,5 +22,5 @@ index 07e1c7cf23cfe..f114e83b14605 100644
  };
  
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 96c1ca136a470afff4a7b068299e28e462519712 Mon Sep 17 00:00:00 2001
+From 72898482bd98f4a135a3564e18b153599a4958f5 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Thu, 21 Dec 2023 10:47:21 +0800
 Subject: [PATCH 0238/1239] dts: adding power-domains for k1x qspi
@@ -9,7 +9,7 @@ Change-Id: I1c11f36541b610e3b4056c915b6dea19d7795906
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index fd492aaa87020..04c72005d238d 100644
+index fd492aaa8702..04c72005d238 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1587,7 +1587,8 @@ qspi: spi@d420c000 {
@@ -23,5 +23,5 @@ index fd492aaa87020..04c72005d238d 100644
  			interrupt-parent = <&intc>;
  			k1x,qspi-tx-dma = <1>;
 -- 
-2.53.0
+2.54.0
 

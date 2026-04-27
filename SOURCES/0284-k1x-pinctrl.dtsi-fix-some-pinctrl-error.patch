@@ -1,4 +1,4 @@
-From a622babcbf1e57c5f93a11fc351764658395d1cb Mon Sep 17 00:00:00 2001
+From 482b77d3895b283c121856171f0b06a096347366 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Wed, 27 Dec 2023 11:16:31 +0800
 Subject: [PATCH 0284/1239] k1x-pinctrl.dtsi:fix some pinctrl error
@@ -9,7 +9,7 @@ Change-Id: I9d160bb8d116a5d0282acf994c5a434f7eb162b8
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
-index 19daed5fb354c..b59bc3cc155bc 100644
+index 19daed5fb354..b59bc3cc155b 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_pinctrl.dtsi
 @@ -664,7 +664,7 @@ K1X_PADCONF(GPIO_20,    MUX_MODE4, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))  /* PCIe
@@ -31,5 +31,5 @@ index 19daed5fb354c..b59bc3cc155bc 100644
              K1X_PADCONF(GPIO_68,    MUX_MODE3, (EDGE_NONE | PULL_DOWN | PAD_1V8_DS2))   /* i2c2_scl */
              K1X_PADCONF(GPIO_69,    MUX_MODE3, (EDGE_NONE | PULL_UP | PAD_1V8_DS2))     /* i2c2_sda */
 -- 
-2.53.0
+2.54.0
 

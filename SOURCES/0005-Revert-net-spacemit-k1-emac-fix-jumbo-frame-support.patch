@@ -1,4 +1,4 @@
-From ba69fec5b0a60a77e301b45a9cc58cdfbbb30ecf Mon Sep 17 00:00:00 2001
+From d81edbbd90d189a6157b498f0cb62f6338567029 Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Wed, 11 Feb 2026 09:01:15 -0500
 Subject: [PATCH 0005/1239] Revert "net: spacemit: k1-emac: fix jumbo frame
@@ -10,7 +10,7 @@ This reverts commit a82647e1a9499a26fd2535edbf1700853c7e4159.
  1 file changed, 6 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index b49c4708bf9eb..88e9424d2d51a 100644
+index b49c4708bf9e..88e9424d2d51 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -12,7 +12,6 @@
@@ -83,5 +83,5 @@ index b49c4708bf9eb..88e9424d2d51a 100644
  
  	priv = netdev_priv(ndev);
 -- 
-2.53.0
+2.54.0
 

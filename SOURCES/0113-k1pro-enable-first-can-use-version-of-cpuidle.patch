@@ -1,4 +1,4 @@
-From 8506f6adc68d76dc8d5a105c51300c212dba54c1 Mon Sep 17 00:00:00 2001
+From d8672ec0af865e8c83a6d628c78282c5806c768c Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Sat, 19 Aug 2023 13:41:22 +0800
 Subject: [PATCH 0113/1239] k1pro: enable first can-use version of cpuidle
@@ -13,7 +13,7 @@ Change-Id: I153f747f56da2d0794234839f09b2e5813243906
  2 files changed, 86 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 4bb0b3559421b..5ef550877bdb3 100644
+index 4bb0b3559421..5ef550877bdb 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -37,6 +37,8 @@ cpu_0: cpu@0 {
@@ -143,7 +143,7 @@ index 4bb0b3559421b..5ef550877bdb3 100644
  
  	clocks {
 diff --git a/arch/riscv/configs/k1-pro_fpga_defconfig b/arch/riscv/configs/k1-pro_fpga_defconfig
-index f7980ccb8e13e..e40d4da086b61 100644
+index f7980ccb8e13..e40d4da086b6 100644
 --- a/arch/riscv/configs/k1-pro_fpga_defconfig
 +++ b/arch/riscv/configs/k1-pro_fpga_defconfig
 @@ -31,6 +31,8 @@ CONFIG_HZ_100=y
@@ -156,5 +156,5 @@ index f7980ccb8e13e..e40d4da086b61 100644
  CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
  CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
 -- 
-2.53.0
+2.54.0
 

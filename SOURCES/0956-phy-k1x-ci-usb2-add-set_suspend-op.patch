@@ -1,4 +1,4 @@
-From 04f8a65a944b53a56b01652cf20702eafae4ff0a Mon Sep 17 00:00:00 2001
+From 88056eff76210a65c4af2c8915e58446d976b5d2 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Fri, 2 Aug 2024 14:52:08 +0800
 Subject: [PATCH 0956/1239] phy-k1x-ci-usb2: add set_suspend op
@@ -9,7 +9,7 @@ Change-Id: Ib7f1604a30b6ba132bd2a955da35ae09c5b96199
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/usb/phy/phy-k1x-ci-usb2.c b/drivers/usb/phy/phy-k1x-ci-usb2.c
-index f252707e32f51..bd31bc54796e0 100644
+index f252707e32f5..bd31bc54796e 100644
 --- a/drivers/usb/phy/phy-k1x-ci-usb2.c
 +++ b/drivers/usb/phy/phy-k1x-ci-usb2.c
 @@ -70,6 +70,18 @@ static void mv_usb2_phy_shutdown(struct usb_phy *phy)
@@ -40,5 +40,5 @@ index f252707e32f51..bd31bc54796e0 100644
  	mv_phy->phy.notify_connect = mv_usb2_phy_connect_change;
  
 -- 
-2.53.0
+2.54.0
 

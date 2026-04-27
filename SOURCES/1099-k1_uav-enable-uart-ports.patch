@@ -1,4 +1,4 @@
-From fbce0ad9084cae41049e83dd32ff5dff491061fc Mon Sep 17 00:00:00 2001
+From 89e647fb7e6e0a009aff188857444510ed215904 Mon Sep 17 00:00:00 2001
 From: xudong <dong.xu@spacemit.com>
 Date: Thu, 7 Nov 2024 20:59:53 +0800
 Subject: [PATCH 1099/1239] k1_uav: enable uart ports
@@ -10,7 +10,7 @@ Signed-off-by: xudong <dong.xu@spacemit.com>
  1 file changed, 18 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_uav.dts b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
-index a93478dc01373..2119f7363ca25 100644
+index a93478dc0137..2119f7363ca2 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_uav.dts
 @@ -218,6 +218,24 @@ &uart2 {
@@ -39,5 +39,5 @@ index a93478dc01373..2119f7363ca25 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_pwm14_1>;
 -- 
-2.53.0
+2.54.0
 

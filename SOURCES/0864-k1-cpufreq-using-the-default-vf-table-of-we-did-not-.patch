@@ -1,4 +1,4 @@
-From e34a0c7a646afeb15d149f121834420e79317e50 Mon Sep 17 00:00:00 2001
+From 68a6b1dec3a42db0da2376e161eae6732f24094c Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 5 Aug 2024 09:01:37 +0800
 Subject: [PATCH 0864/1239] k1:cpufreq: using the default vf table of we did
@@ -10,7 +10,7 @@ Change-Id: I3efcc078e70276c82eae34dcb38c46a83734be59
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/cpufreq/spacemit-cpufreq.c b/drivers/cpufreq/spacemit-cpufreq.c
-index ce81b344a1c66..bff603076d6e8 100644
+index ce81b344a1c6..bff603076d6e 100644
 --- a/drivers/cpufreq/spacemit-cpufreq.c
 +++ b/drivers/cpufreq/spacemit-cpufreq.c
 @@ -394,7 +394,7 @@ static int spacemit_dt_cpufreq_pre_early_init(struct device *dev, int cpu, int i
@@ -37,5 +37,5 @@ index ce81b344a1c66..bff603076d6e8 100644
  	} else {
  		for_each_possible_cpu(cpu) {
 -- 
-2.53.0
+2.54.0
 

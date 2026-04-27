@@ -1,4 +1,4 @@
-From 015e687937bad0cb7f6b183953e8dcccb97cd2e8 Mon Sep 17 00:00:00 2001
+From 5e96ba9e484d1be0c8b1d13c2c5bce8fca3f3e96 Mon Sep 17 00:00:00 2001
 From: dengbo <bo.deng@spacemit.com>
 Date: Mon, 2 Sep 2024 15:06:45 +0800
 Subject: [PATCH 1000/1239] gpu: Fix building error with FORTIFY_SOURCE enabled
@@ -9,7 +9,7 @@ Change-Id: Ida3d59a5e289a6af5e1d2db8ca66f6f18d218dec
  1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/gpu/drm/img-rogue/rgxdebug_common.c b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
-index 8684309e9f7f4..4b1393558a511 100644
+index 8684309e9f7f..4b1393558a51 100644
 --- a/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 +++ b/drivers/gpu/drm/img-rogue/rgxdebug_common.c
 @@ -1459,8 +1459,7 @@ typedef struct _FAULT_INFO_LOG_
@@ -57,5 +57,5 @@ index 8684309e9f7f4..4b1393558a511 100644
  				}
  			}
 -- 
-2.53.0
+2.54.0
 

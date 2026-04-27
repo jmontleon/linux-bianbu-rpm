@@ -1,4 +1,4 @@
-From ed4c05084059eb30c09d1314237b3bfb4d051e35 Mon Sep 17 00:00:00 2001
+From 59d5b9fd9df1538f9018ba0437429a4b88fc0c8c Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 8 May 2024 18:34:48 +0800
 Subject: [PATCH 0665/1239] usb: k1x_udc_core: remove req from queue even it's
@@ -14,7 +14,7 @@ Change-Id: I20a03d4fb802d6ceed257164e0d87efb1b17953a
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 0903113c10fde..7362f4ea6ca6f 100755
+index 0903113c10fd..7362f4ea6ca6 100755
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -266,15 +266,16 @@ static int done(struct mv_ep *ep, struct mv_req *req, int status)
@@ -38,5 +38,5 @@ index 0903113c10fde..7362f4ea6ca6f 100755
  	if (req->req.status == -EINPROGRESS)
  		req->req.status = status;
 -- 
-2.53.0
+2.54.0
 

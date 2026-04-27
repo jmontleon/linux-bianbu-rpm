@@ -1,4 +1,4 @@
-From 62f2ae5985405558b87206bfd3a483e8a7c395d7 Mon Sep 17 00:00:00 2001
+From 87d00d505862cfd3a7313b7aca8fe6b8b950c45a Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Mon, 18 Dec 2023 16:15:39 +0800
 Subject: [PATCH 0217/1239] usb: udc: k1x_udc: fix udc disconnect
@@ -12,7 +12,7 @@ Change-Id: Ie9cf3517d3d961b78a4added9c00c0a35b769fb3
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 9dcd8b769e9ca..e7904bbe8d40a 100755
+index 9dcd8b769e9c..e7904bbe8d40 100755
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -1482,7 +1482,6 @@ static int mv_udc_start(struct usb_gadget *gadget,
@@ -24,5 +24,5 @@ index 9dcd8b769e9ca..e7904bbe8d40a 100755
  
  	udc->usb_state = USB_STATE_ATTACHED;
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 0b60decfdf1fda6e69f87997011dde2023f1abac Mon Sep 17 00:00:00 2001
+From 5bb1798fb9f380abc7ef27ced09c980a63ae08c2 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:26:56 +0800
 Subject: [PATCH 0367/1239] defconfig: add usb3.0 support for k1-x evb2
@@ -9,7 +9,7 @@ Change-Id: I3365e6184b2c33a6c336d2a075e95f297ff1a247
  1 file changed, 3 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_deb2_defconfig b/arch/riscv/configs/k1-x_deb2_defconfig
-index f2d93a980b4df..27b0e1011c6dd 100644
+index f2d93a980b4d..27b0e1011c6d 100644
 --- a/arch/riscv/configs/k1-x_deb2_defconfig
 +++ b/arch/riscv/configs/k1-x_deb2_defconfig
 @@ -379,8 +379,6 @@ CONFIG_BACKLIGHT_PWM=y
@@ -30,5 +30,5 @@ index f2d93a980b4df..27b0e1011c6dd 100644
  CONFIG_EXT4_FS=y
  CONFIG_EXT4_FS_POSIX_ACL=y
 -- 
-2.53.0
+2.54.0
 

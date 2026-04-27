@@ -1,4 +1,4 @@
-From b4082108b90f8fbb01a7ad518cba48fabe8aa37d Mon Sep 17 00:00:00 2001
+From f93a6dc45442ced7530f9a78aca8a86bcb5f1c33 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 27 Jul 2023 11:14:06 +0800
 Subject: [PATCH 0100/1239] usb: dts: add dwc2 dts for k1-pro fpga
@@ -9,7 +9,7 @@ Change-Id: Id6bb4b95e55212335c6d162f3c36a04e6b8d2d83
  1 file changed, 15 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
-index 382380d5d2b6d..96105683dd3c1 100644
+index 382380d5d2b6..96105683dd3c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-pro.dtsi
 @@ -366,6 +366,21 @@ can0: can@2cfd0000 {
@@ -35,5 +35,5 @@ index 382380d5d2b6d..96105683dd3c1 100644
  			compatible = "spacemit,k1-pro-dwc3";
  			#address-cells = <2>;
 -- 
-2.53.0
+2.54.0
 

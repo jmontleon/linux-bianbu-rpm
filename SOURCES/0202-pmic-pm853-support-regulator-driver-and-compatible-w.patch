@@ -1,4 +1,4 @@
-From af250e4d2577975cf276225772cbc20014f6d345 Mon Sep 17 00:00:00 2001
+From 73e0c79fef86fb334cd941a3f659c7a83d844f52 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 27 Nov 2023 20:33:37 +0800
 Subject: [PATCH 0202/1239] pmic:pm853: support regulator driver and compatible
@@ -15,7 +15,7 @@ Change-Id: I0285e418f96395ceaa1efdce7b386923d79218dc
  create mode 100644 include/linux/mfd/spacemit/pm853.h
 
 diff --git a/drivers/mfd/spacemit-mfd.c b/drivers/mfd/spacemit-mfd.c
-index ea8ab1c92adfc..e85b75533a611 100644
+index ea8ab1c92adf..e85b75533a61 100644
 --- a/drivers/mfd/spacemit-mfd.c
 +++ b/drivers/mfd/spacemit-mfd.c
 @@ -12,8 +12,12 @@
@@ -137,7 +137,7 @@ index ea8ab1c92adfc..e85b75533a611 100644
  		pr_warn("%s:%d, No interrupt supported\n",
  				__func__, __LINE__);
 diff --git a/drivers/regulator/spacemit-regulator.c b/drivers/regulator/spacemit-regulator.c
-index 93a27b20387c5..ae9d34edfd7af 100644
+index 93a27b20387c..ae9d34edfd7a 100644
 --- a/drivers/regulator/spacemit-regulator.c
 +++ b/drivers/regulator/spacemit-regulator.c
 @@ -17,7 +17,7 @@
@@ -207,7 +207,7 @@ index 93a27b20387c5..ae9d34edfd7af 100644
  				regulators + i, &config);
 diff --git a/include/linux/mfd/spacemit/pm853.h b/include/linux/mfd/spacemit/pm853.h
 new file mode 100644
-index 0000000000000..0d04ad1341eb8
+index 000000000000..0d04ad1341eb
 --- /dev/null
 +++ b/include/linux/mfd/spacemit/pm853.h
 @@ -0,0 +1,314 @@
@@ -526,7 +526,7 @@ index 0000000000000..0d04ad1341eb8
 +
 +#endif
 diff --git a/include/linux/mfd/spacemit/spacemit_pmic.h b/include/linux/mfd/spacemit/spacemit_pmic.h
-index 79c1267bf82f8..3bfd02b063007 100644
+index 79c1267bf82f..3bfd02b06300 100644
 --- a/include/linux/mfd/spacemit/spacemit_pmic.h
 +++ b/include/linux/mfd/spacemit/spacemit_pmic.h
 @@ -4,6 +4,15 @@
@@ -606,7 +606,7 @@ index 79c1267bf82f8..3bfd02b063007 100644
  
  #endif /* __SPACEMIT_PMIC_H__ */
 diff --git a/include/linux/mfd/spacemit/spm8821.h b/include/linux/mfd/spacemit/spm8821.h
-index 353a4d17e3b32..1473ac5959256 100644
+index 353a4d17e3b3..1473ac595925 100644
 --- a/include/linux/mfd/spacemit/spm8821.h
 +++ b/include/linux/mfd/spacemit/spm8821.h
 @@ -98,86 +98,104 @@ enum SPM8821_reg {
@@ -755,5 +755,5 @@ index 353a4d17e3b32..1473ac5959256 100644
  	/* PWR SWITCH */	\
  	SPM8821_DESC_SWITCH(SPM8821_ID_SWITCH1, "SWITCH_REG1", "dcdc4", SPM8821_SWITCH_CTRL_REG, SPM8821_SWTICH_EN_MASK),		\
 -- 
-2.53.0
+2.54.0
 

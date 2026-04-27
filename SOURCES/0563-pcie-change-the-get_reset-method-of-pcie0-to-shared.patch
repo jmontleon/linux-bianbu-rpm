@@ -1,4 +1,4 @@
-From d02eccaae9ab0197abe386425444846b30b129b4 Mon Sep 17 00:00:00 2001
+From 5c4cd302a3f0651178340772583a54b0fdedd2fe Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 2 Apr 2024 10:05:01 +0800
 Subject: [PATCH 0563/1239] pcie: change the get_reset method of pcie0 to
@@ -10,7 +10,7 @@ Change-Id: I1b0f3e30cb9c3cb8bf178a8beece7626c5ec4d28
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-k1x.c b/drivers/pci/controller/dwc/pcie-k1x.c
-index f5dfdfa80208c..125b94c7ac92f 100755
+index f5dfdfa80208..125b94c7ac92 100755
 --- a/drivers/pci/controller/dwc/pcie-k1x.c
 +++ b/drivers/pci/controller/dwc/pcie-k1x.c
 @@ -1499,9 +1499,14 @@ static int __init k1x_pcie_probe(struct platform_device *pdev)
@@ -31,5 +31,5 @@ index f5dfdfa80208c..125b94c7ac92f 100755
  	}
  
 -- 
-2.53.0
+2.54.0
 

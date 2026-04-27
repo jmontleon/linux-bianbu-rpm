@@ -1,4 +1,4 @@
-From 5e1207d864cd9bab72099f10d49d83364233a4d3 Mon Sep 17 00:00:00 2001
+From d01031256e3d3d0c80699cfd1b60559c47aa206f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Cweijinmei=E2=80=9D?= <jinmei.wei@spacemit.com>
 Date: Mon, 1 Apr 2024 15:49:09 +0800
 Subject: [PATCH 0560/1239] aud: fix the first buffer data loss issue
@@ -9,7 +9,7 @@ Change-Id: Ia6259c8ec27250d355f2a278e2353f22184245d4
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index ec7ab403a612c..4e08f9fe3c794 100755
+index ec7ab403a612..4e08f9fe3c79 100755
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -427,7 +427,6 @@ static int spacemit_snd_dma_submit(struct spacemit_snd_dmadata *dmadata)
@@ -29,5 +29,5 @@ index ec7ab403a612c..4e08f9fe3c794 100755
  			if (ret < 0)
  				goto unlock;
 -- 
-2.53.0
+2.54.0
 

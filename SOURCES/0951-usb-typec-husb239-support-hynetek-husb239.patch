@@ -1,4 +1,4 @@
-From 742122f6aff4bacf91f260b84bb6c69b2240ec20 Mon Sep 17 00:00:00 2001
+From 1346f225b6764e7276b7cc80ecbe5f211f63d71e Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 25 Jul 2024 14:50:07 +0800
 Subject: [PATCH 0951/1239] usb: typec: husb239: support hynetek husb239
@@ -12,7 +12,7 @@ Change-Id: I9cd1ab1848221984a4a33dcb37001b1acb5826ae
  create mode 100644 drivers/usb/typec/husb239.c
 
 diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
-index 2f80c2792dbda..3b0b1756f4b7e 100644
+index 2f80c2792dbd..3b0b1756f4b7 100644
 --- a/drivers/usb/typec/Kconfig
 +++ b/drivers/usb/typec/Kconfig
 @@ -110,6 +110,17 @@ config TYPEC_WUSB3801
@@ -34,7 +34,7 @@ index 2f80c2792dbda..3b0b1756f4b7e 100644
  
  source "drivers/usb/typec/altmodes/Kconfig"
 diff --git a/drivers/usb/typec/Makefile b/drivers/usb/typec/Makefile
-index 7a368fea61bc9..bcbf032e4b38c 100644
+index 7a368fea61bc..bcbf032e4b38 100644
 --- a/drivers/usb/typec/Makefile
 +++ b/drivers/usb/typec/Makefile
 @@ -11,4 +11,5 @@ obj-$(CONFIG_TYPEC_HD3SS3220)	+= hd3ss3220.o
@@ -45,7 +45,7 @@ index 7a368fea61bc9..bcbf032e4b38c 100644
  obj-$(CONFIG_TYPEC)		+= mux/
 diff --git a/drivers/usb/typec/husb239.c b/drivers/usb/typec/husb239.c
 new file mode 100644
-index 0000000000000..ce26f53fa713d
+index 000000000000..ce26f53fa713
 --- /dev/null
 +++ b/drivers/usb/typec/husb239.c
 @@ -0,0 +1,1051 @@
@@ -1101,5 +1101,5 @@ index 0000000000000..ce26f53fa713d
 +MODULE_DESCRIPTION("hynetek HUSB239 DRP Port Controller Driver");
 +MODULE_LICENSE("GPL");
 -- 
-2.53.0
+2.54.0
 

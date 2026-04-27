@@ -1,4 +1,4 @@
-From 68aeed9f8a8b0e6391cdd00c8910820f3bd60b22 Mon Sep 17 00:00:00 2001
+From 894089b5e286a1459e2608dd7e287954c8e44341 Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 26 Mar 2024 11:22:19 +0800
 Subject: [PATCH 0544/1239] usb: xhci: fix spacemit k1x phy disconnect detect
@@ -10,7 +10,7 @@ Change-Id: I78d4de5080384eb24b7fe1fb13954cc22f3a3f26
  2 files changed, 6 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index d03ff7a22f1ef..7e10f8d0e5d5d 100644
+index d03ff7a22f1e..7e10f8d0e5d5 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1721,6 +1721,7 @@ combphy: phy@c0b10000{
@@ -22,7 +22,7 @@ index d03ff7a22f1ef..7e10f8d0e5d5d 100644
  			status = "disabled";
  		};
 diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index 5e1442e91743d..0d736f150b13f 100644
+index 5e1442e91743..0d736f150b13 100644
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
 @@ -13,6 +13,7 @@
@@ -45,5 +45,5 @@ index 5e1442e91743d..0d736f150b13f 100644
  		break;
  	case USB_PORT_FEAT_C_OVER_CURRENT:
 -- 
-2.53.0
+2.54.0
 

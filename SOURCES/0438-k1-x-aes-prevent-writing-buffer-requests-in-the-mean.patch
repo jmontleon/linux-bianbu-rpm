@@ -1,4 +1,4 @@
-From f89d0a1b38f1e37c703a84316081cd75e65f7320 Mon Sep 17 00:00:00 2001
+From e9b4a982fff33b561a9c46fc16ce8722f375a128 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Mon, 5 Feb 2024 15:11:40 +0800
 Subject: [PATCH 0438/1239] k1-x:aes prevent writing-buffer requests in the
@@ -11,7 +11,7 @@ Change-Id: If3ca86baca94fd520d8310c063cf0fc6debb5c64
  2 files changed, 87 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/crypto/spacemit/spacemit-ce-glue.c b/drivers/crypto/spacemit/spacemit-ce-glue.c
-index 70c69d93c8c77..83bb7d26300d9 100755
+index 70c69d93c8c7..83bb7d26300d 100755
 --- a/drivers/crypto/spacemit/spacemit-ce-glue.c
 +++ b/drivers/crypto/spacemit/spacemit-ce-glue.c
 @@ -14,6 +14,7 @@
@@ -299,7 +299,7 @@ index 70c69d93c8c77..83bb7d26300d9 100755
  	return 0;
  }
 diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
-index c792f9d289584..d72ac799c69f7 100755
+index c792f9d28958..d72ac799c69f 100755
 --- a/drivers/crypto/spacemit/spacemit_ce_engine.c
 +++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
 @@ -565,20 +565,20 @@ static int ce_aes_process_nblocks(int index, const unsigned char *buf_in, unsign
@@ -380,5 +380,5 @@ index c792f9d289584..d72ac799c69f7 100755
  	return 0;
  }
 -- 
-2.53.0
+2.54.0
 

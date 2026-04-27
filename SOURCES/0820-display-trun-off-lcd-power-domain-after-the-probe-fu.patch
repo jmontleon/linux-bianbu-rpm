@@ -1,4 +1,4 @@
-From 02cf35c7beed4a12c9df6bf8bf30b7f014ef8ea6 Mon Sep 17 00:00:00 2001
+From 28a6908f5924173315ab4e454fe526edbccea202 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E2=80=9Clilijun=E2=80=9D?= <“lijun.li@spacemit.com”>
 Date: Thu, 4 Jul 2024 18:43:45 +0800
 Subject: [PATCH 0820/1239] display: trun off lcd power domain after the probe
@@ -10,7 +10,7 @@ Change-Id: Ia8bcd8484b4941a9f4487739d03c43e1d8b1ce54
  1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_dpu.c b/drivers/gpu/drm/spacemit/spacemit_dpu.c
-index 001165efe62bf..5c05cc688ef0a 100644
+index 001165efe62b..5c05cc688ef0 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_dpu.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_dpu.c
 @@ -775,12 +775,6 @@ static int spacemit_dpu_bind(struct device *dev, struct device *master, void *da
@@ -38,5 +38,5 @@ index 001165efe62bf..5c05cc688ef0a 100644
  
  	return component_add(dev, &dpu_component_ops);
 -- 
-2.53.0
+2.54.0
 

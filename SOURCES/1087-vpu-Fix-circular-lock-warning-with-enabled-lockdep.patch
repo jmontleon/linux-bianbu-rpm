@@ -1,4 +1,4 @@
-From 31fcfb6a63a3c8a8bc1ffd7438f1156126541cc2 Mon Sep 17 00:00:00 2001
+From 7391e3180adacaf3acdaa0300fd97141b4aec613 Mon Sep 17 00:00:00 2001
 From: mengbinghan <binghan.meng@spacemit.com>
 Date: Mon, 4 Nov 2024 17:55:16 +0800
 Subject: [PATCH 1087/1239] vpu: Fix circular lock warning with enabled lockdep
@@ -74,7 +74,7 @@ Change-Id: Ie8b72cbaaa4d1d9d1cdff6730f12cb1cb1e89b37
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
-index 56b69aee26ceb..ef727d91d1d46 100644
+index 56b69aee26ce..ef727d91d1d4 100644
 --- a/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
 +++ b/drivers/media/platform/spacemit/vpu_k1x/if/v4l2/mvx_v4l2_fops.c
 @@ -114,10 +114,10 @@ int mvx_v4l2_release(struct file *file)
@@ -91,5 +91,5 @@ index 56b69aee26ceb..ef727d91d1d46 100644
  		if (vsession->port[i].q_set != false) {
  			vb2_queue_release(&vsession->port[i].vb2_queue);
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From ca9c69642c5ad1ab1707c8bac6261eb0625b0c98 Mon Sep 17 00:00:00 2001
+From ea8c7395bca0c07df5f20f9b99f76c0982d8906e Mon Sep 17 00:00:00 2001
 From: Jason Montleon <jmontleo@redhat.com>
 Date: Thu, 19 Mar 2026 12:43:17 -0400
 Subject: [PATCH 0002/1239] Revert "net: spacemit: Fix error handling in
@@ -10,7 +10,7 @@ This reverts commit 7d976a6e1da8259e83852ba202eae2732bbd1909.
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-index 5de69a105168a..b49c4708bf9eb 100644
+index 5de69a105168..b49c4708bf9e 100644
 --- a/drivers/net/ethernet/spacemit/k1_emac.c
 +++ b/drivers/net/ethernet/spacemit/k1_emac.c
 @@ -582,9 +582,7 @@ static void emac_alloc_rx_desc_buffers(struct emac_priv *priv)
@@ -36,5 +36,5 @@ index 5de69a105168a..b49c4708bf9eb 100644
  
  /* Returns number of packets received */
 -- 
-2.53.0
+2.54.0
 

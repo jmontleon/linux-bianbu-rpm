@@ -1,4 +1,4 @@
-From 89cdf465581099b9297ddf1cc6544f3af3907a29 Mon Sep 17 00:00:00 2001
+From 4758f0159db58cae26d0df245d09099ea59396bd Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Wed, 23 Oct 2024 11:11:01 +0800
 Subject: [PATCH 1048/1239] serial: fix lockdep_assert warning
@@ -41,7 +41,7 @@ Change-Id: I60437933143f2a3e87b77365a580200bde547507
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/tty/serial/pxa_k1x.c b/drivers/tty/serial/pxa_k1x.c
-index ca16dd56c2313..50d49151a0974 100644
+index ca16dd56c231..50d49151a097 100644
 --- a/drivers/tty/serial/pxa_k1x.c
 +++ b/drivers/tty/serial/pxa_k1x.c
 @@ -514,6 +514,7 @@ static inline void check_modem_status(struct uart_pxa_port *up)
@@ -61,5 +61,5 @@ index ca16dd56c2313..50d49151a0974 100644
  	wake_up_interruptible(&up->port.state->port.delta_msr_wait);
  }
 -- 
-2.53.0
+2.54.0
 

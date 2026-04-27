@@ -1,4 +1,4 @@
-From 05c614edbf55a4dfc36c105a2db8aeadf49a1d0c Mon Sep 17 00:00:00 2001
+From 1533b93dc9e216c3e2ab51734517f4088e6e870f Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Sat, 9 Mar 2024 17:04:03 +0800
 Subject: [PATCH 0489/1239] dtb: adding the dts of linux for kx312 board
@@ -11,7 +11,7 @@ Change-Id: Id5fbbe1ea252a9a56d691d6ce8961b1b5a7121d8
  create mode 100644 arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 
 diff --git a/arch/riscv/boot/dts/spacemit/Makefile b/arch/riscv/boot/dts/spacemit/Makefile
-index d7d6f3370ce6d..cb248e69e7d75 100644
+index d7d6f3370ce6..cb248e69e7d7 100644
 --- a/arch/riscv/boot/dts/spacemit/Makefile
 +++ b/arch/riscv/boot/dts/spacemit/Makefile
 @@ -2,5 +2,5 @@
@@ -23,7 +23,7 @@ index d7d6f3370ce6d..cb248e69e7d75 100644
  obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 new file mode 100644
-index 0000000000000..acdc4ea570ee7
+index 000000000000..acdc4ea570ee
 --- /dev/null
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -0,0 +1,578 @@
@@ -606,5 +606,5 @@ index 0000000000000..acdc4ea570ee7
 +	temperature = <115000>;
 +};
 -- 
-2.53.0
+2.54.0
 

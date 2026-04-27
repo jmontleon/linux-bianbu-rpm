@@ -1,4 +1,4 @@
-From 35da3b902211b139c91b067544dd2346a5221eab Mon Sep 17 00:00:00 2001
+From f2f7a56a354094da39a65a409ead6110ded12fe0 Mon Sep 17 00:00:00 2001
 From: yanhaodong <haodong.yan@spacemit.com>
 Date: Sat, 26 Oct 2024 14:51:55 +0800
 Subject: [PATCH 1061/1239] k1x:chipone-tddi reduce init log level
@@ -9,7 +9,7 @@ Change-Id: I5667c3a31f03bdfbec565a85c6e292e0c65bd74b
  1 file changed, 27 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/input/touchscreen/chipone-tddi/cts_core.c b/drivers/input/touchscreen/chipone-tddi/cts_core.c
-index 3f54cbc102993..b1b2f427e4d2a 100644
+index 3f54cbc10299..b1b2f427e4d2 100644
 --- a/drivers/input/touchscreen/chipone-tddi/cts_core.c
 +++ b/drivers/input/touchscreen/chipone-tddi/cts_core.c
 @@ -1326,33 +1326,33 @@ static int cts_init_fwdata(struct cts_device *cts_dev)
@@ -74,5 +74,5 @@ index 3f54cbc102993..b1b2f427e4d2a 100644
      return 0;
  }
 -- 
-2.53.0
+2.54.0
 

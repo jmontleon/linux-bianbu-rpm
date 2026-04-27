@@ -1,4 +1,4 @@
-From e24fc4c18f21382c0382f7520c8b01500e3114c2 Mon Sep 17 00:00:00 2001
+From b0d201191316f936bf4cf928202959d269aa7f57 Mon Sep 17 00:00:00 2001
 From: Mark Zhuang <mark.zhuang@spacemit.com>
 Date: Mon, 12 Aug 2024 15:46:29 +0800
 Subject: [PATCH 0939/1239] display: fix compile warning
@@ -9,7 +9,7 @@ Change-Id: I4debd5bc0d4236f3f915d2b90dbd7524e2329c7e
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/spacemit/spacemit_gem.c b/drivers/gpu/drm/spacemit/spacemit_gem.c
-index 9c5733d051e66..40ff51db3957a 100644
+index 9c5733d051e6..40ff51db3957 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_gem.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_gem.c
 @@ -239,8 +239,10 @@ int spacemit_gem_prime_vmap(struct drm_gem_object *gem_obj, struct iosys_map *ma
@@ -25,5 +25,5 @@ index 9c5733d051e66..40ff51db3957a 100644
  	pages = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
  	tmp = pages;
 -- 
-2.53.0
+2.54.0
 

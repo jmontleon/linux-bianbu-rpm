@@ -1,4 +1,4 @@
-From f822f3774935e5520cb2fcd09dd5956064da7190 Mon Sep 17 00:00:00 2001
+From 392a91e7f96703ad46599153e287582395f80bc9 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Mon, 15 Jul 2024 16:27:35 +0800
 Subject: [PATCH 0839/1239] aud: fix can not play/record issue after
@@ -10,7 +10,7 @@ Change-Id: I47d82199c833e489141917eb11984f92b6361500
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/spacemit/spacemit-snd-pcm-dma.c b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
-index 57764c40652e9..b6bc02edcb851 100644
+index 57764c40652e..b6bc02edcb85 100644
 --- a/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 +++ b/sound/soc/spacemit/spacemit-snd-pcm-dma.c
 @@ -551,8 +551,12 @@ static int spacemit_snd_pcm_trigger(struct snd_soc_component *component, struct
@@ -28,5 +28,5 @@ index 57764c40652e9..b6bc02edcb851 100644
  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  	case SNDRV_PCM_TRIGGER_RESUME:
 -- 
-2.53.0
+2.54.0
 

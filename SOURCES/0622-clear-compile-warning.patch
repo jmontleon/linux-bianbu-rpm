@@ -1,4 +1,4 @@
-From 774286cf1eaef7ef67f6b76d464fe94cdb031647 Mon Sep 17 00:00:00 2001
+From b32887f3f814c9ea2a2db8413bfba84e588641b5 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 16 Apr 2024 16:26:12 +0800
 Subject: [PATCH 0622/1239] clear compile warning:
@@ -19,7 +19,7 @@ Change-Id: If7b1a0eed35e9655b96cf89d3c6df71bae2ceffe
  2 files changed, 2 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/gpu/drm/spacemit/lt8911exb.c b/drivers/gpu/drm/spacemit/lt8911exb.c
-index 2fa4d54bf450d..8e725e197fef7 100644
+index 2fa4d54bf450..8e725e197fef 100644
 --- a/drivers/gpu/drm/spacemit/lt8911exb.c
 +++ b/drivers/gpu/drm/spacemit/lt8911exb.c
 @@ -208,15 +208,6 @@ static const struct regmap_config lt8911exb_regmap_config = {
@@ -72,7 +72,7 @@ index 2fa4d54bf450d..8e725e197fef7 100644
  
  	return ret;
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index c0aa17eec84e0..84f7a7e2e591b 100644
+index c0aa17eec84e..84f7a7e2e591 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -549,7 +549,6 @@ void hdmi_init (struct spacemit_hdmi *hdmi, int pixel_clock, int bit_depth){
@@ -84,5 +84,5 @@ index c0aa17eec84e0..84f7a7e2e591b 100644
  	int bit_depth = TEN_BPP;
  
 -- 
-2.53.0
+2.54.0
 

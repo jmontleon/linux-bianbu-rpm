@@ -1,4 +1,4 @@
-From e4f6dd5c14668800ec4931e959982eb625fae631 Mon Sep 17 00:00:00 2001
+From b8d7eeeb5567f8bf1f4cdc914045bcfd646f3d01 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 5 Dec 2024 21:14:56 +0800
 Subject: [PATCH 1181/1239] clk: spacemit: clean compile warnings
@@ -11,7 +11,7 @@ Change-Id: I44a45d4b04615d6758e106d4e781cf2b4d199faf
  3 files changed, 5 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index 71bc111626c0f..8b28495947f31 100644
+index 71bc111626c0..8b28495947f3 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1541,7 +1541,7 @@ static struct clk_hw_table bootup_enable_clk_table[] = {
@@ -81,7 +81,7 @@ index 71bc111626c0f..8b28495947f31 100644
  CLK_OF_DECLARE(k1x_clock, "spacemit,k1x-clock", spacemit_k1x_ccu_probe);
  
 diff --git a/drivers/clk/spacemit/ccu_ddr.c b/drivers/clk/spacemit/ccu_ddr.c
-index ae5af8f88742c..5cd74994b9b08 100644
+index ae5af8f88742..5cd74994b9b0 100644
 --- a/drivers/clk/spacemit/ccu_ddr.c
 +++ b/drivers/clk/spacemit/ccu_ddr.c
 @@ -135,7 +135,7 @@ static long ccu_ddr_round_rate(struct clk_hw *hw, unsigned long rate,
@@ -94,7 +94,7 @@ index ae5af8f88742c..5cd74994b9b08 100644
  {
  	struct ccu_ddr *ddr = hw_to_ccu_ddr(hw);
 diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
-index 47e963e92d632..4add1fa636dfa 100644
+index 47e963e92d63..4add1fa636df 100644
 --- a/drivers/clk/spacemit/ccu_mix.c
 +++ b/drivers/clk/spacemit/ccu_mix.c
 @@ -271,7 +271,7 @@ static long ccu_mix_round_rate(struct clk_hw *hw, unsigned long rate,
@@ -107,5 +107,5 @@ index 47e963e92d632..4add1fa636dfa 100644
  	struct ccu_mix *mix = hw_to_ccu_mix(hw);
  	struct ccu_common * common = &mix->common;
 -- 
-2.53.0
+2.54.0
 

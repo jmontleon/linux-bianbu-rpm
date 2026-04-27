@@ -1,4 +1,4 @@
-From 33ddaa7a98e335be520616d814acf986799f775d Mon Sep 17 00:00:00 2001
+From 6728c1d0d49d8cfa4cdb9f73f0a8292487b211f4 Mon Sep 17 00:00:00 2001
 From: Nell <xianbin.zhu@spacemit.com>
 Date: Mon, 21 Aug 2023 16:13:37 +0800
 Subject: [PATCH 0114/1239] k1x:multi-core: modify the configurations related
@@ -12,7 +12,7 @@ Change-Id: I49aded2456b15fcbb5e251ee9f2339c493c2eb50
  3 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index e56826126bd88..483e0c5f5324c 100644
+index e56826126bd8..483e0c5f5324 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -155,7 +155,7 @@ &cpu1_intc  3 &cpu1_intc  7
@@ -34,7 +34,7 @@ index e56826126bd88..483e0c5f5324c 100644
  			riscv,max-priority = <7>;
  			riscv,ndev = <159>;
 diff --git a/arch/riscv/configs/k1-x_fpga_defconfig b/arch/riscv/configs/k1-x_fpga_defconfig
-index a6bd78539626c..a93c66aa8f703 100644
+index a6bd78539626..a93c66aa8f70 100644
 --- a/arch/riscv/configs/k1-x_fpga_defconfig
 +++ b/arch/riscv/configs/k1-x_fpga_defconfig
 @@ -28,6 +28,7 @@ CONFIG_SOC_SPACEMIT_K1X=y
@@ -62,7 +62,7 @@ index a6bd78539626c..a93c66aa8f703 100644
  # CONFIG_IOMMU_SUPPORT is not set
  # CONFIG_DPAA2_CONSOLE is not set
 diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-index 3c1f5d36bc6ad..f0110eb5c5771 100644
+index 3c1f5d36bc6a..f0110eb5c577 100644
 --- a/arch/riscv/kernel/cpu_ops_sbi.c
 +++ b/arch/riscv/kernel/cpu_ops_sbi.c
 @@ -100,7 +100,6 @@ static int sbi_cpu_is_stopped(unsigned int cpuid)
@@ -94,5 +94,5 @@ index 3c1f5d36bc6ad..f0110eb5c5771 100644
  
  #endif
 -- 
-2.53.0
+2.54.0
 

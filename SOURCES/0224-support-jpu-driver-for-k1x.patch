@@ -1,4 +1,4 @@
-From 692914df0a1819f0ee5b1778324af44118d8ef72 Mon Sep 17 00:00:00 2001
+From f75151fcb2e658e42d5a52425fc828b293fe9585 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Wed, 13 Dec 2023 10:10:07 +0800
 Subject: [PATCH 0224/1239] support jpu driver for k1x
@@ -31,7 +31,7 @@ Change-Id: I2091ead52ae80d5c9b663263ee9c52568d460577
  create mode 100644 drivers/soc/spacemit/jpu/regdefine.h
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x.dtsi b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
-index dbb94923050ba..af80d7f78630c 100644
+index dbb94923050b..af80d7f78630 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 +++ b/arch/riscv/boot/dts/spacemit/k1-x.dtsi
 @@ -1634,7 +1634,26 @@ v2d@c0100000 {
@@ -63,7 +63,7 @@ index dbb94923050ba..af80d7f78630c 100644
  			compatible = "spacemit,saturn-le";
  			reg = <0 0xC0340000 0 0x2A000>;
 diff --git a/drivers/soc/spacemit/Kconfig b/drivers/soc/spacemit/Kconfig
-index 65c1e723f48bd..6ef88f2bbbddb 100644
+index 65c1e723f48b..6ef88f2bbbdd 100644
 --- a/drivers/soc/spacemit/Kconfig
 +++ b/drivers/soc/spacemit/Kconfig
 @@ -14,3 +14,5 @@ config SPACEMIT_PM_DOMAINS
@@ -73,7 +73,7 @@ index 65c1e723f48bd..6ef88f2bbbddb 100644
 +
 +source "drivers/soc/spacemit/jpu/Kconfig"
 diff --git a/drivers/soc/spacemit/Makefile b/drivers/soc/spacemit/Makefile
-index f6fba0ac90946..d29e71be0e0d5 100644
+index f6fba0ac9094..d29e71be0e0d 100644
 --- a/drivers/soc/spacemit/Makefile
 +++ b/drivers/soc/spacemit/Makefile
 @@ -1 +1,2 @@
@@ -81,7 +81,7 @@ index f6fba0ac90946..d29e71be0e0d5 100644
 +obj-$(CONFIG_CHIP_MEDIA_JPU)    += jpu/
 diff --git a/drivers/soc/spacemit/jpu/Kconfig b/drivers/soc/spacemit/jpu/Kconfig
 new file mode 100644
-index 0000000000000..c31eb5090e212
+index 000000000000..c31eb5090e21
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/Kconfig
 @@ -0,0 +1,11 @@
@@ -98,7 +98,7 @@ index 0000000000000..c31eb5090e212
 +		This enabled debug message output
 diff --git a/drivers/soc/spacemit/jpu/Makefile b/drivers/soc/spacemit/jpu/Makefile
 new file mode 100644
-index 0000000000000..afdfed75d38d4
+index 000000000000..afdfed75d38d
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/Makefile
 @@ -0,0 +1,4 @@
@@ -108,7 +108,7 @@ index 0000000000000..afdfed75d38d4
 +ccflags-${CONFIG_JPU_ENABLE_DEBUG_MSG} += -DENABLE_DEBUG_MSG
 diff --git a/drivers/soc/spacemit/jpu/config.h b/drivers/soc/spacemit/jpu/config.h
 new file mode 100644
-index 0000000000000..5522f5ca22859
+index 000000000000..5522f5ca2285
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/config.h
 @@ -0,0 +1,21 @@
@@ -135,7 +135,7 @@ index 0000000000000..5522f5ca22859
 +#endif /* __CONFIG_H__ */
 diff --git a/drivers/soc/spacemit/jpu/jmm.h b/drivers/soc/spacemit/jpu/jmm.h
 new file mode 100644
-index 0000000000000..2b07173909070
+index 000000000000..2b0717390907
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jmm.h
 @@ -0,0 +1,570 @@
@@ -711,7 +711,7 @@ index 0000000000000..2b07173909070
 +#endif /* __CNM_JPU_MM_H__ */
 diff --git a/drivers/soc/spacemit/jpu/jpu.c b/drivers/soc/spacemit/jpu/jpu.c
 new file mode 100644
-index 0000000000000..3dbdb7b38e2d5
+index 000000000000..3dbdb7b38e2d
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jpu.c
 @@ -0,0 +1,1803 @@
@@ -2520,7 +2520,7 @@ index 0000000000000..3dbdb7b38e2d5
 +module_exit(jpu_exit);
 diff --git a/drivers/soc/spacemit/jpu/jpu.h b/drivers/soc/spacemit/jpu/jpu.h
 new file mode 100644
-index 0000000000000..09faa5cba2037
+index 000000000000..09faa5cba203
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jpu.h
 @@ -0,0 +1,91 @@
@@ -2617,7 +2617,7 @@ index 0000000000000..09faa5cba2037
 +#endif
 diff --git a/drivers/soc/spacemit/jpu/jpu_export.c b/drivers/soc/spacemit/jpu/jpu_export.c
 new file mode 100644
-index 0000000000000..641ee2ae2118d
+index 000000000000..641ee2ae2118
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jpu_export.c
 @@ -0,0 +1,302 @@
@@ -2925,7 +2925,7 @@ index 0000000000000..641ee2ae2118d
 +}
 diff --git a/drivers/soc/spacemit/jpu/jpu_export.h b/drivers/soc/spacemit/jpu/jpu_export.h
 new file mode 100644
-index 0000000000000..837d45afcb676
+index 000000000000..837d45afcb67
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jpu_export.h
 @@ -0,0 +1,7 @@
@@ -2938,7 +2938,7 @@ index 0000000000000..837d45afcb676
 +#endif /* __CNM_JPU_EXP_H__ */
 diff --git a/drivers/soc/spacemit/jpu/jpuconfig.h b/drivers/soc/spacemit/jpu/jpuconfig.h
 new file mode 100644
-index 0000000000000..f81b8dd5af82c
+index 000000000000..f81b8dd5af82
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/jpuconfig.h
 @@ -0,0 +1,43 @@
@@ -2987,7 +2987,7 @@ index 0000000000000..f81b8dd5af82c
 +#endif /* _JPU_CONFIG_H_ */
 diff --git a/drivers/soc/spacemit/jpu/regdefine.h b/drivers/soc/spacemit/jpu/regdefine.h
 new file mode 100644
-index 0000000000000..b36ef2ed8dd64
+index 000000000000..b36ef2ed8dd6
 --- /dev/null
 +++ b/drivers/soc/spacemit/jpu/regdefine.h
 @@ -0,0 +1,141 @@
@@ -3133,5 +3133,5 @@ index 0000000000000..b36ef2ed8dd64
 +#define AQUIRE_TIMEOUT_MS	100
 +#endif
 -- 
-2.53.0
+2.54.0
 

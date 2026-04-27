@@ -1,4 +1,4 @@
-From 820f62d0e4613ba9a97d83b86c8ddb5902052e40 Mon Sep 17 00:00:00 2001
+From e6d01a12d820e8551c180860628a5cea951c4735 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Tue, 9 Apr 2024 15:17:29 +0800
 Subject: [PATCH 0592/1239] display: Support no edid panel
@@ -11,7 +11,7 @@ Change-Id: Ie9665e61686ae955914dd64768e98ea36baa98f5
  3 files changed, 11 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
-index c61f6643a4ccc..1962132eda0c1 100644
+index c61f6643a4cc..1962132eda0c 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_hs450.dts
 @@ -211,6 +211,7 @@ &dpu_online2_hdmi {
@@ -23,7 +23,7 @@ index c61f6643a4ccc..1962132eda0c1 100644
  };
  
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index ce271347fc620..5373e4310d6a5 100644
+index ce271347fc62..5373e4310d6a 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -205,6 +205,7 @@ &dpu_online2_hdmi {
@@ -35,7 +35,7 @@ index ce271347fc620..5373e4310d6a5 100644
  };
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 40a35bb7da4c9..5bf9a7a7592a6 100644
+index 40a35bb7da4c..5bf9a7a7592a 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -69,6 +69,7 @@ struct spacemit_hdmi {
@@ -69,5 +69,5 @@ index 40a35bb7da4c9..5bf9a7a7592a6 100644
  	pm_runtime_get_sync(&pdev->dev);
  
 -- 
-2.53.0
+2.54.0
 

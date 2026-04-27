@@ -1,4 +1,4 @@
-From df9da76757b849dde3b6891b53b07cc056ab39f1 Mon Sep 17 00:00:00 2001
+From 322f86619855ff650aff140dc15bd1fd4d98c07f Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Sat, 2 Nov 2024 10:29:50 +0800
 Subject: [PATCH 1090/1239] riscv: Flush the icache of all cores related to the
@@ -31,7 +31,7 @@ Change-Id: I0a06c77a2a3c1aa7aaf1e930eaa774d405e6fddb
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index 795b2e815ac92..d92de11b8f74b 100644
+index 795b2e815ac9..d92de11b8f74 100644
 --- a/arch/riscv/kernel/sys_riscv.c
 +++ b/arch/riscv/kernel/sys_riscv.c
 @@ -63,7 +63,8 @@ SYSCALL_DEFINE3(riscv_flush_icache, uintptr_t, start, uintptr_t, end,
@@ -45,5 +45,5 @@ index 795b2e815ac92..d92de11b8f74b 100644
  	return 0;
  }
 -- 
-2.53.0
+2.54.0
 

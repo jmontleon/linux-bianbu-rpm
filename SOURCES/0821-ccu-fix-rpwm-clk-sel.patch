@@ -1,4 +1,4 @@
-From 0349d9bcd13b6d7cc999fba97f18a14c7f1a5aee Mon Sep 17 00:00:00 2001
+From 67e78e2d39dabd7a33c2348c61f1df86a7e58842 Mon Sep 17 00:00:00 2001
 From: weijinmei <jinmei.wei@space-t.cn>
 Date: Fri, 5 Jul 2024 10:32:38 +0800
 Subject: [PATCH 0821/1239] ccu: fix rpwm clk sel
@@ -9,7 +9,7 @@ Change-Id: If119c97eb70b72ce642e6e91c1a6c76daa6a59ef
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/spacemit/ccu-spacemit-k1x.c b/drivers/clk/spacemit/ccu-spacemit-k1x.c
-index cd8176a5ea796..5e562b7a527e3 100644
+index cd8176a5ea79..5e562b7a527e 100644
 --- a/drivers/clk/spacemit/ccu-spacemit-k1x.c
 +++ b/drivers/clk/spacemit/ccu-spacemit-k1x.c
 @@ -1124,7 +1124,7 @@ static SPACEMIT_CCU_GATE_NO_PARENT(rcan_bus_clk, "rcan_bus_clk", NULL,
@@ -22,5 +22,5 @@ index cd8176a5ea796..5e562b7a527e3 100644
  static SPACEMIT_CCU_DIV_MUX_GATE(rpwm_clk, "rpwm_clk", rpwm_parent_names,
  	BASE_TYPE_RCPU2, RCPU2_PWM_CLK_RST,
 -- 
-2.53.0
+2.54.0
 

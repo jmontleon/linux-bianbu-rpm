@@ -1,4 +1,4 @@
-From 718b4286b064608540159e3f5f9f850cce254aa1 Mon Sep 17 00:00:00 2001
+From f28460b49ab7cafb7bb6b6c71e31f346c89cc612 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 20:56:29 +0800
 Subject: [PATCH 0287/1239] add tcm_override_readl/writel for access tcm
@@ -15,7 +15,7 @@ Change-Id: I99790e18f637aa1b3bc2a177e7c51964ecb6ed44
  2 files changed, 39 insertions(+)
 
 diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 7c5250db0ed98..61f71963ca62c 100644
+index 7c5250db0ed9..61f71963ca62 100644
 --- a/arch/riscv/include/asm/csr.h
 +++ b/arch/riscv/include/asm/csr.h
 @@ -447,6 +447,7 @@
@@ -27,7 +27,7 @@ index 7c5250db0ed98..61f71963ca62c 100644
  
  /* Scalar Crypto Extension - Entropy */
 diff --git a/arch/riscv/include/asm/mmio.h b/arch/riscv/include/asm/mmio.h
-index 06cadfd7a237a..9d3fdbe534efe 100644
+index 06cadfd7a237..9d3fdbe534ef 100644
 --- a/arch/riscv/include/asm/mmio.h
 +++ b/arch/riscv/include/asm/mmio.h
 @@ -149,4 +149,42 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
@@ -74,5 +74,5 @@ index 06cadfd7a237a..9d3fdbe534efe 100644
 +
  #endif /* _ASM_RISCV_MMIO_H */
 -- 
-2.53.0
+2.54.0
 

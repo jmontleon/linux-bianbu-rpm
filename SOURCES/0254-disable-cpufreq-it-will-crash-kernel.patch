@@ -1,4 +1,4 @@
-From b147c59be7d0be33de63372826782d47d4a50ac6 Mon Sep 17 00:00:00 2001
+From 4ff9926cb1e1980177f104dfee2cf877ef561aca Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Thu, 21 Dec 2023 22:52:20 +0800
 Subject: [PATCH 0254/1239] disable cpufreq, it will crash kernel
@@ -9,7 +9,7 @@ Change-Id: Iddd554e79daa387611e5d24baa163e12cb06e96e
  1 file changed, 5 deletions(-)
 
 diff --git a/arch/riscv/configs/k1-x_evb_defconfig b/arch/riscv/configs/k1-x_evb_defconfig
-index 0b8c011893acf..3ff5ec87c184a 100644
+index 0b8c011893ac..3ff5ec87c184 100644
 --- a/arch/riscv/configs/k1-x_evb_defconfig
 +++ b/arch/riscv/configs/k1-x_evb_defconfig
 @@ -33,10 +33,6 @@ CONFIG_HZ_100=y
@@ -32,5 +32,5 @@ index 0b8c011893acf..3ff5ec87c184a 100644
  CONFIG_USB_STORAGE=y
  CONFIG_USB_DWC3=y
 -- 
-2.53.0
+2.54.0
 

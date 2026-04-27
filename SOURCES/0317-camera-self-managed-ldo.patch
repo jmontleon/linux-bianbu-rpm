@@ -1,4 +1,4 @@
-From 388cc5e9164876ff117a102ac31c50913d156fc7 Mon Sep 17 00:00:00 2001
+From ab83bc240b9303ff216a0682e2990c2fcce71890 Mon Sep 17 00:00:00 2001
 From: lizhirong <zhirong.li@spacemit.com>
 Date: Tue, 2 Jan 2024 10:16:04 +0800
 Subject: [PATCH 0317/1239] camera self managed ldo
@@ -10,7 +10,7 @@ Change-Id: Iaccd80c771ebf43d0f062b081c7a46b45ac44579
  2 files changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/platform/spacemit/camera/Makefile b/drivers/media/platform/spacemit/camera/Makefile
-index 1bb84e6b437ad..f5e8a1d233b40 100755
+index 1bb84e6b437a..f5e8a1d233b4 100755
 --- a/drivers/media/platform/spacemit/camera/Makefile
 +++ b/drivers/media/platform/spacemit/camera/Makefile
 @@ -2,7 +2,6 @@
@@ -22,7 +22,7 @@ index 1bb84e6b437ad..f5e8a1d233b40 100755
  
  obj-$(CONFIG_SPACEMIT_K1X_CAMERA_V2) += cam_plat_v2.o
 diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index fc3f70ac129d2..cce34e4ca3990 100755
+index fc3f70ac129d..cce34e4ca399 100755
 --- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 +++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
 @@ -1256,8 +1256,8 @@ static int camsnr_of_parse(struct cam_sensor_device *sensor)
@@ -48,5 +48,5 @@ index fc3f70ac129d2..cce34e4ca3990 100755
  	sensor->pwdn = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_HIGH);
  	if (IS_ERR(sensor->pwdn)) {
 -- 
-2.53.0
+2.54.0
 

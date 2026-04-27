@@ -1,4 +1,4 @@
-From 4fb054f623d3e96a381973c0315d28b67f1586aa Mon Sep 17 00:00:00 2001
+From 1383e7a72112a537043a06002d10bbda1c33cda6 Mon Sep 17 00:00:00 2001
 From: huzhen <george.hu@spacemit.com>
 Date: Tue, 14 May 2024 14:41:47 +0800
 Subject: [PATCH 0674/1239] qspi: fix the bug the actual clk frequency not
@@ -15,7 +15,7 @@ Change-Id: I7d71bb38407b6010e1847dae4c7aa9ee6dc2f88d
  1 file changed, 13 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/spi/spi-k1x-qspi.c b/drivers/spi/spi-k1x-qspi.c
-index b517b96cd9996..467b6fa531459 100644
+index b517b96cd999..467b6fa53145 100644
 --- a/drivers/spi/spi-k1x-qspi.c
 +++ b/drivers/spi/spi-k1x-qspi.c
 @@ -402,7 +402,9 @@ static int qspi_set_func_clk(struct k1x_qspi *qspi)
@@ -81,5 +81,5 @@ index b517b96cd9996..467b6fa531459 100644
  	/* rest qspi */
  	qspi_reset(qspi);
 -- 
-2.53.0
+2.54.0
 

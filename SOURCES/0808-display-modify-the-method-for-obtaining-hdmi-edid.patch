@@ -1,4 +1,4 @@
-From ac065050f0fe16ee66aa04af63b5ffa738198824 Mon Sep 17 00:00:00 2001
+From bd898cac49fe5c5499581904bedf5be79a2752ee Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 31 May 2024 17:27:13 +0800
 Subject: [PATCH 0808/1239] display: modify the method for obtaining hdmi edid
@@ -10,7 +10,7 @@ Change-Id: I2426563e402900043340d4ad7e6a68884e5211eb
  2 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
-index db98c0813574c..7bd443f976173 100644
+index db98c0813574..7bd443f97617 100644
 --- a/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 +++ b/arch/riscv/boot/dts/spacemit/k1-x_kx312.dts
 @@ -212,7 +212,6 @@ &dpu_online2_hdmi {
@@ -22,7 +22,7 @@ index db98c0813574c..7bd443f976173 100644
  };
  
 diff --git a/drivers/gpu/drm/spacemit/spacemit_hdmi.c b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
-index 5745275bbb7b6..7839300311fe2 100644
+index 5745275bbb7b..7839300311fe 100644
 --- a/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 +++ b/drivers/gpu/drm/spacemit/spacemit_hdmi.c
 @@ -40,7 +40,7 @@
@@ -80,5 +80,5 @@ index 5745275bbb7b6..7839300311fe2 100644
  	for(i = 0; i < EDID_LENGTH; i += 4){
  		DRM_INFO("EDID 0x%x: 0x%x, 0x%x, 0x%x, 0x%x\r\n", i,
 -- 
-2.53.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 0014fed52afcaeb4df8cfe9e72c8c1b5d882e4bd Mon Sep 17 00:00:00 2001
+From 443ff7cf3bc25786eeece6d105f74a83dd53de23 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Nov 2024 09:56:48 +0800
 Subject: [PATCH 1122/1239] usb: dwc3: modify prototype of device remove
@@ -10,7 +10,7 @@ Change-Id: I617f27e9401bb83a7393b7239e2ea3a181a49048
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-spacemit.c b/drivers/usb/dwc3/dwc3-spacemit.c
-index 6dc59930683d6..d5f5339aaeae3 100644
+index 6dc59930683d..d5f5339aaeae 100644
 --- a/drivers/usb/dwc3/dwc3-spacemit.c
 +++ b/drivers/usb/dwc3/dwc3-spacemit.c
 @@ -349,7 +349,7 @@ static int dwc3_spacemit_probe(struct platform_device *pdev)
@@ -32,5 +32,5 @@ index 6dc59930683d6..d5f5339aaeae3 100644
  
  static const struct dwc3_spacemit_driverdata spacemit_k1pro_drvdata = {
 -- 
-2.53.0
+2.54.0
 

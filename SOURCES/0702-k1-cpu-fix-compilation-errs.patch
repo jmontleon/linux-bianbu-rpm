@@ -1,4 +1,4 @@
-From ca6aff42c89ceea95198a2cda40b19ade10dc0ec Mon Sep 17 00:00:00 2001
+From f7bc3ad509b21edd9d6b8319cbeb3092ba7a5482 Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 3 Jun 2024 09:58:09 +0800
 Subject: [PATCH 0702/1239] k1: cpu: fix compilation errs
@@ -14,7 +14,7 @@ Change-Id: I28bb2e68a9cd2f5227fa71bc489de27bb4b03463
  2 files changed, 5 insertions(+)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index a8e19575511b5..c0a2f0da46b49 100644
+index a8e19575511b..c0a2f0da46b4 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
 @@ -561,6 +561,10 @@ void sbi_shutdown(void);
@@ -29,7 +29,7 @@ index a8e19575511b5..c0a2f0da46b49 100644
  				unsigned long start,
  				unsigned long size,
 diff --git a/arch/riscv/kernel/cpu-hotplug.c b/arch/riscv/kernel/cpu-hotplug.c
-index 3679becae6ace..16c6b68981d15 100644
+index 3679becae6ac..16c6b68981d1 100644
 --- a/arch/riscv/kernel/cpu-hotplug.c
 +++ b/arch/riscv/kernel/cpu-hotplug.c
 @@ -15,6 +15,7 @@
@@ -41,5 +41,5 @@ index 3679becae6ace..16c6b68981d15 100644
  bool cpu_has_hotplug(unsigned int cpu)
  {
 -- 
-2.53.0
+2.54.0
 

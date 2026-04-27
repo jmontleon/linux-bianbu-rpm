@@ -1,4 +1,4 @@
-From 7103331a44d56d343b5869534671b4944d2af6d0 Mon Sep 17 00:00:00 2001
+From 87f15e801fab83a678939ac42a25e97f21f064e7 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 22 Feb 2024 09:42:53 +0800
 Subject: [PATCH 0444/1239] mmc: sdhci-of-k1x: improve the sd tuning process
@@ -9,7 +9,7 @@ Change-Id: I9185214105854ba34bd733834bfb9fa0206b999b
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-k1x.c b/drivers/mmc/host/sdhci-of-k1x.c
-index 1291b714679f3..14185718c1479 100644
+index 1291b714679f..14185718c147 100644
 --- a/drivers/mmc/host/sdhci-of-k1x.c
 +++ b/drivers/mmc/host/sdhci-of-k1x.c
 @@ -761,7 +761,7 @@ static int spacemit_send_tuning_cmd(struct sdhci_host *host, u32 opcode,
@@ -31,5 +31,5 @@ index 1291b714679f3..14185718c1479 100644
  		if ((max - min) >= rxtuning->window_limit) {
  			window->max_delay = max;
 -- 
-2.53.0
+2.54.0
 

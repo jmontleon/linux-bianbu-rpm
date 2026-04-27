@@ -1,4 +1,4 @@
-From 87bda1256c43b9551a9297f77d40d4b4e8ab2e45 Mon Sep 17 00:00:00 2001
+From 6e6424910e8c962544a44a4d6e24a1bee6bddcaf Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Tue, 6 Aug 2024 16:35:24 +0800
 Subject: [PATCH 0922/1239] k1x_udc_core: fix global variable and extcon
@@ -14,7 +14,7 @@ Change-Id: I533f80d909d99791169c50a956967d4c6da437c3
  2 files changed, 23 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/k1x_ci_udc.h b/drivers/usb/gadget/udc/k1x_ci_udc.h
-index 0eedd4de92d21..629f7bbc7eeb8 100644
+index 0eedd4de92d2..629f7bbc7eeb 100644
 --- a/drivers/usb/gadget/udc/k1x_ci_udc.h
 +++ b/drivers/usb/gadget/udc/k1x_ci_udc.h
 @@ -174,7 +174,7 @@ struct mv_udc {
@@ -27,7 +27,7 @@ index 0eedd4de92d21..629f7bbc7eeb8 100644
  	int				irq;
  
 diff --git a/drivers/usb/gadget/udc/k1x_udc_core.c b/drivers/usb/gadget/udc/k1x_udc_core.c
-index 7362f4ea6ca6f..514f12e2baec8 100644
+index 7362f4ea6ca6..514f12e2baec 100644
 --- a/drivers/usb/gadget/udc/k1x_udc_core.c
 +++ b/drivers/usb/gadget/udc/k1x_udc_core.c
 @@ -59,13 +59,10 @@
@@ -196,5 +196,5 @@ index 7362f4ea6ca6f..514f12e2baec8 100644
  	if (!udc)
  		return;
 -- 
-2.53.0
+2.54.0
 
