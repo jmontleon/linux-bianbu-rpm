@@ -1,4 +1,4 @@
-From 851ab4d6085c38eb45d7bf10149d55a0121466db Mon Sep 17 00:00:00 2001
+From 51b2d315f46415031d2b5acc96d42ca163cb6690 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
 Subject: [PATCH 0121/1239] mmc: support spacemit k1x platform
@@ -243,10 +243,10 @@ index 860378bea557..9269cb8208dd 100644
  }
  
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 3e7d9437477c..94cb2035bf8b 100644
+index 49f568f9a7d3..2c2954fb8285 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
-@@ -1180,6 +1180,11 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1192,6 +1192,11 @@ static int mmc_select_hs400(struct mmc_card *card)
  	      host->ios.bus_width == MMC_BUS_WIDTH_8))
  		return 0;
  
@@ -258,7 +258,7 @@ index 3e7d9437477c..94cb2035bf8b 100644
  	/* Switch card to HS mode */
  	val = EXT_CSD_TIMING_HS;
  	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-@@ -1249,6 +1254,11 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1261,6 +1266,11 @@ static int mmc_select_hs400(struct mmc_card *card)
  	if (host->ops->hs400_complete)
  		host->ops->hs400_complete(host);
  
@@ -270,7 +270,7 @@ index 3e7d9437477c..94cb2035bf8b 100644
  	err = mmc_switch_status(card, true);
  	if (err)
  		goto out_err;
-@@ -1307,6 +1317,10 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
+@@ -1319,6 +1329,10 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
  	if (err)
  		goto out_err;
  
@@ -281,7 +281,7 @@ index 3e7d9437477c..94cb2035bf8b 100644
  	/* Switch HS to HS200 */
  	val = EXT_CSD_TIMING_HS200 |
  	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
-@@ -1438,6 +1452,9 @@ static int mmc_select_hs400es(struct mmc_card *card)
+@@ -1450,6 +1464,9 @@ static int mmc_select_hs400es(struct mmc_card *card)
  
  	/* Set host controller to HS400 timing and frequency */
  	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
@@ -291,7 +291,7 @@ index 3e7d9437477c..94cb2035bf8b 100644
  
  	/* Controller enable enhanced strobe function */
  	host->ios.enhanced_strobe = true;
-@@ -2197,14 +2214,28 @@ static int mmc_suspend(struct mmc_host *host)
+@@ -2209,14 +2226,28 @@ static int mmc_suspend(struct mmc_host *host)
  static int _mmc_resume(struct mmc_host *host)
  {
  	int err = 0;

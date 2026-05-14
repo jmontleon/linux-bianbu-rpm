@@ -1,4 +1,4 @@
-From a33c32df70245417861853a073ab6a813eaff806 Mon Sep 17 00:00:00 2001
+From 1892b916e2b8de56e3a38e5785f9f85619091ac9 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:12:48 +0800
 Subject: [PATCH 0506/1239] mmc: sdhci-of-k1x: optimize sdcard tuning procedure
@@ -42,10 +42,10 @@ index 9269cb8208dd..3de171ff67dd 100644
  	if (err) {
  		pr_debug("%s: Signal voltage switch failed, "
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 94cb2035bf8b..7f15a01731c3 100644
+index 2c2954fb8285..10d4f90e11e2 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
-@@ -1180,11 +1180,6 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1192,11 +1192,6 @@ static int mmc_select_hs400(struct mmc_card *card)
  	      host->ios.bus_width == MMC_BUS_WIDTH_8))
  		return 0;
  
@@ -57,7 +57,7 @@ index 94cb2035bf8b..7f15a01731c3 100644
  	/* Switch card to HS mode */
  	val = EXT_CSD_TIMING_HS;
  	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-@@ -1254,11 +1249,6 @@ static int mmc_select_hs400(struct mmc_card *card)
+@@ -1266,11 +1261,6 @@ static int mmc_select_hs400(struct mmc_card *card)
  	if (host->ops->hs400_complete)
  		host->ops->hs400_complete(host);
  
@@ -69,7 +69,7 @@ index 94cb2035bf8b..7f15a01731c3 100644
  	err = mmc_switch_status(card, true);
  	if (err)
  		goto out_err;
-@@ -1317,10 +1307,6 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
+@@ -1329,10 +1319,6 @@ int mmc_hs400_to_hs200(struct mmc_card *card)
  	if (err)
  		goto out_err;
  
@@ -80,7 +80,7 @@ index 94cb2035bf8b..7f15a01731c3 100644
  	/* Switch HS to HS200 */
  	val = EXT_CSD_TIMING_HS200 |
  	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
-@@ -1452,9 +1438,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
+@@ -1464,9 +1450,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
  
  	/* Set host controller to HS400 timing and frequency */
  	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
