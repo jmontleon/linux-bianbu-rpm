@@ -1,4 +1,4 @@
-From ace95f061142449584f73e78b0c2f39fde34c061 Mon Sep 17 00:00:00 2001
+From c5febe65991dc03a0e1021a3e6666bbbcbdfaadb Mon Sep 17 00:00:00 2001
 From: Pan Junzhong <junzhong.pan@spacemit.com>
 Date: Wed, 10 Jan 2024 20:19:04 +0800
 Subject: [PATCH 0370/1239] usb: add spacemit k1x dma mask setting
@@ -10,7 +10,7 @@ Change-Id: Iad0daadc587c5799ac7d1c010b5b5f589bc6bada
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 202cef35c1e0..d6b26772bd32 100644
+index 73316399f96e..e97e34961af8 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
 @@ -2285,6 +2285,12 @@ int dwc3_core_probe(const struct dwc3_probe_data *data)
