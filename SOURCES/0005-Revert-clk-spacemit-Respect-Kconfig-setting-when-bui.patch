@@ -1,0 +1,149 @@
+From 9f1d0bc61e0bc2dac75ad51efdf94068b6162ffb Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Thu, 26 Feb 2026 21:36:34 -0500
+Subject: [PATCH 0005/1240] Revert "clk: spacemit: Respect Kconfig setting when
+ building modules"
+
+This reverts commit e9ed7237b8249227943c5d15240b36bdcad26602.
+---
+ drivers/clk/spacemit/Makefile     | 9 ++-------
+ drivers/clk/spacemit/ccu-k1.c     | 1 -
+ drivers/clk/spacemit/ccu_common.c | 6 ------
+ drivers/clk/spacemit/ccu_ddn.c    | 1 -
+ drivers/clk/spacemit/ccu_mix.c    | 9 ---------
+ drivers/clk/spacemit/ccu_pll.c    | 1 -
+ 6 files changed, 2 insertions(+), 25 deletions(-)
+ delete mode 100644 drivers/clk/spacemit/ccu_common.c
+
+diff --git a/drivers/clk/spacemit/Makefile b/drivers/clk/spacemit/Makefile
+index ad2bf315109b..5ec6da61db98 100644
+--- a/drivers/clk/spacemit/Makefile
++++ b/drivers/clk/spacemit/Makefile
+@@ -1,10 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-$(CONFIG_SPACEMIT_CCU)	+= spacemit-ccu.o
+-spacemit-ccu-y			+= ccu_common.o
+-spacemit-ccu-y			+= ccu_pll.o
+-spacemit-ccu-y			+= ccu_mix.o
+-spacemit-ccu-y			+= ccu_ddn.o
+-
+-obj-$(CONFIG_SPACEMIT_K1_CCU)	+= spacemit-ccu-k1.o
++obj-$(CONFIG_SPACEMIT_K1_CCU)	= spacemit-ccu-k1.o
++spacemit-ccu-k1-y		= ccu_pll.o ccu_mix.o ccu_ddn.o
+ spacemit-ccu-k1-y		+= ccu-k1.o
+diff --git a/drivers/clk/spacemit/ccu-k1.c b/drivers/clk/spacemit/ccu-k1.c
+index 01d9485b615d..4761bc1e3b6e 100644
+--- a/drivers/clk/spacemit/ccu-k1.c
++++ b/drivers/clk/spacemit/ccu-k1.c
+@@ -1204,7 +1204,6 @@ static struct platform_driver k1_ccu_driver = {
+ };
+ module_platform_driver(k1_ccu_driver);
+ 
+-MODULE_IMPORT_NS("CLK_SPACEMIT");
+ MODULE_DESCRIPTION("SpacemiT K1 CCU driver");
+ MODULE_AUTHOR("Haylen Chu <heylenay@4d2.org>");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/spacemit/ccu_common.c b/drivers/clk/spacemit/ccu_common.c
+deleted file mode 100644
+index 4412c4104dab..000000000000
+--- a/drivers/clk/spacemit/ccu_common.c
++++ /dev/null
+@@ -1,6 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-
+-#include <linux/module.h>
+-
+-MODULE_DESCRIPTION("SpacemiT CCU common clock driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
+index b5540e0781ff..5b16e273bee5 100644
+--- a/drivers/clk/spacemit/ccu_ddn.c
++++ b/drivers/clk/spacemit/ccu_ddn.c
+@@ -84,4 +84,3 @@ const struct clk_ops spacemit_ccu_ddn_ops = {
+ 	.determine_rate = ccu_ddn_determine_rate,
+ 	.set_rate	= ccu_ddn_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_ddn_ops, "CLK_SPACEMIT");
+diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
+index 67f8b12b4f5b..7b7990875372 100644
+--- a/drivers/clk/spacemit/ccu_mix.c
++++ b/drivers/clk/spacemit/ccu_mix.c
+@@ -198,28 +198,24 @@ const struct clk_ops spacemit_ccu_gate_ops = {
+ 	.enable		= ccu_gate_enable,
+ 	.is_enabled	= ccu_gate_is_enabled,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_gate_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_factor_ops = {
+ 	.determine_rate = ccu_factor_determine_rate,
+ 	.recalc_rate	= ccu_factor_recalc_rate,
+ 	.set_rate	= ccu_factor_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_factor_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_mux_ops = {
+ 	.determine_rate = ccu_mix_determine_rate,
+ 	.get_parent	= ccu_mux_get_parent,
+ 	.set_parent	= ccu_mux_set_parent,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_mux_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_div_ops = {
+ 	.determine_rate = ccu_mix_determine_rate,
+ 	.recalc_rate	= ccu_div_recalc_rate,
+ 	.set_rate	= ccu_mix_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_div_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_factor_gate_ops = {
+ 	.disable	= ccu_gate_disable,
+@@ -230,7 +226,6 @@ const struct clk_ops spacemit_ccu_factor_gate_ops = {
+ 	.recalc_rate	= ccu_factor_recalc_rate,
+ 	.set_rate	= ccu_factor_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_factor_gate_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_mux_gate_ops = {
+ 	.disable	= ccu_gate_disable,
+@@ -241,7 +236,6 @@ const struct clk_ops spacemit_ccu_mux_gate_ops = {
+ 	.get_parent	= ccu_mux_get_parent,
+ 	.set_parent	= ccu_mux_set_parent,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_mux_gate_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_div_gate_ops = {
+ 	.disable	= ccu_gate_disable,
+@@ -252,7 +246,6 @@ const struct clk_ops spacemit_ccu_div_gate_ops = {
+ 	.recalc_rate	= ccu_div_recalc_rate,
+ 	.set_rate	= ccu_mix_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_div_gate_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_mux_div_gate_ops = {
+ 	.disable	= ccu_gate_disable,
+@@ -266,7 +259,6 @@ const struct clk_ops spacemit_ccu_mux_div_gate_ops = {
+ 	.recalc_rate	= ccu_div_recalc_rate,
+ 	.set_rate	= ccu_mix_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_mux_div_gate_ops, "CLK_SPACEMIT");
+ 
+ const struct clk_ops spacemit_ccu_mux_div_ops = {
+ 	.get_parent	= ccu_mux_get_parent,
+@@ -276,4 +268,3 @@ const struct clk_ops spacemit_ccu_mux_div_ops = {
+ 	.recalc_rate	= ccu_div_recalc_rate,
+ 	.set_rate	= ccu_mix_set_rate,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_mux_div_ops, "CLK_SPACEMIT");
+diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
+index 76d0244873d8..d92f0dae65a4 100644
+--- a/drivers/clk/spacemit/ccu_pll.c
++++ b/drivers/clk/spacemit/ccu_pll.c
+@@ -157,4 +157,3 @@ const struct clk_ops spacemit_ccu_pll_ops = {
+ 	.determine_rate = ccu_pll_determine_rate,
+ 	.is_enabled	= ccu_pll_is_enabled,
+ };
+-EXPORT_SYMBOL_NS_GPL(spacemit_ccu_pll_ops, "CLK_SPACEMIT");
+-- 
+2.54.0
+

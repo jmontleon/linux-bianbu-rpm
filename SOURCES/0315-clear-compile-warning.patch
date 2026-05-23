@@ -1,27 +1,26 @@
-From f8dbb2bf9cd7fa19721a0f9d605c2f2da320596c Mon Sep 17 00:00:00 2001
+From 4db1d78a8eeab53f314f51d56fa04024c3262d4f Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
-Date: Sun, 31 Dec 2023 12:16:34 +0800
-Subject: [PATCH 0315/1239] clear compile warning
+Date: Sun, 31 Dec 2023 12:16:11 +0800
+Subject: [PATCH 0315/1240] clear compile warning
 
-Change-Id: I7b4081af91167cac3465c3bc69a361b5cbbce578
+Change-Id: Iabb98c4774ae65959ee827ef9a1bf47f4e4afbcf
 ---
- drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/crypto/spacemit/spacemit_ce_engine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-index c44ec6e736e6..fc3f70ac129d 100755
---- a/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-+++ b/drivers/media/platform/spacemit/camera/cam_sensor/cam_sensor.c
-@@ -641,8 +641,7 @@ static int cam_sensor_read(struct cam_i2c_data *data,
- err:
- 	cam_info("%s: Failed reading register 0x%02x!", __func__, reg);
- #if 1
--	int i;
--	for (i=0; i<1000; i++) {
-+	for (int i=0; i<1000; i++) {
- 		msleep(1000);
- 		if (i % 60 == 0)
- 			cam_info("sleep %ds", i);
+diff --git a/drivers/crypto/spacemit/spacemit_ce_engine.c b/drivers/crypto/spacemit/spacemit_ce_engine.c
+index 6269bb58f508..23fce0365a95 100755
+--- a/drivers/crypto/spacemit/spacemit_ce_engine.c
++++ b/drivers/crypto/spacemit/spacemit_ce_engine.c
+@@ -857,7 +857,7 @@ int spacemit_aes_cbc_decrypt(int index, const unsigned char *ct,unsigned char *p
+ }
+ EXPORT_SYMBOL(spacemit_aes_cbc_decrypt);
+ 
+-static void engine_reg_dump(int index)
++__maybe_unused static void engine_reg_dump(int index)
+ {
+         uint32_t val;
+         printk("======> engine[%d] reg dump start! <======\n", index);
 -- 
 2.54.0
 

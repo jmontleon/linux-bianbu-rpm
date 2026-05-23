@@ -1,0 +1,27 @@
+From fb832eb3e512f2dc283408a46700e29787b8b222 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jmontleo@redhat.com>
+Date: Sat, 23 May 2026 10:50:33 -0400
+Subject: [PATCH 0001/1240] Revert "clk: spacemit: ccu_mix: fix inverted
+ condition in ccu_mix_trigger_fc()"
+
+This reverts commit da99d0302d3ccccfb13c69e663bf8eae698b9562.
+---
+ drivers/clk/spacemit/ccu_mix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/spacemit/ccu_mix.c b/drivers/clk/spacemit/ccu_mix.c
+index 9a3fc9ea1ce5..67f8b12b4f5b 100644
+--- a/drivers/clk/spacemit/ccu_mix.c
++++ b/drivers/clk/spacemit/ccu_mix.c
+@@ -69,7 +69,7 @@ static int ccu_mix_trigger_fc(struct clk_hw *hw)
+ 	struct ccu_common *common = hw_to_ccu_common(hw);
+ 	unsigned int val;
+ 
+-	if (!common->reg_fc)
++	if (common->reg_fc)
+ 		return 0;
+ 
+ 	ccu_update(common, fc, common->mask_fc, common->mask_fc);
+-- 
+2.54.0
+
