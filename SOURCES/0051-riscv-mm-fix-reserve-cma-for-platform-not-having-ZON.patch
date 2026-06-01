@@ -1,4 +1,4 @@
-From 233a1be6e60ad5b5e01f1a40095572a8b5233e59 Mon Sep 17 00:00:00 2001
+From 0df507bf3dd2a150bb699147170565e33ba35b76 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Mon, 22 May 2023 11:09:59 +0800
 Subject: [PATCH 0051/1240] riscv: mm: fix reserve cma for platform not having
@@ -27,7 +27,7 @@ index fadec20b87a8..c901ae6f0a84 100644
  config RUSTC_SUPPORTS_RISCV
  	def_bool y
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index d85efe74a4b6..7c7482356ff5 100644
+index ee40ca01ac66..5477609895b3 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -314,7 +314,12 @@ static void __init setup_bootmem(void)

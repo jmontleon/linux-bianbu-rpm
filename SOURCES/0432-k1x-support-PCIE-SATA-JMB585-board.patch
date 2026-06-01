@@ -1,4 +1,4 @@
-From 2e127d49c1c4b6f715368ba23a71578911af8b73 Mon Sep 17 00:00:00 2001
+From e6cbd8d040c2fc1cd01218e0ac4a5d9b871f5dd3 Mon Sep 17 00:00:00 2001
 From: wancong <wancong@spacemit.com>
 Date: Thu, 1 Feb 2024 13:52:51 +0800
 Subject: [PATCH 0432/1240] k1x: support PCIE-SATA JMB585 board
@@ -81,10 +81,10 @@ index 7e72cda06519..b79f883ecc7c 100644
  CONFIG_MD_LINEAR=y
  CONFIG_BCACHE=y
 diff --git a/drivers/ata/libata-pmp.c b/drivers/ata/libata-pmp.c
-index 57023324a56f..dd4893e139f1 100644
+index 48ac09d9031e..982bad2e2bf1 100644
 --- a/drivers/ata/libata-pmp.c
 +++ b/drivers/ata/libata-pmp.c
-@@ -446,10 +446,11 @@ static void sata_pmp_quirks(struct ata_port *ap)
+@@ -457,10 +457,11 @@ static void sata_pmp_quirks(struct ata_port *ap)
  		 * otherwise.  Don't try hard to recover it.
  		 */
  		ap->pmp_link[ap->nr_pmp_links - 1].flags |= ATA_LFLAG_NO_RETRY;

@@ -1,4 +1,4 @@
-From b12d221bdde84f2eef79becc5857240a2662010a Mon Sep 17 00:00:00 2001
+From ffa881d505a1ca220b902c29589cf652506c4391 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Wed, 27 Dec 2023 17:01:21 +0800
 Subject: [PATCH 0297/1240] support non-uniform address mapping between
@@ -365,7 +365,7 @@ index 87ba95d003f6..3706fc179110 100644
  		};
  	};
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index c7cc77db9c4c..d8cbb110a21c 100644
+index ceb3b3698534..c08f97012cb5 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -294,7 +294,12 @@ static void __init setup_bootmem(void)

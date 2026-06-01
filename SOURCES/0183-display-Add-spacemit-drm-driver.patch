@@ -1,4 +1,4 @@
-From 60a8624709c5b6a874eaaf6b7415d3209c7c5c62 Mon Sep 17 00:00:00 2001
+From 0beb1ed28a11d42bfb39bceb0f91f054f10e6212 Mon Sep 17 00:00:00 2001
 From: lilijun <lijun.li@spacemit.com>
 Date: Fri, 17 Nov 2023 09:42:35 +0800
 Subject: [PATCH 0183/1240] display: Add spacemit drm driver
@@ -438,10 +438,10 @@ index ed85d0ceee3b..879dbe3daa9b 100644
  	tristate "DRM Support for Hyper-V synthetic video device"
  	depends on DRM && PCI && HYPERV_VMBUS
 diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 742f0d590c5a..8719cc808642 100644
+index b248e64587ed..29872494af99 100644
 --- a/drivers/gpu/drm/Makefile
 +++ b/drivers/gpu/drm/Makefile
-@@ -234,6 +234,7 @@ obj-y			+= solomon/
+@@ -235,6 +235,7 @@ obj-y			+= solomon/
  obj-$(CONFIG_DRM_SPRD) += sprd/
  obj-$(CONFIG_DRM_LOONGSON) += loongson/
  obj-$(CONFIG_DRM_POWERVR) += imagination/

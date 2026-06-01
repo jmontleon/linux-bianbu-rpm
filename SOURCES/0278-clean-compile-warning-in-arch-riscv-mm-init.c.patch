@@ -1,4 +1,4 @@
-From dc9ac43bc0aeb6c7dc79ac0f5d4f767883f2d91b Mon Sep 17 00:00:00 2001
+From f5015a4d180a814fd9f7bd3f034adaaaa8f5a3df Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 17:34:46 +0800
 Subject: [PATCH 0278/1240] clean compile warning in arch/riscv/mm/init.c
@@ -9,7 +9,7 @@ Change-Id: I6465e56523ffb3ede59a3cafc7994aed3226843d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 163cda485c34..c7cc77db9c4c 100644
+index b4a168c775f7..ceb3b3698534 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -317,7 +317,7 @@ static void __init setup_bootmem(void)

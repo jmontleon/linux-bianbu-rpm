@@ -1,4 +1,4 @@
-From 3b5ef78a3c2779e3811c563c24e9910dd4635b80 Mon Sep 17 00:00:00 2001
+From 87c3f0fcf1623b15eff73c4c82217f5246a3432b Mon Sep 17 00:00:00 2001
 From: lijuan <juan.li@spacemit.com>
 Date: Mon, 14 Oct 2024 18:10:42 +0800
 Subject: [PATCH 1042/1240] blk: add request completion flags for debug
@@ -10,7 +10,7 @@ Change-Id: Ib84003e68d537173a9d550071d43eab587d10fb6
  2 files changed, 3 insertions(+)
 
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 4ebb92014eae..80d91b4a776f 100644
+index ab05c5c9e6ae..bd159fbe05da 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
 @@ -1286,6 +1286,7 @@ static void blk_mq_complete_send_ipi(struct request *rq)
@@ -21,7 +21,7 @@ index 4ebb92014eae..80d91b4a776f 100644
  }
  
  static void blk_mq_raise_softirq(struct request *rq)
-@@ -3569,6 +3570,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
+@@ -3588,6 +3589,7 @@ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
  	}
  
  	WRITE_ONCE(rq->state, MQ_RQ_IDLE);

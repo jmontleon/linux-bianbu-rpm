@@ -1,4 +1,4 @@
-From a73a9e759eca34db412dbe3f0241b433107fc137 Mon Sep 17 00:00:00 2001
+From ab3569375c0e2f172fc399c96515c6f1a6396125 Mon Sep 17 00:00:00 2001
 From: zhangmeng <zhangmeng.kevin@spacemit.com>
 Date: Tue, 26 Dec 2023 11:01:54 +0800
 Subject: [PATCH 0274/1240] reserved 2GB~4GB area from memory space, it should
@@ -27,7 +27,7 @@ index 8b1dcf6e6a4a..5532c0a65e3e 100644
  
  	soc {
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 7c7482356ff5..163cda485c34 100644
+index 5477609895b3..b4a168c775f7 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
 @@ -315,7 +315,12 @@ static void __init setup_bootmem(void)
