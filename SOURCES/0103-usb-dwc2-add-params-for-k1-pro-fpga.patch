@@ -1,4 +1,4 @@
-From 117a62e8f077d088011a6675bed85d26e24d0c1a Mon Sep 17 00:00:00 2001
+From 5a409ab8659aceaf16e7b584379addb1fdd4ebac Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Thu, 27 Jul 2023 11:43:56 +0800
 Subject: [PATCH 0103/1240] usb: dwc2: add params for k1-pro fpga
@@ -11,10 +11,10 @@ Change-Id: Iedbfca6f694c798f1e35c345460ce41727cd32f0
  3 files changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 30eb8506617c..b7dba3ad4a34 100644
+index e34aaa59a3d8..8e3c07e28c28 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -5143,9 +5143,9 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
+@@ -5145,9 +5145,9 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
  
  	/* Set device flags indicating whether the HCD supports DMA */
  	if (hsotg->params.host_dma) {
