@@ -1,4 +1,4 @@
-From 4d9f1227b4be54c9a22a0038535bbbb08f568650 Mon Sep 17 00:00:00 2001
+From c0a89d2300788e61e82157f373276c7fa5ed787d Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Tue, 12 Mar 2024 17:12:48 +0800
 Subject: [PATCH 0507/1241] mmc: sdhci-of-k1x: optimize sdcard tuning procedure
@@ -42,7 +42,7 @@ index 9269cb8208dd..3de171ff67dd 100644
  	if (err) {
  		pr_debug("%s: Signal voltage switch failed, "
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 2c2954fb8285..10d4f90e11e2 100644
+index 882ca671310a..f24b5fa5daab 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
 @@ -1192,11 +1192,6 @@ static int mmc_select_hs400(struct mmc_card *card)
@@ -80,7 +80,7 @@ index 2c2954fb8285..10d4f90e11e2 100644
  	/* Switch HS to HS200 */
  	val = EXT_CSD_TIMING_HS200 |
  	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
-@@ -1464,9 +1450,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
+@@ -1466,9 +1452,6 @@ static int mmc_select_hs400es(struct mmc_card *card)
  
  	/* Set host controller to HS400 timing and frequency */
  	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
@@ -770,7 +770,7 @@ index 1968ec44de57..4abbb4e89b68 100644
  #ifdef CONFIG_SYSFS
  		for (i = 0; i < ARRAY_SIZE(sdhci_sysfs_files); i++) {
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index f4797bf4de8f..6068f2c9f0e2 100644
+index 205ba1eb7e07..e16b3facf5a9 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,15 +1733,6 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -917,7 +917,7 @@ index f4797bf4de8f..6068f2c9f0e2 100644
  
  		if (host->ops->irq) {
  			intmask = host->ops->irq(host, intmask);
-@@ -4744,11 +4649,6 @@ int sdhci_setup_host(struct sdhci_host *host)
+@@ -4745,11 +4650,6 @@ int sdhci_setup_host(struct sdhci_host *host)
  	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
  

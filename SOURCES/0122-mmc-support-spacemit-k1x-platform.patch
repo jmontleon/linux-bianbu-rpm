@@ -1,4 +1,4 @@
-From e8ddd9d158760608367e23c69f7bc17c44d0240d Mon Sep 17 00:00:00 2001
+From 076c0dc09da421a01553fdf7613e84d47c639ad2 Mon Sep 17 00:00:00 2001
 From: wanlong <long.wan@spacemit.com>
 Date: Wed, 30 Aug 2023 18:29:05 +0800
 Subject: [PATCH 0122/1241] mmc: support spacemit k1x platform
@@ -243,7 +243,7 @@ index 860378bea557..9269cb8208dd 100644
  }
  
 diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 49f568f9a7d3..2c2954fb8285 100644
+index f9f083d18be5..882ca671310a 100644
 --- a/drivers/mmc/core/mmc.c
 +++ b/drivers/mmc/core/mmc.c
 @@ -1192,6 +1192,11 @@ static int mmc_select_hs400(struct mmc_card *card)
@@ -281,7 +281,7 @@ index 49f568f9a7d3..2c2954fb8285 100644
  	/* Switch HS to HS200 */
  	val = EXT_CSD_TIMING_HS200 |
  	      card->drive_strength << EXT_CSD_DRV_STR_SHIFT;
-@@ -1450,6 +1464,9 @@ static int mmc_select_hs400es(struct mmc_card *card)
+@@ -1452,6 +1466,9 @@ static int mmc_select_hs400es(struct mmc_card *card)
  
  	/* Set host controller to HS400 timing and frequency */
  	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
@@ -291,7 +291,7 @@ index 49f568f9a7d3..2c2954fb8285 100644
  
  	/* Controller enable enhanced strobe function */
  	host->ios.enhanced_strobe = true;
-@@ -2209,14 +2226,28 @@ static int mmc_suspend(struct mmc_host *host)
+@@ -2211,14 +2228,28 @@ static int mmc_suspend(struct mmc_host *host)
  static int _mmc_resume(struct mmc_host *host)
  {
  	int err = 0;
@@ -2006,7 +2006,7 @@ index 000000000000..030bc3845fed
 +MODULE_DESCRIPTION("SDHCI platform driver for Spacemit");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index fec9329e1edb..f4797bf4de8f 100644
+index d06c5a13ef91..205ba1eb7e07 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -1733,6 +1733,15 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
@@ -2165,7 +2165,7 @@ index fec9329e1edb..f4797bf4de8f 100644
  
  		if (host->ops->irq) {
  			intmask = host->ops->irq(host, intmask);
-@@ -4637,6 +4744,11 @@ int sdhci_setup_host(struct sdhci_host *host)
+@@ -4638,6 +4745,11 @@ int sdhci_setup_host(struct sdhci_host *host)
  	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
  		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
  
