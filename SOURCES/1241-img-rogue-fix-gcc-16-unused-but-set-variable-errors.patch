@@ -1,0 +1,98 @@
+From 75e06fea265be936d921c528ebfb908b975e8517 Mon Sep 17 00:00:00 2001
+From: Jason Montleon <jason@montleon.com>
+Date: Thu, 11 Jun 2026 21:44:38 -0400
+Subject: [PATCH 1241/1241] img-rogue: fix gcc 16 unused-but-set-variable
+ errors
+
+gcc 16 enables -Werror=unused-but-set-variable, which breaks the build
+for several variables in the img-rogue driver. In each case the variable
+is only consumed by debug code that compiles to nothing in this config
+(PVR_DPF verbose logs, #if defined(PDUMP) and ENABLE_SYNC_CHECKPOINT_POOL_DEBUG
+blocks), so it is set but never read in a production build.
+
+Mark each with __maybe_unused to silence the warning while preserving the
+debug functionality.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+---
+ drivers/gpu/drm/img-rogue/mmu_common.c       | 2 +-
+ drivers/gpu/drm/img-rogue/pvr_export_fence.c | 4 ++--
+ drivers/gpu/drm/img-rogue/pvr_gputrace.c     | 6 +++---
+ drivers/gpu/drm/img-rogue/rgxhwperf_common.c | 2 +-
+ drivers/gpu/drm/img-rogue/sync_checkpoint.c  | 2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/img-rogue/mmu_common.c b/drivers/gpu/drm/img-rogue/mmu_common.c
+index a5c2cfbb7f8e..067c1317b375 100644
+--- a/drivers/gpu/drm/img-rogue/mmu_common.c
++++ b/drivers/gpu/drm/img-rogue/mmu_common.c
+@@ -3272,7 +3272,7 @@ MMU_MapPages(MMU_CONTEXT *psMMUContext,
+ 	IMG_UINT32 uiPTEIndex = 0;
+ 	IMG_UINT32 uiPageSize = (1 << uiLog2HeapPageSize);
+ 	IMG_UINT32 uiLoop = 0;
+-	IMG_UINT32 ui32MappedCount = 0;
++	IMG_UINT32 ui32MappedCount __maybe_unused = 0;
+ 	IMG_DEVMEM_OFFSET_T uiPgOffset = 0;
+ 	IMG_UINT32 uiFlushEnd = 0, uiFlushStart = 0;
+ 
+diff --git a/drivers/gpu/drm/img-rogue/pvr_export_fence.c b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
+index 38a790b1c378..160b0c3fa9f0 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_export_fence.c
++++ b/drivers/gpu/drm/img-rogue/pvr_export_fence.c
+@@ -140,8 +140,8 @@ pvr_exp_fence_context_signal_fences(void *data)
+ 	struct pvr_exp_fence_context *fctx = (struct pvr_exp_fence_context *)data;
+ 	struct pvr_exp_fence *pvr_exp_fence, *tmp;
+ 	unsigned long flags1;
+-	int chkpt_ct = 0;
+-	int chkpt_sig_ct = 0;
++	int chkpt_ct __maybe_unused = 0;
++	int chkpt_sig_ct __maybe_unused = 0;
+ 
+ 	LIST_HEAD(signal_list);
+ 
+diff --git a/drivers/gpu/drm/img-rogue/pvr_gputrace.c b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
+index 723e6d4d9082..9bc45789024d 100644
+--- a/drivers/gpu/drm/img-rogue/pvr_gputrace.c
++++ b/drivers/gpu/drm/img-rogue/pvr_gputrace.c
+@@ -1125,9 +1125,9 @@ static IMG_BOOL ValidAndEmitFTraceEvent(PVRSRV_RGXDEV_INFO *psDevInfo,
+ static void _GpuTraceProcessPackets(PVRSRV_RGXDEV_INFO *psDevInfo, void *pBuffer,
+                                     IMG_UINT32 ui32ReadLen)
+ {
+-	IMG_UINT32			ui32TlPackets = 0;
+-	IMG_UINT32			ui32HWPerfPackets = 0;
+-	IMG_UINT32			ui32HWPerfPacketsSent = 0;
++	IMG_UINT32 __maybe_unused	ui32TlPackets = 0;
++	IMG_UINT32 __maybe_unused	ui32HWPerfPackets = 0;
++	IMG_UINT32 __maybe_unused	ui32HWPerfPacketsSent = 0;
+ 	void				*pBufferEnd;
+ 	PVRSRVTL_PPACKETHDR psHDRptr;
+ 	PVRSRVTL_PACKETTYPE ui16TlType;
+diff --git a/drivers/gpu/drm/img-rogue/rgxhwperf_common.c b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
+index 4a2452651077..81ec122e4f74 100644
+--- a/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
++++ b/drivers/gpu/drm/img-rogue/rgxhwperf_common.c
+@@ -3840,7 +3840,7 @@ PVRSRV_ERROR RGXHWPerfAcquireEvents(
+ 	PVRSRV_ERROR			eError;
+ 	RGX_KM_HWPERF_DEVDATA*	psDevData = (RGX_KM_HWPERF_DEVDATA*)hDevData;
+ 	IMG_PBYTE				pDataDest;
+-	IMG_UINT32			ui32TlPackets = 0;
++	IMG_UINT32 __maybe_unused	ui32TlPackets = 0;
+ 	IMG_PBYTE			pBufferEnd;
+ 	PVRSRVTL_PPACKETHDR psHDRptr;
+ 	PVRSRVTL_PACKETTYPE ui16TlType;
+diff --git a/drivers/gpu/drm/img-rogue/sync_checkpoint.c b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
+index b04d059662ee..0f2612490ff5 100644
+--- a/drivers/gpu/drm/img-rogue/sync_checkpoint.c
++++ b/drivers/gpu/drm/img-rogue/sync_checkpoint.c
+@@ -3265,7 +3265,7 @@ static IMG_UINT32 _CleanCheckpointPool(_SYNC_CHECKPOINT_CONTEXT *psContext)
+ 	DECLARE_DLLIST(sCleanupList);
+ 	DLLIST_NODE *psThis, *psNext;
+ 	OS_SPINLOCK_FLAGS uiFlags;
+-	IMG_UINT32 ui32ItemsFreed = 0, ui32NullScpCount = 0;
++	IMG_UINT32 ui32ItemsFreed = 0, ui32NullScpCount __maybe_unused = 0;
+ 
+ 	/* Acquire sync checkpoint pool lock */
+ 	OSSpinLockAcquire(psCtxCtl->hSyncCheckpointPoolLock, uiFlags);
+-- 
+2.54.0
+

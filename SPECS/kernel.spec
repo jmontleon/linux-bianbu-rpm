@@ -2415,7 +2415,7 @@ Patch11237: 1237-RTL8852-6.15-fixes.patch
 Patch11238: 1238-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 Patch11239: 1239-Linux-6.16.y-14.patch
 Patch11240: 1240-6.17-Fixes.patch
-
+Patch11241: 1241-img-rogue-fix-gcc-16-unused-but-set-variable-errors.patch
 
 
 
@@ -4514,7 +4514,7 @@ ApplyOptionalPatch 1237-RTL8852-6.15-fixes.patch
 ApplyOptionalPatch 1238-Add-minimal-hacked-up-OrangePi-R2S-devicetree.patch
 ApplyOptionalPatch 1239-Linux-6.16.y-14.patch
 ApplyOptionalPatch 1240-6.17-Fixes.patch
-
+ApplyOptionalPatch 1241-img-rogue-fix-gcc-16-unused-but-set-variable-errors.patch
 
 
 
